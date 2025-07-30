@@ -1,0 +1,28 @@
+## Inbox
+### `20250730`
+**Process-Document Integration**
+How can document content be effectively and automatically linked to process model elements to ensure traceability between business requirements and process design?
+What are the best practices for visualizing and navigating the relationships between documents and process models in collaborative environments?
+
+**Automation & Process Mining**
+To what extent can process mining techniques be applied to unstructured or semi-structured documents for automated process model discovery?
+
+How accurately can a document-based explorer detect deviations between prescribed processes and processes inferred from real document traces?
+
+**Tool Usability & User Experience**
+What interaction paradigms increase user efficiency and accuracy when working with document-driven process modeling tools?
+
+How do different user groups (e.g., business analysts vs. engineers) utilize document-based explorers compared to traditional process modeling tools?
+
+**Collaboration & Knowledge Management**
+In what ways does integrated document-process modeling impact knowledge sharing and process improvement within organizations?
+
+How can conflicts or inconsistencies between overlapping documents and process models be detected and resolved automatically?
+
+**Object & Multi-Artifact Modeling**
+How should the explorer support modeling and analysis for processes involving multiple types of artifacts (documents, data, subprocesses, etc.) with complex interdependencies?
+
+**Evaluation & Impact**
+What metrics can be used to measure the effectiveness of a document-based process model explorer versus conventional modeling tools?
+
+How does the use of such tools affect compliance, change management, and process optimization in real-world case studies?

@@ -1,0 +1,252 @@
+{
+  "main": {
+    "id": "85ee8af646230fe6",
+    "type": "split",
+    "children": [
+      {
+        "id": "b09a7e0b1f5a73cd",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "da3449668e0c3f9d",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Research Questions.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Research Questions"
+            }
+          },
+          {
+            "id": "a465195ce8406474",
+            "type": "leaf",
+            "state": {
+              "type": "card-board-view",
+              "state": {},
+              "icon": "card-board",
+              "title": "CardBoard"
+            }
+          },
+          {
+            "id": "3cb834683729f94b",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Research Questions.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Research Questions"
+            }
+          },
+          {
+            "id": "07b13a7accb1047a",
+            "type": "leaf",
+            "state": {
+              "type": "kanban",
+              "state": {
+                "file": "Kanban.md",
+                "kanbanViewState": {
+                  "kanban-plugin": "board",
+                  "list-collapse": [
+                    false,
+                    false,
+                    false
+                  ]
+                }
+              },
+              "icon": "lucide-trello",
+              "title": "Kanban"
+            }
+          },
+          {
+            "id": "8ee1610fbf26bea3",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Research Questions.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Research Questions"
+            }
+          }
+        ],
+        "currentTab": 2
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "af45a6caf4dcfd74",
+    "type": "split",
+    "children": [
+      {
+        "id": "156b5a43e4f1cb26",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "9b56cfd6d5839b01",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "00e345e08426a34e",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "a6bd09256ce7fd03",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 287.5
+  },
+  "right": {
+    "id": "178a598febc30077",
+    "type": "split",
+    "children": [
+      {
+        "id": "b47caa4b406273be",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "66db0266e3fc055e",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "7d42f7795d16b14f",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "92f6bdec1b5de535",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "bc0d0905923aa57d",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "remotely-save:Remotely Save": false,
+      "obsidian-kanban:Create new board": false,
+      "card-board:CardBoard": false
+    }
+  },
+  "active": "3cb834683729f94b",
+  "lastOpenFiles": [
+    "Research Questions.md",
+    "Kanban.md",
+    "msc-thesis",
+    "msc-thesis-main/README.md",
+    "msc-thesis-main",
+    "msc-thesis-main.zip",
+    "Unconfirmed 668298.crdownload",
+    "Draft the Exposè.md",
+    "Mock-up",
+    "Code",
+    "Exposè/main.pdf",
+    "Exposè/tum-resources/images/TUM_Uhrenturm.png",
+    "MYTh S24_20240617_2044/Session 2 03 May 2024/IEEE Style Guide (2019).pdf",
+    "MYTh S24_20240617_2044/Session 2 03 May 2024/Citing Data.pdf",
+    "MYTh S24_20240617_2044/Session 2 03 May 2024/Citational Styles.pdf",
+    "Untitled Kanban 1.md",
+    "is-bpm-thesis-latex copy/README.md",
+    "Exposè/tum-resources/images/Universitaet_Flaggen.jpg",
+    "Exposè/tum-resources/images/valueprop.PNG"
+  ]
+}
