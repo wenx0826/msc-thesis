@@ -1,13 +1,11 @@
-\babel@toc {english}{}
-\babel@toc {english}{}
-\contentsline {chapter}{Introduction}{4}{Doc-Start}%
-\contentsline {section}{Level 2 Heading}{4}{section*.1}%
-\contentsline {subsection}{Level 3 Heading}{4}{section*.1}%
-\contentsline {subsubsection}{Level 4 Heading}{5}{section*.1}%
-\contentsline {chapter}{Related Work}{7}{Item.3}%
-\contentsline {chapter}{Solution Design}{7}{Item.3}%
-\contentsline {chapter}{Implementation}{7}{Item.3}%
-\contentsline {chapter}{Evaluation}{7}{Item.3}%
-\contentsline {chapter}{Discussion}{7}{Item.3}%
-\contentsline {chapter}{Conclusion}{7}{Item.3}%
-\contentsline {chapter}{Appendix}{8}{Item.3}%
+\babel@toc {english}{}\relax 
+\babel@toc {english}{}\relax 
+\contentsline {chapter}{\numberline {1}Introduction}{4}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Motivation}{4}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Research Questions}{4}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Contribution}{4}{section.1.3}%
+\contentsline {section}{\numberline {1.4}Methodology}{4}{section.1.4}%
+\contentsline {section}{\numberline {1.5}Evaluation}{4}{section.1.5}%
+\contentsline {section}{\numberline {1.6}Structure}{4}{section.1.6}%
+\contentsline {chapter}{\numberline {2}Related Work}{5}{chapter.2}%
+\contentsline {chapter}{\numberline {A}Appendix}{6}{chapter.A}%

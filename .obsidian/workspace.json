@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Research Questions.md",
+                "file": "01.1 Research Questions.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Research Questions"
+              "title": "01.1 Research Questions"
             }
           },
           {
@@ -37,12 +37,24 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Research Questions.md",
+                "file": "01.1 Research Questions.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Research Questions"
+              "title": "01.1 Research Questions"
+            }
+          },
+          {
+            "id": "484f41cd3d95882e",
+            "type": "leaf",
+            "state": {
+              "type": "image",
+              "state": {
+                "file": "361753868885_.pic.jpg"
+              },
+              "icon": "lucide-image",
+              "title": "361753868885_.pic"
             }
           },
           {
@@ -71,16 +83,16 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Research Questions.md",
+                "file": "01.1 Research Questions.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Research Questions"
+              "title": "01.1 Research Questions"
             }
           }
         ],
-        "currentTab": 2
+        "currentTab": 3
       }
     ],
     "direction": "vertical"
@@ -227,26 +239,37 @@
       "card-board:CardBoard": false
     }
   },
-  "active": "3cb834683729f94b",
+  "active": "484f41cd3d95882e",
   "lastOpenFiles": [
-    "Research Questions.md",
+    "Code/cpee-layout-main/themes/preset/symbols/test.svg",
+    "Code/cpee-layout-main/themes/preset/symbols/terminate.svg",
+    "Code/cpee-layout-main/themes/preset/symbols/stop.svg",
+    "Code/cpee-layout-main/themes/preset/symbols/start_event.svg",
+    "Code/cpee-layout-main/themes/preset/symbols/start.svg",
+    "Code/cpee-layout-main/themes/preset/symbols/scripts.svg",
+    "Code/cpee-layout-main/themes/preset/symbols/parallel_eventbased_parallel.svg",
+    "Code/cpee-layout-main/themes/preset/symbols/parallel_eventbased_exclusive.svg",
+    "Code/cpee-layout-main/themes/preset/symbols/parallel_branch_normal.svg",
+    "Code/cpee-layout-main/themes/preset/symbols/parallel_branch_event.svg",
+    "Code/cpee-layout-main/themes/preset/symbols/parallel_branch_compact.svg",
+    "Code/cpee-layout-main/themes/preset/rngs/terminate.rng",
+    "Code/cpee-layout-main/themes/preset/rngs/stop.rng",
+    "Code/cpee-layout-main/themes/preset/rngs/start.rng",
+    "Code/cpee-layout-main/themes/preset/rngs/scripts.rng",
+    "Code/cpee-layout-main/themes/preset/rngs/parallel_branch.rng",
+    "Code/cpee-layout-main/themes/preset/rngs/parallel.rng",
+    "Code/cpee-layout-main/themes/preset/rngs/otherwise.rng",
+    "Code/cpee-layout-main/themes/preset/rngs/manipulate.rng",
+    "Code/cpee-layout-main/themes/preset/rngs/loop.rng",
+    "Code/cpee-layout-main/themes/preset/rngs/group.rng",
+    "Code/cpee-layout-main/README.md",
+    "cpee-layout-main/README.md",
     "Kanban.md",
-    "msc-thesis",
+    "01.1 Research Questions.md",
+    "02 Related Work.md",
     "msc-thesis-main/README.md",
-    "msc-thesis-main",
-    "msc-thesis-main.zip",
-    "Unconfirmed 668298.crdownload",
     "Draft the Exposè.md",
-    "Mock-up",
-    "Code",
-    "Exposè/main.pdf",
-    "Exposè/tum-resources/images/TUM_Uhrenturm.png",
-    "MYTh S24_20240617_2044/Session 2 03 May 2024/IEEE Style Guide (2019).pdf",
-    "MYTh S24_20240617_2044/Session 2 03 May 2024/Citing Data.pdf",
-    "MYTh S24_20240617_2044/Session 2 03 May 2024/Citational Styles.pdf",
     "Untitled Kanban 1.md",
-    "is-bpm-thesis-latex copy/README.md",
-    "Exposè/tum-resources/images/Universitaet_Flaggen.jpg",
-    "Exposè/tum-resources/images/valueprop.PNG"
+    "is-bpm-thesis-latex copy/README.md"
   ]
 }
