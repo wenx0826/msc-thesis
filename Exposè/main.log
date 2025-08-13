@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.8.1)  1 AUG 2025 04:44
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.8.1)  2 AUG 2025 01:05
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1781,13 +1781,13 @@ Package logreq Info: Writing requests to 'main.run.xml'.
 Here is how much of TeX's memory you used:
  51358 strings out of 473190
  1093300 string characters out of 5715801
- 2050496 words of memory out of 5000000
+ 2050499 words of memory out of 5000000
  73754 multiletter control sequences out of 15000+600000
  618517 words of font info for 93 fonts, out of 8000000 for 9000
  1143 hyphenation exceptions out of 8191
  129i,17n,145p,1288b,2929s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2025/texmf-dist/fonts/type1/public/newtx/NewTXMI.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/cm-super/sfrm2074.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/newtx/ztmb.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/newtx/ztmr.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/newtx/ztmri.pfb>
-Output written on "/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/main.pdf" (9 pages, 717893 bytes).
+Output written on "/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/main.pdf" (9 pages, 720490 bytes).
 PDF statistics:
  172 PDF objects out of 1000 (max. 8388607)
  125 compressed objects within 2 object streams

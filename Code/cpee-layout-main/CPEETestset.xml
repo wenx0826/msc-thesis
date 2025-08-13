@@ -1,0 +1,101 @@
+<testset xmlns="http://cpee.org/ns/properties/2.0">
+  <executionhandler>ruby</executionhandler>
+  <dataelements>
+    <refineTimes>-1</refineTimes>
+    <satisfied>false</satisfied>
+    <buildMethod>company</buildMethod>
+    <boughtAll>false</boughtAll>
+  </dataelements>
+  <endpoints>
+    <start_url>https://cpee.org/flow/start/url/</start_url>
+    <timeout>http://cpee.org/services/timeout.php</timeout>
+    <subprocess>https-post://cpee.org/flow/start/url/</subprocess>
+    <send>https-post://cpee.org/ing/correlators/message/send/</send>
+    <receive>https-get://cpee.org/ing/correlators/message/receive/</receive>
+    <user>https-post://cpee.org/services/timeout-user.php</user>
+    <auto>https-post://cpee.org/services/timeout-auto.php</auto>
+  </endpoints>
+  <attributes>
+    <info>Build a treee house</info>
+    <modeltype>CPEE</modeltype>
+    <theme>default</theme>
+    <customer>user</customer>
+    <status>development</status>
+    <creator>ga94hor</creator>
+    <author>ga94hor</author>
+    <design_stage>development</design_stage>
+  </attributes>
+  <description>
+    <description xmlns="http://cpee.org/ns/description/1.0">
+      <loop mode="post_test" condition="!data.satisfied">
+        <manipulate id="s1" label="data.refineTimes += 1">data.refineTimes += 1</manipulate>
+        <call id="u1" endpoint="user">
+          <parameters>
+            <label>Collect requirements</label>
+          </parameters>
+        </call>
+        <call id="u2" endpoint="user">
+          <parameters>
+            <label>Draw the draft</label>
+          </parameters>
+        </call>
+        <call id="u3" endpoint="user">
+          <parameters>
+            <label>Review the draft</label>
+          </parameters>
+          <code>
+            <finalize output="result">data.satisfied = [true, false].sample
+data.buildMethod = ["company", "client"].sample
+            </finalize>
+          </code>
+        </call>
+      </loop>
+      <call id="a1" endpoint="auto">
+        <parameters>
+          <label>Generate material list</label>
+        </parameters>
+      </call>
+      <call id="a2" endpoint="auto">
+        <parameters>
+          <label>Generate bill</label>
+        </parameters>
+      </call>
+     <parallel wait="-1" cancel="last">
+        <parallel_branch>
+          <call id="u4" endpoint="user">
+            <parameters>
+              <label>Pay the bill</label>
+            </parameters>
+          </call>
+        </parallel_branch>
+        <parallel_branch>
+          <choose mode="exclusive">
+            <alternative condition='data.buildMethod == "client"'>
+              <loop mode="post_test" condition="!data.boughtAll">
+                <call id="u5" endpoint="user">
+                  <parameters>
+                    <label>Buy materials</label>
+                  </parameters>
+                  <code>
+                    <finalize output="result">data.boughtAll = [true, false].sample</finalize>
+                  </code>
+                </call>
+              </loop>
+            </alternative>
+            <otherwise />
+          </choose>
+          <call id="u6" endpoint="user">
+            <parameters>
+              <label>Build the house</label>
+            </parameters>
+          </call>
+        </parallel_branch>
+      </parallel>
+    </description>
+  </description>
+  <transformation>
+    <description type="copy"/>
+    <dataelements type="none"/>
+    <endpoints type="none"/>
+  </transformation>
+</testset>

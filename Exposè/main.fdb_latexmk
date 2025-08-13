@@ -1,22 +1,22 @@
 # Fdb version 4
-["biber /Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/main"] 1754016273.09575 "/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/main.bcf" "/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/main.bbl" "/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/main" 1754016287.731 0
-  "/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/main.bcf" 1754016287.59417 107741 7404d13f8da2d4e93b9eac7cfbfa852c "pdflatex"
+["biber /Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/main"] 1754016273.09575 "/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/main.bcf" "/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/main.bbl" "/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/main" 1754089535.836 0
+  "/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/main.bcf" 1754089535.7134 107741 7404d13f8da2d4e93b9eac7cfbfa852c "pdflatex"
   (generated)
   "/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/main.bbl"
   "/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/main.blg"
   (rewritten before read)
-["pdflatex"] 1754016286.03698 "/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/main.tex" "/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/main.pdf" "main" 1754016287.73159 0
-  "/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/chapters/01_Introduction.tex" 1753913816.79085 1196 0e3b50959944ea5c34b5111fcda496e0 ""
+["pdflatex"] 1754089534.25309 "/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/main.tex" "/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/main.pdf" "main" 1754089535.83631 0
+  "/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/chapters/01_Introduction.tex" 1754089506.23315 1195 04ea99ee52460ae3710e7629ecafefc1 ""
   "/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/chapters/02_Related_Work.tex" 1675117955 39 5099dda0f5ead8bab1aa8531986fd5d5 ""
   "/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/chapters/99_Appendix.tex" 1695108829 750 2aba2d2e46ac56df3edc96953ca2dc7d ""
-  "/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/main.aux" 1754016287.58882 2440 fb9ea82aa9463edd6c69d33e10f7c55c "pdflatex"
+  "/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/main.aux" 1754089535.70913 2440 fb9ea82aa9463edd6c69d33e10f7c55c "pdflatex"
   "/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/main.bbl" 1754016284.22709 466 76d65a242ec496c9b4361af646ff12cb "biber /Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/main"
-  "/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/main.lof" 1754016287.59502 155 eb84a261f7dab177fc87381953b84d12 "pdflatex"
-  "/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/main.lot" 1754016287.59498 152 61c9cd009b0bc5cca0bb33ff926386d6 "pdflatex"
-  "/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/main.out" 1754016287.59138 969 0ff288818511aa3ad6d425539483a5aa "pdflatex"
-  "/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/main.run.xml" 1754016287.59487 2530 adad30a430d3197aa08eb6d402abf822 "pdflatex"
-  "/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/main.tex" 1754016271.18458 782 bc9cefba51b19f206dacd6b4f636c235 ""
-  "/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/main.toc" 1754016287.59495 690 b744a675ba0ca9a1dc754eb256574f67 "pdflatex"
+  "/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/main.lof" 1754089535.7143 155 eb84a261f7dab177fc87381953b84d12 "pdflatex"
+  "/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/main.lot" 1754089535.71427 152 61c9cd009b0bc5cca0bb33ff926386d6 "pdflatex"
+  "/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/main.out" 1754089535.71093 969 0ff288818511aa3ad6d425539483a5aa "pdflatex"
+  "/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/main.run.xml" 1754089535.71404 2530 adad30a430d3197aa08eb6d402abf822 "pdflatex"
+  "/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/main.tex" 1754089534.04404 785 2f8830aca1d2638c673d891af9f03865 ""
+  "/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/main.toc" 1754089535.71424 690 b744a675ba0ca9a1dc754eb256574f67 "pdflatex"
   "/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/tum-base-text.sty" 1675119506 2199 aa02c92bff7eebef3a7bffc3e440d29e ""
   "/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/tum-base.sty" 1675118687 3514 643a84ea706dec2b136809face9eb66e ""
   "/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/tum-book.cls" 1695108829 11183 089b11b7ba66394ceaeaf1ed5ae77b77 ""

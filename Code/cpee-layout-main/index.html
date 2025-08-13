@@ -36,7 +36,7 @@
       $(document).ready(() => {
         $.ajax({
           method: 'GET',
-          url: 'model.xml',
+          url: 'Frames.xml',
           success: (data) => {
             new WfAdaptor('themes/default/theme.js',function(graphrealization){
               graphrealization.draw_labels = (max,labels,shift,striped) => {
