@@ -1,0 +1,37 @@
+:root {
+  --x-ui-outside-color: #ffffff;
+  --x-ui-border-color: #a1a1a1;
+
+  --x-ui-content-border-color: #ffed00;
+  --x-ui-content-light-background: #f0f0f0;
+  --x-ui-content-hover-background: #99cce660;
+
+  --x-tab-inactive-color: #f0f0f0;
+  --x-outside-behind-text-color: #333;
+  --x-outside-behind-text-active-color: #333;
+}
+
+*[is=x-ui-] ui-tabbar > ui-tab.inactive, ui-tabbed > ui-tabbar > ui-tab.switch {
+  background-color: var(--x-tab-inactive-color);
+}
+
+[is=x-ui-] #model ui-tabbar, [is=x-ui-] #instance ui-tabbar {
+  /* background if necessary */
+}
+
+*[is=x-ui-] #model ui-tabbar > ui-behind a:link   , *[is=x-ui-] #instance ui-tabbar > ui-behind a:link    { color:var(--x-outside-behind-text-color); }
+*[is=x-ui-] #model ui-tabbar > ui-behind a:visited, *[is=x-ui-] #instance ui-tabbar > ui-behind a:visited { color:var(--x-outside-behind-text-color); }
+*[is=x-ui-] #model ui-tabbar > ui-behind a:hover  , *[is=x-ui-] #instance ui-tabbar > ui-behind a:hover   { color:var(--x-outside-behind-text-active-color); }
+*[is=x-ui-] #model ui-tabbar > ui-behind a:active , *[is=x-ui-] #instance ui-tabbar > ui-behind a:active  { color:var(--x-outside-behind-text-active-color);  }
+
+[is=x-ui-] ui-tabbar .logo {
+  display: inline-block;
+  content: url(/global_ui/logo.svg);
+  background-size: contain;
+  background-repeat: no-repeat;
+  height: 2.4em;
+  padding: 0;
+  padding-left: 1em;
+  margin: 0;
+  vertical-align: bottom;
+}

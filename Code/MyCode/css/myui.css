@@ -1,0 +1,20 @@
+.panel {
+    background-color: var(--x-ui-background-color);
+    padding: 1em;
+    margin: 0;
+    border: 1pt solid var(--x-ui-border-color);
+    border-radius: 1em;
+}
+
+main {
+    display: flex;
+}
+
+#documentContent {
+    user-select: text;
+}
+
+li.active {
+    font-weight: bold;
+    background-color: var(--x-ui-background-color); 
+}

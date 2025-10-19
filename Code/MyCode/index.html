@@ -1,0 +1,294 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Document-Based Process Modeller</title>
+  <!-- libs, do not modify. When local than load local libs. -->
+  <script type="text/javascript" src="js_libs/jquery.min.js"></script>
+  <script type="text/javascript" src="js_libs/jquery.browser.js"></script>
+  <script type="text/javascript" src="js_libs/jquery.svg.min.js"></script>
+  <script type="text/javascript" src="js_libs/jquery.svgdom.min.js"></script>
+  <script type="text/javascript" src="js_libs/vkbeautify.js"></script>
+  <script type="text/javascript" src="js_libs/util.js"></script>
+  <script type="text/javascript" src="js_libs/printf.js"></script>
+  <script type="text/javascript" src="js_libs/strftime.min.js"></script>
+  <script type="text/javascript" src="js_libs/parsequery.js"></script>
+  <script type="text/javascript" src="js_libs/underscore.min.js"></script>
+  <script type="text/javascript" src="js_libs/jquery.caret.min.js"></script>
+  <script type="text/javascript" src="js_libs/jquery.cookie.js"></script>
+  <script type="text/javascript" src="js_libs/marked.min.js"></script>
+
+  <script type="text/javascript" src="js_libs/relaxngui.js"></script>
+
+  <script type="text/javascript" src="js_libs/uidash.js"></script>
+
+
+
+  <!-- modelling ui -->
+  <script type="text/javascript" src="js/wfadaptor.js"></script>
+  <link rel="stylesheet" href="css/wfadaptor.css" type="text/css" />
+
+
+  <link rel="stylesheet" href="js_libs/uidash.css" type="text/css">
+  <link rel="stylesheet" href="js_libs/relaxngui.css" type="text/css">
+
+  <!-- custom stuff, play arround  -->
+  <link rel="stylesheet" href="css/ui.css" type="text/css">
+  <link rel="stylesheet" href="css/globalui_cpee.css" type="text/css">
+
+  <!-- Flos Stuff -->
+  <script type="text/javascript" src="js/structured.js"></script>
+  <style type="text/css">
+    @font-face {
+      font-family: TencentSans;
+      src: url("chrome-extension://lkjkfecdnfjopaeaibboihfkmhdjmanm/static/fonts/TencentSans.woff2");
+    }
+  </style>
+
+  <!-- my libs-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
+  <!-- my scripts - DB simulation -->
+  <script src="js/db_document.js"></script>
+
+  <!-- my ui-->
+  <link rel="stylesheet" href="css/myui.css" type="text/css" />
+
+</head>
+<body data-defaultconfig="index.json" is="x-ui-" data-names="3">
+
+  <ui-rest>
+    <ui-content>
+      <!-- Left: DocumentPanel -->
+      <ui-rest style="flex:2;" class="panel">
+        <!-- Document List Pane -->
+        <ui-tabbed>
+          <ui-tabbar>
+            <ui-tab class="switch"></ui-tab>
+            <ui-tab class="" data-tab="login" id="tablogin">Documents</ui-tab>
+          </ui-tabbar>
+          <ui-content>
+            <ui-area data-belongs-to-tab="login" id="arealogin">
+              <ul id="documentlist">
+              </ul>
+              <label for="documentsInput">Choose documents to upload</label>
+              <input type="file" id="documentsInput" multiple />
+            </ui-area>
+          </ui-content>
+        </ui-tabbed>
+        <!-- Text Action Bar -->
+        <div class="panel">
+          <!-- <button id="regenerateButton">Regenerate</button> -->
+          <button id="generateButton" disabled>Generate</button>
+        </div>
+        <!-- Document Viewer -->
+        <div>
+          <div id="documentContent"></div>
+        </div>
+      </ui-rest>
+      <ui-resizehandle></ui-resizehandle>
+      <!-- Middle: Current Model Panel -->
+      <ui-rest style="flex:2;" class="panel">
+        <div id='graphgrid'>
+          <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink" id='graphcanvas'
+            width='1' height='1'></svg>
+        </div>
+        <!-- Model Action Bar -->
+        <div class="panel" id="modelActionBar" style="visibility: hidden;">
+          <button id="cancelButton">Cancel</button>
+          <button id="keepButton">Keep</button>
+        </div>
+      </ui-rest>
+      <ui-resizehandle></ui-resizehandle>
+      <!-- Right: Models Panel-->
+      <ui-rest style="flex:1;" class="panel">
+        <!-- <div id='graphgrid'>
+          <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink" id='graphcanvas'
+            width='1' height='1'></svg>
+        </div> -->
+      </ui-rest>
+    </ui-content>
+  </ui-rest>
+  <script>
+    let selectedDocumentId = null;
+    let selectedText = "";
+    let generatedModel = null;
+
+    const onDocumentSelect = async (event) => {
+      var target = $(event.currentTarget);
+      target.addClass("active");
+      // remove "active" from all other items, keep the clicked one active
+      $('#documentlist').children().not(target).removeClass('active');
+      const docId = target.data('docid');
+      if (docId && docId !== selectedDocumentId) {
+        selectedDocumentId = docId;
+        console.log('Document ID:', docId);
+        const content = await getDocumentContentById(docId);
+        $('#documentContent').text(content || '');
+        selectedDocumentId = docId;
+      }
+      event.stopPropagation();
+    };
+
+    const loadDocumentList = async () => {
+      const documents = await getDocumentList();
+      const $ul = $("#documentlist");
+      $ul.empty();
+      documents.forEach(doc => {
+        const $li = $("<li>").text(doc.name);
+        $li.attr("data-docid", String(doc.id));
+        $li.on("click", onDocumentSelect);
+        $ul.append($li);
+      });
+    };
+
+    $(document).ready(() => {
+      // deleteAllDocuments();
+      loadDocumentList();
+    });
+
+
+
+    const output = document.getElementById("documentContent");
+
+    $("#documentsInput").on("change", async (event) => {
+      for (const file of event.target.files) {
+        if (!file) continue;
+        const content = await getFileContent(file);
+        // Store document in IndexedDB
+        const documentId = await createDocument(file.name, content);
+        console.log('Stored document:', file.name, 'with id', documentId);
+        const $ul = $("#documentlist");
+        const $li = $("<li>").text(file.name);
+        $li.attr("data-docid", String(documentId));
+        $li.on("click", onDocumentSelect);
+        $ul.append($li);
+      }
+    });
+
+
+    async function getFileContent(file) {
+      let fileContent = "";
+      if (file.type === "application/pdf") {
+        const arrayBuffer = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        let pdfText = "";
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const content = await page.getTextContent();
+          fileContent += content.items.map(item => item.str).join(" ") + "\n";
+        }
+      }
+      else if (
+        file.type === "application/msword" ||
+        file.name.endsWith(".doc") ||
+        file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
+        file.name.endsWith(".docx")
+      ) {
+        const arrayBuffer = await file.arrayBuffer();
+        const result = await mammoth.convertToHtml({ arrayBuffer });
+        fileContent = result.value
+      }
+      else {
+        fileContent = await file.text();
+      }
+      return fileContent;
+    }
+
+    // $(document).on("mouseup", function () {
+    //   alert("Handler for `mouseup` called.");
+    // });
+
+    // $(document).on("mouseup", function () {
+    //   console.log("Mouse up");
+    //   // alert("Handler for `mouseup` called.");
+    // });
+    //  function selectionHandler() {
+    //       console.log("Document loaded.");
+    //     }
+    //   $(document).on("mouseup", selectionHandler);
+
+
+    // $(document).on("mouseup", selectionHandlerTest);
+    // const selectionHandlerTest = () => {
+    //   console.log("Text selection detected.");
+    // }
+
+
+
+    const handleTextSelection = () => {
+
+      const selection = window.getSelection();
+      console.log("Selection:", selection);
+      console.log("Selection text:", selection.toString());
+      selectedText = selection.toString();
+      $("#generateButton").prop("disabled", false);
+      // if (selection && selection.rangeCount > 0) {
+      //   console.log("Selection text:", selection.toString());
+      //   const range = selection.getRangeAt(0); // Get the selected range
+      //   const startOffset = range.startOffset; // Start position of the selection
+      //   const endOffset = range.endOffset; // End position of the selection
+
+      //   // Get the parent node's text content (assumes the selection is within the `p` tag)
+      //   const parentNode = range.startContainer.parentNode;
+      //   // if (parentNode && parentNode.tagName === "P") {
+      //   //   const fullText = parentNode.textContent;
+      //   //   // console.log("Full text:", fullText);
+      //   //   // Split the text into before, selected, and after parts
+      //   //   // beforeSelection.value = text.slice(0, startOffset);
+      //   //   store.selectedText = text.slice(startOffset, endOffset);
+      //   //   // afterSelection.value = text.slice(endOffset);
+      //   // }
+      // }
+
+    };
+    $("#documentContent").on("mouseup", handleTextSelection);
+
+
+
+    const showSampleModel = () => {
+      $.ajax({
+        method: 'GET',
+        url: 'Frames.xml',
+        success: (data) => {
+          new WfAdaptor('themes/default/theme.js', function (graphrealization) {
+            graphrealization.draw_labels = (max, labels, shift, striped) => {
+              console.log(JSON.stringify(labels, null, "  "));
+            };
+            graphrealization.set_svg_container($('#graphcanvas'));
+            graphrealization.set_label_container($('#graphgrid'));
+            graphrealization.set_description($(data), true);
+          });
+        },
+      });
+    };
+
+
+    $("#generateButton").on("click", () => {
+      if (selectedText) {
+        $("#generateButton").prop("disabled", true);
+        $("#modelActionBar").css("visibility", "visible");
+        showSampleModel();
+        // alert(`Generating model for selected text:\n${selectedText}`);
+      } else {
+        alert("No text selected.");
+      }
+    });
+
+    $("#keepButton").on("click", () => {
+      alert("Model kept.");
+    });
+    $("#cancelButton").on("click", () => {
+      alert("Model generation cancelled.");
+      // if (selectedText) {
+      //   $("#generateButton").prop("disabled", true);
+      //   $("#modelActionBar").css("visibility", "visible");
+      //   showSampleModel();
+      //   // alert(`Generating model for selected text:\n${selectedText}`);
+      // } else {
+      //   alert("No text selected.");
+      // }
+    });
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+```plantuml
+@startuml
+
+entity Person {
+}
+entity Location {
+}
+relationship Birthplace {
+}
+
+Person -N- Birthplace
+Birthplace -1- Location
+
+@enduml
+```

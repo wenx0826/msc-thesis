@@ -4,235 +4,36 @@
     "type": "split",
     "children": [
       {
-        "id": "b09a7e0b1f5a73cd",
+        "id": "26f8825f969bea00",
         "type": "tabs",
         "children": [
           {
-            "id": "da3449668e0c3f9d",
+            "id": "f1a611c6a8e406fb",
+            "type": "leaf",
+            "state": {
+              "type": "image",
+              "state": {
+                "file": "Mock-up/mock-up1.jpg"
+              },
+              "icon": "lucide-image",
+              "title": "mock-up1"
+            }
+          },
+          {
+            "id": "28fcae189cb46b7c",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "01.2 Research Questions.md",
+                "file": "01.5 Evaluation.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "01.2 Research Questions"
-            }
-          },
-          {
-            "id": "61e2770f83951a50",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "2 Related Work - Prelexity.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "2 Related Work - Prelexity"
-            }
-          },
-          {
-            "id": "ef5273f58fe6742c",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "3 - 7.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "3 - 7"
-            }
-          },
-          {
-            "id": "88e286af4848049e",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "3 - 7.md",
-                "mode": "preview",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "3 - 7"
-            }
-          },
-          {
-            "id": "a465195ce8406474",
-            "type": "leaf",
-            "state": {
-              "type": "card-board-view",
-              "state": {},
-              "icon": "card-board",
-              "title": "CardBoard"
-            }
-          },
-          {
-            "id": "3cb834683729f94b",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "01.1 Research Questions.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "01.1 Research Questions"
-            }
-          },
-          {
-            "id": "484f41cd3d95882e",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "01.2 Research Questions.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "01.2 Research Questions"
-            }
-          },
-          {
-            "id": "5c68091e09f21fdb",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "01.2 Research Questions.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "01.2 Research Questions"
-            }
-          },
-          {
-            "id": "e3702ee0dd1ad761",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "2 Related Work - Prelexity.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "2 Related Work - Prelexity"
-            }
-          },
-          {
-            "id": "4fc66f79d8c022aa",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Gemini v1.md",
-                "mode": "preview",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "Gemini v1"
-            }
-          },
-          {
-            "id": "c296fc56cdf6362e",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Prelexity related work.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "Prelexity related work"
-            }
-          },
-          {
-            "id": "d303c47b68f4d8bb",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Prelexity related work.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "Prelexity related work"
-            }
-          },
-          {
-            "id": "e698e27b70cb62f7",
-            "type": "leaf",
-            "state": {
-              "type": "pdf",
-              "state": {
-                "file": "is-bpm-thesis-latex copy/main.pdf"
-              },
-              "icon": "lucide-file-text",
-              "title": "main"
-            }
-          },
-          {
-            "id": "0f1738e8f9d857a7",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Gemini v2.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "Gemini v2"
-            }
-          },
-          {
-            "id": "07b13a7accb1047a",
-            "type": "leaf",
-            "state": {
-              "type": "kanban",
-              "state": {
-                "file": "Kanban.md",
-                "kanbanViewState": {
-                  "kanban-plugin": "board",
-                  "list-collapse": [
-                    false,
-                    false,
-                    false
-                  ]
-                }
-              },
-              "icon": "lucide-trello",
-              "title": "Kanban"
-            }
-          },
-          {
-            "id": "8ee1610fbf26bea3",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "01.1 Research Questions.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "01.1 Research Questions"
+              "title": "01.5 Evaluation"
             }
           }
-        ],
-        "currentTab": 3
+        ]
       }
     ],
     "direction": "vertical"
@@ -305,6 +106,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "Gemini DR v0.3.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -314,7 +116,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks"
+              "title": "Backlinks for Gemini DR v0.3"
             }
           },
           {
@@ -351,23 +153,35 @@
             "state": {
               "type": "outline",
               "state": {
+                "file": "Mock-up/mock-up1.jpg",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline"
+              "title": "Outline of mock-up1"
+            }
+          },
+          {
+            "id": "7a1c74257ceb78dc",
+            "type": "leaf",
+            "state": {
+              "type": "advanced-tables-toolbar",
+              "state": {},
+              "icon": "spreadsheet",
+              "title": "Advanced Tables"
             }
           }
-        ]
+        ],
+        "currentTab": 3
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 200
   },
   "left-ribbon": {
     "hiddenItems": {
+      "bases:Create new base": false,
       "switcher:Open quick switcher": false,
       "graph:Open graph view": false,
       "canvas:Create new canvas": false,
@@ -376,54 +190,58 @@
       "command-palette:Open command palette": false,
       "remotely-save:Remotely Save": false,
       "obsidian-kanban:Create new board": false,
-      "card-board:CardBoard": false
+      "card-board:CardBoard": false,
+      "table-editor-obsidian:Advanced Tables Toolbar": false
     }
   },
-  "active": "88e286af4848049e",
+  "active": "9b56cfd6d5839b01",
   "lastOpenFiles": [
-    "2 Related Work - Prelexity.md",
+    "Code/MyCode/dataSchema.md",
+    "Code/MyCode/dataSchema.plantuml",
+    "Code/MyCode/dataSchema.puml",
+    "Code/MyCode/js/db_documents.js",
+    "Code/MyCode/js/db_models.js",
+    "Code/MyCode/js/db_document.js",
+    "Code/MyCode/js/db.js",
+    "Code/MyCode/css/myui.css",
+    "Code/MyCode/css/my.css",
+    "Code/MyCode/css/ui_test.css",
+    "Gemini DR v0.md",
     "3 - 7.md",
-    "01.2 Research Questions.md",
-    "1.1 Motivation.md",
-    "Untitled.md",
-    "04.md",
-    "Untitled",
+    "2 Related Work - Prelexity.md",
+    "02 Related Work.md",
     "01.6 Structure.md",
-    "References/SampleResearchAssign.pdf",
-    "is-bpm-thesis-latex copy/main.pdf",
-    "01.3 Contribution.md",
     "01.5 Evaluation.md",
     "01.4 Methodology.md",
-    "Proposal GPT v1.md",
-    "Gemini v2.md",
-    "Exposè/main.pdf",
-    "Gemini v1.md",
+    "01.3 Contribution.md",
+    "01.1 Motivation.md",
+    "0 - Kanban.md",
+    "Mock-up/mock-up1.jpg",
+    "Code/MyCode/Frames.xml",
+    "Code/MyCode/themes/preset/symbols/test.svg",
+    "Code/MyCode/themes/preset/symbols/terminate.svg",
+    "Code/MyCode/themes/preset/symbols/stop.svg",
+    "Code/MyCode/themes/preset/symbols/start_event.svg",
+    "Code/MyCode/themes/preset/symbols/start.svg",
+    "Code/MyCode/themes/preset/symbols/scripts.svg",
+    "Code/MyCode/themes/preset/symbols/parallel_eventbased_parallel.svg",
+    "Code/MyCode/themes/preset/symbols/parallel_eventbased_exclusive.svg",
+    "Code/MyCode/themes/preset/symbols/parallel_branch_normal.svg",
+    "01.2 Research Questions.md",
+    "GPT v0.md",
+    "Grok v0.md",
+    "Grok v1.md",
+    "Gemini v0.1.md",
+    "Gemini DR v0.4.md",
+    "Gemini DR v0.3.md",
+    "Gemini DR v0.2.md",
+    "Gemini DR v0.1.md",
+    "Gemini v0.2.md",
     "Prelexity related work.md",
     "Mock-up Requirement.md",
-    "Kanban.md",
-    "02 Related Work.md",
-    "GPT.md",
-    "Expose.docx",
-    "main 1.pdf",
-    "Exposè/main 1.pdf",
-    "Exposè/main.synctex(busy)",
-    "Exposè/pdflatex29248.fls",
-    "Exposè/pdflatex29233.fls",
-    "Mock-up/361753868885_.pic.jpg",
-    "Code/cpee-layout-main/themes/preset/symbols/test.svg",
-    "Code/cpee-layout-main/themes/preset/symbols/terminate.svg",
-    "Code/cpee-layout-main/themes/preset/symbols/stop.svg",
-    "Code/cpee-layout-main/themes/preset/symbols/start_event.svg",
-    "Code/cpee-layout-main/themes/preset/symbols/start.svg",
-    "Code/cpee-layout-main/themes/preset/symbols/scripts.svg",
-    "Code/cpee-layout-main/themes/preset/symbols/parallel_eventbased_parallel.svg",
-    "Code/cpee-layout-main/themes/preset/symbols/parallel_eventbased_exclusive.svg",
-    "Code/cpee-layout-main/themes/preset/symbols/parallel_branch_normal.svg",
-    "Code/cpee-layout-main/README.md",
-    "cpee-layout-main/README.md",
-    "msc-thesis-main/README.md",
-    "Draft the Exposè.md",
-    "Untitled Kanban 1.md",
-    "is-bpm-thesis-latex copy/README.md"
+    "Grok v0.1.md",
+    "References/References.md",
+    "Untitled Kanban.md",
+    "Untitled.canvas"
   ]
 }
