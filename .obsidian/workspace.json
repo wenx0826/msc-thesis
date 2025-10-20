@@ -196,6 +196,9 @@
   },
   "active": "9b56cfd6d5839b01",
   "lastOpenFiles": [
+    "Code/MyCode/js/db_traces.js",
+    "Code/MyCode/js/db_trace.js",
+    "Code/MyCode/js/db_crud.js",
     "Code/MyCode/dataSchema.md",
     "Code/MyCode/dataSchema.plantuml",
     "Code/MyCode/dataSchema.puml",
@@ -205,7 +208,6 @@
     "Code/MyCode/js/db.js",
     "Code/MyCode/css/myui.css",
     "Code/MyCode/css/my.css",
-    "Code/MyCode/css/ui_test.css",
     "Gemini DR v0.md",
     "3 - 7.md",
     "2 Related Work - Prelexity.md",
@@ -217,7 +219,6 @@
     "01.1 Motivation.md",
     "0 - Kanban.md",
     "Mock-up/mock-up1.jpg",
-    "Code/MyCode/Frames.xml",
     "Code/MyCode/themes/preset/symbols/test.svg",
     "Code/MyCode/themes/preset/symbols/terminate.svg",
     "Code/MyCode/themes/preset/symbols/stop.svg",
@@ -241,7 +242,6 @@
     "Mock-up Requirement.md",
     "Grok v0.1.md",
     "References/References.md",
-    "Untitled Kanban.md",
     "Untitled.canvas"
   ]
 }

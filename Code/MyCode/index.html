@@ -48,14 +48,15 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
   <!-- my scripts - DB simulation -->
-  <script src="js/db_document.js"></script>
+  <script src="js/db_documents.js"></script>
+  <script src="js/db_models.js"></script>
+  <script src="js/db_traces.js"></script>
 
   <!-- my ui-->
   <link rel="stylesheet" href="css/myui.css" type="text/css" />
 
 </head>
 <body data-defaultconfig="index.json" is="x-ui-" data-names="3">
-
   <ui-rest>
     <ui-content>
       <!-- Left: DocumentPanel -->
@@ -88,9 +89,9 @@
       <ui-resizehandle></ui-resizehandle>
       <!-- Middle: Current Model Panel -->
       <ui-rest style="flex:2;" class="panel">
-        <div id='graphgrid'>
-          <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink" id='graphcanvas'
-            width='1' height='1'></svg>
+        <div id='activeModelGrid'>
+          <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink"
+            id='activeModelCanvas' width='1' height='1'></svg>
         </div>
         <!-- Model Action Bar -->
         <div class="panel" id="modelActionBar" style="visibility: hidden;">
@@ -101,8 +102,14 @@
       <ui-resizehandle></ui-resizehandle>
       <!-- Right: Models Panel-->
       <ui-rest style="flex:1;" class="panel">
-        <!-- <div id='graphgrid'>
-          <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink" id='graphcanvas'
+        <select id="documentListSelect">
+          <option value="">-- Select a Document --</option>
+        </select>
+        <div id="modelListContainer">
+
+        </div>
+        <!-- <div id='activeModelGrid'>
+          <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink" id='activeModelCanvas'
             width='1' height='1'></svg>
         </div> -->
       </ui-rest>
@@ -110,8 +117,49 @@
   </ui-rest>
   <script>
     let selectedDocumentId = null;
-    let selectedText = "";
+    let selectedTextSegments = null;
     let generatedModel = null;
+    let documentList = [];
+    let traceList = [];
+    let db;
+
+    const connectDB = () => {
+      return new Promise((resolve, reject) => {
+        console.log("Connecting to IndexedDB...");
+        const dbReq = indexedDB.open("MyLocalDB", 4);
+        dbReq.onupgradeneeded = function (event) {
+          const db = event.target.result;
+          if (!db.objectStoreNames.contains("models")) {
+            const store = db.createObjectStore("models", {
+              keyPath: "id",
+              autoIncrement: true,
+            });
+          }
+          if (!db.objectStoreNames.contains("documents")) {
+            const store = db.createObjectStore("documents", {
+              keyPath: "id",
+              autoIncrement: true,
+            });
+          }
+          if (!db.objectStoreNames.contains("traces")) {
+            const store = db.createObjectStore("traces", {
+              keyPath: "id",
+              autoIncrement: true,
+            });
+          }
+        };
+        dbReq.onsuccess = function (event) {
+          db = event.target.result;
+          console.log("Database opened/created successfully", db);
+          resolve(db);
+        };
+        dbReq.onerror = function (event) {
+          console.error('Database error:', event.target.errorCode);
+          reject(event.target.errorCode);
+        };
+      });
+    };
+
 
     const onDocumentSelect = async (event) => {
       var target = $(event.currentTarget);
@@ -122,7 +170,7 @@
       if (docId && docId !== selectedDocumentId) {
         selectedDocumentId = docId;
         console.log('Document ID:', docId);
-        const content = await getDocumentContentById(docId);
+        const content = await getDocumentContentById(db, docId);
         $('#documentContent').text(content || '');
         selectedDocumentId = docId;
       }
@@ -130,10 +178,11 @@
     };
 
     const loadDocumentList = async () => {
-      const documents = await getDocumentList();
+      documentList = await getDocumentList(db);
+
       const $ul = $("#documentlist");
       $ul.empty();
-      documents.forEach(doc => {
+      documentList.forEach(doc => {
         const $li = $("<li>").text(doc.name);
         $li.attr("data-docid", String(doc.id));
         $li.on("click", onDocumentSelect);
@@ -141,12 +190,46 @@
       });
     };
 
-    $(document).ready(() => {
-      // deleteAllDocuments();
-      loadDocumentList();
+    const loadModels = async () => {
+      documentList.forEach(async (doc) => {
+        console.log('Loading models for document', doc.id);
+        const traces = await getTracesByDocumentId(db, doc.id);
+        console.log('traces for document', doc.id, traces);
+        const modelIds = traces.map(trace => trace.modelId)
+        traceList = [...traceList, ...traces];
+        traces.forEach(async (trace) => {
+          const modelId = trace.modelId;
+          console.log('trace', trace, 'modelId', modelId);
+          const modelContent = await getModelContentById(db, modelId);
+          console.log(`Model for Document ID ${doc.id}, Model ID ${trace.modelId}:`, modelContent);
+        });
+        const $container = $("#modelListContainer");
+        const $docSection = $("<div>").addClass("document-models-section");
+        const $title = $("<h3>").text(`Models for Document: ${doc.name}`);
+        $docSection.append($title);
+        const $modelList = $("<ul>");
+        modelList.forEach(model => {
+          const $modelItem = $("<li>").text(`Model ID: ${model.id}`);
+          $modelList.append($modelItem);
+        });
+        $docSection.append($modelList);
+        $container.append($docSection);
+      });
+      // const modelList = await getModelList(db);
+      // console.log('Loaded models:', modelList);
+
+    };
+
+    $(document).ready(async () => {
+
+
+      await connectDB();
+      // deleteAllDocuments(db);
+      // deleteAllModels(db);
+      // createSampleModel();
+      await loadDocumentList();
+      await loadModels();
     });
-
-
 
     const output = document.getElementById("documentContent");
 
@@ -155,7 +238,7 @@
         if (!file) continue;
         const content = await getFileContent(file);
         // Store document in IndexedDB
-        const documentId = await createDocument(file.name, content);
+        const documentId = await createDocument(db, file.name, content);
         console.log('Stored document:', file.name, 'with id', documentId);
         const $ul = $("#documentlist");
         const $li = $("<li>").text(file.name);
@@ -194,25 +277,6 @@
       return fileContent;
     }
 
-    // $(document).on("mouseup", function () {
-    //   alert("Handler for `mouseup` called.");
-    // });
-
-    // $(document).on("mouseup", function () {
-    //   console.log("Mouse up");
-    //   // alert("Handler for `mouseup` called.");
-    // });
-    //  function selectionHandler() {
-    //       console.log("Document loaded.");
-    //     }
-    //   $(document).on("mouseup", selectionHandler);
-
-
-    // $(document).on("mouseup", selectionHandlerTest);
-    // const selectionHandlerTest = () => {
-    //   console.log("Text selection detected.");
-    // }
-
 
 
     const handleTextSelection = () => {
@@ -222,6 +286,7 @@
       console.log("Selection text:", selection.toString());
       selectedText = selection.toString();
       $("#generateButton").prop("disabled", false);
+
       // if (selection && selection.rangeCount > 0) {
       //   console.log("Selection text:", selection.toString());
       //   const range = selection.getRangeAt(0); // Get the selected range
@@ -243,42 +308,57 @@
     };
     $("#documentContent").on("mouseup", handleTextSelection);
 
-
-
-    const showSampleModel = () => {
-      $.ajax({
-        method: 'GET',
-        url: 'Frames.xml',
-        success: (data) => {
-          new WfAdaptor('themes/default/theme.js', function (graphrealization) {
-            graphrealization.draw_labels = (max, labels, shift, striped) => {
-              console.log(JSON.stringify(labels, null, "  "));
-            };
-            graphrealization.set_svg_container($('#graphcanvas'));
-            graphrealization.set_label_container($('#graphgrid'));
-            graphrealization.set_description($(data), true);
-          });
-        },
+    const showGeneratedModel = () => {
+      if (!generatedModel) return;
+      var parser = new DOMParser();
+      const data = parser.parseFromString(generatedModel, "application/xml");
+      new WfAdaptor('themes/default/theme.js', function (graphrealization) {
+        graphrealization.draw_labels = (max, labels, shift, striped) => {
+          console.log(JSON.stringify(labels, null, "  "));
+        };
+        graphrealization.set_svg_container($('#activeModelCanvas'));
+        graphrealization.set_label_container($('#activeModelGrid'));
+        graphrealization.set_description($(data), true);
       });
     };
 
-
-    $("#generateButton").on("click", () => {
-      if (selectedText) {
-        $("#generateButton").prop("disabled", true);
-        $("#modelActionBar").css("visibility", "visible");
-        showSampleModel();
-        // alert(`Generating model for selected text:\n${selectedText}`);
-      } else {
-        alert("No text selected.");
+    const createSampleModel = async () => {
+      const resp = await fetch('Frames.xml');
+      if (!resp.ok) {
+        console.error('Failed to load Frames.xml:', resp.status, resp.statusText);
+        return;
       }
+      return await resp.text();
+    };
+
+    const generateModel = async () => {
+      generatedModel = await createSampleModel();
+      showGeneratedModel();
+      $("#modelActionBar").css("visibility", "visible");
+    };
+
+    $("#generateButton").on("click", async () => {
+      $("#generateButton").prop("disabled", true);
+      generateModel();
     });
 
-    $("#keepButton").on("click", () => {
-      alert("Model kept.");
+    $("#keepButton").on("click", async () => {
+
+      const modelId = await createModel(db, generatedModel);
+      console.log('modelId', modelId);
+      await createTrace(db, {
+        documentId: selectedDocumentId,
+        modelId,
+        segments: selectedTextSegments,
+      });
+      $("#modelActionBar").css("visibility", "hidden");
+
     });
     $("#cancelButton").on("click", () => {
-      alert("Model generation cancelled.");
+
+      generatedModel = null;
+      $("#activeModelCanvas").empty();
+      $("#modelActionBar").css("visibility", "hidden");
       // if (selectedText) {
       //   $("#generateButton").prop("disabled", true);
       //   $("#modelActionBar").css("visibility", "visible");
