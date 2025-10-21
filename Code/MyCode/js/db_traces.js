@@ -20,10 +20,27 @@ const getTracesByDocumentId = (db, documentId) => {
     try {
       const tx = db.transaction("traces", "readonly");
       const store = tx.objectStore("traces");
-      const index = store.index("documentId");
+      const index = store.index("document_id");
       const getReq = index.getAll(IDBKeyRange.only(documentId));
       getReq.onsuccess = (evt) => {
         resolve(evt.target.result || []);
+      };
+      getReq.onerror = (err) => reject(err);
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
+const getTraceByModelId = (db, id) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const tx = db.transaction("traces", "readonly");
+      const store = tx.objectStore("traces");
+      const index = store.index("model_id");
+      const getReq = index.getAll(IDBKeyRange.only(id));
+      getReq.onsuccess = (evt) => {
+        resolve(evt.target.result[0] || {});
       };
       getReq.onerror = (err) => reject(err);
     } catch (err) {

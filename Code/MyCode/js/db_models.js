@@ -1,24 +1,10 @@
-const deleteAllModels = (db) => {
-  return new Promise((resolve, reject) => {
-    try {
-      const tx = db.transaction("models", "readwrite");
-      const store = tx.objectStore("models");
-      const clearReq = store.clear();
-      clearReq.onsuccess = () => resolve();
-      clearReq.onerror = (err) => reject(err);
-    } catch (err) {
-      reject(err);
-    }
-  });
-};
-
-const createModel = (db, content) => {
+const createModel = (db, record) => {
   return new Promise((resolve, reject) => {
     try {
       const tx = db.transaction("models", "readwrite");
       const store = tx.objectStore("models");
       //   const record = { file, storedAt: new Date().toISOString() };
-      const addReq = store.add({ content });
+      const addReq = store.add(record);
       addReq.onsuccess = (evt) => resolve(evt.target.result);
       addReq.onerror = (err) => reject(err);
     } catch (err) {
@@ -52,7 +38,7 @@ const getModelList = () => {
   });
 };
 
-const getModelContentById = (db, id) => {
+const getModelById = (db, id) => {
   return new Promise((resolve, reject) => {
     try {
       const tx = db.transaction("models", "readonly");
@@ -61,7 +47,7 @@ const getModelContentById = (db, id) => {
       getReq.onsuccess = (evt) => {
         const record = evt.target.result;
         if (record) {
-          resolve(record.content);
+          resolve(record);
         } else {
           reject(new Error("Model not found"));
         }

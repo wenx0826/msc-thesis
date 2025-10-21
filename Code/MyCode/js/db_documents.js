@@ -1,17 +1,4 @@
 //Documents
-const deleteAllDocuments = (db) => {
-  return new Promise((resolve, reject) => {
-    try {
-      const tx = db.transaction("documents", "readwrite");
-      const store = tx.objectStore("documents");
-      const clearReq = store.clear();
-      clearReq.onsuccess = () => resolve();
-      clearReq.onerror = (err) => reject(err);
-    } catch (err) {
-      reject(err);
-    }
-  });
-};
 
 const getDocumentList = (db) => {
   return new Promise((resolve, reject) => {

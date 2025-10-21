@@ -14,7 +14,24 @@ main {
     user-select: text;
 }
 
-li.active {
+li.active{
     font-weight: bold;
-    background-color: var(--x-ui-background-color); 
+    background-color: var(--x-ui-content-light-background); 
+}
+/* li:hover {
+    cursor: pointer;
+    background-color: var(--x-ui-hover-background-color);
+} */
+.model-container{
+    border: 1.5px solid var(--x-ui-border-color);
+    padding: 0.5em;
+    margin: 0.5em;
+}
+.model-container:hover {
+    border-color: var(--x-ui-hover-border-color);
+    cursor: pointer;
+}
+
+.model-container.active {
+    border-color: var(--wfadaptor-selected);
 }
