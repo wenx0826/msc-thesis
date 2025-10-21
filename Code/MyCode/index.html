@@ -65,7 +65,7 @@
         <ui-tabbed>
           <ui-tabbar>
             <ui-tab class="switch"></ui-tab>
-            <ui-tab class="" data-tab="documents" id="tabdocuments">Documents</ui-tab>
+            <ui-tab class="" data-tab="documents" id="tabdocuments" style="flex: 1;">Documents</ui-tab>
           </ui-tabbar>
           <ui-content>
             <ui-area data-belongs-to-tab="documents" id="areadocuments">
@@ -103,7 +103,7 @@
       <ui-resizehandle></ui-resizehandle>
       <!-- Right: Models Panel-->
       <ui-rest style="flex:1;" class="panel">
-        <div>Models</div>
+        <ui-tab>Models</ui-tab>
         <!-- <select id="documentListSelect">
           <option value="">-- Select a Document --</option>
         </select> -->
