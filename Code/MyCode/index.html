@@ -60,7 +60,7 @@
   <ui-rest>
     <ui-content>
       <!-- Left: DocumentPanel -->
-      <ui-rest style="flex:2;" class="panel">
+      <ui-rest style="flex:2;">
         <!-- Document List Pane -->
         <ui-tabbed>
           <ui-tabbar>
@@ -77,18 +77,20 @@
           </ui-content>
         </ui-tabbed>
         <!-- Text Action Bar -->
-        <div class="panel">
+        <div class="panel" style="margin: 0.5em;">
           <!-- <button id="regenerateButton">Regenerate</button> -->
           <button id="generateButton" disabled>Generate</button>
         </div>
         <!-- Document Viewer -->
-        <ui-content>
-          <ui-area id="documentContent"></ui-area>
-        </ui-content>
+        <ui-rest class="panel" style="margin: 0 0.5em 0.5em 0.5em;">
+          <ui-content>
+            <ui-area id="documentContent"></ui-area>
+          </ui-content>
+        </ui-rest>
       </ui-rest>
       <ui-resizehandle></ui-resizehandle>
       <!-- Middle: Current Model Panel -->
-      <ui-rest style="flex:2;" class="panel">
+      <ui-rest style="flex:2; margin: .5em 0;" class="panel">
         <div id="activeModelName"></div>
         <div id='activeModelGrid'>
           <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink"
@@ -102,7 +104,7 @@
       </ui-rest>
       <ui-resizehandle></ui-resizehandle>
       <!-- Right: Models Panel-->
-      <ui-rest style="flex:1;" class="panel">
+      <ui-rest style="flex:1; margin:0.5em; padding: .2em;" class="panel">
         <ui-tab>Models</ui-tab>
         <!-- <select id="documentListSelect">
           <option value="">-- Select a Document --</option>
@@ -393,12 +395,13 @@
       activeModel.svg = svg;
       const modelId = await createModel(db, activeModel);
       console.log('modelId', modelId);
-
+      renderModel({ ...activeModel, id: modelId });
       await createTrace(db, {
         document_id: activeDocumentId,
         model_id: modelId,
         segments: selectedTextSegments,
       });
+
       $("#generatedModelActionBar").css("visibility", "hidden");
 
     });
