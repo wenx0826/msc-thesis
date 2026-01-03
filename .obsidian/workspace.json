@@ -46,7 +46,7 @@
             }
           }
         ],
-        "currentTab": 2
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -166,12 +166,13 @@
             "state": {
               "type": "outline",
               "state": {
+                "file": "01.5 Evaluation.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline"
+              "title": "Outline of 01.5 Evaluation"
             }
           },
           {
@@ -206,20 +207,25 @@
       "card-board:CardBoard": false
     }
   },
-  "active": "71642115fb92e852",
+  "active": "28fcae189cb46b7c",
   "lastOpenFiles": [
-    "Code/Tests/MultiSelectTests/multi_select_v0.html",
-    "Code/Tests/MultiSelectTests/test_v1.html",
-    "Code/Tests/test_v1.html",
-    "Code/Tests/MultiSelectTests",
-    "Code/Tests/multi_select_test.html",
-    "Code/Tests/test.html",
-    "Code/Tests",
-    "Code/MyCode/test.html",
-    "Code/package-lock.json",
-    "Code/package.json",
+    "Thesis-latex /main.synctex(busy)",
+    "Thesis-latex /pdflatex23821.fls",
+    "Thesis-latex /pdflatex23797.fls",
+    "Thesis-latex /pdflatex23762.fls",
+    "Thesis-latex /pdflatex23424.fls",
+    "Thesis-latex /tum-resources/images/valueprop.PNG",
+    "Thesis-latex /tum-resources/images/Universitaet_Logo_weiss.pdf",
+    "Thesis-latex /tum-resources/images/Universitaet_Logo_sw_RGB.pdf",
+    "Thesis-latex /tum-resources/images/Universitaet_Logo_RGB.pdf",
+    "Thesis-latex /tum-resources/images/Universitaet_Flaggen.jpg",
+    "Thesis-latex /tum-resources/images/TUM_Uhrenturm.png",
+    "Thesis-latex /tum-resources/images",
+    "Thesis-latex /chapters/99_Appendix.tex",
+    "Thesis-latex /chapters/07_Conclusion.tex",
+    "Thesis-latex /README.md",
+    "01.5 Evaluation.md",
     "Code/node_modules/path-to-regexp/Readme.md",
-    "Code/node_modules/path-to-regexp/package.json",
     "Code/node_modules/express/Readme.md",
     "Code/node_modules/express/History.md",
     "Code/node_modules/raw-body/node_modules/iconv-lite/README.md",
@@ -242,8 +248,6 @@
     "Code/node_modules/accepts/HISTORY.md",
     "Code/node_modules/cookie/SECURITY.md",
     "Code/node_modules/cookie/README.md",
-    "Code/node_modules/http-errors/node_modules/statuses/README.md",
-    "Code/node_modules/http-errors/node_modules/statuses/HISTORY.md",
     "Code/cpee-layout-main-test/themes/preset/symbols/test.svg",
     "Code/cpee-layout-main-test/themes/preset/symbols/terminate.svg",
     "Code/cpee-layout-main-test/themes/preset/symbols/stop.svg",
@@ -251,9 +255,6 @@
     "Code/cpee-layout-main-test/themes/preset/symbols/start.svg",
     "Code/cpee-layout-main-test/themes/preset/symbols/scripts.svg",
     "Code/cpee-layout-main-test/themes/preset/symbols/parallel_eventbased_parallel.svg",
-    "Code/cpee-layout-main-test/themes/preset/symbols/parallel_eventbased_exclusive.svg",
-    "Code/cpee-layout-main-test/themes/preset/symbols/parallel_branch_normal.svg",
-    "Code/cpee-layout-main-test/themes/preset/symbols/parallel_branch_event.svg",
     "Untitled.canvas"
   ]
 }
