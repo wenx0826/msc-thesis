@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8" />
+    <title>Virtual Highlight Overlay Demo</title>
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .reader-container {
+            position: relative;
+            width: 80%;
+            margin: 50px auto;
+        }
+
+        /* ✅ 高亮层在下面 */
+        #highlight-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* ✅ 文字层在上面 */
+        #content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .toolbar {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 6px 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        button {
+            margin-right: 6px;
+        }
+
+        .virtual-highlight {
+            mix-blend-mode: multiply;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        p {
+            margin: 12px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="toolbar">
+        <button id="clear">清除所有</button>
+        <button id="export">导出 JSON</button>
+        <button id="import">导入 JSON</button>
+    </div>
+
+    <div class="reader-container">
+        <div id="highlight-layer"></div>
+
+        <div id="content">
+            <p>第一段：这是一个虚拟高亮层的示例。高亮区域绘制在文字下方，不会修改原文 DOM。</p>
+            <p>第二段：按住 Ctrl（或 Cmd）可以连续选择多段文字，每段会生成独立的高亮。</p>
+            <p>第三段：滚动页面或调整窗口时，高亮会自动同步位置。</p>
+            <p>第四段：点击高亮区域可删除该标记，导出功能可保存所有标记。</p>
+            <p>第五段：这种技术常用于阅读器、批注系统、AI 文本分析工具中。</p>
+        </div>
+    </div>
+
+    <script>
+        const content = document.getElementById('content');
+        const layer = document.getElementById('highlight-layer');
+        const clearBtn = document.getElementById('clear');
+        const exportBtn = document.getElementById('export');
+        const importBtn = document.getElementById('import');
+
+        let highlights = []; // 存 {id, range, color}
+
+        /** 生成唯一 ID */
+        function genId() {
+            return 'hl-' + Math.random().toString(36).slice(2, 9);
+        }
+
+        /** 绘制所有高亮 */
+        function renderHighlights() {
+            layer.innerHTML = '';
+            for (const h of highlights) {
+                const rects = h.range.getClientRects();
+                rects.forEach(rect => {
+                    const el = document.createElement('div');
+                    el.className = 'virtual-highlight';
+                    el.dataset.id = h.id;
+                    el.style.position = 'absolute';
+                    el.style.left = rect.left + window.scrollX + 'px';
+                    el.style.top = rect.top + window.scrollY + 'px';
+                    el.style.width = rect.width + 'px';
+                    el.style.height = rect.height + 'px';
+                    el.style.background = h.color;
+                    el.style.pointerEvents = 'auto';
+                    el.addEventListener('click', onHighlightClick);
+                    layer.appendChild(el);
+                });
+            }
+        }
+
+        /** 点击删除高亮 */
+        function onHighlightClick(e) {
+            const id = e.target.dataset.id;
+            highlights = highlights.filter(h => h.id !== id);
+            renderHighlights();
+        }
+
+        /** 添加新高亮 */
+        function addHighlight(range) {
+            const id = genId();
+            const color = 'rgba(255, 230, 0, 0.45)';
+            highlights.push({ id, range, color });
+            renderHighlights();
+        }
+
+        /** 清除所有 */
+        function clearAll() {
+            highlights = [];
+            renderHighlights();
+        }
+
+        /** 滚动或缩放时重绘 */
+        function setupScrollSync() {
+            let ticking = false;
+            const handler = () => {
+                if (!ticking) {
+                    requestAnimationFrame(() => {
+                        renderHighlights();
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            };
+            window.addEventListener('scroll', handler);
+            window.addEventListener('resize', handler);
+        }
+        setupScrollSync();
+
+        /** 鼠标松开时检测选区 */
+        document.addEventListener('mouseup', (e) => {
+            const sel = window.getSelection();
+            if (!sel.rangeCount) return;
+
+            const range = sel.getRangeAt(0);
+            if (range.collapsed) return;
+            if (!content.contains(range.commonAncestorContainer)) return;
+
+            const isCtrl = e.ctrlKey || e.metaKey;
+            if (!isCtrl) clearAll();
+
+            addHighlight(range.cloneRange());
+            sel.removeAllRanges();
+        });
+
+        /** 导出 JSON */
+        exportBtn.addEventListener('click', () => {
+            const data = highlights.map(h => serializeRange(h));
+            const json = JSON.stringify(data, null, 2);
+            console.log(json);
+            alert('已导出到控制台');
+        });
+
+        /** 导入 JSON */
+        importBtn.addEventListener('click', () => {
+            const json = prompt('请输入导出的 JSON：');
+            if (!json) return;
+            const data = JSON.parse(json);
+            highlights = data.map(d => ({
+                id: d.id,
+                color: d.color,
+                range: deserializeRange(d)
+            }));
+            renderHighlights();
+        });
+
+        /** 序列化 Range */
+        function serializeRange(h) {
+            const range = h.range;
+            return {
+                id: h.id,
+                color: h.color,
+                startXPath: getXPath(range.startContainer, content),
+                startOffset: range.startOffset,
+                endXPath: getXPath(range.endContainer, content),
+                endOffset: range.endOffset,
+            };
+        }
+
+        /** 反序列化 Range */
+        function deserializeRange(d) {
+            const r = document.createRange();
+            const start = getNodeByXPath(d.startXPath, content);
+            const end = getNodeByXPath(d.endXPath, content);
+            if (!start || !end) return null;
+            r.setStart(start, d.startOffset);
+            r.setEnd(end, d.endOffset);
+            return r;
+        }
+
+        /** 获取 XPath */
+        function getXPath(node, root = document.body) {
+            if (node === root) return '/';
+            const path = [];
+            let cur = node;
+            while (cur && cur !== root) {
+                const idx = Array.prototype.indexOf.call(cur.parentNode.childNodes, cur);
+                path.unshift(idx);
+                cur = cur.parentNode;
+            }
+            return '/' + path.join('/');
+        }
+
+        /** 从 XPath 获取节点 */
+        function getNodeByXPath(path, root = document.body) {
+            const parts = path.split('/').filter(Boolean);
+            let node = root;
+            for (const idx of parts) {
+                const i = parseInt(idx, 10);
+                if (!node || !node.childNodes[i]) return null;
+                node = node.childNodes[i];
+            }
+            return node;
+        }
+
+        clearBtn.addEventListener('click', clearAll);
+    </script>
+</body>
+</html>

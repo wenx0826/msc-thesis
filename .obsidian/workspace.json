@@ -32,8 +32,21 @@
               "icon": "lucide-file",
               "title": "01.5 Evaluation"
             }
+          },
+          {
+            "id": "71642115fb92e852",
+            "type": "leaf",
+            "state": {
+              "type": "release-notes",
+              "state": {
+                "currentVersion": "1.9.14"
+              },
+              "icon": "lucide-book-up",
+              "title": "Release Notes 1.9.14"
+            }
           }
-        ]
+        ],
+        "currentTab": 2
       }
     ],
     "direction": "vertical"
@@ -153,13 +166,12 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Mock-up/mock-up1.jpg",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of mock-up1"
+              "title": "Outline"
             }
           },
           {
@@ -190,12 +202,48 @@
       "command-palette:Open command palette": false,
       "remotely-save:Remotely Save": false,
       "obsidian-kanban:Create new board": false,
-      "card-board:CardBoard": false,
-      "table-editor-obsidian:Advanced Tables Toolbar": false
+      "table-editor-obsidian:Advanced Tables Toolbar": false,
+      "card-board:CardBoard": false
     }
   },
-  "active": "9b56cfd6d5839b01",
+  "active": "71642115fb92e852",
   "lastOpenFiles": [
+    "Code/Tests/MultiSelectTests/multi_select_v0.html",
+    "Code/Tests/MultiSelectTests/test_v1.html",
+    "Code/Tests/test_v1.html",
+    "Code/Tests/MultiSelectTests",
+    "Code/Tests/multi_select_test.html",
+    "Code/Tests/test.html",
+    "Code/Tests",
+    "Code/MyCode/test.html",
+    "Code/package-lock.json",
+    "Code/package.json",
+    "Code/node_modules/path-to-regexp/Readme.md",
+    "Code/node_modules/path-to-regexp/package.json",
+    "Code/node_modules/express/Readme.md",
+    "Code/node_modules/express/History.md",
+    "Code/node_modules/raw-body/node_modules/iconv-lite/README.md",
+    "Code/node_modules/raw-body/node_modules/iconv-lite/Changelog.md",
+    "Code/node_modules/fresh/README.md",
+    "Code/node_modules/fresh/HISTORY.md",
+    "Code/node_modules/cookie-signature/Readme.md",
+    "Code/node_modules/finalhandler/README.md",
+    "Code/node_modules/cookie-signature/History.md",
+    "Code/node_modules/finalhandler/HISTORY.md",
+    "Code/node_modules/mime-types/README.md",
+    "Code/node_modules/mime-types/HISTORY.md",
+    "Code/node_modules/merge-descriptors/readme.md",
+    "Code/node_modules/content-disposition/README.md",
+    "Code/node_modules/content-disposition/HISTORY.md",
+    "Code/node_modules/body-parser/README.md",
+    "Code/node_modules/body-parser/HISTORY.md",
+    "Code/node_modules/debug/README.md",
+    "Code/node_modules/accepts/README.md",
+    "Code/node_modules/accepts/HISTORY.md",
+    "Code/node_modules/cookie/SECURITY.md",
+    "Code/node_modules/cookie/README.md",
+    "Code/node_modules/http-errors/node_modules/statuses/README.md",
+    "Code/node_modules/http-errors/node_modules/statuses/HISTORY.md",
     "Code/cpee-layout-main-test/themes/preset/symbols/test.svg",
     "Code/cpee-layout-main-test/themes/preset/symbols/terminate.svg",
     "Code/cpee-layout-main-test/themes/preset/symbols/stop.svg",
@@ -206,42 +254,6 @@
     "Code/cpee-layout-main-test/themes/preset/symbols/parallel_eventbased_exclusive.svg",
     "Code/cpee-layout-main-test/themes/preset/symbols/parallel_branch_normal.svg",
     "Code/cpee-layout-main-test/themes/preset/symbols/parallel_branch_event.svg",
-    "Code/cpee-layout-main-test/themes/preset/symbols/parallel_branch_compact.svg",
-    "Code/cpee-layout-main-test/themes/preset/rngs/terminate.rng",
-    "Code/cpee-layout-main-test/themes/preset/rngs/stop.rng",
-    "Code/cpee-layout-main-test/themes/preset/rngs/start.rng",
-    "Code/cpee-layout-main-test/themes/preset/rngs/scripts.rng",
-    "Code/cpee-layout-main-test/themes/preset/rngs/parallel_branch.rng",
-    "Code/cpee-layout-main-test/themes/preset/rngs/parallel.rng",
-    "Code/cpee-layout-main-test/themes/preset/rngs/otherwise.rng",
-    "Code/cpee-layout-main-test/themes/preset/rngs/manipulate.rng",
-    "Code/cpee-layout-main-test/themes/preset/rngs/loop.rng",
-    "Code/cpee-layout-main-test/themes/preset/rngs/group.rng",
-    "Code/cpee-layout-main-test/README.md",
-    "Code/MyCode/dataSchema.md",
-    "Gemini DR v0.md",
-    "3 - 7.md",
-    "2 Related Work - Prelexity.md",
-    "02 Related Work.md",
-    "01.6 Structure.md",
-    "01.5 Evaluation.md",
-    "01.4 Methodology.md",
-    "01.3 Contribution.md",
-    "01.1 Motivation.md",
-    "0 - Kanban.md",
-    "01.2 Research Questions.md",
-    "GPT v0.md",
-    "Grok v0.md",
-    "Grok v1.md",
-    "Gemini v0.1.md",
-    "Gemini DR v0.4.md",
-    "Gemini DR v0.3.md",
-    "Gemini DR v0.2.md",
-    "Gemini DR v0.1.md",
-    "Gemini v0.2.md",
-    "Prelexity related work.md",
-    "Mock-up Requirement.md",
-    "Grok v0.1.md",
     "Untitled.canvas"
   ]
 }

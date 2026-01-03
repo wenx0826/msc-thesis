@@ -69,7 +69,7 @@
           </ui-tabbar>
           <ui-content>
             <ui-area data-belongs-to-tab="documents" id="areadocuments">
-              <ul id="documentlist">
+              <ul id="documentList">
               </ul>
               <label for="documentsInput">Choose documents to upload</label>
               <input type="file" id="documentsInput" multiple />
@@ -77,29 +77,45 @@
           </ui-content>
         </ui-tabbed>
         <!-- Text Action Bar -->
-        <div class="panel" style="margin: 0.5em;">
-          <!-- <button id="regenerateButton">Regenerate</button> -->
-          <button id="generateButton" disabled>Generate</button>
-        </div>
         <!-- Document Viewer -->
-        <ui-rest class="panel" style="margin: 0 0.5em 0.5em 0.5em;">
+        <ui-area id="highlightLayer"></ui-area>
+
+        <ui-rest class="panel" style="margin:0.5em;">
           <ui-content>
-            <ui-area id="documentContent"></ui-area>
+
+            <ui-area id="documentContent">
+              <p>第一段：这是一个虚拟高亮层的示例。高亮区域绘制在文字下方，不会修改原文 DOM。</p>
+              <p>第二段：按住 Ctrl（或 Cmd）可以连续选择多段文字，每段会生成独立的高亮。</p>
+              <p>第三段：滚动页面或调整窗口时，高亮会自动同步位置。</p>
+              <p>第四段：点击高亮区域可删除该标记，导出功能可保存所有标记。</p>
+              <p>第五段：这种技术常用于阅读器、批注系统、AI 文本分析工具中。</p>
+            </ui-area>
           </ui-content>
+
+          <div class="bottom-bar">
+            <div class="button-group">
+
+              <button id="generateButton" disabled>Generate</button>
+            </div>
+          </div>
         </ui-rest>
       </ui-rest>
       <ui-resizehandle></ui-resizehandle>
       <!-- Middle: Current Model Panel -->
-      <ui-rest style="flex:2; margin: .5em 0;" class="panel">
+      <ui-rest class="panel" style="flex:2; margin: .5em 0;">
         <div id="activeModelName"></div>
-        <div id='activeModelGrid'>
-          <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink"
-            id='activeModelCanvas' width='1' height='1'></svg>
-        </div>
+        <ui-content>
+          <div id='activeModelGrid'>
+            <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink"
+              id='activeModelCanvas' width='1' height='1'></svg>
+          </div>
+        </ui-content>
         <!-- Model Action Bar -->
-        <div class="panel" id="generatedModelActionBar" style="visibility: hidden;">
-          <button id="cancelButton">Cancel</button>
-          <button id="keepButton">Keep</button>
+        <div id="generatedModelActionBar" class="bottom-bar" style="visibility: hidden;">
+          <div class="button-group">
+            <button id="cancelButton">Cancel</button>
+            <button id="keepButton">Keep</button>
+          </div>
         </div>
       </ui-rest>
       <ui-resizehandle></ui-resizehandle>
@@ -123,6 +139,15 @@
     </ui-content>
   </ui-rest>
   <script>
+    const $documentsInput = $('#documentsInput');
+    const $documentList = $('#documentList');
+    const $highlightLayer = $('#highlightLayer');
+    const $documentContent = $('#documentContent');
+    const $generateButton = $('#generateButton');
+
+    const $keepButton = $('#keepButton');
+    const $cancelButton = $('#cancelButton');
+
     let activeDocumentId = null;
     let selectedTextSegments = null;
     // let selectedModel = null;
@@ -130,6 +155,8 @@
     let documentList = [];
     let traceList = [];
     let modelList = [];
+
+    let highlights = [];
     let db;
 
     const connectDB = () => {
@@ -177,7 +204,7 @@
     setActiveDocument = async (docId) => {
       if (docId !== activeDocumentId) {
         activeDocumentId = docId;
-        $('#documentlist').children().each((index, element) => {
+        $documentList.children().each((index, element) => {
           const $element = $(element);
           if ($element.data('docid') === docId) {
             $element.addClass("active");
@@ -186,7 +213,8 @@
           }
         });
         const content = await getDocumentContentById(db, docId);
-        $('#documentContent').text(content || '');
+        const htmlContent = new DOMParser().parseFromString(content, "text/html").body.innerHTML;
+        $documentContent.html(htmlContent || '');
       }
     };
     const onDocumentSelect = async (event) => {
@@ -232,13 +260,11 @@
     const loadDocumentList = async () => {
       documentList = await getDocumentList(db);
 
-      const $ul = $("#documentlist");
-      $ul.empty();
       documentList.forEach(doc => {
         const $li = $("<li>").text(doc.name);
         $li.attr("data-docid", String(doc.id));
         $li.on("click", onDocumentSelect);
-        $ul.append($li);
+        $documentList.append($li);
       });
     };
 
@@ -279,23 +305,94 @@
     };
 
     $(document).ready(async () => {
-
-
       await connectDB();
       await loadDocumentList();
       await loadModels();
+      $documentContent.on("mouseup", handleTextSelection);
+      // highlightsScrollSync();
+      // $documentContent.on("scroll", () => renderHighlights());
     });
 
-    const output = document.getElementById("documentContent");
+    const deserializeRange = (serializedRange) => {
+      const startNode = getNodeByXPath(serializedRange.startXPath);
+      const endNode = getNodeByXPath(serializedRange.endXPath);
+      const range = document.createRange();
+      console.log("startNode:", startNode, "endNode:", endNode);
 
-    $("#documentsInput").on("change", async (event) => {
+      range.setStart(startNode, serializedRange.startOffset);
+      range.setEnd(endNode, serializedRange.endOffset);
+      return range;
+    };
+    const renderSerializedRange = (serializedRange) => {
+      const range = deserializeRange(serializedRange);
+      renderHighlight(range);
+    };
+
+    const renderHighlight = (range) => {
+      console.log("Adding highlight for range:", range);
+      const $highlightLayer = $('#highlightLayer');
+      const highlightId = `highlight_${Date.now()}`;
+      const $highlightDiv = $('<div>')
+        .addClass('highlight')
+        .attr('id', highlightId)
+        .css({
+          position: 'absolute',
+          backgroundColor: 'yellow',
+          opacity: 0.5,
+          pointerEvents: 'auto',
+        })
+        .on('click', function () {
+          $(this).remove();
+        });
+
+      const rects = range.getClientRects();
+      for (const rect of rects) {
+        const $rectDiv = $highlightDiv.clone();
+        $rectDiv.css({
+          top: `${rect.top + window.scrollY}px`,
+          left: `${rect.left + window.scrollX}px`,
+          width: `${rect.width}px`,
+          height: `${rect.height}px`,
+        });
+        $highlightLayer.append($rectDiv);
+      }
+    };
+
+    // const renderHighlights = () => {
+    //   $highlightLayer.empty();
+    //   highlights.forEach((range) => {
+    //     const rects = range.getClientRects();
+    //     for (const rect of rects) {
+    //       const $rectDiv = $('<div>')
+    //         .addClass('highlight')
+    //         .css({
+    //           position: 'absolute',
+    //           top: `${rect.top + window.scrollY}px`,
+    //           left: `${rect.left + window.scrollX}px`,
+    //           width: `${rect.width}px`,
+    //           height: `${rect.height}px`,
+    //           backgroundColor: 'yellow',
+    //           opacity: 0.5,
+    //           pointerEvents: 'auto',
+    //         })
+    //         .on('click', function () {
+    //           $(this).remove();
+    //         });
+    //       $highlightLayer.append($rectDiv);
+    //     }
+    //   });
+    // };
+
+
+
+    $documentsInput.on("change", async (event) => {
       for (const file of event.target.files) {
         if (!file) continue;
-        const content = await getFileContent(file);
+        const content = await getFileContentInHTML(file);
         // Store document in IndexedDB
         const documentId = await createDocument(db, file.name, content);
         console.log('Stored document:', file.name, 'with id', documentId);
-        const $ul = $("#documentlist");
+        const $ul = $("#documentList");
         const $li = $("<li>").text(file.name);
         $li.attr("data-docid", String(documentId));
         $li.on("click", onDocumentSelect);
@@ -304,7 +401,7 @@
     });
 
 
-    async function getFileContent(file) {
+    async function getFileContentInHTML(file) {
       let fileContent = "";
       if (file.type === "application/pdf") {
         const arrayBuffer = await file.arrayBuffer();
@@ -316,6 +413,7 @@
           fileContent += content.items.map(item => item.str).join(" ") + "\n";
         }
       }
+
       else if (
         file.type === "application/msword" ||
         file.name.endsWith(".doc") ||
@@ -324,24 +422,137 @@
       ) {
         const arrayBuffer = await file.arrayBuffer();
         const result = await mammoth.convertToHtml({ arrayBuffer });
-        fileContent = result.value
+        fileContent = new DOMParser().parseFromString(result.value, "text/html").body.innerHTML;
       }
       else {
         fileContent = await file.text();
       }
       return fileContent;
     }
+    // const getXPath = (node, root = document.getElementById("documentContent")) => {
+    //   // const paths = [];
+    //   // for (; node && node !== root; node = node.parentNode) {
+    //   //   let index = 0;
+    //   //   let sibling = node.previousSibling;
+    //   //   while (sibling) {
+    //   //     if (sibling.nodeType === Node.ELEMENT_NODE && sibling.nodeName === node.nodeName) {
+    //   //       index++;
+    //   //     }
+    //   //     sibling = sibling.previousSibling;
+    //   //   }
+    //   //   const tagName = node.nodeType === Node.ELEMENT_NODE ? node.nodeName : 'text()';
+    //   //   const pathIndex = index ? `[${index + 1}]` : '';
+    //   //   paths.unshift(`${tagName}${pathIndex}`);
+    //   // }
+    //   // return paths.length ? '/' + paths.join('/') : null;
+
+    //   const path = [];
+    //   while (node && node !== root) {
+    //     const index = Array.prototype.indexOf.call(node.parentNode.childNodes, node);
+    //     path.unshift(index);
+    //     node = node.parentNode;
+
+    //     return '/' + path.join('/');
+    //   }
+    // };
+
+    // const getNodeByXPath = (path, root = document.getElementById("documentContent")) => {
+    //   // const parts = path.split('/').filter(Boolean);
+    //   // let node = root;
+    //   // for (const part of parts) {
+    //   //   let tagName = part;
+    //   //   let index = 0;
+    //   //   const match = part.match(/(.*)\[(\d+)\]$/);
+    //   //   if (match) {
+    //   //     tagName = match[1];
+    //   //     index = parseInt(match[2], 10) - 1;
+    //   //   }
+    //   //   let count = -1;
+    //   //   let found = false;
+    //   //   for (const child of node.childNodes) {
+    //   //     if (child.nodeType === Node.ELEMENT_NODE && child.nodeName === tagName) {
+    //   //       count++;
+    //   //       if (count === index) {
+    //   //         node = child;
+    //   //         found = true;
+    //   //         break;
+    //   //       }
+    //   //     }
+    //   //   }
+    //   //   return found ? node : null;
+    //   // };
+    //   const parts = path.split('/').filter(Boolean);
+    //   let node = root;
+    //   for (const idx of parts) {
+    //     const i = parseInt(idx, 10);
+    //     if (!node || !node.childNodes[i]) return null;
+    //     node = node.childNodes[i];
+    //   }
+    //   return node;
+    // };
 
 
+    function getXPath(node, root = document.getElementById("documentContent")) {
+      if (node === root) return '/';
+      const path = [];
+      let cur = node;
+      while (cur && cur !== root) {
+        const idx = Array.prototype.indexOf.call(cur.parentNode.childNodes, cur);
+        path.unshift(idx);
+        cur = cur.parentNode;
+      }
+      return '/' + path.join('/');
+    }
 
+    /** 从 XPath 获取节点 */
+    function getNodeByXPath(path, root = document.getElementById("documentContent")) {
+      const parts = path.split('/').filter(Boolean);
+      let node = root;
+      for (const idx of parts) {
+        const i = parseInt(idx, 10);
+        if (!node || !node.childNodes[i]) return null;
+        node = node.childNodes[i];
+      }
+      return node;
+    }
+
+
+    const serializeRange = (range) => {
+      console.log("Serializing range:", range, "startOffset:", range.startOffset, "endOffset:", range.endOffset);
+      return {
+        // id: h.id,
+        // color: h.color,
+        startXPath: getXPath(range.startContainer),
+        startOffset: range.startOffset,
+        endXPath: getXPath(range.endContainer),
+        endOffset: range.endOffset,
+      };
+    };
     const handleTextSelection = () => {
 
       const selection = window.getSelection();
       console.log("Selection:", selection);
-      console.log("Selection text:", selection.toString());
-      selectedText = selection.toString();
-      $("#generateButton").prop("disabled", false);
 
+      // console.log("selection.rangeCount", selection.rangeCount);
+      // console.log("Selection text:", selection.toString());
+
+      if (!selection.rangeCount) return;
+      const range = selection.getRangeAt(0);
+      if (range.collapsed) return;
+      // if (!content.contains(range.commonAncestorContainer)) return;
+
+      selectedText = selection.toString();
+
+      $generateButton.prop("disabled", false);
+      console.log("Range:", range);
+      console.log("Range:", range.cloneRange);
+      // highlights.push(range);
+      // renderHighlight(range);
+      const serializedRange = serializeRange(range);
+      console.log("Serialized Range:", serializedRange);
+      renderSerializedRange(serializedRange);
+
+      sel.removeAllRanges();
       // if (selection && selection.rangeCount > 0) {
       //   console.log("Selection text:", selection.toString());
       //   const range = selection.getRangeAt(0); // Get the selected range
@@ -361,7 +572,7 @@
       // }
 
     };
-    $("#documentContent").on("mouseup", handleTextSelection);
+
 
 
 
@@ -380,12 +591,12 @@
       $("#generatedModelActionBar").css("visibility", "visible");
     };
 
-    $("#generateButton").on("click", async () => {
-      $("#generateButton").prop("disabled", true);
+    $generateButton.on("click", async () => {
+      $generateButton.prop("disabled", true);
       generateModel();
     });
 
-    $("#keepButton").on("click", async () => {
+    $keepButton.on("click", async () => {
 
       const svgContent = $('#activeModelCanvas');
       const $svgCopy = svgContent.clone(false);
@@ -405,7 +616,7 @@
       $("#generatedModelActionBar").css("visibility", "hidden");
 
     });
-    $("#cancelButton").on("click", () => {
+    $cancelButton.on("click", () => {
 
       activeModel = null;
       $("#activeModelName").text("");
@@ -414,7 +625,7 @@
       $("#generatedModelActionBar").css("visibility", "hidden");
 
       // if (selectedText) {
-      //   $("#generateButton").prop("disabled", true);
+      //   generateButton.prop("disabled", true);
       //   $("#generatedModelActionBar").css("visibility", "visible");
       //   showSampleModel();
       //   // alert(`Generating model for selected text:\n${selectedText}`);
