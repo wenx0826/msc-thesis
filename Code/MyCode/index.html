@@ -95,7 +95,6 @@
 
           <div class="bottom-bar">
             <div class="button-group">
-              <button id="clearButton" disabled>Clear</button>
               <button id="generateButton" disabled>Generate</button>
             </div>
           </div>
@@ -145,7 +144,6 @@
     const $highlightLayer = $('#highlightLayer');
     const $documentContent = $('#documentContent');
     const $generateButton = $('#generateButton');
-
     const $keepButton = $('#keepButton');
     const $cancelButton = $('#cancelButton');
 
@@ -158,8 +156,9 @@
     let modelList = [];
 
     let highlights = [];
+    let temporaryRanges = [];
     let db;
-
+    let highlightedRanges = [];
     const connectDB = () => {
       return new Promise((resolve, reject) => {
         const dbReq = indexedDB.open("MyDB", 1);
@@ -216,6 +215,11 @@
         const content = await getDocumentContentById(db, docId);
         const htmlContent = new DOMParser().parseFromString(content, "text/html").body.innerHTML;
         $documentContent.html(htmlContent || '');
+        const modelTraces = traceList.filter(trace => trace.document_id === docId);
+        console.log('Model traces for document', docId, modelTraces);
+        modelTraces.forEach(trace => {
+          highlightRanges(trace.segments);
+        });
       }
     };
     const onDocumentSelect = async (event) => {
@@ -235,10 +239,11 @@
         const model = await getModelById(db, modelId);
         setActiveModel(model);
       }
-
       const modelTrace = await getTraceByModelId(db, modelId);
-      console.log('modelTrace', modelTrace);
-      setActiveDocument(modelTrace.document_id);
+      await setActiveDocument(modelTrace.document_id);
+
+      highlightRanges(modelTrace.segments);
+      // renderSerializedRange
     };
 
     const setActiveModel = (model) => {
@@ -330,10 +335,19 @@
 
     const renderSerializedRange = (serializedRange) => {
       const range = deserializeRange(serializedRange);
-      renderHighlight(range);
+      highlightRange(range);
     };
 
-    const renderHighlight = (range) => {
+
+    const highlightRanges = (serializedRanges) => {
+      console.log("Highlighting ranges:", serializedRanges);
+      $highlightLayer.empty();
+      serializedRanges.forEach((serializedRange) => {
+        const range = deserializeRange(serializedRange);
+        highlightRange(range);
+      });
+    };
+    const highlightRange = (range) => {
       console.log("Adding highlight for range:", range);
       const $highlightLayer = $('#highlightLayer');
       const highlightId = `highlight_${Date.now()}`;
@@ -530,10 +544,10 @@
       // console.log("Range:", range);
 
       const serializedRange = serializeRange(range);
-      highlights.push(serializedRange);
+      temporaryRanges.push(serializedRange);
       renderSerializedRange(serializedRange);
 
-      sel.removeAllRanges();
+      // sel.removeAllRanges();
       // if (selection && selection.rangeCount > 0) {
       //   console.log("Selection text:", selection.toString());
       //   const range = selection.getRangeAt(0); // Get the selected range
@@ -591,7 +605,7 @@
       await createTrace(db, {
         document_id: activeDocumentId,
         model_id: modelId,
-        segments: selectedTextSegments,
+        segments: temporaryRanges,
       });
 
       $("#generatedModelActionBar").css("visibility", "hidden");
