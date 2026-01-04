@@ -159,6 +159,20 @@
     let temporaryRanges = [];
     let db;
     let highlightedRanges = [];
+
+    $(document).ready(async () => {
+      await connectDB();
+      await loadDocumentList();
+      await loadModels();
+
+      if (documentList.length) {
+        setActiveDocument(documentList[documentList.length - 1]?.id);
+      }
+      $documentContent.on("mouseup", handleTextSelection);
+      $documentContent.on("scroll", renderHighlights);
+      // highlightsScrollSync();
+      // $documentContent.on("scroll", () => renderHighlights());
+    });
     const connectDB = () => {
       return new Promise((resolve, reject) => {
         const dbReq = indexedDB.open("MyDB", 1);
@@ -202,7 +216,9 @@
     };
 
     setActiveDocument = async (docId) => {
+
       if (docId !== activeDocumentId) {
+        $highlightLayer.empty();
         activeDocumentId = docId;
         $documentList.children().each((index, element) => {
           const $element = $(element);
@@ -218,7 +234,7 @@
         const modelTraces = traceList.filter(trace => trace.document_id === docId);
         console.log('Model traces for document', docId, modelTraces);
         modelTraces.forEach(trace => {
-          highlightRanges(trace.segments);
+          renderRanges(trace.segments);
         });
       }
     };
@@ -242,7 +258,7 @@
       const modelTrace = await getTraceByModelId(db, modelId);
       await setActiveDocument(modelTrace.document_id);
 
-      highlightRanges(modelTrace.segments);
+      renderRanges(modelTrace.segments);
       // renderSerializedRange
     };
 
@@ -311,16 +327,7 @@
 
     };
 
-    $(document).ready(async () => {
-      console.log('Document is ready');
-      await connectDB();
-      await loadDocumentList();
-      await loadModels();
-      $documentContent.on("mouseup", handleTextSelection);
-      $documentContent.on("scroll", renderHighlights);
-      // highlightsScrollSync();
-      // $documentContent.on("scroll", () => renderHighlights());
-    });
+
 
     const deserializeRange = (serializedRange) => {
       const startNode = getNodeByXPath(serializedRange.startXPath);
@@ -339,9 +346,9 @@
     };
 
 
-    const highlightRanges = (serializedRanges) => {
+    const renderRanges = (serializedRanges) => {
       console.log("Highlighting ranges:", serializedRanges);
-      $highlightLayer.empty();
+      // $highlightLayer.empty();
       serializedRanges.forEach((serializedRange) => {
         const range = deserializeRange(serializedRange);
         highlightRange(range);
@@ -398,6 +405,7 @@
         $li.attr("data-docid", String(documentId));
         $li.on("click", onDocumentSelect);
         $ul.append($li);
+        setActiveDocument(documentId);
       }
     });
 
@@ -585,6 +593,8 @@
       setActiveModel({ name: `Model_${modelList.length + 1}`, content: generatedModel });
       $("#generatedModelActionBar").css("visibility", "visible");
     };
+
+
 
     $generateButton.on("click", async () => {
       $generateButton.prop("disabled", true);
