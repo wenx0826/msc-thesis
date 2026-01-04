@@ -78,9 +78,10 @@
         </ui-tabbed>
         <!-- Text Action Bar -->
         <!-- Document Viewer -->
-        <ui-area id="highlightLayer"></ui-area>
+
 
         <ui-rest class="panel" style="margin:0.5em;">
+          <ui-area id="highlightLayer"></ui-area>
           <ui-content>
 
             <ui-area id="documentContent">
@@ -94,7 +95,7 @@
 
           <div class="bottom-bar">
             <div class="button-group">
-
+              <button id="clearButton" disabled>Clear</button>
               <button id="generateButton" disabled>Generate</button>
             </div>
           </div>
@@ -259,7 +260,7 @@
 
     const loadDocumentList = async () => {
       documentList = await getDocumentList(db);
-
+      console.log('Loaded documents:', documentList);
       documentList.forEach(doc => {
         const $li = $("<li>").text(doc.name);
         $li.attr("data-docid", String(doc.id));
@@ -275,7 +276,7 @@
       var canvasId = `modelCanvas_${modelId}`;
       const $modelsArea = $("#models");
       const $modelContainer = $("<div>").addClass("model-container").attr("data-modelid", modelId);
-      $modelContainer.text(`Model ${modelId}`);
+      $modelContainer.text(`${modelName}`);
       $modelsArea.append($modelContainer);
       const $gridDiv = $("<div>").attr("id", gridId);
 
@@ -288,6 +289,7 @@
     };
     const loadModels = async () => {
       documentList.forEach(async (doc) => {
+
         // console.log('Loading models for document', doc.id);
         const traces = await getTracesByDocumentId(db, doc.id);
         // console.log('traces for document', doc.id, traces);
@@ -305,10 +307,12 @@
     };
 
     $(document).ready(async () => {
+      console.log('Document is ready');
       await connectDB();
       await loadDocumentList();
       await loadModels();
       $documentContent.on("mouseup", handleTextSelection);
+      $documentContent.on("scroll", renderHighlights);
       // highlightsScrollSync();
       // $documentContent.on("scroll", () => renderHighlights());
     });
@@ -317,12 +321,13 @@
       const startNode = getNodeByXPath(serializedRange.startXPath);
       const endNode = getNodeByXPath(serializedRange.endXPath);
       const range = document.createRange();
-      console.log("startNode:", startNode, "endNode:", endNode);
+      // console.log("startNode:", startNode, "endNode:", endNode);
 
       range.setStart(startNode, serializedRange.startOffset);
       range.setEnd(endNode, serializedRange.endOffset);
       return range;
     };
+
     const renderSerializedRange = (serializedRange) => {
       const range = deserializeRange(serializedRange);
       renderHighlight(range);
@@ -358,30 +363,12 @@
       }
     };
 
-    // const renderHighlights = () => {
-    //   $highlightLayer.empty();
-    //   highlights.forEach((range) => {
-    //     const rects = range.getClientRects();
-    //     for (const rect of rects) {
-    //       const $rectDiv = $('<div>')
-    //         .addClass('highlight')
-    //         .css({
-    //           position: 'absolute',
-    //           top: `${rect.top + window.scrollY}px`,
-    //           left: `${rect.left + window.scrollX}px`,
-    //           width: `${rect.width}px`,
-    //           height: `${rect.height}px`,
-    //           backgroundColor: 'yellow',
-    //           opacity: 0.5,
-    //           pointerEvents: 'auto',
-    //         })
-    //         .on('click', function () {
-    //           $(this).remove();
-    //         });
-    //       $highlightLayer.append($rectDiv);
-    //     }
-    //   });
-    // };
+    const renderHighlights = () => {
+      $highlightLayer.empty();
+      highlights.forEach((range) => {
+        renderSerializedRange(range);
+      });
+    };
 
 
 
@@ -531,10 +518,6 @@
     const handleTextSelection = () => {
 
       const selection = window.getSelection();
-      console.log("Selection:", selection);
-
-      // console.log("selection.rangeCount", selection.rangeCount);
-      // console.log("Selection text:", selection.toString());
 
       if (!selection.rangeCount) return;
       const range = selection.getRangeAt(0);
@@ -544,12 +527,10 @@
       selectedText = selection.toString();
 
       $generateButton.prop("disabled", false);
-      console.log("Range:", range);
-      console.log("Range:", range.cloneRange);
-      // highlights.push(range);
-      // renderHighlight(range);
+      // console.log("Range:", range);
+
       const serializedRange = serializeRange(range);
-      console.log("Serialized Range:", serializedRange);
+      highlights.push(serializedRange);
       renderSerializedRange(serializedRange);
 
       sel.removeAllRanges();
