@@ -75,7 +75,16 @@ button:disabled {
         }*/
 .highlighted {
   background-color: yellow;
-  position: absolute;
+  position: fixed;
   opacity: 0.5;
   pointer-events: auto;
 }
+.selected {
+  background-color: blue;
+  position: fixed;
+  opacity: 0.7;
+  pointer-events: auto;
+}
+/* ::selection {
+  background: transparent;
+} */

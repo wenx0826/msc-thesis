@@ -57,13 +57,13 @@
 
 </head>
 <body data-defaultconfig="index.json" is="x-ui-" data-names="3">
-  <ui-area id="highlightLayer"></ui-area>
-  <ui-rest>
+
+  <ui-rest style="z-index: 2;">
     <ui-content>
-      <!-- Left: DocumentPanel -->
+      <!-- Left: Document Panel -->
       <ui-rest style="flex:2;">
         <!-- Document List Pane -->
-        <ui-tabbed>
+        <ui-tabbed style="z-index: 2;">
           <ui-tabbar>
             <ui-tab class="switch"></ui-tab>
             <ui-tab class="" data-tab="documents" id="tabdocuments" style="flex: 1;">Documents</ui-tab>
@@ -71,6 +71,7 @@
           <ui-content>
             <ui-area data-belongs-to-tab="documents" id="areadocuments">
               <ul id="documentList">
+
               </ul>
               <label for="documentsInput">Choose documents to upload</label>
               <input type="file" id="documentsInput" multiple />
@@ -78,10 +79,8 @@
           </ui-content>
         </ui-tabbed>
         <!-- Text Action Bar -->
+        <ui-area id="highlightLayer" style="z-index: 1;"></ui-area>
         <!-- Document Viewer -->
-
-
-
         <ui-rest class="panel" style="margin:0.5em;">
 
           <ui-content>
@@ -115,10 +114,12 @@
             <button id="keepButton">Keep</button>
           </div>
         </div>
+
       </ui-rest>
       <ui-resizehandle></ui-resizehandle>
       <!-- Right: Models Panel-->
       <ui-rest style="flex:1; margin:0.5em; padding: .2em;" class="panel">
+
         <ui-tab>Models</ui-tab>
         <!-- <select id="documentListSelect">
           <option value="">-- Select a Document --</option>
@@ -137,6 +138,8 @@
     </ui-content>
   </ui-rest>
   <script>
+    const $window = $(window);
+    const $document = $(document);
     const $documentsInput = $('#documentsInput');
     const $documentList = $('#documentList');
     const $highlightLayer = $('#highlightLayer');
@@ -145,31 +148,20 @@
     const $keepButton = $('#keepButton');
     const $cancelButton = $('#cancelButton');
 
-    let activeDocId = null;
-    let selectedTextSegments = null;
-    // let selectedModel = null;
-    let activeModel = null;
+    let db;
     let documentList = [];
+    let activeDocId = null;
     let traceList = [];
     let modelList = [];
+    let activeModel = null;
 
+
+    let selectedTextSegments = null;
+    // let selectedModel = null;
     let temporaryRanges = [];
-    let db;
+
     let highlightedRanges = [];
 
-    $(document).ready(async () => {
-      await connectDB();
-      await loadDocumentList();
-      await loadModels();
-
-      if (documentList.length) {
-        setActiveDocument(documentList[documentList.length - 1]?.id);
-      }
-      $documentContent.on("mouseup", handleTextSelection);
-      $documentContent.on("scroll", rerenderAllSelections);
-      $(window).on("resize", rerenderAllSelections);
-      // highlightsScrollSync();
-    });
     const connectDB = () => {
       return new Promise((resolve, reject) => {
         const dbReq = indexedDB.open("MyDB", 1);
@@ -212,7 +204,26 @@
       });
     };
 
-    setActiveDocument = async (docId) => {
+
+
+    const loadDocumentList = async () => {
+      documentList = await getDocumentList(db);
+      documentList.forEach(doc => {
+        const $li = $("<li>").text(doc.name);
+        $li.attr("data-docid", String(doc.id));
+        $li.on("click", onDocumentSelect);
+        $documentList.append($li);
+
+        // const $option = $("<option>").val(doc.id).text(doc.name);
+        // $('#documentListSelect').append($option);
+      });
+    };
+    const onDocumentSelect = async (event) => {
+      event.stopPropagation();
+      const docId = $(event.currentTarget).data('docid');
+      setActiveDocument(docId);
+    };
+    const setActiveDocument = async (docId) => {
 
       if (docId !== activeDocId) {
         $highlightLayer.empty();
@@ -229,18 +240,38 @@
 
         const modelTraces = traceList.filter(trace => trace.document_id === docId);
         console.log('Model traces for document', docId, modelTraces);
-        modelTraces.forEach(trace => {
-          renderRanges(trace.segments);
-        });
+        if (modelTraces.length > 0) {
+          modelTraces.forEach(trace => {
+            renderRanges(trace.segments);
+          });
+        }
+
       }
     };
+    const loadDocument = async (docId) => {
+      const content = await getDocumentContentById(db, docId);
+      const htmlContent = new DOMParser().parseFromString(content, "text/html").body.innerHTML;
+      $documentContent.html(htmlContent || '');
 
-    const onDocumentSelect = async (event) => {
-      event.stopPropagation();
-      const docId = $(event.currentTarget).data('docid');
-      setActiveDocument(docId);
     };
 
+
+    const setActiveModel = (model) => {
+      activeModel = model
+      const { name: modelName, content: modelContent } = model;
+      $('#activeModelName').text(modelName);
+
+      var parser = new DOMParser();
+      const data = parser.parseFromString(modelContent, "application/xml");
+      new WfAdaptor('themes/default/theme.js', function (graphrealization) {
+        graphrealization.draw_labels = (max, labels, shift, striped) => {
+          // console.log(JSON.stringify(labels, null, "  "));
+        };
+        graphrealization.set_svg_container($('#activeModelCanvas'));
+        graphrealization.set_label_container($('#activeModelGrid'));
+        graphrealization.set_description($(data), true);
+      });
+    };
     const onModelSelect = async (event) => {
       event.stopPropagation();
       var target = $(event.currentTarget);
@@ -259,38 +290,7 @@
       // renderSerializedRange
     };
 
-    const setActiveModel = (model) => {
-      activeModel = model
-      const { name: modelName, content: modelContent } = model;
-      $('#activeModelName').text(modelName);
 
-      var parser = new DOMParser();
-      const data = parser.parseFromString(modelContent, "application/xml");
-      new WfAdaptor('themes/default/theme.js', function (graphrealization) {
-        graphrealization.draw_labels = (max, labels, shift, striped) => {
-          // console.log(JSON.stringify(labels, null, "  "));
-        };
-        graphrealization.set_svg_container($('#activeModelCanvas'));
-        graphrealization.set_label_container($('#activeModelGrid'));
-        graphrealization.set_description($(data), true);
-      });
-    };
-
-    const loadDocumentList = async () => {
-      documentList = await getDocumentList(db);
-      documentList.forEach(doc => {
-        const $li = $("<li>").text(doc.name);
-        $li.attr("data-docid", String(doc.id));
-        $li.on("click", onDocumentSelect);
-        $documentList.append($li);
-      });
-    };
-    const loadDocument = async (docId) => {
-      const content = await getDocumentContentById(db, docId);
-      const htmlContent = new DOMParser().parseFromString(content, "text/html").body.innerHTML;
-      $documentContent.html(htmlContent || '');
-
-    };
 
     const renderModel = async ({ id: modelId, name: modelName, content: modelContent, svg: svgContent }) => {
 
@@ -328,8 +328,6 @@
 
     };
 
-
-
     const deserializeRange = (serializedRange) => {
       const startNode = getNodeByXPath(serializedRange.startXPath);
       const endNode = getNodeByXPath(serializedRange.endXPath);
@@ -345,7 +343,6 @@
       const range = deserializeRange(serializedRange);
       highlightRange(range);
     };
-
 
     const renderRanges = (serializedRanges) => {
       console.log("Highlighting ranges:", serializedRanges);
@@ -390,24 +387,6 @@
         renderSerializedRange(range);
       });
     };
-
-
-
-    $documentsInput.on("change", async (event) => {
-      for (const file of event.target.files) {
-        if (!file) continue;
-        const content = await getFileContentInHTML(file);
-        // Store document in IndexedDB
-        const documentId = await createDocument(db, file.name, content);
-        console.log('Stored document:', file.name, 'with id', documentId);
-        const $ul = $("#documentList");
-        const $li = $("<li>").text(file.name);
-        $li.attr("data-docid", String(documentId));
-        $li.on("click", onDocumentSelect);
-        $ul.append($li);
-        setActiveDocument(documentId);
-      }
-    });
 
 
     async function getFileContentInHTML(file) {
@@ -537,6 +516,7 @@
         endOffset: range.endOffset,
       };
     };
+
     const handleTextSelection = () => {
 
       const selection = window.getSelection();
@@ -555,7 +535,7 @@
       temporaryRanges.push(serializedRange);
       renderSerializedRange(serializedRange);
 
-      // sel.removeAllRanges();
+      selection.removeAllRanges();
       // if (selection && selection.rangeCount > 0) {
       //   console.log("Selection text:", selection.toString());
       //   const range = selection.getRangeAt(0); // Get the selected range
@@ -576,9 +556,6 @@
 
     };
 
-
-
-
     const createSampleModel = async () => {
       const resp = await fetch('Frames.xml');
       if (!resp.ok) {
@@ -594,7 +571,36 @@
       $("#generatedModelActionBar").css("visibility", "visible");
     };
 
+    $document.ready(async () => {
+      await connectDB();
+      await loadDocumentList();
+      await loadModels();
 
+      if (documentList.length) {
+        setActiveDocument(documentList[documentList.length - 1]?.id);
+      }
+
+      // highlightsScrollSync();
+    });
+
+    $documentsInput.on("change", async (event) => {
+      for (const file of event.target.files) {
+        if (!file) continue;
+        const content = await getFileContentInHTML(file);
+        // Store document in IndexedDB
+        const documentId = await createDocument(db, file.name, content);
+        console.log('Stored document:', file.name, 'with id', documentId);
+        const $ul = $("#documentList");
+        const $li = $("<li>").text(file.name);
+        $li.attr("data-docid", String(documentId));
+        $li.on("click", onDocumentSelect);
+        $ul.append($li);
+        setActiveDocument(documentId);
+      }
+    });
+    $documentContent.on("mouseup", handleTextSelection);
+    $documentContent.on("scroll", rerenderAllSelections);
+    $(window).on("resize", rerenderAllSelections);
 
     $generateButton.on("click", async () => {
       $generateButton.prop("disabled", true);
@@ -638,6 +644,8 @@
       //   alert("No text selected.");
       // }
     });
+
+
 
   </script>
 </body>
