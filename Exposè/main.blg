@@ -1,9 +1,0 @@
-[0] Config.pm:308> INFO - This is Biber 2.20
-[0] Config.pm:311> INFO - Logfile is '/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/main.blg'
-[34] biber-darwin:340> INFO - === Fri Aug  1, 2025, 04:44:44
-[120] Biber.pm:420> INFO - Reading '/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/main.bcf'
-[157] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
-[164] bbl.pm:676> INFO - Writing '/Users/owxwo/Documents/â¼ï¸ MSc Thesis - Document-Based Process Model Explorer/ExposÃ¨/main.bbl' with encoding 'UTF-8'
-[164] bbl.pm:779> INFO - Output to /Users/owxwo/Documents/â¼ï¸ MSc Thesis - Document-Based Process Model Explorer/ExposÃ¨/main.bbl
-[164] Biber.pm:131> WARN - The file '/Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Exposè/main.bcf' does not contain any citations!
-[164] Biber.pm:133> INFO - WARNINGS: 1
