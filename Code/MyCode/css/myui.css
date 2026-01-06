@@ -73,18 +73,32 @@ button:disabled {
             z-index: 0;
             pointer-events: none; 
         }*/
-.highlighted {
+
+.highlight-wrapper {
+  position: fixed;
+  /* background-color: yellow; */
+}
+
+.highlight-wrapper.active {
+  border: 2px solid red;
+
+  /* background-color: yellow; */
+}
+
+.highlight-rect {
   background-color: yellow;
   position: fixed;
   opacity: 0.5;
   pointer-events: auto;
 }
+
+/*
 .selected {
   background-color: blue;
   position: fixed;
   opacity: 0.7;
   pointer-events: auto;
 }
-/* ::selection {
+ ::selection {
   background: transparent;
 } */

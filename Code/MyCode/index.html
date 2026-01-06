@@ -80,6 +80,8 @@
         </ui-tabbed>
         <!-- Text Action Bar -->
         <ui-area id="highlightLayer" style="z-index: 1;"></ui-area>
+        <button id="deleteSelectionButton"
+          style="display:none; position:absolute;  z-index:3; width: 24px; height: 24px; background-color: red; color: white;border: none; border-radius: 50%; font-weight: bold;cursor: pointer;">X</button>
         <!-- Document Viewer -->
         <ui-rest class="panel" style="margin:0.5em;">
 
@@ -135,6 +137,7 @@
             width='1' height='1'></svg>
         </div> -->
       </ui-rest>
+
     </ui-content>
   </ui-rest>
   <script>
@@ -144,6 +147,7 @@
     const $documentList = $('#documentList');
     const $highlightLayer = $('#highlightLayer');
     const $documentContent = $('#documentContent');
+    const $deleteSelectionButton = $('#deleteSelectionButton');
     const $generateButton = $('#generateButton');
     const $keepButton = $('#keepButton');
     const $cancelButton = $('#cancelButton');
@@ -155,12 +159,12 @@
     let modelList = [];
     let activeModel = null;
 
-
     let selectedTextSegments = null;
-    // let selectedModel = null;
-    let temporaryRanges = [];
 
     let highlightedRanges = [];
+    let activeModelRanges = [];
+    let temporaryRanges = [];
+
 
     const connectDB = () => {
       return new Promise((resolve, reject) => {
@@ -204,8 +208,6 @@
       });
     };
 
-
-
     const loadDocumentList = async () => {
       documentList = await getDocumentList(db);
       documentList.forEach(doc => {
@@ -224,7 +226,6 @@
       setActiveDocument(docId);
     };
     const setActiveDocument = async (docId) => {
-
       if (docId !== activeDocId) {
         $highlightLayer.empty();
         activeDocId = docId;
@@ -239,7 +240,6 @@
         await loadDocument(docId);
 
         const modelTraces = traceList.filter(trace => trace.document_id === docId);
-        console.log('Model traces for document', docId, modelTraces);
         if (modelTraces.length > 0) {
           modelTraces.forEach(trace => {
             renderRanges(trace.segments);
@@ -255,6 +255,34 @@
 
     };
 
+    async function getFileContentInHTML(file) {
+      let fileContent = "";
+      if (file.type === "application/pdf") {
+        const arrayBuffer = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        let pdfText = "";
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const content = await page.getTextContent();
+          fileContent += content.items.map(item => item.str).join(" ") + "\n";
+        }
+      }
+
+      else if (
+        file.type === "application/msword" ||
+        file.name.endsWith(".doc") ||
+        file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
+        file.name.endsWith(".docx")
+      ) {
+        const arrayBuffer = await file.arrayBuffer();
+        const result = await mammoth.convertToHtml({ arrayBuffer });
+        fileContent = new DOMParser().parseFromString(result.value, "text/html").body.innerHTML;
+      }
+      else {
+        fileContent = await file.text();
+      }
+      return fileContent;
+    }
 
     const setActiveModel = (model) => {
       activeModel = model
@@ -290,8 +318,6 @@
       // renderSerializedRange
     };
 
-
-
     const renderModel = async ({ id: modelId, name: modelName, content: modelContent, svg: svgContent }) => {
 
       var gridId = `modelGrid_${modelId}`;
@@ -312,9 +338,7 @@
     const loadModels = async () => {
       documentList.forEach(async (doc) => {
 
-        // console.log('Loading models for document', doc.id);
         const traces = await getTracesByDocumentId(db, doc.id);
-        // console.log('traces for document', doc.id, traces);
         const modelIds = traces.map(trace => trace.modelId)
         traceList = [...traceList, ...traces];
         traces.forEach(async (trace) => {
@@ -323,17 +347,65 @@
           await renderModel(model);
         });
       });
-      // const modelList = await getModelList(db);
-      // console.log('Loaded models:', modelList);
 
+    };
+
+    const createSampleModel = async () => {
+      const resp = await fetch('Frames.xml');
+      if (!resp.ok) {
+        console.error('Failed to load Frames.xml:', resp.status, resp.statusText);
+        return;
+      }
+      return await resp.text();
+    };
+
+    const generateModel = async () => {
+      const selectedText = temporaryRanges.map(range => range.toString()).join(' ');
+      // console.log('Generating model for selected text:', selectedText);
+      generatedModel = await createSampleModel();
+      setActiveModel({ name: `Model_${modelList.length + 1}`, content: generatedModel });
+      $("#generatedModelActionBar").css("visibility", "visible");
+    };
+
+    function getXPath(node, root = document.getElementById("documentContent")) {
+      if (node === root) return '/';
+      const path = [];
+      let cur = node;
+      while (cur && cur !== root) {
+        const idx = Array.prototype.indexOf.call(cur.parentNode.childNodes, cur);
+        path.unshift(idx);
+        cur = cur.parentNode;
+      }
+      return '/' + path.join('/');
+    }
+
+    /** 从 XPath 获取节点 */
+    function getNodeByXPath(path, root = document.getElementById("documentContent")) {
+      const parts = path.split('/').filter(Boolean);
+      let node = root;
+      for (const idx of parts) {
+        const i = parseInt(idx, 10);
+        if (!node || !node.childNodes[i]) return null;
+        node = node.childNodes[i];
+      }
+      return node;
+    }
+
+    const serializeRange = (range) => {
+      return {
+        // id: h.id,
+        // color: h.color,
+        startXPath: getXPath(range.startContainer),
+        startOffset: range.startOffset,
+        endXPath: getXPath(range.endContainer),
+        endOffset: range.endOffset,
+      };
     };
 
     const deserializeRange = (serializedRange) => {
       const startNode = getNodeByXPath(serializedRange.startXPath);
       const endNode = getNodeByXPath(serializedRange.endXPath);
       const range = document.createRange();
-      // console.log("startNode:", startNode, "endNode:", endNode);
-
       range.setStart(startNode, serializedRange.startOffset);
       range.setEnd(endNode, serializedRange.endOffset);
       return range;
@@ -345,78 +417,77 @@
     };
 
     const renderRanges = (serializedRanges) => {
-      console.log("Highlighting ranges:", serializedRanges);
       // $highlightLayer.empty();
       serializedRanges.forEach((serializedRange) => {
         const range = deserializeRange(serializedRange);
         highlightRange(range);
       });
     };
+
     const highlightRange = (range) => {
-      console.log("Adding highlight for range:", range);
       const $highlightLayer = $('#highlightLayer');
-      const highlightId = `highlight_${Date.now()}`;
-      const $highlightDiv = $('<div>')
-        .addClass('highlighted')
-        .attr('id', highlightId)
+      const rangeId = range.id || Date.now();
+      const $rangeDiv = $('<div>')
+        .attr('id', rangeId)
+        .addClass('highlight-wrapper')
         .css({
+          top: `${range.getBoundingClientRect().top + window.scrollY}px`,
+          left: `${range.getBoundingClientRect().left + window.scrollX}px`,
+          width: `${range.getBoundingClientRect().width}px`,
+          height: `${range.getBoundingClientRect().height}px`,
         })
-        .on('click', function () {
-          $(this).remove();
-        });
+        .on('click', onRangeSelect);
+
+      const $rangeRect = $('<div>').addClass('highlight-rect');
+
 
       const rects = range.getClientRects();
       for (const rect of rects) {
-        const $rectDiv = $highlightDiv.clone();
+        const $rectDiv = $rangeRect.clone();
         $rectDiv.css({
           top: `${rect.top + window.scrollY}px`,
           left: `${rect.left + window.scrollX}px`,
           width: `${rect.width}px`,
           height: `${rect.height}px`,
         });
-        $highlightLayer.append($rectDiv);
+        $rangeDiv.append($rectDiv);
       }
-    };
 
+      $highlightLayer.append($rangeDiv);
+    };
+    const onRangeSelect = (event) => {
+      event.stopPropagation();
+      const $target = $(event.currentTarget);
+      $target.addClass("active");
+      const rangeId = $target.attr('id');
+      $target.siblings().removeClass('active');
+      // Handle range selection logic here
+      console.log('Range selected:', rangeId);
+      const rangeBoundingRect = $target[0].getBoundingClientRect();
+
+      $deleteSelectionButton.show().css({
+        top: `${rangeBoundingRect.top + window.scrollY - 12}px`,
+        left: `${rangeBoundingRect.right + window.scrollX - 12}px`,
+      }).on('click', () => {
+        // Remove range from highlightedRanges and temporaryRanges
+        highlightedRanges = highlightedRanges.filter(r => r.id !== rangeId);
+        temporaryRanges = temporaryRanges.filter(r => r.id !== rangeId);
+        // Remove the highlight from the UI
+        $target.remove();
+        $deleteSelectionButton.hide();
+      });
+    };
     const rerenderAllSelections = () => {
       $highlightLayer.empty();
       highlightedRanges.forEach((range) => {
         renderSerializedRange(range);
       });
       temporaryRanges.forEach((range) => {
-        renderSerializedRange(range);
+        highlightRange(range);
       });
     };
 
 
-    async function getFileContentInHTML(file) {
-      let fileContent = "";
-      if (file.type === "application/pdf") {
-        const arrayBuffer = await file.arrayBuffer();
-        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-        let pdfText = "";
-        for (let i = 1; i <= pdf.numPages; i++) {
-          const page = await pdf.getPage(i);
-          const content = await page.getTextContent();
-          fileContent += content.items.map(item => item.str).join(" ") + "\n";
-        }
-      }
-
-      else if (
-        file.type === "application/msword" ||
-        file.name.endsWith(".doc") ||
-        file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
-        file.name.endsWith(".docx")
-      ) {
-        const arrayBuffer = await file.arrayBuffer();
-        const result = await mammoth.convertToHtml({ arrayBuffer });
-        fileContent = new DOMParser().parseFromString(result.value, "text/html").body.innerHTML;
-      }
-      else {
-        fileContent = await file.text();
-      }
-      return fileContent;
-    }
     // const getXPath = (node, root = document.getElementById("documentContent")) => {
     //   // const paths = [];
     //   // for (; node && node !== root; node = node.parentNode) {
@@ -480,43 +551,6 @@
     // };
 
 
-    function getXPath(node, root = document.getElementById("documentContent")) {
-      if (node === root) return '/';
-      const path = [];
-      let cur = node;
-      while (cur && cur !== root) {
-        const idx = Array.prototype.indexOf.call(cur.parentNode.childNodes, cur);
-        path.unshift(idx);
-        cur = cur.parentNode;
-      }
-      return '/' + path.join('/');
-    }
-
-    /** 从 XPath 获取节点 */
-    function getNodeByXPath(path, root = document.getElementById("documentContent")) {
-      const parts = path.split('/').filter(Boolean);
-      let node = root;
-      for (const idx of parts) {
-        const i = parseInt(idx, 10);
-        if (!node || !node.childNodes[i]) return null;
-        node = node.childNodes[i];
-      }
-      return node;
-    }
-
-
-    const serializeRange = (range) => {
-      console.log("Serializing range:", range, "startOffset:", range.startOffset, "endOffset:", range.endOffset);
-      return {
-        // id: h.id,
-        // color: h.color,
-        startXPath: getXPath(range.startContainer),
-        startOffset: range.startOffset,
-        endXPath: getXPath(range.endContainer),
-        endOffset: range.endOffset,
-      };
-    };
-
     const handleTextSelection = () => {
 
       const selection = window.getSelection();
@@ -526,18 +560,13 @@
       if (range.collapsed) return;
       // if (!content.contains(range.commonAncestorContainer)) return;
 
-      selectedText = selection.toString();
-
       $generateButton.prop("disabled", false);
-      // console.log("Range:", range);
-
-      const serializedRange = serializeRange(range);
-      temporaryRanges.push(serializedRange);
-      renderSerializedRange(serializedRange);
-
+      const clonedRange = range.cloneRange();
+      clonedRange.id = Date.now();
+      temporaryRanges.push(clonedRange);
+      highlightRange(clonedRange);
       selection.removeAllRanges();
       // if (selection && selection.rangeCount > 0) {
-      //   console.log("Selection text:", selection.toString());
       //   const range = selection.getRangeAt(0); // Get the selected range
       //   const startOffset = range.startOffset; // Start position of the selection
       //   const endOffset = range.endOffset; // End position of the selection
@@ -546,7 +575,6 @@
       //   const parentNode = range.startContainer.parentNode;
       //   // if (parentNode && parentNode.tagName === "P") {
       //   //   const fullText = parentNode.textContent;
-      //   //   // console.log("Full text:", fullText);
       //   //   // Split the text into before, selected, and after parts
       //   //   // beforeSelection.value = text.slice(0, startOffset);
       //   //   store.selectedText = text.slice(startOffset, endOffset);
@@ -554,21 +582,6 @@
       //   // }
       // }
 
-    };
-
-    const createSampleModel = async () => {
-      const resp = await fetch('Frames.xml');
-      if (!resp.ok) {
-        console.error('Failed to load Frames.xml:', resp.status, resp.statusText);
-        return;
-      }
-      return await resp.text();
-    };
-
-    const generateModel = async () => {
-      generatedModel = await createSampleModel();
-      setActiveModel({ name: `Model_${modelList.length + 1}`, content: generatedModel });
-      $("#generatedModelActionBar").css("visibility", "visible");
     };
 
     $document.ready(async () => {
@@ -589,7 +602,6 @@
         const content = await getFileContentInHTML(file);
         // Store document in IndexedDB
         const documentId = await createDocument(db, file.name, content);
-        console.log('Stored document:', file.name, 'with id', documentId);
         const $ul = $("#documentList");
         const $li = $("<li>").text(file.name);
         $li.attr("data-docid", String(documentId));
@@ -616,12 +628,11 @@
 
       activeModel.svg = svg;
       const modelId = await createModel(db, activeModel);
-      console.log('modelId', modelId);
       renderModel({ ...activeModel, id: modelId });
       await createTrace(db, {
         document_id: activeDocId,
         model_id: modelId,
-        segments: temporaryRanges,
+        segments: temporaryRanges.map(range => serializeRange(range)),
       });
 
       $("#generatedModelActionBar").css("visibility", "hidden");
@@ -631,7 +642,7 @@
 
       activeModel = null;
       $("#activeModelName").text("");
-      console.log('Clearing active model canvas');
+      // console.log('Clearing active model canvas');
       $("#activeModelCanvas").empty();
       $("#generatedModelActionBar").css("visibility", "hidden");
 
