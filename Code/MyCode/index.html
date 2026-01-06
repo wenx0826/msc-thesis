@@ -78,18 +78,15 @@
         </ui-tabbed>
         <!-- Text Action Bar -->
         <!-- Document Viewer -->
+        <ui-area id="highlightLayer"></ui-area>
 
 
         <ui-rest class="panel" style="margin:0.5em;">
-          <ui-area id="highlightLayer"></ui-area>
+
           <ui-content>
 
             <ui-area id="documentContent">
-              <p>第一段：这是一个虚拟高亮层的示例。高亮区域绘制在文字下方，不会修改原文 DOM。</p>
-              <p>第二段：按住 Ctrl（或 Cmd）可以连续选择多段文字，每段会生成独立的高亮。</p>
-              <p>第三段：滚动页面或调整窗口时，高亮会自动同步位置。</p>
-              <p>第四段：点击高亮区域可删除该标记，导出功能可保存所有标记。</p>
-              <p>第五段：这种技术常用于阅读器、批注系统、AI 文本分析工具中。</p>
+
             </ui-area>
           </ui-content>
 
@@ -147,7 +144,7 @@
     const $keepButton = $('#keepButton');
     const $cancelButton = $('#cancelButton');
 
-    let activeDocumentId = null;
+    let activeDocId = null;
     let selectedTextSegments = null;
     // let selectedModel = null;
     let activeModel = null;
@@ -155,7 +152,6 @@
     let traceList = [];
     let modelList = [];
 
-    let highlights = [];
     let temporaryRanges = [];
     let db;
     let highlightedRanges = [];
@@ -169,9 +165,9 @@
         setActiveDocument(documentList[documentList.length - 1]?.id);
       }
       $documentContent.on("mouseup", handleTextSelection);
-      $documentContent.on("scroll", renderHighlights);
+      $documentContent.on("scroll", rerenderAllSelections);
+      $(window).on("resize", rerenderAllSelections);
       // highlightsScrollSync();
-      // $documentContent.on("scroll", () => renderHighlights());
     });
     const connectDB = () => {
       return new Promise((resolve, reject) => {
@@ -217,9 +213,9 @@
 
     setActiveDocument = async (docId) => {
 
-      if (docId !== activeDocumentId) {
+      if (docId !== activeDocId) {
         $highlightLayer.empty();
-        activeDocumentId = docId;
+        activeDocId = docId;
         $documentList.children().each((index, element) => {
           const $element = $(element);
           if ($element.data('docid') === docId) {
@@ -228,9 +224,8 @@
             $element.removeClass("active");
           }
         });
-        const content = await getDocumentContentById(db, docId);
-        const htmlContent = new DOMParser().parseFromString(content, "text/html").body.innerHTML;
-        $documentContent.html(htmlContent || '');
+        await loadDocument(docId);
+
         const modelTraces = traceList.filter(trace => trace.document_id === docId);
         console.log('Model traces for document', docId, modelTraces);
         modelTraces.forEach(trace => {
@@ -238,6 +233,7 @@
         });
       }
     };
+
     const onDocumentSelect = async (event) => {
       event.stopPropagation();
       const docId = $(event.currentTarget).data('docid');
@@ -281,7 +277,6 @@
 
     const loadDocumentList = async () => {
       documentList = await getDocumentList(db);
-      console.log('Loaded documents:', documentList);
       documentList.forEach(doc => {
         const $li = $("<li>").text(doc.name);
         $li.attr("data-docid", String(doc.id));
@@ -289,7 +284,12 @@
         $documentList.append($li);
       });
     };
+    const loadDocument = async (docId) => {
+      const content = await getDocumentContentById(db, docId);
+      const htmlContent = new DOMParser().parseFromString(content, "text/html").body.innerHTML;
+      $documentContent.html(htmlContent || '');
 
+    };
 
     const renderModel = async ({ id: modelId, name: modelName, content: modelContent, svg: svgContent }) => {
 
@@ -359,13 +359,9 @@
       const $highlightLayer = $('#highlightLayer');
       const highlightId = `highlight_${Date.now()}`;
       const $highlightDiv = $('<div>')
-        .addClass('highlight')
+        .addClass('highlighted')
         .attr('id', highlightId)
         .css({
-          position: 'absolute',
-          backgroundColor: 'yellow',
-          opacity: 0.5,
-          pointerEvents: 'auto',
         })
         .on('click', function () {
           $(this).remove();
@@ -384,9 +380,12 @@
       }
     };
 
-    const renderHighlights = () => {
+    const rerenderAllSelections = () => {
       $highlightLayer.empty();
-      highlights.forEach((range) => {
+      highlightedRanges.forEach((range) => {
+        renderSerializedRange(range);
+      });
+      temporaryRanges.forEach((range) => {
         renderSerializedRange(range);
       });
     };
@@ -613,7 +612,7 @@
       console.log('modelId', modelId);
       renderModel({ ...activeModel, id: modelId });
       await createTrace(db, {
-        document_id: activeDocumentId,
+        document_id: activeDocId,
         model_id: modelId,
         segments: temporaryRanges,
       });

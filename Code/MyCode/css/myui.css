@@ -1,55 +1,55 @@
 .panel {
-    background-color: var(--x-ui-background-color);
-    padding: 1em;
-    margin: 0;
-    border: 1pt solid var(--x-ui-border-color);
-    border-radius: 1em;
-    overflow: hidden;
+  background-color: var(--x-ui-background-color);
+  padding: 1em;
+  margin: 0;
+  border: 1pt solid var(--x-ui-border-color);
+  border-radius: 1em;
+  overflow: hidden;
 }
 
 main {
-    display: flex;
+  display: flex;
 }
 
 #documentContent {
-    user-select: text;
+  user-select: text;
 }
 
-li.active{
-    font-weight: bold;
-    background-color: var(--x-ui-content-light-background); 
+li.active {
+  font-weight: bold;
+  background-color: var(--x-ui-content-light-background);
 }
 /* li:hover {
     cursor: pointer;
     background-color: var(--x-ui-hover-background-color);
 } */
-.model-container{
-    border: 1.5px solid var(--x-ui-border-color);
-    padding: 0.5em;
-    margin: 0.5em;
+.model-container {
+  border: 1.5px solid var(--x-ui-border-color);
+  padding: 0.5em;
+  margin: 0.5em;
 }
 .model-container:hover {
-    border-color: var(--x-ui-hover-border-color);
-    cursor: pointer;
+  border-color: var(--x-ui-hover-border-color);
+  cursor: pointer;
 }
 
 .model-container.active {
-    border-color: var(--wfadaptor-selected);
+  border-color: var(--wfadaptor-selected);
 }
 
 .bottom-bar {
-    /* display: flex;
+  /* display: flex;
     justify-content: space-between;
     align-items: center; */
-    display: flex;
-    padding: 0.5em 1em;
-    border-top: 1pt solid var(--x-ui-border-color);
-    background-color: var(--x-ui-background-color);
+  display: flex;
+  padding: 0.5em 1em;
+  border-top: 1pt solid var(--x-ui-border-color);
+  background-color: var(--x-ui-background-color);
 }
 .button-group {
-    margin-left: auto;
-    display: flex;
-    gap: 1em;
+  margin-left: auto;
+  display: flex;
+  gap: 1em;
 }
 /* button {
     padding: 1em;
@@ -59,11 +59,11 @@ li.active{
     cursor: pointer;
 } */
 
-button:disabled{
-    background-color: var(--x-ui-disabled-background-color);
-    color: lightgray
+button:disabled {
+  background-color: var(--x-ui-disabled-background-color);
+  color: lightgray;
 }
-
+/*
 #highlightLayer {
             /* position: absolute;
             top: 0;
@@ -71,5 +71,11 @@ button:disabled{
             width: 100%;
             height: 100%;
             z-index: 0;
-            pointer-events: none; */
-        }
+            pointer-events: none; 
+        }*/
+.highlighted {
+  background-color: yellow;
+  position: absolute;
+  opacity: 0.5;
+  pointer-events: auto;
+}
