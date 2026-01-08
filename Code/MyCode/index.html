@@ -163,7 +163,7 @@
 
     let highlightedRanges = [];
     let activeModelRanges = [];
-    let temporaryRanges = [];
+    let temporarySelections = [];
 
 
     const connectDB = () => {
@@ -304,7 +304,8 @@
       event.stopPropagation();
       var target = $(event.currentTarget);
       target.addClass("active");
-      $('#models').children().not(target).removeClass('active');
+      // $('#models').children().not(target).removeClass('active');
+      target.siblings().removeClass('active');
       const modelId = target.data('modelid');
 
       if (modelId) {
@@ -360,7 +361,7 @@
     };
 
     const generateModel = async () => {
-      const selectedText = temporaryRanges.map(range => range.toString()).join(' ');
+      const selectedText = temporarySelections.map(range => range.toString()).join(' ');
       // console.log('Generating model for selected text:', selectedText);
       generatedModel = await createSampleModel();
       setActiveModel({ name: `Model_${modelList.length + 1}`, content: generatedModel });
@@ -469,9 +470,9 @@
         top: `${rangeBoundingRect.top + window.scrollY - 12}px`,
         left: `${rangeBoundingRect.right + window.scrollX - 12}px`,
       }).on('click', () => {
-        // Remove range from highlightedRanges and temporaryRanges
+        // Remove range from highlightedRanges and temporarySelections
         highlightedRanges = highlightedRanges.filter(r => r.id !== rangeId);
-        temporaryRanges = temporaryRanges.filter(r => r.id !== rangeId);
+        temporarySelections = temporarySelections.filter(r => r.id !== rangeId);
         // Remove the highlight from the UI
         $target.remove();
         $deleteSelectionButton.hide();
@@ -482,7 +483,7 @@
       highlightedRanges.forEach((range) => {
         renderSerializedRange(range);
       });
-      temporaryRanges.forEach((range) => {
+      temporarySelections.forEach((range) => {
         highlightRange(range);
       });
     };
@@ -563,7 +564,7 @@
       $generateButton.prop("disabled", false);
       const clonedRange = range.cloneRange();
       clonedRange.id = Date.now();
-      temporaryRanges.push(clonedRange);
+      temporarySelections.push(clonedRange);
       highlightRange(clonedRange);
       selection.removeAllRanges();
       // if (selection && selection.rangeCount > 0) {
@@ -632,7 +633,7 @@
       await createTrace(db, {
         document_id: activeDocId,
         model_id: modelId,
-        segments: temporaryRanges.map(range => serializeRange(range)),
+        segments: temporarySelections.map(range => serializeRange(range)),
       });
 
       $("#generatedModelActionBar").css("visibility", "hidden");
