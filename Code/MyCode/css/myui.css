@@ -19,15 +19,18 @@ li.active {
   font-weight: bold;
   background-color: var(--x-ui-content-light-background);
 }
+
 /* li:hover {
     cursor: pointer;
     background-color: var(--x-ui-hover-background-color);
 } */
+
 .model-container {
   border: 1.5px solid var(--x-ui-border-color);
   padding: 0.5em;
   margin: 0.5em;
 }
+
 .model-container:hover {
   border-color: var(--x-ui-hover-border-color);
   cursor: pointer;
@@ -35,6 +38,7 @@ li.active {
 
 .model-container.active {
   border-color: var(--wfadaptor-selected);
+  border: 2px solid var(--wfadaptor-selected);
 }
 
 .bottom-bar {
@@ -46,6 +50,7 @@ li.active {
   border-top: 1pt solid var(--x-ui-border-color);
   background-color: var(--x-ui-background-color);
 }
+
 .button-group {
   margin-left: auto;
   display: flex;
@@ -74,23 +79,38 @@ button:disabled {
             pointer-events: none; 
         }*/
 
-.highlight-wrapper {
+.range-wrapper {
   position: fixed;
   /* pointer-events: none; */
   /* background-color: yellow; */
 }
 
-.highlight-wrapper.active {
+.range-wrapper.selected {
   border: 2px solid red;
-
   /* background-color: yellow; */
 }
 
-.highlight-rect {
+#traceLayer .range-wrapper.active .range-rect {
   background-color: yellow;
+  /* background-color: yellow; */
+}
+#traceLayer .range-wrapper.selected .range-rect {
+  background-color: red;
+  /* background-color: yellow; */
+}
+.range-rect {
   position: fixed;
   opacity: 0.5;
   pointer-events: auto;
+  /* border: 2px solid red; */
+  /* background-color: yellow; */
+}
+#traceLayer .range-rect {
+  background-color: lightgrey;
+}
+
+#temporarySelectionsLayer .range-rect {
+  background-color: blue;
 }
 
 .label-span {

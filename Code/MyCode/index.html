@@ -79,7 +79,8 @@
           </ui-content>
         </ui-tabbed>
         <!-- Text Action Bar -->
-        <ui-area id="highlightLayer" style="z-index: 1;"></ui-area>
+        <ui-area id="traceLayer" style="z-index: 1;"></ui-area>
+        <ui-area id="temporarySelectionsLayer" style="z-index: 1;"></ui-area>
         <button id="deleteSelectionButton"
           style="display:none; position:absolute;  z-index:3; width: 24px; height: 24px; background-color: red; color: white;border: none; border-radius: 50%; font-weight: bold;cursor: pointer;">X</button>
         <!-- Document Viewer -->
@@ -145,8 +146,10 @@
     const $document = $(document);
     const $documentsInput = $('#documentsInput');
     const $documentList = $('#documentList');
-    const $highlightLayer = $('#highlightLayer');
+
     const $documentContent = $('#documentContent');
+    const $traceLayer = $('#traceLayer');
+    const $temporarySelectionsLayer = $('#temporarySelectionsLayer');
     const $deleteSelectionButton = $('#deleteSelectionButton');
     const $generateButton = $('#generateButton');
     const $keepButton = $('#keepButton');
@@ -159,8 +162,7 @@
     let models = [];
     let activeModel = null;
 
-    let highlightedRanges = [];
-    let activeModelRanges = [];
+
     let temporarySelections = [];
 
     const connectDB = () => {
@@ -229,7 +231,7 @@
       for (const trace of traces) {
         const model = await getModelById(db, trace.model_id);
         models.push(model);
-        await renderModel(model);
+        await renderModelInList(model);
       }
     };
 
@@ -241,7 +243,7 @@
 
     const setActiveDocument = async (docId) => {
       if (docId !== activeDocId) {
-        $highlightLayer.empty();
+        $temporarySelectionsLayer.empty();
         activeDocId = docId;
         $documentList.children().each((index, element) => {
           const $element = $(element);
@@ -255,14 +257,14 @@
 
         const modelTraces = traces.filter(trace => trace.document_id === docId);
         if (modelTraces.length > 0) {
-          modelTraces.forEach(trace => {
-            renderRanges(trace.segments, trace.model_id);
-          });
+          modelTraces.forEach(trace => renderTraceInDocument(trace));
         }
 
       }
     };
-
+    const renderTraceInDocument = (trace) => {
+      renderRanges(trace.segments, trace.model_id);
+    };
     const loadDocument = async (docId) => {
       const content = await getDocumentContentById(db, docId);
       const htmlContent = new DOMParser().parseFromString(content, "text/html").body.innerHTML;
@@ -299,9 +301,42 @@
       return fileContent;
     }
 
-    const setActiveModel = (model) => {
+    const setActiveModel = (modelId) => {
+      if (modelId) {
+        const model = models.find(m => m.id == modelId);
+        // console.log('Setting active model:', model);
+        showModel(model);
+        $('.model-container').removeClass('active');
+        $(`.model-container[data-modelid="${modelId}"]`).addClass('active');
+        $('.range-wrapper').removeClass("active");
+        $(`.range-wrapper[data-modelid="${modelId}"]`).addClass("active");
+        // $('.range-wrapper').find(`[data-modelid="${modelId}"]`).children().each((index, element) => {
+        //   const $element = $(element);
 
-      activeModel = model
+        //     $element.addClass("active");
+
+        //     // $element.removeClass("active");
+        //   }
+        // });
+      } else {
+        clearModel();
+      }
+      // const { name: modelName, content: modelContent } = model;
+      // $('#activeModelName').text(modelName);
+
+      // var parser = new DOMParser();
+      // const data = parser.parseFromString(modelContent, "application/xml");
+      // new WfAdaptor('themes/default/theme.js', function (graphrealization) {
+      //   graphrealization.draw_labels = (max, labels, shift, striped) => {
+      //     // console.log(JSON.stringify(labels, null, "  "));
+      //   };
+      //   graphrealization.set_svg_container($('#activeModelCanvas'));
+      //   graphrealization.set_label_container($('#activeModelGrid'));
+      //   graphrealization.set_description($(data), true);
+      // });
+    };
+
+    const showModel = (model) => {
       const { name: modelName, content: modelContent } = model;
       $('#activeModelName').text(modelName);
 
@@ -316,7 +351,16 @@
         graphrealization.set_description($(data), true);
       });
     };
+    const clearModel = () => {
+      $('#activeModelName').text("");
+      // console.log('Clearing active model canvas');
+      $('#activeModelCanvas').empty();
+    };
 
+    const clearTemporarySelections = () => {
+      temporarySelections = [];
+      $temporarySelectionsLayer.empty();
+    };
     const onModelSelect = async (event) => {
       event.stopPropagation();
       var target = $(event.currentTarget);
@@ -325,19 +369,18 @@
       target.siblings().removeClass('active');
       const modelId = target.data('modelid');
 
-      if (modelId) {
-        const model = await getModelById(db, modelId);
-        setActiveModel(model);
-      }
-      const modelTrace = await getTraceByModelId(db, modelId);
-      await setActiveDocument(modelTrace.document_id);
+      // if (modelId) {
+      //   const model = await getModelById(db, modelId);
+      //   setActiveModel(model);
+      // }
+      // const modelTrace = await getTraceByModelId(db, modelId);
+      // await setActiveDocument(modelTrace.document_id);
 
-      renderRanges(modelTrace.segments);
+      // renderRanges(modelTrace.segments);
       // renderSerializedRange
     };
 
-    const renderModel = async ({ id: modelId, name: modelName, content: modelContent, svg: svgContent }) => {
-
+    const renderModelInList = async ({ id: modelId, name: modelName, content: modelContent, svg: svgContent }) => {
       var gridId = `modelGrid_${modelId}`;
       var canvasId = `modelCanvas_${modelId}`;
       const $modelsArea = $("#models");
@@ -350,7 +393,10 @@
       $gridDiv.append(svgData);
       $gridDiv.append(svgData);
       $modelContainer.append($gridDiv);
-      $modelContainer.on("click", onModelSelect);
+      $modelContainer.on("click", (e) => {
+        e.stopPropagation();
+        setActiveModel(modelId);
+      });
 
     };
 
@@ -368,7 +414,12 @@
       const selectedText = temporarySelections.map(range => range.toString()).join(' ');
       // console.log('Generating model for selected text:', selectedText);
       generatedModel = await createSampleModel();
-      setActiveModel({ name: `Model_${models.length + 1}`, content: generatedModel });
+      var model = {
+        name: `Model_${Date.now()}`,
+        content: generatedModel,
+      };
+      activeModel = model;
+      showModel(model);
       $("#generatedModelActionBar").css("visibility", "visible");
     };
 
@@ -398,7 +449,7 @@
 
     const serializeRange = (range) => {
       return {
-        // id: h.id,
+        id: range.id,
         // color: h.color,
         startXPath: getXPath(range.startContainer),
         startOffset: range.startOffset,
@@ -418,23 +469,24 @@
 
     const renderSerializedRange = (serializedRange) => {
       const range = deserializeRange(serializedRange);
-      highlightRange(range);
+      renderRange(range);
     };
 
     const renderRanges = (serializedRanges, modelId) => {
-      // $highlightLayer.empty();
+      // $temporarySelectionsLayer.empty();
       serializedRanges.forEach((serializedRange) => {
         const range = deserializeRange(serializedRange);
-        highlightRange(range, modelId);
+        renderRange(range, modelId);
       });
     };
 
-    const highlightRange = (range, modelId) => {
-      const $highlightLayer = $('#highlightLayer');
+    const renderRange = (range, modelId) => {
+
       const rangeId = range.id || Date.now();
       const $rangeDiv = $('<div>')
         .attr('id', rangeId)
-        .addClass('highlight-wrapper')
+        .attr('data-modelid', modelId || '')
+        .addClass('range-wrapper')
         .css({
           top: `${range.getBoundingClientRect().top + window.scrollY}px`,
           left: `${range.getBoundingClientRect().left + window.scrollX}px`,
@@ -443,7 +495,7 @@
         })
         ;
 
-      const $rangeRect = $('<div>').addClass('highlight-rect');
+      const $rangeRect = $('<div>').addClass('range-rect');
 
       // console.log('Highlighting range:', range.toString());
       const rects = range.getClientRects();
@@ -467,31 +519,34 @@
           left: `${lastRect.right + window.scrollX}px`,
         }).on('click', onModelLabelSelect);
         $rangeDiv.append(labelSpan);
+        $traceLayer.append($rangeDiv);
+      } else {
+        $temporarySelectionsLayer.append($rangeDiv);
       }
-      $highlightLayer.append($rangeDiv);
+
     };
 
     const onModelLabelSelect = (event) => {
       event.stopPropagation();
       const $target = $(event.currentTarget);
       const modelId = $target.attr('data-modelid');
-      setActiveModel(models.find(m => m.id == modelId));
+      setActiveModel(modelId);
       // Handle model label selection logic here
     };
 
     const onRangeSelect = (event) => {
       event.stopPropagation();
       const $target = $(event.currentTarget).parent();
-      $target.addClass("active");
+      $target.addClass("selected");
       const rangeId = $target.attr('id');
-      $target.siblings().removeClass('active');
+      $target.siblings().removeClass('selected');
       // Handle range selection logic here
       console.log('Range selected:', rangeId);
       const rangeBoundingRect = $target[0].getBoundingClientRect();
 
       $document.one('mousedown', () => {
         $deleteSelectionButton.hide();
-        $target.removeClass('active');
+        $target.removeClass('selected');
       });
 
       $deleteSelectionButton.show().css({
@@ -510,21 +565,21 @@
     /*const deleteRangeById = (rangeId) => {
       highlightedRanges = highlightedRanges.filter(r => r.id !== rangeId);
       temporarySelections = temporarySelections.filter(r => r.id !== rangeId);
-      $highlightLayer.find(`#${rangeId}`).remove();
+      $temporarySelectionsLayer.find(`#${rangeId}`).remove();
     };
 
     const clearRangeSelection = () => {
       $deleteSelectionButton.hide();
-      $highlightLayer.find('.highlight-wrapper.active').removeClass('active');
+      $temporarySelectionsLayer.find('.range-wrapper.active').removeClass('active');
     };*/
 
     const rerenderAllSelections = () => {
-      $highlightLayer.empty();
+      $temporarySelectionsLayer.empty();
       highlightedRanges.forEach((range) => {
         renderSerializedRange(range);
       });
       temporarySelections.forEach((range) => {
-        highlightRange(range);
+        renderRange(range);
       });
     };
 
@@ -603,7 +658,7 @@
       const clonedRange = range.cloneRange();
       clonedRange.id = Date.now();
       temporarySelections.push(clonedRange);
-      highlightRange(clonedRange);
+      renderRange(clonedRange);
       selection.removeAllRanges();
       // if (selection && selection.rangeCount > 0) {
       //   const range = selection.getRangeAt(0); // Get the selected range
@@ -667,12 +722,18 @@
 
       activeModel.svg = svg;
       const modelId = await createModel(db, activeModel);
-      renderModel({ ...activeModel, id: modelId });
-      await createTrace(db, {
+      models.push({ ...activeModel, id: modelId });
+      renderModelInList({ ...activeModel, id: modelId });
+      clearModel();
+      var trace = {
         document_id: activeDocId,
         model_id: modelId,
         segments: temporarySelections.map(range => serializeRange(range)),
-      });
+      };
+      await createTrace(db, trace);
+      traces.push(trace);
+      renderTraceInDocument(trace);
+      clearTemporarySelections();
 
       $("#generatedModelActionBar").css("visibility", "hidden");
 
