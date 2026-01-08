@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <title>Click Outside Close Demo</title>
+    <style>
+        body {
+            height: 200vh;
+            padding: 40px;
+            font-family: sans-serif;
+        }
+
+        button {
+            padding: 8px 14px;
+            cursor: pointer;
+        }
+
+        .dialog {
+            position: fixed;
+            top: 120px;
+            left: 120px;
+            width: 240px;
+            padding: 16px;
+            background: white;
+            border: 1px solid #ccc;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, .15);
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <button id="openBtn">打开对话框</button>
+
+    <div id="dialog" class="dialog hidden">
+        <strong>我是对话框</strong>
+        <p>点我里面不会关闭</p>
+    </div>
+
+    <script>
+        const openBtn = document.getElementById("openBtn");
+        const dialog = document.getElementById("dialog");
+
+        let isOpen = false;
+        let onDocumentPointerDown = null;
+
+        function openDialog() {
+            if (isOpen) return;
+            isOpen = true;
+            dialog.classList.remove("hidden");
+
+            // ⚠️ 只在打开时绑定一次
+            onDocumentPointerDown = (e) => {
+                const target = e.target;
+
+                // 点击在对话框内 or 触发按钮上 → 不关闭
+                if (dialog.contains(target) || openBtn.contains(target)) {
+                    return;
+                }
+
+                // 点击外部 → 关闭
+                closeDialog();
+            };
+
+            // capture = true，防止被内部 stopPropagation 影响
+            document.addEventListener("pointerdown", onDocumentPointerDown, true);
+        }
+
+        function closeDialog() {
+            if (!isOpen) return;
+            isOpen = false;
+            dialog.classList.add("hidden");
+
+            // 🔥 关闭后立刻解绑
+            document.removeEventListener("pointerdown", onDocumentPointerDown, true);
+            onDocumentPointerDown = null;
+        }
+
+        openBtn.addEventListener("click", () => {
+            openDialog();
+        });
+    </script>
+
+</body>
+</html>

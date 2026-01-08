@@ -155,16 +155,13 @@
     let db;
     let documentList = [];
     let activeDocId = null;
-    let traceList = [];
-    let modelList = [];
+    let traces = [];
+    let models = [];
     let activeModel = null;
-
-    let selectedTextSegments = null;
 
     let highlightedRanges = [];
     let activeModelRanges = [];
     let temporarySelections = [];
-
 
     const connectDB = () => {
       return new Promise((resolve, reject) => {
@@ -220,11 +217,28 @@
         // $('#documentListSelect').append($option);
       });
     };
+
+    const loadTraces = async () => {
+      for (const doc of documentList) {
+        const newTraces = await getTracesByDocumentId(db, doc.id);
+        traces = [...traces, ...newTraces];
+      }
+    };
+
+    const loadModels = async () => {
+      for (const trace of traces) {
+        const model = await getModelById(db, trace.model_id);
+        models.push(model);
+        await renderModel(model);
+      }
+    };
+
     const onDocumentSelect = async (event) => {
       event.stopPropagation();
       const docId = $(event.currentTarget).data('docid');
       setActiveDocument(docId);
     };
+
     const setActiveDocument = async (docId) => {
       if (docId !== activeDocId) {
         $highlightLayer.empty();
@@ -239,15 +253,16 @@
         });
         await loadDocument(docId);
 
-        const modelTraces = traceList.filter(trace => trace.document_id === docId);
+        const modelTraces = traces.filter(trace => trace.document_id === docId);
         if (modelTraces.length > 0) {
           modelTraces.forEach(trace => {
-            renderRanges(trace.segments);
+            renderRanges(trace.segments, trace.model_id);
           });
         }
 
       }
     };
+
     const loadDocument = async (docId) => {
       const content = await getDocumentContentById(db, docId);
       const htmlContent = new DOMParser().parseFromString(content, "text/html").body.innerHTML;
@@ -285,6 +300,7 @@
     }
 
     const setActiveModel = (model) => {
+
       activeModel = model
       const { name: modelName, content: modelContent } = model;
       $('#activeModelName').text(modelName);
@@ -300,6 +316,7 @@
         graphrealization.set_description($(data), true);
       });
     };
+
     const onModelSelect = async (event) => {
       event.stopPropagation();
       var target = $(event.currentTarget);
@@ -336,20 +353,7 @@
       $modelContainer.on("click", onModelSelect);
 
     };
-    const loadModels = async () => {
-      documentList.forEach(async (doc) => {
 
-        const traces = await getTracesByDocumentId(db, doc.id);
-        const modelIds = traces.map(trace => trace.modelId)
-        traceList = [...traceList, ...traces];
-        traces.forEach(async (trace) => {
-          const model = await getModelById(db, trace.model_id);
-          modelList.push(model);
-          await renderModel(model);
-        });
-      });
-
-    };
 
     const createSampleModel = async () => {
       const resp = await fetch('Frames.xml');
@@ -364,7 +368,7 @@
       const selectedText = temporarySelections.map(range => range.toString()).join(' ');
       // console.log('Generating model for selected text:', selectedText);
       generatedModel = await createSampleModel();
-      setActiveModel({ name: `Model_${modelList.length + 1}`, content: generatedModel });
+      setActiveModel({ name: `Model_${models.length + 1}`, content: generatedModel });
       $("#generatedModelActionBar").css("visibility", "visible");
     };
 
@@ -417,15 +421,15 @@
       highlightRange(range);
     };
 
-    const renderRanges = (serializedRanges) => {
+    const renderRanges = (serializedRanges, modelId) => {
       // $highlightLayer.empty();
       serializedRanges.forEach((serializedRange) => {
         const range = deserializeRange(serializedRange);
-        highlightRange(range);
+        highlightRange(range, modelId);
       });
     };
 
-    const highlightRange = (range) => {
+    const highlightRange = (range, modelId) => {
       const $highlightLayer = $('#highlightLayer');
       const rangeId = range.id || Date.now();
       const $rangeDiv = $('<div>')
@@ -437,11 +441,11 @@
           width: `${range.getBoundingClientRect().width}px`,
           height: `${range.getBoundingClientRect().height}px`,
         })
-        .on('click', onRangeSelect);
+        ;
 
       const $rangeRect = $('<div>').addClass('highlight-rect');
 
-
+      // console.log('Highlighting range:', range.toString());
       const rects = range.getClientRects();
       for (const rect of rects) {
         const $rectDiv = $rangeRect.clone();
@@ -450,21 +454,45 @@
           left: `${rect.left + window.scrollX}px`,
           width: `${rect.width}px`,
           height: `${rect.height}px`,
-        });
+        }).on('click', onRangeSelect);
         $rangeDiv.append($rectDiv);
       }
 
+      if (modelId) {
+        const lastIndex = rects.length - 1;
+        const lastRect = rects[lastIndex];
+        const modelName = models.find(m => m.id === modelId)?.name || `Model ${modelId}`;
+        const labelSpan = $('<span>').attr('data-modelid', modelId).addClass('label-span').text(`${modelName}`).css({
+          top: `${lastRect.top + window.scrollY - 10}px`,
+          left: `${lastRect.right + window.scrollX}px`,
+        }).on('click', onModelLabelSelect);
+        $rangeDiv.append(labelSpan);
+      }
       $highlightLayer.append($rangeDiv);
     };
-    const onRangeSelect = (event) => {
+
+    const onModelLabelSelect = (event) => {
       event.stopPropagation();
       const $target = $(event.currentTarget);
+      const modelId = $target.attr('data-modelid');
+      setActiveModel(models.find(m => m.id == modelId));
+      // Handle model label selection logic here
+    };
+
+    const onRangeSelect = (event) => {
+      event.stopPropagation();
+      const $target = $(event.currentTarget).parent();
       $target.addClass("active");
       const rangeId = $target.attr('id');
       $target.siblings().removeClass('active');
       // Handle range selection logic here
       console.log('Range selected:', rangeId);
       const rangeBoundingRect = $target[0].getBoundingClientRect();
+
+      $document.one('mousedown', () => {
+        $deleteSelectionButton.hide();
+        $target.removeClass('active');
+      });
 
       $deleteSelectionButton.show().css({
         top: `${rangeBoundingRect.top + window.scrollY - 12}px`,
@@ -478,6 +506,18 @@
         $deleteSelectionButton.hide();
       });
     };
+
+    /*const deleteRangeById = (rangeId) => {
+      highlightedRanges = highlightedRanges.filter(r => r.id !== rangeId);
+      temporarySelections = temporarySelections.filter(r => r.id !== rangeId);
+      $highlightLayer.find(`#${rangeId}`).remove();
+    };
+
+    const clearRangeSelection = () => {
+      $deleteSelectionButton.hide();
+      $highlightLayer.find('.highlight-wrapper.active').removeClass('active');
+    };*/
+
     const rerenderAllSelections = () => {
       $highlightLayer.empty();
       highlightedRanges.forEach((range) => {
@@ -487,7 +527,6 @@
         highlightRange(range);
       });
     };
-
 
     // const getXPath = (node, root = document.getElementById("documentContent")) => {
     //   // const paths = [];
@@ -551,7 +590,6 @@
     //   return node;
     // };
 
-
     const handleTextSelection = () => {
 
       const selection = window.getSelection();
@@ -588,12 +626,12 @@
     $document.ready(async () => {
       await connectDB();
       await loadDocumentList();
+      await loadTraces();
       await loadModels();
 
       if (documentList.length) {
         setActiveDocument(documentList[documentList.length - 1]?.id);
       }
-
       // highlightsScrollSync();
     });
 
