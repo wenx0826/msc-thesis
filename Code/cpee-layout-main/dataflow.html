@@ -1,0 +1,89 @@
+<!--
+  This file is part of cpee-layout.
+
+  cpee-layout is free software: you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free Software
+  Foundation, either version 3 of the License, or (at your option) any later
+  version.
+
+  cpee-layout is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+  details.
+
+  You should have received a copy of the GNU General Public License along with
+  cpee-layout (file COPYING in the main directory). If not, see
+  <http://www.gnu.org/licenses/>.
+-->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>CPEE Layout Test</title>
+
+    <!-- libs, do not modify. When local than load local libs. -->
+    <script type="text/javascript" src="https://cpee.org/js_libs/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cpee.org/js_libs/util.js"></script>
+    <script type="text/javascript" src="https://cpee.org/js_libs/parsequery.js"></script>
+
+
+    <!-- modelling ui -->
+    <script type="text/javascript" src="wfadaptor.js"></script>
+    <link rel="stylesheet" href="wfadaptor.css" type="text/css"/>
+    <script type="text/javascript" src="themes/base.js"></script>
+
+
+    <script type="text/javascript" src="extended_columns.js"></script>
+    <link rel="stylesheet" href="extended_columns-label.css" type="text/css"/>
+    <link rel="stylesheet" href="extended_columns-svg.css" type="text/css"/>
+
+    <style>
+      @font-face {
+        font-family: adawaita-sans;
+        src: url(AdwaitaSans-Regular.ttf);
+      }
+      #graphcolumn {
+        padding-top: 5em;
+        white-space: nowrap;
+      }
+    </style>
+
+    <!-- integration -->
+    <script>
+      let model = 'model.xml';
+      $(document).ready(() => {
+        let q = $.parseQuerySimple();
+        if (q.model) { model = q.model; }
+
+        $.ajax({
+          method: 'GET',
+          url: model,
+          success: (data) => {
+            if (data.documentElement.nodeName != 'description') { data = $('description',data)[0]; }
+            new WfAdaptor('themes/dataflow/theme.js',function(graphrealization){
+              graphrealization.draw_labels = (max,labels,dimensions,striped) => { draw_extended_columns(graphrealization,max,labels,dimensions,striped) };
+              graphrealization.set_svg_container($('#graphcanvas'));
+              graphrealization.set_label_container($('#graphgrid'));
+              graphrealization.set_description($(data), true);
+            });
+          },
+        });
+      });
+    </script>
+  </head>
+  <body id='graphcolumn'>
+    <template id="label">
+      <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top: 0; left: 0;" class="displaylabel">
+        <g transform="translate(1 %%1) rotate(-%%2)">
+          <rect class="displaylabel" width="200" height="14" x="8" y="0" rx="5" ry="5"/>
+          <path class="displaylabel" d="M10,13 0,13 8,8"/>
+          <path class="displaylabelinner" d="M10,11.5 8.5,11.5 8.5,9.5 10,9.5"/>
+          <text class="label" x="18" y="10">aaaa</text>
+        </g>
+      </svg>
+    </template>
+    <div id='graphgrid'><svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink" id='graphcanvas' width='1' height='1'></svg></div>
+  </body>
+</html>
