@@ -16,22 +16,21 @@
   <script type="text/javascript" src="js_libs/jquery.caret.min.js"></script>
   <script type="text/javascript" src="js_libs/jquery.cookie.js"></script>
   <script type="text/javascript" src="js_libs/marked.min.js"></script>
-
   <script type="text/javascript" src="js_libs/relaxngui.js"></script>
-
   <script type="text/javascript" src="js_libs/uidash.js"></script>
 
-
-
-  <!-- modelling ui -->
   <script type="text/javascript" src="js/wfadaptor.js"></script>
   <link rel="stylesheet" href="css/wfadaptor.css" type="text/css" />
 
+  <script type="text/javascript" src="themes/base.js"></script>
+
+  <script type="text/javascript" src="js/extended_columns.js"></script>
+  <link rel="stylesheet" href="css/extended_columns-label.css" type="text/css" />
+  <link rel="stylesheet" href="css/extended_columns-svg.css" type="text/css" />
 
   <link rel="stylesheet" href="js_libs/uidash.css" type="text/css">
   <link rel="stylesheet" href="js_libs/relaxngui.css" type="text/css">
 
-  <!-- custom stuff, play arround  -->
   <link rel="stylesheet" href="css/ui.css" type="text/css">
   <link rel="stylesheet" href="css/globalui_cpee.css" type="text/css">
 
@@ -51,7 +50,6 @@
   <script src="js/db_documents.js"></script>
   <script src="js/db_models.js"></script>
   <script src="js/db_traces.js"></script>
-
   <!-- my ui-->
   <link rel="stylesheet" href="css/myui.css" type="text/css" />
 
@@ -71,7 +69,6 @@
           <ui-content>
             <ui-area data-belongs-to-tab="documents" id="areadocuments">
               <ul id="documentList">
-
               </ul>
               <label for="documentsInput">Choose documents to upload</label>
               <input type="file" id="documentsInput" multiple />
@@ -327,8 +324,8 @@
       var parser = new DOMParser();
       const data = parser.parseFromString(modelContent, "application/xml");
       new WfAdaptor('themes/extended/theme.js', function (graphrealization) {
-        graphrealization.draw_labels = (max, labels, shift, striped) => {
-          // console.log(JSON.stringify(labels, null, "  "));
+        graphrealization.draw_labels = (max, labels, dimensions, striped) => {
+          draw_extended_columns(graphrealization, max, labels, dimensions, striped)
         };
         graphrealization.set_svg_container($('#activeModelCanvas'));
         graphrealization.set_label_container($('#activeModelGrid'));
@@ -341,6 +338,7 @@
       $('#activeModelName').text("");
       // console.log('Clearing active model canvas');
       $('#activeModelCanvas').empty();
+
     };
 
     const clearTemporarySelections = () => {
@@ -388,9 +386,9 @@
     };
 
     const createSampleModel = async () => {
-      const resp = await fetch('Frames.xml');
+      const resp = await fetch('sample_model.xml');
       if (!resp.ok) {
-        console.error('Failed to load Frames.xml:', resp.status, resp.statusText);
+        console.error('Failed to load sample_model.xml:', resp.status, resp.statusText);
         return;
       }
       return await resp.text();
