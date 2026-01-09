@@ -95,7 +95,8 @@
 
           <div class="bottom-bar">
             <div class="button-group">
-              <button id="generateButton" disabled>Generate</button>
+              <button id="generateButton" style="display:none;">Generate</button>
+              <button id="regenerateButton" style="display:none;">Regenerate</button>
             </div>
           </div>
         </ui-rest>
@@ -152,6 +153,7 @@
     const $temporarySelectionsLayer = $('#temporarySelectionsLayer');
     const $deleteSelectionButton = $('#deleteSelectionButton');
     const $generateButton = $('#generateButton');
+    const $regenerateButton = $('#regenerateButton');
     const $keepButton = $('#keepButton');
     const $cancelButton = $('#cancelButton');
 
@@ -304,6 +306,7 @@
     const setActiveModel = (modelId) => {
       if (modelId) {
         const model = models.find(m => m.id == modelId);
+        activeModel = model;
         // console.log('Setting active model:', model);
         showModel(model);
         $('.model-container').removeClass('active');
@@ -653,8 +656,11 @@
       const range = selection.getRangeAt(0);
       if (range.collapsed) return;
       // if (!content.contains(range.commonAncestorContainer)) return;
-
-      $generateButton.prop("disabled", false);
+      if (activeModel) {
+        $regenerateButton.show();
+      } else {
+        $generateButton.show();
+      }
       const clonedRange = range.cloneRange();
       clonedRange.id = Date.now();
       temporarySelections.push(clonedRange);
