@@ -485,7 +485,7 @@
     };
 
     const setActiveDocument = async (docId) => {
-      if (docId !== activeDocId) {
+      if (docId && docId !== activeDocId) {
         $temporarySelectionsLayer.empty();
         activeDocId = docId;
         $documentList.children().each((index, element) => {
@@ -498,17 +498,22 @@
         });
         await loadDocument(docId);
 
-        const modelTraces = traces.filter(trace => trace.document_id === docId);
-        if (modelTraces.length > 0) {
-          modelTraces.forEach(trace => renderTraceInDocument(trace));
-        }
-
+        rerenderTraceLayers();
       }
     };
-
+    const rerenderTraceLayers = () => {
+      $traceLayer.empty();
+      if (activeDocId) {
+        const modelTraces = traces.filter(trace => trace.document_id === activeDocId);
+        if (modelTraces.length) {
+          modelTraces.forEach(trace => renderTraceInDocument(trace));
+        }
+      }
+    };
     const renderTraceInDocument = (trace) => {
       renderRanges(trace.segments, trace.model_id);
     };
+
 
     const loadDocument = async (docId) => {
       const content = await getDocumentContentById(db, docId);
@@ -546,7 +551,8 @@
     }
 
     const setActiveModel = async (modelId) => {
-      if (modelId) {
+      if (modelId && modelId !== (activeModel && activeModel.id)) {
+        // console.log('Setting active model to ID:', modelId);
         activeModel = await getModelById(db, modelId);
         showModel(activeModel);
         $('.model-container').removeClass('active');
@@ -558,7 +564,7 @@
 
         renderRanges(modelTrace.segments);
         renderSerializedRange
-      } else {
+      } else if (!modelId) {
         clearModel();
       }
 
@@ -600,23 +606,6 @@
       $temporarySelectionsLayer.empty();
     };
 
-    const onModelSelect = async (event) => {
-      event.stopPropagation();
-      var target = $(event.currentTarget);
-      console.log('Model selected:', target.data('modelid'));
-
-      const modelId = target.data('modelid');
-
-      if (modelId && modelId !== (activeModel && activeModel.id)) {
-        // const model = await getModelById(db, modelId);
-        setActiveModel(modelId);
-      }
-      // const modelTrace = await getTraceByModelId(db, modelId);
-      // await setActiveDocument(modelTrace.document_id);
-
-      // renderRanges(modelTrace.segments);
-      // renderSerializedRange
-    };
 
     const renderModelInList = async ({ id: modelId, name: modelName, content: modelContent, svg: svgContent }) => {
       var gridId = `modelGrid_${modelId}`;
@@ -632,8 +621,10 @@
       $gridDiv.append(svgData);
       $gridDiv.append(svgData);
       $modelContainer.append($gridDiv);
-      $modelContainer.on("click", onModelSelect);
-
+      $modelContainer.on("click", (event) => {
+        event.stopPropagation();
+        setActiveModel(modelId);
+      });
     };
 
     const createSampleModel = async () => {
@@ -650,7 +641,6 @@
       // console.log('Generating model for selected text:', selectedText);
       generatedModel = await createSampleModel();
       activeModel = {
-        name: `Model_${Date.now()}`,
         data: generatedModel,
       };
       showModel(activeModel);
@@ -751,7 +741,10 @@
         const labelSpan = $('<span>').attr('data-modelid', modelId).addClass('label-span').text(`${modelName}`).css({
           top: `${lastRect.top + window.scrollY - 10}px`,
           left: `${lastRect.right + window.scrollX}px`,
-        }).on('click', onModelLabelSelect);
+        }).on('click', (event) => {
+          event.stopPropagation();
+          setActiveModel(modelId);
+        });
         $rangeDiv.append(labelSpan);
         $traceLayer.append($rangeDiv);
       } else {
@@ -760,13 +753,12 @@
 
     };
 
-    const onModelLabelSelect = (event) => {
-      event.stopPropagation();
-      const $target = $(event.currentTarget);
-      const modelId = $target.attr('data-modelid');
-      setActiveModel(modelId);
-      // Handle model label selection logic here
-    };
+    // const onModelLabelSelect = (event) => {
+    //   event.stopPropagation();
+    //   const $target = $(event.currentTarget);
+    //   const modelId = $target.attr('data-modelid');
+    //   setActiveModel(modelId);
+    // };
 
     const onRangeSelect = (event) => {
       event.stopPropagation();
@@ -957,24 +949,28 @@
       $svgCopy.removeAttr('id');
       const svg = $svgCopy.prop('outerHTML');
       activeModel.svg = svg;
-
       activeModel.data = new XMLSerializer().serializeToString(activeModel.data);
 
       const modelId = await createModel(db, activeModel);
-      models.push({ ...activeModel, id: modelId });
-      renderModelInList({ ...activeModel, id: modelId });
+      const updatedModel = await updateModel(db, modelId, { name: `Model_${modelId}` });
+      models.push(updatedModel);
+
+      renderModelInList(updatedModel);
       clearModel();
+
       var trace = {
         document_id: activeDocId,
         model_id: modelId,
         segments: temporarySelections.map(range => serializeRange(range)),
       };
+
       await createTrace(db, trace);
       traces.push(trace);
       renderTraceInDocument(trace);
       clearTemporarySelections();
       $("#generatedModelActionBar").css("visibility", "hidden");
     });
+
     $cancelButton.on("click", () => {
 
       activeModel = null;
