@@ -1,7 +1,0 @@
-server/instances
-.stats
-.whitelist.old
-.blacklist
-.statsrun
-pkg
-build.out
