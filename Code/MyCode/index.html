@@ -108,6 +108,14 @@
       <!-- Middle: Current Model Panel -->
       <ui-rest class="panel" style="flex:2; margin: .5em 0;">
         <div id="activeModelName"></div>
+        <div>
+          <a id="savetestsetfile" href="" download=""></a>
+          <a id="savesvgfile" href="" download=""></a>
+          <button title='a testset includes various settings, subscriptions and a model'
+            name="savetestsetfile">save<br>testset</button>
+          <button title='the SVG contains the graphical repesentation of the CPEE tree as you see it on the screen'
+            name="savesvgfile">save svg<br>graph</button>
+        </div>
         <ui-content>
           <div id='activeModelGrid'>
             <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink"
@@ -135,7 +143,14 @@
         <ui-tab>Models</ui-tab>
         <ui-rest>
           <ui-content>
-            <ui-area id="models"></ui-area>
+            <ui-area id="models">
+              <div id='activeModelCanvasSmallContainer' style="position: absolute; left: -9999px; top: -9999px;">
+                <div id='activeModelGridSmall'>
+                  <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink"
+                    id='activeModelCanvasSmall' width='1' height='1'></svg>
+                </div>
+              </div>
+            </ui-area>
           </ui-content>
 
         </ui-rest>
@@ -158,12 +173,14 @@
     const $keepButton = $('#keepButton');
     const $cancelButton = $('#cancelButton');
 
+    const $modelsArea = $("#models");
     let db;
     let documentList = [];
     let activeDocId = null;
     let traces = [];
     let models = [];
     let activeModel = null;
+    let activeModelData = null;
 
     let temporarySelections = [];
 
@@ -218,7 +235,6 @@
 
     global_init();
 
-
     function format_visual_forms() {
       if (save['state'] != "ready" && save['state'] != "stopped") {
         $(paths).each(function (k, e) {
@@ -267,22 +283,23 @@
       $(coll).each(function (k, ele) {
         vals += "<" + ele[0] + ">" + ele[1] + "</" + ele[0] + ">";
       });
+      console.log("Saving positions:", vals, JSON.stringify(vals));
       vals =
         "<positions xmlns='http://cpee.org/ns/properties/2.0'>" +
         vals +
         "</positions>";
-      $.ajax({
-        type: "PUT",
-        url: url + "/properties/positions/",
-        contentType: "application/xml",
-        headers: {
-          "Content-ID": "positions",
-          "CPEE-Event-Source": myid,
-        },
-        data: vals,
-        success: monitor_instance_pos,
-        error: report_failure,
-      });
+      // $.ajax({
+      //   type: "PUT",
+      //   url: url + "/properties/positions/",
+      //   contentType: "application/xml",
+      //   headers: {
+      //     "Content-ID": "positions",
+      //     "CPEE-Event-Source": myid,
+      //   },
+      //   data: vals,
+      //   success: monitor_instance_pos,
+      //   error: report_failure,
+      // });
     }
 
 
@@ -307,6 +324,89 @@
     }
 
     function report_failure() { }
+
+
+    function save_testsetfile() {
+      console.log("Saving test set file...", activeModel.data);
+      // var def = new $.Deferred();
+      // def.done(function (name, testset) {
+      //   var ct = new Date();
+      //   $('#savetestsetfile').attr('download', name + '.xml');
+      //   $('#savetestsetfile').attr('href', 'data:application/xml;charset=utf-8;base64,' + $B64(testset.serializePrettyXML()));
+      //   document.getElementById('savetestsetfile').click();
+      // });
+      // get_testset(def);
+    }
+
+    function get_testset(deferred) {
+      var url = $('body').attr('current-instance');
+
+      $.ajax({
+        type: "GET",
+        url: url + "/properties/",
+        success: function (res) {
+          var testset = $X('<testset xmlns="http://cpee.org/ns/properties/2.0"/>');
+          testset.append($(res.documentElement).children());
+          $('testset > state', testset).remove();
+          $('testset > status', testset).remove();
+          $('testset > positions', testset).remove();
+          $('testset > dsl', testset).remove();
+          $('testset > description > *', testset).remove();
+          $('testset > description', testset).append($('testset > dslx', testset).children());
+          $('testset > transformation', testset).remove();
+          $('testset > dsl', testset).remove();
+          $('testset > dslx', testset).remove();
+          $('testset > attributes > uuid', testset).remove();
+          testset.append($X('<transformation xmlns="http://cpee.org/ns/properties/2.0"><description type="copy"/><dataelements type="none"/><endpoints type="none"/></transformation>'));
+          var name = $('testset > attributes > info', testset).text();
+          $('[xmlns]', testset).each((idx, ele) => {
+            if (ele.parentNode.namespaceURI == ele.getAttribute('xmlns')) {
+              ele.removeAttribute('xmlns');
+            }
+          });
+
+          // $.ajax({
+          //   type: "GET",
+          //   url: url + "/notifications/subscriptions/",
+          //   success: async function (res) {
+          //     let values = $("subscriptions > subscription[url]", res);
+          //     let subs = $X('<subscriptions xmlns="http://riddl.org/ns/common-patterns/notifications-producer/2.0"/>');
+          //     let promises = [];
+          //     let scount = 0;
+          //     values.each(function () {
+          //       let sid = $(this).attr('id');
+          //       if (sid.match(/^_/)) {
+          //         scount += 1;
+          //         promises.push(
+          //           $.ajax({
+          //             type: "GET",
+          //             url: url + "/notifications/subscriptions/" + sid,
+          //             error: report_failure
+          //           }).then(function (a) {
+          //             subs.append($(a.documentElement));
+          //           })
+          //         );
+          //       };
+          //     });
+          //     await Promise.all(promises);
+          //     if (scount > 0) { testset.append(subs); }
+          //     deferred.resolve(name, testset);
+          //   },
+          //   error: function () { deferred.reject(); report_failure(); }
+          // });
+
+        },
+        error: function (e) {
+          deferred.reject();
+          report_failure();
+          console.error("Error fetching test set:", e);
+        }
+      });
+    }
+
+
+
+
 
     const connectDB = () => {
       return new Promise((resolve, reject) => {
@@ -462,15 +562,22 @@
     };
 
     const showModel = (model) => {
-      const { name: modelName, content: modelContent } = model;
-      $('#activeModelName').text(modelName);
+      // const { name: modelName, data: modelData } = model;
+      $('#activeModelName').text(model.name);
 
       var parser = new DOMParser();
-      const data = parser.parseFromString(modelContent, "application/xml");
-      new WfAdaptor('themes/extended/theme.js', function (graphrealization) {
-        graphrealization.draw_labels = (max, labels, dimensions, striped) => {
-          draw_extended_columns(graphrealization, max, labels, dimensions, striped)
-        };
+      let data = parser.parseFromString(model.data, "application/xml");
+      if (data.documentElement.nodeName != 'description') {
+        data = $('description', data)[0];
+      } else {
+        data = data.documentElement;
+      }
+      model.data = data
+      console.log('Rendering active model:', model.name, data);
+      WfAdaptor('themes/extended/theme.js', function (graphrealization) {
+        // graphrealization.draw_labels = (max, labels, dimensions, striped) => {
+        //   draw_extended_columns(graphrealization, max, labels, dimensions, striped)
+        // };
         graphrealization.set_svg_container($('#activeModelCanvas'));
         graphrealization.set_label_container($('#activeModelGrid'));
         graphrealization.set_description($(data), true);
@@ -515,6 +622,7 @@
       const $modelsArea = $("#models");
       const $modelContainer = $("<div>").addClass("model-container").attr("data-modelid", modelId);
       $modelContainer.text(`${modelName}`);
+
       $modelsArea.append($modelContainer);
       const $gridDiv = $("<div>").attr("id", gridId);
 
@@ -530,7 +638,7 @@
     };
 
     const createSampleModel = async () => {
-      const resp = await fetch('sample_model.xml');
+      const resp = await fetch('Subprocess.xml');
       if (!resp.ok) {
         console.error('Failed to load sample_model.xml:', resp.status, resp.statusText);
         return;
@@ -542,12 +650,11 @@
       const selectedText = temporarySelections.map(range => range.toString()).join(' ');
       // console.log('Generating model for selected text:', selectedText);
       generatedModel = await createSampleModel();
-      var model = {
+      activeModel = {
         name: `Model_${Date.now()}`,
-        content: generatedModel,
+        data: generatedModel,
       };
-      activeModel = model;
-      showModel(model);
+      showModel(activeModel);
       $("#generatedModelActionBar").css("visibility", "visible");
     };
 
@@ -815,10 +922,10 @@
       await loadTraces();
       await loadModels();
 
-      if (documentList.length) {
-        setActiveDocument(documentList[documentList.length - 1]?.id);
-      }
-      generateModel();
+      // if (documentList.length) {
+      //   setActiveDocument(documentList[documentList.length - 1]?.id);
+      // }
+      // generateModel();
     });
 
     $documentsInput.on("change", async (event) => {
@@ -850,8 +957,9 @@
       const $svgCopy = svgContent.clone(false);
       $svgCopy.removeAttr('id');
       const svg = $svgCopy.prop('outerHTML');
-
       activeModel.svg = svg;
+      activeModel.data = new XMLSerializer().serializeToString(activeModel.data);
+
       const modelId = await createModel(db, activeModel);
       models.push({ ...activeModel, id: modelId });
       renderModelInList({ ...activeModel, id: modelId });
@@ -887,7 +995,7 @@
       // }
     });
 
-
+    $("button[name=savetestsetfile]").click(function () { save_testsetfile(); });
 
   </script>
 </body>

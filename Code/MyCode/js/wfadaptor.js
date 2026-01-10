@@ -24,103 +24,138 @@ var high;
 // WfAdaptor:
 // Handles interaction between Illustartor and Description
 // e.g. Event fires to Adaptor to insert Element and Illustrator and Description do it
-function WfAdaptor(theme_base,doit) { // Controller {{{
+function WfAdaptor(theme_base, doit) {
+  // Controller {{{
 
- // public variables {{{
-    this.illustrator;
-    this.description;
-    this.elements = {};
-    this.theme_base = theme_base;
-    this.theme_dir = theme_base.replace(/theme.js/,'');
+  // public variables {{{
+  this.illustrator;
+  this.description;
+  this.elements = {};
+  this.theme_base = theme_base;
+  this.theme_dir = theme_base.replace(/theme.js/, "");
   // }}}
 
   // private variables {{{
-    var illustrator;
-    var description;
-    var self = this;
+  var illustrator;
+  var description;
+  var self = this;
   // }}}
 
   // helper funtions
-  this.set_description = function(desc,auto_update) { // public {{{
-    this.description.set_description(desc,auto_update);
-  } // }}}
+  this.set_description = function (desc, auto_update) {
+    // public {{{
+    this.description.set_description(desc, auto_update);
+  }; // }}}
 
-  this.get_description = function() { // public {{{
+  this.get_description = function () {
+    // public {{{
     return description.get_description();
-  } // }}}
-  this.notify = function() { // public {{{
-  } // }}}
-  this.draw_labels = function(max,labels,dimensions,striped){ // public {{{
-  } // }}}
-  this.set_svg_container = function (container) { // {{{
+  }; // }}}
+  this.notify = function () {
+    // public {{{
+  }; // }}}
+  this.draw_labels = function (max, labels, dimensions, striped) {
+    // public {{{
+  }; // }}}
+  this.set_svg_container = function (container) {
+    // {{{
     illustrator.set_svg_container(container); // TODO: shadowing the container element
-  } // }}}
-  this.set_label_container = function(container) { // {{{
+  }; // }}}
+  this.set_label_container = function (container) {
+    // {{{
     illustrator.set_label_container(container);
-  } // }}}
+  }; // }}}
 
   // initialize
   this.illustrator = illustrator = new WfIllustrator(this);
   this.description = description = new WfDescription(this, this.illustrator);
 
-  this.update = function(doit){ doit(self); };
+  this.update = function (doit) {
+    doit(self);
+  };
 
-  $.getScript(theme_base, function() { //{{{
+  $.getScript(theme_base, function () {
+    //{{{
     manifestation = new WFAdaptorManifestation(self);
     illustrator.compact = manifestation.compact == true ? true : false;
-    illustrator.rotated_labels = manifestation.rotated_labels == true ? true : false;
+    illustrator.rotated_labels =
+      manifestation.rotated_labels == true ? true : false;
     illustrator.striped = manifestation.striped == true ? true : false;
     description.source = manifestation.source;
     var deferreds = [];
     // copy parent stuff
-    for(element in manifestation.elements) {
+    for (element in manifestation.elements) {
+      // console.log("element", element);
       if (manifestation.elements[element].parent) {
         if (!manifestation.elements[element].description) {
-          manifestation.elements[element].description = manifestation.elements[manifestation.elements[element].parent].description;
+          manifestation.elements[element].description =
+            manifestation.elements[
+              manifestation.elements[element].parent
+            ].description;
         }
         if (!manifestation.elements[element].adaptor) {
-          manifestation.elements[element].adaptor = manifestation.elements[manifestation.elements[element].parent].adaptor;
+          manifestation.elements[element].adaptor =
+            manifestation.elements[
+              manifestation.elements[element].parent
+            ].adaptor;
         }
-        var ill = manifestation.elements[manifestation.elements[element].parent].illustrator;
+        var ill =
+          manifestation.elements[manifestation.elements[element].parent]
+            .illustrator;
         for (var key in ill) {
           if (manifestation.elements[element].illustrator[key] == undefined) {
             manifestation.elements[element].illustrator[key] = ill[key];
           }
         }
         if (manifestation.elements[element].type == undefined) {
-          manifestation.elements[element].type = manifestation.elements[manifestation.elements[element].parent].type;
+          manifestation.elements[element].type =
+            manifestation.elements[manifestation.elements[element].parent].type;
         }
       }
     }
     // doit
-    for(element in manifestation.resources) {
+    for (element in manifestation.resources) {
+      console.log("element", element);
       deferreds.push(
         $.ajax({
           type: "GET",
           dataType: "xml",
           url: manifestation.resources[element],
           context: element,
-          success: function(res){
+          success: function (res) {
             manifestation.resources[this] = $(res.documentElement);
-          }
+          },
         })
       );
     }
-    for(element in manifestation.elements) {
+    for (element in manifestation.elements) {
+      // console.log("element", element);
       if (manifestation.elements[element].illustrator) {
-        if (manifestation.elements[element].illustrator.svg && (typeof manifestation.elements[element].illustrator.svg === 'string' || manifestation.elements[element].illustrator.svg instanceof String)) {
+        if (
+          manifestation.elements[element].illustrator.svg &&
+          (typeof manifestation.elements[element].illustrator.svg ===
+            "string" ||
+            manifestation.elements[element].illustrator.svg instanceof String)
+        ) {
           deferreds.push(
             $.ajax({
               type: "GET",
               dataType: "xml",
               url: manifestation.elements[element].illustrator.svg,
               context: element,
-              success: function(res){
-                manifestation.elements[this].illustrator.svg = $(res.documentElement);
-              }
+              success: function (res) {
+                manifestation.elements[this].illustrator.svg = $(
+                  res.documentElement
+                );
+              },
             })
           );
-        } else if (manifestation.elements[element].illustrator.svg && (typeof manifestation.elements[element].illustrator.svg === 'object' || manifestation.elements[element].illustrator.svg instanceof Object)) {
+        } else if (
+          manifestation.elements[element].illustrator.svg &&
+          (typeof manifestation.elements[element].illustrator.svg ===
+            "object" ||
+            manifestation.elements[element].illustrator.svg instanceof Object)
+        ) {
           if (manifestation.elements[element].illustrator.svg.start) {
             deferreds.push(
               $.ajax({
@@ -128,9 +163,11 @@ function WfAdaptor(theme_base,doit) { // Controller {{{
                 dataType: "xml",
                 url: manifestation.elements[element].illustrator.svg.start,
                 context: element,
-                success: function(res){
-                  manifestation.elements[this].illustrator.svg.start = $(res.documentElement);
-                }
+                success: function (res) {
+                  manifestation.elements[this].illustrator.svg.start = $(
+                    res.documentElement
+                  );
+                },
               })
             );
           }
@@ -141,9 +178,11 @@ function WfAdaptor(theme_base,doit) { // Controller {{{
                 dataType: "xml",
                 url: manifestation.elements[element].illustrator.svg.middle,
                 context: element,
-                success: function(res){
-                  manifestation.elements[this].illustrator.svg.middle = $(res.documentElement);
-                }
+                success: function (res) {
+                  manifestation.elements[this].illustrator.svg.middle = $(
+                    res.documentElement
+                  );
+                },
               })
             );
           }
@@ -154,32 +193,44 @@ function WfAdaptor(theme_base,doit) { // Controller {{{
                 dataType: "xml",
                 url: manifestation.elements[element].illustrator.svg.end,
                 context: element,
-                success: function(res){
-                  manifestation.elements[this].illustrator.svg.end = $(res.documentElement);
-                }
+                success: function (res) {
+                  manifestation.elements[this].illustrator.svg.end = $(
+                    res.documentElement
+                  );
+                },
               })
             );
           }
         }
-        illustrator.elements[element] = manifestation.elements[element].illustrator;
-        illustrator.elements[element].type = manifestation.elements[element].type || 'abstract';
+        illustrator.elements[element] =
+          manifestation.elements[element].illustrator;
+        illustrator.elements[element].type =
+          manifestation.elements[element].type || "abstract";
       }
       if (manifestation.elements[element].description) {
-        if ( typeof manifestation.elements[element].description === 'string' ) {
-          manifestation.elements[element].description = [ manifestation.elements[element].description ];
+        if (typeof manifestation.elements[element].description === "string") {
+          manifestation.elements[element].description = [
+            manifestation.elements[element].description,
+          ];
         }
         if ($.isArray(manifestation.elements[element].description)) {
-          manifestation.elements[element].description.forEach(function(val,ind){
+          manifestation.elements[element].description.forEach(function (
+            val,
+            ind
+          ) {
             deferreds.push(
               $.ajax({
                 type: "GET",
                 dataType: "xml",
                 url: val,
                 context: element,
-                success: function(res){
-                  manifestation.elements[this].description = $(res.documentElement);
-                  description.elements[this] = manifestation.elements[this].description;
-                }
+                success: function (res) {
+                  manifestation.elements[this].description = $(
+                    res.documentElement
+                  );
+                  description.elements[this] =
+                    manifestation.elements[this].description;
+                },
               })
             );
           });
@@ -189,7 +240,7 @@ function WfAdaptor(theme_base,doit) { // Controller {{{
         self.elements[element] = manifestation.elements[element].adaptor;
       }
     }
-    $.when.apply($, deferreds).then(function(x) {
+    $.when.apply($, deferreds).then(function (x) {
       doit(self);
     });
   }); //}}}
@@ -197,160 +248,261 @@ function WfAdaptor(theme_base,doit) { // Controller {{{
 
 // WfIllustrator:
 // Is in charge of displaying the Graph. It is further able insert and remove elements with given ID's from the illustration.
-function WfIllustrator(wf_adaptor) { // View  {{{
+function WfIllustrator(wf_adaptor) {
+  // View  {{{
   // Variable {{{
-    // public
-    this.endclipshift = 17;
-    this.height = 40;
-    this.width = 40;
-    this.default_width = 40;
-    this.default_height = 40;
-    this.height_shift = this.height * 0.26;
-    this.width_shift = this.width * 0.39;
-    this.width_shift_label = 7;
-    this.group_extend = 1;
-    this.elements = {}; // the svgs
-    this.svg = {};
-    this.draw = {};
-    this.dim = {};
-    this.dim.symbols = [];
-    this.dim.connections = [];
-    this.compact = true;
-    this.rotated_labels = true;
-    this.striped = true;
-    this.global_style = {};
-    // private
-    var self = this;
-    var adaptor = null;
+  // public
+  this.endclipshift = 17;
+  this.height = 40;
+  this.width = 40;
+  this.default_width = 40;
+  this.default_height = 40;
+  this.height_shift = this.height * 0.26;
+  this.width_shift = this.width * 0.39;
+  this.width_shift_label = 7;
+  this.group_extend = 1;
+  this.elements = {}; // the svgs
+  this.svg = {};
+  this.draw = {};
+  this.dim = {};
+  this.dim.symbols = [];
+  this.dim.connections = [];
+  this.compact = true;
+  this.rotated_labels = true;
+  this.striped = true;
+  this.global_style = {};
+  // private
+  var self = this;
+  var adaptor = null;
   // }}}
   // Internal Functions
-  this.set_label_container = function(con) { // {{{
+  this.set_label_container = function (con) {
+    // {{{
     self.svg.label_container = con;
-  } // }}}
-  this.set_svg_container = function(con) { // {{{
+  }; // }}}
+  this.set_svg_container = function (con) {
+    // {{{
     self.svg.container = con;
-    self.svg.container.append($X('<defs xmlns="http://www.w3.org/2000/svg">' +
-      '  <marker id="arrow" viewBox="0 0 10 10" refX="28.5" refY="5" orient="auto" markerUnits="strokeWidth" markerWidth="14" markerHeight="3.5">' +
-      '    <path d="m 2 2 l 6 3 l -6 3 z"/>' +
-      '  </marker>' +
-      '  <clipPath id="startclip">' +
-      '    <rect x="-1" y="-1" width="29" height="32"/>' +
-      '  </clipPath>' +
-      '  <clipPath id="endclip">' +
-      '    <rect x="20" y="-1" width="' + self.endclipshift + '" height="35"/>' +
-      '  </clipPath>' +
-      '  <linearGradient id="custom-gradient" x2="0.35" y2="1">' +
-      '    <stop offset="0%" stop-color="var(--wfadaptor-background)"/>' +
-      '    <stop offset="50%" stop-color="var(--custom-color)"/>' +
-      '    <stop offset="100%" stop-color="var(--custom-color)"/>' +
-      '  </linearGradient>' +
-      '</defs>'));
+    self.svg.container.append(
+      $X(
+        '<defs xmlns="http://www.w3.org/2000/svg">' +
+          '  <marker id="arrow" viewBox="0 0 10 10" refX="28.5" refY="5" orient="auto" markerUnits="strokeWidth" markerWidth="14" markerHeight="3.5">' +
+          '    <path d="m 2 2 l 6 3 l -6 3 z"/>' +
+          "  </marker>" +
+          '  <clipPath id="startclip">' +
+          '    <rect x="-1" y="-1" width="29" height="32"/>' +
+          "  </clipPath>" +
+          '  <clipPath id="endclip">' +
+          '    <rect x="20" y="-1" width="' +
+          self.endclipshift +
+          '" height="35"/>' +
+          "  </clipPath>" +
+          '  <linearGradient id="custom-gradient" x2="0.35" y2="1">' +
+          '    <stop offset="0%" stop-color="var(--wfadaptor-background)"/>' +
+          '    <stop offset="50%" stop-color="var(--custom-color)"/>' +
+          '    <stop offset="100%" stop-color="var(--custom-color)"/>' +
+          "  </linearGradient>" +
+          "</defs>"
+      )
+    );
     self.svg.defs = {};
-    self.svg.defs['unknown'] = $X('<g xmlns="http://www.w3.org/2000/svg" class="unknown">' +
+    self.svg.defs["unknown"] = $X(
+      '<g xmlns="http://www.w3.org/2000/svg" class="unknown">' +
         '<circle cx="15" cy="15" r="14" class="unkown"/>' +
         '<text transform="translate(15,20)" class="normal">?</text>' +
-      '</g>');
-    for(element in self.elements)
-      if(self.elements[element].svg) {
-        var sym = $X('<g xmlns="http://www.w3.org/2000/svg"/>').append(self.elements[element].svg.clone().children()); // append all children to symbol
-        $.each(self.elements[element].svg.attr('class').split(/\s+/), function(index, item) { sym.addClass(item); }); // copy all classes from the root node
+        "</g>"
+    );
+    for (element in self.elements) {
+      if (self.elements[element].svg) {
+        var sym = $X('<g xmlns="http://www.w3.org/2000/svg"/>').append(
+          self.elements[element].svg.clone().children()
+        ); // append all children to symbol
+        $.each(
+          self.elements[element].svg.attr("class").split(/\s+/),
+          function (index, item) {
+            sym.addClass(item);
+          }
+        ); // copy all classes from the root node
         self.svg.defs[element] = sym;
       }
-  } // }}}
-  this.set_svg_direct = function(svg) { // {{{
+    }
+  }; // }}}
+  this.set_svg_direct = function (svg) {
+    // {{{
     self.svg.container.append(svg);
     let bb = svg[0].getBBox();
-    self.svg.container.attr('height', bb.y + bb.height + self.height_shift); // small border on the bottom
-    self.svg.container.attr('width',  bb.x + bb.width + self.width_shift);  // small border on the right
-  } // }}}
-  this.set_svg = function(graph) { // {{{
+    self.svg.container.attr("height", bb.y + bb.height + self.height_shift); // small border on the bottom
+    self.svg.container.attr("width", bb.x + bb.width + self.width_shift); // small border on the right
+  }; // }}}
+  this.set_svg = function (graph) {
+    // {{{
     self.svg.container.append(graph.svg);
     let bb = graph.svg[0].getBBox();
-    self.svg.container.attr('height', bb.y + bb.height + self.height_shift); // small border on the bottom
-    self.svg.container.attr('width',  bb.x + bb.width + self.width_shift);  // small border on the right
-    self.svg.container.attr('data-pos-matrix', JSON.stringify(self.dim.symbols));
-    self.svg.container.attr('data-con-list', JSON.stringify(self.dim.connections));
-  } // }}}
-  this.set_duration = function(start) { //{{{
-    self.svg.container.append(
-      $X('<text class="duration" transform="translate(3,' + self.height_shift + ') rotate(90)" xmlns="http://www.w3.org/2000/svg">' +
-         Math.trunc(performance.now()-start) + ' ms' +
-         '</text>')
+    self.svg.container.attr("height", bb.y + bb.height + self.height_shift); // small border on the bottom
+    self.svg.container.attr("width", bb.x + bb.width + self.width_shift); // small border on the right
+    self.svg.container.attr(
+      "data-pos-matrix",
+      JSON.stringify(self.dim.symbols)
     );
-  } //}}}
+    self.svg.container.attr(
+      "data-con-list",
+      JSON.stringify(self.dim.connections)
+    );
+  }; // }}}
+  this.set_duration = function (start) {
+    //{{{
+    self.svg.container.append(
+      $X(
+        '<text class="duration" transform="translate(3,' +
+          self.height_shift +
+          ') rotate(90)" xmlns="http://www.w3.org/2000/svg">' +
+          Math.trunc(performance.now() - start) +
+          " ms" +
+          "</text>"
+      )
+    );
+  }; //}}}
 
-  this.get_node_by_svg_id = function(svg_id) { // {{{
-    return $('[element-id = \'' + svg_id + '\'] g.activities', self.svg.container);
-  } // }}}
-  this.get_label_by_svg_id = function(svg_id) { // {{{
-    return $('[element-id = \'' + svg_id + '\']', self.svg.label_container);
-  } // }}}
-  this.get_elements = function() { // {{{
-    return $('g.element', self.svg.container);
-  } // }}}
-  this.get_labels = function() { // {{{
-    return $('[element-id]', self.svg.label_container);
-  } // }}}
+  this.get_node_by_svg_id = function (svg_id) {
+    // {{{
+    return $(
+      "[element-id = '" + svg_id + "'] g.activities",
+      self.svg.container
+    );
+  }; // }}}
+  this.get_label_by_svg_id = function (svg_id) {
+    // {{{
+    return $("[element-id = '" + svg_id + "']", self.svg.label_container);
+  }; // }}}
+  this.get_elements = function () {
+    // {{{
+    return $("g.element", self.svg.container);
+  }; // }}}
+  this.get_labels = function () {
+    // {{{
+    return $("[element-id]", self.svg.label_container);
+  }; // }}}
 
   // External Functions
-  var clear = this.clear = function() { // {{{
-    $('> :not(defs)', self.svg.container).each(function() {$(this).remove()});
-    $('> defs > [belongs-to=element]', self.svg.container).each(function() {$(this).remove()});
+  var clear = (this.clear = function () {
+    // {{{
+    $("> :not(defs)", self.svg.container).each(function () {
+      $(this).remove();
+    });
+    $("> defs > [belongs-to=element]", self.svg.container).each(function () {
+      $(this).remove();
+    });
     self.dim.symbols = [];
     self.dim.connections = [];
-  } // }}}
-  var get_symbol = this.get_symbol = function() { // {{{
-  } // }}}
-  var get_properties = this.get_properties = function() { // {{{
-  } // }}}
+  }); // }}}
+  var get_symbol = (this.get_symbol = function () {
+    // {{{
+  }); // }}}
+  var get_properties = (this.get_properties = function () {
+    // {{{
+  }); // }}}
 
   // Helper Functions {{{
-  var debug_dim = this.dim.debug = function() { //{{{
-    line = '\n';
-    for (let i=1; i < self.dim.symbols.length; i++) {
-      line += $.sprintf('%02d',i) + ': ';
+  var debug_dim = (this.dim.debug = function () {
+    //{{{
+    line = "\n";
+    for (let i = 1; i < self.dim.symbols.length; i++) {
+      line += $.sprintf("%02d", i) + ": ";
       if (self.dim.symbols[i]) {
-        for (let j=1; j < self.dim.symbols[i].length; j++) {
-          line += ' [ ';
-          if (self.dim.symbols[i] && self.dim.symbols[i][j] && self.dim.symbols[i][j].x) { line += $.sprintf('%3d',self.dim.symbols[i][j].x); } else { line += '   '; }
-          line += ', ';
-          if (self.dim.symbols[i] && self.dim.symbols[i][j] && self.dim.symbols[i][j].width) { line += $.sprintf('%3d',self.dim.symbols[i][j].width); } else { line += '   '; }
-          line += ' ] ';
+        for (let j = 1; j < self.dim.symbols[i].length; j++) {
+          line += " [ ";
+          if (
+            self.dim.symbols[i] &&
+            self.dim.symbols[i][j] &&
+            self.dim.symbols[i][j].x
+          ) {
+            line += $.sprintf("%3d", self.dim.symbols[i][j].x);
+          } else {
+            line += "   ";
+          }
+          line += ", ";
+          if (
+            self.dim.symbols[i] &&
+            self.dim.symbols[i][j] &&
+            self.dim.symbols[i][j].width
+          ) {
+            line += $.sprintf("%3d", self.dim.symbols[i][j].width);
+          } else {
+            line += "   ";
+          }
+          line += " ] ";
         }
       }
       line += "\n";
     }
     return line;
-  } //}}}
+  }); //}}}
 
-  var set_x = this.dim.set_x = function(row,col,twidth,sname) { //{{{
-    if (!self.dim.symbols[row]) { self.dim.symbols[row] = []; }
-    if (!self.dim.symbols[row][col]) { self.dim.symbols[row][col] = {}; }
+  var set_x = (this.dim.set_x = function (row, col, twidth, sname) {
+    //{{{
+    if (!self.dim.symbols[row]) {
+      self.dim.symbols[row] = [];
+    }
+    if (!self.dim.symbols[row][col]) {
+      self.dim.symbols[row][col] = {};
+    }
 
-    if (self.dim.symbols[row-1] && self.dim.symbols[row-1][col] && self.dim.symbols[row-1][col].x) { // row before
-      self.dim.symbols[row][col].x = self.dim.symbols[row-1][col].x;
-    } else if (self.dim.symbols[row] && self.dim.symbols[row][col-1] && self.dim.symbols[row][col-1].x) { // column before
+    if (
+      self.dim.symbols[row - 1] &&
+      self.dim.symbols[row - 1][col] &&
+      self.dim.symbols[row - 1][col].x
+    ) {
+      // row before
+      self.dim.symbols[row][col].x = self.dim.symbols[row - 1][col].x;
+    } else if (
+      self.dim.symbols[row] &&
+      self.dim.symbols[row][col - 1] &&
+      self.dim.symbols[row][col - 1].x
+    ) {
+      // column before
       let mx = 0;
-      for (let i=row; i<self.dim.symbols.length; i++) {
-        if (self.dim.symbols[i][col-1] && mx < self.dim.symbols[i][col-1].x + self.dim.symbols[i][col-1].width) {
-          mx = self.dim.symbols[i][col-1].x + self.dim.symbols[i][col-1].width;
+      for (let i = row; i < self.dim.symbols.length; i++) {
+        if (
+          self.dim.symbols[i][col - 1] &&
+          mx <
+            self.dim.symbols[i][col - 1].x + self.dim.symbols[i][col - 1].width
+        ) {
+          mx =
+            self.dim.symbols[i][col - 1].x + self.dim.symbols[i][col - 1].width;
         }
       }
       self.dim.symbols[row][col].x = mx;
-    } else if (self.dim.symbols[row-1] && self.dim.symbols[row-1][col-1] && self.dim.symbols[row-1][col-1].x) { // diagonal left above
-      self.dim.symbols[row][col].x = self.dim.symbols[row-1][col-1].x + self.dim.symbols[row-1][col-1].width;
-    } else if (self.dim.symbols.length > row + 1) { // same column below
+    } else if (
+      self.dim.symbols[row - 1] &&
+      self.dim.symbols[row - 1][col - 1] &&
+      self.dim.symbols[row - 1][col - 1].x
+    ) {
+      // diagonal left above
+      self.dim.symbols[row][col].x =
+        self.dim.symbols[row - 1][col - 1].x +
+        self.dim.symbols[row - 1][col - 1].width;
+    } else if (self.dim.symbols.length > row + 1) {
+      // same column below
       let mx = 0;
-      for (let i=row; i<self.dim.symbols.length; i++) {
-        if (self.dim.symbols[i] && self.dim.symbols[i][col] && mx < self.dim.symbols[i][col].x) {
+      for (let i = row; i < self.dim.symbols.length; i++) {
+        if (
+          self.dim.symbols[i] &&
+          self.dim.symbols[i][col] &&
+          mx < self.dim.symbols[i][col].x
+        ) {
           mx = self.dim.symbols[i][col].x;
         }
       }
       self.dim.symbols[row][col].x = mx;
-    } else { // same column above
+    } else {
+      // same column above
       let mx = 0;
-      for (let i=row; i>0; i--) {
-        if (self.dim.symbols[i] && self.dim.symbols[i][col] && mx < self.dim.symbols[i][col].x) {
+      for (let i = row; i > 0; i--) {
+        if (
+          self.dim.symbols[i] &&
+          self.dim.symbols[i][col] &&
+          mx < self.dim.symbols[i][col].x
+        ) {
           mx = self.dim.symbols[i][col].x;
         }
       }
@@ -365,10 +517,26 @@ function WfIllustrator(wf_adaptor) { // View  {{{
     }
     self.dim.symbols[row][col].type = sname;
     // console.log('set_x ',row,col,debug_dim());
-  } //}}}
-  var set_x_cond = this.dim.set_x_cond = function(row,col,tx,twidth,sname,label,subtype,sty,eid) { //{{{
-    if (!self.dim.symbols[row]) { self.dim.symbols[row] = []; }
-    if (!self.dim.symbols[row][col] || self.dim.symbols[row][col].width < twidth) {
+  }); //}}}
+  var set_x_cond = (this.dim.set_x_cond = function (
+    row,
+    col,
+    tx,
+    twidth,
+    sname,
+    label,
+    subtype,
+    sty,
+    eid
+  ) {
+    //{{{
+    if (!self.dim.symbols[row]) {
+      self.dim.symbols[row] = [];
+    }
+    if (
+      !self.dim.symbols[row][col] ||
+      self.dim.symbols[row][col].width < twidth
+    ) {
       self.dim.symbols[row][col] = {};
       self.dim.symbols[row][col].x = tx;
       self.dim.symbols[row][col].width = twidth;
@@ -381,60 +549,120 @@ function WfIllustrator(wf_adaptor) { // View  {{{
       self.dim.symbols[row][col][s] = sty[s];
     }
     // console.log('set_x_cond',row,col,debug_dim());
-  } //}}}
+  }); //}}}
 
-  var get_x = this.dim.get_x = function(row,col,deb='') { //{{{
-    if (row<0) { row = 0 };
+  var get_x = (this.dim.get_x = function (row, col, deb = "") {
+    //{{{
+    if (row < 0) {
+      row = 0;
+    }
 
     let mlen = 0;
-    if (self.dim.symbols[row] && self.dim.symbols[row][col] && self.dim.symbols[row][col].x) { // this column
+    if (
+      self.dim.symbols[row] &&
+      self.dim.symbols[row][col] &&
+      self.dim.symbols[row][col].x
+    ) {
+      // this column
       mlen = self.dim.symbols[row][col].x;
-    } else if (self.dim.symbols[row] && !self.dim.symbols[row][col] && self.dim.symbols.length > row && self.dim.symbols[row+1] && self.dim.symbols[row+1][col] && self.dim.symbols[row+1][col].x ) { // row after
-      mlen = self.dim.symbols[row+1][col].x;
-    } else if (self.dim.symbols[row-1] && self.dim.symbols[row-1][col] && self.dim.symbols[row-1][col].x) { // row before
-      mlen = self.dim.symbols[row-1][col].x;
-    } else if (self.dim.symbols[row] && self.dim.symbols[row][col-1] && self.dim.symbols[row][col-1].x) { // column before
-      for (let i=row; i<self.dim.symbols.length; i++) {
-        if (self.dim.symbols[i][col-1] && mlen < self.dim.symbols[i][col-1].x + self.dim.symbols[i][col-1].width) {
-          mlen = self.dim.symbols[i][col-1].x + self.dim.symbols[i][col-1].width;
+    } else if (
+      self.dim.symbols[row] &&
+      !self.dim.symbols[row][col] &&
+      self.dim.symbols.length > row &&
+      self.dim.symbols[row + 1] &&
+      self.dim.symbols[row + 1][col] &&
+      self.dim.symbols[row + 1][col].x
+    ) {
+      // row after
+      mlen = self.dim.symbols[row + 1][col].x;
+    } else if (
+      self.dim.symbols[row - 1] &&
+      self.dim.symbols[row - 1][col] &&
+      self.dim.symbols[row - 1][col].x
+    ) {
+      // row before
+      mlen = self.dim.symbols[row - 1][col].x;
+    } else if (
+      self.dim.symbols[row] &&
+      self.dim.symbols[row][col - 1] &&
+      self.dim.symbols[row][col - 1].x
+    ) {
+      // column before
+      for (let i = row; i < self.dim.symbols.length; i++) {
+        if (
+          self.dim.symbols[i][col - 1] &&
+          mlen <
+            self.dim.symbols[i][col - 1].x + self.dim.symbols[i][col - 1].width
+        ) {
+          mlen =
+            self.dim.symbols[i][col - 1].x + self.dim.symbols[i][col - 1].width;
         }
       }
-    } else if (self.dim.symbols[row+1] && self.dim.symbols[row+1][col] && self.dim.symbols[row+1][col].x) { // directly below
-      mlen = self.dim.symbols[row+1][col].x;
-    } else if (self.dim.symbols[row-1] && self.dim.symbols[row-1][col-1] && self.dim.symbols[row-1][col-1].x) { // diagonal left above
-      mlen = self.dim.symbols[row-1][col-1].x + self.dim.symbols[row-1][col-1].width;
-    } else { // same column below
-      for (let i=row; i<self.dim.symbols.length; i++) {
-        if (self.dim.symbols[i] && self.dim.symbols[i][col] && mlen < self.dim.symbols[i][col].x + self.dim.symbols[i][col].width) {
+    } else if (
+      self.dim.symbols[row + 1] &&
+      self.dim.symbols[row + 1][col] &&
+      self.dim.symbols[row + 1][col].x
+    ) {
+      // directly below
+      mlen = self.dim.symbols[row + 1][col].x;
+    } else if (
+      self.dim.symbols[row - 1] &&
+      self.dim.symbols[row - 1][col - 1] &&
+      self.dim.symbols[row - 1][col - 1].x
+    ) {
+      // diagonal left above
+      mlen =
+        self.dim.symbols[row - 1][col - 1].x +
+        self.dim.symbols[row - 1][col - 1].width;
+    } else {
+      // same column below
+      for (let i = row; i < self.dim.symbols.length; i++) {
+        if (
+          self.dim.symbols[i] &&
+          self.dim.symbols[i][col] &&
+          mlen < self.dim.symbols[i][col].x + self.dim.symbols[i][col].width
+        ) {
           mlen = self.dim.symbols[i][col].x;
         }
       }
       // found nothing in the rows below
-      if (mlen == 0) { // mostly for column 0
+      if (mlen == 0) {
+        // mostly for column 0
         mlen = self.width;
       }
     }
     // console.log(deb,row,col,'--> ' + mlen,debug_dim());
     return mlen;
-  } //}}}
-  var get_x_plus = this.dim.get_x_plus = function(rowf,rowt,col,deb='') { //{{{
-    if (rowf<0) { row = 0 };
+  }); //}}}
+  var get_x_plus = (this.dim.get_x_plus = function (rowf, rowt, col, deb = "") {
+    //{{{
+    if (rowf < 0) {
+      row = 0;
+    }
 
     mlen = 0;
-    for (let i=rowf; i<=rowt; i++) {
-      if (self.dim.symbols[i] && self.dim.symbols[i][col] && mlen < self.dim.symbols[i][col].x + self.dim.symbols[i][col].width) {
+    for (let i = rowf; i <= rowt; i++) {
+      if (
+        self.dim.symbols[i] &&
+        self.dim.symbols[i][col] &&
+        mlen < self.dim.symbols[i][col].x + self.dim.symbols[i][col].width
+      ) {
         mlen = self.dim.symbols[i][col].x + self.dim.symbols[i][col].width;
       }
     }
     // console.log(deb,rowf,rowt,col,'--> ' + mlen,debug_dim());
     return mlen;
-  } //}}}
-  var get_x_width = this.dim.get_x_width = function(maxcol) { //{{{
+  }); //}}}
+  var get_x_width = (this.dim.get_x_width = function (maxcol) {
+    //{{{
     let cwidth = 0;
-    for (let i=0; i < self.dim.symbols.length; i++) {
+    for (let i = 0; i < self.dim.symbols.length; i++) {
       let lwidth = 0;
-      for (let j=0; j <= maxcol; j++) {
-        if (typeof self.dim.symbols[i] !== 'undefined' && typeof self.dim.symbols[i][j] !== 'undefined') {
+      for (let j = 0; j <= maxcol; j++) {
+        if (
+          typeof self.dim.symbols[i] !== "undefined" &&
+          typeof self.dim.symbols[i][j] !== "undefined"
+        ) {
           lwidth += self.dim.symbols[i][j].width;
         } else {
           // go up the column and find the next valid value
@@ -442,7 +670,10 @@ function WfIllustrator(wf_adaptor) { // View  {{{
           let found = false;
           while (x > 0 && !found) {
             x -= 1;
-            if (typeof self.dim.symbols[x] !== 'undefined' && typeof self.dim.symbols[x][j] !== 'undefined') {
+            if (
+              typeof self.dim.symbols[x] !== "undefined" &&
+              typeof self.dim.symbols[x][j] !== "undefined"
+            ) {
               lwidth += self.dim.symbols[x][j].width;
               found = true;
             }
@@ -452,32 +683,42 @@ function WfIllustrator(wf_adaptor) { // View  {{{
           }
         }
       }
-      if (cwidth < lwidth) { cwidth = lwidth; }
+      if (cwidth < lwidth) {
+        cwidth = lwidth;
+      }
     }
     return cwidth;
-  } //}}}
+  }); //}}}
 
-  var get_y = this.draw.get_y = function(row) { // {{{
-    return { y: row * self.height - self.height, height_shift: self.height_shift};
-  } // }}}
+  var get_y = (this.draw.get_y = function (row) {
+    // {{{
+    return {
+      y: row * self.height - self.height,
+      height_shift: self.height_shift,
+    };
+  }); // }}}
 
-  var get_width = this.draw.get_width = function(g) { //{{{
+  var get_width = (this.draw.get_width = function (g) {
+    //{{{
     let t = g.clone();
     self.svg.container.append(t);
     let bb = t[0].getBBox();
     let w = bb.width - bb.x;
     t.remove();
     return w;
-  } //}}}
-  var get_height = this.draw.get_height = function(g) { //{{{
+  }); //}}}
+  var get_height = (this.draw.get_height = function (g) {
+    //{{{
     let t = g.clone();
     self.svg.container.append(t);
     let bb = t[0].getBBox();
     let h = bb.height - bb.y;
     t.remove();
     return h;
-  } //}}}
-  var get_dim = this.draw.get_dim = function(g) { //{{{
+  }); //}}}
+  var get_dim = (this.draw.get_dim = function (g) {
+    //{{{
+
     let element = g.clone();
     self.svg.container.append(element);
     let svg = element[0].ownerSVGElement;
@@ -491,7 +732,10 @@ function WfIllustrator(wf_adaptor) { // View  {{{
 
     var p = svg.createSVGPoint();
 
-    var matrix = svg.getScreenCTM().inverse().multiply(element[0].getScreenCTM());
+    var matrix = svg
+      .getScreenCTM()
+      .inverse()
+      .multiply(element[0].getScreenCTM());
 
     p.x = r.x;
     p.y = r.y;
@@ -525,40 +769,89 @@ function WfIllustrator(wf_adaptor) { // View  {{{
       width: width,
       height: height,
       cx: minX + width / 2,
-      cy: minY + height / 2
+      cy: minY + height / 2,
     };
-  } //}}}
+  }); //}}}
 
-  var bind_event = this.draw.bind_event = function(sym,tname,context) { //{{{
-    for(event_name in adaptor.elements[tname]) {
-      sym.bind(event_name, {'function_call':adaptor.elements[tname][event_name]}, function(e) { e.data.function_call($(this).attr('element-id'),e)});
-      if(event_name == 'mousedown') sym.bind('contextmenu', false);
+  var bind_event = (this.draw.bind_event = function (sym, tname, context) {
+    //{{{
+    for (event_name in adaptor.elements[tname]) {
+      sym.bind(
+        event_name,
+        { function_call: adaptor.elements[tname][event_name] },
+        function (e) {
+          e.data.function_call($(this).attr("element-id"), e);
+        }
+      );
+      if (event_name == "mousedown") sym.bind("contextmenu", false);
     }
-  } //}}}
+  }); //}}}
 
-  var draw_stripe = this.draw.draw_stripe = function (row, maxcol) { // {{{
+  var draw_stripe = (this.draw.draw_stripe = function (row, maxcol) {
+    // {{{
     if (maxcol < 1) maxcol = 1;
 
     let cwidth = get_x_width(maxcol);
     cwidth = cwidth + 2 * self.width - self.width_shift;
 
-    var g = $X('<rect element-row="' + row + '" class="stripe ' + (row % 2 == 0 ? 'even' : 'odd') + '" x="0" y="' + String(row*self.height+self.height_shift/2) + '" width="' + cwidth + '" height="' + (self.height) + '" xmlns="http://www.w3.org/2000/svg"></rect>');
+    var g = $X(
+      '<rect element-row="' +
+        row +
+        '" class="stripe ' +
+        (row % 2 == 0 ? "even" : "odd") +
+        '" x="0" y="' +
+        String(row * self.height + self.height_shift / 2) +
+        '" width="' +
+        cwidth +
+        '" height="' +
+        self.height +
+        '" xmlns="http://www.w3.org/2000/svg"></rect>'
+    );
     self.svg.container.prepend(g);
     return g;
-  } // }}}
-  var draw_symbol = this.draw.draw_symbol = function(sname, id, title, parent_row, max_row, row, col, group, addition, info, style) { // {{{
-    if(self.elements[sname] == undefined || self.elements[sname].svg == undefined) sname = 'unknown';
+  }); // }}}
+  var draw_symbol = (this.draw.draw_symbol = function (
+    sname,
+    id,
+    title,
+    parent_row,
+    max_row,
+    row,
+    col,
+    group,
+    addition,
+    info,
+    style
+  ) {
+    // {{{
+    if (
+      self.elements[sname] == undefined ||
+      self.elements[sname].svg == undefined
+    )
+      sname = "unknown";
     let center_x = (self.width - self.default_width) / 2;
     let center_y = (self.height - self.default_height) / 2;
 
-    let dstart = get_x(parent_row,col,'symbol ' + sname);
+    let dstart = get_x(parent_row, col, "symbol " + sname);
 
-    let sstart = dstart            + center_x - self.width_shift;
-    let stop   = row * self.height + center_y - (self.height-self.height_shift);
+    let sstart = dstart + center_x - self.width_shift;
+    let stop = row * self.height + center_y - (self.height - self.height_shift);
 
-    var g = $X('<g class="element" element-row="' + (row-1) + '" element-type="' + sname + '" element-id="' + id  + '" xmlns="http://www.w3.org/2000/svg">' +
-                  '<g transform="translate(' + String(sstart) + ',' + String(stop) + ')"></g>' +
-               '</g>');
+    var g = $X(
+      '<g class="element" element-row="' +
+        (row - 1) +
+        '" element-type="' +
+        sname +
+        '" element-id="' +
+        id +
+        '" xmlns="http://www.w3.org/2000/svg">' +
+        '<g transform="translate(' +
+        String(sstart) +
+        "," +
+        String(stop) +
+        ')"></g>' +
+        "</g>"
+    );
 
     // add the element-endpoint and other stuff to each symbol (from theme info function)
     for (const key in info) {
@@ -568,101 +861,116 @@ function WfIllustrator(wf_adaptor) { // View  {{{
     var sym = self.svg.defs[sname].clone();
     var subtype = undefined;
 
-    if (g.attr('element-endpoint')) {
-      let tsym = self.get_symbol(g.attr('element-endpoint'));
+    if (g.attr("element-endpoint")) {
+      let tsym = self.get_symbol(g.attr("element-endpoint"));
       if (tsym) {
         let found = false;
-        $('.part-end',sym).remove();
-        if ($('.part-end',tsym).length > 0) {
-          sym.prepend($('.part-end',tsym).clone());
+        $(".part-end", sym).remove();
+        if ($(".part-end", tsym).length > 0) {
+          sym.prepend($(".part-end", tsym).clone());
           found = true;
         }
-        if ($('.part-middle',tsym).length > 0) {
-          $('.part-middle',sym).remove();
-          sym.prepend($('.part-middle',tsym).clone());
+        if ($(".part-middle", tsym).length > 0) {
+          $(".part-middle", sym).remove();
+          sym.prepend($(".part-middle", tsym).clone());
           found = true;
         }
-        if ($('.part-start',tsym).length > 0) {
-          $('.part-start',sym).remove();
-          sym.prepend($('.part-start',tsym).clone());
+        if ($(".part-start", tsym).length > 0) {
+          $(".part-start", sym).remove();
+          sym.prepend($(".part-start", tsym).clone());
           found = true;
         }
-        if ($('.part-normal',tsym).length > 0) {
-          $('.part-normal',sym).remove();
-          sym.prepend($('.part-normal',tsym).clone());
+        if ($(".part-normal", tsym).length > 0) {
+          $(".part-normal", sym).remove();
+          sym.prepend($(".part-normal", tsym).clone());
           found = true;
         }
         if (!found) {
-          $('.part-normal',sym).remove();
-          let ts = $X('<g class="part-normal" xmlns="http://www.w3.org/2000/svg"></g>');
-              ts.append($(tsym.documentElement.children).clone());
+          $(".part-normal", sym).remove();
+          let ts = $X(
+            '<g class="part-normal" xmlns="http://www.w3.org/2000/svg"></g>'
+          );
+          ts.append($(tsym.documentElement.children).clone());
           sym.prepend(ts);
         }
       }
-      let tprop = self.get_properties(g.attr('element-endpoint'));
+      let tprop = self.get_properties(g.attr("element-endpoint"));
       if (tprop) {
         subtype = tprop.subtype;
       }
     }
 
-    sym.attr('class','activities');
+    sym.attr("class", "activities");
     let sty = { ...self.global_style, ...style };
     for (const s in sty) {
-      $('.colorstyle', sym).each((_,ele) => {
-        $(ele).css(s,sty[s]);
+      $(".colorstyle", sym).each((_, ele) => {
+        $(ele).css(s, sty[s]);
       });
     }
 
     var tit = $X('<title xmlns="http://www.w3.org/2000/svg"></title>');
-        tit.text(title);
+    tit.text(title);
     sym.prepend(tit);
-    let lab = $('.label',sym);
+    let lab = $(".label", sym);
     if (lab.length > 0 && self.compact) {
       let l_maxlen = 40; // max label size
-      let l_split  = 18; // desired split position
-      let l_dev    = 10; // if one split line is bigger than l_split + l_dev, split was not successfull and we have to display a more truncated string
-      let l_trunc  = 18; // trucation size
+      let l_split = 18; // desired split position
+      let l_dev = 10; // if one split line is bigger than l_split + l_dev, split was not successfull and we have to display a more truncated string
+      let l_trunc = 18; // trucation size
 
-      let sta = $('.part-start',sym);
-      let mid = $('.part-middle',sym);
-      let end = $('.part-end',sym);
-      let xtr = $('.part-extra',sym);
-      let nor = $('.part-normal',sym);
-      if (title && title != '') {
+      let sta = $(".part-start", sym);
+      let mid = $(".part-middle", sym);
+      let end = $(".part-end", sym);
+      let xtr = $(".part-extra", sym);
+      let nor = $(".part-normal", sym);
+      if (title && title != "") {
         if (title.length < l_split) {
           lab.text(title);
         } else {
-          if (title.length > l_maxlen) { title = title.substr(0,l_maxlen) + '\u2026'; }
-          if (title.includes(' ')) {
+          if (title.length > l_maxlen) {
+            title = title.substr(0, l_maxlen) + "\u2026";
+          }
+          if (title.includes(" ")) {
             let len = title.length;
             let pos = -2;
-            let seps = []
+            let seps = [];
             while (pos != -1) {
-              pos = title.indexOf(' ',pos+1);
+              pos = title.indexOf(" ", pos + 1);
               if (pos > -1) seps.push(pos);
             }
             let closest = title.length;
             let it = 0;
             seps.forEach((ele) => {
-              let min = Math.abs(title.length/2 - ele);
-              if (min < closest) { closest = min; it = ele; }
+              let min = Math.abs(title.length / 2 - ele);
+              if (min < closest) {
+                closest = min;
+                it = ele;
+              }
             });
-            let l1 = title.substr(0,it);
-            let l2 = title.substr(it+1);
-            if (l1.length > l_split+l_dev) {
-              title = title.substr(0,l_trunc) + '\u2026';
+            let l1 = title.substr(0, it);
+            let l2 = title.substr(it + 1);
+            if (l1.length > l_split + l_dev) {
+              title = title.substr(0, l_trunc) + "\u2026";
               lab.text(title);
             } else {
-              if (l2.length > l_split) { l2 = l2.substr(0,l_trunc) + '\u2026'; }
-              let a1 = $X('<tspan x="0" dy="-8" xmlns="http://www.w3.org/2000/svg"></tspan>');
-                  a1.text(l1);
-              let a2 = $X('<tspan x="0" dy="12" xmlns="http://www.w3.org/2000/svg"></tspan>');
-                  a2.text(l2);
+              if (l2.length > l_split) {
+                l2 = l2.substr(0, l_trunc) + "\u2026";
+              }
+              let a1 = $X(
+                '<tspan x="0" dy="-8" xmlns="http://www.w3.org/2000/svg"></tspan>'
+              );
+              a1.text(l1);
+              let a2 = $X(
+                '<tspan x="0" dy="12" xmlns="http://www.w3.org/2000/svg"></tspan>'
+              );
+              a2.text(l2);
               lab.append(a1);
               lab.append(a2);
             }
           } else {
-            if (title.length > l_split) { title = title.substr(0,l_trunc) + '\u2026'; }
+            if (title.length > l_split) {
+              title = title.substr(0, l_trunc) + "\u2026";
+            }
             lab.text(title);
           }
         }
@@ -670,142 +978,321 @@ function WfIllustrator(wf_adaptor) { // View  {{{
         if (mid.length > 0) {
           if (end.length > 0) {
             let pos = get_dim(mid);
-            mid.attr('clip-path','url(#ele-' + id + ')');
-            let clip = $X('<clipPath belongs-to="element" id="ele-' + id + '" xmlns="http://www.w3.org/2000/svg">' +
-              '<rect x="0" y="-1" width="' + width + '" height="' +  (pos.y + pos.height + 4) + '"></rect>' +
-            '</clipPath>');
-            $('defs',self.svg.container).append(clip);
+            mid.attr("clip-path", "url(#ele-" + id + ")");
+            let clip = $X(
+              '<clipPath belongs-to="element" id="ele-' +
+                id +
+                '" xmlns="http://www.w3.org/2000/svg">' +
+                '<rect x="0" y="-1" width="' +
+                width +
+                '" height="' +
+                (pos.y + pos.height + 4) +
+                '"></rect>' +
+                "</clipPath>"
+            );
+            $("defs", self.svg.container).append(clip);
 
-            end.attr('transform','translate(' + (pos.x + width - self.endclipshift - 4) + ',0)');
+            end.attr(
+              "transform",
+              "translate(" + (pos.x + width - self.endclipshift - 4) + ",0)"
+            );
             if (xtr.length > 0) {
-              xtr.attr('transform','translate(' + (pos.x + width - self.endclipshift - 4) + ',0)');
+              xtr.attr(
+                "transform",
+                "translate(" + (pos.x + width - self.endclipshift - 4) + ",0)"
+              );
             }
-            set_x_cond(row,col,dstart,pos.x + width - self.endclipshift - 4 + this.get_width(end) + 2 * self.width_shift_label,sname,title,subtype,sty,id);
+            set_x_cond(
+              row,
+              col,
+              dstart,
+              pos.x +
+                width -
+                self.endclipshift -
+                4 +
+                this.get_width(end) +
+                2 * self.width_shift_label,
+              sname,
+              title,
+              subtype,
+              sty,
+              id
+            );
           } else {
             let tdim = 0;
-            if (self.rotated_labels && self.elements[sname].rotatelabels != false) {
-              lab.addClass('rotate');
+            if (
+              self.rotated_labels &&
+              self.elements[sname].rotatelabels != false
+            ) {
+              lab.addClass("rotate");
               tdim = self.width;
             } else {
               tdim = self.width + width + self.width_shift_label;
             }
-            set_x_cond(row,col,dstart,tdim,sname,title,subtype,sty,id);
+            set_x_cond(row, col, dstart, tdim, sname, title, subtype, sty, id);
           }
         } else {
-          set_x_cond(row,col,dstart,self.width,sname,title,subtype,sty,id);
+          set_x_cond(
+            row,
+            col,
+            dstart,
+            self.width,
+            sname,
+            title,
+            subtype,
+            sty,
+            id
+          );
         }
-        if (nor.length > 0) { nor.remove(); }
+        if (nor.length > 0) {
+          nor.remove();
+        }
       } else {
-        set_x_cond(row,col,dstart,self.width,sname,title,subtype,sty,id);
-        if (sta.length > 0) { sta.remove(); }
-        if (mid.length > 0) { mid.remove(); }
-        if (end.length > 0) { end.remove(); }
+        set_x_cond(
+          row,
+          col,
+          dstart,
+          self.width,
+          sname,
+          title,
+          subtype,
+          sty,
+          id
+        );
+        if (sta.length > 0) {
+          sta.remove();
+        }
+        if (mid.length > 0) {
+          mid.remove();
+        }
+        if (end.length > 0) {
+          end.remove();
+        }
       }
     } else {
-      $('.part-start',sym).remove();
-      $('.part-middle',sym).remove();
-      $('.part-end',sym).remove();
-      set_x_cond(row,col,dstart,self.width,sname,title,subtype,sty,id);
+      $(".part-start", sym).remove();
+      $(".part-middle", sym).remove();
+      $(".part-end", sym).remove();
+      set_x_cond(row, col, dstart, self.width, sname, title, subtype, sty, id);
     }
-
 
     $(g[0].childNodes[0]).append(sym);
     if (!addition) {
       // TODO change to better respresent exec
       $(g[0].childNodes[0]).append(
-        $X('<text class="super" transform="translate(20,-2)" xmlns="http://www.w3.org/2000/svg">' +
+        $X(
+          '<text class="super" transform="translate(20,-2)" xmlns="http://www.w3.org/2000/svg">' +
             '<tspan class="exec">▶</tspan>' +
             '<tspan class="active">0</tspan>' +
             '<tspan class="colon">,</tspan>' +
             '<tspan class="vote">0</tspan>' +
-          '</text>')
+            "</text>"
+        )
       );
     }
 
     // Binding events for symbol
-    bind_event(g,sname,true);
+    bind_event(g, sname, true);
 
-    if (group) {group.append(g);}
-    else {self.svg.container.children('g:first').append(g);}
+    if (group) {
+      group.append(g);
+    } else {
+      self.svg.container.children("g:first").append(g);
+    }
 
     return g;
-  } // }}}
-  var draw_border = this.draw.draw_border = function(id, p1, p2, group) { // {{{
-    let bstart = get_x(p1.row,p1.col,'border from');
-    let bend = get_x_plus(p1.row,p2.row,p2.col,'border to');
-    group.prepend($X('<rect element-id="' + id + '" x="' + (bstart - 1.1 * self.width_shift - self.group_extend) + '" ' +
-        'y="' + ((p1.row-1)*self.height+self.height_shift/2-self.group_extend) + '" ' +
-        'width="' + (bend-bstart+2*self.group_extend) + '" ' +
-        'height="' + (((p2.row+1)-p1.row)*self.height+2*self.group_extend) + '" ' +
-        'class="block" rx="12" ry="12" xmlns="http://www.w3.org/2000/svg"/>'));
-  } // }}}
-  var draw_tile = this.draw.draw_tile = function(id, p1, p2, group) { // {{{
-    let bstart = get_x(p1.row,p1.col,'tile from');
-    let bend = get_x_plus(p1.row,p2.row,p2.col,'tile to');
-    group.prepend($X('<rect element-id="' + id + '" x="' + (bstart - 1.1 * self.width_shift - self.group_extend) + '" ' +
-        'y="' + ((p1.row-1)*self.height+self.height_shift/2-self.group_extend) + '" ' +
-        'width="' + (bend-bstart+2*self.group_extend) + '" ' +
-        'height="' + (((p2.row+1)-p1.row)*self.height+2*self.group_extend) + '" ' +
-        'class="tile" rx="12" ry="12" xmlns="http://www.w3.org/2000/svg"/>'));
-  } // }}}
-  var draw_connection = this.draw.draw_connection = function(group, start, end, context_row, arrow) { // {{{
-    let sr = Math.min(start.row,end.row);
-    let cstart = get_x(sr,start.col,'conn from');
-    let cend = get_x(sr,end.col,'conn to');
-    self.dim.connections.push({from: {row: start.row, col: start.col}, to: {row: end.row, col: end.col}});
+  }); // }}}
+  var draw_border = (this.draw.draw_border = function (id, p1, p2, group) {
+    // {{{
+    let bstart = get_x(p1.row, p1.col, "border from");
+    let bend = get_x_plus(p1.row, p2.row, p2.col, "border to");
+    group.prepend(
+      $X(
+        '<rect element-id="' +
+          id +
+          '" x="' +
+          (bstart - 1.1 * self.width_shift - self.group_extend) +
+          '" ' +
+          'y="' +
+          ((p1.row - 1) * self.height +
+            self.height_shift / 2 -
+            self.group_extend) +
+          '" ' +
+          'width="' +
+          (bend - bstart + 2 * self.group_extend) +
+          '" ' +
+          'height="' +
+          ((p2.row + 1 - p1.row) * self.height + 2 * self.group_extend) +
+          '" ' +
+          'class="block" rx="12" ry="12" xmlns="http://www.w3.org/2000/svg"/>'
+      )
+    );
+  }); // }}}
+  var draw_tile = (this.draw.draw_tile = function (id, p1, p2, group) {
+    // {{{
+    let bstart = get_x(p1.row, p1.col, "tile from");
+    let bend = get_x_plus(p1.row, p2.row, p2.col, "tile to");
+    group.prepend(
+      $X(
+        '<rect element-id="' +
+          id +
+          '" x="' +
+          (bstart - 1.1 * self.width_shift - self.group_extend) +
+          '" ' +
+          'y="' +
+          ((p1.row - 1) * self.height +
+            self.height_shift / 2 -
+            self.group_extend) +
+          '" ' +
+          'width="' +
+          (bend - bstart + 2 * self.group_extend) +
+          '" ' +
+          'height="' +
+          ((p2.row + 1 - p1.row) * self.height + 2 * self.group_extend) +
+          '" ' +
+          'class="tile" rx="12" ry="12" xmlns="http://www.w3.org/2000/svg"/>'
+      )
+    );
+  }); // }}}
+  var draw_connection = (this.draw.draw_connection = function (
+    group,
+    start,
+    end,
+    context_row,
+    arrow
+  ) {
+    // {{{
+    let sr = Math.min(start.row, end.row);
+    let cstart = get_x(sr, start.col, "conn from");
+    let cend = get_x(sr, end.col, "conn to");
+    self.dim.connections.push({
+      from: { row: start.row, col: start.col },
+      to: { row: end.row, col: end.col },
+    });
 
-    if(((end['row']-start['row']) == 0) && ((end['col']-start['col']) == 0)) return;
+    if (end["row"] - start["row"] == 0 && end["col"] - start["col"] == 0)
+      return;
     var line;
     if (arrow)
-      line = $X('<path xmlns="http://www.w3.org/2000/svg" class="edge" marker-end="url(#arrow)"/>');
-    else
-      line = $X('<path xmlns="http://www.w3.org/2000/svg" class="edge"/>');
-    if (end['row']-start['row'] == 0 || end['col']-start['col'] == 0) { // straight line
-      line.attr("d", "M " + String(cstart) + "," + String(start['row']*self.height-15) +" "+
-                            String(cend) +   "," + String(end['row']*self.height-15)
+      line = $X(
+        '<path xmlns="http://www.w3.org/2000/svg" class="edge" marker-end="url(#arrow)"/>'
       );
-    } else if (end['row']-start['row'] > 0) { // downwards
-      if (end['col']-start['col'] > 0) {// left - right
+    else line = $X('<path xmlns="http://www.w3.org/2000/svg" class="edge"/>');
+    if (end["row"] - start["row"] == 0 || end["col"] - start["col"] == 0) {
+      // straight line
+      line.attr(
+        "d",
+        "M " +
+          String(cstart) +
+          "," +
+          String(start["row"] * self.height - 15) +
+          " " +
+          String(cend) +
+          "," +
+          String(end["row"] * self.height - 15)
+      );
+    } else if (end["row"] - start["row"] > 0) {
+      // downwards
+      if (end["col"] - start["col"] > 0) {
+        // left - right
         if (self.compact) {
-          line.attr("d", "M " + String(cstart) + "," + String(start['row']*self.height-15) +" "+
-                                String(cstart+14) + "," + String((end['row']-1)*self.height) +" "+ // first turn of horizontal-line going away from node
-                                String(cend) + "," + String((end['row']-1)*self.height) +" "+
-                                String(cend) + "," + String(end['row']*self.height-15)
+          line.attr(
+            "d",
+            "M " +
+              String(cstart) +
+              "," +
+              String(start["row"] * self.height - 15) +
+              " " +
+              String(cstart + 14) +
+              "," +
+              String((end["row"] - 1) * self.height) +
+              " " + // first turn of horizontal-line going away from node
+              String(cend) +
+              "," +
+              String((end["row"] - 1) * self.height) +
+              " " +
+              String(cend) +
+              "," +
+              String(end["row"] * self.height - 15)
           );
         } else {
-          line.attr("d", "M " + String(cstart) + "," + String(start['row']*self.height-15) +" "+
-                                String(cend) + "," + String(start['row']*self.height-15) +" "+
-                                String(cend) + "," + String(end['row']*self.height-15)
+          line.attr(
+            "d",
+            "M " +
+              String(cstart) +
+              "," +
+              String(start["row"] * self.height - 15) +
+              " " +
+              String(cend) +
+              "," +
+              String(start["row"] * self.height - 15) +
+              " " +
+              String(cend) +
+              "," +
+              String(end["row"] * self.height - 15)
           );
         }
-      } else { // right - left
-        line.attr("d", "M " + String(cstart) + "," + String(start['row']*self.height-15) +" "+
-                              String(cstart) + "," + String(end['row']*self.height-32) +" "+
-                              String(cend+14) + "," + String(end['row']*self.height-32) +" "+ // last turn of horizontal-line going into the node
-                              String(cend) + "," + String(end['row']*self.height-15)
+      } else {
+        // right - left
+        line.attr(
+          "d",
+          "M " +
+            String(cstart) +
+            "," +
+            String(start["row"] * self.height - 15) +
+            " " +
+            String(cstart) +
+            "," +
+            String(end["row"] * self.height - 32) +
+            " " +
+            String(cend + 14) +
+            "," +
+            String(end["row"] * self.height - 32) +
+            " " + // last turn of horizontal-line going into the node
+            String(cend) +
+            "," +
+            String(end["row"] * self.height - 15)
         );
       }
-    } else if(end['row']-start['row'] < 0) { // upwards
-      line.attr("d", "M " + String(cstart) + "," + String(start['row']*self.height-15) +" "+
-                            String(cstart) + "," + String((self.dim.symbols.length-1)*self.height+4) +" "+
-                            String(cend+15) + "," + String((self.dim.symbols.length-1)*self.height+4) +" "+
-                            String(cend+15) + "," + String(end['row']*self.height+15)+" "+
-                            String(cend) + "," + String(end['row']*self.height-15)
+    } else if (end["row"] - start["row"] < 0) {
+      // upwards
+      line.attr(
+        "d",
+        "M " +
+          String(cstart) +
+          "," +
+          String(start["row"] * self.height - 15) +
+          " " +
+          String(cstart) +
+          "," +
+          String((self.dim.symbols.length - 1) * self.height + 4) +
+          " " +
+          String(cend + 15) +
+          "," +
+          String((self.dim.symbols.length - 1) * self.height + 4) +
+          " " +
+          String(cend + 15) +
+          "," +
+          String(end["row"] * self.height + 15) +
+          " " +
+          String(cend) +
+          "," +
+          String(end["row"] * self.height - 15)
       );
     }
     self.svg.container.append(line);
-  } //  }}}
+  }); //  }}}
   // }}}
 
   // Initialize {{{
   adaptor = wf_adaptor;
   // }}}
-
 } // }}}
 
 // WfDescription:
 // Manages the description. Is is further able to add/remove elements from the controlflow description.
-function WfDescription(wf_adaptor, wf_illustrator) { // Model {{{
+function WfDescription(wf_adaptor, wf_illustrator) {
+  // Model {{{
   // public variables
   this.elements = {}; // the rngs
   this.source = null;
@@ -819,338 +1306,514 @@ function WfDescription(wf_adaptor, wf_illustrator) { // Model {{{
   var labels = [];
 
   // Set Labels //{{{
-  this.set_labels = function(graph) {
+  this.set_labels = function (graph) {
     if (illustrator.striped == true && illustrator.compact == false) {
-      for (var i=0; i < graph.max.row; i++) {
-        illustrator.draw.draw_stripe(i,graph.max.col);
+      for (var i = 0; i < graph.max.row; i++) {
+        illustrator.draw.draw_stripe(i, graph.max.col);
       }
     }
-    adaptor.draw_labels(graph.max,labels,{ 'height': illustrator.height, 'stripe_height': illustrator.default_height, 'height_shift': illustrator.height_shift },illustrator.striped == true ? true : false);
-  } //}}}
+    adaptor.draw_labels(
+      graph.max,
+      labels,
+      {
+        height: illustrator.height,
+        stripe_height: illustrator.default_height,
+        height_shift: illustrator.height_shift,
+      },
+      illustrator.striped == true ? true : false
+    );
+  }; //}}}
 
   // Generic Functions {{{
-  this.set_description = function(desc, auto_update) { // public {{{
-    if(auto_update != undefined) update_illustrator = auto_update;
-    if(typeof desc == "string") {
+  this.set_description = function (desc, auto_update) {
+    // public {{{
+    if (auto_update != undefined) update_illustrator = auto_update;
+    if (typeof desc == "string") {
       description = $($.parseXML(desc));
-    } else if(desc instanceof jQuery) {
+    } else if (desc instanceof jQuery) {
       description = desc;
     } else {
-      alert("WfDescription: unknown description type:\nConstructor-Name: " + desc.constructor + " / TypeOf: " + (typeof desc));
+      alert(
+        "WfDescription: unknown description type:\nConstructor-Name: " +
+          desc.constructor +
+          " / TypeOf: " +
+          typeof desc
+      );
       description = null;
     }
     id_counter = {};
     labels = [];
     let start = performance.now();
     illustrator.clear();
-    var graph = parse(description.children('description').get(0), {'row':0,'col':0,final:false,wide:false});
+    var graph = parse(description.children("description").get(0), {
+      row: 0,
+      col: 0,
+      final: false,
+      wide: false,
+    });
     illustrator.set_svg(graph);
     self.set_labels(graph);
     illustrator.set_duration(start);
-  } // }}}
-  var gd = this.get_description = function() { //  public {{{
+  }; // }}}
+  var gd = (this.get_description = function () {
+    //  public {{{
     var serxml = $(description.get(0).documentElement).clone(true);
-    serxml.removeAttr('svg-id');
-    serxml.removeAttr('svg-type');
-    serxml.removeAttr('svg-subtype');
-    serxml.removeAttr('svg-label');
-    $('*[svg-id]',serxml).each(function(){
-      $(this).removeAttr('svg-id');
+    serxml.removeAttr("svg-id");
+    serxml.removeAttr("svg-type");
+    serxml.removeAttr("svg-subtype");
+    serxml.removeAttr("svg-label");
+    $("*[svg-id]", serxml).each(function () {
+      $(this).removeAttr("svg-id");
     });
-    $('*[svg-type]',serxml).each(function(){
-      $(this).removeAttr('svg-type');
+    $("*[svg-type]", serxml).each(function () {
+      $(this).removeAttr("svg-type");
     });
-    $('*[svg-subtype]',serxml).each(function(){
-      $(this).removeAttr('svg-subtype');
+    $("*[svg-subtype]", serxml).each(function () {
+      $(this).removeAttr("svg-subtype");
     });
-    $('*[svg-label]',serxml).each(function(){
-      $(this).removeAttr('svg-label');
+    $("*[svg-label]", serxml).each(function () {
+      $(this).removeAttr("svg-label");
     });
     return serxml.serializeXML();
-  } // }}}
-  this.get_node_by_svg_id = function(svg_id) { // {{{
-    return $('[svg-id = \'' + svg_id + '\']', description);
-  } // }}}
-  var context_eval = this.context_eval = function(what) { // {{{
+  }); // }}}
+  this.get_node_by_svg_id = function (svg_id) {
+    // {{{
+    return $("[svg-id = '" + svg_id + "']", description);
+  }; // }}}
+  var context_eval = (this.context_eval = function (what) {
+    // {{{
     return eval(what);
-  } // }}}
-  var get_free_id = this.get_free_id = function(other) { // {{{
+  }); // }}}
+  var get_free_id = (this.get_free_id = function (other) {
+    // {{{
     var existing = new Array();
     if (other) {
-      if ($(other).attr('id')) {
-        existing.push($(other).attr('id'));
+      if ($(other).attr("id")) {
+        existing.push($(other).attr("id"));
       }
-      $(other).find("[id]").each(function(k,v){
-        existing.push($(v).attr('id'));
-      });
+      $(other)
+        .find("[id]")
+        .each(function (k, v) {
+          existing.push($(v).attr("id"));
+        });
     }
-    $('*[id]', description).each(function(){existing.push($(this).attr('id'))});
+    $("*[id]", description).each(function () {
+      existing.push($(this).attr("id"));
+    });
     var id = 1;
-    while ($.inArray('a' + id,existing) != -1) {
+    while ($.inArray("a" + id, existing) != -1) {
       id += 1;
     }
-    return 'a' + id;
-  } // }}}
-  var refresh = this.refresh = function(doit) {
+    return "a" + id;
+  }); // }}}
+  var refresh = (this.refresh = function (doit) {
     id_counter = {};
     labels = [];
     let start = performance.now();
     illustrator.clear();
-    var graph = parse(description.children('description').get(0), {'row':0,'col':0});
+    var graph = parse(description.children("description").get(0), {
+      row: 0,
+      col: 0,
+    });
     illustrator.set_svg(graph);
     self.set_labels(graph);
     illustrator.set_duration(start);
     doit(self);
-  }
-  var update = this.update = function(svgid) { // {{{
+  });
+  var update = (this.update = function (svgid) {
+    // {{{
     id_counter = {};
-    if(update_illustrator){
+    if (update_illustrator) {
       let start = performance.now();
       labels = [];
       illustrator.clear();
-      var graph = parse(description.children('description').get(0), {'row':0,'col':0});
+      var graph = parse(description.children("description").get(0), {
+        row: 0,
+        col: 0,
+      });
       illustrator.set_svg(graph);
       self.set_labels(graph);
       illustrator.set_duration(start);
     }
 
-    var newn = $('*[new=true]',description);
-    newn.removeAttr('new');
+    var newn = $("*[new=true]", description);
+    newn.removeAttr("new");
 
-    if (newn.attr('svg-id') != undefined)
-      adaptor.notify(newn.attr('svg-id'));
-    else if (svgid != undefined)
-      adaptor.notify(svgid);
-    else if (newn.parent('[svg-id]').length > 0)
-      adaptor.notify(newn.parent('[svg-id]').attr('svg-id'));
-    else
-      console.info('Something went horribly wrong');
-  } // }}}
+    if (newn.attr("svg-id") != undefined) adaptor.notify(newn.attr("svg-id"));
+    else if (svgid != undefined) adaptor.notify(svgid);
+    else if (newn.parent("[svg-id]").length > 0)
+      adaptor.notify(newn.parent("[svg-id]").attr("svg-id"));
+    else console.info("Something went horribly wrong");
+  }); // }}}
   // }}}
   // Adaption functions {{{
-  this.insert_after = function(new_node, target, source_opts) { // {{{
+  this.insert_after = function (new_node, target, source_opts) {
+    // {{{
     if ($.isArray(new_node)) {
-      $.each(new_node,function(k,v){
-        var nn = self.source(v,source_opts);
+      $.each(new_node, function (k, v) {
+        var nn = self.source(v, source_opts);
         target.after(nn);
-        nn.attr('new','true');
+        nn.attr("new", "true");
       });
     } else {
-      var nn = self.source(new_node,source_opts);
+      var nn = self.source(new_node, source_opts);
       target.after(nn);
-      nn.attr('new','true');
+      nn.attr("new", "true");
     }
     update();
-  } // }}}
-  this.insert_first_into = function(new_node, target, source_opts) { // {{{
+  }; // }}}
+  this.insert_first_into = function (new_node, target, source_opts) {
+    // {{{
     if ($.isArray(new_node)) {
-      $.each(new_node,function(k,v){
-        var nn = self.source(v,source_opts);
+      $.each(new_node, function (k, v) {
+        var nn = self.source(v, source_opts);
         target.prepend(nn);
-        nn.attr('new','true');
+        nn.attr("new", "true");
       });
     } else {
-      var nn = self.source(new_node,source_opts);
+      var nn = self.source(new_node, source_opts);
       target.prepend(nn);
-      nn.attr('new','true');
+      nn.attr("new", "true");
     }
     update();
-  } // }}}
-  this.insert_last_into = function(new_node, target) { // {{{
+  }; // }}}
+  this.insert_last_into = function (new_node, target) {
+    // {{{
     if ($.isArray(new_node)) {
-      $.each(new_node,function(k,v){
+      $.each(new_node, function (k, v) {
         var nn = self.source(v);
         target.append(nn);
-        nn.attr('new','true');
+        nn.attr("new", "true");
       });
     } else {
       var nn = self.source(new_node);
       target.append(nn);
-      nn.attr('new','true');
+      nn.attr("new", "true");
     }
     update();
-  } // }}}
-  this.remove = function(selector, target) {//{{{
+  }; // }}}
+  this.remove = function (selector, target) {
+    //{{{
     var svgid;
-    if(selector == undefined) {
-      svgid = target.attr('svg-id');
-      target.remove()
+    if (selector == undefined) {
+      svgid = target.attr("svg-id");
+      target.remove();
     } else {
-      svgid = $(selector, target).attr('svg-id');
+      svgid = $(selector, target).attr("svg-id");
       if (!svgid) {
-        svgid = target.attr('svg-id');
+        svgid = target.attr("svg-id");
       }
       $(selector, target).remove();
     }
     update(svgid);
-  }
+  };
   // }}}
   // }}}
   // Helper Functions {{{
-  var parse = function(root, parent_pos)  { // private {{{
+  var parse = function (root, parent_pos) {
+    // private {{{
     var pos = JSON.parse(JSON.stringify(parent_pos));
-    var max = {'row': 0,'col': 0};
+    var max = { row: 0, col: 0 };
     var prev = [parent_pos]; // connects parent with child(s), depending on the expansion
     var endnodes = [];
-    var sname = sym_name(root.tagName,root);
+    var sname = sym_name(root.tagName, root);
     var root_expansion = illustrator.elements[root.tagName].expansion(root);
-    var block =  { 'max': {'row': pos.row, 'col': pos.col}, 'endnodes': [], 'svg': $X('<g class="group" xmlns="http://www.w3.org/2000/svg"/>') };
+    var block = {
+      max: { row: pos.row, col: pos.col },
+      endnodes: [],
+      svg: $X('<g class="group" xmlns="http://www.w3.org/2000/svg"/>'),
+    };
 
-    if(root_expansion == 'horizontal') pos.row++;
-    if(illustrator.elements[root.tagName].col_shift(root) == true && root_expansion != 'horizontal') pos.col++;
+    if (root_expansion == "horizontal") pos.row++;
+    if (
+      illustrator.elements[root.tagName].col_shift(root) == true &&
+      root_expansion != "horizontal"
+    )
+      pos.col++;
 
-    if(root.tagName == 'description') { // First parsing {{{
+    if (root.tagName == "description") {
+      // First parsing {{{
       pos.row++;
-      $(root).attr('svg-id','description');
-      $(root).attr('svg-type','description');
-      $(root).attr('svg-subtype','description');
-      block.svg.attr('element-id','group-description');
+      $(root).attr("svg-id", "description");
+      $(root).attr("svg-type", "description");
+      $(root).attr("svg-subtype", "description");
+      block.svg.attr("element-id", "group-description");
       if (illustrator.elements[sname].label) {
         // javascript object spread syntax is my new weird crush - the JS designers must be serious people
-        labels.push({...{row: pos.row, element_id: 'start', tname: 'start', label: illustrator.elements[sname].label(root)},...illustrator.draw.get_y(pos.row)});
+        labels.push({
+          ...{
+            row: pos.row,
+            element_id: "start",
+            tname: "start",
+            label: illustrator.elements[sname].label(root),
+          },
+          ...illustrator.draw.get_y(pos.row),
+        });
       }
-      illustrator.global_style = (illustrator.elements[sname].style && root) ? illustrator.elements[sname].style(root) : {};
-      illustrator.draw.draw_symbol(sname, 'description', 'START', pos.row, pos.row, pos.row, pos.col, block.svg, false, {}, {})
+      illustrator.global_style =
+        illustrator.elements[sname].style && root
+          ? illustrator.elements[sname].style(root)
+          : {};
+      illustrator.draw.draw_symbol(
+        sname,
+        "description",
+        "START",
+        pos.row,
+        pos.row,
+        pos.row,
+        pos.col,
+        block.svg,
+        false,
+        {},
+        {}
+      );
     } // }}}
 
-    $(root).children().filter(function(){ return this.localName[0] != '_'; }).each(function() {
-      var context = this;
-      var tname = context.tagName;
-      var sname = sym_name(tname,context);
-      pos.final = illustrator.elements[sname].final ? true : false;
-      pos.wide = illustrator.elements[sname].wide ? true : false;
-      pos.noindent = illustrator.elements[sname].noindent ? true : false;
+    $(root)
+      .children()
+      .filter(function () {
+        return this.localName[0] != "_";
+      })
+      .each(function () {
+        var context = this;
+        var tname = context.tagName;
+        var sname = sym_name(tname, context);
+        pos.final = illustrator.elements[sname].final ? true : false;
+        pos.wide = illustrator.elements[sname].wide ? true : false;
+        pos.noindent = illustrator.elements[sname].noindent ? true : false;
 
-      // Calculate next position {{{
-      if(root_expansion == 'vertical') { pos.row++; }
-      if(root_expansion == 'horizontal')  {
-        // for noindent themes do not indent the first column
-        if (!pos.noindent || (pos.noindent && endnodes.length > 1)) {
-          illustrator.dim.set_x(pos.row,pos.col,illustrator.width,sname);
-          pos.col++;
+        // Calculate next position {{{
+        if (root_expansion == "vertical") {
+          pos.row++;
         }
-        if (!illustrator.compact) {
-          if (block.max.row) {
-            illustrator.dim.set_x(pos.row,pos.col,illustrator.width,sname);
-            pos.row = block.max.row + 1;
+        if (root_expansion == "horizontal") {
+          // for noindent themes do not indent the first column
+          if (!pos.noindent || (pos.noindent && endnodes.length > 1)) {
+            illustrator.dim.set_x(pos.row, pos.col, illustrator.width, sname);
+            pos.col++;
+          }
+          if (!illustrator.compact) {
+            if (block.max.row) {
+              illustrator.dim.set_x(pos.row, pos.col, illustrator.width, sname);
+              pos.row = block.max.row + 1;
+            }
           }
         }
-      }
 
-      if(illustrator.elements[tname] != undefined && illustrator.elements[tname].type == 'complex') {
-        if(illustrator.elements[tname] != undefined && !illustrator.elements[tname].svg) pos.row--;
-        // TODO: Remaining problem is the order inside the svg. Thats why the connection is above the icon
+        if (
+          illustrator.elements[tname] != undefined &&
+          illustrator.elements[tname].type == "complex"
+        ) {
+          if (
+            illustrator.elements[tname] != undefined &&
+            !illustrator.elements[tname].svg
+          )
+            pos.row--;
+          // TODO: Remaining problem is the order inside the svg. Thats why the connection is above the icon
 
-        illustrator.dim.set_x(pos.row,pos.col,illustrator.width,sname);
-        // but fuuuuu, we calculate the gateways only later, so we couldnt even have them bigger for now
+          illustrator.dim.set_x(pos.row, pos.col, illustrator.width, sname);
+          // but fuuuuu, we calculate the gateways only later, so we couldnt even have them bigger for now
 
-        // console.log('----> down', tname, parent_pos.row, pos.row, parent_pos.col, pos.col, illustrator.dim.debug());
+          // console.log('----> down', tname, parent_pos.row, pos.row, parent_pos.col, pos.col, illustrator.dim.debug());
 
-        let tblock = parse(context, JSON.parse(JSON.stringify(pos)));
+          let tblock = parse(context, JSON.parse(JSON.stringify(pos)));
 
-        // merge block and tblock, enforce the max, as the second branch could have fewer nodes than the first
-        block.max.row = Math.max(block.max.row,tblock.max.row);
-        block.max.col = Math.max(block.max.col,tblock.max.col);
-        block.endnodes = tblock.endnodes;
+          // merge block and tblock, enforce the max, as the second branch could have fewer nodes than the first
+          block.max.row = Math.max(block.max.row, tblock.max.row);
+          block.max.col = Math.max(block.max.col, tblock.max.col);
+          block.endnodes = tblock.endnodes;
 
-        // console.log('<---- up', tname, parent_pos.row, block.max.row, parent_pos.col, block.max.col, illustrator.dim.debug());
+          // console.log('<---- up', tname, parent_pos.row, block.max.row, parent_pos.col, block.max.col, illustrator.dim.debug());
 
-        block.svg.append(tblock.svg);
-        block.svg.attr('id', 'group-' + $(context).attr('svg-id'));
-        if(illustrator.elements[sname].endnodes == 'aggregate') endnodes = []; // resets endpoints e.g. potential preceding primitive
-      } else {
-        if(illustrator.elements[tname] != undefined && illustrator.elements[tname].type == 'primitive'  && illustrator.elements[tname].svg) { // This enables "invisble" elements, by returning undefined in the SVG function (e.g. constraints)
-          block.max.row = pos.row;
-          block.max.col = pos.col;
-          block.endnodes = [pos];
-        }
-      }
-      // }}}
-
-      var g;
-      set_details(tname,sname,pos,context);
-      var origpos = JSON.parse(JSON.stringify(pos));
-      [g, endnodes] = draw_position(tname,parent_pos,origpos,prev,block,endnodes,context);
-
-      // Prepare next iteration {{{
-      if(root_expansion == 'vertical') { prev = JSON.parse(JSON.stringify(endnodes)); pos.row = block.max.row;} // covers e.g. input's for alternative, parallel_branch, ... everything with horizontal expansion
-      if(root_expansion == 'horizontal') pos.col = block.max.col;
-      if(max.row < block.max.row) max.row = block.max.row;
-      if(max.col < block.max.col) max.col = block.max.col;
-      // }}}
-
-      if (illustrator.elements[sname].closing_symbol) {
-        var ctname = illustrator.elements[sname].closing_symbol;
-        var csname = sym_name(ctname,context);
-        pos.row++;
-        max.row++;
-        block.max.row = pos.row;
-        if (illustrator.elements[sname].endnodes == 'this') {
-          pos.col++;
-          if (pos.col > max.col) {
-            max.col++;
-            block.max.col = pos.col;
-          }
-          draw_position(ctname,parent_pos,pos,block.endnodes,block,[],context,{svg: g, pos: origpos});
-          pos.col--;
-          set_details(ctname,csname,pos,context,true);
+          block.svg.append(tblock.svg);
+          block.svg.attr("id", "group-" + $(context).attr("svg-id"));
+          if (illustrator.elements[sname].endnodes == "aggregate")
+            endnodes = []; // resets endpoints e.g. potential preceding primitive
         } else {
-          set_details(ctname,csname,pos,context,true);
-          [undefined, endnodes] = draw_position(ctname,parent_pos,pos,prev,block,[],context,{svg: g, pos: origpos});
+          if (
+            illustrator.elements[tname] != undefined &&
+            illustrator.elements[tname].type == "primitive" &&
+            illustrator.elements[tname].svg
+          ) {
+            // This enables "invisble" elements, by returning undefined in the SVG function (e.g. constraints)
+            block.max.row = pos.row;
+            block.max.col = pos.col;
+            block.endnodes = [pos];
+          }
         }
-        prev = JSON.parse(JSON.stringify(endnodes));
-      }
-    });
+        // }}}
 
-    if($(root).children().filter(function(){ return this.attributes['svg-id'] != undefined; }).length == 0) { // empty complex found
+        var g;
+        set_details(tname, sname, pos, context);
+        var origpos = JSON.parse(JSON.stringify(pos));
+        [g, endnodes] = draw_position(
+          tname,
+          parent_pos,
+          origpos,
+          prev,
+          block,
+          endnodes,
+          context
+        );
+
+        // Prepare next iteration {{{
+        if (root_expansion == "vertical") {
+          prev = JSON.parse(JSON.stringify(endnodes));
+          pos.row = block.max.row;
+        } // covers e.g. input's for alternative, parallel_branch, ... everything with horizontal expansion
+        if (root_expansion == "horizontal") pos.col = block.max.col;
+        if (max.row < block.max.row) max.row = block.max.row;
+        if (max.col < block.max.col) max.col = block.max.col;
+        // }}}
+
+        if (illustrator.elements[sname].closing_symbol) {
+          var ctname = illustrator.elements[sname].closing_symbol;
+          var csname = sym_name(ctname, context);
+          pos.row++;
+          max.row++;
+          block.max.row = pos.row;
+          if (illustrator.elements[sname].endnodes == "this") {
+            pos.col++;
+            if (pos.col > max.col) {
+              max.col++;
+              block.max.col = pos.col;
+            }
+            draw_position(
+              ctname,
+              parent_pos,
+              pos,
+              block.endnodes,
+              block,
+              [],
+              context,
+              { svg: g, pos: origpos }
+            );
+            pos.col--;
+            set_details(ctname, csname, pos, context, true);
+          } else {
+            set_details(ctname, csname, pos, context, true);
+            [undefined, endnodes] = draw_position(
+              ctname,
+              parent_pos,
+              pos,
+              prev,
+              block,
+              [],
+              context,
+              { svg: g, pos: origpos }
+            );
+          }
+          prev = JSON.parse(JSON.stringify(endnodes));
+        }
+      });
+
+    if (
+      $(root)
+        .children()
+        .filter(function () {
+          return this.attributes["svg-id"] != undefined;
+        }).length == 0
+    ) {
+      // empty complex found
       endnodes = [parent_pos];
       max.row = parent_pos.row;
       max.col = parent_pos.col;
     }
 
-    if(root.tagName == 'description' && illustrator.elements[root.tagName].closing_symbol) {
+    if (
+      root.tagName == "description" &&
+      illustrator.elements[root.tagName].closing_symbol
+    ) {
       pos.row++;
       max.row = pos.row;
-      draw_position(illustrator.elements['start'].closing_symbol,parent_pos,pos,prev,block,[],this,{svg: block.svg, pos: pos});
+      draw_position(
+        illustrator.elements["start"].closing_symbol,
+        parent_pos,
+        pos,
+        prev,
+        block,
+        [],
+        this,
+        { svg: block.svg, pos: pos }
+      );
     }
 
-    return {'endnodes': endnodes, 'max':max, 'svg': block.svg};
-  } // }}}
-  var sym_name = function(tname,context) { //{{{
+    return { endnodes: endnodes, max: max, svg: block.svg };
+  }; // }}}
+  var sym_name = function (tname, context) {
+    //{{{
     var sname;
-    if(!illustrator.elements[tname])                                         {sname = 'unknown';}
-    else if(typeof illustrator.elements[tname].resolve_symbol == 'function') {sname = illustrator.elements[tname].resolve_symbol(context,illustrator.elements[tname].col_shift ? illustrator.elements[tname].col_shift(context) : undefined);}
-    else if(typeof illustrator.elements[tname].resolve_symbol == 'string')   {sname = illustrator.elements[tname].resolve_symbol;}
-    else                                                                     {sname = tname;}
-    if (sname == null) {sname = tname;}
+    if (!illustrator.elements[tname]) {
+      sname = "unknown";
+    } else if (
+      typeof illustrator.elements[tname].resolve_symbol == "function"
+    ) {
+      sname = illustrator.elements[tname].resolve_symbol(
+        context,
+        illustrator.elements[tname].col_shift
+          ? illustrator.elements[tname].col_shift(context)
+          : undefined
+      );
+    } else if (typeof illustrator.elements[tname].resolve_symbol == "string") {
+      sname = illustrator.elements[tname].resolve_symbol;
+    } else {
+      sname = tname;
+    }
+    if (sname == null) {
+      sname = tname;
+    }
     return sname;
-  } //}}}
-  var set_details = function(tname,sname,pos,context,simple) { //{{{
+  }; //}}}
+  var set_details = function (tname, sname, pos, context, simple) {
+    //{{{
     if (simple == undefined || simple == false) {
-      if($(context).attr('id') == undefined) {
-        if(id_counter[tname] == undefined) id_counter[tname] = -1;
-        $(context).attr('svg-id', tname + '_' + (++id_counter[tname]));
+      if ($(context).attr("id") == undefined) {
+        if (id_counter[tname] == undefined) id_counter[tname] = -1;
+        $(context).attr("svg-id", tname + "_" + ++id_counter[tname]);
       } else {
-        $(context).attr('svg-id',  $(context).attr('id'));
+        $(context).attr("svg-id", $(context).attr("id"));
       }
     }
     if (illustrator.elements[sname].label) {
       var lab = illustrator.elements[sname].label(context);
       if (lab) {
-        for (let i=0; i<lab.length; i++) {
-          if (lab[i] && lab[i].value && lab[i].column == 'Label' && lab[i].value != '') {
-            $(context).attr('svg-label', lab[0].value);
+        for (let i = 0; i < lab.length; i++) {
+          if (
+            lab[i] &&
+            lab[i].value &&
+            lab[i].column == "Label" &&
+            lab[i].value != ""
+          ) {
+            $(context).attr("svg-label", lab[0].value);
             if (illustrator.compact) {
-              lab.splice(i,1);
+              lab.splice(i, 1);
             }
           }
         }
-        labels.push({...{row: pos.row, element_id: $(context).attr('svg-id'), tname: tname, label: lab},...illustrator.draw.get_y(pos.row)});
+        labels.push({
+          ...{
+            row: pos.row,
+            element_id: $(context).attr("svg-id"),
+            tname: tname,
+            label: lab,
+          },
+          ...illustrator.draw.get_y(pos.row),
+        });
       }
     }
-  } //}}}
-  var draw_position = function(tname,parent_pos,pos,prev,block,endnodes,context,second) { // private {{{
-    var sname = sym_name(tname,context);
+  }; //}}}
+  var draw_position = function (
+    tname,
+    parent_pos,
+    pos,
+    prev,
+    block,
+    endnodes,
+    context,
+    second
+  ) {
+    // private {{{
+    var sname = sym_name(tname, context);
     // console.log('----- pos ' + sname, parent_pos.row, block.max.row, parent_pos.col, block.max.col, block, illustrator.dim.debug());
 
     // Draw Symbol {{{
@@ -1160,31 +1823,103 @@ function WfDescription(wf_adaptor, wf_illustrator) { // Model {{{
     }
     if (second) {
       // wide is only for the special case of variable parallel, only event_end has it, all others should reference the first row
-      illustrator.draw.draw_symbol(sname, $(context).attr('svg-id'), $(context).attr('svg-label'), illustrator.elements[sname].wide == true ?  parent_pos.row+1 : parent_pos.row, block.max.row, pos.row, pos.col, second.svg, true, {}, style).addClass(illustrator.elements[sname] ? illustrator.elements[sname].type : 'primitive unknown');
+      illustrator.draw
+        .draw_symbol(
+          sname,
+          $(context).attr("svg-id"),
+          $(context).attr("svg-label"),
+          illustrator.elements[sname].wide == true
+            ? parent_pos.row + 1
+            : parent_pos.row,
+          block.max.row,
+          pos.row,
+          pos.col,
+          second.svg,
+          true,
+          {},
+          style
+        )
+        .addClass(
+          illustrator.elements[sname]
+            ? illustrator.elements[sname].type
+            : "primitive unknown"
+        );
     } else {
-      $(context).attr('svg-type',tname);
-      $(context).attr('svg-subtype',sname);
-      if((illustrator.elements[sname] && illustrator.elements[sname].svg) || sname == 'unknown') {
+      $(context).attr("svg-type", tname);
+      $(context).attr("svg-subtype", sname);
+      if (
+        (illustrator.elements[sname] && illustrator.elements[sname].svg) ||
+        sname == "unknown"
+      ) {
         let info = {};
         if (illustrator.elements[sname].info && context) {
           info = illustrator.elements[sname].info(context);
         }
-        var g = illustrator.draw.draw_symbol(sname, $(context).attr('svg-id'), $(context).attr('svg-label'), parent_pos.row, block.max.row, pos.row, pos.col, block.svg, false, info, style).addClass(illustrator.elements[sname] ? illustrator.elements[sname].type : 'primitive unknown');
-      } else { console.log("no icon "+ sname);}
+        var g = illustrator.draw
+          .draw_symbol(
+            sname,
+            $(context).attr("svg-id"),
+            $(context).attr("svg-label"),
+            parent_pos.row,
+            block.max.row,
+            pos.row,
+            pos.col,
+            block.svg,
+            false,
+            info,
+            style
+          )
+          .addClass(
+            illustrator.elements[sname]
+              ? illustrator.elements[sname].type
+              : "primitive unknown"
+          );
+      } else {
+        console.log("no icon " + sname);
+      }
       if (illustrator.elements[sname] && illustrator.elements[sname].border) {
-        let wide = (illustrator.elements[sname].wide == true && block.max.col == pos.col) ? pos.col + 1 : block.max.col;
+        let wide =
+          illustrator.elements[sname].wide == true && block.max.col == pos.col
+            ? pos.col + 1
+            : block.max.col;
         if (illustrator.elements[sname].closing_symbol) {
-          illustrator.draw.draw_border($(context).attr('svg-id'), pos, { col: wide, row: block.max.row + 1 }, block.svg);
+          illustrator.draw.draw_border(
+            $(context).attr("svg-id"),
+            pos,
+            { col: wide, row: block.max.row + 1 },
+            block.svg
+          );
         } else {
-          illustrator.draw.draw_border($(context).attr('svg-id'), pos, { col: wide, row: block.max.row }, block.svg);
+          illustrator.draw.draw_border(
+            $(context).attr("svg-id"),
+            pos,
+            { col: wide, row: block.max.row },
+            block.svg
+          );
         }
       }
-      if (illustrator.elements[sname] && illustrator.elements[sname].type == 'complex') {
-        let wide = (illustrator.elements[sname].wide == true && block.max.col == pos.col) ? pos.col + 1 : block.max.col;
+      if (
+        illustrator.elements[sname] &&
+        illustrator.elements[sname].type == "complex"
+      ) {
+        let wide =
+          illustrator.elements[sname].wide == true && block.max.col == pos.col
+            ? pos.col + 1
+            : block.max.col;
         if (illustrator.elements[sname].closing_symbol) {
-          illustrator.draw.draw_tile($(context).attr('svg-id'), pos, { col: wide, row: block.max.row + 1 }, block.svg);
+          illustrator.draw.draw_tile(
+            $(context).attr("svg-id"),
+            pos,
+            { col: wide, row: block.max.row + 1 },
+            block.svg
+          );
         } else {
-          illustrator.draw.draw_tile($(context).attr('svg-id'), pos, { col: wide, row: block.max.row }, block.svg);
+          illustrator.draw.draw_tile(
+            $(context).attr("svg-id"),
+            pos,
+            { col: wide, row: block.max.row },
+            block.svg
+          );
         }
       }
     }
@@ -1192,32 +1927,60 @@ function WfDescription(wf_adaptor, wf_illustrator) { // Model {{{
 
     // Calculate Connection {{{
     let connection_case = 0;
-    if(illustrator.elements[sname] != undefined && illustrator.elements[sname].closeblock == true) { // Close Block if element e.g. loop
+    if (
+      illustrator.elements[sname] != undefined &&
+      illustrator.elements[sname].closeblock == true
+    ) {
+      // Close Block if element e.g. loop
       if (second) {
-        if (second.pos.row+1 < pos.row) { // when no content, dont paint the up arrow
+        if (second.pos.row + 1 < pos.row) {
+          // when no content, dont paint the up arrow
           connection_case = 1;
           // console.log('++ case 1',prev[node].row,pos.row,illustrator.dim.debug());
           illustrator.draw.draw_connection(block.svg, pos, second.pos, 0, true);
         }
       } else {
-        for (let node=0; node < block.endnodes.length; node++) {
+        for (let node = 0; node < block.endnodes.length; node++) {
           if (block.endnodes[node] && !block.endnodes[node].final) {
             connection_case = 2;
             // console.log('++ case 2',prev[node].row,pos.row,illustrator.dim.debug());
-            illustrator.draw.draw_connection(block.svg, block.endnodes[node], pos, 0, true);
+            illustrator.draw.draw_connection(
+              block.svg,
+              block.endnodes[node],
+              pos,
+              0,
+              true
+            );
           }
         }
       }
     }
-    if(illustrator.elements[sname] != undefined && illustrator.elements[sname].endnodes != 'this') {
-      for(i in block.endnodes) { endnodes.push(block.endnodes[i]); } // collects all endpoints from different childs e.g. alternatives from choose
-    } else { endnodes = [JSON.parse(JSON.stringify(pos))]; } // sets this element as only endpoint (aggregate)
-    if(prev[0].row == 0 || prev[0].col == 0) { // this enforces the connection from description to the first element
-      connection_case = 3;
-      illustrator.draw.draw_connection(block.svg, { row: 1, col: 1 }, pos, 0, true);
+    if (
+      illustrator.elements[sname] != undefined &&
+      illustrator.elements[sname].endnodes != "this"
+    ) {
+      for (i in block.endnodes) {
+        endnodes.push(block.endnodes[i]);
+      } // collects all endpoints from different childs e.g. alternatives from choose
     } else {
-      if (illustrator.elements[sname].noarrow == undefined || illustrator.elements[sname].noarrow == false) {
-        for (let node=0; node < prev.length; node++) {
+      endnodes = [JSON.parse(JSON.stringify(pos))];
+    } // sets this element as only endpoint (aggregate)
+    if (prev[0].row == 0 || prev[0].col == 0) {
+      // this enforces the connection from description to the first element
+      connection_case = 3;
+      illustrator.draw.draw_connection(
+        block.svg,
+        { row: 1, col: 1 },
+        pos,
+        0,
+        true
+      );
+    } else {
+      if (
+        illustrator.elements[sname].noarrow == undefined ||
+        illustrator.elements[sname].noarrow == false
+      ) {
+        for (let node = 0; node < prev.length; node++) {
           if (prev[node] && !prev[node].final) {
             if (prev[node].wide) {
               var pn = JSON.parse(JSON.stringify(prev[node]));
@@ -1231,20 +1994,38 @@ function WfDescription(wf_adaptor, wf_illustrator) { // Model {{{
               connection_case = 5;
               if (prev.length == 1) {
                 // console.log('++ case 5a',parent_pos.row, '---', prev[node].row,pos.row,illustrator.dim.debug());
-                illustrator.draw.draw_connection(block.svg, prev[node], pos, 0, true);
+                illustrator.draw.draw_connection(
+                  block.svg,
+                  prev[node],
+                  pos,
+                  0,
+                  true
+                );
               } else {
                 // console.log('++ case 5b',prev[node].row,pos.row,illustrator.dim.debug());
-                illustrator.draw.draw_connection(block.svg, prev[node], pos, 0, true);
+                illustrator.draw.draw_connection(
+                  block.svg,
+                  prev[node],
+                  pos,
+                  0,
+                  true
+                );
               }
             }
           }
         }
       } else {
-        for (let node=0; node < prev.length; node++) {
+        for (let node = 0; node < prev.length; node++) {
           if (prev[node] && !prev[node].final) {
             connection_case = 6;
             // console.log('++ case 6',prev[node].row,pos.row,illustrator.dim.debug());
-            illustrator.draw.draw_connection(block.svg, prev[node], pos, prev[node].row, false);
+            illustrator.draw.draw_connection(
+              block.svg,
+              prev[node],
+              pos,
+              prev[node].row,
+              false
+            );
           }
         }
       }
@@ -1256,7 +2037,7 @@ function WfDescription(wf_adaptor, wf_illustrator) { // Model {{{
     // debugger;
 
     return [g, endnodes];
-  } // }}}
+  }; // }}}
   //  }}}
 
   //  Initialze {{{
