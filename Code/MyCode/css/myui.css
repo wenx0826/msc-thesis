@@ -37,8 +37,7 @@ li.active {
 }
 
 .model-container.active {
-  border-color: var(--wfadaptor-selected);
-  border: 2px solid var(--wfadaptor-selected);
+  border: 2px solid var(--wfadaptor-highlight);
 }
 
 .bottom-bar {
