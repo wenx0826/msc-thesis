@@ -28,10 +28,10 @@ const getModelList = () => {
         const store = tx.objectStore("models");
         const getAllReq = store.getAll();
         getAllReq.onsuccess = (evt) => {
-          // const models = (evt.target.result || []).map((r) => ({
-          //   id: r.id,
-          //   content: r.content,
-          // }));
+          const models = (evt.target.result || []).map((r) => ({
+            id: r.id,
+            svg: r.svg,
+          }));
           resolve(models);
         };
         getAllReq.onerror = (err) => reject(err);

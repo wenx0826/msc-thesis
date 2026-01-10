@@ -505,14 +505,15 @@
 
       }
     };
+
     const renderTraceInDocument = (trace) => {
       renderRanges(trace.segments, trace.model_id);
     };
+
     const loadDocument = async (docId) => {
       const content = await getDocumentContentById(db, docId);
       const htmlContent = new DOMParser().parseFromString(content, "text/html").body.innerHTML;
       $documentContent.html(htmlContent || '');
-
     };
 
     async function getFileContentInHTML(file) {
@@ -544,18 +545,19 @@
       return fileContent;
     }
 
-    const setActiveModel = (modelId) => {
+    const setActiveModel = async (modelId) => {
       if (modelId) {
-        const model = models.find(m => m.id == modelId);
-        activeModel = model;
-        // console.log('Setting active model:', model);
-        showModel(model);
-
+        activeModel = await getModelById(db, modelId);
+        showModel(activeModel);
         $('.model-container').removeClass('active');
         $(`.model-container[data-modelid="${modelId}"]`).addClass('active');
         $('.range-wrapper').removeClass("active");
         $(`.range-wrapper[data-modelid="${modelId}"]`).addClass("active");
+        const modelTrace = await getTraceByModelId(db, modelId);
+        await setActiveDocument(modelTrace.document_id);
 
+        renderRanges(modelTrace.segments);
+        renderSerializedRange
       } else {
         clearModel();
       }
@@ -601,15 +603,14 @@
     const onModelSelect = async (event) => {
       event.stopPropagation();
       var target = $(event.currentTarget);
-      target.addClass("active");
-      // $('#models').children().not(target).removeClass('active');
-      target.siblings().removeClass('active');
+      console.log('Model selected:', target.data('modelid'));
+
       const modelId = target.data('modelid');
 
-      // if (modelId) {
-      //   const model = await getModelById(db, modelId);
-      //   setActiveModel(model);
-      // }
+      if (modelId && modelId !== (activeModel && activeModel.id)) {
+        // const model = await getModelById(db, modelId);
+        setActiveModel(modelId);
+      }
       // const modelTrace = await getTraceByModelId(db, modelId);
       // await setActiveDocument(modelTrace.document_id);
 
@@ -631,10 +632,7 @@
       $gridDiv.append(svgData);
       $gridDiv.append(svgData);
       $modelContainer.append($gridDiv);
-      $modelContainer.on("click", (e) => {
-        e.stopPropagation();
-        setActiveModel(modelId);
-      });
+      $modelContainer.on("click", onModelSelect);
 
     };
 
@@ -923,9 +921,9 @@
       await loadTraces();
       await loadModels();
 
-      // if (documentList.length) {
-      //   setActiveDocument(documentList[documentList.length - 1]?.id);
-      // }
+      if (documentList.length) {
+        setActiveDocument(documentList[documentList.length - 1]?.id);
+      }
       // generateModel();
     });
 
@@ -1007,6 +1005,7 @@
       // activeModel.data = new XMLSerializer().serializeToString(activeModel.data);
       const updatedModel = { ...activeModel, data: new XMLSerializer().serializeToString(activeModel.data) };
       updateModel(db, updatedModel);
+
       const idx = models.findIndex(m => m.id === updatedModel.id);
       if (idx !== -1) {
         models[idx] = updatedModel;
