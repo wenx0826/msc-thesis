@@ -108,13 +108,14 @@
       <!-- Middle: Current Model Panel -->
       <ui-rest class="panel" style="flex:2; margin: .5em 0;">
         <div id="activeModelName"></div>
+        <button name="savemodelchanges" onclick="saveModel()">Save Model</button>
         <div>
-          <a id="savetestsetfile" href="" download=""></a>
+          <!-- <a id=" savetestsetfile" href="" download=""></a>
           <a id="savesvgfile" href="" download=""></a>
           <button title='a testset includes various settings, subscriptions and a model'
             name="savetestsetfile">save<br>testset</button>
           <button title='the SVG contains the graphical repesentation of the CPEE tree as you see it on the screen'
-            name="savesvgfile">save svg<br>graph</button>
+            name="savesvgfile">save svg<br>graph</button> -->
         </div>
         <ui-content>
           <div id='activeModelGrid'>
@@ -958,6 +959,7 @@
       $svgCopy.removeAttr('id');
       const svg = $svgCopy.prop('outerHTML');
       activeModel.svg = svg;
+
       activeModel.data = new XMLSerializer().serializeToString(activeModel.data);
 
       const modelId = await createModel(db, activeModel);
@@ -973,9 +975,7 @@
       traces.push(trace);
       renderTraceInDocument(trace);
       clearTemporarySelections();
-
       $("#generatedModelActionBar").css("visibility", "hidden");
-
     });
     $cancelButton.on("click", () => {
 
@@ -997,6 +997,43 @@
 
     $("button[name=savetestsetfile]").click(function () { save_testsetfile(); });
 
+    const saveModel = (e) => {
+      console.log("Saving model file...", activeModel.data);
+      const svgContent = $('#activeModelCanvas');
+      const $svgCopy = svgContent.clone(false);
+      $svgCopy.removeAttr('id');
+      const svg = $svgCopy.prop('outerHTML');
+      activeModel.svg = svg;
+      // activeModel.data = new XMLSerializer().serializeToString(activeModel.data);
+      const updatedModel = { ...activeModel, data: new XMLSerializer().serializeToString(activeModel.data) };
+      updateModel(db, updatedModel);
+      const idx = models.findIndex(m => m.id === updatedModel.id);
+      if (idx !== -1) {
+        models[idx] = updatedModel;
+
+        const $container = $(`.model-container[data-modelid="${updatedModel.id}"]`);
+        if ($container.length) {
+          // Rebuild container contents
+          $container.empty().text(updatedModel.name);
+
+          const $gridDiv = $("<div>").attr("id", `modelGrid_${updatedModel.id}`);
+          try {
+            const svgDoc = new DOMParser().parseFromString(updatedModel.svg || '', "image/svg+xml").documentElement;
+            if (svgDoc) $gridDiv.append(svgDoc);
+          } catch (err) {
+            console.warn('Failed to parse updated model SVG:', err);
+          }
+          $container.append($gridDiv);
+
+          // Reattach click handler
+          $container.off('click').on('click', (e) => { e.stopPropagation(); setActiveModel(updatedModel.id); });
+        }
+      } else {
+        models.push(updatedModel);
+        renderModelInList(updatedModel);
+      }
+    };
+    $("button[name=savemodelfile]").click(function (e) { saveModel(e); });  
   </script>
 </body>
 </html>
