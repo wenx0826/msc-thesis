@@ -498,10 +498,10 @@
         });
         await loadDocument(docId);
 
-        rerenderTraceLayers();
+        rerenderTraceLayer();
       }
     };
-    const rerenderTraceLayers = () => {
+    const rerenderTraceLayer = () => {
       $traceLayer.empty();
       if (activeDocId) {
         const modelTraces = traces.filter(trace => trace.document_id === activeDocId);
@@ -513,7 +513,6 @@
     const renderTraceInDocument = (trace) => {
       renderRanges(trace.segments, trace.model_id);
     };
-
 
     const loadDocument = async (docId) => {
       const content = await getDocumentContentById(db, docId);
@@ -628,12 +627,43 @@
     };
 
     const createSampleModel = async () => {
-      const resp = await fetch('Subprocess.xml');
-      if (!resp.ok) {
-        console.error('Failed to load sample_model.xml:', resp.status, resp.statusText);
-        return;
+
+      // choose a random XML from the "templates" folder and return its text
+
+      const templatesFolder = 'templates/';
+
+      async function fetchTemplatesList() {
+        try {
+          const r = await fetch(`${templatesFolder}templates.json`);
+          if (r.ok) {
+            const arr = await r.json();
+            return arr.map(f => `${f.name}.xml`);
+          }
+        } catch (e) {
+          console.error('Error fetching .templates.json:', e);
+        }
       }
-      return await resp.text();
+
+      try {
+        const list = await fetchTemplatesList();
+        if (!list || !list.length) {
+          throw new Error('No templates found in templates.json');
+        }
+        const chosen = list[Math.floor(Math.random() * list.length)];
+        const resp = await fetch(`${templatesFolder}${chosen}`);
+        console.log('Fetched template:', chosen);
+        if (!resp.ok) {
+          throw new Error(`Failed to fetch template ${chosen}, status ${resp.status}`);
+        }
+        return await resp.text();
+      } catch (err) {
+        console.error('createSampleModel error:', err);
+        // final fallback
+        const resp = await fetch('Subprocess.xml');
+        if (!resp.ok) throw err;
+        return await resp.text();
+      }
+
     };
 
     const generateModel = async () => {
@@ -793,20 +823,21 @@
       temporarySelections = temporarySelections.filter(r => r.id !== rangeId);
       $temporarySelectionsLayer.find(`#${rangeId}`).remove();
     };
-
+ 
     const clearRangeSelection = () => {
       $deleteSelectionButton.hide();
       $temporarySelectionsLayer.find('.range-wrapper.active').removeClass('active');
     };*/
 
-    const rerenderAllSelections = () => {
-      $temporarySelectionsLayer.empty();
-      highlightedRanges.forEach((range) => {
-        renderSerializedRange(range);
-      });
-      temporarySelections.forEach((range) => {
-        renderRange(range);
-      });
+    const rerenderOverlayLayers = () => {
+      rerenderTraceLayer();
+      // $temporarySelectionsLayer.empty();
+      // highlightedRanges.forEach((range) => {
+      //   renderSerializedRange(range);
+      // });
+      // temporarySelections.forEach((range) => {
+      //   renderRange(range);
+      // });
     };
 
     // const getXPath = (node, root = document.getElementById("documentContent")) => {
@@ -934,8 +965,8 @@
       }
     });
     $documentContent.on("mouseup", handleTextSelection);
-    $documentContent.on("scroll", rerenderAllSelections);
-    $(window).on("resize", rerenderAllSelections);
+    $documentContent.on("scroll", rerenderOverlayLayers);
+    $(window).on("resize", rerenderOverlayLayers);
 
     $generateButton.on("click", async () => {
       $generateButton.prop("disabled", true);
