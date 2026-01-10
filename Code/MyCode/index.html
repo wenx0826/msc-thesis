@@ -7,26 +7,20 @@
   <script type="text/javascript" src="js_libs/jquery.browser.js"></script>
   <script type="text/javascript" src="js_libs/jquery.svg.min.js"></script>
   <script type="text/javascript" src="js_libs/jquery.svgdom.min.js"></script>
+  <script type="text/javascript" src="js_libs/jquery.caret.min.js"></script>
+  <script type="text/javascript" src="js_libs/jquery.cookie.js"></script>
   <script type="text/javascript" src="js_libs/vkbeautify.js"></script>
   <script type="text/javascript" src="js_libs/util.js"></script>
   <script type="text/javascript" src="js_libs/printf.js"></script>
   <script type="text/javascript" src="js_libs/strftime.min.js"></script>
   <script type="text/javascript" src="js_libs/parsequery.js"></script>
   <script type="text/javascript" src="js_libs/underscore.min.js"></script>
-  <script type="text/javascript" src="js_libs/jquery.caret.min.js"></script>
-  <script type="text/javascript" src="js_libs/jquery.cookie.js"></script>
+
   <script type="text/javascript" src="js_libs/marked.min.js"></script>
-  <script type="text/javascript" src="js_libs/relaxngui.js"></script>
   <script type="text/javascript" src="js_libs/uidash.js"></script>
 
-  <script type="text/javascript" src="https://cpee.org/js_libs/jquery.min.js"></script>
-  <script type="text/javascript" src="https://cpee.org/js_libs/util.js"></script>
-  <script type="text/javascript" src="https://cpee.org/js_libs/parsequery.js"></script>
   <script type="text/javascript" src="https://cpee.org/js_libs/relaxngui.js"></script>
-  <link rel="stylesheet" href="https://cpee.org/js_libs/relaxngui.css" type="text/css" />
-  <script type="text/javascript" src="https://cpee.org/js_libs/vkbeautify.js"></script>
   <script type="text/javascript" src="https://cpee.org/js_libs/custommenu.js"></script>
-  <script type="text/javascript" src="https://cpee.org/js_libs/underscore.min.js"></script>
 
   <script type="text/javascript" src="js/wfadaptor.js"></script>
   <link rel="stylesheet" href="css/wfadaptor.css" type="text/css" />
@@ -39,11 +33,8 @@
 
   <link rel="stylesheet" href="js_libs/uidash.css" type="text/css">
   <link rel="stylesheet" href="js_libs/relaxngui.css" type="text/css">
-
   <link rel="stylesheet" href="css/ui.css" type="text/css">
   <link rel="stylesheet" href="css/globalui_cpee.css" type="text/css">
-
-
 
   <!-- libs, do not modify. When local than load local libs. -->
 
@@ -53,25 +44,22 @@
   <link rel="stylesheet" href="https://cpee.org/js_libs/custommenu.css" type="text/css" />
 
   <!-- modelling ui -->
-  <script type="text/javascript" src="wfadaptor.js"></script>
-  <link rel="stylesheet" href="wfadaptor.css" type="text/css" />
+  <script type="text/javascript" src="js/wfadaptor.js"></script>
+  <link rel="stylesheet" href="css/wfadaptor.css" type="text/css" />
   <script type="text/javascript" src="themes/base.js"></script>
 
-  <script type="text/javascript" src="extended_columns.js"></script>
-  <link rel="stylesheet" href="extended_columns-label.css" type="text/css" />
-  <link rel="stylesheet" href="extended_columns-svg.css" type="text/css" />
-
-
-
+  <script type="text/javascript" src="js/extended_columns.js"></script>
+  <link rel="stylesheet" href="css/extended_columns-label.css" type="text/css" />
+  <link rel="stylesheet" href="css/extended_columns-svg.css" type="text/css" />
 
   <!-- Flos Stuff -->
-  <script type="text/javascript" src="js/structured.js"></script>
-  <style type="text/css">
+  <!-- <script type="text/javascript" src="js/structured.js"></script> -->
+  <!-- <style type="text/css">
     @font-face {
       font-family: TencentSans;
       src: url("chrome-extension://lkjkfecdnfjopaeaibboihfkmhdjmanm/static/fonts/TencentSans.woff2");
     }
-  </style>
+  </style> -->
 
   <!-- my libs-->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -110,6 +98,7 @@
         <ui-area id="temporarySelectionsLayer" style="z-index: 1;"></ui-area>
         <button id="deleteSelectionButton"
           style="display:none; position:absolute;  z-index:3; width: 24px; height: 24px; background-color: red; color: white;border: none; border-radius: 50%; font-weight: bold;cursor: pointer;">X</button>
+
         <!-- Document Viewer -->
         <ui-rest class="panel" style="margin:0.5em;">
 
@@ -137,9 +126,9 @@
             <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink"
               id='activeModelCanvas' width='1' height='1'></svg>
           </div>
-        </ui-content>
-        <div class="hidden" id="relaxngworker"></div>
 
+          <div id="relaxngworker"></div>
+        </ui-content>
         <!-- Model Action Bar -->
         <div id="generatedModelActionBar" class="bottom-bar" style="visibility: hidden;">
           <div class="button-group">
@@ -151,22 +140,15 @@
       </ui-rest>
       <ui-resizehandle></ui-resizehandle>
       <!-- Right: Models Panel-->
-      <ui-rest style="flex:1; margin:0.5em; padding: .2em;" class="panel">
 
+      <ui-rest style="flex:1; margin:0.5em; padding: .2em;" class="panel">
         <ui-tab>Models</ui-tab>
-        <!-- <select id="documentListSelect">
-          <option value="">-- Select a Document --</option>
-        </select> -->
         <ui-rest>
           <ui-content>
             <ui-area id="models"></ui-area>
           </ui-content>
 
         </ui-rest>
-        <!-- <div id='activeModelGrid'>
-          <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink" id='activeModelCanvas'
-            width='1' height='1'></svg>
-        </div> -->
       </ui-rest>
 
     </ui-content>
@@ -264,6 +246,7 @@
     // disable all input, also check themes
     format_visual_forms();
 
+
     function add_ui_pos(e) {
       ui_pos(e, function (coll) {
         coll.push([$(e).attr('id'), e.nodeName == 'stop' ? 'after' : 'at']);
@@ -271,12 +254,70 @@
       });
     }
 
+    function del_ui_pos(e) {
+      ui_pos(e, function (coll) {
+        coll.splice(coll.findIndex((ele) => ele[0] == $(e).attr('id')), 1);
+        return coll;
+      });
+    }
 
 
+    function ui_pos(e, bl) {
+      var url = $("body").attr("current-instance");
+      var coll = [];
+      $(
+        "g.element.primitive > g.activities.active, g.element.primitive > g.activities.passive"
+      ).each(function (a, b) {
+        coll.push([
+          $(b).parent().attr("element-id"),
+          $(b).parent().attr("element-type") == "stop" ? "after" : "at",
+        ]);
+      });
+      coll = bl(coll);
+      var vals = "";
+      $(coll).each(function (k, ele) {
+        vals += "<" + ele[0] + ">" + ele[1] + "</" + ele[0] + ">";
+      });
+      vals =
+        "<positions xmlns='http://cpee.org/ns/properties/2.0'>" +
+        vals +
+        "</positions>";
+      $.ajax({
+        type: "PUT",
+        url: url + "/properties/positions/",
+        contentType: "application/xml",
+        headers: {
+          "Content-ID": "positions",
+          "CPEE-Event-Source": myid,
+        },
+        data: vals,
+        success: monitor_instance_pos,
+        error: report_failure,
+      });
+    }
 
 
+    function monitor_instance_pos() {
 
+      if (graph_position && graph_position == "false") {
+        save["instance_pos"] = [];
+        format_visual_clear();
+        format_instance_pos();
+        return;
+      }
+      var url = $("body").attr("current-instance");
+      $.ajax({
+        type: "GET",
+        url: url + "/properties/positions/",
+        success: function (res) {
+          save["instance_pos"] = $("positions > *", res);
+          format_visual_clear();
+          format_instance_pos();
+        },
+      });
+    }
 
+    function report_failure() { }
 
 
 
@@ -783,17 +824,15 @@
     };
 
     $document.ready(async () => {
-      await connectDB();
-      await loadDocumentList();
-      await loadTraces();
-      await loadModels();
+      // await connectDB();
+      // await loadDocumentList();
+      // await loadTraces();
+      // await loadModels();
 
-      if (documentList.length) {
-        setActiveDocument(documentList[documentList.length - 1]?.id);
-      }
+      // if (documentList.length) {
+      //   setActiveDocument(documentList[documentList.length - 1]?.id);
+      // }
       generateModel();
-
-      // highlightsScrollSync();
     });
 
     $documentsInput.on("change", async (event) => {

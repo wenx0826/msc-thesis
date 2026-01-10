@@ -179,6 +179,8 @@
   },
   "active": "279053b3089b8b05",
   "lastOpenFiles": [
+    "Code/MyCode/js_libs/AdwaitaSans-Regular.ttf",
+    "Code/MyCode/js_libs/relaxngui.css",
     "Code/MyCode/themes/reduced/theme.js",
     "Code/MyCode/themes/reduced",
     "Code/MyCode/themes/control/theme.js",
@@ -188,8 +190,6 @@
     "Code/MyCode/themes/extended/theme.js",
     "Code/MyCode/themes/extended",
     "Code/MyCode/themes/base.js",
-    "Code/MyCode/themes/model/rngs/scripts.rng",
-    "Code/MyCode/themes/model/rngs/callmanipulate.rng",
     "Code/MyCode/themes/preset/symbols/wait_for_signal.svg",
     "Code/MyCode/themes/preset/symbols/terminate.svg",
     "Code/MyCode/themes/preset/symbols/stop.svg",
