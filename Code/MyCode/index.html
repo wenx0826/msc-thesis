@@ -181,9 +181,11 @@
     let traces = [];
     let models = [];
     let activeModel = null;
-    let activeModelData = null;
 
+    let activeModelTrace = null;
     let temporarySelections = [];
+
+    // let activeModelSelections = [];
 
     var es;
     var suspended_redrawing = false;
@@ -486,6 +488,9 @@
 
     const setActiveDocument = async (docId) => {
       if (docId && docId !== activeDocId) {
+        if (activeModel) {
+          setActiveModel(null);
+        }
         $temporarySelectionsLayer.empty();
         activeDocId = docId;
         $documentList.children().each((index, element) => {
@@ -497,21 +502,27 @@
           }
         });
         await loadDocument(docId);
-
         rerenderTraceLayer();
       }
     };
+
     const rerenderTraceLayer = () => {
       $traceLayer.empty();
       if (activeDocId) {
-        const modelTraces = traces.filter(trace => trace.document_id === activeDocId);
-        if (modelTraces.length) {
-          modelTraces.forEach(trace => renderTraceInDocument(trace));
+        const activeModelTraces = traces.filter(trace => trace.document_id === activeDocId);
+        if (activeModelTraces.length) {
+          activeModelTraces.forEach(trace => renderTraceInDocument(trace));
         }
       }
     };
+
+    const rerenderTemporarySelectionsLayer = () => {
+      $temporarySelectionsLayer.empty();
+      temporarySelections.forEach(selection => renderTemporarySelectionInDocument(selection));
+    };
+
     const renderTraceInDocument = (trace) => {
-      renderRanges(trace.segments, trace.model_id);
+      renderRanges(trace.selections, trace.model_id);
     };
 
     const loadDocument = async (docId) => {
@@ -549,22 +560,30 @@
       return fileContent;
     }
 
+
     const setActiveModel = async (modelId) => {
       if (modelId && modelId !== (activeModel && activeModel.id)) {
-        // console.log('Setting active model to ID:', modelId);
         activeModel = await getModelById(db, modelId);
         showModel(activeModel);
         $('.model-container').removeClass('active');
         $(`.model-container[data-modelid="${modelId}"]`).addClass('active');
         $('.range-wrapper').removeClass("active");
         $(`.range-wrapper[data-modelid="${modelId}"]`).addClass("active");
-        const modelTrace = await getTraceByModelId(db, modelId);
-        await setActiveDocument(modelTrace.document_id);
 
-        renderRanges(modelTrace.segments);
-        renderSerializedRange
+
+        activeModelTrace = traces.find(trace => trace.model_id === modelId);
+
+        const documentId = activeModelTrace ? activeModelTrace.document_id : null;
+        if (documentId && documentId !== activeDocId) {
+          await setActiveDocument(documentId);
+        }
+
+        activeModelSelections = activeModelTrace ? activeModelTrace.selections : [];
+        highlightSelections(activeModelSelections);
+
       } else if (!modelId) {
         clearModel();
+        $('.model-container').removeClass('active');
       }
 
     };
@@ -581,7 +600,6 @@
         data = data.documentElement;
       }
       model.data = data
-      console.log('Rendering active model:', model.name, data);
       WfAdaptor('themes/extended/theme.js', function (graphrealization) {
         // graphrealization.draw_labels = (max, labels, dimensions, striped) => {
         //   draw_extended_columns(graphrealization, max, labels, dimensions, striped)
@@ -668,7 +686,6 @@
 
     const generateModel = async () => {
       const selectedText = temporarySelections.map(range => range.toString()).join(' ');
-      // console.log('Generating model for selected text:', selectedText);
       generatedModel = await createSampleModel();
       activeModel = {
         data: generatedModel,
@@ -723,18 +740,18 @@
 
     const renderSerializedRange = (serializedRange) => {
       const range = deserializeRange(serializedRange);
-      renderRange(range);
+      renderTrace(range);
     };
 
     const renderRanges = (serializedRanges, modelId) => {
       // $temporarySelectionsLayer.empty();
       serializedRanges.forEach((serializedRange) => {
         const range = deserializeRange(serializedRange);
-        renderRange(range, modelId);
+        renderTrace(range, modelId);
       });
     };
 
-    const renderRange = (range, modelId) => {
+    const renderTrace = (range, modelId) => {
 
       const rangeId = range.id || Date.now();
       const $rangeDiv = $('<div>')
@@ -783,13 +800,6 @@
 
     };
 
-    // const onModelLabelSelect = (event) => {
-    //   event.stopPropagation();
-    //   const $target = $(event.currentTarget);
-    //   const modelId = $target.attr('data-modelid');
-    //   setActiveModel(modelId);
-    // };
-
     const onRangeSelect = (event) => {
       event.stopPropagation();
       const $target = $(event.currentTarget).parent();
@@ -809,8 +819,8 @@
         top: `${rangeBoundingRect.top + window.scrollY - 12}px`,
         left: `${rangeBoundingRect.right + window.scrollX - 12}px`,
       }).on('click', () => {
-        // Remove range from highlightedRanges and temporarySelections
-        highlightedRanges = highlightedRanges.filter(r => r.id !== rangeId);
+        // Remove range from highlightSelections and temporarySelections
+        highlightSelections = highlightSelections.filter(r => r.id !== rangeId);
         temporarySelections = temporarySelections.filter(r => r.id !== rangeId);
         // Remove the highlight from the UI
         $target.remove();
@@ -819,7 +829,7 @@
     };
 
     /*const deleteRangeById = (rangeId) => {
-      highlightedRanges = highlightedRanges.filter(r => r.id !== rangeId);
+      highlightSelections = highlightSelections.filter(r => r.id !== rangeId);
       temporarySelections = temporarySelections.filter(r => r.id !== rangeId);
       $temporarySelectionsLayer.find(`#${rangeId}`).remove();
     };
@@ -831,13 +841,7 @@
 
     const rerenderOverlayLayers = () => {
       rerenderTraceLayer();
-      // $temporarySelectionsLayer.empty();
-      // highlightedRanges.forEach((range) => {
-      //   renderSerializedRange(range);
-      // });
-      // temporarySelections.forEach((range) => {
-      //   renderRange(range);
-      // });
+      rerenderTemporarySelectionsLayer();
     };
 
     // const getXPath = (node, root = document.getElementById("documentContent")) => {
@@ -918,7 +922,7 @@
       const clonedRange = range.cloneRange();
       clonedRange.id = Date.now();
       temporarySelections.push(clonedRange);
-      renderRange(clonedRange);
+      renderTrace(clonedRange);
       selection.removeAllRanges();
       // if (selection && selection.rangeCount > 0) {
       //   const range = selection.getRangeAt(0); // Get the selected range
@@ -992,7 +996,7 @@
       var trace = {
         document_id: activeDocId,
         model_id: modelId,
-        segments: temporarySelections.map(range => serializeRange(range)),
+        selections: temporarySelections.map(range => serializeRange(range)),
       };
 
       await createTrace(db, trace);
