@@ -220,7 +220,21 @@
     let activeModelTrace = null;
     let temporarySelections = [];
 
+
     // let activeModelSelections = [];
+
+    const getActiveModelId = () => {
+      return activeModel ? activeModel.id : null;
+    };
+
+    const getActiveModelTrace = () => {
+      return traces.find(trace => trace.model_id == (activeModel && activeModel.id)) || null;
+    };
+    const getActiveModelDocumentId = () => {
+      const trace = getActiveModelTrace();
+      return trace ? trace.document_id : null;
+    };
+
 
     var es;
     var suspended_redrawing = false;
@@ -595,7 +609,7 @@
       const $selectionDiv = $('<div>')
         .attr('id', rangeId)
         .attr('data-modelid', modelId || '')
-        .addClass('selection-wrapper')
+        .addClass(`selection-wrapper ${modelId == getActiveModelId() ? 'active' : ''}`)
         .css({
           top: `${range.getBoundingClientRect().top + window.scrollY}px`,
           left: `${range.getBoundingClientRect().left + window.scrollX}px`,
@@ -659,7 +673,6 @@
       $tracesLayer.empty();
       if (activeDocId) {
         const docTraces = traces.filter(trace => trace.document_id == activeDocId);
-        console.log('!!!001- Active Document ID for traces layer rerender:', activeDocId, 'Traces to render:', docTraces);
         if (docTraces.length) {
           docTraces.forEach(trace => renderTrace(trace));
         }
@@ -671,13 +684,7 @@
     };
     // #endregion
 
-    const getActiveModelTrace = () => {
-      return traces.find(trace => trace.model_id == (activeModel && activeModel.id)) || null;
-    };
-    const getActiveModelDocumentId = () => {
-      const trace = getActiveModelTrace();
-      return trace ? trace.document_id : null;
-    };
+
 
     const setActiveDocument = async (docId) => {
       if (docId && docId != activeDocId) {
