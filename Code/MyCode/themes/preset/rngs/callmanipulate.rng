@@ -11,7 +11,7 @@
     <element name="label" rngui:label="Label">
       <data type="string" rngui:label="Short description of the task"/>
     </element>
-    <element name="color" rngui:label="Task Color">
+    <!-- <element name="color" rngui:label="Task Color">
       <choice rngui:type='color'>
         <value>#ffffff</value>
         <value>#d4e1f1</value>
@@ -22,8 +22,8 @@
         <value>#ded0c5</value>
         <value>#deddda</value>
       </choice>
-    </element>
-    <element name="method" rngui:label="Method">
+    </element> -->
+    <!-- <element name="method" rngui:label="Method">
       <choice>
         <value>:post</value>
         <value>:get</value>
@@ -39,9 +39,9 @@
           <data type="string" rngui:label="Value"/>
         </element>
       </zeroOrMore>
-    </element>
+    </element> -->
   </element>
-  <element name="code" rngui:header="Data Handling">
+  <!-- <element name="code" rngui:header="Data Handling">
     <element name="signal" rngui:label="Signal after finalize/update">
       <data type="boolean" rngui:label="A signal is sent every time the activity changes a data object"/>
     </element>
@@ -66,8 +66,8 @@
       </attribute>
       <text rngui:label="Script that is executed, if a service call fails"/>
     </element>
-  </element>
-  <element name="annotations" rngui:header="Annotations">
+  </element> -->
+  <!-- <element name="annotations" rngui:header="Annotations">
     <element name="_generic" rngui:header="Generic" rngui:fold="closed">
       <zeroOrMore rngui:label="Create Annotation Pair">
         <element rngui:label="Name" rngui:labeltype="xml">
@@ -244,9 +244,9 @@
         <text rngui:wrap="true" rngui:label="Notes"/>
       </element>
     </element>
-  </element>
+  </element> -->
 
-  <element name="documentation" rngui:header="Documentation">
+  <!-- <element name="documentation" rngui:header="Documentation">
     <element name="input" rngui:header="Input Arguments" rngui:fold="closed">
       <zeroOrMore rngui:label="Create Argument">
         <element name="item" rngui:label="Description">
@@ -277,5 +277,5 @@
         <text rngui:wrap="true" rngui:label="Which output elements are important? How to transform and save them?"/>
       </element>
     </element>
-  </element>
+  </element> -->
 </element>

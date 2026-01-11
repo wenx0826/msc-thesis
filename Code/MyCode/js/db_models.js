@@ -87,7 +87,6 @@ const updateModel = (db, id, updatedFields) => {
   });
 };
 
-// 通用保存函数 - 既可以创建也可以更新
 // const updateModel = (db, record) => {
 //   return new Promise((resolve, reject) => {
 //     try {

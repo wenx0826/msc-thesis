@@ -28,7 +28,7 @@
           <color/>
           <arguments>
             <behavior>wait_running</behavior>
-            <url/>
+            <url>https://cpee.org/hub/server/fe.xml</url>
             <init/>
             <endpoints/>
             <attributes/>

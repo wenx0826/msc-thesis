@@ -11,7 +11,7 @@
     <element name="label" rngui:label="Label">
       <data type="string" rngui:label="Short description of the task"/>
     </element>
-    <element name="color" rngui:label="Task Color">
+    <!-- <element name="color" rngui:label="Task Color">
       <choice rngui:type='color'>
         <value>#ffffff</value>
         <value>#d4e1f1</value>
@@ -22,7 +22,7 @@
         <value>#ded0c5</value>
         <value>#deddda</value>
       </choice>
-    </element>
+    </element> -->
     <element name="method" rngui:label="Method">
       <choice>
         <value>:post</value>

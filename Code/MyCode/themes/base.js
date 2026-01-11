@@ -67,6 +67,7 @@ function WFAdaptorManifestationBase(adaptor) {
   //{{{ Render the details from rng (right hand side of graph tab)
   this.update_details = function (svgid) {
     var tab = $("#dat_details");
+    console.log("Updating details for svgid:", svgid, tab);
     var node = self.adaptor.description.get_node_by_svg_id(svgid).get(0);
     if (self.adaptor.description.elements[$(node).attr("svg-subtype")]) {
       save["details_target"].svgid = svgid;
@@ -106,6 +107,7 @@ function WFAdaptorManifestationBase(adaptor) {
         self.adaptor.description.context_eval,
         true
       );
+      console.log("Details RelaxNGui instance------:", save["details"]);
       save["details"].content(nn);
 
       format_visual_forms();
