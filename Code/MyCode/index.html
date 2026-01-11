@@ -98,7 +98,7 @@
 
           <div class="bottom-bar">
             <div class="button-group">
-              <button id="generateButton" style="display:none;">Generate</button>
+              <button id="generateButton" disabled="true">Generate</button>
               <button id="regenerateButton" style="display:none;">Regenerate</button>
             </div>
           </div>
@@ -480,12 +480,6 @@
       }
     };
 
-    const onDocumentSelect = async (event) => {
-      event.stopPropagation();
-      const docId = $(event.currentTarget).data('docid');
-      setActiveDocument(docId);
-    };
-
     const setActiveDocument = async (docId) => {
       if (docId && docId !== activeDocId) {
         if (activeModel) {
@@ -506,10 +500,18 @@
       }
     };
 
+    const onDocumentSelect = async (event) => {
+      event.stopPropagation();
+      const docId = $(event.currentTarget).data('docid');
+      setActiveDocument(docId);
+    };
+
+
     const rerenderTraceLayer = () => {
       $traceLayer.empty();
       if (activeDocId) {
         const activeModelTraces = traces.filter(trace => trace.document_id === activeDocId);
+        console.log('Rerendering trace layer for document', activeDocId, 'Active Model Traces:', activeModelTraces.length);
         if (activeModelTraces.length) {
           activeModelTraces.forEach(trace => renderTraceInDocument(trace));
         }
@@ -522,6 +524,7 @@
     };
 
     const renderTraceInDocument = (trace) => {
+      console.log('Rendering trace in document ' + activeDocId, trace);
       renderRanges(trace.selections, trace.model_id);
     };
 
@@ -567,9 +570,6 @@
         showModel(activeModel);
         $('.model-container').removeClass('active');
         $(`.model-container[data-modelid="${modelId}"]`).addClass('active');
-        $('.range-wrapper').removeClass("active");
-        $(`.range-wrapper[data-modelid="${modelId}"]`).addClass("active");
-
 
         activeModelTrace = traces.find(trace => trace.model_id === modelId);
 
@@ -577,9 +577,11 @@
         if (documentId && documentId !== activeDocId) {
           await setActiveDocument(documentId);
         }
+        $('.range-wrapper').removeClass("active");
+        $(`.range-wrapper[data-modelid="${modelId}"]`).addClass("active");
 
         activeModelSelections = activeModelTrace ? activeModelTrace.selections : [];
-        highlightSelections(activeModelSelections);
+
 
       } else if (!modelId) {
         clearModel();
@@ -691,6 +693,7 @@
         data: generatedModel,
       };
       showModel(activeModel);
+      $generateButton.prop("disabled", false);
       $("#generatedModelActionBar").css("visibility", "visible");
     };
 
@@ -752,7 +755,7 @@
     };
 
     const renderTrace = (range, modelId) => {
-
+      console.log('Rendering trace range:', range, 'for modelId:', modelId);
       const rangeId = range.id || Date.now();
       const $rangeDiv = $('<div>')
         .attr('id', rangeId)
@@ -770,6 +773,7 @@
 
       // console.log('Highlighting range:', range.toString());
       const rects = range.getClientRects();
+      console.log('!!!Range rects:', rects);
       for (const rect of rects) {
         const $rectDiv = $rangeRect.clone();
         $rectDiv.css({
@@ -784,6 +788,8 @@
       if (modelId) {
         const lastIndex = rects.length - 1;
         const lastRect = rects[lastIndex];
+        console.log('!!!Rendering trace range:', range, 'for modelId:', modelId, lastIndex, lastRect);
+
         const modelName = models.find(m => m.id === modelId)?.name || `Model ${modelId}`;
         const labelSpan = $('<span>').attr('data-modelid', modelId).addClass('label-span').text(`${modelName}`).css({
           top: `${lastRect.top + window.scrollY - 10}px`,
@@ -914,10 +920,11 @@
       const range = selection.getRangeAt(0);
       if (range.collapsed) return;
       // if (!content.contains(range.commonAncestorContainer)) return;
-      if (activeModel) {
+      if (activeModel && activeModel.id) {
         $regenerateButton.show();
       } else {
-        $generateButton.show();
+        // $generateButton.show();
+        $generateButton.prop("disabled", false);
       }
       const clonedRange = range.cloneRange();
       clonedRange.id = Date.now();
@@ -1003,6 +1010,7 @@
       traces.push(trace);
       renderTraceInDocument(trace);
       clearTemporarySelections();
+      $generateButton.prop("disabled", true);
       $("#generatedModelActionBar").css("visibility", "hidden");
     });
 
