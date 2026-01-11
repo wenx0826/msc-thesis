@@ -83,7 +83,7 @@
           </ui-content>
         </ui-tabbed>
         <!-- Text Action Bar -->
-        <ui-area id="traceLayer" style="z-index: 1;"></ui-area>
+        <ui-area id="tracesLayer" style="z-index: 1;"></ui-area>
         <ui-area id="temporarySelectionsLayer" style="z-index: 1;"></ui-area>
         <button id="deleteSelectionButton"
           style="display:none; position:absolute;  z-index:3; width: 24px; height: 24px; background-color: red; color: white;border: none; border-radius: 50%; font-weight: bold;cursor: pointer;">X</button>
@@ -166,8 +166,10 @@
     const $documentList = $('#documentList');
 
     const $documentContent = $('#documentContent');
-    const $traceLayer = $('#traceLayer');
+
+    const $tracesLayer = $('#tracesLayer');
     const $temporarySelectionsLayer = $('#temporarySelectionsLayer');
+
     const $deleteSelectionButton = $('#deleteSelectionButton');
     const $generateButton = $('#generateButton');
     const $regenerateButton = $('#regenerateButton');
@@ -409,8 +411,6 @@
 
 
 
-
-
     const connectDB = () => {
       return new Promise((resolve, reject) => {
         const dbReq = indexedDB.open("MyDB", 1);
@@ -480,12 +480,178 @@
       }
     };
 
+    // #region Selection Range Serialization and Deserialization
+    function getXPath(node, root = document.getElementById("documentContent")) {
+      if (node === root) return '/';
+      const path = [];
+      let cur = node;
+      while (cur && cur !== root) {
+        const idx = Array.prototype.indexOf.call(cur.parentNode.childNodes, cur);
+        path.unshift(idx);
+        cur = cur.parentNode;
+      }
+      return '/' + path.join('/');
+    }
+
+    function getNodeByXPath(path, root = document.getElementById("documentContent")) {
+      const parts = path.split('/').filter(Boolean);
+      let node = root;
+      for (const idx of parts) {
+        const i = parseInt(idx, 10);
+        if (!node || !node.childNodes[i]) return null;
+        node = node.childNodes[i];
+      }
+      return node;
+    }
+
+    const serializeRange = (range) => {
+      return {
+        id: range.id,
+        // color: h.color,
+        startXPath: getXPath(range.startContainer),
+        startOffset: range.startOffset,
+        endXPath: getXPath(range.endContainer),
+        endOffset: range.endOffset,
+      };
+    };
+
+    const deserializeRange = (serializedRange) => {
+      const startNode = getNodeByXPath(serializedRange.startXPath);
+      const endNode = getNodeByXPath(serializedRange.endXPath);
+      const range = document.createRange();
+      range.setStart(startNode, serializedRange.startOffset);
+      range.setEnd(endNode, serializedRange.endOffset);
+      range.id = serializedRange.id;
+      return range;
+    };
+
+    // #endregion
+
+    // #region Render Selections Layer and Traces Layer
+    const onRangeSelect = (event) => {
+      event.stopPropagation();
+      const $target = $(event.currentTarget).parent();
+      $target.addClass("selected");
+      const rangeId = $target.attr('id');
+      $target.siblings().removeClass('selected');
+
+      const rangeBoundingRect = $target[0].getBoundingClientRect();
+
+      $document.one('mousedown', () => {
+        $deleteSelectionButton.hide();
+        $target.removeClass('selected');
+      });
+
+      $deleteSelectionButton.show().css({
+        top: `${rangeBoundingRect.top + window.scrollY - 12}px`,
+        left: `${rangeBoundingRect.right + window.scrollX - 12}px`,
+      }).on('click', () => {
+        // Remove range from highlightSelections and temporarySelections
+        highlightSelections = highlightSelections.filter(r => r.id !== rangeId);
+        temporarySelections = temporarySelections.filter(r => r.id !== rangeId);
+        // Remove the highlight from the UI
+        $target.remove();
+        $deleteSelectionButton.hide();
+      });
+    };
+
+
+    const renderSelection = (range, modelId) => {
+      const rangeId = range.id || Date.now();
+
+      const $selectionDiv = $('<div>')
+        .attr('id', rangeId)
+        .attr('data-modelid', modelId || '')
+        .addClass('selection-wrapper')
+        .css({
+          top: `${range.getBoundingClientRect().top + window.scrollY}px`,
+          left: `${range.getBoundingClientRect().left + window.scrollX}px`,
+          width: `${range.getBoundingClientRect().width}px`,
+          height: `${range.getBoundingClientRect().height}px`,
+        });
+      const $rangeRect = $('<div>').addClass('range-rect');
+      const rects = range.getClientRects();
+      for (const rect of rects) {
+        const $rectDiv = $rangeRect.clone();
+        $rectDiv.css({
+          top: `${rect.top + window.scrollY}px`,
+          left: `${rect.left + window.scrollX}px`,
+          width: `${rect.width}px`,
+          height: `${rect.height}px`,
+        }).on('click', onRangeSelect);
+        $selectionDiv.append($rectDiv);
+      }
+
+      if (modelId) {
+        const lastIndex = rects.length - 1;
+        const lastRect = rects[lastIndex];
+
+        const modelName = models.find(m => m.id == modelId)?.name || `Model ${modelId}`;
+        const labelSpan = $('<span>').attr('data-modelid', modelId).addClass('label-span').text(`${modelName}`).css({
+          top: `${lastRect.top + window.scrollY - 10}px`,
+          left: `${lastRect.right + window.scrollX}px`,
+        }).on('click', (event) => {
+          event.stopPropagation();
+          setActiveModel(modelId);
+        });
+        $selectionDiv.append(labelSpan);
+        $tracesLayer.append($selectionDiv);
+      } else {
+        $temporarySelectionsLayer.append($selectionDiv);
+      }
+
+    };
+
+    const clearTemporarySelections = () => {
+      if (temporarySelections.length > 0) {
+        temporarySelections = [];
+        $temporarySelectionsLayer.empty();
+      };
+    }
+
+    const rerenderTemporarySelectionsLayer = () => {
+      if (temporarySelections.length > 0) {
+        $temporarySelectionsLayer.empty();
+        temporarySelections.forEach(range => renderSelection(range));
+      }
+    };
+    const renderTrace = ({ selections: selections, model_id: modelId }) => {
+      selections.forEach(serializedRange => {
+        const range = deserializeRange(serializedRange);
+        renderSelection(range, modelId);
+      });
+    };
+
+    const rerenderTracesLayer = () => {
+      $tracesLayer.empty();
+      if (activeDocId) {
+        const docTraces = traces.filter(trace => trace.document_id == activeDocId);
+        console.log('!!!001- Active Document ID for traces layer rerender:', activeDocId, 'Traces to render:', docTraces);
+        if (docTraces.length) {
+          docTraces.forEach(trace => renderTrace(trace));
+        }
+      }
+    };
+    const rerenderOverlayLayers = () => {
+      rerenderTracesLayer();
+      rerenderTemporarySelectionsLayer();
+    };
+    // #endregion
+
+    const getActiveModelTrace = () => {
+      return traces.find(trace => trace.model_id == (activeModel && activeModel.id)) || null;
+    };
+    const getActiveModelDocumentId = () => {
+      const trace = getActiveModelTrace();
+      return trace ? trace.document_id : null;
+    };
+
     const setActiveDocument = async (docId) => {
-      if (docId && docId !== activeDocId) {
-        if (activeModel) {
+      if (docId && docId != activeDocId) {
+        const activeModelDocId = getActiveModelDocumentId();
+        if (getActiveModelDocumentId() != docId) {
           setActiveModel(null);
         }
-        $temporarySelectionsLayer.empty();
         activeDocId = docId;
         $documentList.children().each((index, element) => {
           const $element = $(element);
@@ -496,8 +662,36 @@
           }
         });
         await loadDocument(docId);
-        rerenderTraceLayer();
+        clearTemporarySelections();
+        rerenderTracesLayer();
       }
+    };
+
+    const setActiveModel = async (modelId) => {
+      console.log('001-Setting active model to ID:', modelId);
+      if (modelId && modelId != (activeModel && activeModel.id)) {
+        console.log('001-Setting active model to ID:', modelId);
+        activeModel = await getModelById(db, modelId);
+        showModel(activeModel);
+        $('.model-container').removeClass('active');
+        $(`.model-container[data-modelid="${modelId}"]`).addClass('active');
+
+        activeModelTrace = traces.find(trace => trace.model_id == modelId);
+
+        const documentId = activeModelTrace ? activeModelTrace.document_id : null;
+        await setActiveDocument(documentId);
+
+        $('.selection-wrapper').removeClass("active");
+        $(`.selection-wrapper[data-modelid="${modelId}"]`).addClass("active");
+
+        activeModelSelections = activeModelTrace ? activeModelTrace.selections : [];
+
+
+      } else if (!modelId) {
+        clearModel();
+        $('.model-container').removeClass('active');
+      }
+
     };
 
     const onDocumentSelect = async (event) => {
@@ -506,27 +700,6 @@
       setActiveDocument(docId);
     };
 
-
-    const rerenderTraceLayer = () => {
-      $traceLayer.empty();
-      if (activeDocId) {
-        const activeModelTraces = traces.filter(trace => trace.document_id === activeDocId);
-        console.log('Rerendering trace layer for document', activeDocId, 'Active Model Traces:', activeModelTraces.length);
-        if (activeModelTraces.length) {
-          activeModelTraces.forEach(trace => renderTraceInDocument(trace));
-        }
-      }
-    };
-
-    const rerenderTemporarySelectionsLayer = () => {
-      $temporarySelectionsLayer.empty();
-      temporarySelections.forEach(selection => renderTemporarySelectionInDocument(selection));
-    };
-
-    const renderTraceInDocument = (trace) => {
-      console.log('Rendering trace in document ' + activeDocId, trace);
-      renderRanges(trace.selections, trace.model_id);
-    };
 
     const loadDocument = async (docId) => {
       const content = await getDocumentContentById(db, docId);
@@ -564,31 +737,7 @@
     }
 
 
-    const setActiveModel = async (modelId) => {
-      if (modelId && modelId !== (activeModel && activeModel.id)) {
-        activeModel = await getModelById(db, modelId);
-        showModel(activeModel);
-        $('.model-container').removeClass('active');
-        $(`.model-container[data-modelid="${modelId}"]`).addClass('active');
 
-        activeModelTrace = traces.find(trace => trace.model_id === modelId);
-
-        const documentId = activeModelTrace ? activeModelTrace.document_id : null;
-        if (documentId && documentId !== activeDocId) {
-          await setActiveDocument(documentId);
-        }
-        $('.range-wrapper').removeClass("active");
-        $(`.range-wrapper[data-modelid="${modelId}"]`).addClass("active");
-
-        activeModelSelections = activeModelTrace ? activeModelTrace.selections : [];
-
-
-      } else if (!modelId) {
-        clearModel();
-        $('.model-container').removeClass('active');
-      }
-
-    };
 
     const showModel = (model) => {
       // const { name: modelName, data: modelData } = model;
@@ -619,12 +768,6 @@
       $('#activeModelCanvas').empty();
 
     };
-
-    const clearTemporarySelections = () => {
-      temporarySelections = [];
-      $temporarySelectionsLayer.empty();
-    };
-
 
     const renderModelInList = async ({ id: modelId, name: modelName, content: modelContent, svg: svgContent }) => {
       var gridId = `modelGrid_${modelId}`;
@@ -697,143 +840,6 @@
       $("#generatedModelActionBar").css("visibility", "visible");
     };
 
-    function getXPath(node, root = document.getElementById("documentContent")) {
-      if (node === root) return '/';
-      const path = [];
-      let cur = node;
-      while (cur && cur !== root) {
-        const idx = Array.prototype.indexOf.call(cur.parentNode.childNodes, cur);
-        path.unshift(idx);
-        cur = cur.parentNode;
-      }
-      return '/' + path.join('/');
-    }
-
-    /** 从 XPath 获取节点 */
-    function getNodeByXPath(path, root = document.getElementById("documentContent")) {
-      const parts = path.split('/').filter(Boolean);
-      let node = root;
-      for (const idx of parts) {
-        const i = parseInt(idx, 10);
-        if (!node || !node.childNodes[i]) return null;
-        node = node.childNodes[i];
-      }
-      return node;
-    }
-
-    const serializeRange = (range) => {
-      return {
-        id: range.id,
-        // color: h.color,
-        startXPath: getXPath(range.startContainer),
-        startOffset: range.startOffset,
-        endXPath: getXPath(range.endContainer),
-        endOffset: range.endOffset,
-      };
-    };
-
-    const deserializeRange = (serializedRange) => {
-      const startNode = getNodeByXPath(serializedRange.startXPath);
-      const endNode = getNodeByXPath(serializedRange.endXPath);
-      const range = document.createRange();
-      range.setStart(startNode, serializedRange.startOffset);
-      range.setEnd(endNode, serializedRange.endOffset);
-      return range;
-    };
-
-    const renderSerializedRange = (serializedRange) => {
-      const range = deserializeRange(serializedRange);
-      renderTrace(range);
-    };
-
-    const renderRanges = (serializedRanges, modelId) => {
-      // $temporarySelectionsLayer.empty();
-      serializedRanges.forEach((serializedRange) => {
-        const range = deserializeRange(serializedRange);
-        renderTrace(range, modelId);
-      });
-    };
-
-    const renderTrace = (range, modelId) => {
-      console.log('Rendering trace range:', range, 'for modelId:', modelId);
-      const rangeId = range.id || Date.now();
-      const $rangeDiv = $('<div>')
-        .attr('id', rangeId)
-        .attr('data-modelid', modelId || '')
-        .addClass('range-wrapper')
-        .css({
-          top: `${range.getBoundingClientRect().top + window.scrollY}px`,
-          left: `${range.getBoundingClientRect().left + window.scrollX}px`,
-          width: `${range.getBoundingClientRect().width}px`,
-          height: `${range.getBoundingClientRect().height}px`,
-        })
-        ;
-
-      const $rangeRect = $('<div>').addClass('range-rect');
-
-      // console.log('Highlighting range:', range.toString());
-      const rects = range.getClientRects();
-      console.log('!!!Range rects:', rects);
-      for (const rect of rects) {
-        const $rectDiv = $rangeRect.clone();
-        $rectDiv.css({
-          top: `${rect.top + window.scrollY}px`,
-          left: `${rect.left + window.scrollX}px`,
-          width: `${rect.width}px`,
-          height: `${rect.height}px`,
-        }).on('click', onRangeSelect);
-        $rangeDiv.append($rectDiv);
-      }
-
-      if (modelId) {
-        const lastIndex = rects.length - 1;
-        const lastRect = rects[lastIndex];
-        console.log('!!!Rendering trace range:', range, 'for modelId:', modelId, lastIndex, lastRect);
-
-        const modelName = models.find(m => m.id === modelId)?.name || `Model ${modelId}`;
-        const labelSpan = $('<span>').attr('data-modelid', modelId).addClass('label-span').text(`${modelName}`).css({
-          top: `${lastRect.top + window.scrollY - 10}px`,
-          left: `${lastRect.right + window.scrollX}px`,
-        }).on('click', (event) => {
-          event.stopPropagation();
-          setActiveModel(modelId);
-        });
-        $rangeDiv.append(labelSpan);
-        $traceLayer.append($rangeDiv);
-      } else {
-        $temporarySelectionsLayer.append($rangeDiv);
-      }
-
-    };
-
-    const onRangeSelect = (event) => {
-      event.stopPropagation();
-      const $target = $(event.currentTarget).parent();
-      $target.addClass("selected");
-      const rangeId = $target.attr('id');
-      $target.siblings().removeClass('selected');
-      // Handle range selection logic here
-      console.log('Range selected:', rangeId);
-      const rangeBoundingRect = $target[0].getBoundingClientRect();
-
-      $document.one('mousedown', () => {
-        $deleteSelectionButton.hide();
-        $target.removeClass('selected');
-      });
-
-      $deleteSelectionButton.show().css({
-        top: `${rangeBoundingRect.top + window.scrollY - 12}px`,
-        left: `${rangeBoundingRect.right + window.scrollX - 12}px`,
-      }).on('click', () => {
-        // Remove range from highlightSelections and temporarySelections
-        highlightSelections = highlightSelections.filter(r => r.id !== rangeId);
-        temporarySelections = temporarySelections.filter(r => r.id !== rangeId);
-        // Remove the highlight from the UI
-        $target.remove();
-        $deleteSelectionButton.hide();
-      });
-    };
-
     /*const deleteRangeById = (rangeId) => {
       highlightSelections = highlightSelections.filter(r => r.id !== rangeId);
       temporarySelections = temporarySelections.filter(r => r.id !== rangeId);
@@ -842,13 +848,10 @@
  
     const clearRangeSelection = () => {
       $deleteSelectionButton.hide();
-      $temporarySelectionsLayer.find('.range-wrapper.active').removeClass('active');
+      $temporarySelectionsLayer.find('.selection-wrapper.active').removeClass('active');
     };*/
 
-    const rerenderOverlayLayers = () => {
-      rerenderTraceLayer();
-      rerenderTemporarySelectionsLayer();
-    };
+
 
     // const getXPath = (node, root = document.getElementById("documentContent")) => {
     //   // const paths = [];
@@ -929,24 +932,8 @@
       const clonedRange = range.cloneRange();
       clonedRange.id = Date.now();
       temporarySelections.push(clonedRange);
-      renderTrace(clonedRange);
+      renderSelection(range);
       selection.removeAllRanges();
-      // if (selection && selection.rangeCount > 0) {
-      //   const range = selection.getRangeAt(0); // Get the selected range
-      //   const startOffset = range.startOffset; // Start position of the selection
-      //   const endOffset = range.endOffset; // End position of the selection
-
-      //   // Get the parent node's text content (assumes the selection is within the `p` tag)
-      //   const parentNode = range.startContainer.parentNode;
-      //   // if (parentNode && parentNode.tagName === "P") {
-      //   //   const fullText = parentNode.textContent;
-      //   //   // Split the text into before, selected, and after parts
-      //   //   // beforeSelection.value = text.slice(0, startOffset);
-      //   //   store.selectedText = text.slice(startOffset, endOffset);
-      //   //   // afterSelection.value = text.slice(endOffset);
-      //   // }
-      // }
-
     };
 
     $document.ready(async () => {
@@ -994,10 +981,10 @@
       activeModel.data = new XMLSerializer().serializeToString(activeModel.data);
 
       const modelId = await createModel(db, activeModel);
-      const updatedModel = await updateModel(db, modelId, { name: `Model_${modelId}` });
-      models.push(updatedModel);
+      const model = await updateModel(db, modelId, { name: `Model_${modelId}` });
+      models.push(model);
 
-      renderModelInList(updatedModel);
+      renderModelInList(model);
       clearModel();
 
       var trace = {
@@ -1008,28 +995,17 @@
 
       await createTrace(db, trace);
       traces.push(trace);
-      renderTraceInDocument(trace);
+      renderTrace(trace);
       clearTemporarySelections();
       $generateButton.prop("disabled", true);
       $("#generatedModelActionBar").css("visibility", "hidden");
     });
 
     $cancelButton.on("click", () => {
-
       activeModel = null;
       $("#activeModelName").text("");
-      // console.log('Clearing active model canvas');
       $("#activeModelCanvas").empty();
       $("#generatedModelActionBar").css("visibility", "hidden");
-
-      // if (selectedText) {
-      //   generateButton.prop("disabled", true);
-      //   $("#generatedModelActionBar").css("visibility", "visible");
-      //   showSampleModel();
-      //   // alert(`Generating model for selected text:\n${selectedText}`);
-      // } else {
-      //   alert("No text selected.");
-      // }
     });
 
     $("button[name=savetestsetfile]").click(function () { save_testsetfile(); });

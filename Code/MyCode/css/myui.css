@@ -78,22 +78,22 @@ button:disabled {
             pointer-events: none; 
         }*/
 
-.range-wrapper {
+.selection-wrapper {
   position: fixed;
   /* pointer-events: none; */
   /* background-color: yellow; */
 }
 
-.range-wrapper.selected {
+.selection-wrapper.selected {
   border: 2px solid red;
   /* background-color: yellow; */
 }
 
-#traceLayer .range-wrapper.active .range-rect {
+#tracesLayer .selection-wrapper.active .range-rect {
   background-color: yellow;
   /* background-color: yellow; */
 }
-#traceLayer .range-wrapper.selected .range-rect {
+#tracesLayer .selection-wrapper.selected .range-rect {
   background-color: red;
   /* background-color: yellow; */
 }
@@ -104,7 +104,7 @@ button:disabled {
   /* border: 2px solid red; */
   /* background-color: yellow; */
 }
-#traceLayer .range-rect {
+#tracesLayer .range-rect {
   background-color: lightgrey;
 }
 
