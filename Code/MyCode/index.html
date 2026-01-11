@@ -3,12 +3,12 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <title>Document-Based Process Modeller</title>
   <!-- libs, do not modify. When local than load local libs. -->
-  <script type="text/javascript" src="js_libs/jquery.min.js"></script>
-  <script type="text/javascript" src="js_libs/jquery.browser.js"></script>
-  <script type="text/javascript" src="js_libs/jquery.caret.min.js"></script>
-  <script type="text/javascript" src="js_libs/jquery.cookie.js"></script>
-  <script type="text/javascript" src="js_libs/jquery.svg.min.js"></script>
-  <script type="text/javascript" src="js_libs/jquery.svgdom.min.js"></script>
+  <script type="text/javascript" src="https://cpee.org/js_libs/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cpee.org/js_libs/jquery.browser.js"></script>
+  <script type="text/javascript" src="https://cpee.org/js_libs/jquery.caret.min.js"></script>
+  <script type="text/javascript" src="https://cpee.org/js_libs/jquery.cookie.js"></script>
+  <script type="text/javascript" src="https://cpee.org/js_libs/jquery.svg.min.js"></script>
+  <script type="text/javascript" src="https://cpee.org/js_libs/jquery.svgdom.min.js"></script>
 
   <!-- <script type="text/javascript" src="/js_libs/build-bpmn.js"></script> -->
   <script type="text/javascript" src="js_libs/custommenu.js"></script>
@@ -782,8 +782,8 @@
       }
       model.data = data
       console.log('Parsed model data for visualization:', data);
-      save['graph_theme'] = 'default_copy';
-      save['graph_adaptor'] = new WfAdaptor('themes/default_copy/theme.js', function (graphrealization) {
+      save['graph_theme'] = 'preset_copy';
+      save['graph_adaptor'] = new WfAdaptor('themes/preset_copy/theme.js', function (graphrealization) {
         // graphrealization.draw_labels = (max, labels, dimensions, striped) => {
         //   draw_extended_columns(graphrealization, max, labels, dimensions, striped)
         // };
@@ -840,8 +840,8 @@
       }
 
       try {
-        // const list = await fetchTemplatesList();
-        const list = [];
+        const list = await fetchTemplatesList();
+        // const list = [];
         if (!list || !list.length) {
           throw new Error('No templates found in templates.json');
         }
