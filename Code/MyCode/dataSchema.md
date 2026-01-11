@@ -9,18 +9,19 @@ entity "Document" as Document {
 
 entity "Model" as Model {
   name : TEXT
-  model : TEXT
+  dataa : XML
+  svg: SVG
 }
 
-entity "TraceLink" as TraceLink {
+entity "Trace" as Trace {
   document_id : INT
   model_id : INT
-  segments : JSON   // [{start_offset, end_offset, text}]
+  selections : JSON   // [{start_offset, end_offset, text}]
 }
 
 ' --- Relationships ---
-Document ||--o{ TraceLink : "has mappings"
-Model ||--o{ TraceLink : "mapped in"
+Document ||--o{ Trace : "has mappings"
+Model ||--o{ Trace : "mapped in"
 
 @enduml
 ```
