@@ -757,6 +757,7 @@
     };
 
     const setActiveModel = async (modelId) => {
+
       console.log('001-Setting active model to ID:', modelId);
       if (modelId && modelId != (activeModel && activeModel.id)) {
         console.log('001-Setting active model to ID:', modelId);
@@ -772,10 +773,14 @@
         $(`.selection-wrapper[data-modelid="${modelId}"]`).addClass("active");
 
       } else if (!modelId) {
-        clearModel();
+        activeModel = null;
         $('.model-container').removeClass('active');
         $('.selection-wrapper').removeClass("active");
-        activeModel = null;
+
+
+        $('#activeModelName').text("");
+        // console.log('Clearing active model canvas');
+        $('#activeModelCanvas').empty();
       }
 
     };
@@ -846,13 +851,7 @@
       });
     };
 
-    const clearModel = () => {
-      activeModel = null;
-      $('#activeModelName').text("");
-      // console.log('Clearing active model canvas');
-      $('#activeModelCanvas').empty();
 
-    };
 
     const renderModelInList = async ({ id: modelId, name: modelName, content: modelContent, svg: svgContent }) => {
       var gridId = `modelGrid_${modelId}`;
@@ -1219,8 +1218,7 @@
       models.push(model);
 
       renderModelInList(model);
-      clearModel();
-
+      setActiveModel(null);
       var trace = {
         document_id: activeDocId,
         model_id: modelId,
@@ -1233,6 +1231,7 @@
       clearTemporarySelections();
       $generateButton.prop("disabled", true);
       $("#generatedModelActionBar").css("visibility", "hidden");
+
     });
 
     $cancelButton.on("click", () => {
