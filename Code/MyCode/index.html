@@ -235,6 +235,7 @@
     const deleteDocumentTraces = (docId) => {
       traces = traces.filter(trace => trace.document_id != docId);
     };
+
     // #region CPEE Code
     var es;
     var suspended_redrawing = false;
@@ -926,6 +927,19 @@
       $("#generatedModelActionBar").css("visibility", "visible");
     };
 
+    const regenerateModel = async () => {
+      const selectedText = temporarySelections.map(range => range.toString()).join(' ');
+      generatedModel = await createSampleModel();
+      activeModel = {
+        ...activeModel,
+        data: generatedModel,
+      };
+      showModel(activeModel);
+      $generateButton.prop("disabled", false);
+      $regenerateButton.prop("disabled", false);
+      $("#generatedModelActionBar").css("visibility", "visible");
+    };
+
     /*const deleteRangeById = (rangeId) => {
       highlightSelections = highlightSelections.filter(r => r.id !== rangeId);
       temporarySelections = temporarySelections.filter(r => r.id !== rangeId);
@@ -1203,21 +1217,30 @@
       $generateButton.prop("disabled", true);
       generateModel();
     });
-
+    $regenerateButton.on("click", async () => {
+      $generateButton.prop("disabled", true);
+      $regenerateButton.prop("disabled", true);
+      regenerateModel();
+    });
     $keepButton.on("click", async () => {
+      let modelId = getActiveModelId();
+      let model
 
-      const svgContent = $('#activeModelCanvas');
-      const $svgCopy = svgContent.clone(false);
-      $svgCopy.removeAttr('id');
-      const svg = $svgCopy.prop('outerHTML');
-      activeModel.svg = svg;
-      activeModel.data = new XMLSerializer().serializeToString(activeModel.data);
-
-      const modelId = await createModel(db, activeModel);
-      const model = await updateModel(db, modelId, { name: `Model_${modelId}` });
+      if (!modelId) {
+        const svgContent = $('#activeModelCanvas');
+        const $svgCopy = svgContent.clone(false);
+        $svgCopy.removeAttr('id');
+        const svg = $svgCopy.prop('outerHTML');
+        activeModel.svg = svg;
+        activeModel.data = new XMLSerializer().serializeToString(activeModel.data);
+        modelId = await createModel(db, activeModel);
+        model = await updateModel(db, modelId, { name: `Model_${modelId}` });
+        renderModelInList(model);
+      } else {
+        // model = await updateModel(db, modelId, activeModel);
+        await saveModel();
+      }
       models.push(model);
-
-      renderModelInList(model);
       setActiveModel(null);
       var trace = {
         document_id: activeDocId,
@@ -1242,6 +1265,13 @@
     });
 
     $("button[name=savetestsetfile]").click(function () { save_testsetfile(); });
+
+    // const refreshModelList = async () => {
+    //   $modelsArea.empty();
+    //   for (const model of models) {
+    //     await renderModelInList(model);
+    //   }
+    // };
 
     const saveModel = async (e) => {
       // console.log('Saving model...');
