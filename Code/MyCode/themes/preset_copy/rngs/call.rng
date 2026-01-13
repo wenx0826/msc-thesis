@@ -41,7 +41,7 @@
       </zeroOrMore>
     </element>
   </element>
-  <element name="annotations" rngui:header="Annotations">
+  <!-- <element name="annotations" rngui:header="Annotations">
     <element name="_generic" rngui:header="Generic" rngui:fold="closed">
       <zeroOrMore rngui:label="Create Annotation Pair">
         <element rngui:label="Name" rngui:labeltype="xml">
@@ -245,5 +245,5 @@
         <text rngui:wrap="true" rngui:label="What is supposed to happen?"/>
       </element>
     </element>
-  </element>
+  </element> -->
 </element>

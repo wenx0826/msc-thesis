@@ -108,7 +108,7 @@
       <!-- Middle: Current Model Panel -->
       <ui-rest class="panel" style="flex:2; margin: .5em 0;">
         <div id="activeModelName"></div>
-        <div>
+        <!-- <div>
           <label for="hr-select">Your favorite food</label> <br />
 
           <select name="foods" id="hr-select">
@@ -140,7 +140,7 @@
               <option value="turbot">Turbot</option>
             </optgroup>
           </select>
-        </div>
+        </div> -->
         <button name="savemodelchanges" onclick="saveModel()">Save Model</button>
         <div>
           <!-- <a id=" savetestsetfile" href="" download=""></a>
@@ -779,7 +779,7 @@
     const showModel = (model) => {
       // const { name: modelName, data: modelData } = model;
       $('#activeModelName').text(model.name);
-      console.log('Showing model:', model);
+      // console.log('Showing model:', model);
       var parser = new DOMParser();
       let data = parser.parseFromString(model.data, "application/xml");
       if (data.documentElement.nodeName != 'description') {
@@ -1048,6 +1048,7 @@
         var newnode = vtarget.parents('g.element[element-id]');
         var newtype = newnode.attr('element-type') + '_' + newnode.attr('element-endpoint');
         var g = graphrealization.get_description();
+        console.log('Auto-save graph diff????', g);
         save['graph'] = $X(g);
         save['graph'].removeAttr('svg-id');
         save['graph'].removeAttr('svg-type');
@@ -1058,7 +1059,7 @@
           manifestation.update_details(svgid);
           do_main_work(svgid);
         } else {
-          console.log('Auto-save triggered????', desc.get_description());
+          console.log('Auto-save triggered???????', desc.get_description());
           // $.ajax({
           //   type: "PUT",
           //   url: url + "/properties/description/",
@@ -1095,7 +1096,7 @@
       if (documentList.length) {
         setActiveDocument(documentList[documentList.length - 1]?.id);
       }
-      generateModel();
+      // generateModel();
 
       var timer;
 

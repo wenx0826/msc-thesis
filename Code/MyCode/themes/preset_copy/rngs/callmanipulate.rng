@@ -41,7 +41,7 @@
       </zeroOrMore>
     </element>
   </element>
-  <element name="code" rngui:header="Data Handling">
+  <!-- <element name="code" rngui:header="Data Handling">
     <element name="signal" rngui:label="Signal after finalize/update">
       <data type="boolean" rngui:label="A signal is sent every time the activity changes a data object"/>
     </element>
@@ -277,5 +277,5 @@
         <text rngui:wrap="true" rngui:label="Which output elements are important? How to transform and save them?"/>
       </element>
     </element>
-  </element>
+  </element> -->
 </element>
