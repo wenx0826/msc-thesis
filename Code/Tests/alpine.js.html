@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Document List Demo (Alpine.js)</title>
+
+    <!-- Alpine.js (CDN, 无需构建工具) -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+            margin: 24px;
+        }
+
+        .wrap {
+            max-width: 820px;
+            margin: 0 auto;
+        }
+
+        .doc-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            background: #fafafa;
+        }
+
+        .doc-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .doc-item {
+            display: grid;
+            grid-template-columns: 28px 1fr auto;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .doc-item:first-child {
+            border-top: 0;
+        }
+
+        .doc-item:hover {
+            background: #fbfbfb;
+        }
+
+        .doc-name {
+            user-select: none;
+        }
+
+        .doc-edit {
+            width: 100%;
+            padding: 6px 8px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .doc-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        button {
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #f6f6f6;
+        }
+
+        button:disabled {
+            cursor: not-allowed;
+            opacity: .6;
+        }
+
+        .hint {
+            margin-top: 14px;
+            color: #666;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        code {
+            background: #f2f2f2;
+            padding: 2px 6px;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap" x-data="docListApp()">
+        <h2>Document List Demo（Alpine.js）</h2>
+
+        <!-- Toolbar：有选中才显示 -->
+        <div class="doc-toolbar" x-show="selected.size > 0" x-cloak>
+            <label style="display:flex;align-items:center;gap:8px;">
+                <input type="checkbox" :checked="selectAllChecked" x-ref="selectAll"
+                    @change="toggleSelectAll($event.target.checked)" />
+                全选
+            </label>
+
+            <span x-text="`${selected.size} selected`"></span>
+
+            <button type="button" :disabled="selected.size === 0" @click="bulkDelete()">
+                删除选中
+            </button>
+        </div>
+
+        <ul class="doc-list">
+            <template x-for="doc in docs" :key="doc.id">
+                <li class="doc-item" :data-id="doc.id">
+                    <!-- checkbox 多选 -->
+                    <input class="doc-check" type="checkbox" :checked="selected.has(doc.id)"
+                        @change="toggleSelected(doc.id, $event.target.checked)" />
+
+                    <!-- name / edit -->
+                    <template x-if="editingId !== doc.id">
+                        <span class="doc-name" :title="doc.name" x-text="doc.name">
+                        </span>
+                    </template>
+
+                    <template x-if="editingId === doc.id">
+                        <input class="doc-edit" type="text" x-model="editValue" x-ref="editInput"
+                            @keydown.enter.prevent="saveEdit()" @keydown.escape.prevent="cancelEdit()" />
+                    </template>
+
+                    <!-- actions -->
+                    <div class="doc-actions">
+                        <template x-if="editingId !== doc.id">
+                            <button type="button" @click="startEdit(doc)">重命名</button>
+                        </template>
+
+                        <template x-if="editingId !== doc.id">
+                            <button type="button" @click="deleteOne(doc.id)">删除</button>
+                        </template>
+
+                        <template x-if="editingId === doc.id">
+                            <button type="button" @click="saveEdit()">保存</button>
+                        </template>
+
+                        <template x-if="editingId === doc.id">
+                            <button type="button" @click="cancelEdit()">取消</button>
+                        </template>
+                    </div>
+                </li>
+            </template>
+        </ul>
+
+        <div class="hint">
+            小提示：<br />
+            - 点击 <code>重命名</code> 进入编辑，按 <code>Enter</code> 保存，<code>Esc</code> 取消<br />
+            - 勾选多个 item 后会出现工具条，可以 <code>删除选中</code><br />
+            - 全选支持三态：全不选 / 全选 / 部分选中（indeterminate）
+        </div>
+    </div>
+
+    <script>
+        function docListApp() {
+            return {
+                docs: [
+                    { id: "d1", name: "Project Spec" },
+                    { id: "d2", name: "Meeting Notes" },
+                    { id: "d3", name: "Roadmap" },
+                    { id: "d4", name: "Design Draft" },
+                ],
+
+                // 多选集合
+                selected: new Set(),
+
+                // 编辑状态
+                editingId: null,
+                editValue: "",
+                editBackup: "",
+
+                // 计算属性：全选是否勾上
+                get selectAllChecked() {
+                    return this.docs.length > 0 && this.selected.size === this.docs.length;
+                },
+
+                // 让“全选”支持三态（关键：indeterminate）
+                updateSelectAllIndeterminate() {
+                    const el = this.$refs.selectAll;
+                    if (!el) return;
+                    const total = this.docs.length;
+                    const count = this.selected.size;
+
+                    if (total === 0 || count === 0 || count === total) {
+                        el.indeterminate = false;
+                    } else {
+                        el.indeterminate = true;
+                    }
+                },
+
+                // 切换单个选中
+                toggleSelected(id, checked) {
+                    if (checked) this.selected.add(id);
+                    else this.selected.delete(id);
+
+                    this.$nextTick(() => this.updateSelectAllIndeterminate());
+                },
+
+                // 全选 / 取消全选
+                toggleSelectAll(checked) {
+                    this.selected.clear();
+                    if (checked) {
+                        for (const d of this.docs) this.selected.add(d.id);
+                    }
+                    this.$nextTick(() => this.updateSelectAllIndeterminate());
+                },
+
+                // 单删
+                deleteOne(id) {
+                    if (!confirm("Delete this document?")) return;
+
+                    this.docs = this.docs.filter(d => d.id !== id);
+                    this.selected.delete(id);
+
+                    // 如果刚好在编辑这个，也要退出编辑
+                    if (this.editingId === id) this.cancelEdit();
+
+                    this.$nextTick(() => this.updateSelectAllIndeterminate());
+                },
+
+                // 批量删除
+                bulkDelete() {
+                    if (this.selected.size === 0) return;
+                    if (!confirm(`Delete ${this.selected.size} documents?`)) return;
+
+                    const toDel = new Set(this.selected);
+                    this.docs = this.docs.filter(d => !toDel.has(d.id));
+                    this.selected.clear();
+
+                    // 如果编辑项被删掉，退出编辑
+                    if (this.editingId && toDel.has(this.editingId)) {
+                        this.editingId = null;
+                        this.editValue = "";
+                        this.editBackup = "";
+                    }
+
+                    this.$nextTick(() => this.updateSelectAllIndeterminate());
+                },
+
+                // 开始编辑
+                startEdit(doc) {
+                    this.editingId = doc.id;
+                    this.editBackup = doc.name;
+                    this.editValue = doc.name;
+
+                    this.$nextTick(() => {
+                        // 让输入框自动 focus + 全选
+                        const input = this.$refs.editInput;
+                        if (input) { input.focus(); input.select(); }
+                    });
+                },
+
+                // 保存编辑
+                saveEdit() {
+                    const v = (this.editValue || "").trim();
+                    if (!v) {
+                        alert("Name cannot be empty");
+                        this.$nextTick(() => this.$refs.editInput?.focus());
+                        return;
+                    }
+
+                    const idx = this.docs.findIndex(d => d.id === this.editingId);
+                    if (idx >= 0) this.docs[idx].name = v;
+
+                    this.editingId = null;
+                    this.editValue = "";
+                    this.editBackup = "";
+                },
+
+                // 取消编辑
+                cancelEdit() {
+                    const idx = this.docs.findIndex(d => d.id === this.editingId);
+                    if (idx >= 0) this.docs[idx].name = this.editBackup;
+
+                    this.editingId = null;
+                    this.editValue = "";
+                    this.editBackup = "";
+                },
+
+                // 初始化时把三态同步一下
+                init() {
+                    this.$nextTick(() => this.updateSelectAllIndeterminate());
+                }
+            };
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Document List Demo (Rename / Multi-select / Bulk Delete)</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+            margin: 24px;
+        }
+
+        .wrap {
+            max-width: 820px;
+            margin: 0 auto;
+        }
+
+        .doc-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            background: #fafafa;
+        }
+
+        .doc-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .doc-item {
+            display: grid;
+            grid-template-columns: 28px 1fr auto;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .doc-item:first-child {
+            border-top: 0;
+        }
+
+        .doc-item:hover {
+            background: #fbfbfb;
+        }
+
+        .doc-name {
+            user-select: none;
+        }
+
+        .doc-edit {
+            width: 100%;
+            padding: 6px 8px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .doc-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        button {
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #f6f6f6;
+        }
+
+        button:disabled {
+            cursor: not-allowed;
+            opacity: .6;
+        }
+
+        .hint {
+            margin-top: 14px;
+            color: #666;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        code {
+            background: #f2f2f2;
+            padding: 2px 6px;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <h2>Document List Demo</h2>
+
+        <div id="docToolbar" class="doc-toolbar" hidden>
+            <label style="display:flex;align-items:center;gap:8px;">
+                <input type="checkbox" id="selectAll" />
+                全选
+            </label>
+
+            <span id="selectedCount">0 selected</span>
+
+            <button type="button" id="bulkDelete" disabled>删除选中</button>
+        </div>
+
+        <ul id="docList" class="doc-list"></ul>
+
+        <template id="docItemTpl">
+            <li class="doc-item" data-id="">
+                <input class="doc-check" type="checkbox" />
+
+                <span class="doc-name" title=""></span>
+                <input class="doc-edit" type="text" hidden />
+
+                <div class="doc-actions">
+                    <button type="button" data-action="rename">重命名</button>
+                    <button type="button" data-action="delete">删除</button>
+                    <button type="button" data-action="save" hidden>保存</button>
+                    <button type="button" data-action="cancel" hidden>取消</button>
+                </div>
+            </li>
+        </template>
+
+        <div class="hint">
+            小提示：<br />
+            - 点击 <code>重命名</code> 进入编辑，按 <code>Enter</code> 保存，<code>Esc</code> 取消<br />
+            - 勾选多个 item 后会出现工具条，可以 <code>删除选中</code><br />
+            - 全选支持三态：全不选 / 全选 / 部分选中（indeterminate）
+        </div>
+    </div>
+
+    <script>
+        const listEl = document.getElementById("docList");
+        const tpl = document.getElementById("docItemTpl");
+
+        const toolbarEl = document.getElementById("docToolbar");
+        const selectAllEl = document.getElementById("selectAll");
+        const selectedCountEl = document.getElementById("selectedCount");
+        const bulkDeleteEl = document.getElementById("bulkDelete");
+
+        // 你可以把它当成“前端 store”
+        let docs = [
+            { id: "d1", name: "Project Spec" },
+            { id: "d2", name: "Meeting Notes" },
+            { id: "d3", name: "Roadmap" },
+            { id: "d4", name: "Design Draft" },
+        ];
+
+        // 存选中的 doc.id
+        const selected = new Set();
+
+        function createDocItem(doc) {
+            const el = tpl.content.firstElementChild.cloneNode(true);
+            el.dataset.id = doc.id;
+
+            const nameEl = el.querySelector(".doc-name");
+            const inputEl = el.querySelector(".doc-edit");
+            const checkEl = el.querySelector(".doc-check");
+
+            nameEl.textContent = doc.name;
+            nameEl.title = doc.name;
+            inputEl.value = doc.name;
+
+            // render 时保持 checkbox 状态
+            checkEl.checked = selected.has(doc.id);
+
+            return el;
+        }
+
+        function renderList() {
+            listEl.innerHTML = "";
+            const frag = document.createDocumentFragment();
+            for (const d of docs) frag.appendChild(createDocItem(d));
+            listEl.appendChild(frag);
+            syncToolbar();
+        }
+
+        function syncToolbar() {
+            const count = selected.size;
+
+            toolbarEl.hidden = count === 0;
+            selectedCountEl.textContent = `${count} selected`;
+            bulkDeleteEl.disabled = count === 0;
+
+            // 全选三态
+            const total = docs.length;
+            if (total === 0) {
+                selectAllEl.checked = false;
+                selectAllEl.indeterminate = false;
+                return;
+            }
+
+            if (count === 0) {
+                selectAllEl.checked = false;
+                selectAllEl.indeterminate = false;
+            } else if (count === total) {
+                selectAllEl.checked = true;
+                selectAllEl.indeterminate = false;
+            } else {
+                selectAllEl.checked = false;
+                selectAllEl.indeterminate = true;
+            }
+        }
+
+        function setEditingState(itemEl, isEditing) {
+            const nameEl = itemEl.querySelector(".doc-name");
+            const inputEl = itemEl.querySelector(".doc-edit");
+
+            const btnRename = itemEl.querySelector('[data-action="rename"]');
+            const btnDelete = itemEl.querySelector('[data-action="delete"]');
+            const btnSave = itemEl.querySelector('[data-action="save"]');
+            const btnCancel = itemEl.querySelector('[data-action="cancel"]');
+
+            if (isEditing) {
+                nameEl.hidden = true;
+                inputEl.hidden = false;
+
+                btnRename.hidden = true;
+                btnDelete.hidden = true;
+                btnSave.hidden = false;
+                btnCancel.hidden = false;
+
+                inputEl.focus();
+                inputEl.select();
+            } else {
+                nameEl.hidden = false;
+                inputEl.hidden = true;
+
+                btnRename.hidden = false;
+                btnDelete.hidden = false;
+                btnSave.hidden = true;
+                btnCancel.hidden = true;
+            }
+        }
+
+        // 事件委托：click
+        listEl.addEventListener("click", (e) => {
+            // 1) checkbox
+            const check = e.target.closest("input.doc-check");
+            if (check) {
+                const itemEl = check.closest(".doc-item");
+                const id = itemEl.dataset.id;
+
+                if (check.checked) selected.add(id);
+                else selected.delete(id);
+
+                syncToolbar();
+                return;
+            }
+
+            // 2) buttons
+            const btn = e.target.closest("button[data-action]");
+            if (!btn) return;
+
+            const action = btn.dataset.action;
+            const itemEl = btn.closest(".doc-item");
+            if (!itemEl) return;
+
+            const id = itemEl.dataset.id;
+
+            if (action === "rename") {
+                setEditingState(itemEl, true);
+                return;
+            }
+
+            if (action === "cancel") {
+                const doc = docs.find((d) => d.id === id);
+                itemEl.querySelector(".doc-edit").value = doc?.name ?? "";
+                setEditingState(itemEl, false);
+                return;
+            }
+
+            if (action === "save") {
+                const inputEl = itemEl.querySelector(".doc-edit");
+                const newName = inputEl.value.trim();
+                if (!newName) {
+                    alert("Name cannot be empty");
+                    inputEl.focus();
+                    return;
+                }
+
+                docs = docs.map((d) => (d.id === id ? { ...d, name: newName } : d));
+
+                const nameEl = itemEl.querySelector(".doc-name");
+                nameEl.textContent = newName;
+                nameEl.title = newName;
+
+                setEditingState(itemEl, false);
+                return;
+            }
+
+            if (action === "delete") {
+                if (!confirm("Delete this document?")) return;
+
+                docs = docs.filter((d) => d.id !== id);
+                selected.delete(id); // 如果它被选中了，也要移除
+                itemEl.remove();
+                syncToolbar();
+                return;
+            }
+        });
+
+        // 回车保存 / ESC 取消（委托）
+        listEl.addEventListener("keydown", (e) => {
+            const input = e.target.closest("input.doc-edit");
+            if (!input) return;
+
+            const itemEl = input.closest(".doc-item");
+
+            if (e.key === "Enter") itemEl.querySelector('[data-action="save"]').click();
+            if (e.key === "Escape") itemEl.querySelector('[data-action="cancel"]').click();
+        });
+
+        // 全选 / 取消全选
+        selectAllEl.addEventListener("change", () => {
+            if (selectAllEl.checked) {
+                selected.clear();
+                for (const d of docs) selected.add(d.id);
+            } else {
+                selected.clear();
+            }
+            renderList(); // 让每个 checkbox 状态正确
+        });
+
+        // 批量删除
+        bulkDeleteEl.addEventListener("click", () => {
+            if (selected.size === 0) return;
+
+            if (!confirm(`Delete ${selected.size} documents?`)) return;
+
+            const toDelete = new Set(selected);
+            docs = docs.filter((d) => !toDelete.has(d.id));
+
+            selected.clear();
+            renderList();
+        });
+
+        renderList();
+    </script>
+</body>
+</html>

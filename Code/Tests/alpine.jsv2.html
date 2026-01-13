@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Doc List Simple (Alpine) - Row Click Select</title>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+            margin: 24px;
+        }
+
+        .wrap {
+            max-width: 820px;
+            margin: 0 auto;
+        }
+
+        .toolbar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            background: #fafafa;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        li {
+            display: grid;
+            grid-template-columns: 28px 1fr auto;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-top: 1px solid #f0f0f0;
+            cursor: default;
+        }
+
+        li:first-child {
+            border-top: 0;
+        }
+
+        li:hover {
+            background: #fbfbfb;
+        }
+
+        li.selected-row {
+            background: #f7f7ff;
+        }
+
+        .name {
+            user-select: none;
+            cursor: text;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 6px 8px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        button {
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #f6f6f6;
+        }
+
+        button:disabled {
+            cursor: not-allowed;
+            opacity: .6;
+        }
+
+        .muted {
+            color: #666;
+            font-size: 13px;
+            margin-top: 10px;
+            line-height: 1.5;
+        }
+
+        code {
+            background: #f2f2f2;
+            padding: 2px 6px;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap" x-data="docListSimple()">
+        <h2>Document List（点击行空白可勾选）</h2>
+
+        <div class="toolbar" x-show="selected.size > 0" x-cloak>
+            <label style="display:flex;align-items:center;gap:8px;">
+                <input type="checkbox" x-ref="selectAll" :checked="isAllSelected"
+                    @change="toggleSelectAll($event.target.checked)" />
+                全选
+            </label>
+
+            <span x-text="`${selected.size} selected`"></span>
+
+            <button type="button" :disabled="selected.size===0" @click="bulkDelete()">
+                删除选中
+            </button>
+        </div>
+
+        <ul>
+            <template x-for="doc in docs" :key="doc.id">
+                <li :class="selected.has(doc.id) ? 'selected-row' : ''" @click="rowClickToggle(doc.id, $event)">
+                    <!-- checkbox 多选（点它不会触发行点击切换，因为我们在 rowClickToggle 里排除了） -->
+                    <input type="checkbox" :checked="selected.has(doc.id)"
+                        @change="toggleSelected(doc.id, $event.target.checked)" />
+
+                    <div>
+                        <!-- 展示态：点名字进入编辑（并 stop propagation，避免触发行点击切换） -->
+                        <template x-if="editingId !== doc.id">
+                            <span class="name" :title="doc.name" x-text="doc.name" @click.stop="startEdit(doc)">
+                            </span>
+                        </template>
+
+                        <!-- 编辑态：输入框内部点击不触发行点击 -->
+                        <template x-if="editingId === doc.id">
+                            <input type="text" x-model="editValue" x-ref="editInput" @click.stop
+                                @keydown.enter.prevent="saveEdit()" @keydown.escape.prevent="cancelEdit()"
+                                @blur="saveEdit()" />
+                        </template>
+                    </div>
+
+                    <!-- 单行删除：点按钮不触发行点击切换 -->
+                    <button type="button" @click.stop="deleteOne(doc.id)">删除</button>
+                </li>
+            </template>
+        </ul>
+
+        <div class="muted">
+            交互：点击行空白可切换勾选；点击名字直接编辑；<code>Enter</code> 保存，<code>Esc</code> 取消；失焦自动保存。<br />
+            勾选多个后显示工具条，可批量删除；全选支持三态。
+        </div>
+    </div>
+
+    <script>
+        function docListSimple() {
+            return {
+                docs: [
+                    { id: "d1", name: "Project Spec" },
+                    { id: "d2", name: "Meeting Notes" },
+                    { id: "d3", name: "Roadmap" },
+                    { id: "d4", name: "Design Draft" },
+                ],
+
+                selected: new Set(),
+
+                editingId: null,
+                editValue: "",
+                editBackup: "",
+
+                get isAllSelected() {
+                    return this.docs.length > 0 && this.selected.size === this.docs.length;
+                },
+
+                updateIndeterminate() {
+                    const el = this.$refs.selectAll;
+                    if (!el) return;
+                    const total = this.docs.length;
+                    const count = this.selected.size;
+                    el.indeterminate = (count > 0 && count < total);
+                },
+
+                toggleSelected(id, checked) {
+                    checked ? this.selected.add(id) : this.selected.delete(id);
+                    this.$nextTick(() => this.updateIndeterminate());
+                },
+
+                // ✅ 行空白点击切换选择
+                rowClickToggle(id, evt) {
+                    // 如果正在编辑这一行，就不允许点行切换，避免误操作
+                    if (this.editingId === id) return;
+
+                    // 排除点到交互控件（checkbox/按钮/输入框/链接等）
+                    const interactive = evt.target.closest("input, button, a, label, textarea, select");
+                    if (interactive) return;
+
+                    // 切换 selected
+                    if (this.selected.has(id)) this.selected.delete(id);
+                    else this.selected.add(id);
+
+                    this.$nextTick(() => this.updateIndeterminate());
+                },
+
+                toggleSelectAll(checked) {
+                    this.selected.clear();
+                    if (checked) for (const d of this.docs) this.selected.add(d.id);
+                    this.$nextTick(() => this.updateIndeterminate());
+                },
+
+                bulkDelete() {
+                    if (this.selected.size === 0) return;
+                    if (!confirm(`Delete ${this.selected.size} documents?`)) return;
+
+                    const del = new Set(this.selected);
+                    this.docs = this.docs.filter(d => !del.has(d.id));
+                    this.selected.clear();
+
+                    if (this.editingId && del.has(this.editingId)) {
+                        this.editingId = null;
+                        this.editValue = "";
+                        this.editBackup = "";
+                    }
+
+                    this.$nextTick(() => this.updateIndeterminate());
+                },
+
+                deleteOne(id) {
+                    if (!confirm("Delete this document?")) return;
+                    this.docs = this.docs.filter(d => d.id !== id);
+                    this.selected.delete(id);
+
+                    if (this.editingId === id) {
+                        this.editingId = null;
+                        this.editValue = "";
+                        this.editBackup = "";
+                    }
+
+                    this.$nextTick(() => this.updateIndeterminate());
+                },
+
+                startEdit(doc) {
+                    this.editingId = doc.id;
+                    this.editBackup = doc.name;
+                    this.editValue = doc.name;
+
+                    this.$nextTick(() => {
+                        const input = this.$refs.editInput;
+                        if (input) { input.focus(); input.select(); }
+                    });
+                },
+
+                saveEdit() {
+                    if (!this.editingId) return;
+
+                    const v = (this.editValue || "").trim();
+                    if (!v) {
+                        this.cancelEdit(); // 空值：恢复
+                        return;
+                    }
+
+                    const idx = this.docs.findIndex(d => d.id === this.editingId);
+                    if (idx >= 0) this.docs[idx].name = v;
+
+                    this.editingId = null;
+                    this.editValue = "";
+                    this.editBackup = "";
+                },
+
+                cancelEdit() {
+                    const idx = this.docs.findIndex(d => d.id === this.editingId);
+                    if (idx >= 0) this.docs[idx].name = this.editBackup;
+
+                    this.editingId = null;
+                    this.editValue = "";
+                    this.editBackup = "";
+                },
+
+                init() {
+                    this.$nextTick(() => this.updateIndeterminate());
+                }
+            }
+        }
+    </script>
+</body>
+</html>

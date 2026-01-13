@@ -915,10 +915,92 @@
       }
 
     };
+    const generateModelLLM = async (inputText) => {
+      // Placeholder for LLM integration
+      // In a real implementation, this would call an API to generate a model based on inputText
+      console.log('Generating model using LLM for input text:', inputText);
+      // For now, just return a sample model
 
+      const xml = "<description xmlns=\"http://cpee.org/ns/description/1.0\"/>"
+
+      const fd = new FormData();
+      fd.append("rpst_xml", new Blob([xml], { type: "text/xml" }));
+      fd.append("user_input", new Blob([inputText], { type: "text/plain" }));
+      fd.append("llm", new Blob(["gemini-2.0-flash"], { type: "text/plain" }));
+
+      const llmResponse = $.ajax({
+        url: "https://autobpmn.ai/llm/",
+        method: "POST",
+        data: fd,
+        contentType: false,
+        processData: false,
+        xhrFields: { withCredentials: true },
+        crossDomain: true,
+        success: (data) => {
+          console.log('LLM generation request sent successfully', data);
+          return data;
+        },
+        error: (xhr) => {
+          console.log("LLM generation request failed", xhr.status, xhr.responseText);
+          throw new Error(`LLM request failed: ${xhr.status}`);
+        }
+      });
+
+      return llmResponse;
+
+
+      // return new Promise((resolve, reject) => {
+      //   $.ajax({
+      //     url: "https://autobpmn.ai/llm/",
+      //     method: "POST",
+      //     data: fd,
+      //     contentType: false,
+      //     processData: false,
+      //     xhrFields: { withCredentials: true },
+      //     crossDomain: true,
+      //     success: (data) => {
+      //       console.log('LLM generation request sent successfully', data);
+      //       resolve(data);
+      //     },
+      //     error: (xhr) => {
+      //       console.log("LLM generation request failed", xhr.status, xhr.responseText);
+      //       reject(new Error(`LLM request failed: ${xhr.status}`));
+      //     }
+      //   });
+      // });
+
+
+      // return await createSampleModel();
+    };
     const generateModel = async () => {
+
       const selectedText = temporarySelections.map(range => range.toString()).join(' ');
-      generatedModel = await createSampleModel();
+      // generatedModel = await createSampleModel();
+
+      generateModelLLM(selectedText);
+      let generatedModel;
+      try {
+        const res = await generateModelLLM(selectedText);
+        if (typeof res === 'string') {
+          generatedModel = res;
+        } else if (res && res.rpst_xml) {
+          generatedModel = (typeof res.rpst_xml === 'string') ? res.rpst_xml : new XMLSerializer().serializeToString(res.rpst_xml);
+        } else if (res && res.xml) {
+          generatedModel = (typeof res.xml === 'string') ? res.xml : new XMLSerializer().serializeToString(res.xml);
+        } else if (res && res.description) {
+          generatedModel = (typeof res.description === 'string') ? res.description : new XMLSerializer().serializeToString(res.description);
+        } else {
+          generatedModel = '<description xmlns="http://cpee.org/ns/description/1.0"/>';
+        }
+      } catch (err) {
+        console.log('001 Error generating model:', err);
+        const rejectMessage = err?.message ?? err?.responseText ?? (typeof err === 'string' ? err : JSON.stringify(err));
+        console.log('002 Reject message:', rejectMessage);
+
+        $generateButton.prop('disabled', false);
+        // return;
+      }
+      console.log('003 Next step -  Generated Model :', generatedModel);
       activeModel = {
         data: generatedModel,
       };

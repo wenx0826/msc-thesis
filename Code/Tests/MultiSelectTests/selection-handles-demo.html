@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Selection Handles Demo</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+            padding: 24px;
+        }
+
+        .card {
+            max-width: 760px;
+            line-height: 1.8;
+            font-size: 18px;
+        }
+
+        .hint {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        /* 两个拖拽 handle */
+        .handle {
+            position: fixed;
+            width: 12px;
+            height: 12px;
+            border-radius: 999px;
+            background: #2f7cf6;
+            box-shadow: 0 6px 18px rgba(47, 124, 246, .25);
+            border: 2px solid #fff;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            display: none;
+            cursor: grab;
+            touch-action: none;
+            /* 关键：防止移动端拖动变成页面滚动 */
+        }
+
+        .handle.dragging {
+            cursor: grabbing;
+        }
+    </style>
+</head>
+<body>
+    <div class="hint">先用鼠标拖选一段文字，然后拖动选区两端的小蓝点继续向前/向后选择。</div>
+    <div class="card" id="content">
+        这是一个“高级文本选择”的前端小 demo。你可以先选择一句话的一部分，然后会看到选区两端出现两个小蓝点。
+        接着你可以拖动左侧小蓝点去改变选区的起点，或者拖动右侧小蓝点去改变选区的终点。
+        这个效果常见于移动端阅读器、笔记 App、文档编辑器等场景。实现核心是 Selection + Range + 端点定位。
+    </div>
+
+    <div class="handle" id="handleStart" aria-label="selection start"></div>
+    <div class="handle" id="handleEnd" aria-label="selection end"></div>
+
+    <script>
+        const content = document.getElementById('content');
+        const hStart = document.getElementById('handleStart');
+        const hEnd = document.getElementById('handleEnd');
+
+        let dragging = null;          // 'start' | 'end' | null
+        let raf = 0;
+        let activeRange = null;       // ✅ 缓存的 Range（关键）
+
+        function isSelectionInsideContent(sel) {
+            if (!sel || sel.rangeCount === 0) return false;
+            const range = sel.getRangeAt(0);
+            const common = range.commonAncestorContainer;
+            return content.contains(common.nodeType === 1 ? common : common.parentElement);
+        }
+
+        function getLiveRangeIfValid() {
+            const sel = window.getSelection();
+            if (!isSelectionInsideContent(sel)) return null;
+            const r = sel.getRangeAt(0);
+            if (!r || r.collapsed) return null;
+            return r;
+        }
+
+        function showHandles(show) {
+            hStart.style.display = show ? 'block' : 'none';
+            hEnd.style.display = show ? 'block' : 'none';
+        }
+
+        function safeRectFromCollapsedRange(r) {
+            const rect = r.getClientRects()[0] || r.getBoundingClientRect();
+            return rect;
+        }
+
+        function updateHandlesPosition() {
+            // ✅ 位置优先用 activeRange（拖拽中/或点击把 live selection 清了也不怕）
+            const base = activeRange || getLiveRangeIfValid();
+            if (!base) {
+                showHandles(false);
+                return;
+            }
+
+            // 如果 live selection 还在，同步一下缓存
+            activeRange = base.cloneRange();
+
+            const r1 = base.cloneRange();
+            r1.collapse(true);
+            const rect1 = safeRectFromCollapsedRange(r1);
+
+            const r2 = base.cloneRange();
+            r2.collapse(false);
+            const rect2 = safeRectFromCollapsedRange(r2);
+
+            hStart.style.left = rect1.left + 'px';
+            hStart.style.top = (rect1.bottom + 8) + 'px';
+
+            hEnd.style.left = rect2.right + 'px';
+            hEnd.style.top = (rect2.bottom + 8) + 'px';
+
+            showHandles(true);
+        }
+
+        function scheduleUpdate() {
+            cancelAnimationFrame(raf);
+            raf = requestAnimationFrame(updateHandlesPosition);
+        }
+
+        function caretFromPoint(x, y) {
+            if (document.caretPositionFromPoint) {
+                const pos = document.caretPositionFromPoint(x, y);
+                if (!pos) return null;
+                return { node: pos.offsetNode, offset: pos.offset };
+            }
+            if (document.caretRangeFromPoint) {
+                const r = document.caretRangeFromPoint(x, y);
+                if (!r) return null;
+                return { node: r.startContainer, offset: r.startOffset };
+            }
+            return null;
+        }
+
+        function applyRange(range) {
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+        }
+
+        function normalize(range) {
+            // 若 start/end 反了：交换
+            const test = range.cloneRange();
+            try {
+                // 如果能正常取文字，通常就没反
+                test.toString();
+                return range;
+            } catch {
+                const r = document.createRange();
+                r.setStart(range.endContainer, range.endOffset);
+                r.setEnd(range.startContainer, range.startOffset);
+                return r;
+            }
+        }
+
+        function onHandleDown(which, e) {
+            // ✅ 关键：阻止浏览器默认行为导致 selection 丢失
+            e.preventDefault();
+            e.stopPropagation();
+
+            // ✅ 在点到 handle 的瞬间，先把“当前 live 选区”拷贝进缓存
+            const live = getLiveRangeIfValid();
+            if (live) activeRange = live.cloneRange();
+
+            if (!activeRange) return;
+
+            dragging = which;
+            (which === 'start' ? hStart : hEnd).classList.add('dragging');
+
+            // 立刻把缓存 range 应用回去，防止浏览器刚刚清掉选区
+            applyRange(activeRange);
+            scheduleUpdate();
+        }
+
+        function onPointerMove(e) {
+            if (!dragging || !activeRange) return;
+
+            const caret = caretFromPoint(e.clientX, e.clientY);
+            if (!caret) return;
+
+            // 限制只在内容里拖（可选）
+            const el = caret.node.nodeType === 1 ? caret.node : caret.node.parentElement;
+            if (!content.contains(el)) return;
+
+            const newRange = activeRange.cloneRange();
+
+            try {
+                if (dragging === 'start') newRange.setStart(caret.node, caret.offset);
+                else newRange.setEnd(caret.node, caret.offset);
+            } catch {
+                return;
+            }
+
+            const fixed = normalize(newRange);
+            activeRange = fixed.cloneRange();  // ✅ 持续更新缓存
+            applyRange(fixed);
+            scheduleUpdate();
+        }
+
+        function endDrag() {
+            if (!dragging) return;
+            hStart.classList.remove('dragging');
+            hEnd.classList.remove('dragging');
+            dragging = null;
+            scheduleUpdate();
+        }
+
+        // ✅ selectionchange：只在非拖拽时同步 activeRange
+        document.addEventListener('selectionchange', () => {
+            if (dragging) return;
+            const live = getLiveRangeIfValid();
+            activeRange = live ? live.cloneRange() : null;
+            scheduleUpdate();
+        });
+
+        document.addEventListener('mouseup', scheduleUpdate);
+        window.addEventListener('scroll', scheduleUpdate, { passive: true });
+        window.addEventListener('resize', scheduleUpdate);
+
+        // ✅ handle：pointerdown + mousedown 双保险（Safari/部分浏览器）
+        hStart.style.touchAction = 'none';
+        hEnd.style.touchAction = 'none';
+
+        hStart.addEventListener('pointerdown', (e) => onHandleDown('start', e));
+        hEnd.addEventListener('pointerdown', (e) => onHandleDown('end', e));
+
+        hStart.addEventListener('mousedown', (e) => e.preventDefault());
+        hEnd.addEventListener('mousedown', (e) => e.preventDefault());
+
+        window.addEventListener('pointermove', onPointerMove);
+        window.addEventListener('pointerup', endDrag);
+        window.addEventListener('pointercancel', endDrag);
+
+        showHandles(false);
+    </script>
+</body>
+</html>
