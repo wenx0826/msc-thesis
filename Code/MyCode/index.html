@@ -229,6 +229,12 @@
       return trace ? trace.document_id : null;
     };
 
+    const getDocumentTraces = (docId) => {
+      return traces.filter(trace => trace.document_id == docId);
+    };
+    const deleteDocumentTraces = (docId) => {
+      traces = traces.filter(trace => trace.document_id != docId);
+    };
     // #region CPEE Code
     var es;
     var suspended_redrawing = false;
@@ -493,14 +499,55 @@
         };
       });
     };
+    const deleteDocument = async (docId) => {
+      await deleteDocumentCascadeById(db, docId);
+      const docTraces = getDocumentTraces(docId);
+      docTraces.forEach(trace => {
+        const modelIndex = models.findIndex(m => m.id == trace.model_id);
+        if (modelIndex !== -1) {
+          models.splice(modelIndex, 1);
+        }
+        const $modelDiv = $modelsArea.find(`div[data-modelid='${trace.model_id}']`);
+        $modelDiv.remove();
+      });
+      if (activeDocId == docId) {
+        clearOverlayLayers();
+        $documentContent.empty();
+        activeDocId = null;
+        $generateButton.prop('disabled', true);
 
+      }
+      if (getActiveModelDocumentId() == docId) {
+        setActiveModel(null);
+      }
+      deleteDocumentTraces(docId);
+
+    };
+    const renderDocumentItem = async (doc) => {
+      const $li = $("<li>");
+      $li.attr("data-docid", String(doc.id));
+      $li.on("click", onDocumentSelect);
+      $span = $('<span>').text(doc.name);
+      const deleteDocButton = $('<button>').text('Delete').on('click', async (event) => {
+        event.stopPropagation();
+        await deleteDocument(doc.id);
+        $li.remove();
+        // if (activeDocId === doc.id) {
+        //   $documentContent.empty();
+        //   activeDocId = null;
+        //   $generateButton.prop('disabled', true);
+        // }
+      });
+      $li.append($span);
+      $li.append(deleteDocButton);
+      $li.attr("data-docid", String(doc.id));
+      $li.on("click", onDocumentSelect);
+      $documentList.append($li);
+    };
     const loadDocumentList = async () => {
       documentList = await getDocumentList(db);
       documentList.forEach(doc => {
-        const $li = $("<li>").text(doc.name);
-        $li.attr("data-docid", String(doc.id));
-        $li.on("click", onDocumentSelect);
-        $documentList.append($li);
+        renderDocumentItem(doc);
         // const $option = $("<option>").val(doc.id).text(doc.name);
         // $('#documentListSelect').append($option);
       });
@@ -642,11 +689,19 @@
       }
 
     };
+    const clearOverlayLayers = () => {
+      clearTraceLayer();
+      clearTemporarySelections();
 
+    };
+    const clearTraceLayer = () => {
+      $tracesLayer.empty();
+    };
     const clearTemporarySelections = () => {
       if (temporarySelections.length > 0) {
         temporarySelections = [];
         $temporarySelectionsLayer.empty();
+
       };
     }
 
@@ -664,7 +719,7 @@
     };
 
     const rerenderTracesLayer = () => {
-      $tracesLayer.empty();
+      clearTraceLayer();
       if (activeDocId) {
         const docTraces = traces.filter(trace => trace.document_id == activeDocId);
         if (docTraces.length) {
@@ -1132,11 +1187,12 @@
         const content = await getFileContentInHTML(file);
         // Store document in IndexedDB
         const documentId = await createDocument(db, file.name, content);
-        const $ul = $("#documentList");
-        const $li = $("<li>").text(file.name);
-        $li.attr("data-docid", String(documentId));
-        $li.on("click", onDocumentSelect);
-        $ul.append($li);
+        // const $ul = $("#documentList");
+        // const $li = $("<li>").text(file.name);
+        // $li.attr("data-docid", String(documentId));
+        // $li.on("click", onDocumentSelect);
+        renderDocumentItem({ id: documentId, name: file.name });
+        // $ul.append($li);
         setActiveDocument(documentId);
       }
     });
@@ -1189,7 +1245,8 @@
     $("button[name=savetestsetfile]").click(function () { save_testsetfile(); });
 
     const saveModel = async (e) => {
-      console.log("Saving model file...", activeModel.data);
+      // console.log('Saving model...');
+      // console.log("Saving model file...", activeModel.data);
       const svgContent = $('#activeModelCanvas');
       const $svgCopy = svgContent.clone(false);
       $svgCopy.removeAttr('id');

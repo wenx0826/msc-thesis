@@ -11,6 +11,16 @@ main {
   display: flex;
 }
 
+#documentList li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* width: 20%;
+  height: 80vh;
+  overflow-y: auto;
+  border-right: 1pt solid var(--x-ui-border-color);
+  padding-right: 0.5em; */
+}
 #documentContent {
   user-select: text;
 }
@@ -123,6 +133,7 @@ button:disabled {
   pointer-events: auto;
   cursor: pointer;
 }
+
 /*
 .selected {
   background-color: blue;
