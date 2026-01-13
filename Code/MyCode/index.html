@@ -22,16 +22,13 @@
   <script type="text/javascript" src="js_libs/util.js"></script>
   <script type="text/javascript" src="js_libs/vkbeautify.js"></script>
 
-
   <link rel="stylesheet" href="js_libs/custommenu.css" type="text/css" />
   <link rel="stylesheet" href="js_libs/relaxngui.css" type="text/css">
   <link rel="stylesheet" href="js_libs/uidash.css" type="text/css">
   <link rel="stylesheet" href="js_libs/uidash-icons.css" type="text/css">
 
-
   <link rel="stylesheet" href="css/ui.css" type="text/css">
   <link rel="stylesheet" href="css/globalui_cpee.css" type="text/css">
-
 
   <!-- modelling ui -->
   <script type="text/javascript" src="js/wfadaptor.js"></script>
@@ -96,9 +93,9 @@
             </ui-area>
           </ui-content>
 
-          <div class="bottom-bar">
+          <div class="bottom-bar" z-index="3">
             <div class="button-group">
-              <button id="generateButton" disabled="true">Generate</button>
+              <button id="generateButton" disabled="true">Generate Model</button>
               <button id="regenerateButton" style="display:none;">Regenerate</button>
             </div>
           </div>
@@ -210,6 +207,7 @@
     const $cancelButton = $('#cancelButton');
 
     const $modelsArea = $("#models");
+
     let db;
     let documentList = [];
     let activeDocId = null;
@@ -217,11 +215,7 @@
     let models = [];
     let activeModel = null;
 
-    let activeModelTrace = null;
     let temporarySelections = [];
-
-
-    // let activeModelSelections = [];
 
     const getActiveModelId = () => {
       return activeModel ? activeModel.id : null;
@@ -235,7 +229,7 @@
       return trace ? trace.document_id : null;
     };
 
-
+    // #region CPEE Code
     var es;
     var suspended_redrawing = false;
     var skip_location = false;
@@ -457,7 +451,7 @@
     }
 
 
-
+    // #endregion
     const connectDB = () => {
       return new Promise((resolve, reject) => {
         const dbReq = indexedDB.open("MyDB", 1);
@@ -716,20 +710,17 @@
         $('.model-container').removeClass('active');
         $(`.model-container[data-modelid="${modelId}"]`).addClass('active');
 
-        activeModelTrace = traces.find(trace => trace.model_id == modelId);
-
-        const documentId = activeModelTrace ? activeModelTrace.document_id : null;
+        const documentId = getActiveModelDocumentId();
         await setActiveDocument(documentId);
 
         $('.selection-wrapper').removeClass("active");
         $(`.selection-wrapper[data-modelid="${modelId}"]`).addClass("active");
 
-        activeModelSelections = activeModelTrace ? activeModelTrace.selections : [];
-
-
       } else if (!modelId) {
         clearModel();
         $('.model-container').removeClass('active');
+        $('.selection-wrapper').removeClass("active");
+        activeModel = null;
       }
 
     };
@@ -956,6 +947,7 @@
     //   return node;
     // };
 
+
     const handleTextSelection = () => {
 
       const selection = window.getSelection();
@@ -964,11 +956,14 @@
       const range = selection.getRangeAt(0);
       if (range.collapsed) return;
       // if (!content.contains(range.commonAncestorContainer)) return;
+      $generateButton.prop("disabled", false);
       if (activeModel && activeModel.id) {
+        // $generateButton.hide();
+        $generateButton.text("Generate New Model");
         $regenerateButton.show();
       } else {
         // $generateButton.show();
-        $generateButton.prop("disabled", false);
+        $generateButton.text("Generate Model");
       }
       const clonedRange = range.cloneRange();
       clonedRange.id = Date.now();
@@ -980,7 +975,7 @@
 
 
 
-
+    //#region CPEE Code
     function do_main_save() {
       console.log('Auto-saving details changes...!!!');
       if (save['details'].has_changed()) {
@@ -1086,6 +1081,7 @@
 
       });
     }
+    // #endregion
 
     $document.ready(async () => {
       await connectDB();
