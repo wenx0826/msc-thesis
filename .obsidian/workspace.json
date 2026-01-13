@@ -18,8 +18,23 @@
               "icon": "lucide-image",
               "title": "mock-up1"
             }
+          },
+          {
+            "id": "f5b021513b788b17",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "布局.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "布局"
+            }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -139,13 +154,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Mock-up/mock-up1.jpg",
+                "file": "布局.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of mock-up1"
+              "title": "Outline of 布局"
             }
           },
           {
@@ -180,15 +195,21 @@
       "card-board:CardBoard": false
     }
   },
-  "active": "279053b3089b8b05",
+  "active": "f5b021513b788b17",
   "lastOpenFiles": [
-    "Code/Tests/alpine.jsv2.html",
-    "Code/Tests/alpine.js copy.html",
-    "Code/Tests/alpine.js.html",
-    "Code/Tests/alpine.js",
-    "Code/Tests/select-box.html",
-    "Code/Tests/MultiSelectTests/selection-handles-demo.html",
-    "document_based_process.txt",
+    "Code/CPEE-cpee2/cockpit/js_libs/AdwaitaSans-Regular.ttf",
+    "Code/CPEE-cpee2/cockpit/js_libs/relaxngui.js",
+    "Code/CPEE-cpee2/cockpit/js_libs/build-bpmn.js",
+    "Code/CPEE-cpee2/cockpit/js_libs/custommenu.js",
+    "Code/CPEE-cpee2/cockpit/js_libs/marked.min.js",
+    "Code/CPEE-cpee2/cockpit/js_libs/parsequery.js",
+    "Code/CPEE-cpee2/cockpit/js_libs/relaxngui.css",
+    "Code/CPEE-cpee2/cockpit/js_libs/uidash-icons.css",
+    "Code/CPEE-cpee2/cockpit/js_libs/uidash.js",
+    "Code/CPEE-cpee2/cockpit/js_libs/vkbeautify.js",
+    "Code/CPEE-cpee2/cockpit/js_libs/printf.js",
+    "Mock-up/mock-up1.jpg",
+    "布局.md",
     "Code/MyCode/themes/preset_copy/symbols/wait_for_signal.svg",
     "Code/MyCode/themes/preset_copy/symbols/terminate.svg",
     "Code/MyCode/themes/preset_copy/symbols/stop.svg",
@@ -198,11 +219,6 @@
     "Code/MyCode/themes/preset_copy/symbols/parallel_eventbased_parallel.svg",
     "Code/MyCode/themes/preset_copy/symbols/parallel_eventbased_exclusive.svg",
     "Code/MyCode/themes/preset_copy/symbols/parallel_branch_normal.svg",
-    "Code/MyCode/themes/preset_copy/symbols/parallel_branch_event.svg",
-    "Code/MyCode/themes/preset_copy/rngs/wait_for_signal.rng",
-    "Code/MyCode/themes/preset_copy/rngs/terminate.rng",
-    "Code/MyCode/themes/preset_copy/rngs/stop.rng",
-    "Code/MyCode/themes/preset_copy/rngs/start.rng",
     "Code/cpee-layout-main-test2/README.md",
     "Code/cpee-layout-main copy/README.md",
     "Code/cpee-layout-main/README.md",
@@ -227,7 +243,6 @@
     "Code/CPEE-cpee2/FEATURES.md",
     "cpee-layout-main/README.md",
     "References/References.md",
-    "Grok v0.1.md",
     "Untitled.canvas"
   ]
 }
