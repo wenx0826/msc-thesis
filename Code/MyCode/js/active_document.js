@@ -3,8 +3,7 @@ let $generateButton;
 let $regenerateButton;
 let $deleteSelectionButton;
 
-const loadDocument = async () => {
-  const docId = Store.getActiveDocumentId();
+const loadDocument = async (docId) => {
   const content = await getDocumentContentById(db, docId);
   const htmlContent = new DOMParser().parseFromString(content, "text/html").body
     .innerHTML;
@@ -36,7 +35,4 @@ $(document).ready(function () {
   });
 });
 
-document.addEventListener("store:active-document-changed", () => {
-  clearTemporarySelections();
-  rerenderOverlayLayers();
-});
+document.addEventListener("store:active-document-changed", () => {});

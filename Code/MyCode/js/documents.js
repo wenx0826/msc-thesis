@@ -8,17 +8,21 @@ const loadDocumentList = async () => {
   });
 };
 
-const onDocumentSelect = async (event) => {
-  event.stopPropagation();
-  const docId = $(event.currentTarget).data("docid");
-  setActiveDocument(docId);
-};
+// const onDocumentSelect = async (event) => {
+//   event.stopPropagation();
+//   const docId = $(event.currentTarget).data("docid");
+//   setActiveDocument(docId);
+// };
 
 const renderDocumentItem = async (doc) => {
   console.log("Rendering document item:", doc);
   const $li = $("<li>");
   $li.attr("data-docid", String(doc.id));
-  $li.on("click", onDocumentSelect);
+  $li.on("click", (event) => {
+    event.stopPropagation();
+    Store.setActiveDocumentId(doc.id);
+  });
+
   $span = $("<span>").text(doc.name);
   const deleteDocButton = $("<button>")
     .text("Delete")
@@ -26,9 +30,9 @@ const renderDocumentItem = async (doc) => {
       event.stopPropagation();
       await deleteDocument(doc.id);
       $li.remove();
-      // if (activeDocId === doc.id) {
+      // if (activeDocumentId === doc.id) {
       //   $documentContent.empty();
-      //   activeDocId = null;
+      //   activeDocumentId = null;
       //   $generateButton.prop('disabled', true);
       // }
     });
@@ -39,25 +43,16 @@ const renderDocumentItem = async (doc) => {
   $documentList.append($li);
 };
 
-const setActiveDocument = async (docId) => {
-  const activeDocId = Store.getActiveDocumentId();
-  if (docId && docId != activeDocId) {
-    if (Store.getActiveModelDocumentId() != docId) {
-      Store.setActiveModel(null);
+const highlightActiveDocumentItem = (activeDocumentId) => {
+  $documentList.children().each((index, element) => {
+    const $element = $(element);
+
+    if ($element.data("docid") === activeDocumentId) {
+      $element.addClass("active");
+    } else {
+      $element.removeClass("active");
     }
-    Store.setActiveDocumentId(docId);
-    $documentList.children().each((index, element) => {
-      const $element = $(element);
-      if ($element.data("docid") === docId) {
-        $element.addClass("active");
-      } else {
-        $element.removeClass("active");
-      }
-    });
-    await loadDocument(docId);
-    // clearTemporarySelections();
-    // rerenderTracesLayer();
-  }
+  });
 };
 
 const getFileContentInHTML = async (file) => {
@@ -96,7 +91,7 @@ $(document).ready(function () {
       const content = await getFileContentInHTML(file);
       const documentId = await createDocument(db, file.name, content);
       renderDocumentItem({ id: documentId, name: file.name });
-      setActiveDocument(documentId);
+      Store.setActiveDocumentId(documentId);
     }
   });
 });

@@ -49,7 +49,7 @@ const saveModel = async (e) => {
   }
 };
 
-const showModel = (model) => {
+const showActiveModel = (model) => {
   // const { name: modelName, data: modelData } = model;
   $("#activeModelName").text(model.name);
   // console.log('Showing model:', model);
@@ -74,63 +74,6 @@ const showModel = (model) => {
       graphrealization.set_description($(data), true);
     }
   );
-};
-
-const setActiveModel = async (modelId) => {
-  const activeModel = Store.getActiveModel;
-  // const activeModel = Store.state.activeModel;
-  console.log("001-Setting active model to ID:", modelId);
-  if (modelId && modelId != (activeModel && activeModel.id)) {
-    console.log("001-Setting active model to ID:", modelId);
-    const model = await getModelById(db, modelId);
-    Store.setActiveModel(model);
-    showModel(model);
-    $(".model-container").removeClass("active");
-    $(`.model-container[data-modelid="${modelId}"]`).addClass("active");
-
-    const documentId = Store.getActiveModelDocumentId();
-    await setActiveDocument(documentId);
-
-    $(".selection-wrapper").removeClass("active");
-    $(`.selection-wrapper[data-modelid="${modelId}"]`).addClass("active");
-  } else if (!modelId) {
-    Store.setActiveModel(null);
-    $(".model-container").removeClass("active");
-    $(".selection-wrapper").removeClass("active");
-
-    $("#activeModelName").text("");
-    // console.log('Clearing active model canvas');
-    $("#activeModelCanvas").empty();
-  }
-};
-const renderModelInList = async ({
-  id: modelId,
-  name: modelName,
-  content: modelContent,
-  svg: svgContent,
-}) => {
-  var gridId = `modelGrid_${modelId}`;
-  var canvasId = `modelCanvas_${modelId}`;
-  const $modelsArea = $("#models");
-  const $modelContainer = $("<div>")
-    .addClass("model-container")
-    .attr("data-modelid", modelId);
-  $modelContainer.text(`${modelName}`);
-
-  $modelsArea.append($modelContainer);
-  const $gridDiv = $("<div>").attr("id", gridId);
-
-  const svgData = new DOMParser().parseFromString(
-    svgContent,
-    "image/svg+xml"
-  ).documentElement;
-  $gridDiv.append(svgData);
-  $gridDiv.append(svgData);
-  $modelContainer.append($gridDiv);
-  $modelContainer.on("click", (event) => {
-    event.stopPropagation();
-    setActiveModel(modelId);
-  });
 };
 
 const createSampleModel = async () => {
@@ -174,6 +117,7 @@ const createSampleModel = async () => {
     return await resp.text();
   }
 };
+
 const generateModelLLM = async (inputText) => {
   // Placeholder for LLM integration
   // In a real implementation, this would call an API to generate a model based on inputText
@@ -233,6 +177,7 @@ const generateModelLLM = async (inputText) => {
 
   // return await createSampleModel();
 };
+
 const generateModel = async () => {
   const selectedText = Store.getTemporarySelections()
     .map((range) => range.toString())
@@ -279,21 +224,25 @@ const generateModel = async () => {
   activeModel = {
     data: generatedModel,
   };
-  showModel(activeModel);
+  showActiveModel(activeModel);
   $generateButton.prop("disabled", false);
   $("#generatedModelActionBar").css("visibility", "visible");
 };
 
 const regenerateModel = async () => {
-  const selectedText = temporarySelections
+  const selectedText = Store.getTemporarySelections()
     .map((range) => range.toString())
     .join(" ");
-  generatedModel = await createSampleModel();
-  activeModel = {
+  const generatedModel = await createSampleModel();
+  const activeModel = Store.getActiveModel();
+
+  const model = {
     ...activeModel,
     data: generatedModel,
   };
-  showModel(activeModel);
+  //   setActiveModel(activeModel.id);
+  Store.setActiveModel(model);
+  showActiveModel(model);
   $generateButton.prop("disabled", false);
   $regenerateButton.prop("disabled", false);
   $("#generatedModelActionBar").css("visibility", "visible");
@@ -325,7 +274,7 @@ $(document).ready(function () {
     }
 
     Store.addModel(model);
-    setActiveModel(null);
+    Store.setActiveModel(null);
     var trace = {
       document_id: Store.getActiveDocumentId(),
       model_id: modelId,

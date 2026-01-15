@@ -76,8 +76,22 @@ window.Store = {
     return model ? model.name : `Model ${modelId}`;
   },
   // activeModel
+  async setActiveModelById(modelId) {
+    // const model = this.state.models.find((m) => m.id == modelId) || null;
+    // this.setActiveModel(model);
+    var currentActiveModelId = this.getActiveModelId();
+    if (modelId != currentActiveModelId) {
+      if (modelId) {
+        const model = await getModelById(db, modelId);
+        this.setActiveModel(model);
+      } else {
+        this.setActiveModel(null);
+      }
+    }
+  },
   setActiveModel(model) {
     this.state.activeModel = model;
+    document.dispatchEvent(new CustomEvent("store:active-model-changed"));
   },
   getActiveModel() {
     return this.state.activeModel;
