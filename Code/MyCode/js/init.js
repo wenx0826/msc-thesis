@@ -79,8 +79,10 @@ $(document).ready(async () => {
   await loadModels();
   const documentList = Store.getDocumentList();
   if (documentList.length) {
-    setActiveDocument(documentList[documentList.length - 1]?.id);
+    // setActiveDocument(documentList[documentList.length - 1]?.id);
+    Store.setActiveDocumentId(documentList[documentList.length - 1]?.id);
   }
+  console.log("Initialization complete.", Store.state);
   // generateModel();
 
   // var timer;

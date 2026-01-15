@@ -1,0 +1,42 @@
+let $documentContent;
+let $generateButton;
+let $regenerateButton;
+let $deleteSelectionButton;
+
+const loadDocument = async () => {
+  const docId = Store.getActiveDocumentId();
+  const content = await getDocumentContentById(db, docId);
+  const htmlContent = new DOMParser().parseFromString(content, "text/html").body
+    .innerHTML;
+  $("#documentContent").html(htmlContent || "");
+};
+
+$(document).ready(function () {
+  $tracesLayer = $("#tracesLayer");
+  $temporarySelectionsLayer = $("#temporarySelectionsLayer");
+
+  $deleteSelectionButton = $("#deleteSelectionButton");
+  $generateButton = $("#generateButton");
+  $regenerateButton = $("#regenerateButton");
+  $keepButton = $("#keepButton");
+  $cancelButton = $("#cancelButton");
+  $documentContent = $("#documentContent");
+  $documentContent.on("mouseup", handleTextSelection);
+  $documentContent.on("scroll", rerenderOverlayLayers);
+  $(window).on("resize", rerenderOverlayLayers);
+
+  $generateButton.on("click", async () => {
+    $generateButton.prop("disabled", true);
+    generateModel();
+  });
+  $regenerateButton.on("click", async () => {
+    $generateButton.prop("disabled", true);
+    $regenerateButton.prop("disabled", true);
+    regenerateModel();
+  });
+});
+
+document.addEventListener("store:active-document-changed", () => {
+  clearTemporarySelections();
+  rerenderOverlayLayers();
+});

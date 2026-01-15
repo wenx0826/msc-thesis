@@ -13,6 +13,9 @@ window.Store = {
   getTraces() {
     return this.state.traces;
   },
+  addTrace(trace) {
+    this.state.traces.push(trace);
+  },
   addTraces(newTraces) {
     this.state.traces = [...this.state.traces, ...newTraces];
   },
@@ -40,20 +43,37 @@ window.Store = {
     const doc = this.state.documentList.find((d) => d.id == docId);
     return doc ? doc.name : "Unknown Document";
   },
-  // activeDocumentId
+  // activeDocument
   setActiveDocumentId(docId) {
-    this.state.activeDocumentId = docId;
+    var currentActiveDocId = this.state.activeDocumentId;
+    if (docId && docId != currentActiveDocId) {
+      this.state.activeDocumentId = docId;
+      document.dispatchEvent(
+        new CustomEvent("store:active-document-id-changed")
+      );
+    }
   },
   getActiveDocumentId() {
-    return this.state.activeDocId;
+    return this.state.activeDocumentId;
   },
-
+  getActiveDocumentTraces() {
+    const activeDocumentId = this.getActiveDocumentId();
+    return activeDocumentId
+      ? this.state.traces.filter(
+          (trace) => trace.document_id == activeDocumentId
+        )
+      : [];
+  },
   // models
   addModel(model) {
     this.state.models.push(model);
   },
   getModels() {
     return this.state.models;
+  },
+  getModelNameById(modelId) {
+    const model = this.state.models.find((m) => m.id == modelId);
+    return model ? model.name : `Model ${modelId}`;
   },
   // activeModel
   setActiveModel(model) {
@@ -86,7 +106,16 @@ window.Store = {
     );
   },
   // temporarySelections
+  addTemporarySelection(selection) {
+    this.state.temporarySelections.push(selection);
+  },
   setTemporarySelections(selections) {
     this.state.temporarySelections = selections;
+  },
+  getTemporarySelections() {
+    return this.state.temporarySelections;
+  },
+  hasTemporarySelections() {
+    return this.state.temporarySelections.length > 0;
   },
 };

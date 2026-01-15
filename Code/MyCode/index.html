@@ -64,8 +64,14 @@
   <script src="js/store.js"></script>
   <script src="js/myui.js"></script>
   <script src="js/documents.js"></script>
+  <script src="js/active_document.js"></script>
+  <script src="js/active_document_selections.js"></script>
+
   <script src="js/models.js"></script>
+  <script src="js/active_model.js"></script>
+  <script src="js/main.js"></script>
   <script src="js/init.js"></script>
+
 
   <script src="js/mydetails.js"></script>
 
@@ -416,160 +422,7 @@
 
     // #endregion
 
-    // #region Render Selections Layer and Traces Layer
-    const onRangeSelect = (event) => {
-      event.stopPropagation();
-      const $target = $(event.currentTarget).parent();
-      $target.addClass("selected");
-      const rangeId = $target.attr('id');
-      $target.siblings().removeClass('selected');
 
-      const rangeBoundingRect = $target[0].getBoundingClientRect();
-
-      $document.one('mousedown', () => {
-        $deleteSelectionButton.hide();
-        $target.removeClass('selected');
-      });
-
-      $deleteSelectionButton.show().css({
-        top: `${rangeBoundingRect.top + window.scrollY - 12}px`,
-        left: `${rangeBoundingRect.right + window.scrollX - 12}px`,
-      }).on('click', () => {
-        // Remove range from highlightSelections and temporarySelections
-        highlightSelections = highlightSelections.filter(r => r.id !== rangeId);
-        temporarySelections = temporarySelections.filter(r => r.id !== rangeId);
-        // Remove the highlight from the UI
-        $target.remove();
-        $deleteSelectionButton.hide();
-      });
-    };
-
-
-    const renderSelection = (range, modelId) => {
-      const rangeId = range.id || Date.now();
-
-      const $selectionDiv = $('<div>')
-        .attr('id', rangeId)
-        .attr('data-modelid', modelId || '')
-        .addClass(`selection-wrapper ${modelId == getActiveModelId() ? 'active' : ''}`)
-        .css({
-          top: `${range.getBoundingClientRect().top + window.scrollY}px`,
-          left: `${range.getBoundingClientRect().left + window.scrollX}px`,
-          width: `${range.getBoundingClientRect().width}px`,
-          height: `${range.getBoundingClientRect().height}px`,
-        });
-      const $rangeRect = $('<div>').addClass('range-rect');
-      const rects = range.getClientRects();
-      for (const rect of rects) {
-        const $rectDiv = $rangeRect.clone();
-        $rectDiv.css({
-          top: `${rect.top + window.scrollY}px`,
-          left: `${rect.left + window.scrollX}px`,
-          width: `${rect.width}px`,
-          height: `${rect.height}px`,
-        }).on('click', onRangeSelect);
-        $selectionDiv.append($rectDiv);
-      }
-
-      if (modelId) {
-        const lastIndex = rects.length - 1;
-        const lastRect = rects[lastIndex];
-
-        const modelName = models.find(m => m.id == modelId)?.name || `Model ${modelId}`;
-        const labelSpan = $('<span>').attr('data-modelid', modelId).addClass('label-span').text(`${modelName}`).css({
-          top: `${lastRect.top + window.scrollY - 10}px`,
-          left: `${lastRect.right + window.scrollX}px`,
-        }).on('click', (event) => {
-          event.stopPropagation();
-          setActiveModel(modelId);
-        });
-        $selectionDiv.append(labelSpan);
-        $tracesLayer.append($selectionDiv);
-      } else {
-        $temporarySelectionsLayer.append($selectionDiv);
-      }
-
-    };
-    const clearOverlayLayers = () => {
-      clearTraceLayer();
-      clearTemporarySelections();
-
-    };
-    const clearTraceLayer = () => {
-      $tracesLayer.empty();
-    };
-    const clearTemporarySelections = () => {
-      if (temporarySelections.length > 0) {
-        temporarySelections = [];
-        $temporarySelectionsLayer.empty();
-
-      };
-    }
-
-    const rerenderTemporarySelectionsLayer = () => {
-      if (temporarySelections.length > 0) {
-        $temporarySelectionsLayer.empty();
-        temporarySelections.forEach(range => renderSelection(range));
-      }
-    };
-    const renderTrace = ({ selections: selections, model_id: modelId }) => {
-      selections.forEach(serializedRange => {
-        const range = deserializeRange(serializedRange);
-        renderSelection(range, modelId);
-      });
-    };
-
-    const rerenderTracesLayer = () => {
-      clearTraceLayer();
-      if (activeDocId) {
-        const docTraces = traces.filter(trace => trace.document_id == activeDocId);
-        if (docTraces.length) {
-          docTraces.forEach(trace => renderTrace(trace));
-        }
-      }
-    };
-    const rerenderOverlayLayers = () => {
-      rerenderTracesLayer();
-      rerenderTemporarySelectionsLayer();
-    };
-    // #endregion
-
-
-
-
-
-
-
-
-
-    async function getFileContentInHTML(file) {
-      let fileContent = "";
-      if (file.type === "application/pdf") {
-        const arrayBuffer = await file.arrayBuffer();
-        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-        let pdfText = "";
-        for (let i = 1; i <= pdf.numPages; i++) {
-          const page = await pdf.getPage(i);
-          const content = await page.getTextContent();
-          fileContent += content.items.map(item => item.str).join(" ") + "\n";
-        }
-      }
-
-      else if (
-        file.type === "application/msword" ||
-        file.name.endsWith(".doc") ||
-        file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
-        file.name.endsWith(".docx")
-      ) {
-        const arrayBuffer = await file.arrayBuffer();
-        const result = await mammoth.convertToHtml({ arrayBuffer });
-        fileContent = new DOMParser().parseFromString(result.value, "text/html").body.innerHTML;
-      }
-      else {
-        fileContent = await file.text();
-      }
-      return fileContent;
-    }
 
 
     // Listen to custom events dispatched in this app
@@ -670,29 +523,6 @@
     // };
 
 
-    const handleTextSelection = () => {
-
-      const selection = window.getSelection();
-
-      if (!selection.rangeCount) return;
-      const range = selection.getRangeAt(0);
-      if (range.collapsed) return;
-      // if (!content.contains(range.commonAncestorContainer)) return;
-      $generateButton.prop("disabled", false);
-      if (activeModel && activeModel.id) {
-        // $generateButton.hide();
-        $generateButton.text("Generate New Model");
-        $regenerateButton.show();
-      } else {
-        // $generateButton.show();
-        $generateButton.text("Generate Model");
-      }
-      const clonedRange = range.cloneRange();
-      clonedRange.id = Date.now();
-      temporarySelections.push(clonedRange);
-      renderSelection(range);
-      selection.removeAllRanges();
-    };
 
 
 
@@ -807,71 +637,13 @@
     */
 
 
-    $documentContent.on("mouseup", handleTextSelection);
-    $documentContent.on("scroll", rerenderOverlayLayers);
-    $(window).on("resize", rerenderOverlayLayers);
-
-    $generateButton.on("click", async () => {
-      $generateButton.prop("disabled", true);
-      generateModel();
-    });
-    $regenerateButton.on("click", async () => {
-      $generateButton.prop("disabled", true);
-      $regenerateButton.prop("disabled", true);
-      regenerateModel();
-    });
-    $keepButton.on("click", async () => {
-      let modelId = getActiveModelId();
-      let model
-
-      if (!modelId) {
-        const svgContent = $('#activeModelCanvas');
-        const $svgCopy = svgContent.clone(false);
-        $svgCopy.removeAttr('id');
-        const svg = $svgCopy.prop('outerHTML');
-        activeModel.svg = svg;
-        activeModel.data = new XMLSerializer().serializeToString(activeModel.data);
-        modelId = await createModel(db, activeModel);
-        model = await updateModel(db, modelId, { name: `Model_${modelId}` });
-        renderModelInList(model);
-      } else {
-        // model = await updateModel(db, modelId, activeModel);
-        await saveModel();
-      }
-      models.push(model);
-      setActiveModel(null);
-      var trace = {
-        document_id: activeDocId,
-        model_id: modelId,
-        selections: temporarySelections.map(range => serializeRange(range)),
-      };
-
-      await createTrace(db, trace);
-      traces.push(trace);
-      renderTrace(trace);
-      clearTemporarySelections();
-      $generateButton.prop("disabled", true);
-      $("#generatedModelActionBar").css("visibility", "hidden");
-
-    });
-
-    $cancelButton.on("click", () => {
-      activeModel = null;
-      $("#activeModelName").text("");
-      $("#activeModelCanvas").empty();
-      $("#generatedModelActionBar").css("visibility", "hidden");
-    });
-
     $("button[name=savetestsetfile]").click(function () { save_testsetfile(); });
-
     // const refreshModelList = async () => {
     //   $modelsArea.empty();
     //   for (const model of models) {
     //     await renderModelInList(model);
     //   }
     // };
-
-
     $("button[name=savemodelfile]").click(function (e) { saveModel(e); });  
   </script>
 </body>
