@@ -806,21 +806,7 @@
         // #endregion
     */
 
-    $documentsInput.on("change", async (event) => {
-      for (const file of event.target.files) {
-        if (!file) continue;
-        const content = await getFileContentInHTML(file);
-        // Store document in IndexedDB
-        const documentId = await createDocument(db, file.name, content);
-        // const $ul = $("#documentList");
-        // const $li = $("<li>").text(file.name);
-        // $li.attr("data-docid", String(documentId));
-        // $li.on("click", onDocumentSelect);
-        renderDocumentItem({ id: documentId, name: file.name });
-        // $ul.append($li);
-        setActiveDocument(documentId);
-      }
-    });
+
     $documentContent.on("mouseup", handleTextSelection);
     $documentContent.on("scroll", rerenderOverlayLayers);
     $(window).on("resize", rerenderOverlayLayers);
@@ -885,44 +871,7 @@
     //   }
     // };
 
-    const saveModel = async (e) => {
-      // console.log('Saving model...');
-      // console.log("Saving model file...", activeModel.data);
-      const svgContent = $('#activeModelCanvas');
-      const $svgCopy = svgContent.clone(false);
-      $svgCopy.removeAttr('id');
-      const svg = $svgCopy.prop('outerHTML');
-      activeModel.svg = svg;
-      // activeModel.data = new XMLSerializer().serializeToString(activeModel.data);
-      // const updatedModel = { ...activeModel, data: new XMLSerializer().serializeToString(activeModel.data) };
-      // updateModel(db, activeModel.id, );
-      const updatedModel = await updateModel(db, activeModel.id, { svg: svg, data: new XMLSerializer().serializeToString(activeModel.data) });
-      const idx = models.findIndex(m => m.id === updatedModel.id);
-      if (idx !== -1) {
-        models[idx] = updatedModel;
 
-        const $container = $(`.model-container[data-modelid="${updatedModel.id}"]`);
-        if ($container.length) {
-          // Rebuild container contents
-          $container.empty().text(updatedModel.name);
-
-          const $gridDiv = $("<div>").attr("id", `modelGrid_${updatedModel.id}`);
-          try {
-            const svgDoc = new DOMParser().parseFromString(updatedModel.svg || '', "image/svg+xml").documentElement;
-            if (svgDoc) $gridDiv.append(svgDoc);
-          } catch (err) {
-            console.warn('Failed to parse updated model SVG:', err);
-          }
-          $container.append($gridDiv);
-
-          // Reattach click handler
-          $container.off('click').on('click', (e) => { e.stopPropagation(); setActiveModel(updatedModel.id); });
-        }
-      } else {
-        models.push(updatedModel);
-        renderModelInList(updatedModel);
-      }
-    };
     $("button[name=savemodelfile]").click(function (e) { saveModel(e); });  
   </script>
 </body>

@@ -1,6 +1,6 @@
 const $window = $(window);
 const $document = $(document);
-const $documentsInput = $("#documentsInput");
+
 // const $documentList = $("#documentList");
 
 const $documentContent = $("#documentContent");

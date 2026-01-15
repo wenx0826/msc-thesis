@@ -52,13 +52,20 @@ window.Store = {
   addModel(model) {
     this.state.models.push(model);
   },
+  getModels() {
+    return this.state.models;
+  },
   // activeModel
   setActiveModel(model) {
     this.state.activeModel = model;
   },
+  getActiveModel() {
+    return this.state.activeModel;
+  },
   getActiveModelId() {
     return this.state.activeModel ? this.state.activeModel.id : null;
   },
+
   getActiveModelTrace() {
     return (
       this.state.traces.find(

@@ -6,6 +6,53 @@ const loadModels = async () => {
     await renderModelInList(model);
   }
 };
+const saveModel = async (e) => {
+  const svgContent = $("#activeModelCanvas");
+  const $svgCopy = svgContent.clone(false);
+  $svgCopy.removeAttr("id");
+  const svg = $svgCopy.prop("outerHTML");
+  const activeModel = Store.getActiveModel();
+  activeModel.svg = svg;
+  // activeModel.data = new XMLSerializer().serializeToString(activeModel.data);
+  // const updatedModel = { ...activeModel, data: new XMLSerializer().serializeToString(activeModel.data) };
+  // updateModel(db, activeModel.id, );
+  const updatedModel = await updateModel(db, activeModel.id, {
+    svg: svg,
+    data: new XMLSerializer().serializeToString(activeModel.data),
+  });
+  const models = Store.getModels();
+  const idx = models.findIndex((m) => m.id === updatedModel.id);
+  if (idx !== -1) {
+    models[idx] = updatedModel;
+
+    const $container = $(`.model-container[data-modelid="${updatedModel.id}"]`);
+    if ($container.length) {
+      // Rebuild container contents
+      $container.empty().text(updatedModel.name);
+
+      const $gridDiv = $("<div>").attr("id", `modelGrid_${updatedModel.id}`);
+      try {
+        const svgDoc = new DOMParser().parseFromString(
+          updatedModel.svg || "",
+          "image/svg+xml"
+        ).documentElement;
+        if (svgDoc) $gridDiv.append(svgDoc);
+      } catch (err) {
+        console.warn("Failed to parse updated model SVG:", err);
+      }
+      $container.append($gridDiv);
+
+      // Reattach click handler
+      $container.off("click").on("click", (e) => {
+        e.stopPropagation();
+        setActiveModel(updatedModel.id);
+      });
+    }
+  } else {
+    models.push(updatedModel);
+    renderModelInList(updatedModel);
+  }
+};
 
 const showModel = (model) => {
   // const { name: modelName, data: modelData } = model;

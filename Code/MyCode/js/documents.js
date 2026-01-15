@@ -69,4 +69,14 @@ const setActiveDocument = async (docId) => {
 
 $(document).ready(function () {
   $documentList = $("#documentList");
+
+  $("#documentsInput").on("change", async (event) => {
+    for (const file of event.target.files) {
+      if (!file) continue;
+      const content = await getFileContentInHTML(file);
+      const documentId = await createDocument(db, file.name, content);
+      renderDocumentItem({ id: documentId, name: file.name });
+      setActiveDocument(documentId);
+    }
+  });
 });
