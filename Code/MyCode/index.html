@@ -31,13 +31,19 @@
   <link rel="stylesheet" href="css/globalui_cpee.css" type="text/css">
 
   <!-- modelling ui -->
-  <script type="text/javascript" src="js/wfadaptor.js"></script>
-  <link rel="stylesheet" href="css/wfadaptor.css" type="text/css" />
-  <script type="text/javascript" src="themes/base.js"></script>
+  <script type="text/javascript" src="js_cpee/wfadaptor.js"></script>
+  <link rel="stylesheet" href="js_cpee/wfadaptor.css" type="text/css" />
+  <script type="text/javascript" src="themes/base_new.js"></script>
 
-  <script type="text/javascript" src="js/extended_columns.js"></script>
+  <script type="text/javascript" src="js_cpee/extended_columns.js"></script>
   <link rel="stylesheet" href="css/extended_columns-label.css" type="text/css" />
   <link rel="stylesheet" href="css/extended_columns-svg.css" type="text/css" />
+
+  <script type="text/javascript" src="js_cpee/instance.js"></script>
+  <script type="text/javascript" src="js_cpee/details.js"></script>
+  <!-- <script type="text/javascript" src="js/parameters.js"></script>
+    <script type="text/javascript" src="js/modifiers.js"></script> -->
+
 
   <!-- Flos Stuff -->
   <!-- <script type="text/javascript" src="js/structured.js"></script> -->
@@ -55,6 +61,14 @@
   <script src="js/db_documents.js"></script>
   <script src="js/db_models.js"></script>
   <script src="js/db_traces.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/myui.js"></script>
+  <script src="js/documents.js"></script>
+  <script src="js/models.js"></script>
+  <script src="js/init.js"></script>
+
+  <script src="js/mydetails.js"></script>
+
   <!-- my ui-->
   <link rel="stylesheet" href="css/myui.css" type="text/css" />
 
@@ -80,6 +94,48 @@
           </ui-content>
         </ui-tabbed>
         <!-- Text Action Bar -->
+        <div id="textColor">
+          <div class="relaxngui_cell relaxngui_color_container">
+            <span class="round"><input data-relaxngui-visible="true" data-relaxngui-template="false"
+                data-relaxngui-parent=" &gt; call &gt; parameters"
+                data-relaxngui-path=" &gt; call &gt; parameters &gt; color" type="radio" name="1me7kniu26u"
+                value="#d4e1f1" id="checkbox_1me7kniu26u_1"><label for="checkbox_1me7kniu26u_1"
+                style="background-color: #d4e1f1;"></label></span><span class="round"><input
+                data-relaxngui-visible="true" data-relaxngui-template="false"
+                data-relaxngui-parent=" &gt; call &gt; parameters"
+                data-relaxngui-path=" &gt; call &gt; parameters &gt; color" type="radio" name="1me7kniu26u"
+                value="#d8f0dd" id="checkbox_1me7kniu26u_2"><label for="checkbox_1me7kniu26u_2"
+                style="background-color: #d8f0dd;"></label></span><span class="round"><input
+                data-relaxngui-visible="true" data-relaxngui-template="false"
+                data-relaxngui-parent=" &gt; call &gt; parameters"
+                data-relaxngui-path=" &gt; call &gt; parameters &gt; color" type="radio" name="1me7kniu26u"
+                value="#ffffcc" id="checkbox_1me7kniu26u_3"><label for="checkbox_1me7kniu26u_3"
+                style="background-color: #ffffcc;"></label></span><span class="round"><input
+                data-relaxngui-visible="true" data-relaxngui-template="false"
+                data-relaxngui-parent=" &gt; call &gt; parameters"
+                data-relaxngui-path=" &gt; call &gt; parameters &gt; color" type="radio" name="1me7kniu26u"
+                value="#e4c3e4" id="checkbox_1me7kniu26u_4"><label for="checkbox_1me7kniu26u_4"
+                style="background-color: #e4c3e4;"></label></span><span class="round"><input
+                data-relaxngui-visible="true" data-relaxngui-template="false"
+                data-relaxngui-parent=" &gt; call &gt; parameters"
+                data-relaxngui-path=" &gt; call &gt; parameters &gt; color" type="radio" name="1me7kniu26u"
+                value="#f8a8c6" id="checkbox_1me7kniu26u_5"><label for="checkbox_1me7kniu26u_5"
+                style="background-color: #f8a8c6;"></label></span><span class="round"><input
+                data-relaxngui-visible="true" data-relaxngui-template="false"
+                data-relaxngui-parent=" &gt; call &gt; parameters"
+                data-relaxngui-path=" &gt; call &gt; parameters &gt; color" type="radio" name="1me7kniu26u"
+                value="#ded0c5" id="checkbox_1me7kniu26u_6"><label for="checkbox_1me7kniu26u_6"
+                style="background-color: #ded0c5;"></label></span><span class="round"><input
+                data-relaxngui-visible="true" data-relaxngui-template="false"
+                data-relaxngui-parent=" &gt; call &gt; parameters"
+                data-relaxngui-path=" &gt; call &gt; parameters &gt; color" type="radio" name="1me7kniu26u"
+                value="#deddda" id="checkbox_1me7kniu26u_7"><label for="checkbox_1me7kniu26u_7"
+                style="background-color: #deddda;"></label>
+            </span>
+          </div>
+
+
+        </div>
         <ui-area id="tracesLayer" style="z-index: 1;"></ui-area>
         <ui-area id="temporarySelectionsLayer" style="z-index: 1;"></ui-area>
         <button id="deleteSelectionButton"
@@ -148,16 +204,17 @@
             name="savesvgfile">save svg<br>graph</button> -->
         </div>
         <ui-content>
-          <div id='activeModelGrid'>
+          <div id='activeModelGrid' style="overflow:auto; -webkit-overflow-scrolling: touch;">
             <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink"
-              id='activeModelCanvas' width='1' height='1'></svg>
+              id='activeModelCanvas' width='1' height='1' style="display:block; width:100%; height:auto;"></svg>
           </div>
-
-          <div id="relaxngworker"></div>
-          <ui-area data-belongs-to-tab="details" id="detailcolumn">
-            <div id="dat_details" class='x-ui-layout'></div>
-          </ui-area>
         </ui-content>
+        <ui-resizehandle data-label="drag to resize"></ui-resizehandle>
+
+        <div id="relaxngworker"></div>
+        <ui-area data-belongs-to-tab="details" id="detailcolumn">
+          <div id="dat_details" class='x-ui-layout'></div>
+        </ui-area>
         <!-- Model Action Bar -->
         <div id="generatedModelActionBar" class="bottom-bar" style="visibility: hidden;">
           <div class="button-group">
@@ -190,384 +247,244 @@
     </ui-content>
   </ui-rest>
   <script>
-    const $window = $(window);
-    const $document = $(document);
-    const $documentsInput = $('#documentsInput');
-    const $documentList = $('#documentList');
-
-    const $documentContent = $('#documentContent');
-
-    const $tracesLayer = $('#tracesLayer');
-    const $temporarySelectionsLayer = $('#temporarySelectionsLayer');
-
-    const $deleteSelectionButton = $('#deleteSelectionButton');
-    const $generateButton = $('#generateButton');
-    const $regenerateButton = $('#regenerateButton');
-    const $keepButton = $('#keepButton');
-    const $cancelButton = $('#cancelButton');
-
-    const $modelsArea = $("#models");
-
-    let db;
-    let documentList = [];
-    let activeDocId = null;
-    let traces = [];
-    let models = [];
-    let activeModel = null;
-
-    let temporarySelections = [];
-
-    const getActiveModelId = () => {
-      return activeModel ? activeModel.id : null;
-    };
-
-    const getActiveModelTrace = () => {
-      return traces.find(trace => trace.model_id == (activeModel && activeModel.id)) || null;
-    };
-    const getActiveModelDocumentId = () => {
-      const trace = getActiveModelTrace();
-      return trace ? trace.document_id : null;
-    };
-
-    const getDocumentTraces = (docId) => {
-      return traces.filter(trace => trace.document_id == docId);
-    };
-    const deleteDocumentTraces = (docId) => {
-      traces = traces.filter(trace => trace.document_id != docId);
-    };
-
-    // #region CPEE Code
-    var es;
-    var suspended_redrawing = false;
-    var skip_location = false;
-    var myid = ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c => (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16));
-    var paths = '#dat_details input, #dat_details textarea, #dat_details select, #dat_details button, #dat_details [contenteditable], #dat_dataelements input, #dat_dataelements textarea, #dat_dataelements select, #dat_dataelements button, #dat_dataelements [contenteditable], #dat_endpoints input, #dat_endpoints textarea, #dat_endpoints select, #dat_endpoints button, #dat_endpoints [contenteditable], #dat_attributes input, #dat_attributes textarea, #dat_attributes select, #dat_attributes button, #dat_attributes [contenteditable]';
-    var loading = false;
-    var subscription;
-    var subscription_state = 'less';
-    var graph_changed = new Event("graph:changed", { "bubbles": true, "cancelable": false });
-    var graph_theme = null;
-    var graph_position = null;
-    var graph_highlight = null;
-    var graph_highlight_tasks = []
-    var graph_highlight_color = null;
-    var model_loaded = new Event("model:loaded", { "bubbles": true, "cancelable": false });
-    var save = {};
-    save['endpoints'] = undefined;
-    save['dataelements'] = undefined;
-    save['attributes'] = undefined;
-    save['attributes_raw'] = {};
-
-    var node_state = {};
-    var debug = false;
-
-    function global_init() {
-      suspended_redrawing = false;
-      loading = false;
-      subscription = undefined;
-      subscription_state = 'less';
-      save['states'] = {};
-      save['state'] = "ready";
-      save['dsl'] = undefined;
-      save['activity_red_states'] = {}
-      save['graph'] = undefined;
-      save['graph_theme'] = undefined;
-      save['graph_adaptor'] = undefined;
-      save['endpoints_cache'] = {};
-      save['endpoints_list'] = {};
-      save['details'] = undefined;
-      save['details_target'] = {};
-      save['instance_pos'] = [];
-      save['modeltype'] = 'CPEE';
-      save['modifiers'] = {};
-      save['modifiers_active'] = {};
-      save['modifiers_additional'] = {};
-      save['resources'] = undefined;
-      node_state = {};
-    }
-
-    global_init();
-
-    function format_visual_forms() {
-      // if (save['state'] != "ready" && save['state'] != "stopped") {
-      //   $(paths).each(function (k, e) {
-      //     if ($(e).attr('contenteditable')) { $(e).attr('contenteditable', 'false'); }
-      //     $(e).attr('disabled', 'disable');
-      //   });
-      // } else {
-      //   $(paths).each(function (k, e) {
-      //     if ($(e).attr('contenteditable')) { $(e).attr('contenteditable', 'true'); }
-      //     $(e).removeAttr('disabled');
-      //   });
-      // }
-    }
-    // disable all input, also check themes
-    format_visual_forms();
 
 
-    function add_ui_pos(e) {
-      ui_pos(e, function (coll) {
-        coll.push([$(e).attr('id'), e.nodeName == 'stop' ? 'after' : 'at']);
-        return coll;
-      });
-    }
-
-    function del_ui_pos(e) {
-      ui_pos(e, function (coll) {
-        coll.splice(coll.findIndex((ele) => ele[0] == $(e).attr('id')), 1);
-        return coll;
-      });
-    }
 
 
-    function ui_pos(e, bl) {
-      var url = $("body").attr("current-instance");
-      var coll = [];
-      $(
-        "g.element.primitive > g.activities.active, g.element.primitive > g.activities.passive"
-      ).each(function (a, b) {
-        coll.push([
-          $(b).parent().attr("element-id"),
-          $(b).parent().attr("element-type") == "stop" ? "after" : "at",
-        ]);
-      });
-      coll = bl(coll);
-      var vals = "";
-      $(coll).each(function (k, ele) {
-        vals += "<" + ele[0] + ">" + ele[1] + "</" + ele[0] + ">";
-      });
-      console.log("Saving positions:", vals, JSON.stringify(vals));
-      vals =
-        "<positions xmlns='http://cpee.org/ns/properties/2.0'>" +
-        vals +
-        "</positions>";
-      // $.ajax({
-      //   type: "PUT",
-      //   url: url + "/properties/positions/",
-      //   contentType: "application/xml",
-      //   headers: {
-      //     "Content-ID": "positions",
-      //     "CPEE-Event-Source": myid,
-      //   },
-      //   data: vals,
-      //   success: monitor_instance_pos,
-      //   error: report_failure,
-      // });
-    }
 
 
-    function monitor_instance_pos() {
-
-      if (graph_position && graph_position == "false") {
-        save["instance_pos"] = [];
-        format_visual_clear();
-        format_instance_pos();
-        return;
-      }
-      var url = $("body").attr("current-instance");
-      $.ajax({
-        type: "GET",
-        url: url + "/properties/positions/",
-        success: function (res) {
-          save["instance_pos"] = $("positions > *", res);
-          format_visual_clear();
-          format_instance_pos();
-        },
-      });
-    }
-
-    function report_failure() { }
 
 
-    function save_testsetfile() {
-      console.log("Saving test set file...", activeModel.data);
-      // var def = new $.Deferred();
-      // def.done(function (name, testset) {
-      //   var ct = new Date();
-      //   $('#savetestsetfile').attr('download', name + '.xml');
-      //   $('#savetestsetfile').attr('href', 'data:application/xml;charset=utf-8;base64,' + $B64(testset.serializePrettyXML()));
-      //   document.getElementById('savetestsetfile').click();
-      // });
-      // get_testset(def);
-    }
 
-    function get_testset(deferred) {
-      var url = $('body').attr('current-instance');
 
-      $.ajax({
-        type: "GET",
-        url: url + "/properties/",
-        success: function (res) {
-          var testset = $X('<testset xmlns="http://cpee.org/ns/properties/2.0"/>');
-          testset.append($(res.documentElement).children());
-          $('testset > state', testset).remove();
-          $('testset > status', testset).remove();
-          $('testset > positions', testset).remove();
-          $('testset > dsl', testset).remove();
-          $('testset > description > *', testset).remove();
-          $('testset > description', testset).append($('testset > dslx', testset).children());
-          $('testset > transformation', testset).remove();
-          $('testset > dsl', testset).remove();
-          $('testset > dslx', testset).remove();
-          $('testset > attributes > uuid', testset).remove();
-          testset.append($X('<transformation xmlns="http://cpee.org/ns/properties/2.0"><description type="copy"/><dataelements type="none"/><endpoints type="none"/></transformation>'));
-          var name = $('testset > attributes > info', testset).text();
-          $('[xmlns]', testset).each((idx, ele) => {
-            if (ele.parentNode.namespaceURI == ele.getAttribute('xmlns')) {
-              ele.removeAttribute('xmlns');
+
+    /* instance.js 
+        // #region CPEE Code
+        var es;
+        var suspended_redrawing = false;
+        var skip_location = false;
+        var myid = ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c => (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16));
+        var paths = '#dat_details input, #dat_details textarea, #dat_details select, #dat_details button, #dat_details [contenteditable], #dat_dataelements input, #dat_dataelements textarea, #dat_dataelements select, #dat_dataelements button, #dat_dataelements [contenteditable], #dat_endpoints input, #dat_endpoints textarea, #dat_endpoints select, #dat_endpoints button, #dat_endpoints [contenteditable], #dat_attributes input, #dat_attributes textarea, #dat_attributes select, #dat_attributes button, #dat_attributes [contenteditable]';
+        var loading = false;
+        var subscription;
+        var subscription_state = 'less';
+        var graph_changed = new Event("graph:changed", { "bubbles": true, "cancelable": false });
+        var graph_theme = null;
+        var graph_position = null;
+        var graph_highlight = null;
+        var graph_highlight_tasks = []
+        var graph_highlight_color = null;
+        var model_loaded = new Event("model:loaded", { "bubbles": true, "cancelable": false });
+        var save = {};
+        save['endpoints'] = undefined;
+        save['dataelements'] = undefined;
+        save['attributes'] = undefined;
+        save['attributes_raw'] = {};
+    
+        var node_state = {};
+        var debug = false;
+    
+        function global_init() {
+          suspended_redrawing = false;
+          loading = false;
+          subscription = undefined;
+          subscription_state = 'less';
+          save['states'] = {};
+          save['state'] = "ready";
+          save['dsl'] = undefined;
+          save['activity_red_states'] = {}
+          save['graph'] = undefined;
+          save['graph_theme'] = undefined;
+          save['graph_adaptor'] = undefined;
+          save['endpoints_cache'] = {};
+          save['endpoints_list'] = {};
+          save['details'] = undefined;
+          save['details_target'] = {};
+          save['instance_pos'] = [];
+          save['modeltype'] = 'CPEE';
+          save['modifiers'] = {};
+          save['modifiers_active'] = {};
+          save['modifiers_additional'] = {};
+          save['resources'] = undefined;
+          node_state = {};
+        }
+    
+        global_init();
+    
+        function format_visual_forms() {
+          // if (save['state'] != "ready" && save['state'] != "stopped") {
+          //   $(paths).each(function (k, e) {
+          //     if ($(e).attr('contenteditable')) { $(e).attr('contenteditable', 'false'); }
+          //     $(e).attr('disabled', 'disable');
+          //   });
+          // } else {
+          //   $(paths).each(function (k, e) {
+          //     if ($(e).attr('contenteditable')) { $(e).attr('contenteditable', 'true'); }
+          //     $(e).removeAttr('disabled');
+          //   });
+          // }
+        }
+        // disable all input, also check themes
+        format_visual_forms();
+    
+    
+        function add_ui_pos(e) {
+          ui_pos(e, function (coll) {
+            coll.push([$(e).attr('id'), e.nodeName == 'stop' ? 'after' : 'at']);
+            return coll;
+          });
+        }
+    
+        function del_ui_pos(e) {
+          ui_pos(e, function (coll) {
+            coll.splice(coll.findIndex((ele) => ele[0] == $(e).attr('id')), 1);
+            return coll;
+          });
+        }
+    
+    
+        function ui_pos(e, bl) {
+          var url = $("body").attr("current-instance");
+          var coll = [];
+          $(
+            "g.element.primitive > g.activities.active, g.element.primitive > g.activities.passive"
+          ).each(function (a, b) {
+            coll.push([
+              $(b).parent().attr("element-id"),
+              $(b).parent().attr("element-type") == "stop" ? "after" : "at",
+            ]);
+          });
+          coll = bl(coll);
+          var vals = "";
+          $(coll).each(function (k, ele) {
+            vals += "<" + ele[0] + ">" + ele[1] + "</" + ele[0] + ">";
+          });
+          // console.log("UI positions:", vals);
+          console.log("Saving positions:", vals, JSON.stringify(vals));
+          vals =
+            "<positions xmlns='http://cpee.org/ns/properties/2.0'>" +
+            vals +
+            "</positions>";
+          // $.ajax({
+          //   type: "PUT",
+          //   url: url + "/properties/positions/",
+          //   contentType: "application/xml",
+          //   headers: {
+          //     "Content-ID": "positions",
+          //     "CPEE-Event-Source": myid,
+          //   },
+          //   data: vals,
+          //   success: monitor_instance_pos,
+          //   error: report_failure,
+          // });
+        }
+    
+    
+        function monitor_instance_pos() {
+    
+          if (graph_position && graph_position == "false") {
+            save["instance_pos"] = [];
+            format_visual_clear();
+            format_instance_pos();
+            return;
+          }
+          var url = $("body").attr("current-instance");
+          $.ajax({
+            type: "GET",
+            url: url + "/properties/positions/",
+            success: function (res) {
+              save["instance_pos"] = $("positions > *", res);
+              format_visual_clear();
+              format_instance_pos();
+            },
+          });
+        }
+    
+        function report_failure() { }
+    
+    
+        function save_testsetfile() {
+          console.log("Saving test set file...", activeModel.data);
+          // var def = new $.Deferred();
+          // def.done(function (name, testset) {
+          //   var ct = new Date();
+          //   $('#savetestsetfile').attr('download', name + '.xml');
+          //   $('#savetestsetfile').attr('href', 'data:application/xml;charset=utf-8;base64,' + $B64(testset.serializePrettyXML()));
+          //   document.getElementById('savetestsetfile').click();
+          // });
+          // get_testset(def);
+        }
+    
+        function get_testset(deferred) {
+          var url = $('body').attr('current-instance');
+    
+          $.ajax({
+            type: "GET",
+            url: url + "/properties/",
+            success: function (res) {
+              var testset = $X('<testset xmlns="http://cpee.org/ns/properties/2.0"/>');
+              testset.append($(res.documentElement).children());
+              $('testset > state', testset).remove();
+              $('testset > status', testset).remove();
+              $('testset > positions', testset).remove();
+              $('testset > dsl', testset).remove();
+              $('testset > description > *', testset).remove();
+              $('testset > description', testset).append($('testset > dslx', testset).children());
+              $('testset > transformation', testset).remove();
+              $('testset > dsl', testset).remove();
+              $('testset > dslx', testset).remove();
+              $('testset > attributes > uuid', testset).remove();
+              testset.append($X('<transformation xmlns="http://cpee.org/ns/properties/2.0"><description type="copy"/><dataelements type="none"/><endpoints type="none"/></transformation>'));
+              var name = $('testset > attributes > info', testset).text();
+              $('[xmlns]', testset).each((idx, ele) => {
+                if (ele.parentNode.namespaceURI == ele.getAttribute('xmlns')) {
+                  ele.removeAttribute('xmlns');
+                }
+              });
+    
+              // $.ajax({
+              //   type: "GET",
+              //   url: url + "/notifications/subscriptions/",
+              //   success: async function (res) {
+              //     let values = $("subscriptions > subscription[url]", res);
+              //     let subs = $X('<subscriptions xmlns="http://riddl.org/ns/common-patterns/notifications-producer/2.0"/>');
+              //     let promises = [];
+              //     let scount = 0;
+              //     values.each(function () {
+              //       let sid = $(this).attr('id');
+              //       if (sid.match(/^_/)) {
+              //         scount += 1;
+              //         promises.push(
+              //           $.ajax({
+              //             type: "GET",
+              //             url: url + "/notifications/subscriptions/" + sid,
+              //             error: report_failure
+              //           }).then(function (a) {
+              //             subs.append($(a.documentElement));
+              //           })
+              //         );
+              //       };
+              //     });
+              //     await Promise.all(promises);
+              //     if (scount > 0) { testset.append(subs); }
+              //     deferred.resolve(name, testset);
+              //   },
+              //   error: function () { deferred.reject(); report_failure(); }
+              // });
+    
+            },
+            error: function (e) {
+              deferred.reject();
+              report_failure();
+              console.error("Error fetching test set:", e);
             }
           });
-
-          // $.ajax({
-          //   type: "GET",
-          //   url: url + "/notifications/subscriptions/",
-          //   success: async function (res) {
-          //     let values = $("subscriptions > subscription[url]", res);
-          //     let subs = $X('<subscriptions xmlns="http://riddl.org/ns/common-patterns/notifications-producer/2.0"/>');
-          //     let promises = [];
-          //     let scount = 0;
-          //     values.each(function () {
-          //       let sid = $(this).attr('id');
-          //       if (sid.match(/^_/)) {
-          //         scount += 1;
-          //         promises.push(
-          //           $.ajax({
-          //             type: "GET",
-          //             url: url + "/notifications/subscriptions/" + sid,
-          //             error: report_failure
-          //           }).then(function (a) {
-          //             subs.append($(a.documentElement));
-          //           })
-          //         );
-          //       };
-          //     });
-          //     await Promise.all(promises);
-          //     if (scount > 0) { testset.append(subs); }
-          //     deferred.resolve(name, testset);
-          //   },
-          //   error: function () { deferred.reject(); report_failure(); }
-          // });
-
-        },
-        error: function (e) {
-          deferred.reject();
-          report_failure();
-          console.error("Error fetching test set:", e);
         }
-      });
-    }
+    
+    
+        // #endregion
+        */
 
-
-    // #endregion
-    const connectDB = () => {
-      return new Promise((resolve, reject) => {
-        const dbReq = indexedDB.open("MyDB", 1);
-        dbReq.onupgradeneeded = function (event) {
-          const db = event.target.result;
-          // db.deleteObjectStore("models");
-          // db.deleteObjectStore("documents");
-          // db.deleteObjectStore("traces");
-          if (!db.objectStoreNames.contains("documents")) {
-            db.createObjectStore("documents", {
-              keyPath: "id",
-              autoIncrement: true,
-            });
-          }
-          if (!db.objectStoreNames.contains("models")) {
-            db.createObjectStore("models", {
-              keyPath: "id",
-              autoIncrement: true,
-            });
-          }
-          if (!db.objectStoreNames.contains("traces")) {
-            const traceStore = db.createObjectStore("traces", {
-              keyPath: "id",
-              autoIncrement: true,
-            });
-            traceStore.createIndex("document_id", "document_id", { unique: false });
-            traceStore.createIndex("model_id", "model_id", { unique: false });
-          }
-
-        };
-
-        dbReq.onsuccess = function (event) {
-          db = event.target.result;
-          resolve(db);
-        };
-        dbReq.onerror = function (event) {
-          console.error('Database error:', event.target.errorCode);
-          reject(event.target.errorCode);
-        };
-      });
-    };
-    const deleteDocument = async (docId) => {
-      await deleteDocumentCascadeById(db, docId);
-      const docTraces = getDocumentTraces(docId);
-      docTraces.forEach(trace => {
-        const modelIndex = models.findIndex(m => m.id == trace.model_id);
-        if (modelIndex !== -1) {
-          models.splice(modelIndex, 1);
-        }
-        const $modelDiv = $modelsArea.find(`div[data-modelid='${trace.model_id}']`);
-        $modelDiv.remove();
-      });
-      if (activeDocId == docId) {
-        clearOverlayLayers();
-        $documentContent.empty();
-        activeDocId = null;
-        $generateButton.prop('disabled', true);
-
-      }
-      if (getActiveModelDocumentId() == docId) {
-        setActiveModel(null);
-      }
-      deleteDocumentTraces(docId);
-
-    };
-    const renderDocumentItem = async (doc) => {
-      const $li = $("<li>");
-      $li.attr("data-docid", String(doc.id));
-      $li.on("click", onDocumentSelect);
-      $span = $('<span>').text(doc.name);
-      const deleteDocButton = $('<button>').text('Delete').on('click', async (event) => {
-        event.stopPropagation();
-        await deleteDocument(doc.id);
-        $li.remove();
-        // if (activeDocId === doc.id) {
-        //   $documentContent.empty();
-        //   activeDocId = null;
-        //   $generateButton.prop('disabled', true);
-        // }
-      });
-      $li.append($span);
-      $li.append(deleteDocButton);
-      $li.attr("data-docid", String(doc.id));
-      $li.on("click", onDocumentSelect);
-      $documentList.append($li);
-    };
-    const loadDocumentList = async () => {
-      documentList = await getDocumentList(db);
-      documentList.forEach(doc => {
-        renderDocumentItem(doc);
-        // const $option = $("<option>").val(doc.id).text(doc.name);
-        // $('#documentListSelect').append($option);
-      });
-    };
-
-    const loadTraces = async () => {
-      for (const doc of documentList) {
-        const newTraces = await getTracesByDocumentId(db, doc.id);
-        traces = [...traces, ...newTraces];
-      }
-    };
-
-    const loadModels = async () => {
-      for (const trace of traces) {
-        const model = await getModelById(db, trace.model_id);
-        models.push(model);
-        await renderModelInList(model);
-      }
-    };
 
     // #region Selection Range Serialization and Deserialization
     function getXPath(node, root = document.getElementById("documentContent")) {
@@ -736,27 +653,6 @@
 
 
 
-    const setActiveDocument = async (docId) => {
-      if (docId && docId != activeDocId) {
-        const activeModelDocId = getActiveModelDocumentId();
-        if (getActiveModelDocumentId() != docId) {
-          setActiveModel(null);
-        }
-        activeDocId = docId;
-        $documentList.children().each((index, element) => {
-          const $element = $(element);
-          if ($element.data('docid') === docId) {
-            $element.addClass("active");
-          } else {
-            $element.removeClass("active");
-          }
-        });
-        await loadDocument(docId);
-        clearTemporarySelections();
-        rerenderTracesLayer();
-      }
-    };
-
     const setActiveModel = async (modelId) => {
 
       console.log('001-Setting active model to ID:', modelId);
@@ -786,18 +682,9 @@
 
     };
 
-    const onDocumentSelect = async (event) => {
-      event.stopPropagation();
-      const docId = $(event.currentTarget).data('docid');
-      setActiveDocument(docId);
-    };
 
 
-    const loadDocument = async (docId) => {
-      const content = await getDocumentContentById(db, docId);
-      const htmlContent = new DOMParser().parseFromString(content, "text/html").body.innerHTML;
-      $documentContent.html(htmlContent || '');
-    };
+
 
     async function getFileContentInHTML(file) {
       let fileContent = "";
@@ -851,6 +738,26 @@
         graphrealization.set_description($(data), true);
       });
     };
+
+    // Listen to custom events dispatched in this app
+    document.addEventListener('graph:changed', function (e) {
+      console.log('graph:changed', e);
+      try { rerenderOverlayLayers(); } catch (_) { }
+    });
+
+    document.addEventListener('model:loaded', function (e) {
+      console.log('model:loaded', e);
+    });
+
+    // jQuery-style listeners (optional)
+    $(document).on('graph:changed', function (e) {
+      console.log('Event Listener "graph:changed" listened', e);
+    });
+
+    $(document).on('model:loaded', function (e) {
+      console.log('model:loaded (jQuery)', e);
+    });
+
 
 
 
@@ -975,9 +882,8 @@
     const generateModel = async () => {
 
       const selectedText = temporarySelections.map(range => range.toString()).join(' ');
-      // generatedModel = await createSampleModel();
 
-      generateModelLLM(selectedText);
+
       let generatedModel;
       try {
         const res = await generateModelLLM(selectedText);
@@ -997,7 +903,9 @@
         const rejectMessage = err?.message ?? err?.responseText ?? (typeof err === 'string' ? err : JSON.stringify(err));
         console.log('002 Reject message:', rejectMessage);
 
-        $generateButton.prop('disabled', false);
+        // $generateButton.prop('disabled', false);
+        generatedModel = await createSampleModel();
+
         // return;
       }
       console.log('003 Next step -  Generated Model :', generatedModel);
@@ -1124,157 +1032,115 @@
 
 
 
-
-    //#region CPEE Code
-    function do_main_save() {
-      console.log('Auto-saving details changes...!!!');
-      if (save['details'].has_changed()) {
-        do_main_work(save['details_target'].svgid);
-      }
-    }
-
-    function do_main_work(svgid) {
-      var desc = save['details_target'].model;
-      var node = desc.get_node_by_svg_id(svgid);
-      var orignode = save['graph_adaptor'].illustrator.get_node_by_svg_id(svgid).parents('g.element[element-id]');
-      var origtype = orignode.attr('element-type') + '_' + orignode.attr('element-endpoint');
-
-      var url = $('body').attr('current-instance');
-
-      var nnew;
-      if (svgid != save['details_target'].svgid) {
-        let tn = desc.get_node_by_svg_id(svgid).get(0);
-        let rng = desc.elements[$(tn).attr('svg-subtype')].clone();
-        if (save['endpoints_cache'][$(tn).attr('endpoint')] && save['endpoints_cache'][$(tn).attr('endpoint')].schema) {
-          let schema = save['endpoints_cache'][$(tn).attr('endpoint')].schema.documentElement;
-          $(rng).find(' > element[name="parameters"] > element[name="arguments"]').replaceWith($(schema).clone());
-        }
-        if (save['endpoints_list'][$(tn).attr('endpoint')] && (!save['endpoints_list'][$(tn).attr('endpoint')].startsWith('http') || save['endpoints_list'][$(tn).attr('endpoint')].match(/^https?-/))) {
-          $(rng).find(' > element[name="parameters"] > element[name="method"]').remove();
-        }
-        let rngw = new RelaxNGui(rng, $('#relaxngworker'), desc.context_eval);
-        nnew = $(rngw.save().documentElement);
-      } else {
-        save['details'].set_checkpoint();
-        nnew = $(save['details'].save().documentElement);
-      }
-      nnew.attr('svg-id', svgid);
-
-      if ($('*[svg-id]', node).length > 0) {
-        nnew.append(node.children().filter(function () { return this.attributes['svg-id'] != undefined; }));
-      }
-
-      if (node[0].namespaceURI == nnew.attr('xmlns')) { // remove xmlns when it is the same as in the parent node
-        nnew[0].removeAttribute('xmlns');
-      }
-
-      // copy all elements from different namespaces
-      [...node[0].attributes].forEach(attr => {
-        if (attr && attr.namespaceURI && attr.namespaceURI != 'http://cpee.org/ns/description/1.0') {
-          nnew[0].setAttributeNS(attr.namespaceURI, attr.nodeName, attr.nodeValue);
-        }
-      });
-
-      node.replaceWith(nnew);
-
-      var ttarget = manifestation.adaptor.illustrator.get_node_by_svg_id(svgid);
-      var tnewnode = ttarget.parents('g.element[element-id]');
-      var tnewtype = tnewnode.attr('element-type') + '_' + tnewnode.attr('element-endpoint');
-
-      desc.refresh(function (graphrealization) {
-        var vtarget = manifestation.adaptor.illustrator.get_node_by_svg_id(svgid);
-        if (vtarget.length > 0) {
-          vtarget.parents('g.element[element-id]').addClass('selected');
-        }
-        manifestation.adaptor.illustrator.get_label_by_svg_id(svgid).addClass('selected');
-        $('#graphgrid [element-id=' + svgid + ']').addClass('selected');
-
-
-        var newnode = vtarget.parents('g.element[element-id]');
-        var newtype = newnode.attr('element-type') + '_' + newnode.attr('element-endpoint');
-        var g = graphrealization.get_description();
-        console.log('Auto-save graph diff????', g);
-        save['graph'] = $X(g);
-        save['graph'].removeAttr('svg-id');
-        save['graph'].removeAttr('svg-type');
-        save['graph'].removeAttr('svg-subtype');
-        save['graph'].removeAttr('svg-label');
-
-        if (newtype != origtype) {
-          manifestation.update_details(svgid);
-          do_main_work(svgid);
-        } else {
-          console.log('Auto-save triggered???????', desc.get_description());
-          // $.ajax({
-          //   type: "PUT",
-          //   url: url + "/properties/description/",
-          //   contentType: 'text/xml',
-          //   headers: {
-          //     'Content-ID': 'description',
-          //     'CPEE-Event-Source': myid
-          //   },
-          //   data: desc.get_description()
-          // });
-          format_instance_pos();
-
-          document.dispatchEvent(graph_changed);
-
-          ////////////////////////////
-          // holy shit, f***in papercut. When blur/focusout from within relaxngui,
-          // click on original target after graph was updated. tsvgid has to be
-          // saved in mousedown because blur/focusout is between mousedown and click.
-          ////////////////////////////
-          if (save['details_target'].svgid != save['details_target'].tsvgid) {
-            manifestation.adaptor.illustrator.get_label_by_svg_id(save['details_target'].tsvgid).trigger('click');
+    /*  details.js
+        //#region CPEE Code
+        function do_main_save() {
+          console.log('Auto-saving details changes...!!!');
+          if (save['details'].has_changed()) {
+            do_main_work(save['details_target'].svgid);
           }
         }
-
-      });
-    }
-    // #endregion
-
-    $document.ready(async () => {
-      await connectDB();
-      await loadDocumentList();
-      await loadTraces();
-      await loadModels();
-
-      if (documentList.length) {
-        setActiveDocument(documentList[documentList.length - 1]?.id);
-      }
-      // generateModel();
-
-      var timer;
-
-
-
-      $(document).on('input', '#dat_details input, #dat_details textarea, #dat_details [contenteditable]', function (e) {
-        console.log('!!!Input detected, scheduling auto-save...');
-        clearTimeout(timer);
-        timer = setTimeout(do_main_save, 5000);
-      });
-      // only for contenteditable divs
-      $(document).on('keypress', '#dat_details div[contenteditable]', function (e) {
-        if (e.keyCode == 13) {
-          document.execCommand('insertLineBreak')
-          e.preventDefault()
+    
+        function do_main_work(svgid) {
+          var desc = save['details_target'].model;
+          var node = desc.get_node_by_svg_id(svgid);
+          var orignode = save['graph_adaptor'].illustrator.get_node_by_svg_id(svgid).parents('g.element[element-id]');
+          var origtype = orignode.attr('element-type') + '_' + orignode.attr('element-endpoint');
+    
+          var url = $('body').attr('current-instance');
+    
+          var nnew;
+          if (svgid != save['details_target'].svgid) {
+            let tn = desc.get_node_by_svg_id(svgid).get(0);
+            let rng = desc.elements[$(tn).attr('svg-subtype')].clone();
+            if (save['endpoints_cache'][$(tn).attr('endpoint')] && save['endpoints_cache'][$(tn).attr('endpoint')].schema) {
+              let schema = save['endpoints_cache'][$(tn).attr('endpoint')].schema.documentElement;
+              $(rng).find(' > element[name="parameters"] > element[name="arguments"]').replaceWith($(schema).clone());
+            }
+            if (save['endpoints_list'][$(tn).attr('endpoint')] && (!save['endpoints_list'][$(tn).attr('endpoint')].startsWith('http') || save['endpoints_list'][$(tn).attr('endpoint')].match(/^https?-/))) {
+              $(rng).find(' > element[name="parameters"] > element[name="method"]').remove();
+            }
+            let rngw = new RelaxNGui(rng, $('#relaxngworker'), desc.context_eval);
+            nnew = $(rngw.save().documentElement);
+          } else {
+            save['details'].set_checkpoint();
+            nnew = $(save['details'].save().documentElement);
+          }
+          nnew.attr('svg-id', svgid);
+    
+          if ($('*[svg-id]', node).length > 0) {
+            nnew.append(node.children().filter(function () { return this.attributes['svg-id'] != undefined; }));
+          }
+    
+          if (node[0].namespaceURI == nnew.attr('xmlns')) { // remove xmlns when it is the same as in the parent node
+            nnew[0].removeAttribute('xmlns');
+          }
+    
+          // copy all elements from different namespaces
+          [...node[0].attributes].forEach(attr => {
+            if (attr && attr.namespaceURI && attr.namespaceURI != 'http://cpee.org/ns/description/1.0') {
+              nnew[0].setAttributeNS(attr.namespaceURI, attr.nodeName, attr.nodeValue);
+            }
+          });
+    
+          node.replaceWith(nnew);
+    
+          var ttarget = manifestation.adaptor.illustrator.get_node_by_svg_id(svgid);
+          var tnewnode = ttarget.parents('g.element[element-id]');
+          var tnewtype = tnewnode.attr('element-type') + '_' + tnewnode.attr('element-endpoint');
+    
+          desc.refresh(function (graphrealization) {
+            var vtarget = manifestation.adaptor.illustrator.get_node_by_svg_id(svgid);
+            if (vtarget.length > 0) {
+              vtarget.parents('g.element[element-id]').addClass('selected');
+            }
+            manifestation.adaptor.illustrator.get_label_by_svg_id(svgid).addClass('selected');
+            $('#graphgrid [element-id=' + svgid + ']').addClass('selected');
+    
+    
+            var newnode = vtarget.parents('g.element[element-id]');
+            var newtype = newnode.attr('element-type') + '_' + newnode.attr('element-endpoint');
+            var g = graphrealization.get_description();
+            console.log('Auto-save graph diff????', g);
+            save['graph'] = $X(g);
+            save['graph'].removeAttr('svg-id');
+            save['graph'].removeAttr('svg-type');
+            save['graph'].removeAttr('svg-subtype');
+            save['graph'].removeAttr('svg-label');
+    
+            if (newtype != origtype) {
+              manifestation.update_details(svgid);
+              do_main_work(svgid);
+            } else {
+              console.log('Auto-save triggered???????', desc.get_description());
+              // $.ajax({
+              //   type: "PUT",
+              //   url: url + "/properties/description/",
+              //   contentType: 'text/xml',
+              //   headers: {
+              //     'Content-ID': 'description',
+              //     'CPEE-Event-Source': myid
+              //   },
+              //   data: desc.get_description()
+              // });
+              format_instance_pos();
+    
+              document.dispatchEvent(graph_changed);
+    
+              ////////////////////////////
+              // holy shit, f***in papercut. When blur/focusout from within relaxngui,
+              // click on original target after graph was updated. tsvgid has to be
+              // saved in mousedown because blur/focusout is between mousedown and click.
+              ////////////////////////////
+              if (save['details_target'].svgid != save['details_target'].tsvgid) {
+                manifestation.adaptor.illustrator.get_label_by_svg_id(save['details_target'].tsvgid).trigger('click');
+              }
+            }
+    
+          });
         }
-      });
-      $(document).on('relaxngui_remove', '#dat_details', function (e) {
-        clearTimeout(timer);
-        do_main_save();
-      });
-      $(document).on('relaxngui_move', '#dat_details', function (e) {
-        clearTimeout(timer);
-        do_main_save();
-      });
-      $(document).on('relaxngui_change', '#dat_details', function (e) {
-        clearTimeout(timer);
-        do_main_save();
-      });
-
-
-    });
+        // #endregion
+    */
 
     $documentsInput.on("change", async (event) => {
       for (const file of event.target.files) {

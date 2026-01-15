@@ -1,4 +1,7 @@
 <element xmlns="http://relaxng.org/ns/structure/1.0" xmlns:rngui="http://rngui.org" rngui:version="1.2" ns="http://cpee.org/ns/description/1.0" name="call" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  
+ 
+  
   <attribute name="id" rngui:label="ID" rngui:default="javascript:get_free_id()">
     <data type="string" rngui:readonly="true"/>
   </attribute>
@@ -23,23 +26,24 @@
         <value>#deddda</value>
       </choice>
     </element>
-    <element name="method" rngui:label="Method">
+    <element name="type" rngui:label="Type">
       <choice>
-        <value>:post</value>
-        <value>:get</value>
-        <value>:put</value>
-        <value>:patch</value>
-        <value>:delete</value>
+        <value>task</value>
+        <value>subprocess</value>
       </choice>
     </element>
-    <element name="arguments" rngui:header="Arguments">
+    <element name="model" rngui:label="Model">
+      <choice>
+      </choice>
+    </element>
+    <!-- <element name="arguments" rngui:header="Arguments">
       <zeroOrMore rngui:label="Create Argument Pair">
         <element rngui:label="Name" rngui:labeltype="xml">
           <anyName/>
           <data type="string" rngui:label="Value"/>
         </element>
       </zeroOrMore>
-    </element>
+    </element> -->
   </element>
   <!-- <element name="code" rngui:header="Data Handling">
     <element name="signal" rngui:label="Signal after finalize/update">

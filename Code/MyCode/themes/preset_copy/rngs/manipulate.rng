@@ -17,10 +17,10 @@
       <value>#deddda</value>
     </choice>
   </attribute>
-  <element name="code" rngui:label="Script" rngui:header="Code">
+  <!-- <element name="code" rngui:label="Script" rngui:header="Code">
     <text rngui:label="Script that is executed"/>
-  </element>
-  <element name="annotations" rngui:header="Annotations">
+  </element> -->
+  <!-- <element name="annotations" rngui:header="Annotations">
     <element name="_logging_behavior" rngui:header="Logging Behavior" rngui:fold="closed">
       <element name="_exclude" rngui:label="Exclude from log">
         <data type="boolean" rngui:label="Exclude from log"/>
@@ -72,5 +72,5 @@
       </element>
 
     </element>
-  </element>
+  </element> -->
 </element>

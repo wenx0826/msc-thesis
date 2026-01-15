@@ -1,3 +1,4 @@
+// version 1622 lines
 function WFAdaptorManifestationBase(adaptor) {
   var self = this;
 
@@ -65,32 +66,9 @@ function WFAdaptorManifestationBase(adaptor) {
     return JSON.stringify(nodes);
   }; //}}}
   //{{{ Render the details from rng (right hand side of graph tab)
-  this.get_details = function (svgid) {
-    var node = self.adaptor.description.get_node_by_svg_id(svgid).get(0);
-
-    // 尝试几种常见结构来读取 parameters -> arguments -> model 的值
-    var model = (model = $("> parameters > arguments > model", node).text());
-    console.log(
-      "Getting Modelintermediate model after first check:!!!!!",
-      model
-    );
-    var endpoint = $(node).attr("endpoint");
-    if (endpoint == "subprocess") {
-      console.log("!!!!!!!!!!!!!type is subprocess, skipping details update");
-    }
-    // console.log("Getting details for svgid:", svgid, node);
-  };
-  this.get_linked_model = function (svgid) {
-    var node = self.adaptor.description.get_node_by_svg_id(svgid).get(0);
-    var model = (model = $("> parameters > arguments > model", node).text());
-    return model;
-  };
   this.update_details = function (svgid) {
     var tab = $("#dat_details");
-
-    // console.log("Updating details for svgid:", svgid, tab);
     var node = self.adaptor.description.get_node_by_svg_id(svgid).get(0);
-
     if (self.adaptor.description.elements[$(node).attr("svg-subtype")]) {
       save["details_target"].svgid = svgid;
       save["details_target"].model = self.adaptor.description;
@@ -129,15 +107,17 @@ function WFAdaptorManifestationBase(adaptor) {
         self.adaptor.description.context_eval,
         true
       );
-      // console.log("Details RelaxNGui instance------:", save["details"]);
       save["details"].content(nn);
-      console.log("Clicked on Node Dispatching node", node, "nn", nn);
 
-      document.dispatchEvent(
-        new CustomEvent("wf:details-updated", {
-          detail: { nn },
-        })
-      );
+      const nodeType = $(node).prop("tagName");
+      const endpoint = $(node).attr("endpoint");
+      if (nodeType.includes("call")) {
+        document.dispatchEvent(
+          new CustomEvent("wf:call-clicked", {
+            detail: { nn },
+          })
+        );
+      }
       format_visual_forms();
     }
   }; //}}}
@@ -445,12 +425,6 @@ function WFAdaptorManifestationBase(adaptor) {
   }; // }}}
   this.events.click = function (svgid, e) {
     // {{{
-    console.log("001 Clicked Element!!!!!!!!:", svgid);
-
-    var node = self.adaptor.description.get_node_by_svg_id(svgid).get(0);
-    var model = (model = $("> parameters > arguments > model", node).text());
-    // return model;
-
     if (self.adaptor.description.get_node_by_svg_id(svgid).length == 0) {
       return;
     }
@@ -458,7 +432,6 @@ function WFAdaptorManifestationBase(adaptor) {
     $("#graphgrid .selected").removeClass("selected");
 
     if (e && (e.ctrlKey || e.metaKey)) {
-      // console.log("Ctrl or Meta key pressed");
       if (save["state"] != "ready" && save["state"] != "stopped") {
         return false;
       }
@@ -477,10 +450,8 @@ function WFAdaptorManifestationBase(adaptor) {
         }
       }
     } else if (e && e.shiftKey) {
-      // console.log("Shift key pressed");
       positionHandling(svgid);
     } else {
-      // console.log("No modifier key pressed");
       self.adaptor.illustrator.get_elements().removeClass("marked");
       localStorage.removeItem("marked");
       localStorage.removeItem("marked_from");
@@ -493,33 +464,16 @@ function WFAdaptorManifestationBase(adaptor) {
       $("#graphgrid [element-id=" + svgid + "]").addClass("selected");
 
       self.update_details(svgid);
-
-      // self.get_details(svgid);
     }
     if (e) {
       e.stopImmediatePropagation();
     }
   }; // }}}
   this.events.dblclick = function (svgid, e) {
-    console.log("DDDDDDD Double Clicked Element!!!!!!!!:", svgid);
-    var model = self.get_linked_model(svgid);
-    console.log("DDDDDDD Click Model l§inked to this element!!!!!!!!:", model);
-    console.log("Document:", document);
-    console.log("setActiveModel", setActiveModel);
-    if (model) {
-      setActiveModel(Number(model));
-    }
     // {{{
   }; // }}}
   this.events.mouseover = function (svgid, e) {
     // {{{
-    // console.log("DDDDDDD Double Clicked Element!!!!!!!!:", svgid);
-    // var model = self.get_linked_model(svgid);
-    // console.log("DDDDDDD Click Model l§inked to this element!!!!!!!!:", model);
-    // console.log("Document:", document);
-    // console.log("setActiveModel", setActiveModel);
-    // setActiveModel(Number(model));
-
     let er = self.adaptor.illustrator.svg.container
       .find('[element-id = "' + svgid + '"][element-row]')
       .attr("element-row");
@@ -652,7 +606,6 @@ function WFAdaptorManifestationBase(adaptor) {
         self.events.touchstart(node, e, true, true);
       },
       touchend: self.events.touchend,
-      dblclick: self.events.dblclick,
       click: self.events.click,
       dragstart: self.events.dragstart,
       mouseover: self.events.mouseover,
