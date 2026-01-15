@@ -1,3 +1,4 @@
+// #region used
 var es;
 var suspended_redrawing = false;
 var skip_location = false;
@@ -61,6 +62,7 @@ function global_init() {
 }
 
 global_init();
+// #endregion
 
 var sub_more =
   "topic" +
@@ -1998,6 +2000,7 @@ function format_instance_pos() {
   });
 } //}}}
 
+// #region used
 function format_visual_forms() {
   //{{{
   if (save["state"] != "ready" && save["state"] != "stopped") {
@@ -2016,7 +2019,9 @@ function format_visual_forms() {
     });
   }
 } //}}}
+// #endregion
 
+// #region unused
 function format_code(res, skim, lnums) {
   // {{{
   try {
@@ -2129,7 +2134,9 @@ function append_to_log(what, type, message) {
     });
   }
 } //}}}
+// #endregion
 
+// #region used
 function report_failure() {}
 
 function ui_pos(e, bl) {
@@ -2180,3 +2187,4 @@ function add_ui_pos(e) {
     return coll;
   });
 }
+// #endregion

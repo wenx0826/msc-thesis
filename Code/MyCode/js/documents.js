@@ -12,7 +12,7 @@ const loadDocument = async (docId) => {
   const content = await getDocumentContentById(db, docId);
   const htmlContent = new DOMParser().parseFromString(content, "text/html").body
     .innerHTML;
-  $documentContent.html(htmlContent || "");
+  $("#documentContent").html(htmlContent || "");
 };
 
 const onDocumentSelect = async (event) => {
@@ -63,7 +63,7 @@ const setActiveDocument = async (docId) => {
     });
     await loadDocument(docId);
     // clearTemporarySelections();
-    rerenderTracesLayer();
+    // rerenderTracesLayer();
   }
 };
 

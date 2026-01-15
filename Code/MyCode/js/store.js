@@ -10,7 +10,7 @@ window.Store = {
   // Methods to manipulate the store
 
   // traces
-  getAllTraces() {
+  getTraces() {
     return this.state.traces;
   },
   addTraces(newTraces) {
@@ -30,6 +30,11 @@ window.Store = {
   // document
   getDocumentTraces(docId) {
     return this.state.traces.filter((trace) => trace.document_id == docId);
+  },
+  getDoucmentModels(docId) {
+    const docTraces = this.getDocumentTraces(docId);
+    const modelIds = docTraces.map((trace) => trace.model_id);
+    return this.state.models.filter((model) => modelIds.includes(model.id));
   },
   getDocumentNameById(docId) {
     const doc = this.state.documentList.find((d) => d.id == docId);

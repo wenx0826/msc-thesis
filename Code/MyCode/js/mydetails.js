@@ -1,5 +1,6 @@
 const fileName = "mydetails.js";
 const renderModelSelect = (modelId) => {
+  const activeModelId = Store.getActiveModelId();
   //   const trace = getActiveModelTrace();
   //   if (trace) {
   //     trace.selections.forEach((serializedRange) => {
@@ -12,17 +13,30 @@ const renderModelSelect = (modelId) => {
     `#dat_details select[data-relaxngui-path=" > call > parameters > model"]`
   );
   $("<option>").val("").text("--- Please select --- ").appendTo($modelSelect);
+  const traces = Store.getTraces();
+  const documentList = Store.getDocumentList();
+  $.each(documentList, function (index, document) {
+    const $optGroup = $("<optgroup>")
+      .attr("label", document.name)
+      .appendTo($modelSelect);
 
-  $.each(traces, function (index, trace) {
-    var documentId = trace.document_id;
-    console.log("documentId:", documentId);
-    const docName = getDocumentNameById(documentId);
-    const $documentGroup = $("optgroup").attr("label", docName);
-    $modelSelect.append(
-      $("<option>")
-        .val(documentId)
-        .text("Model " + documentId)
-    );
+    const docModels = Store.getDoucmentModels(document.id);
+    $.each(docModels, function (idx, model) {
+      const modelTrace = traces.find(
+        (trace) =>
+          trace.model_id == model.id && trace.document_id == document.id
+      );
+      if (modelTrace) {
+        var $option = $("<option>")
+          .val(model.id)
+          .text(model.name)
+          .appendTo($optGroup);
+
+        if (model.id == activeModelId) {
+          $option.prop("disabled", true);
+        }
+      }
+    });
   });
   // }
 };
