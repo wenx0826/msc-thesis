@@ -1,7 +1,22 @@
 let $tracesLayer;
 let $temporarySelectionsLayer;
+let $deleteSelectionButton;
 
-// #region Render Selections Layer and Traces Layer
+const clearTraceLayer = () => {
+  $tracesLayer.empty();
+};
+
+const clearTemporarySelections = () => {
+  if (Store.hasTemporarySelections()) {
+    Store.setTemporarySelections([]);
+    $temporarySelectionsLayer.empty();
+  }
+};
+const clearOverlayLayers = () => {
+  clearTraceLayer();
+  clearTemporarySelections();
+};
+
 const onRangeSelect = (event) => {
   event.stopPropagation();
   const $target = $(event.currentTarget).parent();
@@ -78,7 +93,7 @@ const renderSelection = (range, modelId) => {
       })
       .on("click", (event) => {
         event.stopPropagation();
-        setActiveModel(modelId);
+        Store.setActiveModelById(modelId);
       });
     $selectionDiv.append(labelSpan);
     $tracesLayer.append($selectionDiv);
@@ -86,18 +101,17 @@ const renderSelection = (range, modelId) => {
     $temporarySelectionsLayer.append($selectionDiv);
   }
 };
-const clearOverlayLayers = () => {
-  clearTraceLayer();
-  clearTemporarySelections();
-};
-const clearTraceLayer = () => {
-  $tracesLayer.empty();
-};
-const clearTemporarySelections = () => {
-  if (Store.hasTemporarySelections()) {
-    Store.setTemporarySelections([]);
-    $temporarySelectionsLayer.empty();
-  }
+
+const highlightActiveModelSelections = (activeModelId) => {
+  $tracesLayer.find(".selection-wrapper").each((index, element) => {
+    const $element = $(element);
+    const elementModelId = $element.data("modelid");
+    if (elementModelId === activeModelId) {
+      $element.addClass("active");
+    } else {
+      $element.removeClass("active");
+    }
+  });
 };
 
 const rerenderTemporarySelectionsLayer = () => {

@@ -1,13 +1,16 @@
 let $documentContent;
 let $generateButton;
 let $regenerateButton;
-let $deleteSelectionButton;
 
 const loadDocument = async (docId) => {
   const content = await getDocumentContentById(db, docId);
   const htmlContent = new DOMParser().parseFromString(content, "text/html").body
     .innerHTML;
   $("#documentContent").html(htmlContent || "");
+};
+
+const clearDocumentViewer = () => {
+  $("#documentContent").empty();
 };
 
 $(document).ready(function () {
@@ -28,11 +31,10 @@ $(document).ready(function () {
     $generateButton.prop("disabled", true);
     generateModel();
   });
+
   $regenerateButton.on("click", async () => {
     $generateButton.prop("disabled", true);
     $regenerateButton.prop("disabled", true);
     regenerateModel();
   });
 });
-
-document.addEventListener("store:active-document-changed", () => {});

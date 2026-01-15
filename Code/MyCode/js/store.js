@@ -22,7 +22,20 @@ window.Store = {
   setTraces(traces) {
     this.state.traces = traces;
   },
-
+  getDocumentTraces(docId) {
+    return this.state.traces.filter((trace) => trace.document_id == docId);
+  },
+  getDocumentModels(docId) {
+    const docTraces = this.getDocumentTraces(docId);
+    const modelIds = docTraces.map((trace) => trace.model_id);
+    return this.state.models.filter((model) => modelIds.includes(model.id));
+  },
+  deleteDocumentTraces(docId) {
+    this.state.traces = this.state.traces.filter(
+      (trace) => trace.document_id != docId
+    );
+  },
+  // traces
   // documentList
   setDocumentList(docList) {
     this.state.documentList = docList;
@@ -30,23 +43,38 @@ window.Store = {
   getDocumentList() {
     return this.state.documentList;
   },
+  deleteDocument(docId) {
+    this.state.documentList = this.state.documentList.filter(
+      (doc) => doc.id != docId
+    );
+    const models = this.getDocumentModels(docId);
+    models.forEach((model) => {
+      this.deleteModel(model.id);
+      const modelIndex = this.state.models.findIndex((m) => m.id == model.id);
+      if (modelIndex !== -1) {
+        this.state.models.splice(modelIndex, 1);
+      }
+    });
+    this.deleteDocumentTraces(docId);
+    if (this.getActiveDocumentId() == docId) {
+      this.setActiveDocumentId(null);
+    }
+    document.dispatchEvent(
+      new CustomEvent("store:document-deleted", {
+        detail: { documentId: docId },
+      })
+    );
+  },
   // document
-  getDocumentTraces(docId) {
-    return this.state.traces.filter((trace) => trace.document_id == docId);
-  },
-  getDoucmentModels(docId) {
-    const docTraces = this.getDocumentTraces(docId);
-    const modelIds = docTraces.map((trace) => trace.model_id);
-    return this.state.models.filter((model) => modelIds.includes(model.id));
-  },
+
   getDocumentNameById(docId) {
     const doc = this.state.documentList.find((d) => d.id == docId);
     return doc ? doc.name : "Unknown Document";
   },
   // activeDocument
   setActiveDocumentId(docId) {
-    var currentActiveDocId = this.state.activeDocumentId;
-    if (docId && docId != currentActiveDocId) {
+    var currentActiveDocId = this.getActiveDocumentId();
+    if (docId != currentActiveDocId) {
       this.state.activeDocumentId = docId;
       document.dispatchEvent(
         new CustomEvent("store:active-document-id-changed")
@@ -74,6 +102,19 @@ window.Store = {
   getModelNameById(modelId) {
     const model = this.state.models.find((m) => m.id == modelId);
     return model ? model.name : `Model ${modelId}`;
+  },
+  deleteModel(modelId) {
+    this.state.models = this.state.models.filter(
+      (model) => model.id != modelId
+    );
+    document.dispatchEvent(
+      new CustomEvent("store:model-deleted", {
+        detail: { modelId: modelId },
+      })
+    );
+    if (this.getActiveModelId() == modelId) {
+      this.setActiveModel(null);
+    }
   },
   // activeModel
   async setActiveModelById(modelId) {

@@ -13,23 +13,30 @@ const loadDocumentList = async () => {
 //   const docId = $(event.currentTarget).data("docid");
 //   setActiveDocument(docId);
 // };
+const removeDocumentItem = (documentId) => {
+  $documentList
+    .children()
+    .filter((index, element) => $(element).data("docid") === documentId)
+    .remove();
+};
 
-const renderDocumentItem = async (doc) => {
-  console.log("Rendering document item:", doc);
+const renderDocumentItem = async ({ id: documentId, name: documentName }) => {
   const $li = $("<li>");
-  $li.attr("data-docid", String(doc.id));
+  $li.attr("data-docid", String(documentId));
   $li.on("click", (event) => {
     event.stopPropagation();
-    Store.setActiveDocumentId(doc.id);
+    Store.setActiveDocumentId(documentId);
   });
 
-  $span = $("<span>").text(doc.name);
+  $span = $("<span>").text(documentName);
   const deleteDocButton = $("<button>")
     .text("Delete")
     .on("click", async (event) => {
       event.stopPropagation();
-      await deleteDocument(doc.id);
-      $li.remove();
+      Store.deleteDocument(documentId);
+
+      //   await deleteDocument(documentId);
+      //   $li.remove();
       // if (activeDocumentId === doc.id) {
       //   $documentContent.empty();
       //   activeDocumentId = null;
@@ -38,7 +45,7 @@ const renderDocumentItem = async (doc) => {
     });
   $li.append($span);
   $li.append(deleteDocButton);
-  $li.attr("data-docid", String(doc.id));
+  $li.attr("data-docid", String(documentId));
   //   $li.on("click", onDocumentSelect);
   $documentList.append($li);
 };

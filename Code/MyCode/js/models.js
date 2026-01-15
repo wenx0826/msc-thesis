@@ -41,3 +41,7 @@ const highlightActiveModelInList = (modelId) => {
   $(".model-container").removeClass("active");
   $(`.model-container[data-modelid="${modelId}"]`).addClass("active");
 };
+
+const removeModelFromList = (modelId) => {
+  $(`.model-container[data-modelid="${modelId}"]`).remove();
+};
