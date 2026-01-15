@@ -43,14 +43,12 @@ const setActiveModel = async (modelId) => {
 };
 
 document.addEventListener("store:active-model-changed", () => {
-  console.log(
-    "EVENT LISTENER: store:active-model-changed",
-    Store.getActiveModelId()
-  );
+  console.log("EVENT LISTENER: store:active-model-changed");
   const activeModel = Store.getActiveModel();
   const activeModelId = Store.getActiveModelId();
 
   if (!activeModel) {
+    clearModelViewer();
   } else {
     showActiveModel(activeModel);
     if (activeModelId) {

@@ -48,7 +48,11 @@ const saveModel = async (e) => {
     renderModelInList(updatedModel);
   }
 };
-
+const clearModelViewer = () => {
+  $("#activeModelName").text("");
+  // console.log('Clearing active model canvas');
+  $("#activeModelCanvas").empty();
+};
 const showActiveModel = (model) => {
   // const { name: modelName, data: modelData } = model;
   $("#activeModelName").text(model.name);
