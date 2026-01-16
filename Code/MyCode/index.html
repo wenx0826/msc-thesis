@@ -152,7 +152,8 @@
             <ui-area id="documentContent">
             </ui-area>
           </ui-content>
-          <ui-bar class="bar bottom-bar" z-index="3">
+          <ui-divider></ui-divider>
+          <ui-bar style="z-index: 3;">
             <div class="right button-group">
               <button id="generateButton" disabled="true">Generate Model</button>
               <button id="regenerateButton" style="display:none;">Regenerate</button>
@@ -160,50 +161,52 @@
           </ui-bar>
         </ui-rest>
       </ui-rest>
-      <ui-resizehandle data-label="drag to resize" id="columnResizehandle1"></ui-resizehandle>
+      <ui-resizehandle id="columnResizehandle1" data-direction="vertical"></ui-resizehandle>
       <!-- Middle: Current Model Panel -->
       <ui-rest class="panel" style="flex:0.4;">
-        <ui-bar class="top-bar">
-          <div id="activeModelName"></div>
-          <button name="savemodelchanges" onclick="saveModel()">Save Model</button>
-        </ui-bar>
 
-        <!-- <div>
+        <ui-rest style="flex: 0.75 1 0;min-height: 100px">
+          <ui-bar>
+            <div id="activeModelName"></div>
+            <button name="savemodelchanges" onclick="saveModel()">Save Model</button>
+          </ui-bar>
+          <ui-divider></ui-divider>
+
+          <!-- <div>
           <a id=" savetestsetfile" href="" download=""></a>
           <a id="savesvgfile" href="" download=""></a>
           <button title='a testset includes various settings, subscriptions and a model'
             name="savetestsetfile">save<br>testset</button>
           <button title='the SVG contains the graphical repesentation of the CPEE tree as you see it on the screen'
             name="savesvgfile">save svg<br>graph</button> -->
-
-
-        <ui-content>
-          <ui-area id='activeModelGrid'>
-            <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink"
-              id='activeModelCanvas' width='1' height='1' style="display:block; width:100%; height:auto;"></svg>
-          </ui-area>
-        </ui-content>
-        <div id="relaxngworker"></div>
-        <ui-area data-belongs-to-tab="details" id="detailcolumn">
+          <ui-content>
+            <ui-area id='activeModelGrid'>
+              <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink"
+                id='activeModelCanvas' width='1' height='1' style="display:block;"></svg>
+            </ui-area>
+          </ui-content>
+          <div id="relaxngworker"></div>
           <div id="dat_details" class='x-ui-layout'></div>
-        </ui-area>
-        <ui-bar id="generatedModelActionBar" class="" style="visibility: hidden;">
-          <div class="right button-group">
-            <button id="cancelButton">Cancel</button>
-            <button id="keepButton">Keep</button>
-          </div>
-        </ui-bar>
-        <ui-resizehandle data-label="drag to resize">drag to resize</ui-resizehandle>
-        <ui-rest style="flex: 0.25">
+          <ui-bar id="generatedModelActionBar">
+            <div class="right button-group">
+              <button id="cancelButton">Cancel</button>
+              <button id="keepButton">Keep</button>
+            </div>
+          </ui-bar>
+        </ui-rest>
+        <ui-resizehandle data-direction="horizontal"></ui-resizehandle>
+        <ui-rest style="flex: 0.25 1 0; min-height: 100px;">
           <!-- <textarea id="modelXmlContent" style="width:100%; height:100%;"></textarea> -->
           <div id="prompt" contenteditable="true" style="width:100%; height:100%;"></div>
           <div></div>
         </ui-rest>
+
       </ui-rest>
-      <ui-resizehandle data-label="drag to resize"></ui-resizehandle>
+      <ui-resizehandle data-direction="vertical"></ui-resizehandle>
       <!-- Right: Models Panel-->
       <ui-rest style="flex:0.2" class="panel">
-        <ui-bar class="top-bar"><span style="font-size: 1.4em; font-weight: bold;">Models</span></ui-bar>
+        <ui-bar><span style="font-size: 1.4em; font-weight: bold;">Models</span></ui-bar>
+        <ui-divider></ui-divider>
         <ui-rest>
           <ui-content>
             <ui-area id="models">

@@ -191,12 +191,89 @@ function uidash_clone_tab(
     });
   };
 
+  $.fn.dragrow = function () {
+    let $active = null,
+      $prev = null,
+      $next = null;
+
+    let startTotal = 0; // Total height of prev+next
+    let startPrevTop = 0; // Top of prev
+    let sumGrow = 0; // Sum of flex-grow of prev+next
+    let prevMin = 0,
+      nextMin = 0;
+
+    function getGrow($el) {
+      const flex = $el.css("flex") || "";
+      const g = parseFloat(flex.split(" ")[0]);
+      return Number.isFinite(g) ? g : 1;
+    }
+
+    function getMinHeight($el) {
+      const mh = parseFloat($el.css("min-height"));
+      return Number.isFinite(mh) ? mh : 0;
+    }
+
+    // Global mousemove handler (namespace to avoid conflicts)
+    $(document)
+      .off("mousemove.dragrow")
+      .on("mousemove.dragrow", function (e) {
+        if (!$active || !$active.hasClass("draggable")) return;
+
+        // Relative mouse position (Y axis) within "prev + next"
+        let pos = e.pageY - startPrevTop;
+
+        // Clamp: prev >= prevMin, next >= nextMin
+        const minPos = prevMin;
+        const maxPos = startTotal - nextMin;
+        if (pos < minPos) pos = minPos;
+        if (pos > maxPos) pos = maxPos;
+
+        const ratioPrev = startTotal === 0 ? 0.5 : pos / startTotal;
+        const ratioNext = 1 - ratioPrev;
+
+        // Only reallocate grow within this pair (keep third block unaffected)
+        $prev.css({
+          "flex-grow": (ratioPrev * sumGrow).toString(),
+        });
+        $next.css({
+          "flex-grow": (ratioNext * sumGrow).toString(),
+        });
+
+        e.preventDefault();
+      });
+
+    return this.each(function () {
+      $(this).on("mousedown", function (e) {
+        $active = $(this); // Always use this (the handle itself)
+        $prev = $active.prev(); // The block above
+        $next = $active.next(); // The block below
+
+        startTotal = $prev.outerHeight() + $next.outerHeight();
+        startPrevTop = $prev.offset().top;
+
+        sumGrow = getGrow($prev) + getGrow($next);
+        prevMin = getMinHeight($prev);
+        nextMin = getMinHeight($next);
+        $active.addClass("draggable");
+        $("body").addClass("drag-in-progress");
+
+        $(document).one("mouseup.dragrow", function () {
+          $("body").removeClass("drag-in-progress");
+          $active.removeClass("draggable");
+        });
+
+        e.preventDefault();
+        e.stopPropagation();
+      });
+    });
+  };
+
   $.fn.dragresize = function () {
     var drag = $(this);
     var prev = drag.prev();
     var initpos = 0;
     var initheight = 0;
-
+    console.log("dragresize initialized", drag);
     this.on("mousedown", function (e) {
       drag.addClass("draggable");
       initpos = e.pageY;
@@ -210,7 +287,7 @@ function uidash_clone_tab(
 
     $(document).on("mousemove", function (e) {
       if (!drag.hasClass("draggable")) return;
-
+      console.log("dragresize mousemove");
       var pos = initheight - (initpos - e.pageY);
       if (pos < 0) return;
 
@@ -266,11 +343,9 @@ $(document).ready(function () {
     $("body").children().remove();
     $("body").append("Sorry, only Firefox >= 20.0 and Chrom(e|ium) >= 17.");
   }
-  $("*[is=x-ui-] ui-rest > ui-content > ui-resizehandle").dragcolumn();
-  $("*[is=x-ui-] > ui-resizehandle").dragresize();
-  $(
-    "*[is=x-ui-] ui-rest > ui-content > ui-area > ui-resizehandle"
-  ).dragresize();
+  // $("*[is=x-ui-] ui-rest > ui-content > ui-resizehandle").dragcolumn();
+  $("*[is=x-ui-] ui-resizehandle[data-direction='vertical']").dragcolumn();
+  $("*[is=x-ui-] ui-resizehandle[data-direction='horizontal']").dragrow();
   $(document).on("click", "ui-tabbar ui-tab.switch", function () {
     uidash_toggle_vis_tab(this);
   });

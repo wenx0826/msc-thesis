@@ -16,15 +16,17 @@
   padding: 0;
 }
 
-*[is="x-ui-"] ui-resizehandle {
-  flex: 0 0 0.65em;
+ui-resizehandle[data-direction="vertical"] {
+  flex: 0 0 1em;
   cursor: col-resize;
   user-select: none;
   position: relative;
   padding: 0;
+  margin-left: -0.175em;
+  margin-right: -0.175em;
 }
 
-*[is="x-ui-"] ui-resizehandle::before {
+ui-resizehandle[data-direction="vertical"]::before {
   content: "";
   position: absolute;
 
@@ -34,34 +36,75 @@
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #999;
+  background: var(--x-ui-border-color);
 
   transform: translate(-50%, -50%);
 
-  box-shadow: 0 -6px 0 #999, 0 6px 0 #999;
+  box-shadow: 0 -6px 0 var(--x-ui-border-color),
+    0 6px 0 var(--x-ui-border-color);
 }
 
-*[is="x-ui-"] ui-resizehandle:hover::before {
+ui-resizehandle[data-direction="vertical"]:hover::before {
   background: #666;
   box-shadow: 0 -6px 0 #666, 0 6px 0 #666;
 }
-/* hover 提示 */
+
+/* ui-resizehandle[data-direction="horizontal"] { */
+/* flex: 0 0 0.65em;
+  display: block;
+  cursor: row-resize;
+  user-select: none;
+  position: relative;
+  padding: 0;
+  margin-top: 0.2em;
+  margin-bottom: -0.5em;
+  background-color: #666;
+  /* border: 1px solid var(--x-ui-border-color); */
+/* } */
+/* ui-resizehandle[data-direction="horizontal"]:hover + ui-divider {
+  border-width: 2pt; */
+/* border-color: #666; */
+/* } */
+ui-resizehandle[data-direction="horizontal"] {
+  flex: 0 0 1em; /* 命中宽度 10px */
+  display: block;
+  position: relative;
+  cursor: row-resize;
+  user-select: none;
+  background: transparent; /* 本体透明 */
+  margin-top: -0.5em;
+  margin-bottom: -0.5em;
+}
+
+/* 中间细线 */
+ui-resizehandle[data-direction="horizontal"]::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1pt;
+  background: var(--x-ui-border-color);
+  transform: translateY(-50%);
+}
+
+/* hover/drag 时稍微明显一点（可选） */
 ui-resizehandle:hover::before {
-  background: #666;
-  box-shadow: 0 -6px 0 #666, 0 6px 0 #666;
+  background: rgba(0, 0, 0, 0.45);
+}
+body.drag-in-progress ui-resizehandle::before {
+  background: rgba(59, 130, 246, 0.9);
 }
 
 /* -- my ui styles -- */
-*[is="x-ui-"] ui-bar {
+ui-bar {
   display: flex;
   padding: 0.5em 1em;
 }
 
-.top-bar {
-  border-bottom: 1pt solid var(--x-ui-border-color);
-}
-
-.middle-bar {
+ui-divider {
+  display: block;
+  width: 100%;
   border-top: 1pt solid var(--x-ui-border-color);
 }
 
@@ -130,7 +173,7 @@ li.active {
   border-top: 1pt solid var(--x-ui-border-color);
   background-color: var(--x-ui-background-color);
 }
-.bar > .right {
+ui-bar > .right {
   margin-left: auto;
 }
 .button-group {
