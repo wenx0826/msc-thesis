@@ -1,11 +1,54 @@
 /* main {
   display: flex;
 } */
-
-/* -- x-ui overroides --*/
-*[is="x-ui-"] ui-tabbed ui-content,
+#main {
+  padding: 0.6em;
+}
+/* -- x-ui overrides --*/
+*[is="x-ui-"] ui-tabbed ui-content {
+  margin: 0;
+  border-width: 2px;
+}
 *[is="x-ui-"] ui-tabbed ui-tab {
   border-width: 2px;
+}
+*[is="x-ui-"] ui-tabbed ui-tabbar {
+  padding: 0;
+}
+
+*[is="x-ui-"] ui-resizehandle {
+  flex: 0 0 0.65em;
+  cursor: col-resize;
+  user-select: none;
+  position: relative;
+  padding: 0;
+}
+
+*[is="x-ui-"] ui-resizehandle::before {
+  content: "";
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #999;
+
+  transform: translate(-50%, -50%);
+
+  box-shadow: 0 -6px 0 #999, 0 6px 0 #999;
+}
+
+*[is="x-ui-"] ui-resizehandle:hover::before {
+  background: #666;
+  box-shadow: 0 -6px 0 #666, 0 6px 0 #666;
+}
+/* hover 提示 */
+ui-resizehandle:hover::before {
+  background: #666;
+  box-shadow: 0 -6px 0 #666, 0 6px 0 #666;
 }
 
 /* -- my ui styles -- */
@@ -29,6 +72,7 @@
   border: 2px solid var(--x-ui-border-color);
   border-radius: 1em;
   overflow: hidden;
+  min-width: 180px;
 }
 
 #documentList li {

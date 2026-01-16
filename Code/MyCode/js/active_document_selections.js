@@ -166,4 +166,5 @@ const handleTextSelection = () => {
 $(document).ready(function () {
   $tracesLayer = $("#tracesLayer");
   $temporarySelectionsLayer = $("#temporarySelectionsLayer");
+  $("#columnResizehandle1").on("dragcolumnmove", rerenderOverlayLayers);
 });

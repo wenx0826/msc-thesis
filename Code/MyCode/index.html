@@ -79,7 +79,7 @@
 
 </head>
 <body data-defaultconfig="index.json" is="x-ui-" data-names="3">
-  <ui-rest style="z-index: 2;">
+  <ui-rest style="z-index: 2;" id="main">
     <ui-content>
       <!-- Left: Document Panel -->
       <ui-rest style="flex:0.4;">
@@ -147,7 +147,7 @@
           style="display:none; position:absolute;  z-index:3; width: 24px; height: 24px; background-color: red; color: white;border: none; border-radius: 50%; font-weight: bold;cursor: pointer;">X</button>
 
         <!-- Document Viewer -->
-        <ui-rest class="panel" style="margin:0.5em;">
+        <ui-rest class="panel" style="margin-top: 0.5em;">
           <ui-content>
             <ui-area id="documentContent">
             </ui-area>
@@ -160,17 +160,15 @@
           </ui-bar>
         </ui-rest>
       </ui-rest>
-      <ui-resizehandle data-label="drag to resize" id="drag1"></ui-resizehandle>
-      <ui-rest style="flex:0.6;">
-        <ui-content>
-          <!-- Middle: Current Model Panel -->
-          <ui-rest class="panel" style=" margin: .5em 0.2em;">
-            <ui-bar class="top-bar">
-              <div id="activeModelName"></div>
-              <button name="savemodelchanges" onclick="saveModel()">Save Model</button>
-            </ui-bar>
+      <ui-resizehandle data-label="drag to resize" id="columnResizehandle1"></ui-resizehandle>
+      <!-- Middle: Current Model Panel -->
+      <ui-rest class="panel" style="flex:0.4;">
+        <ui-bar class="top-bar">
+          <div id="activeModelName"></div>
+          <button name="savemodelchanges" onclick="saveModel()">Save Model</button>
+        </ui-bar>
 
-            <!-- <div>
+        <!-- <div>
           <a id=" savetestsetfile" href="" download=""></a>
           <a id="savesvgfile" href="" download=""></a>
           <button title='a testset includes various settings, subscriptions and a model'
@@ -179,49 +177,47 @@
             name="savesvgfile">save svg<br>graph</button> -->
 
 
-            <ui-content>
-              <ui-area id='activeModelGrid'>
-                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink"
-                  id='activeModelCanvas' width='1' height='1' style="display:block; width:100%; height:auto;"></svg>
-              </ui-area>
-            </ui-content>
-            <div id="relaxngworker"></div>
-            <ui-area data-belongs-to-tab="details" id="detailcolumn">
-              <div id="dat_details" class='x-ui-layout'></div>
-            </ui-area>
-            <ui-bar id="generatedModelActionBar" class="" style="visibility: hidden;">
-              <div class="right button-group">
-                <button id="cancelButton">Cancel</button>
-                <button id="keepButton">Keep</button>
-              </div>
-            </ui-bar>
-            <ui-resizehandle data-label="drag to resize">drag to resize</ui-resizehandle>
-            <ui-rest style="flex: 0.25">
-              <!-- <textarea id="modelXmlContent" style="width:100%; height:100%;"></textarea> -->
-              <div id="prompt" contenteditable="true" style="width:100%; height:100%;"></div>
-              <div></div>
-            </ui-rest>
-          </ui-rest>
-          <ui-resizehandle data-label="drag to resize" id="drag2"></ui-resizehandle>
-          <!-- Right: Models Panel-->
-
-          <ui-rest style=" margin:0.5em;" class="panel">
-            <ui-bar class="top-bar"><span style="font-size: 1.4em; font-weight: bold;">Models</span></ui-bar>
-            <ui-rest>
-              <ui-content>
-                <ui-area id="models">
-                  <div id='activeModelCanvasSmallContainer' style="position: absolute; left: -9999px; top: -9999px;">
-                    <div id='activeModelGridSmall'>
-                      <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink"
-                        id='activeModelCanvasSmall' width='1' height='1'></svg>
-                    </div>
-                  </div>
-                </ui-area>
-              </ui-content>
-
-            </ui-rest>
-          </ui-rest>
+        <ui-content>
+          <ui-area id='activeModelGrid'>
+            <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink"
+              id='activeModelCanvas' width='1' height='1' style="display:block; width:100%; height:auto;"></svg>
+          </ui-area>
         </ui-content>
+        <div id="relaxngworker"></div>
+        <ui-area data-belongs-to-tab="details" id="detailcolumn">
+          <div id="dat_details" class='x-ui-layout'></div>
+        </ui-area>
+        <ui-bar id="generatedModelActionBar" class="" style="visibility: hidden;">
+          <div class="right button-group">
+            <button id="cancelButton">Cancel</button>
+            <button id="keepButton">Keep</button>
+          </div>
+        </ui-bar>
+        <ui-resizehandle data-label="drag to resize">drag to resize</ui-resizehandle>
+        <ui-rest style="flex: 0.25">
+          <!-- <textarea id="modelXmlContent" style="width:100%; height:100%;"></textarea> -->
+          <div id="prompt" contenteditable="true" style="width:100%; height:100%;"></div>
+          <div></div>
+        </ui-rest>
+      </ui-rest>
+      <ui-resizehandle data-label="drag to resize"></ui-resizehandle>
+      <!-- Right: Models Panel-->
+      <ui-rest style="flex:0.2" class="panel">
+        <ui-bar class="top-bar"><span style="font-size: 1.4em; font-weight: bold;">Models</span></ui-bar>
+        <ui-rest>
+          <ui-content>
+            <ui-area id="models">
+              <div id='activeModelCanvasSmallContainer' style="position: absolute; left: -9999px; top: -9999px;">
+                <div id='activeModelGridSmall'>
+                  <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink"
+                    id='activeModelCanvasSmall' width='1' height='1'></svg>
+                </div>
+              </div>
+            </ui-area>
+          </ui-content>
+
+        </ui-rest>
+
       </ui-rest>
     </ui-content>
   </ui-rest>
