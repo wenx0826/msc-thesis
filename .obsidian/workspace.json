@@ -197,6 +197,7 @@
   },
   "active": "9b56cfd6d5839b01",
   "lastOpenFiles": [
+    "Code/MyCode/js/active_model_details.js",
     "Code/MyCode/js/db/db_traces.js",
     "Code/MyCode/js/db/db_models.js",
     "Code/MyCode/js/db/db_documents.js",
@@ -207,7 +208,6 @@
     "Code/MyCode/js/active_model.js",
     "Code/MyCode/js/active_document.js",
     "Code/MyCode/js/models.js",
-    "Code/MyCode/js/myui.js",
     "Mock-up/mock-up1.jpg",
     "布局.md",
     "Code/MyCode/themes/preset_copy/symbols/wait_for_signal.svg",

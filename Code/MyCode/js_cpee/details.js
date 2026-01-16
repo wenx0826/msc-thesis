@@ -38,6 +38,7 @@ $(document).ready(function () {
 function do_main_save() {
   //{{{
   if (save["details"].has_changed()) {
+    console.log("detail.js - do_main_save - Details have changed, saving...");
     do_main_work(save["details_target"].svgid);
   }
 } //}}}

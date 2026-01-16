@@ -40,6 +40,8 @@ function global_init() {
   subscription = undefined;
   subscription_state = "less";
   save["states"] = {};
+
+  // mycodechanges
   // save['state']= undefined;
   save["state"] = "ready";
 

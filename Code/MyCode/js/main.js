@@ -140,7 +140,7 @@ document.addEventListener("store:active-document-id-changed", async () => {
     rerenderOverlayLayers();
   }
   const activeModelDocumentId = Store.getActiveModelDocumentId();
-  if (activeModelDocumentId != activeDocumentId) {
+  if (activeModelDocumentId && activeModelDocumentId != activeDocumentId) {
     Store.setActiveModel(null);
   }
 });

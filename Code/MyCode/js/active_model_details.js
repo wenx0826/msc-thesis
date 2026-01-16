@@ -9,34 +9,20 @@ const renderModelSelect = (modelValue) => {
   );
   $("<option>").val("").text("--- Please select --- ").appendTo($modelSelect);
 
-  const traces = Store.getTraces();
   const documentList = Store.getDocumentList();
-  $.each(documentList, function (index, document) {
-    const $optGroup = $("<optgroup>")
-      .attr("label", document.name)
-      .appendTo($modelSelect);
-
-    const docModels = Store.getDoucmentModels(document.id);
-    $.each(docModels, function (idx, model) {
-      const modelTrace = traces.find(
-        (trace) =>
-          trace.model_id == model.id && trace.document_id == document.id
-      );
-      if (modelTrace) {
-        var $option = $("<option>")
-          .val(model.id)
-          .text(model.name)
-          .appendTo($optGroup);
-
-        if (model.id == activeModelId) {
-          $option.prop("disabled", true);
-        }
-        if (model.id == modelValue) {
-          $option.prop("selected", true);
-        }
-      }
-    });
-  });
+  //
+  for (const { id: docId, name: docName } of documentList) {
+    $optGroup = $("<optgroup>").attr("label", docName).appendTo($modelSelect);
+    const docModels = Store.getDocumentModels(docId);
+    for (const { id: modelId, name: modelName } of docModels) {
+      const $option = $("<option>")
+        .val(modelId)
+        .text(modelName)
+        .appendTo($optGroup);
+      if (modelId == modelValue) $option.prop("selected", true);
+      if (modelId == activeModelId) $option.prop("disabled", true);
+    }
+  }
 };
 
 // Example for CustomEvent with payload
@@ -46,7 +32,7 @@ $(document).on("wf:call-clicked", function (e) {
   const tagName = nn.prop("tagName");
   const endpoint = nn.attr("endpoint");
   console.log(
-    "!!! Savewf:details-updated detail tagName:",
+    "Savewf:details-updated detail tagName:",
     tagName,
     "endpoint:",
     endpoint
@@ -81,9 +67,11 @@ $(document).on("wf:call-clicked", function (e) {
     "!!! Savewf:details-updated detail call:q save:",
     document.getElementById("dat_details")
   );
+
   const $typeSeclect = $(
     `#dat_details select[data-relaxngui-path=" > call > parameters > type"]`
   );
+
   $typeSeclect.append(
     $("<option>")
       .val("task")
@@ -100,7 +88,9 @@ $(document).on("wf:call-clicked", function (e) {
   const $modelSelect = $(
     `#dat_details select[data-relaxngui-path=" > call > parameters > model"]`
   );
+
   renderModelSelect(modelValue);
+
   // }
 
   // $('#dat_details select[data-relaxngui-path=" > call > parameters > type"]').val(endpoint);
