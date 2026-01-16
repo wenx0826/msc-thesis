@@ -109,11 +109,16 @@ function uidash_clone_tab(
 (function ($) {
   //{{{
   $.fn.dragcolumn = function () {
-    var drag = $(this);
-    var prev = drag.prev();
-    var next = drag.next();
+    // var drag = $(this);
+    // var prev = drag.prev();
+    // var next = drag.next();
+    var drag, prev, next;
 
     this.on("mousedown", function (e) {
+      console.log("mousedown", e.target);
+      drag = $(e.target);
+      prev = drag.prev();
+      next = drag.next();
       drag.addClass("draggable");
       $("body").addClass("drag-in-progress");
       $(document).one("mouseup", function (e) {
@@ -144,6 +149,7 @@ function uidash_clone_tab(
       e.preventDefault();
     });
   };
+
   $.fn.dragresize = function () {
     var drag = $(this);
     var prev = drag.prev();

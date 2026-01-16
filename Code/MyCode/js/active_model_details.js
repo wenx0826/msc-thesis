@@ -54,6 +54,10 @@ $(document).on("wf:call-clicked", function (e) {
     "Model value from call's children parameters's children model:",
     modelValue
   );
+  const tab = $("#dat_details");
+  const firstElement = tab.children().first().children().first();
+  console.log("First element of the first element of the tab:", firstElement);
+  firstElement.css("visibility", "hidden");
 
   console.log("Value of <type> tag:", typeValue);
   //   console.log(
