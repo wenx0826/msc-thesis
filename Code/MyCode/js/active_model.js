@@ -29,7 +29,7 @@ const saveModel = async (e) => {
       try {
         const svgDoc = new DOMParser().parseFromString(
           updatedModel.svg || "",
-          "image/svg+xml"
+          "image/svg+xml",
         ).documentElement;
         if (svgDoc) $gridDiv.append(svgDoc);
       } catch (err) {
@@ -70,6 +70,7 @@ const showActiveModel = (model) => {
   // console.log('Showing model:', model);
   var parser = new DOMParser();
   let data = parser.parseFromString(model.data, "application/xml");
+  console.log("Parsed model data:", data.documentElement.nodeName);
   if (data.documentElement.nodeName != "description") {
     data = $("description", data)[0];
   } else {
@@ -153,161 +154,8 @@ const showActiveModel = (model) => {
           $("#dat_details").empty();
         }
       };
-    }
+    },
   );
-};
-
-const createSampleModel = async () => {
-  // choose a random XML from the "templates" folder and return its text
-
-  const templatesFolder = "templates/";
-
-  async function fetchTemplatesList() {
-    try {
-      const r = await fetch(`${templatesFolder}templates.json`);
-      if (r.ok) {
-        const arr = await r.json();
-        return arr.map((f) => `${f.name}.xml`);
-      }
-    } catch (e) {
-      console.error("Error fetching .templates.json:", e);
-    }
-  }
-
-  try {
-    const list = await fetchTemplatesList();
-    // const list = [];
-    if (!list || !list.length) {
-      throw new Error("No templates found in templates.json");
-    }
-    const chosen = list[Math.floor(Math.random() * list.length)];
-    const resp = await fetch(`${templatesFolder}${chosen}`);
-    console.log("Fetched template:", chosen);
-    if (!resp.ok) {
-      throw new Error(
-        `Failed to fetch template ${chosen}, status ${resp.status}`
-      );
-    }
-    return await resp.text();
-  } catch (err) {
-    console.error("createSampleModel error:", err);
-    // final fallback
-    const resp = await fetch("sample_model_with_subprocess.xml");
-    // const resp = await fetch('sample_model.xml');
-    if (!resp.ok) throw err;
-    return await resp.text();
-  }
-};
-
-const generateModelLLM = async (inputText) => {
-  // Placeholder for LLM integration
-  // In a real implementation, this would call an API to generate a model based on inputText
-  console.log("Generating model using LLM for input text:", inputText);
-  // For now, just return a sample model
-
-  const xml = '<description xmlns="http://cpee.org/ns/description/1.0"/>';
-
-  const fd = new FormData();
-  fd.append("rpst_xml", new Blob([xml], { type: "text/xml" }));
-  fd.append("user_input", new Blob([inputText], { type: "text/plain" }));
-  fd.append("llm", new Blob(["gemini-2.0-flash"], { type: "text/plain" }));
-
-  const llmResponse = $.ajax({
-    url: "https://autobpmn.ai/llm/",
-    method: "POST",
-    data: fd,
-    contentType: false,
-    processData: false,
-    xhrFields: { withCredentials: true },
-    crossDomain: true,
-    success: (data) => {
-      console.log("LLM generation request sent successfully", data);
-      return data;
-    },
-    error: (xhr) => {
-      console.log(
-        "LLM generation request failed",
-        xhr.status,
-        xhr.responseText
-      );
-      throw new Error(`LLM request failed: ${xhr.status}`);
-    },
-  });
-
-  return llmResponse;
-
-  // return new Promise((resolve, reject) => {
-  //   $.ajax({
-  //     url: "https://autobpmn.ai/llm/",
-  //     method: "POST",
-  //     data: fd,
-  //     contentType: false,
-  //     processData: false,
-  //     xhrFields: { withCredentials: true },
-  //     crossDomain: true,
-  //     success: (data) => {
-  //       console.log('LLM generation request sent successfully', data);
-  //       resolve(data);
-  //     },
-  //     error: (xhr) => {
-  //       console.log("LLM generation request failed", xhr.status, xhr.responseText);
-  //       reject(new Error(`LLM request failed: ${xhr.status}`));
-  //     }
-  //   });
-  // });
-
-  // return await createSampleModel();
-};
-
-const generateModel = async () => {
-  const selectedText = Store.getTemporarySelections()
-    .map((range) => range.toString())
-    .join(" ");
-
-  let generatedModel;
-  try {
-    const res = await generateModelLLM(selectedText);
-    if (typeof res === "string") {
-      generatedModel = res;
-    } else if (res && res.rpst_xml) {
-      generatedModel =
-        typeof res.rpst_xml === "string"
-          ? res.rpst_xml
-          : new XMLSerializer().serializeToString(res.rpst_xml);
-    } else if (res && res.xml) {
-      generatedModel =
-        typeof res.xml === "string"
-          ? res.xml
-          : new XMLSerializer().serializeToString(res.xml);
-    } else if (res && res.description) {
-      generatedModel =
-        typeof res.description === "string"
-          ? res.description
-          : new XMLSerializer().serializeToString(res.description);
-    } else {
-      generatedModel =
-        '<description xmlns="http://cpee.org/ns/description/1.0"/>';
-    }
-  } catch (err) {
-    console.log("001 Error generating model:", err);
-    const rejectMessage =
-      err?.message ??
-      err?.responseText ??
-      (typeof err === "string" ? err : JSON.stringify(err));
-    console.log("002 Reject message:", rejectMessage);
-
-    // $generateButton.prop('disabled', false);
-    generatedModel = await createSampleModel();
-
-    // return;
-  }
-  console.log("003 Next step -  Generated Model :", generatedModel);
-  activeModel = {
-    data: generatedModel,
-  };
-  showActiveModel(activeModel);
-  $generateButton.prop("disabled", false);
-  $("#generatedModelActionBar").css("visibility", "visible");
 };
 
 const regenerateModel = async () => {
@@ -344,10 +192,12 @@ $(document).ready(function () {
       const svg = $svgCopy.prop("outerHTML");
       activeModel.svg = svg;
       activeModel.data = new XMLSerializer().serializeToString(
-        activeModel.data
+        activeModel.data,
       );
-      modelId = await createModel(db, activeModel);
-      model = await updateModel(db, modelId, { name: `Model_${modelId}` });
+      modelId = await API.Model.createModel(activeModel);
+      model = await API.Model.updateModel(modelId, {
+        name: `Model_${modelId}`,
+      });
       renderModelInList(model);
     } else {
       // model = await updateModel(db, modelId, activeModel);
@@ -360,11 +210,11 @@ $(document).ready(function () {
       document_id: Store.getActiveDocumentId(),
       model_id: modelId,
       selections: Store.getTemporarySelections().map((range) =>
-        serializeRange(range)
+        serializeRange(range),
       ),
     };
 
-    await createTrace(db, trace);
+    await API.Trace.createTrace(trace);
 
     Store.addTrace(trace);
     renderTrace(trace);

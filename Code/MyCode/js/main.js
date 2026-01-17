@@ -1,68 +1,32 @@
-let db;
-
-const connectDB = () => {
-  return new Promise((resolve, reject) => {
-    const dbReq = indexedDB.open("MyDB", 1);
-    dbReq.onupgradeneeded = function (event) {
-      const db = event.target.result;
-      // db.deleteObjectStore("models");
-      // db.deleteObjectStore("documents");
-      // db.deleteObjectStore("traces");
-      if (!db.objectStoreNames.contains("documents")) {
-        db.createObjectStore("documents", {
-          keyPath: "id",
-          autoIncrement: true,
-        });
-      }
-      if (!db.objectStoreNames.contains("models")) {
-        db.createObjectStore("models", {
-          keyPath: "id",
-          autoIncrement: true,
-        });
-      }
-      if (!db.objectStoreNames.contains("traces")) {
-        const traceStore = db.createObjectStore("traces", {
-          keyPath: "id",
-          autoIncrement: true,
-        });
-        traceStore.createIndex("document_id", "document_id", { unique: false });
-        traceStore.createIndex("model_id", "model_id", { unique: false });
-      }
-    };
-
-    dbReq.onsuccess = function (event) {
-      db = event.target.result;
-      resolve(db);
-    };
-    dbReq.onerror = function (event) {
-      console.error("Database error:", event.target.errorCode);
-      reject(event.target.errorCode);
-    };
-  });
-};
-
 // const deleteDocument = async (docId) => {};
 
-const loadTraces = async () => {
-  const documentList = Store.getDocumentList();
-  for (const doc of documentList) {
-    const newTraces = await getTracesByDocumentId(db, doc.id);
+const loadData = async () => {
+  const documentList = await API.Document.getDocumentList();
+  Store.setDocumentList(documentList);
+  documentList.forEach((doc) => {
+    renderDocumentItem(doc);
+  });
+  for (const { id: docId } of documentList) {
+    const newTraces = await API.Trace.getTracesByDocumentId(docId);
+    console.log("Loaded traces for document", docId, newTraces);
     Store.addTraces(newTraces);
+    for (const { model_id: modelId } of newTraces) {
+      API.Model.getModelById(modelId).then((model) => {
+        Store.addModel(model);
+        renderModelInList(model);
+      });
+    }
+  }
+  if (documentList.length) {
+    Store.setActiveDocumentId(documentList[documentList.length - 1]?.id);
   }
 };
 
 $(document).ready(async () => {
-  await connectDB();
-  await loadDocumentList();
-  await loadTraces();
-  await loadModels();
-  const documentList = Store.getDocumentList();
-  if (documentList.length) {
-    Store.setActiveDocumentId(documentList[documentList.length - 1]?.id);
-  }
+  await API.init();
+  await loadData();
   console.log("Initialization complete.", Store.state);
   // generateModel();
-
   // var timer;
   // $(document).on('input', '#dat_details input, #dat_details textarea, #dat_details [contenteditable]', function (e) {
   //   console.log('!!!Input detected, scheduling auto-save...');
@@ -126,6 +90,7 @@ document.addEventListener("store:model-deleted", (e) => {
   const modelId = e.detail.modelId;
   removeModelFromList(modelId);
 });
+
 document.addEventListener("store:active-document-id-changed", async () => {
   console.log("EVENT LISTENER: store:active-document-id-changed");
 

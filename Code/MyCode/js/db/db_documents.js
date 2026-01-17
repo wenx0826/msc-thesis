@@ -19,12 +19,12 @@ const getDocumentList = (db) => {
   });
 };
 
-const createDocument = (db, name, content) => {
+const createDocument = (db, record) => {
   return new Promise((resolve, reject) => {
     try {
       const tx = db.transaction("documents", "readwrite");
       const store = tx.objectStore("documents");
-      const record = { name, content, storedAt: new Date().toISOString() };
+      record = { ...record, storedAt: new Date().toISOString() };
       const addReq = store.add(record);
       addReq.onsuccess = (evt) => resolve(evt.target.result);
       addReq.onerror = (err) => reject(err);
@@ -93,8 +93,8 @@ const deleteDocumentCascadeById = (db, documentId) => {
           new Set(
             traces
               .map((t) => t.model_id)
-              .filter((v) => v !== undefined && v !== null)
-          )
+              .filter((v) => v !== undefined && v !== null),
+          ),
         );
 
         // 2) Delete all traces belonging to this document
@@ -119,7 +119,7 @@ const deleteDocumentCascadeById = (db, documentId) => {
                   const allTracesForModel = e2.target.result || [];
 
                   const usedByOtherDocs = allTracesForModel.some(
-                    (tr) => tr.document_id !== documentId
+                    (tr) => tr.document_id !== documentId,
                   );
 
                   if (!usedByOtherDocs) {
@@ -127,8 +127,8 @@ const deleteDocumentCascadeById = (db, documentId) => {
                   }
                   res();
                 };
-              })
-          )
+              }),
+          ),
         );
 
         // 4) Finally delete the document itself

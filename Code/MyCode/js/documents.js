@@ -1,13 +1,5 @@
 let $documentList;
 
-const loadDocumentList = async () => {
-  const documentList = await getDocumentList(db);
-  Store.setDocumentList(documentList);
-  documentList.forEach((doc) => {
-    renderDocumentItem(doc);
-  });
-};
-
 // const onDocumentSelect = async (event) => {
 //   event.stopPropagation();
 //   const docId = $(event.currentTarget).data("docid");
@@ -96,8 +88,9 @@ $(document).ready(function () {
     for (const file of event.target.files) {
       if (!file) continue;
       const content = await getFileContentInHTML(file);
-      const documentId = await createDocument(db, file.name, content);
-      renderDocumentItem({ id: documentId, name: file.name });
+      const name = file.name;
+      const documentId = await API.Document.createDocument({ name, content });
+      renderDocumentItem({ id: documentId, name });
       Store.setActiveDocumentId(documentId);
     }
   });

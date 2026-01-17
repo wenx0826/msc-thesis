@@ -1,12 +1,3 @@
-const loadModels = async () => {
-  const traces = Store.getTraces();
-  for (const trace of traces) {
-    const model = await getModelById(db, trace.model_id);
-    Store.addModel(model);
-    await renderModelInList(model);
-  }
-};
-
 const renderModelInList = async ({
   id: modelId,
   name: modelName,
@@ -26,7 +17,7 @@ const renderModelInList = async ({
 
   const svgData = new DOMParser().parseFromString(
     svgContent,
-    "image/svg+xml"
+    "image/svg+xml",
   ).documentElement;
   $gridDiv.append(svgData);
   $gridDiv.append(svgData);

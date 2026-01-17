@@ -3,7 +3,7 @@ let $generateButton;
 let $regenerateButton;
 
 const loadDocument = async (docId) => {
-  const content = await getDocumentContentById(db, docId);
+  const content = await getDocumentContentById(API.db, docId);
   const htmlContent = new DOMParser().parseFromString(content, "text/html").body
     .innerHTML;
   $("#documentContent").html(htmlContent || "");
@@ -20,8 +20,7 @@ $(document).ready(function () {
   $deleteSelectionButton = $("#deleteSelectionButton");
   $generateButton = $("#generateButton");
   $regenerateButton = $("#regenerateButton");
-  $keepButton = $("#keepButton");
-  $cancelButton = $("#cancelButton");
+
   $documentContent = $("#documentContent");
   $documentContent.on("mouseup", handleTextSelection);
   $documentContent.on("scroll", rerenderOverlayLayers);
@@ -29,7 +28,7 @@ $(document).ready(function () {
 
   $generateButton.on("click", async () => {
     $generateButton.prop("disabled", true);
-    generateModel();
+    API.Model.generateModel();
   });
 
   $regenerateButton.on("click", async () => {

@@ -32,7 +32,7 @@ window.Store = {
   },
   deleteDocumentTraces(docId) {
     this.state.traces = this.state.traces.filter(
-      (trace) => trace.document_id != docId
+      (trace) => trace.document_id != docId,
     );
   },
   // traces
@@ -45,7 +45,7 @@ window.Store = {
   },
   deleteDocument(docId) {
     this.state.documentList = this.state.documentList.filter(
-      (doc) => doc.id != docId
+      (doc) => doc.id != docId,
     );
     const models = this.getDocumentModels(docId);
     models.forEach((model) => {
@@ -62,7 +62,7 @@ window.Store = {
     document.dispatchEvent(
       new CustomEvent("store:document-deleted", {
         detail: { documentId: docId },
-      })
+      }),
     );
   },
   // document
@@ -77,7 +77,7 @@ window.Store = {
     if (docId != currentActiveDocId) {
       this.state.activeDocumentId = docId;
       document.dispatchEvent(
-        new CustomEvent("store:active-document-id-changed")
+        new CustomEvent("store:active-document-id-changed"),
       );
     }
   },
@@ -88,7 +88,7 @@ window.Store = {
     const activeDocumentId = this.getActiveDocumentId();
     return activeDocumentId
       ? this.state.traces.filter(
-          (trace) => trace.document_id == activeDocumentId
+          (trace) => trace.document_id == activeDocumentId,
         )
       : [];
   },
@@ -105,12 +105,12 @@ window.Store = {
   },
   deleteModel(modelId) {
     this.state.models = this.state.models.filter(
-      (model) => model.id != modelId
+      (model) => model.id != modelId,
     );
     document.dispatchEvent(
       new CustomEvent("store:model-deleted", {
         detail: { modelId: modelId },
-      })
+      }),
     );
     if (this.getActiveModelId() == modelId) {
       this.setActiveModel(null);
@@ -123,7 +123,7 @@ window.Store = {
     var currentActiveModelId = this.getActiveModelId();
     if (modelId != currentActiveModelId) {
       if (modelId) {
-        const model = await getModelById(db, modelId);
+        const model = await API.Model.getModelById(modelId);
         this.setActiveModel(model);
       } else {
         this.setActiveModel(null);
@@ -146,7 +146,7 @@ window.Store = {
       this.state.traces.find(
         (trace) =>
           trace.model_id ==
-          (this.state.activeModel && this.state.activeModel.id)
+          (this.state.activeModel && this.state.activeModel.id),
       ) || null
     );
   },
@@ -157,7 +157,7 @@ window.Store = {
 
   deleteDocumentTraces(docId) {
     this.state.traces = this.state.traces.filter(
-      (trace) => trace.document_id != docId
+      (trace) => trace.document_id != docId,
     );
   },
   // temporarySelections

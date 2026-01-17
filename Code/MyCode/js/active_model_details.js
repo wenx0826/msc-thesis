@@ -1,11 +1,8 @@
-const fileName = "mydetails.js";
-// let $modelSelect, $typeSeclect;
-
 const renderModelSelect = (modelValue) => {
   const activeModelId = Store.getActiveModelId();
 
   const $modelSelect = $(
-    `#dat_details select[data-relaxngui-path=" > call > parameters > model"]`
+    `#dat_details select[data-relaxngui-path=" > call > parameters > model"]`,
   );
   $("<option>").val("").text("--- Please select --- ").appendTo($modelSelect);
 
@@ -35,7 +32,7 @@ $(document).on("wf:call-clicked", function (e) {
     "Savewf:details-updated detail tagName:",
     tagName,
     "endpoint:",
-    endpoint
+    endpoint,
   );
   console.log("nn:", nn);
   //   const typeValue = nn.children("parameters").children("type").val();
@@ -48,11 +45,11 @@ $(document).on("wf:call-clicked", function (e) {
   const modelValue = nn.children("parameters").children("model").text();
   console.log(
     "Type value from call's children parameters's children type:",
-    typeValue
+    typeValue,
   );
   console.log(
     "Model value from call's children parameters's children model:",
-    modelValue
+    modelValue,
   );
   const tab = $("#dat_details");
   const firstElement = tab.children().first().children().first();
@@ -69,28 +66,28 @@ $(document).on("wf:call-clicked", function (e) {
   // save['activity_red_states'][id] = state
   console.log(
     "!!! Savewf:details-updated detail call:q save:",
-    document.getElementById("dat_details")
+    document.getElementById("dat_details"),
   );
 
   const $typeSeclect = $(
-    `#dat_details select[data-relaxngui-path=" > call > parameters > type"]`
+    `#dat_details select[data-relaxngui-path=" > call > parameters > type"]`,
   );
 
   $typeSeclect.append(
     $("<option>")
       .val("task")
       .text("Task")
-      .prop("selected", typeValue == "task")
+      .prop("selected", typeValue == "task"),
   );
   $typeSeclect.append(
     $("<option>")
       .val("subprocess")
       .text("Subprocess")
-      .prop("selected", typeValue == "subprocess")
+      .prop("selected", typeValue == "subprocess"),
   );
 
   const $modelSelect = $(
-    `#dat_details select[data-relaxngui-path=" > call > parameters > model"]`
+    `#dat_details select[data-relaxngui-path=" > call > parameters > model"]`,
   );
 
   renderModelSelect(modelValue);
