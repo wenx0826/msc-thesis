@@ -45,6 +45,7 @@ function do_main_save() {
 
 function do_main_work(svgid) {
   //{{{
+  console.log("??? Details Save: svgid=", svgid);
   var desc = save["details_target"].model;
   console.log("Details Save: desc=", desc);
   var node = desc.get_node_by_svg_id(svgid);

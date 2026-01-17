@@ -3,6 +3,9 @@ function WFAdaptorManifestationBase(adaptor) {
   var self = this;
 
   this.adaptor = adaptor;
+  // this.notify = function (svgid) {
+  //   self.update_details(svgid);
+  // };
   this.resources = {};
   this.elements = {};
   this.events = {};
@@ -18,6 +21,14 @@ function WFAdaptorManifestationBase(adaptor) {
       base,
       opts
     );
+    // Print base as string
+    if (typeof base === "object" && base.length && base[0].outerHTML) {
+      console.log(base[0].outerHTML);
+    } else if (typeof base === "string") {
+      console.log(base);
+    } else {
+      console.log(String(base));
+    }
     if (base[0].namespaceURI == "http://relaxng.org/ns/structure/1.0") {
       $("#relaxngworker").empty();
       var rngw = new RelaxNGui(
@@ -129,6 +140,16 @@ function WFAdaptorManifestationBase(adaptor) {
 
   // Menu handling and details, private a should be available through inheritance
   var copyOrMove = (self.copyOrMove = function (menu, group, xml_node, mode) {
+    console.log(
+      "base_new.js copyOrMove called with menu",
+      menu,
+      "group",
+      group,
+      "xml_node",
+      String(xml_node),
+      "mode",
+      mode
+    );
     //{{{
     var nodes = localStorage.getItem("marked");
 
@@ -395,6 +416,7 @@ function WFAdaptorManifestationBase(adaptor) {
         }
       }
     }
+    console.log("What's e", e, "menu", menu);
     new CustomMenu(e).contextmenu(menu);
   }); //}}}
 

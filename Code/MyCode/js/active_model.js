@@ -40,7 +40,7 @@ const saveModel = async (e) => {
       // Reattach click handler
       $container.off("click").on("click", (e) => {
         e.stopPropagation();
-        setActiveModel(updatedModel.id);
+        Store.setActiveModel(updatedModel.id);
       });
     }
   } else {
@@ -76,6 +76,72 @@ const showActiveModel = (model) => {
       graphrealization.set_svg_container($("#activeModelCanvas"));
       graphrealization.set_label_container($("#activeModelGrid"));
       graphrealization.set_description($(data), true);
+      graphrealization.notify = function (svgid) {
+        console.log("!!!!!!Graph realization notify for svgid:", svgid);
+        var g = graphrealization.get_description();
+        console.log("!!!!!!Graph realization notify for g???:", g);
+
+        /*save["graph"] = $X(g);
+        save["graph"].removeAttr("svg-id");
+        save["graph"].removeAttr("svg-type");
+        save["graph"].removeAttr("svg-subtype");
+        save["graph"].removeAttr("svg-label");
+        document.dispatchEvent(graph_changed);*/
+        if (save["modeltype"] != "CPEE") {
+          /*
+          $.ajax({
+            type: "PUT",
+            url: url + "/properties/attributes/modeltype/",
+            data: { value: "CPEE" },
+            error: report_failure,
+          });
+          $.ajax({
+            type: "PUT",
+            url: url + "/properties/transformation/",
+            contentType: "text/xml",
+            headers: {
+              "Content-ID": "transformation",
+              "CPEE-Event-Source": myid,
+            },
+            data: '<transformation xmlns="http://cpee.org/ns/properties/2.0"><description type="copy"/><dataelements type="none"/><endpoints type="none"/></transformation>',
+            success: function () {
+              $.ajax({
+                type: "PUT",
+                url: url + "/properties/description/",
+                contentType: "text/xml",
+                headers: {
+                  "Content-ID": "description",
+                  "CPEE-Event-Source": myid,
+                },
+                data: g,
+                error: report_failure,
+              });
+            },
+            error: report_failure,
+          });
+          */
+        } else {
+          /*
+          $.ajax({
+            type: "PUT",
+            url: url + "/properties/description/",
+            contentType: "text/xml",
+            headers: {
+              "Content-ID": "description",
+              "CPEE-Event-Source": myid,
+            },
+            data: g,
+            error: report_failure,
+          });
+          */
+        }
+        manifestation.events.click(svgid);
+        format_instance_pos();
+        if (manifestation.selected() == "unknown") {
+          // nothing selected
+          $("#dat_details").empty();
+        }
+      };
     }
   );
 };
