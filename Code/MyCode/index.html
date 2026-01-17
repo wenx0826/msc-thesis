@@ -84,8 +84,8 @@
       <span style="font-size: 1.6em; font-weight: bold;">Document-Based Process Modeller</span>
     </div>
     <div class="right button-group">
-      <button id="loadConfigButton">Load Config</button>
-      <button id="saveConfigButton">Save Config</button>
+      <span id="loadConfigButton">Theme: Preset</span>
+      <span id="saveConfigButton">LLM: gemini 2 Flash</span>
     </div>
   </ui-bar>
   <ui-rest style="z-index: 2;" id="main">
@@ -178,6 +178,7 @@
           <ui-bar>
             <div id="activeModelName"></div>
             <button name="savemodelchanges" onclick="saveModel()">Save Model</button>
+            <button name="deletemodel" onclick="deleteActiveModel()">Delete Model</button>
           </ui-bar>
           <ui-divider></ui-divider>
 

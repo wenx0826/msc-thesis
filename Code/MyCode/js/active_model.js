@@ -48,6 +48,17 @@ const saveModel = async (e) => {
     renderModelInList(updatedModel);
   }
 };
+const deleteActiveModel = async (e) => {
+  const activeModelId = Store.getActiveModelId();
+  Store.deleteModel(activeModelId);
+  // const activeModel = Store.getActiveModel();
+  // if (!activeModel || !activeModel.id) return;
+
+  // await deleteModelById(db, activeModel.id);
+  // Store.removeModelById(activeModel.id);
+  // clearModelViewer();
+  // Store.setActiveModel(null);
+};
 const clearModelViewer = () => {
   $("#activeModelName").text("");
   // console.log('Clearing active model canvas');
@@ -77,9 +88,9 @@ const showActiveModel = (model) => {
       graphrealization.set_label_container($("#activeModelGrid"));
       graphrealization.set_description($(data), true);
       graphrealization.notify = function (svgid) {
-        console.log("!!!!!!Graph realization notify for svgid:", svgid);
+        // console.log("!!!!!!Graph realization notify for svgid:", svgid);
         var g = graphrealization.get_description();
-        console.log("!!!!!!Graph realization notify for g???:", g);
+        // console.log("!!!!!!Graph realization notify for g???:", g);
 
         /*save["graph"] = $X(g);
         save["graph"].removeAttr("svg-id");
