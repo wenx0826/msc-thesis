@@ -143,6 +143,14 @@ li.active {
     background-color: var(--x-ui-hover-background-color);
 } */
 
+#modelPromptContainer {
+  /* display: flex;
+  flex-direction: column; */
+  margin: 0.5em;
+  border: 0.5pt solid var(--x-ui-border-color);
+  border-bottom-left-radius: 0.6em;
+  border-bottom-right-radius: 0.6em;
+}
 .model-container {
   border: 1.5px solid var(--x-ui-border-color);
   padding: 0.5em;
