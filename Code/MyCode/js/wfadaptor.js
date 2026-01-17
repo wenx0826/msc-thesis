@@ -51,16 +51,20 @@ function WfAdaptor(theme_base, doit) {
     // public {{{
     return description.get_description();
   }; // }}}
+
   this.notify = function () {
     // public {{{
   }; // }}}
+
   this.draw_labels = function (max, labels, dimensions, striped) {
     // public {{{
   }; // }}}
+
   this.set_svg_container = function (container) {
     // {{{
     illustrator.set_svg_container(container); // TODO: shadowing the container element
   }; // }}}
+
   this.set_label_container = function (container) {
     // {{{
     illustrator.set_label_container(container);

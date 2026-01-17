@@ -1,7 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <title>Document-Based Process Modeller</title>
+  <title>Doc-Based Process Modeller</title>
   <!-- libs, do not modify. When local than load local libs. -->
   <script type="text/javascript" src="https://cpee.org/js_libs/jquery.min.js"></script>
   <script type="text/javascript" src="https://cpee.org/js_libs/jquery.browser.js"></script>
@@ -79,6 +79,15 @@
 
 </head>
 <body data-defaultconfig="index.json" is="x-ui-" data-names="3">
+  <ui-bar>
+    <div class="left">
+      <span style="font-size: 1.6em; font-weight: bold;">Document-Based Process Modeller</span>
+    </div>
+    <div class="right button-group">
+      <button id="loadConfigButton">Load Config</button>
+      <button id="saveConfigButton">Save Config</button>
+    </div>
+  </ui-bar>
   <ui-rest style="z-index: 2;" id="main">
     <ui-content>
       <!-- Left: Document Panel -->
@@ -198,7 +207,12 @@
         <ui-rest style="flex: 0.25 1 0; min-height: 100px;" id="modelPromptContainer">
           <!-- <textarea id="modelXmlContent" style="width:100%; height:100%;"></textarea> -->
           <div id="prompt" contenteditable="true" style="width:100%; height:100%;"></div>
-          <div></div>
+          <ui-bar>
+            <div class="right button-group">
+              <button id="clearPromptButton">Clear</button>
+              <button id="applyPromptButton">Send</button>
+            </div>
+          </ui-bar>
         </ui-rest>
 
       </ui-rest>

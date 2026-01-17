@@ -13,6 +13,11 @@ function WFAdaptorManifestationBase(adaptor) {
 
   //{{{ transform the details data to description parts based on rng
   this.source = function (base, opts) {
+    console.log(
+      "WFAdaptorManifestationBase.source: transforming to description",
+      base,
+      opts
+    );
     if (base[0].namespaceURI == "http://relaxng.org/ns/structure/1.0") {
       $("#relaxngworker").empty();
       var rngw = new RelaxNGui(

@@ -151,19 +151,19 @@ function do_main_work(svgid) {
       manifestation.update_details(svgid);
       do_main_work(svgid);
     } else {
-      $.ajax({
-        type: "PUT",
-        url: url + "/properties/description/",
-        contentType: "text/xml",
-        headers: {
-          "Content-ID": "description",
-          "CPEE-Event-Source": myid,
-        },
-        data: desc.get_description(),
-      });
-      format_instance_pos();
+      // $.ajax({
+      //   type: "PUT",
+      //   url: url + "/properties/description/",
+      //   contentType: "text/xml",
+      //   headers: {
+      //     "Content-ID": "description",
+      //     "CPEE-Event-Source": myid,
+      //   },
+      //   data: desc.get_description(),
+      // });
+      // format_instance_pos();
 
-      document.dispatchEvent(graph_changed);
+      // document.dispatchEvent(graph_changed);
 
       ////////////////////////////
       // holy shit, f***in papercut. When blur/focusout from within relaxngui,
