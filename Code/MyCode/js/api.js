@@ -100,7 +100,7 @@ API.Model = {
       }
       const chosen = list[Math.floor(Math.random() * list.length)];
       const resp = await fetch(`${templatesFolder}${chosen}`);
-      console.log("Fetched template:", chosen);
+      // console.log("Fetched template:", chosen);
       if (!resp.ok) {
         throw new Error(
           `Failed to fetch template ${chosen}, status ${resp.status}`,
@@ -117,16 +117,16 @@ API.Model = {
     }
   },
 
-  async generateModelLLM(userInput) {
+  async generateModelLLM({ rpstXml, userInput, llm }) {
     const fd = new FormData();
     fd.append(
       "rpst_xml",
-      new Blob([`<description xmlns="http://cpee.org/ns/description/1.0"/>`], {
+      new Blob([rpstXml], {
         type: "text/xml",
       }),
     );
     fd.append("user_input", new Blob([userInput], { type: "text/plain" }));
-    fd.append("llm", new Blob(["gemini-2.0-flash"], { type: "text/plain" }));
+    fd.append("llm", new Blob([llm], { type: "text/plain" }));
 
     const response = new Promise((resolve, reject) => {
       $.ajax({
@@ -137,11 +137,11 @@ API.Model = {
         processData: false,
         method: "POST",
         success: function (data) {
-          console.log("LLM generation request sent successfully", data);
+          // console.log("LLM generation request sent successfully", data);
           resolve(data.output_cpee);
         },
         error: function (xhr, status, data) {
-          console.log("Error in LLM generation request:", xhr, status, data);
+          // console.log("Error in LLM generation request:", xhr, status, data);
           reject(new Error(xhr.responseJSON?.error || "Request failed"));
         },
       });
@@ -149,20 +149,14 @@ API.Model = {
     return response;
   },
 
-  async generateModel() {
-    const selectedText = Store.getTemporarySelections()
-      .map((range) => range.toString())
-      .join(" ");
-
-    let generatedModel =
-      '<description xmlns="http://cpee.org/ns/description/1.0"/>';
+  async generateModel(params) {
+    let generatedModel = null;
     try {
       if (this.LLMDisabled) {
         generatedModel = await this.generateSampleModel();
       } else {
-        let res = await this.generateModelLLM(selectedText);
+        let res = await this.generateModelLLM(params);
         if (res) {
-          console.log("Generated model is a string.");
           res = res.replace('<?xml version="1.0"?>\n', "");
           generatedModel = "<description>" + res + "</description>";
         }
@@ -177,13 +171,15 @@ API.Model = {
 
       // $generateButton.prop('disabled', false);
     }
-    console.log("003 Next step -  Generated Model :", generatedModel);
+    // console.log("003 Next step -  Generated Model :", generatedModel);
     activeModel = {
       data: generatedModel,
     };
-    Store.setActiveModel(activeModel);
-    $generateButton.prop("disabled", false);
-    $("#generatedModelActionBar").css("visibility", "visible");
+    return generatedModel;
+    // Store.setActiveModel(activeModel);
+
+    // $generateButton.prop("disabled", false);
+    // $("#generatedModelActionBar").css("visibility", "visible");
   },
   async getModelById(id) {
     return await getModelById(API.db, id);

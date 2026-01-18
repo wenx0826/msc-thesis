@@ -5,6 +5,8 @@ let $tracesLayer;
 let $temporarySelectionsLayer;
 let $deleteSelectionButton;
 
+let temporarySelections = [];
+
 $(document).ready(function () {
   $tracesLayer = $("#tracesLayer");
   $temporarySelectionsLayer = $("#temporarySelectionsLayer");
@@ -16,21 +18,24 @@ $(document).ready(function () {
   $documentContent = $("#documentContent");
   $documentContent.on("mouseup", handleTextSelection);
   $documentContent.on("scroll", rerenderOverlayLayers);
-  $(window).on("resize", rerenderOverlayLayers);
 
   $generateButton.on("click", async () => {
+    const selectedText = getSelectedText();
+    console.log("Selected text:", selectedText);
     $generateButton.prop("disabled", true);
-    API.Model.generateModel();
+    activeModelStore.generateNewModel(selectedText);
+    // const text = Store.activeModel.setStatus("generating");
+    // API.Model.generateModel();
   });
 
   $regenerateButton.on("click", async () => {
     $generateButton.prop("disabled", true);
     $regenerateButton.prop("disabled", true);
-    regenerateModel();
+    activeModelStore.regenerateModel();
   });
 });
 
-Store.activeDocument.subscribe((state, { key, oldValue, newValue }) => {
+activeDocumentStore.subscribe((state, { key, oldValue, newValue }) => {
   switch (key) {
     case "status":
       if (newValue === "loading") {
@@ -44,6 +49,7 @@ Store.activeDocument.subscribe((state, { key, oldValue, newValue }) => {
           "text/html",
         ).body.innerHTML;
         $documentContent.html(htmlContent || "");
+        rerenderTracesLayer();
       } else {
         $documentContent.empty();
       }
@@ -53,17 +59,27 @@ Store.activeDocument.subscribe((state, { key, oldValue, newValue }) => {
   }
 });
 
+activeModelStore.subscribe((state, { key, oldValue, newValue }) => {
+  if (key === "model") {
+    if (newValue && newValue.id) highlightActiveModelSelections(newValue.id);
+  }
+});
 // const clearDocumentViewer = () => {
 //   $("#documentContent").empty();
 // };
-
+const getSelectedText = () => {
+  return temporarySelections.map((range) => range.toString()).join(" ");
+};
 const clearTraceLayer = () => {
   $tracesLayer.empty();
 };
+const hasTemporarySelections = () => {
+  return temporarySelections.length > 0;
+};
 
 const clearTemporarySelections = () => {
-  if (Store.hasTemporarySelections()) {
-    Store.setTemporarySelections([]);
+  if (hasTemporarySelections()) {
+    temporarySelections = [];
     $temporarySelectionsLayer.empty();
   }
 };
@@ -136,7 +152,7 @@ const renderSelection = (range, modelId) => {
     const lastIndex = rects.length - 1;
     const lastRect = rects[lastIndex];
 
-    const modelName = Store.getModelNameById(modelId);
+    const modelName = modelsStore.getModelNameById(modelId);
 
     const labelSpan = $("<span>")
       .attr("data-modelid", modelId)
@@ -148,7 +164,7 @@ const renderSelection = (range, modelId) => {
       })
       .on("click", (event) => {
         event.stopPropagation();
-        Store.setActiveModelById(modelId);
+        activeModelStore.setModelById(modelId);
       });
     $selectionDiv.append(labelSpan);
     $tracesLayer.append($selectionDiv);
@@ -184,8 +200,8 @@ const renderTrace = ({ selections, model_id: modelId }) => {
 
 const rerenderTracesLayer = () => {
   clearTraceLayer();
-  const activeDocumentTraces = Store.getActiveDocumentTraces();
-  activeDocumentTraces.forEach((trace) => renderTrace(trace));
+  const traces = activeDocumentStore.getTraces();
+  traces.forEach((trace) => renderTrace(trace));
 };
 
 const rerenderOverlayLayers = () => {
@@ -213,7 +229,8 @@ const handleTextSelection = () => {
   }
   const clonedRange = range.cloneRange();
   clonedRange.id = Date.now();
-  Store.addTemporarySelection(clonedRange);
+  temporarySelections.push(clonedRange);
   renderSelection(range);
   selection.removeAllRanges();
 };
+$(window).on("resize", rerenderOverlayLayers);

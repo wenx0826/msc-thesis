@@ -25,9 +25,7 @@ function createDomainStore(initialState, options = {}) {
 }
 
 window.Store = {
-  state: {
-    temporarySelections: [],
-  },
+  state: {},
   // Methods to manipulate the store
 
   // traces
@@ -52,7 +50,6 @@ window.Store = {
   },
 
   // document
-
   getDocumentNameById(docId) {
     const doc = this.state.documentList.find((d) => d.id == docId);
     return doc ? doc.name : "Unknown Document";
@@ -161,6 +158,29 @@ window.Store = {
     return this.state.temporarySelections.length > 0;
   },
 };
+Store.project = Object.assign(
+  createDomainStore({
+    id: null,
+    name: null,
+    llmModel: "gemini-2.0-flash",
+    theme: null,
+  }),
+  {
+    setProject(id, name) {
+      this.state.id = id;
+      this.state.name = name;
+    },
+    getLlmModel() {
+      return this.state.llmModel;
+    },
+    setLlmModel(llmModel) {
+      this.state.llmModel = llmModel;
+    },
+    setTheme(theme) {
+      this.state.theme = theme;
+    },
+  },
+);
 Store.documents = Object.assign(
   createDomainStore({
     documentList: [],
@@ -179,7 +199,7 @@ Store.documents = Object.assign(
       return API.Document.createDocument(doc).then((newDoc) => {
         const newDocList = [...this.state.documentList, newDoc];
         this.setDocumentList();
-        return newDoc;
+        return newDoc.id;
       });
     },
     async deleteDocumentById(docId) {
@@ -214,6 +234,9 @@ Store.traces = Object.assign(
     getTraces() {
       return this.state.traces;
     },
+    getDocumentTraces(docId) {
+      return this.state.traces.filter((trace) => trace.document_id == docId);
+    },
     addTrace(trace) {
       this.state.traces.push(trace);
     },
@@ -223,8 +246,20 @@ Store.traces = Object.assign(
     setTraces(traces) {
       this.state.traces = traces;
     },
-    getDocumentTraces(docId) {
-      return this.state.traces.filter((trace) => trace.document_id == docId);
+
+    async createTrace(sections) {
+      const documentId = Store.activeDocument.getActiveDocumentId();
+      const modelId = Store.activeModel.getModelId();
+      const trace = {
+        id: Date.now(), // Simple unique ID generation
+        document_id: documentId,
+        model_id: modelId,
+        selections: sections,
+      };
+      await API.Trace.createTrace(trace);
+      this.addTrace(trace);
+      // console.log("Created trace:", trace);
+      // return trace;
     },
   },
 );
@@ -269,14 +304,9 @@ Store.activeDocument = Object.assign(
         },
       );
     },
-
-    getActiveDocumentTraces() {
+    getTraces() {
       const activeDocumentId = this.getActiveDocumentId();
-      return activeDocumentId
-        ? this.state.traces.filter(
-            (trace) => trace.document_id == activeDocumentId,
-          )
-        : [];
+      return Store.traces.getDocumentTraces(activeDocumentId);
     },
   },
 );
@@ -284,32 +314,116 @@ Store.activeModel = Object.assign(
   createDomainStore({
     status: null, // 'loading', 'ready', 'error','generating'
     error: null,
-    svg: null,
-    data: null,
+    id: null,
+    model: null,
   }),
   {
-    async setActiveModelById(modelId) {
+    setStatus(status) {
+      this.state.status = status;
+      this.notify({ key: "status", newValue: status });
+    },
+    getModel() {
+      return this.state.model;
+    },
+    getModelId() {
+      return this.state.model ? this.state.model.id : null;
+    },
+    setError(error) {
+      this.state.error = error;
+      this.notify({ key: "error", newValue: error });
+    },
+    setModel(newValue) {
+      const oldValue = this.getModel();
+      this.state.model = newValue;
+      this.notify({ key: "model", oldValue, newValue });
+    },
+    async setModelById(modelId) {
       // const model = this.state.models.find((m) => m.id == modelId) || null;
       // this.setActiveModel(model);
-      var currentActiveModelId = this.getActiveModelId();
+      var currentActiveModelId = this.getModelId();
       if (modelId != currentActiveModelId) {
         if (modelId) {
           const model = await API.Model.getModelById(modelId);
-          this.setActiveModel(model);
+          this.setModel(model);
         } else {
-          this.setActiveModel(null);
+          this.setModel(null);
         }
       }
     },
-    setActiveModel(model) {
-      this.state.activeModel = model;
-      document.dispatchEvent(new CustomEvent("store:active-model-changed"));
+
+    generateModel(userInput, rpstXml) {
+      console.log("Generating model with input:", userInput, rpstXml);
+      this.setStatus("generating");
+      const llm = Store.project.getLlmModel();
+      API.Model.generateModel({ userInput, rpstXml, llm })
+        .then((data) => {
+          this.setModel({ data });
+          // this.setStatus("ready");
+        })
+        .catch((error) => {
+          console.error("Error generating model:", error);
+          this.setError(String(error));
+          this.setStatus("error");
+        });
     },
-    getActiveModel() {
-      return this.state.activeModel;
+    regenerateModel() {
+      const activeModel = this.getActiveModel();
+      if (activeModel) {
+        this.generateModel(activeModel.source_text, activeModel.rpst_xml);
+      }
     },
-    getActiveModelId() {
-      return this.state.activeModel ? this.state.activeModel.id : null;
+    generateNewModel(selectedText) {
+      console.log("Store, Generating new model with selected text:??????");
+      const rpstXml = window.Constants.EMPTY_MODEL;
+      this.generateModel(selectedText, rpstXml);
+    },
+  },
+);
+Store.models = Object.assign(
+  createDomainStore({
+    models: [],
+  }),
+  {
+    addModel(model) {
+      this.state.models.push(model);
+    },
+    getModels(text) {
+      r;
+      return this.state.models;
+    },
+    getModelNameById(modelId) {
+      const model = this.state.model;
+      return model && model.id == modelId ? model.name : `Model ${modelId}`;
+    },
+    async createModel(model) {
+      const modelId = await API.Model.createModel(model);
+      model = await API.Model.updateModel(modelId, {
+        name: `Model_${modelId}`,
+      });
+      this.addModel(model);
+      return model;
+    },
+    async updateModel(modelId, updatedFields) {
+      // const updatedModel = await API.Model.updateModel(modelId, updatedFields);
+      // const idx = this.state.models.findIndex((m) => m.id === updatedModel.id);
+      // this.notify({ key: "models", newValue: this.state.models });
+    },
+    getModelNameById(modelId) {
+      const model = this.state.models.find((m) => m.id == modelId);
+      return model ? model.name : `Model ${modelId}`;
+    },
+    deleteModel(modelId) {
+      this.state.models = this.state.models.filter(
+        (model) => model.id != modelId,
+      );
+      document.dispatchEvent(
+        new CustomEvent("store:model-deleted", {
+          detail: { modelId: modelId },
+        }),
+      );
+      if (this.getActiveModelId() == modelId) {
+        this.setActiveModel(null);
+      }
     },
   },
 );

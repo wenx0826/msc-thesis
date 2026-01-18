@@ -1,4 +1,14 @@
-const renderModelInList = async ({
+const $modelsArea = $("#models");
+
+activeModelStore.subscribe((state, { key, oldValue, newValue }) => {
+  if (key === "model") {
+    if (newValue && newValue.id) {
+      highlightActiveModelInList(newValue.id);
+    }
+  }
+});
+
+const renderModelInList = ({
   id: modelId,
   name: modelName,
   content: modelContent,
@@ -24,7 +34,7 @@ const renderModelInList = async ({
   $modelContainer.append($gridDiv);
   $modelContainer.on("click", (event) => {
     event.stopPropagation();
-    Store.setActiveModelById(modelId);
+    activeModelStore.setModelById(modelId);
   });
 };
 

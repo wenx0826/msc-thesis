@@ -1,6 +1,4 @@
 let $documentList;
-const activeDocumentStore = Store.activeDocument;
-const documentsStore = Store.documents;
 
 const onDocumentItemSelect = (event) => {
   event.stopPropagation();
@@ -94,7 +92,7 @@ $(document).ready(function () {
       if (!file) continue;
       const content = await getFileContentInHTML(file);
       const name = file.name;
-      documentsStore.createDocument({ name, content }).then(({ id, name }) => {
+      documentsStore.createDocument({ name, content }).then((id) => {
         renderDocumentItem({ id, name });
         activeDocumentStore.setActiveDocumentId(id);
       });

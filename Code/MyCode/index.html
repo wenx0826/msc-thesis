@@ -61,19 +61,15 @@
   <script src="js/db/db_documents.js"></script>
   <script src="js/db/db_models.js"></script>
   <script src="js/db/db_traces.js"></script>
+  <script src="js/constants.js"></script>
   <script src="js/api.js"></script>
   <script src="js/store.js"></script>
-  <script src="js/myui.js"></script>
-  <script src="js/documents.js"></script>
-  <script src="js/active_document.js"></script>
-  <script src="js/active_document_selections.js"></script>
-
-  <script src="js/models.js"></script>
-  <script src="js/active_model.js"></script>
   <script src="js/main.js"></script>
-
-
-  <script src="js/active_model_details.js"></script>
+  <script src="js/ui/documents.js"></script>
+  <script src="js/ui/active_document.js"></script>
+  <script src="js/ui/models.js"></script>
+  <script src="js/ui/active_model.js"></script>
+  <script src="js/ui/active_model_details.js"></script>
 
   <!-- my ui-->
   <link rel="stylesheet" href="css/myui.css" type="text/css" />
@@ -86,7 +82,17 @@
     </div>
     <div class="right button-group">
       <span id="loadConfigButton">Theme: Preset</span>
-      <span id="saveConfigButton">LLM: gemini 2 Flash</span>
+      <div class="multi">
+        <label id="llmlabel" for="llms">LLM:</label>
+        <select name="llms" id="llms">
+          <option value="gemini-2.0-flash" selected>gemini 2 Flash</option>
+          <option value="gemini-2.5-flash-preview-05-20">gemini 2.5 Flash</option>
+          <option value="gemini-2.5-pro-preview-05-06">gemini 2.5 Pro</option>
+          <option value="gpt-4">gpt 4</option>
+          <option value="gpt-4o">gpt 4o</option>
+          <option value="gpt-4o-mini">gpt 4o mini</option>
+        </select>
+      </div>
     </div>
   </ui-bar>
   <ui-rest style="z-index: 2;" id="main">
@@ -165,7 +171,7 @@
           <ui-divider></ui-divider>
           <ui-bar style="z-index: 3;">
             <div class="right button-group">
-              <button id="generateButton">Generate Model</button>
+              <button id="generateButton" disabled>Generate Model</button>
               <button id="regenerateButton" style="display:none;">Regenerate</button>
             </div>
           </ui-bar>
@@ -409,10 +415,6 @@
     };
 
     // #endregion
-
-
-
-
     // Listen to custom events dispatched in this app
     document.addEventListener('graph:changed', function (e) {
       console.log('graph:changed', e);
@@ -431,9 +433,6 @@
     $(document).on('model:loaded', function (e) {
       console.log('model:loaded (jQuery)', e);
     });
-
-
-
 
     /*const deleteRangeById = (rangeId) => {
       highlightSelections = highlightSelections.filter(r => r.id !== rangeId);

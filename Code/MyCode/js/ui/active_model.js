@@ -1,6 +1,90 @@
 let $keepButton;
 let $cancelButton;
 
+$(document).ready(function () {
+  $keepButton = $("#keepButton");
+  $cancelButton = $("#cancelButton");
+
+  $keepButton.on("click", async () => {
+    let modelId = activeModelStore.getModelId();
+    const activeModel = activeModelStore.getModel();
+
+    if (!modelId) {
+      const svgContent = $("#activeModelCanvas");
+      const $svgCopy = svgContent.clone(false);
+      $svgCopy.removeAttr("id");
+      const svg = $svgCopy.prop("outerHTML");
+      activeModel.svg = svg;
+      activeModel.data = new XMLSerializer().serializeToString(
+        activeModel.data,
+      );
+      modelsStore.createModel(activeModel).then((model) => {
+        renderModelInList(model);
+        console.log("Created model with ID:", model);
+        activeModelStore.setModel(model);
+
+        const sections = temporarySelections.map((range) =>
+          serializeRange(range),
+        );
+        traceStore.createTrace(sections).then((trace) => {
+          clearTemporarySelections(); //to improve
+        });
+      });
+      //
+      // const model = await modelsStore.createModel(activeModel);
+      // // modelsStore.addModel(model);
+      // activeModelStore.setModel(model);
+      // modelId = model.id;
+    } else {
+      // model = await updateModel(db, modelId, activeModel);
+      await saveModel();
+    }
+
+    // Store.addModel(model);
+    // var trace = {
+    //   document_id: activeDocumentStore.getActiveDocumentId(),
+    //   model_id: modelId,
+    //   selections: temporarySelections().map((range) => serializeRange(range)),
+    // };
+
+    // await API.Trace.createTrace(trace);
+
+    // Store.addTrace(trace);
+
+    $generateButton.prop("disabled", true);
+    $("#generatedModelActionBar").css("visibility", "hidden");
+  });
+
+  $cancelButton.on("click", () => {
+    activeModel = null;
+    $("#activeModelName").text("");
+    $("#activeModelCanvas").empty();
+    $("#generatedModelActionBar").css("visibility", "hidden");
+  });
+});
+
+activeModelStore.subscribe((state, { key, oldValue, newValue }) => {
+  switch (key) {
+    case "id":
+      // if (newValue) {
+      //   const model = Store.getModelById(newValue);
+      //   if (model) {
+      //     showActiveModel(model);
+      //   }
+      // } else {
+      //   clearModelViewer();
+      // }
+      break;
+    case "model":
+      if (newValue) {
+        showActiveModel(newValue);
+      } else {
+        clearModelViewer();
+      }
+      break;
+  }
+});
+
 const saveModel = async (e) => {
   const svgContent = $("#activeModelCanvas");
   const $svgCopy = svgContent.clone(false);
@@ -176,57 +260,3 @@ const regenerateModel = async () => {
   $regenerateButton.prop("disabled", false);
   $("#generatedModelActionBar").css("visibility", "visible");
 };
-
-$(document).ready(function () {
-  $keepButton = $("#keepButton");
-  $cancelButton = $("#cancelButton");
-
-  $keepButton.on("click", async () => {
-    let modelId = Store.getActiveModelId();
-    let model;
-
-    if (!modelId) {
-      const svgContent = $("#activeModelCanvas");
-      const $svgCopy = svgContent.clone(false);
-      $svgCopy.removeAttr("id");
-      const svg = $svgCopy.prop("outerHTML");
-      activeModel.svg = svg;
-      activeModel.data = new XMLSerializer().serializeToString(
-        activeModel.data,
-      );
-      modelId = await API.Model.createModel(activeModel);
-      model = await API.Model.updateModel(modelId, {
-        name: `Model_${modelId}`,
-      });
-      renderModelInList(model);
-    } else {
-      // model = await updateModel(db, modelId, activeModel);
-      await saveModel();
-    }
-
-    Store.addModel(model);
-    Store.setActiveModel(null);
-    var trace = {
-      document_id: Store.getActiveDocumentId(),
-      model_id: modelId,
-      selections: Store.getTemporarySelections().map((range) =>
-        serializeRange(range),
-      ),
-    };
-
-    await API.Trace.createTrace(trace);
-
-    Store.addTrace(trace);
-    renderTrace(trace);
-    clearTemporarySelections();
-    $generateButton.prop("disabled", true);
-    $("#generatedModelActionBar").css("visibility", "hidden");
-  });
-
-  $cancelButton.on("click", () => {
-    activeModel = null;
-    $("#activeModelName").text("");
-    $("#activeModelCanvas").empty();
-    $("#generatedModelActionBar").css("visibility", "hidden");
-  });
-});

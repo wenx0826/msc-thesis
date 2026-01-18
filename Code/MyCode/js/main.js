@@ -1,8 +1,12 @@
-// const deleteDocument = async (docId) => {};
+const documentsStore = Store.documents;
+const tracesStore = Store.traces;
+const activeDocumentStore = Store.activeDocument;
+const modelsStore = Store.models;
+const activeModelStore = Store.activeModel;
 
 const loadData = async () => {
   const documentList = await API.Document.getDocumentList();
-  Store.documents.setDocumentList(documentList);
+  documentsStore.setDocumentList(documentList);
   documentList.forEach((doc) => {
     renderDocumentItem(doc);
   });
@@ -10,16 +14,16 @@ const loadData = async () => {
   for (const { id: docId } of documentList) {
     const newTraces = await API.Trace.getTracesByDocumentId(docId);
     console.log("Loaded traces for document", docId, newTraces);
-    Store.traces.addTraces(newTraces);
+    tracesStore.addTraces(newTraces);
     for (const { model_id: modelId } of newTraces) {
       API.Model.getModelById(modelId).then((model) => {
-        Store.models.addModel(model);
+        modelsStore.addModel(model);
         renderModelInList(model);
       });
     }
   }
   if (documentList.length) {
-    Store.activeDocument.setActiveDocumentId(
+    activeDocumentStore.setActiveDocumentId(
       documentList[documentList.length - 1]?.id,
     );
   }
@@ -29,7 +33,6 @@ $(document).ready(async () => {
   await API.init();
   await loadData();
   console.log("Initialization complete.", Store.state);
-  $("#columnResizehandle1").on("dragcolumnmove", rerenderOverlayLayers);
   // generateModel();
   // var timer;
   // $(document).on('input', '#dat_details input, #dat_details textarea, #dat_details [contenteditable]', function (e) {
@@ -114,26 +117,26 @@ document.addEventListener("store:model-deleted", (e) => {
   }
 });*/
 
-document.addEventListener("store:active-model-changed", () => {
-  console.log("EVENT LISTENER: store:active-model-changed");
+// document.addEventListener("store:active-model-changed", () => {
+//   console.log("EVENT LISTENER: store:active-model-changed");
 
-  const activeModel = Store.getActiveModel();
+//   const activeModel = Store.getActiveModel();
 
-  if (!activeModel) {
-    clearModelViewer();
-  } else {
-    showActiveModel(activeModel);
-    const activeModelId = Store.getActiveModelId();
-    if (activeModelId) {
-      highlightActiveModelInList(activeModelId);
-      const activeModelDocumentId = Store.getActiveModelDocumentId();
-      const activeDocumentId = Store.getActiveDocumentId();
-      if (activeModelDocumentId != activeDocumentId) {
-        Store.setActiveDocumentId(activeModelDocumentId);
-      } else {
-        console.log("Highlighting active model selections");
-        highlightActiveModelSelections(activeModelId);
-      }
-    }
-  }
-});
+//   if (!activeModel) {
+//     clearModelViewer();
+//   } else {
+//     showActiveModel(activeModel);
+//     const activeModelId = Store.getActiveModelId();
+//     if (activeModelId) {
+//       highlightActiveModelInList(activeModelId);
+//       const activeModelDocumentId = Store.getActiveModelDocumentId();
+//       const activeDocumentId = Store.getActiveDocumentId();
+//       if (activeModelDocumentId != activeDocumentId) {
+//         Store.setActiveDocumentId(activeModelDocumentId);
+//       } else {
+//         console.log("Highlighting active model selections");
+//         highlightActiveModelSelections(activeModelId);
+//       }
+//     }
+//   }
+// });
