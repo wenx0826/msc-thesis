@@ -95,6 +95,13 @@ Store.activeDocument = Object.assign(
     traces: [],
   }),
   {
+    getActiveDocumentId() {
+      return this.state.activeDocumentId;
+    },
+    getTraces() {
+      const activeDocumentId = this.getActiveDocumentId();
+      return Store.traces.getDocumentTraces(activeDocumentId);
+    },
     setStatus(status) {
       this.state.status = status;
       this.notify({ key: "status", newValue: status });
@@ -102,9 +109,6 @@ Store.activeDocument = Object.assign(
     setContent(newValue) {
       this.state.content = newValue;
       this.notify({ key: "content", newValue });
-    },
-    getActiveDocumentId() {
-      return this.state.activeDocumentId;
     },
     setActiveDocumentId(newValue) {
       const oldValue = this.getActiveDocumentId();
@@ -128,10 +132,6 @@ Store.activeDocument = Object.assign(
         },
       );
     },
-    getTraces() {
-      const activeDocumentId = this.getActiveDocumentId();
-      return Store.traces.getDocumentTraces(activeDocumentId);
-    },
   },
 );
 Store.traces = Object.assign(
@@ -147,6 +147,13 @@ Store.traces = Object.assign(
     },
     getDocumentModelIds(docId) {
       return this.getDocumentTraces(docId).map((trace) => trace.model_id);
+    },
+    getDocumentModels(docId) {
+      const modelIds = this.getDocumentModelIds(docId);
+      return modelIds.map((modelId) => {
+        const model = modelsStore.getModelById(modelId);
+        return { id: modelId, name: model ? model.name : `Model ${modelId}` };
+      });
     },
     getModelTrace(modelId) {
       return (
@@ -201,23 +208,26 @@ Store.models = Object.assign(
     getModels(text) {
       return this.state.models;
     },
+    getModelById(modelId) {
+      return this.state.models.find((model) => model.id == modelId) || null;
+    },
     getModelNameById(modelId) {
-      const model = this.state.model;
+      const model = this.getModelById(modelId);
       return model && model.id == modelId ? model.name : `Model ${modelId}`;
     },
     async createModel(model) {
       const modelId = await API.Model.createModel(model);
-      model = await API.Model.updateModel(modelId, {
+      model = await API.Model.updateModelById(modelId, {
         name: `Model_${modelId}`,
       });
       this.addModel(model);
       return model;
     },
-    async updateModel(modelId, updatedFields) {
+    /*async updateActiceModel(modelId, updatedFields) {
       // const updatedModel = await API.Model.updateModel(modelId, updatedFields);
       // const idx = this.state.models.findIndex((m) => m.id === updatedModel.id);
       // this.notify({ key: "models", newValue: this.state.models });
-    },
+    },*/
     async deleteModelById(modelId) {
       this.notify({ key: "models", operation: "delete", id: modelId });
       this.state.models = this.state.models.filter(
@@ -229,6 +239,21 @@ Store.models = Object.assign(
       tracesStore.deleteModelTrace(modelId);
       API.Model.deleteModelById(modelId);
     },
+    async updateModelById(modelId, updatedFields) {
+      const updatedModel = await API.Model.updateModelById(
+        modelId,
+        updatedFields,
+      );
+      const idx = this.state.models.findIndex((m) => m.id === modelId);
+      if (idx >= 0) {
+        this.state.models[idx] = updatedModel;
+      }
+      this.notify({
+        key: "models",
+        operation: "update",
+        id: modelId,
+      });
+    },
   },
 );
 
@@ -239,15 +264,25 @@ Store.activeModel = Object.assign(
     model: null,
   }),
   {
-    setStatus(status) {
-      this.state.status = status;
-      this.notify({ key: "status", newValue: status });
-    },
     getModel() {
       return this.state.model;
     },
     getModelId() {
       return this.state.model ? this.state.model.id : null;
+    },
+    getDocumentId() {
+      const modelId = this.getModelId();
+      return tracesStore.getModelTrace(modelId)?.document_id;
+      // const model = this.getModel();
+      // if (model) {
+      //   const trace = Store.traces.getModelTrace(model.id);
+      //   return trace ? trace.document_id : null;
+      // }
+      // return null;
+    },
+    setStatus(status) {
+      this.state.status = status;
+      this.notify({ key: "status", newValue: status });
     },
     setError(error) {
       this.state.error = error;
@@ -271,7 +306,13 @@ Store.activeModel = Object.assign(
         }
       }
     },
-
+    async updateActiceModel() {
+      const modelId = this.getModelId();
+      if (modelId) {
+        const updatedModel = await API.Model.getModelById(modelId);
+        this.setModel(updatedModel);
+      }
+    },
     generateModel(userInput, rpstXml) {
       console.log("Generating model with input:", userInput, rpstXml);
       this.setStatus("generating");
@@ -298,6 +339,14 @@ Store.activeModel = Object.assign(
       const rpstXml = window.Constants.EMPTY_MODEL;
       this.generateModel(selectedText, rpstXml);
     },
+    /*updateActiveModel(model) {
+      const modelId = this.getModelId();
+      if (modelId) {
+        API.Model.updateModelById(modelId, model).then((updatedModel) => {
+          this.setModel(updatedModel);
+        });
+      }
+    },*/
     // deleteModel() {
     //   modelsStore.deleteModelById(this.getModelId());
     //   this.setModel(null);

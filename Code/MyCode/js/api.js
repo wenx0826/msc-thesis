@@ -189,8 +189,8 @@ API.Model = {
   async createModel(model) {
     return await createModel(API.db, model);
   },
-  async updateModel(id, updatedFields) {
-    return await updateModel(API.db, id, updatedFields);
+  async updateModelById(id, updatedFields) {
+    return await updateModelById(API.db, id, updatedFields);
   },
   async deleteModelById(id) {
     return await deleteModelById(API.db, id);

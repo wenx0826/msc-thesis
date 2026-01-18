@@ -12,7 +12,7 @@ $(document).ready(function () {
     function (e) {
       clearTimeout(timer);
       timer = setTimeout(do_main_save, 5000);
-    }
+    },
   );
   // only for contenteditable divs
   $(document).on("keypress", "#dat_details div[contenteditable]", function (e) {
@@ -92,7 +92,7 @@ function do_main_work(svgid) {
     nnew.append(
       node.children().filter(function () {
         return this.attributes["svg-id"] != undefined;
-      })
+      }),
     );
   }
 
@@ -122,11 +122,11 @@ function do_main_work(svgid) {
   desc.refresh(function (graphrealization) {
     console.log(
       "Error001 Graph realization after details save: graphrealization=",
-      graphrealization
+      graphrealization,
     );
     console.log(
       "Error002 Graph realization after details save: g=",
-      graphrealization.get_description()
+      graphrealization.get_description(),
     );
     var vtarget = manifestation.adaptor.illustrator.get_node_by_svg_id(svgid);
     if (vtarget.length > 0) {
@@ -142,12 +142,14 @@ function do_main_work(svgid) {
       newnode.attr("element-type") + "_" + newnode.attr("element-endpoint");
     var g = graphrealization.get_description();
 
+    //TODO !!!! Important ToFix!!!!
+    /*
     save["graph"] = $X(g);
     save["graph"].removeAttr("svg-id");
     save["graph"].removeAttr("svg-type");
     save["graph"].removeAttr("svg-subtype");
     save["graph"].removeAttr("svg-label");
-
+*/
     if (newtype != origtype) {
       manifestation.update_details(svgid);
       do_main_work(svgid);
@@ -176,6 +178,9 @@ function do_main_work(svgid) {
           .get_label_by_svg_id(save["details_target"].tsvgid)
           .trigger("click");
       }
+
+      console.log("herer???");
+      saveActiveModel();
     }
   });
 } //}}}

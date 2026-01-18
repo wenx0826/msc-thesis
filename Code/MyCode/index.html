@@ -184,8 +184,10 @@
         <ui-rest style="flex: 0.75 1 0;min-height: 100px">
           <ui-bar>
             <div id="activeModelName"></div>
-            <button name="savemodelchanges" onclick="saveModel()">Save Model</button>
-            <button name="deletemodel" onclick="deleteActiveModel()">Delete Model</button>
+            <div class="right button-group">
+              <button name="savemodelchanges" onclick="saveModel()">Save Model</button>
+              <button name="deletemodel" onclick="deleteActiveModel()">Delete Model</button>
+            </div>
           </ui-bar>
           <ui-divider></ui-divider>
           <!-- <div>
@@ -201,9 +203,9 @@
                 id='activeModelCanvas' width='1' height='1' style="display:block;"></svg>
             </ui-area>
           </ui-content>
-          <div id="relaxngworker" class='hidden'></div>
           <div id="dat_details" class='x-ui-layout'></div>
-          <ui-bar id="generatedModelActionBar">
+          <div id="relaxngworker" class='hidden'></div>
+          <ui-bar id="generatedModelActionBar" class="hidden">
             <div class="right button-group">
               <button id="cancelButton">Cancel</button>
               <button id="keepButton">Keep</button>

@@ -1,9 +1,11 @@
 let $keepButton;
 let $cancelButton;
+let $generatedModelActionBar;
 
 $(document).ready(function () {
   $keepButton = $("#keepButton");
   $cancelButton = $("#cancelButton");
+  $generatedModelActionBar = $("#generatedModelActionBar");
   $keepButton.on("click", async () => {
     let modelId = activeModelStore.getModelId();
     const activeModel = activeModelStore.getModel();
@@ -78,6 +80,14 @@ activeModelStore.subscribe((state, { key, oldValue, newValue }) => {
     case "model":
       if (newValue) {
         showActiveModel(newValue);
+        $generatedModelActionBar.show();
+        const modelId = newValue.id;
+        if (modelId) {
+          const modelDocumentId = activeModelStore.getDocumentId();
+          if (modelDocumentId) {
+            activeDocumentStore.setActiveDocumentId(modelDocumentId);
+          }
+        }
       } else {
         clearModelViewer();
       }
@@ -85,53 +95,61 @@ activeModelStore.subscribe((state, { key, oldValue, newValue }) => {
   }
 });
 
-const saveModel = async (e) => {
+function saveActiveModel() {
+  const activeModel = activeModelStore.getModel();
+
   const svgContent = $("#activeModelCanvas");
   const $svgCopy = svgContent.clone(false);
   $svgCopy.removeAttr("id");
   const svg = $svgCopy.prop("outerHTML");
-  const activeModel = Store.getActiveModel();
-  activeModel.svg = svg;
-  // activeModel.data = new XMLSerializer().serializeToString(activeModel.data);
-  // const updatedModel = { ...activeModel, data: new XMLSerializer().serializeToString(activeModel.data) };
-  // updateModel(db, activeModel.id, );
-  const updatedModel = await updateModel(db, activeModel.id, {
-    svg: svg,
+  // const activeModel = Store.getActiveModel();
+
+  // activeModel.data = n§;
+  modelsStore.updateModelById(activeModel.id, {
+    svg,
     data: new XMLSerializer().serializeToString(activeModel.data),
   });
-  const models = Store.getModels();
-  const idx = models.findIndex((m) => m.id === updatedModel.id);
-  if (idx !== -1) {
-    models[idx] = updatedModel;
+  //
+  // const updatedModel = { ...activeModel, data: new XMLSerializer().serializeToString(activeModel.data) };
+  // updateModel(db, activeModel.id, );
+  // const updatedModel = await updateModel(db, activeModel.id, {
+  //   svg: svg,
+  //   data: new XMLSerializer().serializeToString(activeModel.data),
+  // });
+  // const models = Store.getModels();
+  // const idx = models.findIndex((m) => m.id === updatedModel.id);
+  // if (idx !== -1) {
+  //   models[idx] = updatedModel;
 
-    const $container = $(`.model-container[data-modelid="${updatedModel.id}"]`);
-    if ($container.length) {
-      // Rebuild container contents
-      $container.empty().text(updatedModel.name);
+  //   const $container = $(`.model-container[data-modelid="${updatedModel.id}"]`);
+  //   if ($container.length) {
+  //     // Rebuild container contents
+  //     $container.empty().text(updatedModel.name);
 
-      const $gridDiv = $("<div>").attr("id", `modelGrid_${updatedModel.id}`);
-      try {
-        const svgDoc = new DOMParser().parseFromString(
-          updatedModel.svg || "",
-          "image/svg+xml",
-        ).documentElement;
-        if (svgDoc) $gridDiv.append(svgDoc);
-      } catch (err) {
-        console.warn("Failed to parse updated model SVG:", err);
-      }
-      $container.append($gridDiv);
+  //     const $gridDiv = $("<div>").attr("id", `modelGrid_${updatedModel.id}`);
+  //     try {
+  //       const svgDoc = new DOMParser().parseFromString(
+  //         updatedModel.svg || "",
+  //         "image/svg+xml",
+  //       ).documentElement;
+  //       if (svgDoc) $gridDiv.append(svgDoc);
+  //     } catch (err) {
+  //       console.warn("Failed to parse updated model SVG:", err);
+  //     }
+  //     $container.append($gridDiv);
 
-      // Reattach click handler
-      $container.off("click").on("click", (e) => {
-        e.stopPropagation();
-        Store.setActiveModel(updatedModel.id);
-      });
-    }
-  } else {
-    models.push(updatedModel);
-    renderModelInList(updatedModel);
-  }
-};
+  //     // Reattach click handler
+  //     $container.off("click").on("click", (e) => {
+  //       e.stopPropagation();
+  //       Store.setActiveModel(updatedModel.id);
+  //     });
+  //   }
+
+  // } else {
+  // models.push(updatedModel);
+  // renderModelInList(updatedModel);
+  // }
+}
 
 function deleteActiveModel(e) {
   const activeModelId = activeModelStore.getModelId();

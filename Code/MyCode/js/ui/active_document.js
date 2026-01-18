@@ -59,6 +59,12 @@ activeDocumentStore.subscribe((state, { key, oldValue, newValue }) => {
       }
       break;
     case "activeDocumentId":
+      if (newValue) {
+        const activeModelDocumentId = activeModelStore.getDocumentId();
+        if (activeModelDocumentId != newValue) {
+          activeModelStore.setModel(null);
+        }
+      }
       break;
   }
 });

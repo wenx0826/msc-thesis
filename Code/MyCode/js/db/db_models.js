@@ -63,7 +63,7 @@ const getModelById = (db, id) => {
   });
 };
 
-const updateModel = (db, id, updatedFields) => {
+const updateModelById = (db, id, updatedFields) => {
   return new Promise((resolve, reject) => {
     try {
       const tx = db.transaction("models", "readwrite");
@@ -86,6 +86,7 @@ const updateModel = (db, id, updatedFields) => {
     }
   });
 };
+
 const deleteModelById = (db, id) => {
   return new Promise((resolve, reject) => {
     try {
@@ -99,6 +100,7 @@ const deleteModelById = (db, id) => {
     }
   });
 };
+
 // const updateModel = (db, record) => {
 //   return new Promise((resolve, reject) => {
 //     try {

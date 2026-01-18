@@ -1,16 +1,16 @@
 const renderModelSelect = (modelValue) => {
-  const activeModelId = Store.getActiveModelId();
+  const activeModelId = activeModelStore.getModelId();
 
   const $modelSelect = $(
     `#dat_details select[data-relaxngui-path=" > call > parameters > model"]`,
   );
   $("<option>").val("").text("--- Please select --- ").appendTo($modelSelect);
 
-  const documentList = Store.getDocumentList();
+  const documentList = documentsStore.getDocumentList();
   //
   for (const { id: docId, name: docName } of documentList) {
     $optGroup = $("<optgroup>").attr("label", docName).appendTo($modelSelect);
-    const docModels = Store.getDocumentModels(docId);
+    const docModels = tracesStore.getDocumentModels(docId);
     for (const { id: modelId, name: modelName } of docModels) {
       const $option = $("<option>")
         .val(modelId)
@@ -24,7 +24,7 @@ const renderModelSelect = (modelValue) => {
 
 // Example for CustomEvent with payload
 $(document).on("wf:call-clicked", function (e) {
-  console.log(`${fileName}: Event Listener 'wf:call-clicked' listened`);
+  console.log(`Event Listener 'wf:call-clicked' listened`);
   const nn = e.detail.nn;
   const tagName = nn.prop("tagName");
   const endpoint = nn.attr("endpoint");
