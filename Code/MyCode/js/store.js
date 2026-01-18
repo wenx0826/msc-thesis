@@ -1,30 +1,37 @@
+function createDomainStore(initialState, options = {}) {
+  const subs = new Set();
+
+  return {
+    state: { ...initialState },
+
+    subscribe(fn) {
+      subs.add(fn);
+      // return unsubscribe
+      return () => subs.delete(fn);
+    },
+
+    notify(patch) {
+      // patch: { type, prev, next, ... }
+      subs.forEach((fn) => fn(this.state, patch));
+
+      // Optional DOM event bridge (single place)
+      // if (options.domEventName) {
+      //   document.dispatchEvent(
+      //     new CustomEvent(options.domEventName, { detail: patch }),
+      //   );
+      // }
+    },
+  };
+}
+
 window.Store = {
   state: {
-    traces: [],
-    documentList: [],
-    activeDocumentId: null,
-    models: [],
-    activeModel: null,
     temporarySelections: [],
   },
   // Methods to manipulate the store
 
   // traces
-  getTraces() {
-    return this.state.traces;
-  },
-  addTrace(trace) {
-    this.state.traces.push(trace);
-  },
-  addTraces(newTraces) {
-    this.state.traces = [...this.state.traces, ...newTraces];
-  },
-  setTraces(traces) {
-    this.state.traces = traces;
-  },
-  getDocumentTraces(docId) {
-    return this.state.traces.filter((trace) => trace.document_id == docId);
-  },
+
   getDocumentModels(docId) {
     const docTraces = this.getDocumentTraces(docId);
     const modelIds = docTraces.map((trace) => trace.model_id);
@@ -43,28 +50,7 @@ window.Store = {
   getDocumentList() {
     return this.state.documentList;
   },
-  deleteDocument(docId) {
-    this.state.documentList = this.state.documentList.filter(
-      (doc) => doc.id != docId,
-    );
-    const models = this.getDocumentModels(docId);
-    models.forEach((model) => {
-      this.deleteModel(model.id);
-      const modelIndex = this.state.models.findIndex((m) => m.id == model.id);
-      if (modelIndex !== -1) {
-        this.state.models.splice(modelIndex, 1);
-      }
-    });
-    this.deleteDocumentTraces(docId);
-    if (this.getActiveDocumentId() == docId) {
-      this.setActiveDocumentId(null);
-    }
-    document.dispatchEvent(
-      new CustomEvent("store:document-deleted", {
-        detail: { documentId: docId },
-      }),
-    );
-  },
+
   // document
 
   getDocumentNameById(docId) {
@@ -81,6 +67,7 @@ window.Store = {
       );
     }
   },
+
   getActiveDocumentId() {
     return this.state.activeDocumentId;
   },
@@ -174,3 +161,155 @@ window.Store = {
     return this.state.temporarySelections.length > 0;
   },
 };
+Store.documents = Object.assign(
+  createDomainStore({
+    documentList: [],
+  }),
+  {
+    setDocumentList() {
+      API.Document.getDocumentList().then((fetchedDocList) => {
+        this.state.documentList = fetchedDocList;
+        this.notify({ key: "documentList", newValue: fetchedDocList });
+      });
+    },
+    getDocumentList() {
+      return this.state.documentList;
+    },
+    async createDocument(doc) {
+      return API.Document.createDocument(doc).then((newDoc) => {
+        const newDocList = [...this.state.documentList, newDoc];
+        this.setDocumentList();
+        return newDoc;
+      });
+    },
+    async deleteDocumentById(docId) {
+      await API.Document.deleteDocumentById(docId);
+      this.state.documentList = this.state.documentList.filter(
+        (doc) => doc.id != docId,
+      );
+      const activeDocumentId = Store.getActiveDocumentId();
+      if (activeDocumentId == docId) {
+        Store.activeDocument.setActiveDocumentId(null);
+      }
+      // const models = this.getDocumentModels(docId);
+      // models.forEach((model) => {
+      //   this.deleteModel(model.id);
+      //   const modelIndex = this.state.models.findIndex((m) => m.id == model.id);
+      //   if (modelIndex !== -1) {
+      //     this.state.models.splice(modelIndex, 1);
+      //   }
+      // });
+      // this.deleteDocumentTraces(docId);
+      // if (this.getActiveDocumentId() == docId) {
+      //   this.setActiveDocumentId(null);
+      // }
+    },
+  },
+);
+Store.traces = Object.assign(
+  createDomainStore({
+    traces: [],
+  }),
+  {
+    getTraces() {
+      return this.state.traces;
+    },
+    addTrace(trace) {
+      this.state.traces.push(trace);
+    },
+    addTraces(newTraces) {
+      this.state.traces = [...this.state.traces, ...newTraces];
+    },
+    setTraces(traces) {
+      this.state.traces = traces;
+    },
+    getDocumentTraces(docId) {
+      return this.state.traces.filter((trace) => trace.document_id == docId);
+    },
+  },
+);
+Store.activeDocument = Object.assign(
+  createDomainStore({
+    status: null,
+    activeDocumentId: null,
+    content: null,
+    traces: [],
+  }),
+  {
+    setStatus(status) {
+      this.state.status = status;
+      this.notify({ key: "status", newValue: status });
+    },
+    setContent(newValue) {
+      this.state.content = newValue;
+      this.notify({ key: "content", newValue });
+    },
+    getActiveDocumentId() {
+      return this.state.activeDocumentId;
+    },
+    setActiveDocumentId(newValue) {
+      const oldValue = this.getActiveDocumentId();
+      if (newValue != oldValue) {
+        this.state.activeDocumentId = newValue;
+        newValue ? this.setContentById(newValue) : this.setContent(null);
+        this.notify({ key: "activeDocumentId", newValue });
+      }
+    },
+    setContentById(docId) {
+      this.setStatus("loading");
+      API.Document.getDocumentContentById(docId).then(
+        (content) => {
+          this.setContent(content);
+          this.setStatus(null);
+        },
+        (error) => {
+          console.log("Error loading document content:???", error);
+          this.setContent(null);
+          this.setStatus("error");
+        },
+      );
+    },
+
+    getActiveDocumentTraces() {
+      const activeDocumentId = this.getActiveDocumentId();
+      return activeDocumentId
+        ? this.state.traces.filter(
+            (trace) => trace.document_id == activeDocumentId,
+          )
+        : [];
+    },
+  },
+);
+Store.activeModel = Object.assign(
+  createDomainStore({
+    status: null, // 'loading', 'ready', 'error','generating'
+    error: null,
+    svg: null,
+    data: null,
+  }),
+  {
+    async setActiveModelById(modelId) {
+      // const model = this.state.models.find((m) => m.id == modelId) || null;
+      // this.setActiveModel(model);
+      var currentActiveModelId = this.getActiveModelId();
+      if (modelId != currentActiveModelId) {
+        if (modelId) {
+          const model = await API.Model.getModelById(modelId);
+          this.setActiveModel(model);
+        } else {
+          this.setActiveModel(null);
+        }
+      }
+    },
+    setActiveModel(model) {
+      this.state.activeModel = model;
+      document.dispatchEvent(new CustomEvent("store:active-model-changed"));
+    },
+    getActiveModel() {
+      return this.state.activeModel;
+    },
+    getActiveModelId() {
+      return this.state.activeModel ? this.state.activeModel.id : null;
+    },
+  },
+);

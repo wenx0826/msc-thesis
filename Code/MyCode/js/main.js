@@ -2,23 +2,26 @@
 
 const loadData = async () => {
   const documentList = await API.Document.getDocumentList();
-  Store.setDocumentList(documentList);
+  Store.documents.setDocumentList(documentList);
   documentList.forEach((doc) => {
     renderDocumentItem(doc);
   });
+  console.log("Loaded documents:", documentList);
   for (const { id: docId } of documentList) {
     const newTraces = await API.Trace.getTracesByDocumentId(docId);
     console.log("Loaded traces for document", docId, newTraces);
-    Store.addTraces(newTraces);
+    Store.traces.addTraces(newTraces);
     for (const { model_id: modelId } of newTraces) {
       API.Model.getModelById(modelId).then((model) => {
-        Store.addModel(model);
+        Store.models.addModel(model);
         renderModelInList(model);
       });
     }
   }
   if (documentList.length) {
-    Store.setActiveDocumentId(documentList[documentList.length - 1]?.id);
+    Store.activeDocument.setActiveDocumentId(
+      documentList[documentList.length - 1]?.id,
+    );
   }
 };
 
@@ -26,6 +29,7 @@ $(document).ready(async () => {
   await API.init();
   await loadData();
   console.log("Initialization complete.", Store.state);
+  $("#columnResizehandle1").on("dragcolumnmove", rerenderOverlayLayers);
   // generateModel();
   // var timer;
   // $(document).on('input', '#dat_details input, #dat_details textarea, #dat_details [contenteditable]', function (e) {
@@ -91,7 +95,7 @@ document.addEventListener("store:model-deleted", (e) => {
   removeModelFromList(modelId);
 });
 
-document.addEventListener("store:active-document-id-changed", async () => {
+/*document.addEventListener("store:active-document-id-changed", async () => {
   console.log("EVENT LISTENER: store:active-document-id-changed");
 
   const activeDocumentId = Store.getActiveDocumentId();
@@ -108,7 +112,7 @@ document.addEventListener("store:active-document-id-changed", async () => {
   if (activeModelDocumentId && activeModelDocumentId != activeDocumentId) {
     Store.setActiveModel(null);
   }
-});
+});*/
 
 document.addEventListener("store:active-model-changed", () => {
   console.log("EVENT LISTENER: store:active-model-changed");

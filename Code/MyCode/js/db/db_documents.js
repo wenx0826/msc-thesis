@@ -26,7 +26,13 @@ const createDocument = (db, record) => {
       const store = tx.objectStore("documents");
       record = { ...record, storedAt: new Date().toISOString() };
       const addReq = store.add(record);
-      addReq.onsuccess = (evt) => resolve(evt.target.result);
+      addReq.onsuccess = (evt) => {
+        const id = evt.target.result;
+        // Fetch the newly created record
+        const getReq = store.get(id);
+        getReq.onsuccess = (e2) => resolve(e2.target.result);
+        getReq.onerror = (err) => reject(err);
+      };
       addReq.onerror = (err) => reject(err);
     } catch (err) {
       reject(err);

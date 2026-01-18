@@ -1,10 +1,13 @@
 let $documentList;
+const activeDocumentStore = Store.activeDocument;
+const documentsStore = Store.documents;
 
-// const onDocumentSelect = async (event) => {
-//   event.stopPropagation();
-//   const docId = $(event.currentTarget).data("docid");
-//   setActiveDocument(docId);
-// };
+const onDocumentItemSelect = (event) => {
+  event.stopPropagation();
+  const docId = $(event.currentTarget).data("docid");
+  activeDocumentStore.setActiveDocumentId(docId);
+};
+
 const removeDocumentItem = (documentId) => {
   $documentList
     .children()
@@ -15,17 +18,20 @@ const removeDocumentItem = (documentId) => {
 const renderDocumentItem = async ({ id: documentId, name: documentName }) => {
   const $li = $("<li>");
   $li.attr("data-docid", String(documentId));
-  $li.on("click", (event) => {
-    event.stopPropagation();
-    Store.setActiveDocumentId(documentId);
-  });
+  $li.on("click", onDocumentItemSelect);
 
   $span = $("<span>").text(documentName);
   const deleteDocButton = $("<button>")
     .text("Delete")
     .on("click", async (event) => {
       event.stopPropagation();
-      Store.deleteDocument(documentId);
+      documentsStore.deleteDocumentById(documentId).then(() => {
+        removeDocumentItem(documentId);
+      });
+      // const activeDocumentId = Store.getActiveDocumentId();
+      // const $li = $documentList
+      //   .children()
+      //   .filter((index, element) => $(element).data("docid") === documentId);
 
       //   await deleteDocument(documentId);
       //   $li.remove();
@@ -38,7 +44,6 @@ const renderDocumentItem = async ({ id: documentId, name: documentName }) => {
   $li.append($span);
   $li.append(deleteDocButton);
   $li.attr("data-docid", String(documentId));
-  //   $li.on("click", onDocumentSelect);
   $documentList.append($li);
 };
 
@@ -89,9 +94,16 @@ $(document).ready(function () {
       if (!file) continue;
       const content = await getFileContentInHTML(file);
       const name = file.name;
-      const documentId = await API.Document.createDocument({ name, content });
-      renderDocumentItem({ id: documentId, name });
-      Store.setActiveDocumentId(documentId);
+      documentsStore.createDocument({ name, content }).then(({ id, name }) => {
+        renderDocumentItem({ id, name });
+        activeDocumentStore.setActiveDocumentId(id);
+      });
     }
   });
+});
+
+Store.activeDocument.subscribe((state, { key, oldValue, newValue }) => {
+  if (key === "activeDocumentId") {
+    highlightActiveDocumentItem(newValue);
+  }
 });

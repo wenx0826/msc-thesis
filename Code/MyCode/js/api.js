@@ -51,11 +51,14 @@ API.Document = {
   async getDocumentList() {
     return await getDocumentList(API.db);
   },
-  async getDocumentById(id) {
-    return await getDocumentById(API.db, id);
+  async getDocumentContentById(id) {
+    return await getDocumentContentById(API.db, id);
   },
   async createDocument(doc) {
     return await createDocument(API.db, doc);
+  },
+  async deleteDocumentById(id) {
+    return await deleteDocumentById(API.db, id);
   },
 };
 
