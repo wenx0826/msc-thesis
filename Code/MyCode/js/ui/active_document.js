@@ -6,6 +6,9 @@ let $temporarySelectionsLayer;
 let $deleteSelectionButton;
 
 let temporarySelections = [];
+const hasTemporarySelections = () => {
+  return temporarySelections.length > 0;
+};
 
 $(document).ready(function () {
   $tracesLayer = $("#tracesLayer");
@@ -49,9 +52,10 @@ activeDocumentStore.subscribe((state, { key, oldValue, newValue }) => {
           "text/html",
         ).body.innerHTML;
         $documentContent.html(htmlContent || "");
+        clearTemporarySelections();
         rerenderTracesLayer();
       } else {
-        $documentContent.empty();
+        clearDocumentViewer();
       }
       break;
     case "activeDocumentId":
@@ -65,19 +69,12 @@ activeModelStore.subscribe((state, { key, oldValue, newValue }) => {
   }
 });
 
-// const clearDocumentViewer = () => {
-//   $("#documentContent").empty();
-// };
 const getSelectedText = () => {
   return temporarySelections.map((range) => range.toString()).join(" ");
 };
 const clearTraceLayer = () => {
   $tracesLayer.empty();
 };
-const hasTemporarySelections = () => {
-  return temporarySelections.length > 0;
-};
-
 const clearTemporarySelections = () => {
   if (hasTemporarySelections()) {
     temporarySelections = [];
@@ -87,6 +84,10 @@ const clearTemporarySelections = () => {
 const clearOverlayLayers = () => {
   clearTraceLayer();
   clearTemporarySelections();
+};
+const clearDocumentViewer = () => {
+  $("#documentContent").empty();
+  clearOverlayLayers();
 };
 
 const onRangeSelect = (event) => {
@@ -126,7 +127,7 @@ const renderSelection = (range, modelId) => {
     .attr("id", rangeId)
     .attr("data-modelid", modelId || "")
     .addClass(
-      `selection-wrapper ${modelId == Store.getActiveModelId() ? "active" : ""}`,
+      `selection-wrapper ${modelId == activeModelStore.getModelId() ? "active" : ""}`,
     )
     .css({
       top: `${range.getBoundingClientRect().top + window.scrollY}px`,
@@ -186,6 +187,11 @@ const highlightActiveModelSelections = (activeModelId) => {
   });
 };
 
+function removeSelectionsByModelId(modelId) {
+  console.log("Removing selections for model ID:", modelId);
+  $tracesLayer.find(`.selection-wrapper[data-modelid="${modelId}"]`).remove();
+}
+
 const rerenderTemporarySelectionsLayer = () => {
   if (Store.hasTemporarySelections()) {
     $temporarySelectionsLayer.empty();
@@ -209,7 +215,6 @@ const rerenderOverlayLayers = () => {
   rerenderTracesLayer();
   rerenderTemporarySelectionsLayer();
 };
-// #endregion
 
 const handleTextSelection = () => {
   const selection = window.getSelection();
@@ -219,7 +224,7 @@ const handleTextSelection = () => {
   if (range.collapsed) return;
   // if (!content.contains(range.commonAncestorContainer)) return;
   $generateButton.prop("disabled", false);
-  const activeModelId = Store.getActiveModelId();
+  const activeModelId = activeModelStore.getModelId();
   if (activeModelId) {
     // $generateButton.hide();
     $generateButton.text("Generate New Model");
@@ -234,4 +239,5 @@ const handleTextSelection = () => {
   renderSelection(range);
   selection.removeAllRanges();
 };
+
 $(window).on("resize", rerenderOverlayLayers);

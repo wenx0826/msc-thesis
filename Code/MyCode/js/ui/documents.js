@@ -1,4 +1,5 @@
 let $documentList;
+
 $(document).ready(function () {
   $documentList = $("#documentList");
   $("#documentsInput").on("change", async (event) => {
@@ -19,6 +20,7 @@ activeDocumentStore.subscribe((state, { key, oldValue, newValue }) => {
     highlightActiveDocumentItem(newValue);
   }
 });
+
 documentsStore.subscribe((state, { key, operation, id }) => {
   // if (key === "documentList") {
   //   // handle document list changes if needed

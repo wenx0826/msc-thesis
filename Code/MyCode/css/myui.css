@@ -40,13 +40,16 @@ ui-resizehandle[data-direction="vertical"]::before {
 
   transform: translate(-50%, -50%);
 
-  box-shadow: 0 -6px 0 var(--x-ui-border-color),
+  box-shadow:
+    0 -6px 0 var(--x-ui-border-color),
     0 6px 0 var(--x-ui-border-color);
 }
 
 ui-resizehandle[data-direction="vertical"]:hover::before {
   background: #666;
-  box-shadow: 0 -6px 0 #666, 0 6px 0 #666;
+  box-shadow:
+    0 -6px 0 #666,
+    0 6px 0 #666;
 }
 
 /* ui-resizehandle[data-direction="horizontal"] { */
@@ -213,7 +216,7 @@ button:disabled {
 
 .selection-wrapper {
   position: fixed;
-  /* pointer-events: none; */
+  pointer-events: none;
   /* background-color: yellow; */
 }
 

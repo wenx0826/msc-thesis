@@ -27,6 +27,7 @@ $(document).ready(function () {
         );
         tracesStore.createTrace(sections).then((trace) => {
           clearTemporarySelections(); //to improve
+          renderTrace(trace);
         });
       });
       //
@@ -131,21 +132,14 @@ const saveModel = async (e) => {
     renderModelInList(updatedModel);
   }
 };
-const deleteActiveModel = async (e) => {
-  const activeModelId = activeModelStore.getModelId();
-  activeModelStore.setModel(null);
-  modelsStore.deleteModelById(activeModelId).then(() => {
-    removeModelFromList(activeModelId);
-    removeSelectionsByModelId(activeModelId);
-  });
-  // const activeModel = Store.getActiveModel();
-  // if (!activeModel || !activeModel.id) return;
 
-  // await deleteModelById(db, activeModel.id);
-  // Store.removeModelById(activeModel.id);
-  // clearModelViewer();
-  // Store.setActiveModel(null);
-};
+function deleteActiveModel(e) {
+  const activeModelId = activeModelStore.getModelId();
+  // activeModelStore.deleteModel();
+  modelsStore.deleteModelById(activeModelId);
+  removeSelectionsByModelId(activeModelId);
+}
+
 const clearModelViewer = () => {
   $("#activeModelName").text("");
   // console.log('Clearing active model canvas');

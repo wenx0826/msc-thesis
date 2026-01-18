@@ -180,7 +180,6 @@ API.Model = {
     };
     return generatedModel;
     // Store.setActiveModel(activeModel);
-
     // $generateButton.prop("disabled", false);
     // $("#generatedModelActionBar").css("visibility", "visible");
   },
@@ -192,5 +191,8 @@ API.Model = {
   },
   async updateModel(id, updatedFields) {
     return await updateModel(API.db, id, updatedFields);
+  },
+  async deleteModelById(id) {
+    return await deleteModelById(API.db, id);
   },
 };

@@ -81,8 +81,9 @@
       <span style="font-size: 1.2em; font-weight: bold;">Demo Project</span>
     </div>
     <div class="right button-group">
-      <span id="loadConfigButton">Theme: Preset</span>
-      <div class="multi">
+      <span>Theme: Preset</span>
+      <span>LLM: gemini 2 Flash</span>
+      <!-- <div class="multi">
         <label id="llmlabel" for="llms">LLM:</label>
         <select name="llms" id="llms">
           <option value="gemini-2.0-flash" selected>gemini 2 Flash</option>
@@ -92,7 +93,7 @@
           <option value="gpt-4o">gpt 4o</option>
           <option value="gpt-4o-mini">gpt 4o mini</option>
         </select>
-      </div>
+      </div> -->
     </div>
   </ui-bar>
   <ui-rest style="z-index: 2;" id="main">
@@ -180,12 +181,11 @@
       <ui-resizehandle id="columnResizehandle1" data-direction="vertical"></ui-resizehandle>
       <!-- Middle: Current Model Panel -->
       <ui-rest class="panel" style="flex:0.4;">
-
         <ui-rest style="flex: 0.75 1 0;min-height: 100px">
           <ui-bar>
             <div id="activeModelName"></div>
             <button name="savemodelchanges" onclick="saveModel()">Save Model</button>
-            <button name="deletemodel" onclick="activeModelStore.deleteModel()">Delete Model</button>
+            <button name="deletemodel" onclick="deleteActiveModel()">Delete Model</button>
           </ui-bar>
           <ui-divider></ui-divider>
           <!-- <div>

@@ -7,7 +7,17 @@ activeModelStore.subscribe((state, { key, oldValue, newValue }) => {
     }
   }
 });
-
+modelsStore.subscribe((state, { key, operation, id }) => {
+  switch (operation) {
+    // case "add":
+    //   renderModelInList(state.models.find((model) => model.id === id));
+    //   break;
+    case "delete":
+      console.log("Model deleted with ID:", id);
+      removeModelFromList(id);
+      break;
+  }
+});
 const renderModelInList = ({
   id: modelId,
   name: modelName,

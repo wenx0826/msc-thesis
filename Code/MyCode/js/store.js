@@ -1,3 +1,5 @@
+window.Store = {};
+
 function createDomainStore(initialState, options = {}) {
   const subs = new Set();
 
@@ -24,140 +26,6 @@ function createDomainStore(initialState, options = {}) {
   };
 }
 
-window.Store = {
-  state: {},
-  // Methods to manipulate the store
-
-  // traces
-
-  getDocumentModels(docId) {
-    const docTraces = this.getDocumentTraces(docId);
-    const modelIds = docTraces.map((trace) => trace.model_id);
-    return this.state.models.filter((model) => modelIds.includes(model.id));
-  },
-  deleteDocumentTraces(docId) {
-    this.state.traces = this.state.traces.filter(
-      (trace) => trace.document_id != docId,
-    );
-  },
-  // traces
-  // documentList
-  setDocumentList(docList) {
-    this.state.documentList = docList;
-  },
-  getDocumentList() {
-    return this.state.documentList;
-  },
-
-  // document
-  getDocumentNameById(docId) {
-    const doc = this.state.documentList.find((d) => d.id == docId);
-    return doc ? doc.name : "Unknown Document";
-  },
-  // activeDocument
-  setActiveDocumentId(docId) {
-    var currentActiveDocId = this.getActiveDocumentId();
-    if (docId != currentActiveDocId) {
-      this.state.activeDocumentId = docId;
-      document.dispatchEvent(
-        new CustomEvent("store:active-document-id-changed"),
-      );
-    }
-  },
-
-  getActiveDocumentId() {
-    return this.state.activeDocumentId;
-  },
-  getActiveDocumentTraces() {
-    const activeDocumentId = this.getActiveDocumentId();
-    return activeDocumentId
-      ? this.state.traces.filter(
-          (trace) => trace.document_id == activeDocumentId,
-        )
-      : [];
-  },
-  // models
-  addModel(model) {
-    this.state.models.push(model);
-  },
-  getModels() {
-    return this.state.models;
-  },
-  getModelNameById(modelId) {
-    const model = this.state.models.find((m) => m.id == modelId);
-    return model ? model.name : `Model ${modelId}`;
-  },
-  deleteModel(modelId) {
-    this.state.models = this.state.models.filter(
-      (model) => model.id != modelId,
-    );
-    document.dispatchEvent(
-      new CustomEvent("store:model-deleted", {
-        detail: { modelId: modelId },
-      }),
-    );
-    if (this.getActiveModelId() == modelId) {
-      this.setActiveModel(null);
-    }
-  },
-  // activeModel
-  async setActiveModelById(modelId) {
-    // const model = this.state.models.find((m) => m.id == modelId) || null;
-    // this.setActiveModel(model);
-    var currentActiveModelId = this.getActiveModelId();
-    if (modelId != currentActiveModelId) {
-      if (modelId) {
-        const model = await API.Model.getModelById(modelId);
-        this.setActiveModel(model);
-      } else {
-        this.setActiveModel(null);
-      }
-    }
-  },
-  setActiveModel(model) {
-    this.state.activeModel = model;
-    document.dispatchEvent(new CustomEvent("store:active-model-changed"));
-  },
-  getActiveModel() {
-    return this.state.activeModel;
-  },
-  getActiveModelId() {
-    return this.state.activeModel ? this.state.activeModel.id : null;
-  },
-
-  getActiveModelTrace() {
-    return (
-      this.state.traces.find(
-        (trace) =>
-          trace.model_id ==
-          (this.state.activeModel && this.state.activeModel.id),
-      ) || null
-    );
-  },
-  getActiveModelDocumentId() {
-    const trace = this.getActiveModelTrace();
-    return trace ? trace.document_id : null;
-  },
-
-  deleteDocumentTraces(docId) {
-    this.state.traces = this.state.traces.filter(
-      (trace) => trace.document_id != docId,
-    );
-  },
-  // temporarySelections
-  addTemporarySelection(selection) {
-    this.state.temporarySelections.push(selection);
-  },
-  setTemporarySelections(selections) {
-    this.state.temporarySelections = selections;
-  },
-  getTemporarySelections() {
-    return this.state.temporarySelections;
-  },
-  hasTemporarySelections() {
-    return this.state.temporarySelections.length > 0;
-  },
-};
 Store.project = Object.assign(
   createDomainStore({
     id: null,
@@ -203,45 +71,19 @@ Store.documents = Object.assign(
       });
     },
     async deleteDocumentById(docId) {
-      // this.notify({ key: "documentList", operation: "delete", id: docId });
-      const activeDocumentId = Store.activeDocument.getActiveDocumentId();
+      this.notify({ key: "documentList", operation: "delete", id: docId });
+      this.state.documentList = this.state.documentList.filter(
+        (doc) => doc.id != docId,
+      );
+      API.Document.deleteDocumentById(docId);
+      const activeDocumentId = activeDocumentStore.getActiveDocumentId();
       if (activeDocumentId == docId) {
-        Store.activeDocument.setActiveDocumentId(null);
+        activeDocumentStore.setActiveDocumentId(null);
       }
-      const docModelIds = Store.traces.getDocumentModelIds(docId);
-      console.log("Deleting document models:", docModelIds);
-      //
-      // const docTraces = Store.traces
-      //   .getDocumentTraces(docId)
-      //   .map((trace) => trace.id);
-      // docTraces.forEach((traceId) => {
-      //   Store.traces.state.traces = Store.traces.state.traces.filter(
-      //     (trace) => trace.id != traceId,
-      //   );
-
-      // });
-
-      // await API.Document.deleteDocumentById(docId);
-      // this.state.documentList = this.state.documentList.filter(
-      //   (doc) => doc.id != docId,
-      // );
-
-      // const activeDocumentId = Store.getActiveDocumentId();
-      // if (activeDocumentId == docId) {
-      //   Store.activeDocument.setActiveDocumentId(null);
-      // }
-      // const models = this.getDocumentModels(docId);
-      // models.forEach((model) => {
-      //   this.deleteModel(model.id);
-      //   const modelIndex = this.state.models.findIndex((m) => m.id == model.id);
-      //   if (modelIndex !== -1) {
-      //     this.state.models.splice(modelIndex, 1);
-      //   }
-      // });
-      // this.deleteDocumentTraces(docId);
-      // if (this.getActiveDocumentId() == docId) {
-      //   this.setActiveDocumentId(null);
-      // }
+      const docModelIds = tracesStore.getDocumentModelIds(docId);
+      docModelIds.forEach((modelId) => {
+        modelsStore.deleteModelById(modelId);
+      });
     },
   },
 );
@@ -333,16 +175,16 @@ Store.traces = Object.assign(
       await API.Trace.createTrace(trace);
       this.addTrace(trace);
       // console.log("Created trace:", trace);
-      // return trace;
+      return trace;
     },
     async deleteModelTrace(modelId) {
-      const trace = this.state.traces.find(
+      const traceId = this.state.traces.find(
         (trace) => trace.model_id == modelId,
-      );
-      if (trace) {
-        await API.Trace.deleteTraceById(trace.id);
+      )?.id;
+      if (traceId) {
+        await API.Trace.deleteTraceById(traceId);
         this.state.traces = this.state.traces.filter(
-          (trace) => trace.model_id != modelId,
+          (trace) => trace.id != traceId,
         );
       }
     },
@@ -357,7 +199,6 @@ Store.models = Object.assign(
       this.state.models.push(model);
     },
     getModels(text) {
-      r;
       return this.state.models;
     },
     getModelNameById(modelId) {
@@ -378,18 +219,15 @@ Store.models = Object.assign(
       // this.notify({ key: "models", newValue: this.state.models });
     },
     async deleteModelById(modelId) {
+      this.notify({ key: "models", operation: "delete", id: modelId });
       this.state.models = this.state.models.filter(
         (model) => model.id != modelId,
       );
-      // await API.Model.deleteModelById(modelId);
-      // tracesStore.deleteModelTrace(modelId);
-
-      // if (modelTrace) {
-      //   await API.Trace.deleteTraceById(modelTrace.id);
-      // getModelTrace
-      // if (trace) {
-
-      this.notify({ key: "models", operation: "delete", id: modelId });
+      if (activeModelStore.getModelId() == modelId) {
+        activeModelStore.setModel(null);
+      }
+      tracesStore.deleteModelTrace(modelId);
+      API.Model.deleteModelById(modelId);
     },
   },
 );
@@ -460,10 +298,9 @@ Store.activeModel = Object.assign(
       const rpstXml = window.Constants.EMPTY_MODEL;
       this.generateModel(selectedText, rpstXml);
     },
-    deleteModel() {
-      console.log("Deleting active model");
-      this.setModel(null);
-      modelsStore.deleteModelById(this.getModelId());
-    },
+    // deleteModel() {
+    //   modelsStore.deleteModelById(this.getModelId());
+    //   this.setModel(null);
+    // },
   },
 );
