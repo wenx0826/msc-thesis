@@ -203,14 +203,33 @@ Store.documents = Object.assign(
       });
     },
     async deleteDocumentById(docId) {
-      await API.Document.deleteDocumentById(docId);
-      this.state.documentList = this.state.documentList.filter(
-        (doc) => doc.id != docId,
-      );
-      const activeDocumentId = Store.getActiveDocumentId();
+      // this.notify({ key: "documentList", operation: "delete", id: docId });
+      const activeDocumentId = Store.activeDocument.getActiveDocumentId();
       if (activeDocumentId == docId) {
         Store.activeDocument.setActiveDocumentId(null);
       }
+      const docModelIds = Store.traces.getDocumentModelIds(docId);
+      console.log("Deleting document models:", docModelIds);
+      //
+      // const docTraces = Store.traces
+      //   .getDocumentTraces(docId)
+      //   .map((trace) => trace.id);
+      // docTraces.forEach((traceId) => {
+      //   Store.traces.state.traces = Store.traces.state.traces.filter(
+      //     (trace) => trace.id != traceId,
+      //   );
+
+      // });
+
+      // await API.Document.deleteDocumentById(docId);
+      // this.state.documentList = this.state.documentList.filter(
+      //   (doc) => doc.id != docId,
+      // );
+
+      // const activeDocumentId = Store.getActiveDocumentId();
+      // if (activeDocumentId == docId) {
+      //   Store.activeDocument.setActiveDocumentId(null);
+      // }
       // const models = this.getDocumentModels(docId);
       // models.forEach((model) => {
       //   this.deleteModel(model.id);
@@ -223,43 +242,6 @@ Store.documents = Object.assign(
       // if (this.getActiveDocumentId() == docId) {
       //   this.setActiveDocumentId(null);
       // }
-    },
-  },
-);
-Store.traces = Object.assign(
-  createDomainStore({
-    traces: [],
-  }),
-  {
-    getTraces() {
-      return this.state.traces;
-    },
-    getDocumentTraces(docId) {
-      return this.state.traces.filter((trace) => trace.document_id == docId);
-    },
-    addTrace(trace) {
-      this.state.traces.push(trace);
-    },
-    addTraces(newTraces) {
-      this.state.traces = [...this.state.traces, ...newTraces];
-    },
-    setTraces(traces) {
-      this.state.traces = traces;
-    },
-
-    async createTrace(sections) {
-      const documentId = Store.activeDocument.getActiveDocumentId();
-      const modelId = Store.activeModel.getModelId();
-      const trace = {
-        id: Date.now(), // Simple unique ID generation
-        document_id: documentId,
-        model_id: modelId,
-        selections: sections,
-      };
-      await API.Trace.createTrace(trace);
-      this.addTrace(trace);
-      // console.log("Created trace:", trace);
-      // return trace;
     },
   },
 );
@@ -310,11 +292,112 @@ Store.activeDocument = Object.assign(
     },
   },
 );
+Store.traces = Object.assign(
+  createDomainStore({
+    traces: [],
+  }),
+  {
+    getTraces() {
+      return this.state.traces;
+    },
+    getDocumentTraces(docId) {
+      return this.state.traces.filter((trace) => trace.document_id == docId);
+    },
+    getDocumentModelIds(docId) {
+      return this.getDocumentTraces(docId).map((trace) => trace.model_id);
+    },
+    getModelTrace(modelId) {
+      return (
+        this.state.traces.find((trace) => trace.model_id == modelId) || null
+      );
+    },
+    addTrace(trace) {
+      this.state.traces.push(trace);
+    },
+    addTraces(newTraces) {
+      this.state.traces = [...this.state.traces, ...newTraces];
+    },
+    setTraces(traces) {
+      this.state.traces = traces;
+    },
+
+    async createTrace(sections) {
+      const documentId = Store.activeDocument.getActiveDocumentId();
+      const modelId = Store.activeModel.getModelId();
+      const trace = {
+        id: Date.now(), // Simple unique ID generation
+        document_id: documentId,
+        model_id: modelId,
+        selections: sections,
+      };
+      await API.Trace.createTrace(trace);
+      this.addTrace(trace);
+      // console.log("Created trace:", trace);
+      // return trace;
+    },
+    async deleteModelTrace(modelId) {
+      const trace = this.state.traces.find(
+        (trace) => trace.model_id == modelId,
+      );
+      if (trace) {
+        await API.Trace.deleteTraceById(trace.id);
+        this.state.traces = this.state.traces.filter(
+          (trace) => trace.model_id != modelId,
+        );
+      }
+    },
+  },
+);
+Store.models = Object.assign(
+  createDomainStore({
+    models: [],
+  }),
+  {
+    addModel(model) {
+      this.state.models.push(model);
+    },
+    getModels(text) {
+      r;
+      return this.state.models;
+    },
+    getModelNameById(modelId) {
+      const model = this.state.model;
+      return model && model.id == modelId ? model.name : `Model ${modelId}`;
+    },
+    async createModel(model) {
+      const modelId = await API.Model.createModel(model);
+      model = await API.Model.updateModel(modelId, {
+        name: `Model_${modelId}`,
+      });
+      this.addModel(model);
+      return model;
+    },
+    async updateModel(modelId, updatedFields) {
+      // const updatedModel = await API.Model.updateModel(modelId, updatedFields);
+      // const idx = this.state.models.findIndex((m) => m.id === updatedModel.id);
+      // this.notify({ key: "models", newValue: this.state.models });
+    },
+    async deleteModelById(modelId) {
+      this.state.models = this.state.models.filter(
+        (model) => model.id != modelId,
+      );
+      // await API.Model.deleteModelById(modelId);
+      // tracesStore.deleteModelTrace(modelId);
+
+      // if (modelTrace) {
+      //   await API.Trace.deleteTraceById(modelTrace.id);
+      // getModelTrace
+      // if (trace) {
+
+      this.notify({ key: "models", operation: "delete", id: modelId });
+    },
+  },
+);
+
 Store.activeModel = Object.assign(
   createDomainStore({
     status: null, // 'loading', 'ready', 'error','generating'
     error: null,
-    id: null,
     model: null,
   }),
   {
@@ -377,53 +460,10 @@ Store.activeModel = Object.assign(
       const rpstXml = window.Constants.EMPTY_MODEL;
       this.generateModel(selectedText, rpstXml);
     },
-  },
-);
-Store.models = Object.assign(
-  createDomainStore({
-    models: [],
-  }),
-  {
-    addModel(model) {
-      this.state.models.push(model);
-    },
-    getModels(text) {
-      r;
-      return this.state.models;
-    },
-    getModelNameById(modelId) {
-      const model = this.state.model;
-      return model && model.id == modelId ? model.name : `Model ${modelId}`;
-    },
-    async createModel(model) {
-      const modelId = await API.Model.createModel(model);
-      model = await API.Model.updateModel(modelId, {
-        name: `Model_${modelId}`,
-      });
-      this.addModel(model);
-      return model;
-    },
-    async updateModel(modelId, updatedFields) {
-      // const updatedModel = await API.Model.updateModel(modelId, updatedFields);
-      // const idx = this.state.models.findIndex((m) => m.id === updatedModel.id);
-      // this.notify({ key: "models", newValue: this.state.models });
-    },
-    getModelNameById(modelId) {
-      const model = this.state.models.find((m) => m.id == modelId);
-      return model ? model.name : `Model ${modelId}`;
-    },
-    deleteModel(modelId) {
-      this.state.models = this.state.models.filter(
-        (model) => model.id != modelId,
-      );
-      document.dispatchEvent(
-        new CustomEvent("store:model-deleted", {
-          detail: { modelId: modelId },
-        }),
-      );
-      if (this.getActiveModelId() == modelId) {
-        this.setActiveModel(null);
-      }
+    deleteModel() {
+      console.log("Deleting active model");
+      this.setModel(null);
+      modelsStore.deleteModelById(this.getModelId());
     },
   },
 );

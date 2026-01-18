@@ -48,3 +48,17 @@ const getTraceByModelId = (db, id) => {
     }
   });
 };
+
+const deleteTraceById = (db, id) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const tx = db.transaction("traces", "readwrite");
+      const store = tx.objectStore("traces");
+      const deleteReq = store.delete(id);
+      deleteReq.onsuccess = () => resolve();
+      deleteReq.onerror = (err) => reject(err);
+    } catch (err) {
+      reject(err);
+    }
+  });
+};

@@ -69,6 +69,9 @@ API.Trace = {
   async createTrace(trace) {
     return await createTrace(API.db, trace);
   },
+  async deleteTraceById(id) {
+    return await deleteTraceById(API.db, id);
+  },
 };
 
 API.Model = {

@@ -1,4 +1,37 @@
 let $documentList;
+$(document).ready(function () {
+  $documentList = $("#documentList");
+  $("#documentsInput").on("change", async (event) => {
+    for (const file of event.target.files) {
+      if (!file) continue;
+      const content = await getFileContentInHTML(file);
+      const name = file.name;
+      documentsStore.createDocument({ name, content }).then((id) => {
+        renderDocumentItem({ id, name });
+        activeDocumentStore.setActiveDocumentId(id);
+      });
+    }
+  });
+});
+
+activeDocumentStore.subscribe((state, { key, oldValue, newValue }) => {
+  if (key === "activeDocumentId") {
+    highlightActiveDocumentItem(newValue);
+  }
+});
+documentsStore.subscribe((state, { key, operation, id }) => {
+  // if (key === "documentList") {
+  //   // handle document list changes if needed
+  // }
+  switch (operation) {
+    // case "add":
+    //   renderDocumentItem(state.documentList.find((doc) => doc.id === id));
+    //   break;
+    case "delete":
+      removeDocumentItem(id);
+      break;
+  }
+});
 
 const onDocumentItemSelect = (event) => {
   event.stopPropagation();
@@ -24,7 +57,7 @@ const renderDocumentItem = async ({ id: documentId, name: documentName }) => {
     .on("click", async (event) => {
       event.stopPropagation();
       documentsStore.deleteDocumentById(documentId).then(() => {
-        removeDocumentItem(documentId);
+        // removeDocumentItem(documentId);
       });
       // const activeDocumentId = Store.getActiveDocumentId();
       // const $li = $documentList
@@ -84,24 +117,3 @@ const getFileContentInHTML = async (file) => {
   }
   return fileContent;
 };
-
-$(document).ready(function () {
-  $documentList = $("#documentList");
-  $("#documentsInput").on("change", async (event) => {
-    for (const file of event.target.files) {
-      if (!file) continue;
-      const content = await getFileContentInHTML(file);
-      const name = file.name;
-      documentsStore.createDocument({ name, content }).then((id) => {
-        renderDocumentItem({ id, name });
-        activeDocumentStore.setActiveDocumentId(id);
-      });
-    }
-  });
-});
-
-Store.activeDocument.subscribe((state, { key, oldValue, newValue }) => {
-  if (key === "activeDocumentId") {
-    highlightActiveDocumentItem(newValue);
-  }
-});

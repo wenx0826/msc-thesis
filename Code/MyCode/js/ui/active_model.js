@@ -4,7 +4,6 @@ let $cancelButton;
 $(document).ready(function () {
   $keepButton = $("#keepButton");
   $cancelButton = $("#cancelButton");
-
   $keepButton.on("click", async () => {
     let modelId = activeModelStore.getModelId();
     const activeModel = activeModelStore.getModel();
@@ -26,7 +25,7 @@ $(document).ready(function () {
         const sections = temporarySelections.map((range) =>
           serializeRange(range),
         );
-        traceStore.createTrace(sections).then((trace) => {
+        tracesStore.createTrace(sections).then((trace) => {
           clearTemporarySelections(); //to improve
         });
       });
@@ -133,8 +132,12 @@ const saveModel = async (e) => {
   }
 };
 const deleteActiveModel = async (e) => {
-  const activeModelId = Store.getActiveModelId();
-  Store.deleteModel(activeModelId);
+  const activeModelId = activeModelStore.getModelId();
+  activeModelStore.setModel(null);
+  modelsStore.deleteModelById(activeModelId).then(() => {
+    removeModelFromList(activeModelId);
+    removeSelectionsByModelId(activeModelId);
+  });
   // const activeModel = Store.getActiveModel();
   // if (!activeModel || !activeModel.id) return;
 

@@ -86,7 +86,19 @@ const updateModel = (db, id, updatedFields) => {
     }
   });
 };
-
+const deleteModelById = (db, id) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const tx = db.transaction("models", "readwrite");
+      const store = tx.objectStore("models");
+      const deleteReq = store.delete(id);
+      deleteReq.onsuccess = () => resolve();
+      deleteReq.onerror = (err) => reject(err);
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
 // const updateModel = (db, record) => {
 //   return new Promise((resolve, reject) => {
 //     try {

@@ -64,6 +64,7 @@ activeModelStore.subscribe((state, { key, oldValue, newValue }) => {
     if (newValue && newValue.id) highlightActiveModelSelections(newValue.id);
   }
 });
+
 // const clearDocumentViewer = () => {
 //   $("#documentContent").empty();
 // };
