@@ -156,6 +156,12 @@
             graphrealization.set_svg_container($('#graphcanvas'));
             graphrealization.set_label_container($('#graphgrid'));
             graphrealization.set_description($(data), true);
+            graphrealization.notify = function (svgid) {
+              // console.log("!!!!!!Graph realization notify for svgid:", svgid);
+              var g = graphrealization.get_description();
+              console.log("Graph realization notify description:", graphrealization, g);
+              // console.log("Graph realization notify description: g.get", g.get_description());
+            };
           });
         },
       });

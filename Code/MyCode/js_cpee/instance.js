@@ -6,7 +6,7 @@ var myid = ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) =>
   (
     c ^
     (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))
-  ).toString(16)
+  ).toString(16),
 );
 var paths =
   "#dat_details input, #dat_details textarea, #dat_details select, #dat_details button, #dat_details [contenteditable], #dat_dataelements input, #dat_dataelements textarea, #dat_dataelements select, #dat_dataelements button, #dat_dataelements [contenteditable], #dat_endpoints input, #dat_endpoints textarea, #dat_endpoints select, #dat_endpoints button, #dat_endpoints [contenteditable], #dat_attributes input, #dat_attributes textarea, #dat_attributes select, #dat_attributes button, #dat_attributes [contenteditable]";
@@ -42,9 +42,8 @@ function global_init() {
   save["states"] = {};
 
   // mycodechanges
-  // save['state']= undefined;
-  save["state"] = "ready";
-
+  save["state"] = undefined;
+  // save["state"] = "ready";
   save["dsl"] = undefined;
   save["activity_red_states"] = {};
   save["graph"] = undefined;
@@ -262,7 +261,7 @@ function cockpit() {
       $("input[name=instance-url]").val(),
       $("input[name=res-url]").val(),
       false,
-      false
+      false,
     );
   });
   $("button[name=loadtestset]").click(function (e) {
@@ -276,7 +275,7 @@ function cockpit() {
     new CustomMenu(e).menu(
       $("#modeltypes"),
       load_modeltype,
-      $("button[name=loadmodeltype]")
+      $("button[name=loadmodeltype]"),
     );
   });
   $("button[name=savetestsetfile]").click(function () {
@@ -322,8 +321,8 @@ function cockpit() {
         if (this.type == "file") {
           $("#templates").append(
             $("<div class='menuitem'></div>").text(
-              this.name.replace(/\.xml/, "")
-            )
+              this.name.replace(/\.xml/, ""),
+            ),
           );
         }
       });
@@ -370,7 +369,7 @@ function cockpit() {
           q.monitor,
           $("body").attr("current-resources"),
           true,
-          false
+          false,
         );
       } else if (q.load) {
         if (q.load.match(/https?:\/\//)) {
@@ -390,7 +389,7 @@ function cockpit() {
           create_instance_from(
             $("body").attr("current-base"),
             q.instantiate,
-            false
+            false,
           );
         } else {
           alert("Nope. Url!");
@@ -401,7 +400,7 @@ function cockpit() {
           $("body").attr("current-base"),
           "Plain Instance",
           false,
-          false
+          false,
         );
       } else if (q.monitor) {
         uidash_activate_tab("#tabinstance");
@@ -409,7 +408,7 @@ function cockpit() {
           q.monitor,
           $("body").attr("current-resources"),
           false,
-          false
+          false,
         );
       } else if (q.exec) {
         if (q.exec.match(/https?:\/\//)) {
@@ -491,7 +490,7 @@ function create_instance_from(base, url, exec) {
             iu,
             $("body").attr("current-resources"),
             false,
-            exec
+            exec,
           );
         },
         error: function (a, b, c) {
@@ -520,7 +519,7 @@ function create_instance(base, name, load, exec) {
               iu,
               $("body").attr("current-resources"),
               load,
-              exec
+              exec,
             );
           } else {
             $("body").attr("current-instance", sanitize_url(iu));
@@ -542,7 +541,7 @@ async function sse() {
   var url = $("body").attr("current-instance");
   if (subscription) {
     es = new EventSource(
-      url + "/notifications/subscriptions/" + subscription + "/sse/"
+      url + "/notifications/subscriptions/" + subscription + "/sse/",
     );
     es.onopen = function () {
       append_to_log("monitoring", "opened", "nice.");
@@ -581,17 +580,17 @@ async function sse() {
                   '<iframe src="track.html?monitor=' +
                     data.content.received["CPEE-INSTANCE-URL"].replace(
                       /\/*$/,
-                      "/"
+                      "/",
                     ) +
-                    '"></iframe>'
-                )
+                    '"></iframe>',
+                ),
               );
               $("#graphcolumn").addClass("resize");
             }
             break;
           case "state":
             save["states"][data["content"]["state"]] = Date.parse(
-              data.timestamp
+              data.timestamp,
             );
             monitor_instance_state_change(data["content"]["state"]);
             break;
@@ -609,14 +608,14 @@ async function sse() {
       append_to_log(
         data["type"],
         data["topic"] + "/" + data["name"],
-        JSON.stringify(data["content"])
+        JSON.stringify(data["content"]),
       );
     };
     es.onerror = function () {
       append_to_log(
         "monitoring",
         "closed",
-        "finished or abandoned or not existing or server down. one of these, i assume."
+        "finished or abandoned or not existing or server down. one of these, i assume.",
       );
       // setTimeout(sse,10000);
     };
@@ -664,7 +663,7 @@ function monitor_instance(cin, rep, load, exec) {
       $("#current-instance-subscriptions").show();
       $("#current-instance-subscriptions").attr(
         "href",
-        url + "notifications/subscriptions/"
+        url + "notifications/subscriptions/",
       );
       $("#current-instance-callbacks").show();
       $("#current-instance-callbacks").attr("href", url + "callbacks/");
@@ -688,7 +687,7 @@ function monitor_instance(cin, rep, load, exec) {
           (graph_theme ? "theme=" + graph_theme + "&" : "") +
           (q.min || q.min == "" ? "min&" : "") +
           "monitor=" +
-          url
+          url,
       );
 
       // Change url to return to current instance when reloading (because new subscription is made)
@@ -768,7 +767,7 @@ function monitor_instance_values(type, vals) {
         }
       } else {
         let ele = $X(
-          "<" + key + ' xmlns="http://cpee.org/ns/properties/2.0"/>'
+          "<" + key + ' xmlns="http://cpee.org/ns/properties/2.0"/>',
         );
         if (
           typeof value === "string" ||
@@ -836,8 +835,8 @@ function monitor_instance_values(type, vals) {
                           rep,
                           v.tagName,
                           encodeURIComponent($(v).text()),
-                          tmp
-                        )
+                          tmp,
+                        ),
                       )
                       .then(function (x) {
                         save["endpoints_cache"] = tmp;
@@ -886,7 +885,7 @@ function monitor_instance_values(type, vals) {
           if ($("body").attr("current-save")) {
             $("body").attr(
               "current-save-dir",
-              $(" > attributes > design_dir", res).text()
+              $(" > attributes > design_dir", res).text(),
             );
           }
           if ($("body").attr("current-logs")) {
@@ -895,11 +894,11 @@ function monitor_instance_values(type, vals) {
             $("#shifted-log").show();
             $("#current-log").attr(
               "href",
-              $("body").attr("current-logs") + uuid + ".xes.yaml"
+              $("body").attr("current-logs") + uuid + ".xes.yaml",
             );
             $("#shifted-log").attr(
               "href",
-              $("body").attr("current-logs") + uuid + ".xes.shift.yaml"
+              $("body").attr("current-logs") + uuid + ".xes.shift.yaml",
             );
             if ($("#current-log").text() == "") {
               $("#current-log").text(uuid + ".xes.yaml");
@@ -963,7 +962,7 @@ function adaptor_init(url, theme, dslx) {
                 graph_highlight_color +
                 " !important; } ";
               $("head").append(
-                '<style type="text/css">' + styletext + "</style>"
+                '<style type="text/css">' + styletext + "</style>",
               );
               scroll_into_view(ele);
             });
@@ -974,7 +973,7 @@ function adaptor_init(url, theme, dslx) {
             max,
             labels,
             dimensions,
-            striped
+            striped,
           );
 
           // Add the last stripe
@@ -990,7 +989,7 @@ function adaptor_init(url, theme, dslx) {
                 (i + 2) +
                 "; height: " +
                 dimensions.stripe_height +
-                'px">&#032;</div>'
+                'px">&#032;</div>',
             );
             graphrealization.illustrator.svg.label_container.append(ele);
           }
@@ -1063,7 +1062,7 @@ function adaptor_init(url, theme, dslx) {
 
         // while inside and svgs are reloaded, do nothing here
         suspended_redrawing = false;
-      }
+      },
     );
   } else {
     save["graph_adaptor"].update(function (graphrealization) {
@@ -1121,11 +1120,11 @@ function monitor_instance_dsl() {
         res = format_code(res, false, true);
         res = res.replace(
           /activity\s+:([A-Za-z][a-zA-Z0-9_]+)/g,
-          "<span class='activities' id=\"activity-$1\">activity :$1</span>"
+          "<span class='activities' id=\"activity-$1\">activity :$1</span>",
         );
         res = res.replace(
           /activity\s+\[:([A-Za-z][a-zA-Z0-9_]+)([^\]]*\])/g,
-          "<span class='activities' id=\"activity-$1\">activity [:$1$2</span>"
+          "<span class='activities' id=\"activity-$1\">activity [:$1$2</span>",
         );
 
         ctv.append(res);
@@ -1375,7 +1374,7 @@ function save_testsetfile() {
     $("#savetestsetfile").attr(
       "href",
       "data:application/xml;charset=utf-8;base64," +
-        $B64(testset.serializePrettyXML())
+        $B64(testset.serializePrettyXML()),
     );
     document.getElementById("savetestsetfile").click();
   });
@@ -1398,7 +1397,7 @@ function get_testset(deferred) {
       $("testset > dsl", testset).remove();
       $("testset > description > *", testset).remove();
       $("testset > description", testset).append(
-        $("testset > dslx", testset).children()
+        $("testset > dslx", testset).children(),
       );
       $("testset > transformation", testset).remove();
       $("testset > dsl", testset).remove();
@@ -1406,8 +1405,8 @@ function get_testset(deferred) {
       $("testset > attributes > uuid", testset).remove();
       testset.append(
         $X(
-          '<transformation xmlns="http://cpee.org/ns/properties/2.0"><description type="copy"/><dataelements type="none"/><endpoints type="none"/></transformation>'
-        )
+          '<transformation xmlns="http://cpee.org/ns/properties/2.0"><description type="copy"/><dataelements type="none"/><endpoints type="none"/></transformation>',
+        ),
       );
       var name = $("testset > attributes > info", testset).text();
       $("[xmlns]", testset).each((idx, ele) => {
@@ -1421,7 +1420,7 @@ function get_testset(deferred) {
         success: async function (res) {
           let values = $("subscriptions > subscription[url]", res);
           let subs = $X(
-            '<subscriptions xmlns="http://riddl.org/ns/common-patterns/notifications-producer/2.0"/>'
+            '<subscriptions xmlns="http://riddl.org/ns/common-patterns/notifications-producer/2.0"/>',
           );
           let promises = [];
           let scount = 0;
@@ -1436,7 +1435,7 @@ function get_testset(deferred) {
                   error: report_failure,
                 }).then(function (a) {
                   subs.append($(a.documentElement));
-                })
+                }),
               );
             }
           });
@@ -1468,7 +1467,7 @@ function save_svgfile() {
     const gr = $X(
       '<g transform="translate(' +
         start +
-        ')" xmlns="http://www.w3.org/2000/svg"></g>'
+        ')" xmlns="http://www.w3.org/2000/svg"></g>',
     );
     start = start + parseInt(ele.getAttribute("width"));
     $("g", ele).each((j, g) => {
@@ -1488,7 +1487,7 @@ function save_svgfile() {
         if (y.selectorText == ":root") {
           $(y.style).each(function (k, z) {
             varreps["var\\(" + z + "\\)"] = getComputedStyle(
-              document.documentElement
+              document.documentElement,
             )
               .getPropertyValue(z)
               .toString();
@@ -1519,7 +1518,7 @@ function save_svgfile() {
       $("#savesvgfile").attr(
         "href",
         "data:application/xml;charset=utf-8;base64," +
-          $B64(gc.serializePrettyXML())
+          $B64(gc.serializePrettyXML()),
       );
       document.getElementById("savesvgfile").click();
     },
@@ -1544,7 +1543,7 @@ function save_bpmnfile() {
       $("#savebpmnfile").attr(
         "href",
         "data:application/xml;charset=utf-8;base64," +
-          $B64(david.serializePrettyXML())
+          $B64(david.serializePrettyXML()),
       );
       document.getElementById("savebpmnfile").click();
     },
@@ -1594,7 +1593,7 @@ async function set_testset(testset, exec) {
         vals[$(this).attr("url")] = $(this).attr("id");
       });
       await load_testset_handlers(url, testset, vals);
-    })
+    }),
   );
   await Promise.all(promises);
 
@@ -1610,7 +1609,7 @@ async function set_testset(testset, exec) {
       },
       data: tset.serializeXML(),
       error: report_failure,
-    })
+    }),
   );
   await Promise.all(promises);
 
@@ -1823,7 +1822,7 @@ async function load_testset_handlers(url, testset, vals) {
             type: "POST",
             url: url + "/notifications/subscriptions/",
             data: inp.join("&"),
-          })
+          }),
         );
       }
     } else {
@@ -1840,7 +1839,7 @@ async function load_testset_handlers(url, testset, vals) {
             type: "PUT",
             url: url + "/notifications/subscriptions/" + vals[suburl] + "/",
             data: inp.join("&"),
-          })
+          }),
         );
       }
     }
@@ -1949,7 +1948,7 @@ function format_visual_set(what) {
           else vs = "";
           b.setAttribute("class", "activities " + vs);
         });
-      }
+      },
     );
   }
 } //}}}
@@ -1997,7 +1996,7 @@ function format_instance_pos() {
         ? taskstate == "at"
           ? "active"
           : "passive"
-        : "passive"
+        : "passive",
     );
   });
 } //}}}
@@ -2053,7 +2052,7 @@ function format_code(res, skim, lnums) {
             tm +
             "em'>" +
             ln +
-            "&#160;".repeat(m.length)
+            "&#160;".repeat(m.length),
         );
         l++;
       }
@@ -2114,7 +2113,7 @@ function append_to_log(what, type, message) {
         what +
         "\">T</a></td><td class='fixed'>&#160;-&#160;</td><td class='fixed'>" +
         type +
-        "</td><td class='fixed'>&#160;-&#160;</td><td class='long'>... check in persistent log ...</td></tr>"
+        "</td><td class='fixed'>&#160;-&#160;</td><td class='long'>... check in persistent log ...</td></tr>",
     );
   } else {
     $("#dat_log").prepend(
@@ -2126,7 +2125,7 @@ function append_to_log(what, type, message) {
         type +
         "</td><td class='fixed'>&#160;-&#160;</td><td class='long'>" +
         message +
-        "</td></tr>"
+        "</td></tr>",
     );
   }
   var dle = $("#dat_log").children();
@@ -2142,43 +2141,48 @@ function append_to_log(what, type, message) {
 function report_failure() {}
 
 function ui_pos(e, bl) {
-  var url = $("body").attr("current-instance");
-  var coll = [];
-  $(
-    "g.element.primitive > g.activities.active, g.element.primitive > g.activities.passive"
-  ).each(function (a, b) {
-    coll.push([
-      $(b).parent().attr("element-id"),
-      $(b).parent().attr("element-type") == "stop" ? "after" : "at",
-    ]);
-  });
-  coll = bl(coll);
-  var vals = "";
-  $(coll).each(function (k, ele) {
-    vals += "<" + ele[0] + ">" + ele[1] + "</" + ele[0] + ">";
-  });
-  vals =
-    "<positions xmlns='http://cpee.org/ns/properties/2.0'>" +
-    vals +
-    "</positions>";
-  $.ajax({
-    type: "PUT",
-    url: url + "/properties/positions/",
-    contentType: "application/xml",
-    headers: {
-      "Content-ID": "positions",
-      "CPEE-Event-Source": myid,
-    },
-    data: vals,
-    success: monitor_instance_pos,
-    error: report_failure,
-  });
+  try {
+    var url = $("body").attr("current-instance");
+    var coll = [];
+    $(
+      "g.element.primitive > g.activities.active, g.element.primitive > g.activities.passive",
+    ).each(function (a, b) {
+      coll.push([
+        $(b).parent().attr("element-id"),
+        $(b).parent().attr("element-type") == "stop" ? "after" : "at",
+      ]);
+    });
+
+    coll = bl(coll);
+    var vals = "";
+    $(coll).each(function (k, ele) {
+      vals += "<" + ele[0] + ">" + ele[1] + "</" + ele[0] + ">";
+    });
+    vals =
+      "<positions xmlns='http://cpee.org/ns/properties/2.0'>" +
+      vals +
+      "</positions>";
+    // $.ajax({
+    //   type: "PUT",
+    //   url: url + "/properties/positions/",
+    //   contentType: "application/xml",
+    //   headers: {
+    //     "Content-ID": "positions",
+    //     "CPEE-Event-Source": myid,
+    //   },
+    //   data: vals,
+    //   success: monitor_instance_pos,
+    //   error: report_failure,
+    // });
+  } catch (e) {
+    console.error(e);
+  }
 }
 function del_ui_pos(e) {
   ui_pos(e, function (coll) {
     coll.splice(
       coll.findIndex((ele) => ele[0] == $(e).attr("id")),
-      1
+      1,
     );
     return coll;
   });

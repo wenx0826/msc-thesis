@@ -2,7 +2,7 @@
   <attribute name="condition" rngui:label="Condition">
     <data type="string" rngui:label="Condition"/>
   </attribute>
-  <element name="_probability" rngui:mark="true" rngui:header="Execution Probability">
+  <!-- <element name="_probability" rngui:mark="true" rngui:header="Execution Probability">
     <element name="_probability_min" rngui:label="Min in %">
       <data type="integer" rngui:label="Percent 0-100">
         <param name="minInclusive">1</param>
@@ -21,5 +21,5 @@
         <param name="maxInclusive">100</param>
       </data>
     </element>
-  </element>
+  </element> -->
 </element>

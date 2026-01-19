@@ -1,0 +1,114 @@
+<!-- converter.html -->
+<!doctype html>
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Doc-Based Process Modeller</title>
+<!-- libs, do not modify. When local than load local libs. -->
+<script type="text/javascript" src="https://cpee.org/js_libs/jquery.min.js"></script>
+<script type="text/javascript" src="https://cpee.org/js_libs/jquery.browser.js"></script>
+<script type="text/javascript" src="https://cpee.org/js_libs/jquery.caret.min.js"></script>
+<script type="text/javascript" src="https://cpee.org/js_libs/jquery.cookie.js"></script>
+<script type="text/javascript" src="https://cpee.org/js_libs/jquery.svg.min.js"></script>
+<script type="text/javascript" src="https://cpee.org/js_libs/jquery.svgdom.min.js"></script>
+
+<!-- <script type="text/javascript" src="/js_libs/build-bpmn.js"></script> -->
+<script type="text/javascript" src="js_libs/custommenu.js"></script>
+<script type="text/javascript" src="js_libs/marked.min.js"></script>
+<script type="text/javascript" src="js_libs/parsequery.js"></script>
+<script type="text/javascript" src="js_libs/printf.js"></script>
+<script type="text/javascript" src="js_libs/relaxngui.js"></script>
+<script type="text/javascript" src="js_libs/strftime.min.js"></script>
+<script type="text/javascript" src="js_libs/uidash.js"></script>
+<script type="text/javascript" src="js_libs/underscore.min.js"></script>
+<script type="text/javascript" src="js_libs/util.js"></script>
+<script type="text/javascript" src="js_libs/vkbeautify.js"></script>
+
+<link rel="stylesheet" href="js_libs/custommenu.css" type="text/css" />
+<link rel="stylesheet" href="js_libs/relaxngui.css" type="text/css">
+<link rel="stylesheet" href="js_libs/uidash.css" type="text/css">
+<link rel="stylesheet" href="js_libs/uidash-icons.css" type="text/css">
+
+<link rel="stylesheet" href="css/ui.css" type="text/css">
+<link rel="stylesheet" href="css/globalui_cpee.css" type="text/css">
+
+<!-- modelling ui -->
+<script type="text/javascript" src="js_cpee/wfadaptor.js"></script>
+<link rel="stylesheet" href="js_cpee/wfadaptor.css" type="text/css" />
+<script type="text/javascript" src="themes/base_new.js"></script>
+
+<script type="text/javascript" src="js_cpee/extended_columns.js"></script>
+<link rel="stylesheet" href="css/extended_columns-label.css" type="text/css" />
+<link rel="stylesheet" href="css/extended_columns-svg.css" type="text/css" />
+
+<script type="text/javascript" src="js_cpee/instance.js"></script>
+<script type="text/javascript" src="js_cpee/details.js"></script>
+<!-- <script type="text/javascript" src="js/parameters.js"></script>
+    <script type="text/javascript" src="js/modifiers.js"></script> -->
+
+
+<!-- Flos Stuff -->
+<!-- <script type="text/javascript" src="js/structured.js"></script> -->
+<!-- <style type="text/css">
+    @font-face {
+      font-family: TencentSans;
+      src: url("chrome-extension://lkjkfecdnfjopaeaibboihfkmhdjmanm/static/fonts/TencentSans.woff2");
+    }
+  </style> -->
+
+<!-- my libs-->
+
+
+
+<!-- my ui-->
+
+<body>
+    <div id='modelGridSmall'>
+        <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink"
+            id='modelCanvasSmall' width='1' height='1'></svg>
+    </div>
+    <script type="module">
+
+        window.addEventListener("message", async (e) => {
+            // const { id, input, args } = e.data || {};
+            // console.log("Received message:", e.data);
+            const { id, input, args, source } = e.data;
+            if (source !== "convertDataToSVG") {
+                console.log("Message from unknown source:", e.data);
+                return;
+            }
+            try {
+                console.log("Converting model data to SVG:", input, args);
+
+
+                var parser = new DOMParser();
+                let data = parser.parseFromString(input.data, "application/xml");
+
+                if (data.documentElement.nodeName != "description") {
+                    data = $("description", data)[0];
+                } else {
+
+                    data = data.documentElement;
+                }
+
+                const adaptor = WfAdaptor("themes/preset_copy/theme.js", function (
+                    graphrealization,
+                ) {
+                    graphrealization.set_svg_container($("#modelCanvasSmall"));
+                    graphrealization.set_label_container($("#modelGridSmall"));
+                    graphrealization.set_description($(data), true);
+                    const svgData = $("#modelCanvasSmall").clone().removeAttr("id");
+                    console.log("SVG data for model:", svgData);
+                    const svgString = svgData.prop('outerHTML');
+                    e.source.postMessage({ id, ok: true, result: svgString }, e.origin);
+                });
+                // console.log("Adaptor created for model rendering in list:", adaptor);
+            } catch (err) {
+                e.source.postMessage(
+                    { id, ok: false, error: String(err?.stack || err) },
+                    e.origin
+                );
+            }
+        });
+    </script>
+</body>
+</html>

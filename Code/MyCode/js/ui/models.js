@@ -16,7 +16,7 @@ modelsStore.subscribe((state, { key, operation, id }) => {
     //   renderModelInList(state.models.find((model) => model.id === id));
     //   break;
     case "update":
-      rerenderModelInList(id);
+      // rerenderModelInList(id);
       break;
     case "delete":
       console.log("Model deleted with ID:", id);
@@ -32,56 +32,48 @@ modelsStore.subscribe((state, { key, operation, id }) => {
 //   ).documentElement;
 //   $container.append(svgData);
 // }
-const renderModelInList = ({
-  id: modelId,
-  name: modelName,
-  content: modelContent,
-  svg: svgContent,
-}) => {
-  var gridId = `modelGrid_${modelId}`;
-  var canvasId = `modelCanvas_${modelId}`;
+
+let seq = 0;
+const pending = new Map();
+
+function convertDataToSVG(input) {
+  console.log("convertDataToSVG called from:", new Error().stack);
+  //TODO: how to deal pending???
+  return new Promise(async (resolve, reject) => {
+    const id = ++seq;
+    pending.set(id, { resolve, reject });
+    $("#converter-frame")[0].contentWindow.postMessage(
+      { id, input, source: "convertDataToSVG" },
+      window.origin,
+    );
+  });
+}
+async function renderModelInList(model) {
+  console.log("Calling convertDataToSVG to render model in list:", model.id);
+  const outputFrame = await convertDataToSVG(model);
+  // console.log("Converted SVG content from model data:", outputFrame);
+
+  const svgData = new DOMParser().parseFromString(
+    outputFrame,
+    "image/svg+xml",
+  ).documentElement;
+
+  var gridId = `modelGrid_${model.id}`;
   const $modelsArea = $("#models");
   const $modelContainer = $("<div>")
     .addClass("model-container")
-    .attr("data-modelid", modelId);
-  $modelContainer.text(`${modelName}`);
-
+    .attr("data-modelid", model.id);
+  $modelContainer.text(`${model.name}`);
   $modelsArea.append($modelContainer);
   const $gridDiv = $("<div>").attr("id", gridId);
-
-  const svgData = new DOMParser().parseFromString(
-    svgContent,
-    "image/svg+xml",
-  ).documentElement;
-  $gridDiv.append(svgData);
   $gridDiv.append(svgData);
   $modelContainer.append($gridDiv);
   $modelContainer.on("click", (event) => {
     event.stopPropagation();
-    activeModelStore.setModelById(modelId);
+    activeModelStore.setModelById(model.id);
   });
-};
-
-const rerenderModelInList = (modelId) => {
-  const model = modelsStore.getModelById(modelId);
-  if (!model) {
-    console.warn(`Model with ID ${modelId} not found for rerendering.`);
-    return;
-  }
-  const $modelContainer = $(`.model-container[data-modelid="${modelId}"]`);
-  $modelContainer.empty();
-  $modelContainer.text(`${model.name}`);
-
-  const gridId = `modelGrid_${model.id}`;
-  const $gridDiv = $("<div>").attr("id", gridId);
-
-  const svgData = new DOMParser().parseFromString(
-    model.svg,
-    "image/svg+xml",
-  ).documentElement;
-  $gridDiv.append(svgData);
-  $modelContainer.append($gridDiv);
-};
+  console.log("Model rendered in list:", model);
+}
 
 const highlightActiveModelInList = (modelId) => {
   // $(".model-container").removeClass("active");
@@ -93,3 +85,13 @@ const unhighlightActiveModelInList = (modelId) => {
 const removeModelFromList = (modelId) => {
   $(`.model-container[data-modelid="${modelId}"]`).remove();
 };
+
+window.addEventListener("message", (e) => {
+  const { id, ok, result, error } = e.data || {};
+  if (!pending.has(id)) return;
+
+  const { resolve, reject } = pending.get(id);
+  pending.delete(id);
+
+  ok ? resolve(result) : reject(new Error(error));
+});

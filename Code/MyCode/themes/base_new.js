@@ -19,7 +19,7 @@ function WFAdaptorManifestationBase(adaptor) {
     console.log(
       "WFAdaptorManifestationBase.source: transforming to description",
       base,
-      opts
+      opts,
     );
     // Print base as string
     if (typeof base === "object" && base.length && base[0].outerHTML) {
@@ -34,7 +34,7 @@ function WFAdaptorManifestationBase(adaptor) {
       var rngw = new RelaxNGui(
         base,
         $("#relaxngworker"),
-        self.adaptor.description.context_eval
+        self.adaptor.description.context_eval,
       );
       var nnew = $(rngw.save().documentElement);
       return nnew;
@@ -121,7 +121,7 @@ function WFAdaptorManifestationBase(adaptor) {
         rng,
         tab,
         self.adaptor.description.context_eval,
-        true
+        true,
       );
       save["details"].content(nn);
 
@@ -131,7 +131,7 @@ function WFAdaptorManifestationBase(adaptor) {
         document.dispatchEvent(
           new CustomEvent("wf:call-clicked", {
             detail: { nn },
-          })
+          }),
         );
       }
       format_visual_forms();
@@ -148,7 +148,7 @@ function WFAdaptorManifestationBase(adaptor) {
       "xml_node",
       String(xml_node),
       "mode",
-      mode
+      mode,
     );
     //{{{
     var nodes = localStorage.getItem("marked");
@@ -178,7 +178,7 @@ function WFAdaptorManifestationBase(adaptor) {
       if (myid == localStorage.getItem("marked_from")) {
         $(nodes).each(function (key, node) {
           nodes[key] = self.adaptor.description.get_node_by_svg_id(
-            $(node).attr("svg-id")
+            $(node).attr("svg-id"),
           );
         });
       }
@@ -232,7 +232,7 @@ function WFAdaptorManifestationBase(adaptor) {
     svgid,
     e,
     child,
-    sibling
+    sibling,
   ) {
     //{{{
     if (save["state"] != "ready" && save["state"] != "stopped") {
@@ -246,7 +246,7 @@ function WFAdaptorManifestationBase(adaptor) {
     if (child) {
       group = self.elements[xml_node.get(0).tagName].permissible_children(
         xml_node,
-        "into"
+        "into",
       );
       if (group.length > 0) {
         menu["Insert into"] = group;
@@ -254,7 +254,7 @@ function WFAdaptorManifestationBase(adaptor) {
           menu["Insert into"],
           group,
           xml_node,
-          self.adaptor.description.insert_first_into
+          self.adaptor.description.insert_first_into,
         );
       }
       if (self.elements[xml_node.get(0).tagName].permissible_children_expert) {
@@ -267,7 +267,7 @@ function WFAdaptorManifestationBase(adaptor) {
             menu["Insert into (Experts Only!)"],
             group,
             xml_node,
-            self.adaptor.description.insert_first_into
+            self.adaptor.description.insert_first_into,
           );
         }
       }
@@ -282,7 +282,7 @@ function WFAdaptorManifestationBase(adaptor) {
           menu["Insert after"],
           group,
           xml_node,
-          self.adaptor.description.insert_after
+          self.adaptor.description.insert_after,
         );
       }
       if (
@@ -298,7 +298,7 @@ function WFAdaptorManifestationBase(adaptor) {
             menu["Insert after (Experts Only!)"],
             group,
             xml_node,
-            self.adaptor.description.insert_after
+            self.adaptor.description.insert_after,
           );
         }
       }
@@ -309,7 +309,7 @@ function WFAdaptorManifestationBase(adaptor) {
       !self.elements[xml_node.get(0).tagName].neverdelete
     ) {
       var icon = contextMenuHandling_clean_icon(
-        self.elements[xml_node.get(0).tagName].illustrator.svg
+        self.elements[xml_node.get(0).tagName].illustrator.svg,
       );
       icon.find(".colorstyle").css("fill", "var(--wfadaptor-important");
       menu["Delete"] = [
@@ -366,7 +366,7 @@ function WFAdaptorManifestationBase(adaptor) {
     }
     if ($("> code", xml_node).length > 0 && xml_node.get(0).tagName == "call") {
       var icon = contextMenuHandling_clean_icon(
-        self.elements.callmanipulate.illustrator.svg
+        self.elements.callmanipulate.illustrator.svg,
       );
       icon
         .find(".part-extra .colorstyle")
@@ -385,7 +385,7 @@ function WFAdaptorManifestationBase(adaptor) {
       xml_node.get(0).tagName == "stop"
     ) {
       var icon = contextMenuHandling_clean_icon(
-        self.elements.call.illustrator.svg
+        self.elements.call.illustrator.svg,
       );
       icon.find(".part-normal").addClass("passive");
       var vtarget = self.adaptor.illustrator.get_node_by_svg_id(svgid);
@@ -451,49 +451,65 @@ function WFAdaptorManifestationBase(adaptor) {
     return false;
   }; // }}}
   this.events.click = function (svgid, e) {
-    // {{{
-    if (self.adaptor.description.get_node_by_svg_id(svgid).length == 0) {
-      return;
-    }
-
-    $("#graphgrid .selected").removeClass("selected");
-
-    if (e && (e.ctrlKey || e.metaKey)) {
-      if (save["state"] != "ready" && save["state"] != "stopped") {
-        return false;
+    try {
+      console.log(
+        "Click Bug 001-bWFAdaptorManifestationBase click event for svgid:",
+        svgid,
+      );
+      // {{{
+      if (self.adaptor.description.get_node_by_svg_id(svgid).length == 0) {
+        return;
       }
-      var tab = $("#dat_details");
-      tab.empty();
-      var vtarget = self.adaptor.illustrator.get_node_by_svg_id(svgid);
-      if (vtarget.length > 0) {
-        var vt = vtarget.parents("g.element[element-id]");
-        vt.toggleClass("marked");
-        if (vt.hasClass("marked")) {
-          localStorage.setItem("marked", self.marked_text());
-          localStorage.setItem("marked_from", myid);
-        } else {
-          localStorage.removeItem("marked");
-          localStorage.removeItem("marked_from");
+
+      $("#graphgrid .selected").removeClass("selected");
+
+      if (e && (e.ctrlKey || e.metaKey)) {
+        if (save["state"] != "ready" && save["state"] != "stopped") {
+          return false;
         }
-      }
-    } else if (e && e.shiftKey) {
-      positionHandling(svgid);
-    } else {
-      self.adaptor.illustrator.get_elements().removeClass("marked");
-      localStorage.removeItem("marked");
-      localStorage.removeItem("marked_from");
+        var tab = $("#dat_details");
+        tab.empty();
+        var vtarget = self.adaptor.illustrator.get_node_by_svg_id(svgid);
+        if (vtarget.length > 0) {
+          var vt = vtarget.parents("g.element[element-id]");
+          vt.toggleClass("marked");
+          if (vt.hasClass("marked")) {
+            localStorage.setItem("marked", self.marked_text());
+            localStorage.setItem("marked_from", myid);
+          } else {
+            localStorage.removeItem("marked");
+            localStorage.removeItem("marked_from");
+          }
+        }
+      } else if (e && e.shiftKey) {
+        positionHandling(svgid);
+      } else {
+        console.log(
+          "Click Bug 002-WFAdaptorManifestationBase click event normal select:",
+          svgid,
+        );
+        self.adaptor.illustrator.get_elements().removeClass("marked");
 
-      var vtarget = self.adaptor.illustrator.get_node_by_svg_id(svgid);
-      if (vtarget.length > 0) {
-        vtarget.parents("g.element[element-id]").addClass("selected");
-      }
-      self.adaptor.illustrator.get_label_by_svg_id(svgid).addClass("selected");
-      $("#graphgrid [element-id=" + svgid + "]").addClass("selected");
+        localStorage.removeItem("marked");
+        localStorage.removeItem("marked_from");
 
-      self.update_details(svgid);
-    }
-    if (e) {
-      e.stopImmediatePropagation();
+        var vtarget = self.adaptor.illustrator.get_node_by_svg_id(svgid);
+        console.log("Click Bug 004 - vtarget", vtarget, vtarget.length);
+        if (vtarget.length > 0) {
+          vtarget.parents("g.element[element-id]").addClass("selected");
+        }
+        self.adaptor.illustrator
+          .get_label_by_svg_id(svgid)
+          .addClass("selected");
+        $("#graphgrid [element-id=" + svgid + "]").addClass("selected");
+
+        self.update_details(svgid);
+      }
+      if (e) {
+        e.stopImmediatePropagation();
+      }
+    } catch (e) {
+      console.warn("WFAdaptorManifestationBase click event error:", e);
     }
   }; // }}}
   this.events.dblclick = function (svgid, e) {
@@ -616,7 +632,7 @@ function WFAdaptorManifestationBase(adaptor) {
             label: "Scripts",
             function_call: self.adaptor.description.insert_last_into,
             menu_icon: contextMenuHandling_clean_icon(
-              self.elements.callmanipulate.illustrator.svg
+              self.elements.callmanipulate.illustrator.svg,
             ),
             type: undefined,
             params: [self.adaptor.description.elements.scripts, node],
@@ -977,7 +993,7 @@ function WFAdaptorManifestationBase(adaptor) {
             label: "Parallel Branch",
             function_call: func,
             menu_icon: contextMenuHandling_clean_icon(
-              self.elements.parallel_branch.illustrator.svg
+              self.elements.parallel_branch.illustrator.svg,
             ),
             type: "parallel_branch",
             params: [self.adaptor.description.elements.parallel_branch, node],
@@ -989,7 +1005,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Alternative",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.alternative.illustrator.svg
+            self.elements.alternative.illustrator.svg,
           ),
           type: "alternative",
           params: [self.adaptor.description.elements.alternative, node],
@@ -1005,7 +1021,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Otherwise",
           function_call: self.adaptor.description.insert_last_into,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.otherwise.illustrator.svg
+            self.elements.otherwise.illustrator.svg,
           ),
           type: "otherwise",
           params: [self.adaptor.description.elements.otherwise, node],
@@ -1017,7 +1033,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Parallel Branch",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.parallel_branch.illustrator.svg
+            self.elements.parallel_branch.illustrator.svg,
           ),
           type: "parallel_branch",
           params: [self.adaptor.description.elements.parallel_branch, node],
@@ -1070,7 +1086,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Service Call with Scripts",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.callmanipulate.illustrator.svg
+            self.elements.callmanipulate.illustrator.svg,
           ),
           type: "callmanipulate",
           params: [self.adaptor.description.elements.callmanipulate, node],
@@ -1079,7 +1095,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Service Call",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.call.illustrator.svg
+            self.elements.call.illustrator.svg,
           ),
           type: "call",
           params: [self.adaptor.description.elements.call, node],
@@ -1088,7 +1104,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Script",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.manipulate.illustrator.svg
+            self.elements.manipulate.illustrator.svg,
           ),
           type: "manipulate",
           params: [self.adaptor.description.elements.manipulate, node],
@@ -1097,7 +1113,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Parallel",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.parallel.illustrator.svg
+            self.elements.parallel.illustrator.svg,
           ),
           type: "parallel",
           params: [self.adaptor.description.elements.parallel, node],
@@ -1106,7 +1122,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Decision",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.choose.illustrator.svg
+            self.elements.choose.illustrator.svg,
           ),
           type: "choose",
           params: [self.adaptor.description.elements.choose, node],
@@ -1115,7 +1131,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Loop",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.loop.illustrator.svg
+            self.elements.loop.illustrator.svg,
           ),
           type: "loop",
           params: [self.adaptor.description.elements.loop, node],
@@ -1124,7 +1140,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Terminate",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.terminate.illustrator.svg
+            self.elements.terminate.illustrator.svg,
           ),
           type: "terminate",
           params: [self.adaptor.description.elements.terminate, node],
@@ -1133,7 +1149,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Stop",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.stop.illustrator.svg
+            self.elements.stop.illustrator.svg,
           ),
           type: "stop",
           params: [self.adaptor.description.elements.stop, node],
@@ -1145,7 +1161,7 @@ function WFAdaptorManifestationBase(adaptor) {
             label: "Critical",
             function_call: func,
             menu_icon: contextMenuHandling_clean_icon(
-              self.elements.critical.illustrator.svg
+              self.elements.critical.illustrator.svg,
             ),
             type: "critical",
             params: [self.adaptor.description.elements.critical, node],
@@ -1154,11 +1170,11 @@ function WFAdaptorManifestationBase(adaptor) {
             label: "Wait for Signal",
             function_call: func,
             menu_icon: contextMenuHandling_clean_icon(
-              self.elements.wait_for_signal.illustrator.svg
+              self.elements.wait_for_signal.illustrator.svg,
             ),
             type: "wait_for_signal",
             params: [self.adaptor.description.elements.wait_for_signal, node],
-          }
+          },
         );
       }
       return childs;
@@ -1215,7 +1231,7 @@ function WFAdaptorManifestationBase(adaptor) {
             label: "Parallel Branch",
             function_call: func,
             menu_icon: contextMenuHandling_clean_icon(
-              self.elements.parallel_branch.illustrator.svg
+              self.elements.parallel_branch.illustrator.svg,
             ),
             type: "parallel_branch",
             params: [self.adaptor.description.elements.parallel_branch, node],
@@ -1227,7 +1243,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Service Call with Scripts",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.callmanipulate.illustrator.svg
+            self.elements.callmanipulate.illustrator.svg,
           ),
           type: "callmanipulate",
           params: [self.adaptor.description.elements.callmanipulate, node],
@@ -1236,7 +1252,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Service Call",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.call.illustrator.svg
+            self.elements.call.illustrator.svg,
           ),
           type: "call",
           params: [self.adaptor.description.elements.call, node],
@@ -1245,7 +1261,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Script",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.manipulate.illustrator.svg
+            self.elements.manipulate.illustrator.svg,
           ),
           type: "manipulate",
           params: [self.adaptor.description.elements.manipulate, node],
@@ -1254,7 +1270,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Parallel",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.parallel.illustrator.svg
+            self.elements.parallel.illustrator.svg,
           ),
           type: "parallel",
           params: [self.adaptor.description.elements.parallel, node],
@@ -1263,7 +1279,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Decision",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.choose.illustrator.svg
+            self.elements.choose.illustrator.svg,
           ),
           type: "choose",
           params: [self.adaptor.description.elements.choose, node],
@@ -1272,7 +1288,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Loop",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.loop.illustrator.svg
+            self.elements.loop.illustrator.svg,
           ),
           type: "loop",
           params: [self.adaptor.description.elements.loop, node],
@@ -1281,7 +1297,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Terminate",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.terminate.illustrator.svg
+            self.elements.terminate.illustrator.svg,
           ),
           type: "terminate",
           params: [self.adaptor.description.elements.terminate, node],
@@ -1290,7 +1306,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Stop",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.stop.illustrator.svg
+            self.elements.stop.illustrator.svg,
           ),
           type: "stop",
           params: [self.adaptor.description.elements.stop, node],
@@ -1302,7 +1318,7 @@ function WFAdaptorManifestationBase(adaptor) {
             label: "Critical",
             function_call: func,
             menu_icon: contextMenuHandling_clean_icon(
-              self.elements.critical.illustrator.svg
+              self.elements.critical.illustrator.svg,
             ),
             type: "critical",
             params: [self.adaptor.description.elements.critical, node],
@@ -1311,11 +1327,11 @@ function WFAdaptorManifestationBase(adaptor) {
             label: "Wait for Signal",
             function_call: func,
             menu_icon: contextMenuHandling_clean_icon(
-              self.elements.wait_for_signal.illustrator.svg
+              self.elements.wait_for_signal.illustrator.svg,
             ),
             type: "wait_for_signal",
             params: [self.adaptor.description.elements.wait_for_signal, node],
-          }
+          },
         );
       }
       return childs;
@@ -1368,7 +1384,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Service Call with Scripts",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.callmanipulate.illustrator.svg
+            self.elements.callmanipulate.illustrator.svg,
           ),
           type: "callmanipulate",
           params: [self.adaptor.description.elements.callmanipulate, node],
@@ -1377,7 +1393,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Service Call",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.call.illustrator.svg
+            self.elements.call.illustrator.svg,
           ),
           type: "call",
           params: [self.adaptor.description.elements.call, node],
@@ -1386,7 +1402,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Script",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.manipulate.illustrator.svg
+            self.elements.manipulate.illustrator.svg,
           ),
           type: "manipulate",
           params: [self.adaptor.description.elements.manipulate, node],
@@ -1395,7 +1411,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Decision",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.choose.illustrator.svg
+            self.elements.choose.illustrator.svg,
           ),
           type: "choose",
           params: [self.adaptor.description.elements.choose, node],
@@ -1404,7 +1420,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Loop",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.loop.illustrator.svg
+            self.elements.loop.illustrator.svg,
           ),
           type: "loop",
           params: [self.adaptor.description.elements.loop, node],
@@ -1413,7 +1429,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Terminate",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.terminate.illustrator.svg
+            self.elements.terminate.illustrator.svg,
           ),
           type: "terminate",
           params: [self.adaptor.description.elements.terminate, node],
@@ -1422,7 +1438,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Stop",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.stop.illustrator.svg
+            self.elements.stop.illustrator.svg,
           ),
           type: "stop",
           params: [self.adaptor.description.elements.stop, node],
@@ -1434,7 +1450,7 @@ function WFAdaptorManifestationBase(adaptor) {
             label: "Critical",
             function_call: func,
             menu_icon: contextMenuHandling_clean_icon(
-              self.elements.critical.illustrator.svg
+              self.elements.critical.illustrator.svg,
             ),
             type: "critical",
             params: [self.adaptor.description.elements.critical, node],
@@ -1443,11 +1459,11 @@ function WFAdaptorManifestationBase(adaptor) {
             label: "Wait for Signal",
             function_call: func,
             menu_icon: contextMenuHandling_clean_icon(
-              self.elements.wait_for_signal.illustrator.svg
+              self.elements.wait_for_signal.illustrator.svg,
             ),
             type: "wait_for_signal",
             params: [self.adaptor.description.elements.wait_for_signal, node],
-          }
+          },
         );
       }
       if (
@@ -1457,7 +1473,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Parallel Branch",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.parallel_branch.illustrator.svg
+            self.elements.parallel_branch.illustrator.svg,
           ),
           type: "parallel_branch",
           params: [self.adaptor.description.elements.parallel_branch, node],
@@ -1467,7 +1483,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Parallel",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.parallel.illustrator.svg
+            self.elements.parallel.illustrator.svg,
           ),
           type: "parallel",
           params: [self.adaptor.description.elements.parallel, node],
@@ -1534,7 +1550,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Parallel Branch",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.parallel_branch.illustrator.svg
+            self.elements.parallel_branch.illustrator.svg,
           ),
           type: "parallel_branch",
           params: [self.adaptor.description.elements.parallel_branch, node],
@@ -1555,7 +1571,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Service Call with Scripts",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.callmanipulate.illustrator.svg
+            self.elements.callmanipulate.illustrator.svg,
           ),
           type: "callmanipulate",
           params: [self.adaptor.description.elements.callmanipulate, node],
@@ -1564,7 +1580,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Service Call",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.call.illustrator.svg
+            self.elements.call.illustrator.svg,
           ),
           type: "call",
           params: [self.adaptor.description.elements.call, node],
@@ -1573,7 +1589,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Script",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.manipulate.illustrator.svg
+            self.elements.manipulate.illustrator.svg,
           ),
           type: "manipulate",
           params: [self.adaptor.description.elements.manipulate, node],
@@ -1582,7 +1598,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Decision",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.choose.illustrator.svg
+            self.elements.choose.illustrator.svg,
           ),
           type: "choose",
           params: [self.adaptor.description.elements.choose, node],
@@ -1591,7 +1607,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Loop",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.loop.illustrator.svg
+            self.elements.loop.illustrator.svg,
           ),
           type: "loop",
           params: [self.adaptor.description.elements.loop, node],
@@ -1600,7 +1616,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Stop",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.stop.illustrator.svg
+            self.elements.stop.illustrator.svg,
           ),
           type: "stop",
           params: [self.adaptor.description.elements.stop, node],
@@ -1611,7 +1627,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Parallel",
           function_call: self.adaptor.description.insert_last_into,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.parallel.illustrator.svg
+            self.elements.parallel.illustrator.svg,
           ),
           type: "parallel",
           params: [self.adaptor.description.elements.parallel, node],
@@ -1675,7 +1691,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Service Call with Scripts",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.callmanipulate.illustrator.svg
+            self.elements.callmanipulate.illustrator.svg,
           ),
           type: "callmanipulate",
           params: [self.adaptor.description.elements.callmanipulate, node],
@@ -1684,7 +1700,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Service Call",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.call.illustrator.svg
+            self.elements.call.illustrator.svg,
           ),
           type: "call",
           params: [self.adaptor.description.elements.call, node],
@@ -1693,7 +1709,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Script",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.manipulate.illustrator.svg
+            self.elements.manipulate.illustrator.svg,
           ),
           type: "manipulate",
           params: [self.adaptor.description.elements.manipulate, node],
@@ -1702,7 +1718,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Parallel",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.parallel.illustrator.svg
+            self.elements.parallel.illustrator.svg,
           ),
           type: "parallel",
           params: [self.adaptor.description.elements.parallel, node],
@@ -1711,7 +1727,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Decision",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.choose.illustrator.svg
+            self.elements.choose.illustrator.svg,
           ),
           type: "choose",
           params: [self.adaptor.description.elements.choose, node],
@@ -1720,7 +1736,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Loop",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.loop.illustrator.svg
+            self.elements.loop.illustrator.svg,
           ),
           type: "loop",
           params: [self.adaptor.description.elements.loop, node],
@@ -1729,7 +1745,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Terminate",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.terminate.illustrator.svg
+            self.elements.terminate.illustrator.svg,
           ),
           type: "terminate",
           params: [self.adaptor.description.elements.terminate, node],
@@ -1738,7 +1754,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Stop",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.stop.illustrator.svg
+            self.elements.stop.illustrator.svg,
           ),
           type: "stop",
           params: [self.adaptor.description.elements.stop, node],
@@ -1747,7 +1763,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Critical",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.critical.illustrator.svg
+            self.elements.critical.illustrator.svg,
           ),
           type: "critical",
           params: [self.adaptor.description.elements.critical, node],
@@ -1756,7 +1772,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Wait for Signal",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.wait_for_signal.illustrator.svg
+            self.elements.wait_for_signal.illustrator.svg,
           ),
           type: "wait_for_signal",
           params: [self.adaptor.description.elements.wait_for_signal, node],
@@ -1772,7 +1788,7 @@ function WFAdaptorManifestationBase(adaptor) {
             label: "Alternative",
             function_call: func,
             menu_icon: contextMenuHandling_clean_icon(
-              self.elements.alternative.illustrator.svg
+              self.elements.alternative.illustrator.svg,
             ),
             type: "alternative",
             params: [self.adaptor.description.elements.alternative, node],
@@ -1825,7 +1841,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Service Call with Scripts",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.callmanipulate.illustrator.svg
+            self.elements.callmanipulate.illustrator.svg,
           ),
           type: "callmanipulate",
           params: [self.adaptor.description.elements.callmanipulate, node],
@@ -1834,7 +1850,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Service Call",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.call.illustrator.svg
+            self.elements.call.illustrator.svg,
           ),
           type: "call",
           params: [self.adaptor.description.elements.call, node],
@@ -1843,7 +1859,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Script",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.manipulate.illustrator.svg
+            self.elements.manipulate.illustrator.svg,
           ),
           type: "manipulate",
           params: [self.adaptor.description.elements.manipulate, node],
@@ -1852,7 +1868,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Parallel",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.parallel.illustrator.svg
+            self.elements.parallel.illustrator.svg,
           ),
           type: "parallel",
           params: [self.adaptor.description.elements.parallel, node],
@@ -1861,7 +1877,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Decision",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.choose.illustrator.svg
+            self.elements.choose.illustrator.svg,
           ),
           type: "choose",
           params: [self.adaptor.description.elements.choose, node],
@@ -1870,7 +1886,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Loop",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.loop.illustrator.svg
+            self.elements.loop.illustrator.svg,
           ),
           type: "loop",
           params: [self.adaptor.description.elements.loop, node],
@@ -1879,7 +1895,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Terminate",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.terminate.illustrator.svg
+            self.elements.terminate.illustrator.svg,
           ),
           type: "terminate",
           params: [self.adaptor.description.elements.terminate, node],
@@ -1888,7 +1904,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Stop",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.stop.illustrator.svg
+            self.elements.stop.illustrator.svg,
           ),
           type: "stop",
           params: [self.adaptor.description.elements.stop, node],
@@ -1900,7 +1916,7 @@ function WFAdaptorManifestationBase(adaptor) {
             label: "Critical",
             function_call: func,
             menu_icon: contextMenuHandling_clean_icon(
-              self.elements.critical.illustrator.svg
+              self.elements.critical.illustrator.svg,
             ),
             type: "critical",
             params: [self.adaptor.description.elements.critical, node],
@@ -1909,11 +1925,11 @@ function WFAdaptorManifestationBase(adaptor) {
             label: "Wait for Signal",
             function_call: func,
             menu_icon: contextMenuHandling_clean_icon(
-              self.elements.wait_for_signal.illustrator.svg
+              self.elements.wait_for_signal.illustrator.svg,
             ),
             type: "wait_for_signal",
             params: [self.adaptor.description.elements.wait_for_signal, node],
-          }
+          },
         );
       }
       return childs;
@@ -2002,7 +2018,7 @@ function WFAdaptorManifestationBase(adaptor) {
 
         $(
           "call, manipulate, loop[condition], alternative[condition]",
-          node
+          node,
         ).each(function (i, n) {
           let item = "";
           if (n.hasAttribute("condition")) {
@@ -2023,7 +2039,7 @@ function WFAdaptorManifestationBase(adaptor) {
             });
             $(
               "call > code > finalize, call > code > update, call > code > rescue",
-              n
+              n,
             ).each(function (j, m) {
               let x = m.textContent;
               item += x + "\n";
@@ -2075,7 +2091,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Service Call with Scripts",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.callmanipulate.illustrator.svg
+            self.elements.callmanipulate.illustrator.svg,
           ),
           type: "callmanipulate",
           params: [self.adaptor.description.elements.callmanipulate, node],
@@ -2084,7 +2100,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Service Call",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.call.illustrator.svg
+            self.elements.call.illustrator.svg,
           ),
           type: "call",
           params: [self.adaptor.description.elements.call, node],
@@ -2093,7 +2109,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Script",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.manipulate.illustrator.svg
+            self.elements.manipulate.illustrator.svg,
           ),
           type: "manipulate",
           params: [self.adaptor.description.elements.manipulate, node],
@@ -2102,7 +2118,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Parallel",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.parallel.illustrator.svg
+            self.elements.parallel.illustrator.svg,
           ),
           type: "parallel",
           params: [self.adaptor.description.elements.parallel, node],
@@ -2111,7 +2127,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Decision",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.choose.illustrator.svg
+            self.elements.choose.illustrator.svg,
           ),
           type: "choose",
           params: [self.adaptor.description.elements.choose, node],
@@ -2120,7 +2136,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Loop",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.loop.illustrator.svg
+            self.elements.loop.illustrator.svg,
           ),
           type: "loop",
           params: [self.adaptor.description.elements.loop, node],
@@ -2129,7 +2145,7 @@ function WFAdaptorManifestationBase(adaptor) {
           label: "Stop",
           function_call: func,
           menu_icon: contextMenuHandling_clean_icon(
-            self.elements.stop.illustrator.svg
+            self.elements.stop.illustrator.svg,
           ),
           type: "stop",
           params: [self.adaptor.description.elements.stop, node],

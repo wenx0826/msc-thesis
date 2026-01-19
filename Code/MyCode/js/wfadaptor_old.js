@@ -44,11 +44,23 @@ function WfAdaptor(theme_base, doit) {
   // helper funtions
   this.set_description = function (desc, auto_update) {
     // public {{{
+    console.log(
+      "GetDescriptionBug001-this.setDescription description in adaptor: desc:",
+      desc,
+    );
     this.description.set_description(desc, auto_update);
+    console.log("GetDescriptionBug002-Description set in adaptor");
   }; // }}}
 
   this.get_description = function () {
     // public {{{
+    console.log(
+      "GetDescriptionBug00X-this.get_description called",
+      description,
+      description.get_description(),
+      this.description,
+      this.description.get_description(),
+    );
     return description.get_description();
   }; // }}}
 
@@ -73,7 +85,7 @@ function WfAdaptor(theme_base, doit) {
   // initialize
   this.illustrator = illustrator = new WfIllustrator(this);
   this.description = description = new WfDescription(this, this.illustrator);
-
+  console.log("GetDescriptionBug00X-herere?-Description set in adaptor");
   this.update = function (doit) {
     doit(self);
   };
@@ -129,7 +141,7 @@ function WfAdaptor(theme_base, doit) {
           success: function (res) {
             manifestation.resources[this] = $(res.documentElement);
           },
-        })
+        }),
       );
     }
     for (element in manifestation.elements) {
@@ -149,10 +161,10 @@ function WfAdaptor(theme_base, doit) {
               context: element,
               success: function (res) {
                 manifestation.elements[this].illustrator.svg = $(
-                  res.documentElement
+                  res.documentElement,
                 );
               },
-            })
+            }),
           );
         } else if (
           manifestation.elements[element].illustrator.svg &&
@@ -169,10 +181,10 @@ function WfAdaptor(theme_base, doit) {
                 context: element,
                 success: function (res) {
                   manifestation.elements[this].illustrator.svg.start = $(
-                    res.documentElement
+                    res.documentElement,
                   );
                 },
-              })
+              }),
             );
           }
           if (manifestation.elements[element].illustrator.svg.middle) {
@@ -184,10 +196,10 @@ function WfAdaptor(theme_base, doit) {
                 context: element,
                 success: function (res) {
                   manifestation.elements[this].illustrator.svg.middle = $(
-                    res.documentElement
+                    res.documentElement,
                   );
                 },
-              })
+              }),
             );
           }
           if (manifestation.elements[element].illustrator.svg.end) {
@@ -199,10 +211,10 @@ function WfAdaptor(theme_base, doit) {
                 context: element,
                 success: function (res) {
                   manifestation.elements[this].illustrator.svg.end = $(
-                    res.documentElement
+                    res.documentElement,
                   );
                 },
-              })
+              }),
             );
           }
         }
@@ -218,26 +230,25 @@ function WfAdaptor(theme_base, doit) {
           ];
         }
         if ($.isArray(manifestation.elements[element].description)) {
-          manifestation.elements[element].description.forEach(function (
-            val,
-            ind
-          ) {
-            deferreds.push(
-              $.ajax({
-                type: "GET",
-                dataType: "xml",
-                url: val,
-                context: element,
-                success: function (res) {
-                  manifestation.elements[this].description = $(
-                    res.documentElement
-                  );
-                  description.elements[this] =
-                    manifestation.elements[this].description;
-                },
-              })
-            );
-          });
+          manifestation.elements[element].description.forEach(
+            function (val, ind) {
+              deferreds.push(
+                $.ajax({
+                  type: "GET",
+                  dataType: "xml",
+                  url: val,
+                  context: element,
+                  success: function (res) {
+                    manifestation.elements[this].description = $(
+                      res.documentElement,
+                    );
+                    description.elements[this] =
+                      manifestation.elements[this].description;
+                  },
+                }),
+              );
+            },
+          );
         }
       }
       if (manifestation.elements[element].adaptor) {
@@ -306,26 +317,26 @@ function WfIllustrator(wf_adaptor) {
           '    <stop offset="50%" stop-color="var(--custom-color)"/>' +
           '    <stop offset="100%" stop-color="var(--custom-color)"/>' +
           "  </linearGradient>" +
-          "</defs>"
-      )
+          "</defs>",
+      ),
     );
     self.svg.defs = {};
     self.svg.defs["unknown"] = $X(
       '<g xmlns="http://www.w3.org/2000/svg" class="unknown">' +
         '<circle cx="15" cy="15" r="14" class="unkown"/>' +
         '<text transform="translate(15,20)" class="normal">?</text>' +
-        "</g>"
+        "</g>",
     );
     for (element in self.elements) {
       if (self.elements[element].svg) {
         var sym = $X('<g xmlns="http://www.w3.org/2000/svg"/>').append(
-          self.elements[element].svg.clone().children()
+          self.elements[element].svg.clone().children(),
         ); // append all children to symbol
         $.each(
           self.elements[element].svg.attr("class").split(/\s+/),
           function (index, item) {
             sym.addClass(item);
-          }
+          },
         ); // copy all classes from the root node
         self.svg.defs[element] = sym;
       }
@@ -346,11 +357,11 @@ function WfIllustrator(wf_adaptor) {
     self.svg.container.attr("width", bb.x + bb.width + self.width_shift); // small border on the right
     self.svg.container.attr(
       "data-pos-matrix",
-      JSON.stringify(self.dim.symbols)
+      JSON.stringify(self.dim.symbols),
     );
     self.svg.container.attr(
       "data-con-list",
-      JSON.stringify(self.dim.connections)
+      JSON.stringify(self.dim.connections),
     );
   }; // }}}
   this.set_duration = function (start) {
@@ -362,8 +373,8 @@ function WfIllustrator(wf_adaptor) {
           ') rotate(90)" xmlns="http://www.w3.org/2000/svg">' +
           Math.trunc(performance.now() - start) +
           " ms" +
-          "</text>"
-      )
+          "</text>",
+      ),
     );
   }; //}}}
 
@@ -371,7 +382,7 @@ function WfIllustrator(wf_adaptor) {
     // {{{
     return $(
       "[element-id = '" + svg_id + "'] g.activities",
-      self.svg.container
+      self.svg.container,
     );
   }; // }}}
   this.get_label_by_svg_id = function (svg_id) {
@@ -531,7 +542,7 @@ function WfIllustrator(wf_adaptor) {
     label,
     subtype,
     sty,
-    eid
+    eid,
   ) {
     //{{{
     if (!self.dim.symbols[row]) {
@@ -785,7 +796,7 @@ function WfIllustrator(wf_adaptor) {
         { function_call: adaptor.elements[tname][event_name] },
         function (e) {
           e.data.function_call($(this).attr("element-id"), e);
-        }
+        },
       );
       if (event_name == "mousedown") sym.bind("contextmenu", false);
     }
@@ -809,7 +820,7 @@ function WfIllustrator(wf_adaptor) {
         cwidth +
         '" height="' +
         self.height +
-        '" xmlns="http://www.w3.org/2000/svg"></rect>'
+        '" xmlns="http://www.w3.org/2000/svg"></rect>',
     );
     self.svg.container.prepend(g);
     return g;
@@ -825,7 +836,7 @@ function WfIllustrator(wf_adaptor) {
     group,
     addition,
     info,
-    style
+    style,
   ) {
     // {{{
     if (
@@ -854,7 +865,7 @@ function WfIllustrator(wf_adaptor) {
         "," +
         String(stop) +
         ')"></g>' +
-        "</g>"
+        "</g>",
     );
 
     // add the element-endpoint and other stuff to each symbol (from theme info function)
@@ -892,7 +903,7 @@ function WfIllustrator(wf_adaptor) {
         if (!found) {
           $(".part-normal", sym).remove();
           let ts = $X(
-            '<g class="part-normal" xmlns="http://www.w3.org/2000/svg"></g>'
+            '<g class="part-normal" xmlns="http://www.w3.org/2000/svg"></g>',
           );
           ts.append($(tsym.documentElement.children).clone());
           sym.prepend(ts);
@@ -961,11 +972,11 @@ function WfIllustrator(wf_adaptor) {
                 l2 = l2.substr(0, l_trunc) + "\u2026";
               }
               let a1 = $X(
-                '<tspan x="0" dy="-8" xmlns="http://www.w3.org/2000/svg"></tspan>'
+                '<tspan x="0" dy="-8" xmlns="http://www.w3.org/2000/svg"></tspan>',
               );
               a1.text(l1);
               let a2 = $X(
-                '<tspan x="0" dy="12" xmlns="http://www.w3.org/2000/svg"></tspan>'
+                '<tspan x="0" dy="12" xmlns="http://www.w3.org/2000/svg"></tspan>',
               );
               a2.text(l2);
               lab.append(a1);
@@ -992,18 +1003,18 @@ function WfIllustrator(wf_adaptor) {
                 '" height="' +
                 (pos.y + pos.height + 4) +
                 '"></rect>' +
-                "</clipPath>"
+                "</clipPath>",
             );
             $("defs", self.svg.container).append(clip);
 
             end.attr(
               "transform",
-              "translate(" + (pos.x + width - self.endclipshift - 4) + ",0)"
+              "translate(" + (pos.x + width - self.endclipshift - 4) + ",0)",
             );
             if (xtr.length > 0) {
               xtr.attr(
                 "transform",
-                "translate(" + (pos.x + width - self.endclipshift - 4) + ",0)"
+                "translate(" + (pos.x + width - self.endclipshift - 4) + ",0)",
               );
             }
             set_x_cond(
@@ -1020,7 +1031,7 @@ function WfIllustrator(wf_adaptor) {
               title,
               subtype,
               sty,
-              id
+              id,
             );
           } else {
             let tdim = 0;
@@ -1045,7 +1056,7 @@ function WfIllustrator(wf_adaptor) {
             title,
             subtype,
             sty,
-            id
+            id,
           );
         }
         if (nor.length > 0) {
@@ -1061,7 +1072,7 @@ function WfIllustrator(wf_adaptor) {
           title,
           subtype,
           sty,
-          id
+          id,
         );
         if (sta.length > 0) {
           sta.remove();
@@ -1090,8 +1101,8 @@ function WfIllustrator(wf_adaptor) {
             '<tspan class="active">0</tspan>' +
             '<tspan class="colon">,</tspan>' +
             '<tspan class="vote">0</tspan>' +
-            "</text>"
-        )
+            "</text>",
+        ),
       );
     }
 
@@ -1128,8 +1139,8 @@ function WfIllustrator(wf_adaptor) {
           'height="' +
           ((p2.row + 1 - p1.row) * self.height + 2 * self.group_extend) +
           '" ' +
-          'class="block" rx="12" ry="12" xmlns="http://www.w3.org/2000/svg"/>'
-      )
+          'class="block" rx="12" ry="12" xmlns="http://www.w3.org/2000/svg"/>',
+      ),
     );
   }); // }}}
   var draw_tile = (this.draw.draw_tile = function (id, p1, p2, group) {
@@ -1154,8 +1165,8 @@ function WfIllustrator(wf_adaptor) {
           'height="' +
           ((p2.row + 1 - p1.row) * self.height + 2 * self.group_extend) +
           '" ' +
-          'class="tile" rx="12" ry="12" xmlns="http://www.w3.org/2000/svg"/>'
-      )
+          'class="tile" rx="12" ry="12" xmlns="http://www.w3.org/2000/svg"/>',
+      ),
     );
   }); // }}}
   var draw_connection = (this.draw.draw_connection = function (
@@ -1163,7 +1174,7 @@ function WfIllustrator(wf_adaptor) {
     start,
     end,
     context_row,
-    arrow
+    arrow,
   ) {
     // {{{
     let sr = Math.min(start.row, end.row);
@@ -1179,7 +1190,7 @@ function WfIllustrator(wf_adaptor) {
     var line;
     if (arrow)
       line = $X(
-        '<path xmlns="http://www.w3.org/2000/svg" class="edge" marker-end="url(#arrow)"/>'
+        '<path xmlns="http://www.w3.org/2000/svg" class="edge" marker-end="url(#arrow)"/>',
       );
     else line = $X('<path xmlns="http://www.w3.org/2000/svg" class="edge"/>');
     if (end["row"] - start["row"] == 0 || end["col"] - start["col"] == 0) {
@@ -1193,7 +1204,7 @@ function WfIllustrator(wf_adaptor) {
           " " +
           String(cend) +
           "," +
-          String(end["row"] * self.height - 15)
+          String(end["row"] * self.height - 15),
       );
     } else if (end["row"] - start["row"] > 0) {
       // downwards
@@ -1217,7 +1228,7 @@ function WfIllustrator(wf_adaptor) {
               " " +
               String(cend) +
               "," +
-              String(end["row"] * self.height - 15)
+              String(end["row"] * self.height - 15),
           );
         } else {
           line.attr(
@@ -1233,7 +1244,7 @@ function WfIllustrator(wf_adaptor) {
               " " +
               String(cend) +
               "," +
-              String(end["row"] * self.height - 15)
+              String(end["row"] * self.height - 15),
           );
         }
       } else {
@@ -1255,7 +1266,7 @@ function WfIllustrator(wf_adaptor) {
             " " + // last turn of horizontal-line going into the node
             String(cend) +
             "," +
-            String(end["row"] * self.height - 15)
+            String(end["row"] * self.height - 15),
         );
       }
     } else if (end["row"] - start["row"] < 0) {
@@ -1281,7 +1292,7 @@ function WfIllustrator(wf_adaptor) {
           " " +
           String(cend) +
           "," +
-          String(end["row"] * self.height - 15)
+          String(end["row"] * self.height - 15),
       );
     }
     self.svg.container.append(line);
@@ -1324,7 +1335,7 @@ function WfDescription(wf_adaptor, wf_illustrator) {
         stripe_height: illustrator.default_height,
         height_shift: illustrator.height_shift,
       },
-      illustrator.striped == true ? true : false
+      illustrator.striped == true ? true : false,
     );
   }; //}}}
 
@@ -1341,7 +1352,7 @@ function WfDescription(wf_adaptor, wf_illustrator) {
         "WfDescription: unknown description type:\nConstructor-Name: " +
           desc.constructor +
           " / TypeOf: " +
-          typeof desc
+          typeof desc,
       );
       description = null;
     }
@@ -1569,7 +1580,7 @@ function WfDescription(wf_adaptor, wf_illustrator) {
         block.svg,
         false,
         {},
-        {}
+        {},
       );
     } // }}}
 
@@ -1657,7 +1668,7 @@ function WfDescription(wf_adaptor, wf_illustrator) {
           prev,
           block,
           endnodes,
-          context
+          context,
         );
 
         // Prepare next iteration {{{
@@ -1690,7 +1701,7 @@ function WfDescription(wf_adaptor, wf_illustrator) {
               block,
               [],
               context,
-              { svg: g, pos: origpos }
+              { svg: g, pos: origpos },
             );
             pos.col--;
             set_details(ctname, csname, pos, context, true);
@@ -1704,7 +1715,7 @@ function WfDescription(wf_adaptor, wf_illustrator) {
               block,
               [],
               context,
-              { svg: g, pos: origpos }
+              { svg: g, pos: origpos },
             );
           }
           prev = JSON.parse(JSON.stringify(endnodes));
@@ -1738,7 +1749,7 @@ function WfDescription(wf_adaptor, wf_illustrator) {
         block,
         [],
         this,
-        { svg: block.svg, pos: pos }
+        { svg: block.svg, pos: pos },
       );
     }
 
@@ -1756,7 +1767,7 @@ function WfDescription(wf_adaptor, wf_illustrator) {
         context,
         illustrator.elements[tname].col_shift
           ? illustrator.elements[tname].col_shift(context)
-          : undefined
+          : undefined,
       );
     } else if (typeof illustrator.elements[tname].resolve_symbol == "string") {
       sname = illustrator.elements[tname].resolve_symbol;
@@ -1814,7 +1825,7 @@ function WfDescription(wf_adaptor, wf_illustrator) {
     block,
     endnodes,
     context,
-    second
+    second,
   ) {
     // private {{{
     var sname = sym_name(tname, context);
@@ -1841,12 +1852,12 @@ function WfDescription(wf_adaptor, wf_illustrator) {
           second.svg,
           true,
           {},
-          style
+          style,
         )
         .addClass(
           illustrator.elements[sname]
             ? illustrator.elements[sname].type
-            : "primitive unknown"
+            : "primitive unknown",
         );
     } else {
       $(context).attr("svg-type", tname);
@@ -1871,12 +1882,12 @@ function WfDescription(wf_adaptor, wf_illustrator) {
             block.svg,
             false,
             info,
-            style
+            style,
           )
           .addClass(
             illustrator.elements[sname]
               ? illustrator.elements[sname].type
-              : "primitive unknown"
+              : "primitive unknown",
           );
       } else {
         console.log("no icon " + sname);
@@ -1891,14 +1902,14 @@ function WfDescription(wf_adaptor, wf_illustrator) {
             $(context).attr("svg-id"),
             pos,
             { col: wide, row: block.max.row + 1 },
-            block.svg
+            block.svg,
           );
         } else {
           illustrator.draw.draw_border(
             $(context).attr("svg-id"),
             pos,
             { col: wide, row: block.max.row },
-            block.svg
+            block.svg,
           );
         }
       }
@@ -1915,14 +1926,14 @@ function WfDescription(wf_adaptor, wf_illustrator) {
             $(context).attr("svg-id"),
             pos,
             { col: wide, row: block.max.row + 1 },
-            block.svg
+            block.svg,
           );
         } else {
           illustrator.draw.draw_tile(
             $(context).attr("svg-id"),
             pos,
             { col: wide, row: block.max.row },
-            block.svg
+            block.svg,
           );
         }
       }
@@ -1953,7 +1964,7 @@ function WfDescription(wf_adaptor, wf_illustrator) {
               block.endnodes[node],
               pos,
               0,
-              true
+              true,
             );
           }
         }
@@ -1977,7 +1988,7 @@ function WfDescription(wf_adaptor, wf_illustrator) {
         { row: 1, col: 1 },
         pos,
         0,
-        true
+        true,
       );
     } else {
       if (
@@ -2003,7 +2014,7 @@ function WfDescription(wf_adaptor, wf_illustrator) {
                   prev[node],
                   pos,
                   0,
-                  true
+                  true,
                 );
               } else {
                 // console.log('++ case 5b',prev[node].row,pos.row,illustrator.dim.debug());
@@ -2012,7 +2023,7 @@ function WfDescription(wf_adaptor, wf_illustrator) {
                   prev[node],
                   pos,
                   0,
-                  true
+                  true,
                 );
               }
             }
@@ -2028,7 +2039,7 @@ function WfDescription(wf_adaptor, wf_illustrator) {
               prev[node],
               pos,
               prev[node].row,
-              false
+              false,
             );
           }
         }

@@ -3,8 +3,28 @@ const tracesStore = Store.traces;
 const activeDocumentStore = Store.activeDocument;
 const modelsStore = Store.models;
 const activeModelStore = Store.activeModel;
+let iframeLoaded = false;
 
-const loadData = async () => {
+function waitForIframe() {
+  return new Promise((resolve) => {
+    const iframe = document.getElementById("converter-frame");
+    if (
+      iframe.contentDocument &&
+      iframe.contentDocument.readyState === "complete"
+    ) {
+      iframeLoaded = true;
+      resolve();
+    } else {
+      iframe.addEventListener("load", () => {
+        iframeLoaded = true;
+        resolve();
+      });
+    }
+  });
+}
+async function loadData() {
+  // Wait for iframe to be ready
+  let modelIds = [];
   const documentList = await API.Document.getDocumentList();
   documentsStore.setDocumentList(documentList);
   documentList.forEach((doc) => {
@@ -13,23 +33,43 @@ const loadData = async () => {
   console.log("Loaded documents:", documentList);
   for (const { id: docId } of documentList) {
     const newTraces = await API.Trace.getTracesByDocumentId(docId);
-    console.log("Loaded traces for document", docId, newTraces);
+    // console.log("Loaded traces for document", docId, newTraces);
     tracesStore.addTraces(newTraces);
-    for (const { model_id: modelId } of newTraces) {
-      API.Model.getModelById(modelId).then((model) => {
-        modelsStore.addModel(model);
-        renderModelInList(model);
-      });
-    }
+    modelIds.push(...newTraces.map((trace) => trace.model_id));
+    // for (const { model_id: modelId } of newTraces) {
+    //   API.Model.getModelById(modelId).then(async (model) => {
+    //     await modelsStore.addModel(model);
+    //     // await renderModelInList(model);
+    //   });
+    // }
   }
   if (documentList.length) {
     activeDocumentStore.setActiveDocumentId(
       documentList[documentList.length - 1]?.id,
     );
   }
-};
+  if (!iframeLoaded) {
+    await waitForIframe();
+  }
+  modelIds.forEach(async (modelId) => {
+    const model = await API.Model.getModelById(modelId);
+    modelsStore.addModel(model);
+    await renderModelInList(model);
+  });
+  // const modelIds = Store.models.getAllModelIds();
+}
+
+function getProjectIdFromURL() {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get("project");
+}
 
 $(document).ready(async () => {
+  console.log("project id from url:", getProjectIdFromURL());
+  const iframe = document.getElementById("converter-frame");
+  iframe.addEventListener("load", () => {
+    iframeLoaded = true;
+  });
   await API.init();
   await loadData();
   console.log("Initialization complete.", Store.state);

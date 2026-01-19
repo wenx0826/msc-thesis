@@ -4,6 +4,7 @@ let $regenerateButton;
 let $tracesLayer;
 let $temporarySelectionsLayer;
 let $deleteSelectionButton;
+let $editorWrap;
 
 let temporarySelections = [];
 const hasTemporarySelections = () => {
@@ -19,8 +20,9 @@ $(document).ready(function () {
   $regenerateButton = $("#regenerateButton");
 
   $documentContent = $("#documentContent");
+  $editorWrap = $("#editorWrap");
   $documentContent.on("mouseup", handleTextSelection);
-  $documentContent.on("scroll", rerenderOverlayLayers);
+  $editorWrap.on("scroll", rerenderOverlayLayers);
 
   $generateButton.on("click", async () => {
     const selectedText = getSelectedText();
@@ -97,6 +99,7 @@ const clearDocumentViewer = () => {
 };
 
 const onRangeSelect = (event) => {
+  console.log("Range selected");
   event.stopPropagation();
   const $target = $(event.currentTarget).parent();
   $target.addClass("selected");
@@ -128,6 +131,7 @@ const onRangeSelect = (event) => {
 
 const renderSelection = (range, modelId) => {
   const rangeId = range.id || Date.now();
+  const color = getSelectionColor();
 
   const $selectionDiv = $("<div>")
     .attr("id", rangeId)
@@ -136,21 +140,25 @@ const renderSelection = (range, modelId) => {
       `selection-wrapper ${modelId == activeModelStore.getModelId() ? "active" : ""}`,
     )
     .css({
-      top: `${range.getBoundingClientRect().top + window.scrollY}px`,
-      left: `${range.getBoundingClientRect().left + window.scrollX}px`,
-      width: `${range.getBoundingClientRect().width}px`,
-      height: `${range.getBoundingClientRect().height}px`,
+      // top: `${range.getBoundingClientRect().top + window.scrollY}px`,
+      // left: `${range.getBoundingClientRect().left + window.scrollX}px`,
+      // width: `${range.getBoundingClientRect().width}px`,
+      // height: `${range.getBoundingClientRect().height}px`,
+      backgroundColor: color,
     });
+  const eleEditorWrap = $editorWrap[0];
+  const eleEditorWrapRect = eleEditorWrap.getBoundingClientRect();
   const $rangeRect = $("<div>").addClass("range-rect");
   const rects = range.getClientRects();
   for (const rect of rects) {
     const $rectDiv = $rangeRect.clone();
     $rectDiv
       .css({
-        top: `${rect.top + window.scrollY}px`,
-        left: `${rect.left + window.scrollX}px`,
+        top: `${rect.top - eleEditorWrapRect.top + eleEditorWrap.scrollTop}px`,
+        left: `${rect.left - eleEditorWrapRect.left + eleEditorWrap.scrollLeft}px`,
         width: `${rect.width}px`,
         height: `${rect.height}px`,
+        backgroundColor: "inherit",
       })
       .on("click", onRangeSelect);
     $selectionDiv.append($rectDiv);
@@ -199,11 +207,16 @@ function removeSelectionsByModelId(modelId) {
 }
 
 const rerenderTemporarySelectionsLayer = () => {
-  if (Store.hasTemporarySelections()) {
+  console.log(
+    "Rerendering temporary selections layer????",
+    hasTemporarySelections(),
+  );
+  if (hasTemporarySelections()) {
     $temporarySelectionsLayer.empty();
-    Store.getTemporarySelections().forEach((range) => renderSelection(range));
+    temporarySelections.forEach((range) => renderSelection(range));
   }
 };
+
 const renderTrace = ({ selections, model_id: modelId }) => {
   selections.forEach((serializedRange) => {
     const range = deserializeRange(serializedRange);
@@ -221,6 +234,12 @@ const rerenderOverlayLayers = () => {
   rerenderTracesLayer();
   rerenderTemporarySelectionsLayer();
 };
+
+function getSelectionColor() {
+  const form = document.getElementById("selectionColorForm");
+  const color = new FormData(form).get("color");
+  return color;
+}
 
 const handleTextSelection = () => {
   const selection = window.getSelection();

@@ -20,12 +20,13 @@
     </element>
     <element name="type" rngui:label="Type">
       <choice>
+        <value>task</value>
+        <value>subprocess</value>
       </choice>
     </element>
     <element name="model" rngui:label="Model">
       <choice>
       </choice>
     </element> 
-    
   </element>
 </element>

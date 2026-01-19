@@ -11,7 +11,7 @@
       <value>#deddda</value>
     </choice>
   </attribute>
-  <element name="_generic" rngui:header="Process Level Generic Annotations">
+  <!-- <element name="_generic" rngui:header="Process Level Generic Annotations">
     <zeroOrMore rngui:label="Create Annotation Pair">
       <element rngui:label="Name" rngui:labeltype="xml">
         <anyName/>
@@ -138,6 +138,6 @@
       </zeroOrMore>
     </element>
 
-  </element>
+  </element> -->
 
 </element>

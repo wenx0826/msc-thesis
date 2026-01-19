@@ -100,7 +100,7 @@ Store.activeDocument = Object.assign(
     },
     getTraces() {
       const activeDocumentId = this.getActiveDocumentId();
-      return Store.traces.getDocumentTraces(activeDocumentId);
+      return tracesStore.getDocumentTraces(activeDocumentId);
     },
     setStatus(status) {
       this.state.status = status;
@@ -143,7 +143,7 @@ Store.traces = Object.assign(
       return this.state.traces;
     },
     getDocumentTraces(docId) {
-      return this.state.traces.filter((trace) => trace.document_id == docId);
+      return this.getTraces().filter((trace) => trace.document_id == docId);
     },
     getDocumentModelIds(docId) {
       return this.getDocumentTraces(docId).map((trace) => trace.model_id);
@@ -172,6 +172,8 @@ Store.traces = Object.assign(
 
     async createTrace(sections) {
       const documentId = Store.activeDocument.getActiveDocumentId();
+      console.log("Creating trace for document ID:", Store.activeDocument);
+      console.log("Creating trace for document ID???:", documentId);
       const modelId = Store.activeModel.getModelId();
       const trace = {
         id: Date.now(), // Simple unique ID generation
@@ -200,12 +202,13 @@ Store.traces = Object.assign(
 Store.models = Object.assign(
   createDomainStore({
     models: [],
+    modelList: [],
   }),
   {
     addModel(model) {
       this.state.models.push(model);
     },
-    getModels(text) {
+    getModels() {
       return this.state.models;
     },
     getModelById(modelId) {
@@ -306,20 +309,24 @@ Store.activeModel = Object.assign(
         }
       }
     },
-    async updateActiceModel() {
+    /*async updateActiceModel() {
       const modelId = this.getModelId();
       if (modelId) {
         const updatedModel = await API.Model.getModelById(modelId);
         this.setModel(updatedModel);
       }
-    },
+    },*/
     generateModel(userInput, rpstXml) {
+      const activeModel = this.getModel();
+      const model = activeModel ? activeModel : {};
       console.log("Generating model with input:", userInput, rpstXml);
       this.setStatus("generating");
       const llm = Store.project.getLlmModel();
       API.Model.generateModel({ userInput, rpstXml, llm })
         .then((data) => {
-          this.setModel({ data });
+          console.log("Generated model data!!!:", data);
+
+          this.setModel({ ...model, data });
           // this.setStatus("ready");
         })
         .catch((error) => {
@@ -328,16 +335,25 @@ Store.activeModel = Object.assign(
           this.setStatus("error");
         });
     },
-    regenerateModel() {
-      const activeModel = this.getActiveModel();
-      if (activeModel) {
-        this.generateModel(activeModel.source_text, activeModel.rpst_xml);
-      }
+    regenerateModel(userInput) {
+      console.log("Regenerating model...");
+      console.log("Applying prompt to active model:", userInput);
+      const activeModel = this.getModel();
+      console.log("description of active model:", activeModel.data);
+      const rpstXml = $(activeModel.data).children().serializePrettyXML();
+      console.log("Regenerate RPST XML of active model:", rpstXml);
+
+      // console.log("RPST XML of active model:", rpstXml);
+      this.generateModel(userInput, rpstXml);
+      // const activeModel = this.getActiveModel();
+      // if (activeModel) {
+      //   this.generateModel(activeModel.source_text, activeModel.rpst_xml);
+      // }
     },
-    generateNewModel(selectedText) {
+    generateNewModel(userInput) {
       console.log("Store, Generating new model with selected text:??????");
       const rpstXml = window.Constants.EMPTY_MODEL;
-      this.generateModel(selectedText, rpstXml);
+      this.generateModel(userInput, rpstXml);
     },
     /*updateActiveModel(model) {
       const modelId = this.getModelId();

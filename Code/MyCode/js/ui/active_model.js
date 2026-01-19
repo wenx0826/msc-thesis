@@ -1,17 +1,37 @@
 let $keepButton;
 let $cancelButton;
 let $generatedModelActionBar;
+let $regeneratedModelActionBar;
+let $deleteModelButton;
+let $datDetails;
+let $applyPromptButton;
+let $promptInput;
+let $clearPromptButton;
+let $promptContainer;
+let $promptActionBar;
+let $replaceButton;
+let $backButton;
 
 $(document).ready(function () {
   $keepButton = $("#keepButton");
   $cancelButton = $("#cancelButton");
   $generatedModelActionBar = $("#generatedModelActionBar");
+  $regeneratedModelActionBar = $("#regeneratedModelActionBar");
+  $deleteModelButton = $("#deleteModelButton");
+  $datDetails = $("#dat_details");
+  $promptInput = $("#promptInput");
+  $promptContainer = $("#promptContainer");
+  $promptActionBar = $("#promptActionBar");
+  $sendPromptButton = $("#sendPromptButton");
+  $clearPromptButton = $("#clearPromptButton");
+  $replaceButton = $("#replaceButton");
+  $backButton = $("#backButton");
   $keepButton.on("click", async () => {
     let modelId = activeModelStore.getModelId();
     const activeModel = activeModelStore.getModel();
 
     if (!modelId) {
-      const svgContent = $("#activeModelCanvas");
+      const svgContent = $("#graphcanvas");
       const $svgCopy = svgContent.clone(false);
       $svgCopy.removeAttr("id");
       const svg = $svgCopy.prop("outerHTML");
@@ -20,8 +40,9 @@ $(document).ready(function () {
         activeModel.data,
       );
       modelsStore.createModel(activeModel).then((model) => {
-        renderModelInList(model);
         console.log("Created model with ID:", model);
+
+        renderModelInList(model);
         activeModelStore.setModel(model);
 
         const sections = temporarySelections.map((range) =>
@@ -39,7 +60,7 @@ $(document).ready(function () {
       // modelId = model.id;
     } else {
       // model = await updateModel(db, modelId, activeModel);
-      await saveModel();
+      // await saveModel();
     }
 
     // Store.addModel(model);
@@ -54,39 +75,72 @@ $(document).ready(function () {
     // Store.addTrace(trace);
 
     $generateButton.prop("disabled", true);
-    $("#generatedModelActionBar").css("visibility", "hidden");
+    $("#generatedModelActionBar").hide();
   });
-
+  $replaceButton.on("click", async () => {
+    saveActiveModel();
+  });
   $cancelButton.on("click", () => {
     activeModel = null;
     $("#activeModelName").text("");
-    $("#activeModelCanvas").empty();
+    $("#graphcanvas").empty();
     $("#generatedModelActionBar").css("visibility", "hidden");
+  });
+  $("#activeModelContainer").click(function (e) {
+    $("#graphgrid .selected").removeClass("selected");
+    // save["graph_adaptor"].illustrator.get_elements().removeClass("marked");
+    localStorage.removeItem("marked");
+    localStorage.removeItem("marked_from");
+    $("#dat_details").empty();
+    // e.stopImmediatePropagation();
+  });
+  $promptInput.on("input", () => {
+    const promptText = $promptInput.text();
+    console.log("Prompt input changed:", promptText);
+    if (promptText && promptText.trim() !== "") {
+      $promptActionBar.removeAttr("disabled");
+    } else {
+      $promptActionBar.attr("disabled", "disabled");
+    }
+    // You can add additional logic here if needed
+  });
+  $clearPromptButton.on("mousedown", (e) => {
+    e.preventDefault(); // Prevent losing focus on the input
+    console.log("Clearing prompt input");
+    $promptInput.empty();
+    $promptActionBar.attr("disabled", "disabled");
+  });
+  $sendPromptButton.on("click", () => {
+    const promptText = $promptInput.text();
+    if (!promptText || promptText.trim() === "") {
+      alert("Please enter a prompt.");
+      return;
+    }
+    $promptInput.empty();
+    $promptActionBar.attr("disabled", "disabled");
+
+    // console.log("Applying prompt from button:", promptText);
+    activeModelStore.regenerateModel(promptText);
   });
 });
 
 activeModelStore.subscribe((state, { key, oldValue, newValue }) => {
   switch (key) {
-    case "id":
-      // if (newValue) {
-      //   const model = Store.getModelById(newValue);
-      //   if (model) {
-      //     showActiveModel(model);
-      //   }
-      // } else {
-      //   clearModelViewer();
-      // }
-      break;
     case "model":
+      const newModelId = newValue ? newValue.id : null;
+      const oldModelId = oldValue ? oldValue.id : null;
       if (newValue) {
         showActiveModel(newValue);
-        $generatedModelActionBar.show();
-        const modelId = newValue.id;
-        if (modelId) {
+        if (!newModelId) {
+          $generatedModelActionBar.show();
+        } else if (newModelId == oldModelId) {
+          $regeneratedModelActionBar.show();
+        } else if (newModelId != oldModelId) {
+          // $promptContainer.removeClass("disabled");
           const modelDocumentId = activeModelStore.getDocumentId();
-          if (modelDocumentId) {
+          if (modelDocumentId)
+            //mini bug here has to use this if otherwise new trace cannot be created yet for new model
             activeDocumentStore.setActiveDocumentId(modelDocumentId);
-          }
         }
       } else {
         clearModelViewer();
@@ -96,6 +150,7 @@ activeModelStore.subscribe((state, { key, oldValue, newValue }) => {
 });
 
 function saveActiveModel() {
+  // TODO: remove selection and check arrow
   const activeModel = activeModelStore.getModel();
 
   const svgContent = $("#activeModelCanvas");
@@ -104,11 +159,65 @@ function saveActiveModel() {
   const svg = $svgCopy.prop("outerHTML");
   // const activeModel = Store.getActiveModel();
 
-  // activeModel.data = n§;
+  // activeModel.data = ;
   modelsStore.updateModelById(activeModel.id, {
-    svg,
+    // svg,
     data: new XMLSerializer().serializeToString(activeModel.data),
   });
+
+  var gc = $("#graphcanvas").clone();
+  var start = parseInt(gc.attr("width"));
+  $("#graphgrid > svg:not(#graphcanvas)").each((i, ele) => {
+    const gr = $X(
+      '<g transform="translate(' +
+        start +
+        ')" xmlns="http://www.w3.org/2000/svg"></g>',
+    );
+    start = start + parseInt(ele.getAttribute("width"));
+    $("g", ele).each((j, g) => {
+      gr.append($(g).clone());
+    });
+    gc.append(gr);
+  });
+  gc.find(".selected").removeClass("selected");
+  var varreps = {};
+  $(window.document.styleSheets).each(function (i, x) {
+    if (
+      x &&
+      x.href &&
+      x.ownerNode.attributes.getNamedItem("data-include-export")
+    ) {
+      $(x.cssRules).each(function (j, y) {
+        if (y.selectorText == ":root") {
+          $(y.style).each(function (k, z) {
+            varreps["var\\(" + z + "\\)"] = getComputedStyle(
+              document.documentElement,
+            )
+              .getPropertyValue(z)
+              .toString();
+          });
+        }
+        var loc = $(gc).find(y.selectorText.replace(/svg /g, ""));
+        var cst = y.style.cssText;
+        for (k in varreps) {
+          cst = cst.replace(new RegExp(k, "g"), varreps[k]);
+        }
+        loc.each(function (k, loco) {
+          var sty =
+            $(loco).attr("style") == undefined ? "" : $(loco).attr("style");
+          $(loco).attr("style", cst + sty);
+        });
+      });
+      var loc = $(gc).find("text.super");
+      loc.attr("style", loc.attr("style") + " display: none; ");
+    }
+  });
+  gc.attr("width", start + 1);
+  gc.find(".duration");
+  gc.removeAttr("id");
+  console.log("Saving active model with SVG:", gc[0]);
+  $(`#modelGrid_${activeModel.id}`).empty().append(gc);
+  // updateModelInList(activeModel, gc[0].outerHTML);
   //
   // const updatedModel = { ...activeModel, data: new XMLSerializer().serializeToString(activeModel.data) };
   // updateModel(db, activeModel.id, );
@@ -161,22 +270,28 @@ function deleteActiveModel(e) {
 const clearModelViewer = () => {
   $("#activeModelName").text("");
   // console.log('Clearing active model canvas');
-  $("#activeModelCanvas").empty();
+  $("#graphcanvas").empty();
+  $datDetails.empty();
 };
+
 const showActiveModel = (model) => {
-  // const { name: modelName, data: modelData } = model;
+  $datDetails.empty();
   $("#activeModelName").text(model.name);
-  // console.log('Showing model:', model);
+
   var parser = new DOMParser();
   let data = parser.parseFromString(model.data, "application/xml");
-  console.log("Parsed model data:", data.documentElement.nodeName);
+  console.log("Parsed model data:", data);
+  // console.log("Parsed model data:", doc.documentElement.nodeName);
+  // let data;
   if (data.documentElement.nodeName != "description") {
     data = $("description", data)[0];
   } else {
+    // console.log("Parsed model data - is description");
     data = data.documentElement;
   }
   model.data = data;
   console.log("Parsed model data for visualization:", data);
+  save["state"] = model.id ? "ready" : undefined;
   save["graph_theme"] = "preset_copy";
   save["graph_adaptor"] = new WfAdaptor(
     "themes/preset_copy/theme.js",
@@ -184,74 +299,27 @@ const showActiveModel = (model) => {
       // graphrealization.draw_labels = (max, labels, dimensions, striped) => {
       //   draw_extended_columns(graphrealization, max, labels, dimensions, striped)
       // };
-      graphrealization.set_svg_container($("#activeModelCanvas"));
-      graphrealization.set_label_container($("#activeModelGrid"));
+      graphrealization.set_svg_container($("#graphcanvas"));
+      graphrealization.set_label_container($("#graphgrid"));
       graphrealization.set_description($(data), true);
       graphrealization.notify = function (svgid) {
         // console.log("!!!!!!Graph realization notify for svgid:", svgid);
         var g = graphrealization.get_description();
-        // console.log("!!!!!!Graph realization notify for g???:", g);
-
+        console.log("Bug! Cannot get description g=", g);
         /*save["graph"] = $X(g);
         save["graph"].removeAttr("svg-id");
         save["graph"].removeAttr("svg-type");
         save["graph"].removeAttr("svg-subtype");
         save["graph"].removeAttr("svg-label");
-        document.dispatchEvent(graph_changed);*/
-        if (save["modeltype"] != "CPEE") {
-          /*
-          $.ajax({
-            type: "PUT",
-            url: url + "/properties/attributes/modeltype/",
-            data: { value: "CPEE" },
-            error: report_failure,
-          });
-          $.ajax({
-            type: "PUT",
-            url: url + "/properties/transformation/",
-            contentType: "text/xml",
-            headers: {
-              "Content-ID": "transformation",
-              "CPEE-Event-Source": myid,
-            },
-            data: '<transformation xmlns="http://cpee.org/ns/properties/2.0"><description type="copy"/><dataelements type="none"/><endpoints type="none"/></transformation>',
-            success: function () {
-              $.ajax({
-                type: "PUT",
-                url: url + "/properties/description/",
-                contentType: "text/xml",
-                headers: {
-                  "Content-ID": "description",
-                  "CPEE-Event-Source": myid,
-                },
-                data: g,
-                error: report_failure,
-              });
-            },
-            error: report_failure,
-          });
-          */
-        } else {
-          /*
-          $.ajax({
-            type: "PUT",
-            url: url + "/properties/description/",
-            contentType: "text/xml",
-            headers: {
-              "Content-ID": "description",
-              "CPEE-Event-Source": myid,
-            },
-            data: g,
-            error: report_failure,
-          });
-          */
-        }
+        document.dispatchEvent(graph_changed);
+        */
         manifestation.events.click(svgid);
         format_instance_pos();
         if (manifestation.selected() == "unknown") {
           // nothing selected
           $("#dat_details").empty();
         }
+        saveActiveModel();
       };
     },
   );
