@@ -161,8 +161,9 @@
             <ui-area id="editorWrap">
               <ui-area id="tracesLayer" style="z-index: 1;"></ui-area>
               <ui-area id="temporarySelectionsLayer"></ui-area>
-              <ui-area id="documentContent">
-              </ui-area>
+              <ui-area id="documentContent"></ui-area>
+              <ui-area id="modelTagsLayer"></ui-area>
+            </ui-area>
             </ui-area>
             <!-- </div> -->
           </ui-content>
@@ -179,9 +180,10 @@
       <!-- Middle: Current Model Panel -->
       <ui-rest class="panel" style="flex:0.4;">
         <ui-rest style="flex: 0.75 1 0;min-height: 100px">
-          <ui-bar>
+          <ui-bar id="modelActionBar" style="visibility: hidden">
             <div id="activeModelName"></div>
             <div class="right button-group">
+              <button name="deselsetModelButton" onclick="activeModelStore.setModel(null)">Deselect Model</button>
               <button name="deletemodel" onclick="deleteActiveModel()">Delete Model</button>
             </div>
           </ui-bar>

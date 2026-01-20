@@ -50,14 +50,7 @@ function convertDataToSVG(input) {
 }
 async function renderModelInList(model) {
   console.log("Calling convertDataToSVG to render model in list:", model.id);
-  const outputFrame = await convertDataToSVG(model);
-  // console.log("Converted SVG content from model data:", outputFrame);
-
-  const svgData = new DOMParser().parseFromString(
-    outputFrame,
-    "image/svg+xml",
-  ).documentElement;
-
+  const modelId = model.id;
   var gridId = `modelGrid_${model.id}`;
   const $modelsArea = $("#models");
   const $modelContainer = $("<div>")
@@ -66,13 +59,23 @@ async function renderModelInList(model) {
   $modelContainer.text(`${model.name}`);
   $modelsArea.append($modelContainer);
   const $gridDiv = $("<div>").attr("id", gridId);
-  $gridDiv.append(svgData);
-  $modelContainer.append($gridDiv);
   $modelContainer.on("click", (event) => {
     event.stopPropagation();
-    activeModelStore.setModelById(model.id);
+    const activeModel = activeModelStore.getModel();
+    const activeModeId = activeModel ? activeModel.id : null;
+    activeModelStore.setModel(activeModeId == modelId ? null : model);
   });
   console.log("Model rendered in list:", model);
+  $modelContainer.append($gridDiv);
+
+  const outputFrame = await convertDataToSVG(model);
+  // console.log("Converted SVG content from model data:", outputFrame);
+  const svgData = new DOMParser().parseFromString(
+    outputFrame,
+    "image/svg+xml",
+  ).documentElement;
+
+  $gridDiv.append(svgData);
 }
 
 const highlightActiveModelInList = (modelId) => {

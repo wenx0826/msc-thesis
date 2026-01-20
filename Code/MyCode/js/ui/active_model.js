@@ -1,3 +1,4 @@
+let $modelActionBar;
 let $keepButton;
 let $cancelButton;
 let $generatedModelActionBar;
@@ -13,6 +14,7 @@ let $replaceButton;
 let $backButton;
 
 $(document).ready(function () {
+  $modelActionBar = $("#modelActionBar");
   $keepButton = $("#keepButton");
   $cancelButton = $("#cancelButton");
   $generatedModelActionBar = $("#generatedModelActionBar");
@@ -120,7 +122,7 @@ $(document).ready(function () {
     $promptActionBar.attr("disabled", "disabled");
 
     // console.log("Applying prompt from button:", promptText);
-    activeModelStore.regenerateModel(promptText);
+    activeModelStore.generateModelByPrompt(promptText);
   });
 });
 
@@ -133,14 +135,17 @@ activeModelStore.subscribe((state, { key, oldValue, newValue }) => {
         showActiveModel(newValue);
         if (!newModelId) {
           $generatedModelActionBar.show();
-        } else if (newModelId == oldModelId) {
-          $regeneratedModelActionBar.show();
-        } else if (newModelId != oldModelId) {
-          // $promptContainer.removeClass("disabled");
-          const modelDocumentId = activeModelStore.getDocumentId();
-          if (modelDocumentId)
-            //mini bug here has to use this if otherwise new trace cannot be created yet for new model
-            activeDocumentStore.setActiveDocumentId(modelDocumentId);
+        } else {
+          $modelActionBar.css("visibility", "visible");
+          if (newModelId == oldModelId) {
+            $regeneratedModelActionBar.show();
+          } else if (newModelId != oldModelId) {
+            // $promptContainer.removeClass("disabled");
+            const modelDocumentId = activeModelStore.getDocumentId();
+            if (modelDocumentId)
+              //mini bug here has to use this if otherwise new trace cannot be created yet for new model
+              activeDocumentStore.setActiveDocumentId(modelDocumentId);
+          }
         }
       } else {
         clearModelViewer();
@@ -153,10 +158,10 @@ function saveActiveModel() {
   // TODO: remove selection and check arrow
   const activeModel = activeModelStore.getModel();
 
-  const svgContent = $("#activeModelCanvas");
-  const $svgCopy = svgContent.clone(false);
-  $svgCopy.removeAttr("id");
-  const svg = $svgCopy.prop("outerHTML");
+  // const svgContent = $("#activeModelCanvas");
+  // const $svgCopy = svgContent.clone(false);
+  // $svgCopy.removeAttr("id");
+  // const svg = $svgCopy.prop("outerHTML");
   // const activeModel = Store.getActiveModel();
 
   // activeModel.data = ;
@@ -276,21 +281,27 @@ const clearModelViewer = () => {
 
 const showActiveModel = (model) => {
   $datDetails.empty();
-  $("#activeModelName").text(model.name);
+  $("#activeModelName").text(model.name ? model.name : "");
+  // TODO
+  let modelData = model.data;
+  console.log(typeof modelData);
+  if (typeof modelData == "string") {
+    var parser = new DOMParser();
+    let data = parser.parseFromString(modelData, "application/xml");
+    console.log("Parsed model data:", data);
+    // console.log("Parsed model data:", doc.documentElement.nodeName);
+    // let data;
+    if (data.documentElement.nodeName != "description") {
+      data = $("description", data)[0];
+    } else {
+      // console.log("Parsed model data - is description");
+      data = data.documentElement;
+    }
 
-  var parser = new DOMParser();
-  let data = parser.parseFromString(model.data, "application/xml");
-  console.log("Parsed model data:", data);
-  // console.log("Parsed model data:", doc.documentElement.nodeName);
-  // let data;
-  if (data.documentElement.nodeName != "description") {
-    data = $("description", data)[0];
-  } else {
-    // console.log("Parsed model data - is description");
-    data = data.documentElement;
+    model.data = data;
+    console.log("Parsed model data for visualization:", data);
   }
-  model.data = data;
-  console.log("Parsed model data for visualization:", data);
+
   save["state"] = model.id ? "ready" : undefined;
   save["graph_theme"] = "preset_copy";
   save["graph_adaptor"] = new WfAdaptor(
@@ -301,7 +312,7 @@ const showActiveModel = (model) => {
       // };
       graphrealization.set_svg_container($("#graphcanvas"));
       graphrealization.set_label_container($("#graphgrid"));
-      graphrealization.set_description($(data), true);
+      graphrealization.set_description($(model.data), true);
       graphrealization.notify = function (svgid) {
         // console.log("!!!!!!Graph realization notify for svgid:", svgid);
         var g = graphrealization.get_description();

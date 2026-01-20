@@ -28,7 +28,7 @@ $(document).ready(function () {
     const selectedText = getSelectedText();
     console.log("Selected text:", selectedText);
     $generateButton.prop("disabled", true);
-    activeModelStore.generateNewModel(selectedText);
+    activeModelStore.generateNewModelBySelections(selectedText);
     // const text = Store.activeModel.setStatus("generating");
     // API.Model.generateModel();
   });

@@ -99,6 +99,8 @@
                     const svgData = $("#modelCanvasSmall").clone().removeAttr("id");
                     console.log("SVG data for model:", svgData);
                     const svgString = svgData.prop('outerHTML');
+                    //ToAsk why???
+                    // const svgString = svgData.serializedPrettyXML()
                     e.source.postMessage({ id, ok: true, result: svgString }, e.origin);
                 });
                 // console.log("Adaptor created for model rendering in list:", adaptor);

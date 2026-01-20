@@ -317,23 +317,36 @@ Store.activeModel = Object.assign(
       }
     },*/
     generateModel(userInput, rpstXml) {
-      const activeModel = this.getModel();
-      const model = activeModel ? activeModel : {};
-      console.log("Generating model with input:", userInput, rpstXml);
+      const model = rpstXml ? this.getModel() : {};
       this.setStatus("generating");
       const llm = Store.project.getLlmModel();
-      API.Model.generateModel({ userInput, rpstXml, llm })
+      API.Model.generateModel({
+        userInput,
+        rpstXml: rpstXml ? rpstXml : window.Constants.EMPTY_MODEL,
+        llm,
+      })
         .then((data) => {
-          console.log("Generated model data!!!:", data);
-
           this.setModel({ ...model, data });
-          // this.setStatus("ready");
         })
         .catch((error) => {
           console.error("Error generating model:", error);
           this.setError(String(error));
           this.setStatus("error");
         });
+      /*const activeModel = this.getModel();
+      const model = rpstXml ? rpstXml : {};
+      console.log("Generating model with input:", userInput, rpstXml);
+      this.setStatus("generating");
+     
+      API.Model.generateModel({ userInput, rpstXml, llm })
+        .then((data) => data)
+        .catch((error) => {
+          console.error("Error generating model:", error);
+          this.setError(String(error));
+          this.setStatus("error");
+        });
+      */
+      // return new Promise
     },
     regenerateModel(userInput) {
       console.log("Regenerating model...");
@@ -350,10 +363,17 @@ Store.activeModel = Object.assign(
       //   this.generateModel(activeModel.source_text, activeModel.rpst_xml);
       // }
     },
-    generateNewModel(userInput) {
-      console.log("Store, Generating new model with selected text:??????");
-      const rpstXml = window.Constants.EMPTY_MODEL;
+    generateModelByPrompt(userInput) {
+      const activeModel = this.getModel();
+      rpstXml = activeModel
+        ? $(activeModel.data).children().serializePrettyXML()
+        : window.Constants.EMPTY_MODEL;
       this.generateModel(userInput, rpstXml);
+    },
+    generateNewModelBySelections(userInput) {
+      console.log("Store, Generating new model with selected text:??????");
+      // const rpstXml = window.Constants.EMPTY_MODEL;
+      this.generateModel(userInput);
     },
     /*updateActiveModel(model) {
       const modelId = this.getModelId();
