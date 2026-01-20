@@ -3,8 +3,10 @@ let $generateButton;
 let $regenerateButton;
 let $tracesLayer;
 let $temporarySelectionsLayer;
+let $modelTagsLayer;
 let $deleteSelectionButton;
 let $editorWrap;
+// let $modelTagsLayer
 
 let temporarySelections = [];
 const hasTemporarySelections = () => {
@@ -14,7 +16,7 @@ const hasTemporarySelections = () => {
 $(document).ready(function () {
   $tracesLayer = $("#tracesLayer");
   $temporarySelectionsLayer = $("#temporarySelectionsLayer");
-
+  $modelTagsLayer = $("#modelTagsLayer");
   $deleteSelectionButton = $("#deleteSelectionButton");
   $generateButton = $("#generateButton");
   $regenerateButton = $("#regenerateButton");
@@ -37,6 +39,11 @@ $(document).ready(function () {
     $generateButton.prop("disabled", true);
     $regenerateButton.prop("disabled", true);
     activeModelStore.regenerateModel();
+  });
+  $("#columnResizehandle1").on("dragcolumnmove", (e) => {
+    // console.log("Drag column move event:???", e);
+    // e.preventDefault();
+    rerenderOverlayLayers();
   });
 });
 
@@ -71,17 +78,32 @@ activeDocumentStore.subscribe((state, { key, oldValue, newValue }) => {
   }
 });
 
+// activeModelStore.subscribe((state, { key, oldValue, newValue }) => {
+//   if (key === "model") {
+//     if (newValue && newValue.id) highlightActiveModelSelections(newValue.id);
+//   }
+// });
+
 activeModelStore.subscribe((state, { key, oldValue, newValue }) => {
   if (key === "model") {
-    if (newValue && newValue.id) highlightActiveModelSelections(newValue.id);
+    if (newValue && newValue.id) {
+      // highlightActiveModelInList(newValue.id);
+      highlightActiveModelSelections(newValue.id);
+    }
+    if (oldValue && oldValue.id) {
+      unhighlightActiveModelSelections(oldValue.id);
+    }
   }
 });
 
 const getSelectedText = () => {
   return temporarySelections.map((range) => range.toString()).join(" ");
 };
-const clearTraceLayer = () => {
+const clearTracesLayer = () => {
   $tracesLayer.empty();
+};
+const clearTagsLayer = () => {
+  $modelTagsLayer.empty();
 };
 const clearTemporarySelections = () => {
   if (hasTemporarySelections()) {
@@ -90,7 +112,8 @@ const clearTemporarySelections = () => {
   }
 };
 const clearOverlayLayers = () => {
-  clearTraceLayer();
+  clearTracesLayer();
+  clearTagsLayer();
   clearTemporarySelections();
 };
 const clearDocumentViewer = () => {
@@ -129,10 +152,63 @@ const onRangeSelect = (event) => {
     });
 };
 
+// #region Selection Range Serialization and Deserialization
+function getXPath(node, root = document.getElementById("documentContent")) {
+  if (node === root) return "/";
+  const path = [];
+  let cur = node;
+  while (cur && cur !== root) {
+    const idx = Array.prototype.indexOf.call(cur.parentNode.childNodes, cur);
+    path.unshift(idx);
+    cur = cur.parentNode;
+  }
+  return "/" + path.join("/");
+}
+
+function getNodeByXPath(
+  path,
+  root = document.getElementById("documentContent"),
+) {
+  const parts = path.split("/").filter(Boolean);
+  let node = root;
+  for (const idx of parts) {
+    const i = parseInt(idx, 10);
+    if (!node || !node.childNodes[i]) return null;
+    node = node.childNodes[i];
+  }
+  return node;
+}
+
+const serializeRange = (range) => {
+  return {
+    id: range.id,
+    // color: h.color,
+    startXPath: getXPath(range.startContainer),
+    startOffset: range.startOffset,
+    endXPath: getXPath(range.endContainer),
+    endOffset: range.endOffset,
+  };
+};
+
+const deserializeRange = (serializedRange) => {
+  const startNode = getNodeByXPath(serializedRange.startXPath);
+  const endNode = getNodeByXPath(serializedRange.endXPath);
+  const range = document.createRange();
+  range.setStart(startNode, serializedRange.startOffset);
+  range.setEnd(endNode, serializedRange.endOffset);
+  range.id = serializedRange.id;
+  return range;
+};
+
+// #endregion
+
 const renderSelection = (range, modelId) => {
   const rangeId = range.id || Date.now();
   const color = getSelectionColor();
-
+  const eleEditorWrap = $editorWrap[0];
+  const eleEditorWrapRect = eleEditorWrap.getBoundingClientRect();
+  const $rangeRect = $("<div>").addClass("range-rect");
+  const rects = range.getClientRects();
   const $selectionDiv = $("<div>")
     .attr("id", rangeId)
     .attr("data-modelid", modelId || "")
@@ -140,16 +216,12 @@ const renderSelection = (range, modelId) => {
       `selection-wrapper ${modelId == activeModelStore.getModelId() ? "active" : ""}`,
     )
     .css({
-      // top: `${range.getBoundingClientRect().top + window.scrollY}px`,
-      // left: `${range.getBoundingClientRect().left + window.scrollX}px`,
-      // width: `${range.getBoundingClientRect().width}px`,
-      // height: `${range.getBoundingClientRect().height}px`,
-      backgroundColor: color,
+      top: `${range.getBoundingClientRect().top - eleEditorWrapRect.top + eleEditorWrap.scrollTop}px`,
+      left: `${range.getBoundingClientRect().left - eleEditorWrapRect.left + eleEditorWrap.scrollLeft}px`,
+      width: `${range.getBoundingClientRect().width}px`,
+      height: `${range.getBoundingClientRect().height}px`,
     });
-  const eleEditorWrap = $editorWrap[0];
-  const eleEditorWrapRect = eleEditorWrap.getBoundingClientRect();
-  const $rangeRect = $("<div>").addClass("range-rect");
-  const rects = range.getClientRects();
+
   for (const rect of rects) {
     const $rectDiv = $rangeRect.clone();
     $rectDiv
@@ -158,7 +230,8 @@ const renderSelection = (range, modelId) => {
         left: `${rect.left - eleEditorWrapRect.left + eleEditorWrap.scrollLeft}px`,
         width: `${rect.width}px`,
         height: `${rect.height}px`,
-        backgroundColor: "inherit",
+        // backgroundColor: "inherit",
+        backgroundColor: getSelectionColor(),
       })
       .on("click", onRangeSelect);
     $selectionDiv.append($rectDiv);
@@ -170,35 +243,66 @@ const renderSelection = (range, modelId) => {
 
     const modelName = modelsStore.getModelNameById(modelId);
 
-    const labelSpan = $("<span>")
+    const tagSpan = $("<span>")
       .attr("data-modelid", modelId)
-      .addClass("label-span")
+      .addClass("tag-span")
       .text(`${modelName}`)
       .css({
-        top: `${lastRect.top + window.scrollY - 10}px`,
-        left: `${lastRect.right + window.scrollX}px`,
+        top: `${lastRect.top - eleEditorWrapRect.top + eleEditorWrap.scrollTop}px`,
+        left: `${lastRect.right - eleEditorWrapRect.left + eleEditorWrap.scrollLeft}px`,
       })
       .on("click", (event) => {
         event.stopPropagation();
-        activeModelStore.setModelById(modelId);
+        // activeModelStore.setModelById(modelId);
+        const activeModel = activeModelStore.getModel();
+        const activeModeId = activeModel ? activeModel.id : null;
+        activeModelStore.setModelById(activeModeId == modelId ? null : modelId);
       });
-    $selectionDiv.append(labelSpan);
+    if (modelId == activeModelStore.getModelId()) {
+      tagSpan.addClass("active");
+    }
+    // $selectionDiv.append(tagSpan);
     $tracesLayer.append($selectionDiv);
+    $modelTagsLayer.append(tagSpan);
   } else {
     $temporarySelectionsLayer.append($selectionDiv);
   }
 };
 
 const highlightActiveModelSelections = (activeModelId) => {
-  $tracesLayer.find(".selection-wrapper").each((index, element) => {
-    const $element = $(element);
-    const elementModelId = $element.data("modelid");
-    if (elementModelId === activeModelId) {
-      $element.addClass("active");
-    } else {
-      $element.removeClass("active");
-    }
-  });
+  $modelTagsLayer
+    .find(`.tag-span[data-modelid="${activeModelId}"]`)
+    .addClass("active");
+  $tracesLayer
+    .find(`.selection-wrapper[data-modelid="${activeModelId}"]`)
+    .addClass("active");
+  // $tracesLayer.find(".selection-wrapper").each((index, element) => {
+  //   const $element = $(element);
+  //   const elementModelId = $element.data("modelid");
+  //   if (elementModelId === activeModelId) {
+  //     $element.addClass("active");
+  //   } else {
+  //     $element.removeClass("active");
+  //   }
+  // });
+};
+
+const unhighlightActiveModelSelections = (activeModelId) => {
+  $modelTagsLayer
+    .find(`.tag-span[data-modelid="${activeModelId}"]`)
+    .removeClass("active");
+  $tracesLayer
+    .find(`.selection-wrapper[data-modelid="${activeModelId}"]`)
+    .removeClass("active");
+  // $tracesLayer.find(".selection-wrapper").each((index, element) => {
+  //   const $element = $(element);
+  //   const elementModelId = $element.data("modelid");
+  //   if (elementModelId === activeModelId) {
+  //     $element.addClass("active");
+  //   } else {
+  //     $element.removeClass("active");
+  //   }
+  // });
 };
 
 function removeSelectionsByModelId(modelId) {
@@ -218,14 +322,19 @@ const rerenderTemporarySelectionsLayer = () => {
 };
 
 const renderTrace = ({ selections, model_id: modelId }) => {
-  selections.forEach((serializedRange) => {
+  // const
+  selections.forEach((serializedRange, index) => {
     const range = deserializeRange(serializedRange);
+    if (index === 0) {
+      console.log("First range!!:", modelId, "with range:", range);
+    }
     renderSelection(range, modelId);
   });
 };
 
 const rerenderTracesLayer = () => {
-  clearTraceLayer();
+  clearTracesLayer();
+  clearTagsLayer();
   const traces = activeDocumentStore.getTraces();
   traces.forEach((trace) => renderTrace(trace));
 };
@@ -251,12 +360,13 @@ const handleTextSelection = () => {
   $generateButton.prop("disabled", false);
   const activeModelId = activeModelStore.getModelId();
   if (activeModelId) {
-    // $generateButton.hide();
-    $generateButton.text("Generate New Model");
+    $generateButton.hide();
+    // $generateButton.text("Generate New Model");
     $regenerateButton.show();
   } else {
-    // $generateButton.show();
-    $generateButton.text("Generate Model");
+    $regenerateButton.hide();
+    $generateButton.show();
+    // $generateButton.text("Generate Model");
   }
   const clonedRange = range.cloneRange();
   clonedRange.id = Date.now();

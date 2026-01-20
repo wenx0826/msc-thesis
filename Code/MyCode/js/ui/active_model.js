@@ -273,9 +273,10 @@ function deleteActiveModel(e) {
 }
 
 const clearModelViewer = () => {
-  $("#activeModelName").text("");
+  // $("#activeModelName").text("");
   // console.log('Clearing active model canvas');
   $("#graphcanvas").empty();
+  $modelActionBar.css("visibility", "hidden");
   $datDetails.empty();
 };
 

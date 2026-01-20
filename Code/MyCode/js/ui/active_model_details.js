@@ -52,8 +52,8 @@ $(document).on("wf:call-clicked", function (e) {
   // );
   const tab = $("#dat_details");
   const firstElement = tab.children().first().children().first();
-  // console.log("First element of the first element of the tab:", firstElement);
-  // firstElement.css("visibility", "hidden");
+  console.log("First element of the first element of the tab:", firstElement);
+  firstElement.css("visibility", "hidden");
   // console.log("Value of <type> tag:", typeValue);
   //   console.log(
   //     `${fileName}: Call clicked - tagName: ${tagName}, endpoint: ${endpoint}, type: ${type}`

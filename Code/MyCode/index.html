@@ -364,52 +364,7 @@
           */
 
 
-      // #region Selection Range Serialization and Deserialization
-      function getXPath(node, root = document.getElementById("documentContent")) {
-        if (node === root) return '/';
-        const path = [];
-        let cur = node;
-        while (cur && cur !== root) {
-          const idx = Array.prototype.indexOf.call(cur.parentNode.childNodes, cur);
-          path.unshift(idx);
-          cur = cur.parentNode;
-        }
-        return '/' + path.join('/');
-      }
 
-      function getNodeByXPath(path, root = document.getElementById("documentContent")) {
-        const parts = path.split('/').filter(Boolean);
-        let node = root;
-        for (const idx of parts) {
-          const i = parseInt(idx, 10);
-          if (!node || !node.childNodes[i]) return null;
-          node = node.childNodes[i];
-        }
-        return node;
-      }
-
-      const serializeRange = (range) => {
-        return {
-          id: range.id,
-          // color: h.color,
-          startXPath: getXPath(range.startContainer),
-          startOffset: range.startOffset,
-          endXPath: getXPath(range.endContainer),
-          endOffset: range.endOffset,
-        };
-      };
-
-      const deserializeRange = (serializedRange) => {
-        const startNode = getNodeByXPath(serializedRange.startXPath);
-        const endNode = getNodeByXPath(serializedRange.endXPath);
-        const range = document.createRange();
-        range.setStart(startNode, serializedRange.startOffset);
-        range.setEnd(endNode, serializedRange.endOffset);
-        range.id = serializedRange.id;
-        return range;
-      };
-
-      // #endregion
       // Listen to custom events dispatched in this app
       document.addEventListener('graph:changed', function (e) {
         console.log('graph:changed', e);
