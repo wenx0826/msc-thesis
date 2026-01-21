@@ -317,6 +317,8 @@ Store.activeModel = Object.assign(
       }
     },*/
     generateModel(userInput, rpstXml) {
+      // const activeModel = this.getModel();
+      // const model = rpstXml ? rpstXml : {};
       const model = rpstXml ? this.getModel() : {};
       this.setStatus("generating");
       const llm = Store.project.getLlmModel();
@@ -370,7 +372,7 @@ Store.activeModel = Object.assign(
         : window.Constants.EMPTY_MODEL;
       this.generateModel(userInput, rpstXml);
     },
-    generateNewModelBySelections(userInput) {
+    generateModelBySelections(userInput) {
       console.log("Store, Generating new model with selected text:??????");
       // const rpstXml = window.Constants.EMPTY_MODEL;
       this.generateModel(userInput);

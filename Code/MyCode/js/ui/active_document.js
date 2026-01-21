@@ -1,11 +1,11 @@
 let $documentContent;
 let $generateButton;
-let $regenerateButton;
 let $tracesLayer;
 let $temporarySelectionsLayer;
 let $modelTagsLayer;
 let $deleteSelectionButton;
 let $editorWrap;
+let $promptContent;
 // let $modelTagsLayer
 
 let temporarySelections = [];
@@ -19,8 +19,7 @@ $(document).ready(function () {
   $modelTagsLayer = $("#modelTagsLayer");
   $deleteSelectionButton = $("#deleteSelectionButton");
   $generateButton = $("#generateButton");
-  $regenerateButton = $("#regenerateButton");
-
+  $promptContent = $("#promptContent");
   $documentContent = $("#documentContent");
   $editorWrap = $("#editorWrap");
   $documentContent.on("mouseup", handleTextSelection);
@@ -30,18 +29,10 @@ $(document).ready(function () {
     const selectedText = getSelectedText();
     console.log("Selected text:", selectedText);
     $generateButton.prop("disabled", true);
-    activeModelStore.generateNewModelBySelections(selectedText);
+    activeModelStore.generateModelBySelections(selectedText);
     // const text = Store.activeModel.setStatus("generating");
-    // API.Model.generateModel();
-  });
-
-  $regenerateButton.on("click", async () => {
-    $generateButton.prop("disabled", true);
-    $regenerateButton.prop("disabled", true);
-    activeModelStore.regenerateModel();
   });
   $("#columnResizehandle1").on("dragcolumnmove", (e) => {
-    // console.log("Drag column move event:???", e);
     // e.preventDefault();
     rerenderOverlayLayers();
   });
@@ -86,11 +77,19 @@ activeDocumentStore.subscribe((state, { key, oldValue, newValue }) => {
 
 activeModelStore.subscribe((state, { key, oldValue, newValue }) => {
   if (key === "model") {
-    if (newValue && newValue.id) {
+    const newModelId = newValue ? newValue.id : null;
+    const oldModelId = oldValue ? oldValue.id : null;
+    if (newModelId) {
       // highlightActiveModelInList(newValue.id);
       highlightActiveModelSelections(newValue.id);
+      $generateButton.text("Regenerate Model");
+      // $generateButton.prop("disabled", false);
+      $promptContainer.show();
+    } else {
+      $generateButton.text("Generate Model");
+      $promptContainer.hide();
     }
-    if (oldValue && oldValue.id) {
+    if (oldModelId) {
       unhighlightActiveModelSelections(oldValue.id);
     }
   }
@@ -359,15 +358,7 @@ const handleTextSelection = () => {
   // if (!content.contains(range.commonAncestorContainer)) return;
   $generateButton.prop("disabled", false);
   const activeModelId = activeModelStore.getModelId();
-  if (activeModelId) {
-    $generateButton.hide();
-    // $generateButton.text("Generate New Model");
-    $regenerateButton.show();
-  } else {
-    $regenerateButton.hide();
-    $generateButton.show();
-    // $generateButton.text("Generate Model");
-  }
+
   const clonedRange = range.cloneRange();
   clonedRange.id = Date.now();
   temporarySelections.push(clonedRange);

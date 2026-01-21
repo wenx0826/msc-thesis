@@ -2,14 +2,17 @@ const $modelsArea = $("#models");
 
 activeModelStore.subscribe((state, { key, oldValue, newValue }) => {
   if (key === "model") {
-    if (newValue && newValue.id) {
-      highlightActiveModelInList(newValue.id);
+    const newModelId = newValue ? newValue.id : null;
+    const oldModelId = oldValue ? oldValue.id : null;
+    if (newModelId) {
+      highlightActiveModelInList(newModelId);
     }
-    if (oldValue && oldValue.id) {
-      unhighlightActiveModelInList(oldValue.id);
+    if (oldModelId) {
+      unhighlightActiveModelInList(oldModelId);
     }
   }
 });
+
 modelsStore.subscribe((state, { key, operation, id }) => {
   switch (operation) {
     // case "add":
@@ -24,6 +27,7 @@ modelsStore.subscribe((state, { key, operation, id }) => {
       break;
   }
 });
+
 // function renderModelInContainer({ name, svg: svgContent }, $container) {
 //   $container.empty();
 //   const svgData = new DOMParser().parseFromString(

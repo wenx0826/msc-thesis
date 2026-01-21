@@ -75,7 +75,7 @@ API.Trace = {
 };
 
 API.Model = {
-  LLMDisabled: true,
+  LLMDisabled: false,
   async getModelById(id) {
     return await getModelById(API.db, id);
   },

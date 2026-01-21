@@ -27,8 +27,10 @@
   <script type="text/javascript" src="https://cpee.org/js_libs/jquery.min.js"></script>
   <script type="text/javascript" src="https://cpee.org/js_libs/util.js"></script>
   <script type="text/javascript" src="https://cpee.org/js_libs/parsequery.js"></script>
-  <script type="text/javascript" src="https://cpee.org/js_libs/relaxngui.js"></script>
+  <!-- <script type="text/javascript" src="https://cpee.org/js_libs/relaxngui.js"></script> -->
   <link rel="stylesheet" href="https://cpee.org/js_libs/relaxngui.css" type="text/css" />
+  <script type="text/javascript" src="../MyCode/js_libs/relaxngui.js"></script>
+  <!-- <link rel="stylesheet" href="../MyCode/js_libs/relaxngui.css" type="text/css" /> -->
   <script type="text/javascript" src="https://cpee.org/js_libs/vkbeautify.js"></script>
   <script type="text/javascript" src="https://cpee.org/js_libs/custommenu.js"></script>
   <script type="text/javascript" src="https://cpee.org/js_libs/underscore.min.js"></script>
@@ -38,7 +40,7 @@
   <link rel="stylesheet" href="https://cpee.org/js_libs/custommenu.css" type="text/css" />
 
   <!-- modelling ui -->
-  <script type="text/javascript" src="wfadaptor.js"></script>
+  <script type="text/javascript" src="../MyCode/js_cpee/wfadaptor.js"></script>
   <link rel="stylesheet" href="wfadaptor.css" type="text/css" />
   <script type="text/javascript" src="themes/base.js"></script>
 
@@ -148,7 +150,7 @@
         url: model,
         success: (data) => {
           if (data.documentElement.nodeName != 'description') { data = $('description', data)[0]; }
-          new WfAdaptor('themes/extended/theme.js', function (graphrealization) {
+          new WfAdaptor('themes/preset/theme.js', function (graphrealization) {
             graphrealization.draw_labels = (max, labels, dimensions, striped) => {
               // console.log("draw_labels ", max, labels, dimensions, striped);
               draw_extended_columns(graphrealization, max, labels, dimensions, striped)

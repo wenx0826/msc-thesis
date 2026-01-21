@@ -187,7 +187,7 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
             level +
             "' class='relaxngui_header fold'>" +
             header +
-            "</div>"
+            "</div>",
         );
         xxx.prepend($("<span class='relaxngui_fold'></span>"));
         ret.append(xxx);
@@ -204,8 +204,8 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
               level +
               "' class='relaxngui_header'>" +
               header +
-              "</div>"
-          )
+              "</div>",
+          ),
         );
       }
     }
@@ -221,7 +221,7 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
     template,
     path,
     optional,
-    id
+    id,
   ) {
     //{{{
     if (defaul && typeof defaul == "string" && defaul.match(/^javascript:/)) {
@@ -250,8 +250,8 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
             id +
             "' readonly='readonly'" +
             os +
-            "></input>"
-        )
+            "></input>",
+        ),
       );
     else {
       if (second.type == "string") {
@@ -278,8 +278,8 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
                 ? " pattern='" + second.pattern + "'"
                 : "") +
               os +
-              "></input>"
-          )
+              "></input>",
+          ),
         );
       } else if (second.type == "integer") {
         node.append(
@@ -304,8 +304,8 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
               (second.min != undefined ? " min='" + second.min + "'" : "") +
               (second.max != undefined ? " max='" + second.max + "'" : "") +
               os +
-              "></input>"
-          )
+              "></input>",
+          ),
         );
       } else if (second.type == "positiveInteger") {
         if (second.min == undefined) second.min = 1;
@@ -331,8 +331,8 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
               (second.min != undefined ? " min='" + second.min + "'" : "") +
               (second.max != undefined ? " max='" + second.max + "'" : "") +
               os +
-              "></input>"
-          )
+              "></input>",
+          ),
         );
       } else if (second.type == "nonNegativeInteger") {
         if (second.min == undefined) second.min = 0;
@@ -360,8 +360,8 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
               (second.min != undefined ? " min='" + second.min + "'" : "") +
               (second.max != undefined ? " max='" + second.max + "'" : "") +
               os +
-              "></input>"
-          )
+              "></input>",
+          ),
         );
       } else if (second.type == "date") {
         node.append(
@@ -384,8 +384,8 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
               second.label +
               "'" +
               os +
-              "></input>"
-          )
+              "></input>",
+          ),
         );
       } else if (second.type == "float") {
         node.append(
@@ -410,8 +410,8 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
               (second.min != undefined ? " min='" + second.min + "'" : "") +
               (second.max != undefined ? " max='" + second.max + "'" : "") +
               os +
-              "></input>"
-          )
+              "></input>",
+          ),
         );
       } else if (second.type == "bool") {
         node.append(
@@ -434,12 +434,12 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
               second.label +
               "'" +
               os +
-              "></input>"
-          )
+              "></input>",
+          ),
         );
       } else if (second.type == "color") {
         let tnode = $(
-          "<div class='relaxngui_cell relaxngui_color_container'/>"
+          "<div class='relaxngui_cell relaxngui_color_container'/>",
         );
         tnode.append(
           "<span class='round none'><input data-relaxngui-visible='true' data-relaxngui-template='" +
@@ -458,7 +458,7 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
             id +
             "_" +
             "none" +
-            "'></label></span>"
+            "'></label></span>",
         );
         $.each(datalist, function (didx, dname) {
           tnode.append(
@@ -482,7 +482,7 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
               didx +
               "' style='background-color: " +
               dname[0] +
-              ";'></label></span>"
+              ";'></label></span>",
           );
         });
         node.append(tnode);
@@ -509,8 +509,8 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
               second.label +
               "'" +
               os +
-              "><li></li></ol>"
-          )
+              "><li></li></ol>",
+          ),
         );
       } else if (second.type == "datalist") {
         var tnode = $(
@@ -530,7 +530,7 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
             id +
             "' size='1'" +
             os +
-            "></select>"
+            "></select>",
         );
         $.each(datalist, function (didx, dname) {
           if (dname[1] == defaul)
@@ -539,11 +539,11 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
                 dname[1] +
                 '" selected="selected">' +
                 dname[0] +
-                "</value>"
+                "</value>",
             );
           else
             tnode.append(
-              '<option value="' + dname[1] + '">' + dname[0] + "</value>"
+              '<option value="' + dname[1] + '">' + dname[0] + "</value>",
             );
         });
         node.append(tnode);
@@ -562,8 +562,8 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
               id +
               "' readonly='readonly'" +
               os +
-              "></input>"
-          )
+              "></input>",
+          ),
         );
       }
     }
@@ -641,7 +641,7 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
       $(tag).children("attribute[name=rngui-nonfunctional]"),
       function (k, v) {
         first.functional = false;
-      }
+      },
     );
     $.each(
       $(tag).children("choice, data[type=string] > choice"),
@@ -686,7 +686,7 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
             v.textContent,
           ]);
         });
-      }
+      },
     );
 
     ret.attr("data-relaxngui-visible", first.visible);
@@ -713,8 +713,8 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
             labid +
             "'>" +
             first.label +
-            "</label><span class='relaxngui_cell'>⇒</span>"
-        )
+            "</label><span class='relaxngui_cell'>⇒</span>",
+        ),
       );
     } else if (first.name) {
       // a tag without information is ignored
@@ -731,8 +731,8 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
               path +
               " > *[data-name]' class='relaxngui_cell' type='text' pattern='^[a-zA-Z_][a-zA-Z0-9_\\-]*$' placeholder='" +
               first.label +
-              "'></input><span class='relaxngui_cell'>⇒</span>"
-          )
+              "'></input><span class='relaxngui_cell'>⇒</span>",
+          ),
         );
       } else {
         node.append(
@@ -745,8 +745,8 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
               path +
               " > *[data-name]' class='relaxngui_cell' type='text' pattern='^[a-z_][a-zA-Z0-9_]*$'       placeholder='" +
               first.label +
-              "'></input><span class='relaxngui_cell'>⇒</span>"
-          )
+              "'></input><span class='relaxngui_cell'>⇒</span>",
+          ),
         );
       }
     }
@@ -766,7 +766,7 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
         template,
         path,
         optional,
-        labid
+        labid,
       );
       ret.append(node);
       retcount += 1;
@@ -845,10 +845,10 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
                   (typeof $(tag).attr("name") === "undefined"
                     ? "*"
                     : $(tag).attr("name"))) +
-              '[data-main]">'
+              '[data-main]">',
           );
           xxx = $(
-            '<div class="relaxngui_template"><div data-type="del">✖</div><div data-type="mov"><div>⬍</div></div></div>'
+            '<div class="relaxngui_template"><div data-type="del">✖</div><div data-type="mov"><div>⬍</div></div></div>',
           );
           xxx.append(yyy);
           ret.append(xxx);
@@ -871,7 +871,7 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
                 (path == ""
                   ? " > " + elements.attr("name")
                   : path + " > " + $(tag).attr("name")) +
-                '[data-main]">'
+                '[data-main]">',
             );
           } else {
             xxx = $(
@@ -885,7 +885,7 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
                 (path == ""
                   ? " > " + elements.attr("name")
                   : path + " > " + $(tag).attr("name")) +
-                '[data-main]">'
+                '[data-main]">',
             );
           }
           ret.append(xxx);
@@ -906,7 +906,7 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
               template,
               path + " > " + $(tag).attr("name"),
               lencount,
-              attr.optional ? true : false
+              attr.optional ? true : false,
             );
           });
         rcount += recshow_single(
@@ -915,7 +915,7 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
           template,
           path,
           lencount,
-          attr.optional ? true : false
+          attr.optional ? true : false,
         );
 
         var sub;
@@ -928,7 +928,7 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
               ignore: attr.ignore,
               mode: attr.mode == "even" && rcount % 2 == 0 ? "odd" : "even",
               level: attr.level + 1,
-            }
+            },
           ))
         ) {
           var inode = xxx.append(sub);
@@ -964,7 +964,7 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
             ignore: attr.ignore,
             mode: attr.mode,
             level: attr.level,
-          })
+          }),
         );
         ret.append(but);
       } else if (
@@ -984,7 +984,7 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
             optional: true,
             level: attr.level + 1,
             lencount: lencount,
-          })
+          }),
         );
       }
       $(tag)
@@ -1008,7 +1008,7 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
     var xml;
     var curr;
     var tar = target.find(
-      "[data-relaxngui-path][data-relaxngui-visible=true]:not([data-relaxngui-template=true])"
+      "[data-relaxngui-path][data-relaxngui-visible=true]:not([data-relaxngui-template=true])",
     );
     for (var i = 0; i < tar.length; ) {
       var path = $(tar[i]).attr("data-relaxngui-path");
@@ -1048,7 +1048,7 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
           ) {
             var curr = $(
               $XR("<" + par + ' xmlns="' + parent_ns + '"' + exp + "/>")
-                .documentElement
+                .documentElement,
             );
           } else {
             var curr = $($XR("<" + par + exp + "/>").documentElement);
@@ -1066,11 +1066,11 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
             ) {
               var nn = $(
                 $XR("<" + $(tar[i]).get_val() + ' xmlns="' + parent_ns + '"/>')
-                  .documentElement
+                  .documentElement,
               ).text($(tar[i + 1]).get_val());
             } else {
               var nn = $(
-                $XR("<" + $(tar[i]).get_val() + "/>").documentElement
+                $XR("<" + $(tar[i]).get_val() + "/>").documentElement,
               ).text($(tar[i + 1]).get_val());
             }
             $(parent_path, xml).append(nn);
@@ -1105,12 +1105,10 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
         }
       }
     });
-    console.log("RelaxnGUI: XML content:", xml);
     return xml;
   }; //}}}
   this.save = function () {
     //{{{
-    console.log("RelaxnGUI: Saving XML content.????");
     return self.save_raw();
   }; //}}}
   this.save_text = function () {
@@ -1150,18 +1148,18 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
                       .find(
                         '[data-relaxngui-path="' +
                           path +
-                          '[data-name]"][data-relaxngui-template="false"]'
+                          '[data-name]"][data-relaxngui-template="false"]',
                       )
-                      .get(index)
+                      .get(index),
                   ).set_val(ele.localName);
                   $(
                     target
                       .find(
                         '[data-relaxngui-path="' +
                           path +
-                          '"][data-relaxngui-template="false"]'
+                          '"][data-relaxngui-template="false"]',
                       )
-                      .get(index)
+                      .get(index),
                   ).set_val($(ele).text());
                 });
             } else if (
@@ -1184,9 +1182,9 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
                         .find(
                           '[data-relaxngui-path="' +
                             path +
-                            '"][data-relaxngui-template="false"]'
+                            '"][data-relaxngui-template="false"]',
                         )
-                        .get(index)
+                        .get(index),
                     ).set_val(val);
                   }
                 });
@@ -1212,7 +1210,7 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
                 .find(
                   '.relaxngui_table[data-relaxngui-template="false"] > .relaxngui_template > [data-relaxngui-path="' +
                     path +
-                    '"][data-relaxngui-template="true"]'
+                    '"][data-relaxngui-template="true"]',
                 )
                 .parent()
                 .parent()
@@ -1233,14 +1231,14 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
                       addelements(
                         $(but.get(ind)),
                         $(but.get(ind)).parent(),
-                        true
+                        true,
                       );
                       $(but.get(ind)).attr("disabled", "disabled");
                     } else {
                       addelements(
                         $(but.get(ind)),
                         $(but.get(ind)).parent(),
-                        true
+                        true,
                       );
                     }
                   });
@@ -1331,8 +1329,8 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
   if ($("#relaxngui_ruler").length == 0) {
     $("body").prepend(
       $(
-        '<span id="relaxngui_ruler" style="position: absolute; visibility: hidden; white-space: nowrap;"></span>'
-      )
+        '<span id="relaxngui_ruler" style="position: absolute; visibility: hidden; white-space: nowrap;"></span>',
+      ),
     );
   }
 
@@ -1341,7 +1339,7 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
       ignore: ignore,
       mode: "even",
       level: 0,
-    })
+    }),
   );
 
   var self = this;
@@ -1350,7 +1348,7 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
   this.relaxngui_visible = function (what, ...args) {
     let curval = $(
       '[data-relaxngui-path="' + relaxngui_init_target + '"]',
-      target
+      target,
     ).get_val();
     if (what == curval) {
       args.forEach((arg, i) => {
@@ -1448,13 +1446,13 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
       let current_element = $(ev.currentTarget);
       let current_element_main = $(
         '[data-relaxngui-path="' + pp + '"]',
-        target
+        target,
       );
       if (current_element_main.is("[data-relaxngui-onchange]")) {
         eval(current_element_main.attr("data-relaxngui-onchange"));
       }
       target.trigger("relaxngui_change");
-    }
+    },
   );
   target.unbind("keypress.relaxngui");
   target.on("keypress.relaxngui", "input", function (ev) {
@@ -1464,7 +1462,7 @@ var RelaxNGui = function (rng, target, ceval, ignore = false) {
       let current_element = $(ev.currentTarget);
       let current_element_main = $(
         '[data-relaxngui-path="' + pp + '"]',
-        target
+        target,
       );
       if (current_element_main.is("[data-relaxngui-onchange]")) {
         eval(current_element_main.attr("data-relaxngui-onchange"));
