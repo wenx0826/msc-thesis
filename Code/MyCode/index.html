@@ -1,581 +1,164 @@
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<!doctype html>
+<html lang="zh">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <title>Doc-Based Process Modeller</title>
-  <!-- libs, do not modify. When local than load local libs. -->
-  <script type="text/javascript" src="https://cpee.org/js_libs/jquery.min.js"></script>
-  <script type="text/javascript" src="https://cpee.org/js_libs/jquery.browser.js"></script>
-  <script type="text/javascript" src="https://cpee.org/js_libs/jquery.caret.min.js"></script>
-  <script type="text/javascript" src="https://cpee.org/js_libs/jquery.cookie.js"></script>
-  <script type="text/javascript" src="https://cpee.org/js_libs/jquery.svg.min.js"></script>
-  <script type="text/javascript" src="https://cpee.org/js_libs/jquery.svgdom.min.js"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Doc-Based Process Modeller</title>
+    <script type="text/javascript" src="https://cpee.org/js_libs/jquery.min.js"></script>
+    <script type="text/javascript" src="js_libs/util.js"></script>
 
-  <!-- <script type="text/javascript" src="/js_libs/build-bpmn.js"></script> -->
-  <script type="text/javascript" src="js_libs/custommenu.js"></script>
-  <script type="text/javascript" src="js_libs/marked.min.js"></script>
-  <script type="text/javascript" src="js_libs/parsequery.js"></script>
-  <script type="text/javascript" src="js_libs/printf.js"></script>
-  <script type="text/javascript" src="js_libs/relaxngui.js"></script>
-  <script type="text/javascript" src="js_libs/strftime.min.js"></script>
-  <script type="text/javascript" src="js_libs/uidash.js"></script>
-  <script type="text/javascript" src="js_libs/underscore.min.js"></script>
-  <script type="text/javascript" src="js_libs/util.js"></script>
-  <script type="text/javascript" src="js_libs/vkbeautify.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px
+        }
 
-  <link rel="stylesheet" href="js_libs/custommenu.css" type="text/css" />
-  <link rel="stylesheet" href="js_libs/relaxngui.css" type="text/css">
-  <link rel="stylesheet" href="js_libs/uidash.css" type="text/css">
-  <link rel="stylesheet" href="js_libs/uidash-icons.css" type="text/css">
+        dialog {
+            border: none;
+            border-radius: 10px;
+            padding: 16px;
+            width: 320px
+        }
 
-  <link rel="stylesheet" href="css/ui.css" type="text/css">
-  <link rel="stylesheet" href="css/globalui_cpee.css" type="text/css">
+        dialog::backdrop {
+            background: rgba(0, 0, 0, .35)
+        }
 
-  <!-- modelling ui -->
-  <script type="text/javascript" src="js_cpee/wfadaptor.js"></script>
-  <link rel="stylesheet" href="js_cpee/wfadaptor.css" type="text/css" />
-  <script type="text/javascript" src="themes/base_new.js"></script>
+        input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box
+        }
 
-  <script type="text/javascript" src="js_cpee/extended_columns.js"></script>
-  <link rel="stylesheet" href="css/extended_columns-label.css" type="text/css" />
-  <link rel="stylesheet" href="css/extended_columns-svg.css" type="text/css" />
+        .actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 12px
+        }
 
-  <script type="text/javascript" src="js_cpee/instance.js"></script>
-  <script type="text/javascript" src="js_cpee/details.js"></script>
-  <!-- <script type="text/javascript" src="js/parameters.js"></script>
-    <script type="text/javascript" src="js/modifiers.js"></script> -->
-
-
-  <!-- Flos Stuff -->
-  <!-- <script type="text/javascript" src="js/structured.js"></script> -->
-  <!-- <style type="text/css">
-    @font-face {
-      font-family: TencentSans;
-      src: url("chrome-extension://lkjkfecdnfjopaeaibboihfkmhdjmanm/static/fonts/TencentSans.woff2");
-    }
-  </style> -->
-
-  <!-- my libs-->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
-  <!-- my scripts - DB simulation -->
-  <script src="js/db/db_documents.js"></script>
-  <script src="js/db/db_models.js"></script>
-  <script src="js/db/db_traces.js"></script>
-  <script src="js/constants.js"></script>
-  <script src="js/api.js"></script>
-  <script src="js/store.js"></script>
-  <script src="js/main.js"></script>
-  <script src="js/ui/documents.js"></script>
-  <script src="js/ui/active_document.js"></script>
-  <script src="js/ui/models.js"></script>
-  <script src="js/ui/active_model.js"></script>
-  <script src="js/ui/active_model_details.js"></script>
-
-  <!-- my ui-->
-  <link rel="stylesheet" href="css/myui.css" type="text/css" />
-
+        .error {
+            color: #c00;
+            min-height: 18px;
+            margin-top: 8px
+        }
+    </style>
 </head>
-<body is="x-ui-">
-  <ui-bar>
-    <div class="left">
-      <span style="font-size: 1.2em; font-weight: bold;">Demo Project</span>
-      <button>Create Project</button>
-    </div>
-    <div class="right button-group">
-      <span>Theme: Preset</span>
-      <span>LLM: gemini 2 Flash</span>
-      <!-- <div class="multi">
-        <label id="llmlabel" for="llms">LLM:</label>
-        <select name="llms" id="llms">
-          <option value="gemini-2.0-flash" selected>gemini 2 Flash</option>
-          <option value="gemini-2.5-flash-preview-05-20">gemini 2.5 Flash</option>
-          <option value="gemini-2.5-pro-preview-05-06">gemini 2.5 Pro</option>
-          <option value="gpt-4">gpt 4</option>
-          <option value="gpt-4o">gpt 4o</option>
-          <option value="gpt-4o-mini">gpt 4o mini</option>
-        </select>
-      </div> -->
-    </div>
-  </ui-bar>
-  <iframe id="converter-frame" src="converter.html" style="position: absolute; left: -9999px; top: -9999px;""></iframe>
+<body>
 
-  <ui-rest style=" z-index: 2;" id="main">
-    <ui-content>
-      <!-- Left: Document Panel -->
-      <ui-rest style="flex:0.4;">
-        <!-- Document List Pane -->
-        <ui-tabbed style="z-index: 2;">
-          <ui-tabbar>
-            <ui-tab class="switch"></ui-tab>
-            <ui-tab class="" data-tab="documents" id="tabdocuments" style="flex: 1;">Documents</ui-tab>
-          </ui-tabbar>
-          <ui-content>
-            <ui-area data-belongs-to-tab="documents" id="areadocuments">
-              <ul id="documentList">
-              </ul>
-              <label for="documentsInput">Choose documents to upload</label>
-              <input type="file" id="documentsInput" multiple />
-            </ui-area>
-          </ui-content>
-        </ui-tabbed>
-        <!-- Text Action Bar -->
-        <button id="deleteSelectionButton"
-          style="display:none; position:absolute;  z-index:3; width: 24px; height: 24px; background-color: red; color: white;border: none; border-radius: 50%; font-weight: bold;cursor: pointer;">X</button>
-        <!-- Document Viewer -->
-        <ui-rest class="panel" style="margin-top: 0.5em;">
-          <ui-bar>
-            <div class="right">
-              <form id="selectionColorForm" style="margin: 0;">
-                <div class="relaxngui_cell relaxngui_color_container">
-                  <span class="round">
-                    <input type="radio" name="color" value="#d4e1f1" id="selectionColor1" checked>
-                    <label for="selectionColor1" style="background-color: #d4e1f1;"></label>
-                  </span>
-                  <span class="round">
-                    <input type="radio" name="color" value="#d8f0dd" id="selectionColor2">
-                    <label for="selectionColor2" style="background-color: #d8f0dd;"></label>
-                  </span>
-                  <span class="round">
-                    <input type="radio" name="color" value="#ffffcc" id="selectionColor3">
-                    <label for="selectionColor3" style="background-color: #ffffcc;"></label>
-                  </span>
-                  <span class="round">
-                    <input type="radio" name="color" value="#e4c3e4" id="selectionColor4">
-                    <label for="selectionColor4" style="background-color: #e4c3e4;"></label></span>
-                  <span class="round"><input type="radio" name="color" value="#f8a8c6" id="selectionColor5">
-                    <label for="selectionColor5" style="background-color: #f8a8c6;"></label></span>
-                  <span class="round">
-                    <input type="radio" name="color" value="#ded0c5" id="selectionColor6">
-                    <label for="selectionColor6" style="background-color: #ded0c5;"></label></span>
-                  <span class="round"><input type="radio" name="color" value="#deddda" id="selectionColor7">
-                    <label for="selectionColor7" style="background-color: #deddda;"></label>
-                  </span>
-                </div>
-              </form>
-            </div>
-          </ui-bar>
-          <ui-divider></ui-divider>
-          <ui-content>
-            <!--  -->
-            <!-- <div> -->
-            <ui-area id="editorWrap">
-              <ui-area id="tracesLayer" style="z-index: 1;"></ui-area>
-              <ui-area id="temporarySelectionsLayer"></ui-area>
-              <ui-area id="documentContent"></ui-area>
-              <ui-area id="modelTagsLayer"></ui-area>
-            </ui-area>
-            </ui-area>
-            <!-- </div> -->
-          </ui-content>
-          <ui-divider></ui-divider>
-          <ui-bar style="z-index: 3;">
-            <div class="right button-group">
-              <button id="generateButton" disabled>Generate Model</button>
-              <!-- <button id="regenerateButton" style="display:none;">Regenerate</button> -->
-            </div>
-          </ui-bar>
-        </ui-rest>
-      </ui-rest>
-      <ui-resizehandle id="columnResizehandle1" data-direction="vertical"></ui-resizehandle>
-      <!-- Middle: Current Model Panel -->
-      <ui-rest class="panel" style="flex:0.4;">
-        <ui-rest style="flex:1 1 0;min-height: 100px">
-          <ui-bar id="modelActionBar" style="visibility: hidden">
-            <div id="activeModelName"></div>
-            <div class="right button-group">
-              <button name="deselsetModelButton" onclick="activeModelStore.setModel(null)">Deselect Model</button>
-              <button name="deletemodel" onclick="deleteActiveModel()">Delete Model</button>
-            </div>
-          </ui-bar>
-          <ui-divider></ui-divider>
-          <!-- <div>
-          <a id=" savetestsetfile" href="" download=""></a>
-          <a id="savesvgfile" href="" download=""></a>
-          <button title='a testset includes various settings, subscriptions and a model'
-            name="savetestsetfile">save<br>testset</button>
-          <button title='the SVG contains the graphical repesentation of the CPEE tree as you see it on the screen'
-            name="savesvgfile">save svg<br>graph</button> -->
-          <ui-content id="activeModelContainer">
-            <ui-area id='graphgrid'>
-              <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink"
-                id='graphcanvas' width='1' height='1' style="display:block;"></svg>
-            </ui-area>
-          </ui-content>
-          <div id="dat_details" class='x-ui-layout'></div>
-          <div id="relaxngworker" class='hidden'></div>
-          <ui-bar id="generatedModelActionBar" class="hidden">
-            <div class="right button-group">
-              <button id="cancelButton">Cancel</button>
-              <button id="keepButton">Keep</button>
-            </div>
-          </ui-bar>
-          <ui-bar id="regeneratedModelActionBar" class="hidden">
-            <div class="right button-group">
-              <button id="backButton">Back</button>
-              <button id="cancelButton">Cancel</button>
-              <button id="replaceButton">Replace</button>
-            </div>
-          </ui-bar>
-        </ui-rest>
-        <ui-resizehandle data-direction="horizontal"></ui-resizehandle>
-        <ui-rest style="flex: 0.25 1 0; min-height: 100px;" id="promptContainer" class="hidden">
-          <!-- <textarea id="modelXmlContent" style="width:100%; height:100%;"></textarea> -->
-          <div id="promptInput" contenteditable="true" style="width:100%; height:100%;"></div>
-          <ui-bar>
-            <fieldset class="right button-group" id="promptActionBar" disabled>
-              <button id="clearPromptButton">Clear</button>
-              <button id="sendPromptButton">Send</button>
-            </fieldset>
-          </ui-bar>
-        </ui-rest>
+    <button id="btnCreate">Create a new project</button>
 
-      </ui-rest>
-      <ui-resizehandle data-direction="vertical"></ui-resizehandle>
-      <!-- Right: Models Panel-->
-      <ui-rest style="flex:0.2" class="panel">
-        <ui-bar><span style="font-size: 1.4em; font-weight: bold;">Models</span></ui-bar>
-        <ui-divider></ui-divider>
-        <ui-rest>
-          <ui-content>
-            <ui-area id="models">
-              <div id='modelCanvasSmallContainer'>
-                <div id='modelGridSmall' style="position: absolute; left: -9999px; top: -9999px;">
-                  <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink"
-                    id='modelCanvasSmall' width='1' height='1'></svg>
-                </div>
-              </div>
-            </ui-area>
-          </ui-content>
-        </ui-rest>
-      </ui-rest>
-    </ui-content>
-    </ui-rest>
+    <h3>All projects</h3>
+    <table id="projectTable">
+        <template id="rowtemplate">
+            <tr class="">
+                <td> <a href=""><em>no name</em></a></td>
+                <td>This is a prototype for managing multiple projects. In a real application, projects would be stored
+                    on a
+                    server and retrieved via API calls.</td>
+
+            </tr>
+        </template>
+    </table>
+
+    <dialog id="dlg">
+        <form id="form" method="dialog">
+            <h3 style="margin:0 0 10px 0;">New Project</h3>
+            <input id="name" type="text" autocomplete="off" />
+            <div class="error" id="err"></div>
+            <div class="actions">
+                <button type="button" id="cancel">Cancel</button>
+                <button type="submit" id="save">Create</button>
+            </div>
+        </form>
+    </dialog>
+
     <script>
-      /* instance.js 
-          // #region CPEE Code
-          function monitor_instance_pos() {
-      
-            if (graph_position && graph_position == "false") {
-              save["instance_pos"] = [];
-              format_visual_clear();
-              format_instance_pos();
-              return;
-            }
-            var url = $("body").attr("current-instance");
-            $.ajax({
-              type: "GET",
-              url: url + "/properties/positions/",
-              success: function (res) {
-                save["instance_pos"] = $("positions > *", res);
-                format_visual_clear();
-                format_instance_pos();
-              },
-            });
-          }
-      
-      
-      
-          function save_testsetfile() {
-            console.log("Saving test set file...", activeModel.data);
-            // var def = new $.Deferred();
-            // def.done(function (name, testset) {
-            //   var ct = new Date();
-            //   $('#savetestsetfile').attr('download', name + '.xml');
-            //   $('#savetestsetfile').attr('href', 'data:application/xml;charset=utf-8;base64,' + $B64(testset.serializePrettyXML()));
-            //   document.getElementById('savetestsetfile').click();
-            // });
-            // get_testset(def);
-          }
-      
-          function get_testset(deferred) {
-            var url = $('body').attr('current-instance');
-      
-            $.ajax({
-              type: "GET",
-              url: url + "/properties/",
-              success: function (res) {
-                var testset = $X('<testset xmlns="http://cpee.org/ns/properties/2.0"/>');
-                testset.append($(res.documentElement).children());
-                $('testset > state', testset).remove();
-                $('testset > status', testset).remove();
-                $('testset > positions', testset).remove();
-                $('testset > dsl', testset).remove();
-                $('testset > description > *', testset).remove();
-                $('testset > description', testset).append($('testset > dslx', testset).children());
-                $('testset > transformation', testset).remove();
-                $('testset > dsl', testset).remove();
-                $('testset > dslx', testset).remove();
-                $('testset > attributes > uuid', testset).remove();
-                testset.append($X('<transformation xmlns="http://cpee.org/ns/properties/2.0"><description type="copy"/><dataelements type="none"/><endpoints type="none"/></transformation>'));
-                var name = $('testset > attributes > info', testset).text();
-                $('[xmlns]', testset).each((idx, ele) => {
-                  if (ele.parentNode.namespaceURI == ele.getAttribute('xmlns')) {
-                    ele.removeAttribute('xmlns');
-                  }
+        function esc(s) { return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])) }
+        const projects = [
+            {
+                "id": "proj-001",
+                "name": "Project Alpha",
+
+            },
+            {
+                "id": "proj-002",
+                "name": "Project Beta",
+            },
+            {
+                "id": "proj-003",
+                "name": "Project Gamma",
+            },
+        ];
+
+
+        function loadProjects() {
+            // $.getJSON("/api/projects", function (resp) {
+            //     if (!resp.ok) return;
+
+            if (projects.length) {
+                // Insert rows into the existing table (after the template)
+                const $table = $("#projectTable");
+                // Remove any previously inserted rows except the template
+                // $table.find("tr").not(":has(template), .header").remove();
+                projects.forEach(p => {
+                    const $row = $($("#rowtemplate").html());
+                    $row.find("a")
+                        .attr("href", "main.html?project_id=" + encodeURIComponent(p.id))
+                        .text(esc(p.name));
+                    $table.append($row)
                 });
-      
+            }
+        }
+
+        $(function () {
+            const dlg = document.getElementById("dlg");
+            loadProjects();
+            console.log("Project list loaded. UUID test1:", crypto.randomUUID());
+            console.log("Project list loaded. UUID test2:", $UUID());
+
+
+            $("#btnCreate").on("click", function () {
+                $("#err").text("");
+                $("#name").val("");
+                dlg.showModal();
+                $("#name").trigger("focus");
+            });
+
+            $("#cancel").on("click", function () { dlg.close(); });
+
+            $("#form").on("submit", function (e) {
+                e.preventDefault();
+                const name = $("#name").val().trim();
+                $("#err").text("");
+                if (!name) { $("#err").text("Name is required."); return; }
+                $("#save").prop("disabled", true);
+                const id = crypto.randomUUID();
+                projects.push({ id, name });
+                loadProjects();
+                dlg.close();
+                console.log("Created project:", { id, name });
+                window.location.assign("main.html?project_id=" + encodeURIComponent(id));
                 // $.ajax({
-                //   type: "GET",
-                //   url: url + "/notifications/subscriptions/",
-                //   success: async function (res) {
-                //     let values = $("subscriptions > subscription[url]", res);
-                //     let subs = $X('<subscriptions xmlns="http://riddl.org/ns/common-patterns/notifications-producer/2.0"/>');
-                //     let promises = [];
-                //     let scount = 0;
-                //     values.each(function () {
-                //       let sid = $(this).attr('id');
-                //       if (sid.match(/^_/)) {
-                //         scount += 1;
-                //         promises.push(
-                //           $.ajax({
-                //             type: "GET",
-                //             url: url + "/notifications/subscriptions/" + sid,
-                //             error: report_failure
-                //           }).then(function (a) {
-                //             subs.append($(a.documentElement));
-                //           })
-                //         );
-                //       };
-                //     });
-                //     await Promise.all(promises);
-                //     if (scount > 0) { testset.append(subs); }
-                //     deferred.resolve(name, testset);
-                //   },
-                //   error: function () { deferred.reject(); report_failure(); }
+                //     url: "/api/projects",
+                //     method: "POST",
+                //     contentType: "application/json",
+                //     data: JSON.stringify({ name }),
+                //     success: function (resp) {
+                //         if (!resp.ok) { $("#err").text(resp.error || "Error"); return; }
+                //         // ✅创建成功：跳转到 project=projectName
+                //         window.location.href = "main.html?project=" + encodeURIComponent(resp.project.name);
+                //     },
+                //     error: function (xhr) {
+                //         const msg = xhr.responseJSON?.error || ("HTTP " + xhr.status);
+                //         $("#err").text(msg);
+                //     },
+                //     complete: function () { $("#save").prop("disabled", false); }
                 // });
-      
-              },
-              error: function (e) {
-                deferred.reject();
-                report_failure();
-                console.error("Error fetching test set:", e);
-              }
             });
-          }
-      
-      
-          // #endregion
-          */
-
-
-
-      // Listen to custom events dispatched in this app
-      document.addEventListener('graph:changed', function (e) {
-        console.log('graph:changed', e);
-        try { rerenderOverlayLayers(); } catch (_) { }
-      });
-
-      document.addEventListener('model:loaded', function (e) {
-        console.log('model:loaded', e);
-      });
-
-      // jQuery-style listeners (optional)
-      $(document).on('graph:changed', function (e) {
-        console.log('Event Listener "graph:changed" listened', e);
-      });
-
-      $(document).on('model:loaded', function (e) {
-        console.log('model:loaded (jQuery)', e);
-      });
-
-      /*const deleteRangeById = (rangeId) => {
-        highlightSelections = highlightSelections.filter(r => r.id !== rangeId);
-        temporarySelections = temporarySelections.filter(r => r.id !== rangeId);
-        $temporarySelectionsLayer.find(`#${rangeId}`).remove();
-      };
-   
-      const clearRangeSelection = () => {
-        $deleteSelectionButton.hide();
-        $temporarySelectionsLayer.find('.selection-wrapper.active').removeClass('active');
-      };*/
-
-
-
-      // const getXPath = (node, root = document.getElementById("documentContent")) => {
-      //   // const paths = [];
-      //   // for (; node && node !== root; node = node.parentNode) {
-      //   //   let index = 0;
-      //   //   let sibling = node.previousSibling;
-      //   //   while (sibling) {
-      //   //     if (sibling.nodeType === Node.ELEMENT_NODE && sibling.nodeName === node.nodeName) {
-      //   //       index++;
-      //   //     }
-      //   //     sibling = sibling.previousSibling;
-      //   //   }
-      //   //   const tagName = node.nodeType === Node.ELEMENT_NODE ? node.nodeName : 'text()';
-      //   //   const pathIndex = index ? `[${index + 1}]` : '';
-      //   //   paths.unshift(`${tagName}${pathIndex}`);
-      //   // }
-      //   // return paths.length ? '/' + paths.join('/') : null;
-
-      //   const path = [];
-      //   while (node && node !== root) {
-      //     const index = Array.prototype.indexOf.call(node.parentNode.childNodes, node);
-      //     path.unshift(index);
-      //     node = node.parentNode;
-
-      //     return '/' + path.join('/');
-      //   }
-      // };
-
-      // const getNodeByXPath = (path, root = document.getElementById("documentContent")) => {
-      //   // const parts = path.split('/').filter(Boolean);
-      //   // let node = root;
-      //   // for (const part of parts) {
-      //   //   let tagName = part;
-      //   //   let index = 0;
-      //   //   const match = part.match(/(.*)\[(\d+)\]$/);
-      //   //   if (match) {
-      //   //     tagName = match[1];
-      //   //     index = parseInt(match[2], 10) - 1;
-      //   //   }
-      //   //   let count = -1;
-      //   //   let found = false;
-      //   //   for (const child of node.childNodes) {
-      //   //     if (child.nodeType === Node.ELEMENT_NODE && child.nodeName === tagName) {
-      //   //       count++;
-      //   //       if (count === index) {
-      //   //         node = child;
-      //   //         found = true;
-      //   //         break;
-      //   //       }
-      //   //     }
-      //   //   }
-      //   //   return found ? node : null;
-      //   // };
-      //   const parts = path.split('/').filter(Boolean);
-      //   let node = root;
-      //   for (const idx of parts) {
-      //     const i = parseInt(idx, 10);
-      //     if (!node || !node.childNodes[i]) return null;
-      //     node = node.childNodes[i];
-      //   }
-      //   return node;
-      // };
-
-
-
-
-
-      /*  details.js
-          //#region CPEE Code
-          function do_main_save() {
-            console.log('Auto-saving details changes...!!!');
-            if (save['details'].has_changed()) {
-              do_main_work(save['details_target'].svgid);
-            }
-          }
-      
-          function do_main_work(svgid) {
-            var desc = save['details_target'].model;
-            var node = desc.get_node_by_svg_id(svgid);
-            var orignode = save['graph_adaptor'].illustrator.get_node_by_svg_id(svgid).parents('g.element[element-id]');
-            var origtype = orignode.attr('element-type') + '_' + orignode.attr('element-endpoint');
-      
-            var url = $('body').attr('current-instance');
-      
-            var nnew;
-            if (svgid != save['details_target'].svgid) {
-              let tn = desc.get_node_by_svg_id(svgid).get(0);
-              let rng = desc.elements[$(tn).attr('svg-subtype')].clone();
-              if (save['endpoints_cache'][$(tn).attr('endpoint')] && save['endpoints_cache'][$(tn).attr('endpoint')].schema) {
-                let schema = save['endpoints_cache'][$(tn).attr('endpoint')].schema.documentElement;
-                $(rng).find(' > element[name="parameters"] > element[name="arguments"]').replaceWith($(schema).clone());
-              }
-              if (save['endpoints_list'][$(tn).attr('endpoint')] && (!save['endpoints_list'][$(tn).attr('endpoint')].startsWith('http') || save['endpoints_list'][$(tn).attr('endpoint')].match(/^https?-/))) {
-                $(rng).find(' > element[name="parameters"] > element[name="method"]').remove();
-              }
-              let rngw = new RelaxNGui(rng, $('#relaxngworker'), desc.context_eval);
-              nnew = $(rngw.save().documentElement);
-            } else {
-              save['details'].set_checkpoint();
-              nnew = $(save['details'].save().documentElement);
-            }
-            nnew.attr('svg-id', svgid);
-      
-            if ($('*[svg-id]', node).length > 0) {
-              nnew.append(node.children().filter(function () { return this.attributes['svg-id'] != undefined; }));
-            }
-      
-            if (node[0].namespaceURI == nnew.attr('xmlns')) { // remove xmlns when it is the same as in the parent node
-              nnew[0].removeAttribute('xmlns');
-            }
-      
-            // copy all elements from different namespaces
-            [...node[0].attributes].forEach(attr => {
-              if (attr && attr.namespaceURI && attr.namespaceURI != 'http://cpee.org/ns/description/1.0') {
-                nnew[0].setAttributeNS(attr.namespaceURI, attr.nodeName, attr.nodeValue);
-              }
-            });
-      
-            node.replaceWith(nnew);
-      
-            var ttarget = manifestation.adaptor.illustrator.get_node_by_svg_id(svgid);
-            var tnewnode = ttarget.parents('g.element[element-id]');
-            var tnewtype = tnewnode.attr('element-type') + '_' + tnewnode.attr('element-endpoint');
-      
-            desc.refresh(function (graphrealization) {
-              var vtarget = manifestation.adaptor.illustrator.get_node_by_svg_id(svgid);
-              if (vtarget.length > 0) {
-                vtarget.parents('g.element[element-id]').addClass('selected');
-              }
-              manifestation.adaptor.illustrator.get_label_by_svg_id(svgid).addClass('selected');
-              $('#graphgrid [element-id=' + svgid + ']').addClass('selected');
-      
-      
-              var newnode = vtarget.parents('g.element[element-id]');
-              var newtype = newnode.attr('element-type') + '_' + newnode.attr('element-endpoint');
-              var g = graphrealization.get_description();
-              console.log('Auto-save graph diff????', g);
-              save['graph'] = $X(g);
-              save['graph'].removeAttr('svg-id');
-              save['graph'].removeAttr('svg-type');
-              save['graph'].removeAttr('svg-subtype');
-              save['graph'].removeAttr('svg-label');
-      
-              if (newtype != origtype) {
-                manifestation.update_details(svgid);
-                do_main_work(svgid);
-              } else {
-                console.log('Auto-save triggered???????', desc.get_description());
-                // $.ajax({
-                //   type: "PUT",
-                //   url: url + "/properties/description/",
-                //   contentType: 'text/xml',
-                //   headers: {
-                //     'Content-ID': 'description',
-                //     'CPEE-Event-Source': myid
-                //   },
-                //   data: desc.get_description()
-                // });
-                format_instance_pos();
-      
-                document.dispatchEvent(graph_changed);
-      
-                ////////////////////////////
-                // holy shit, f***in papercut. When blur/focusout from within relaxngui,
-                // click on original target after graph was updated. tsvgid has to be
-                // saved in mousedown because blur/focusout is between mousedown and click.
-                ////////////////////////////
-                if (save['details_target'].svgid != save['details_target'].tsvgid) {
-                  manifestation.adaptor.illustrator.get_label_by_svg_id(save['details_target'].tsvgid).trigger('click');
-                }
-              }
-      
-            });
-          }
-          // #endregion
-      */
-
-
-      $("button[name=savetestsetfile]").click(function () { save_testsetfile(); });
-      // const refreshModelList = async () => {
-      //   $modelsArea.empty();
-      //   for (const model of models) {
-      //     await renderModelInList(model);
-      //   }
-      // };
-      $("button[name=savemodelfile]").click(function (e) { saveModel(e); });  
+        });
     </script>
+
 </body>
 </html>

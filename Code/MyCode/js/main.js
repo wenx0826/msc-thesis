@@ -61,7 +61,7 @@ async function loadData() {
 
 function getProjectIdFromURL() {
   const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.get("project");
+  return urlParams.get("project_id");
 }
 
 $(document).ready(async () => {
@@ -72,6 +72,8 @@ $(document).ready(async () => {
   });
   await API.init();
   await loadData();
+  const projectId = getProjectIdFromURL();
+  console.log("Setting project id in store:", projectId);
   console.log("Initialization complete.", Store.state);
   // generateModel();
   // var timer;
