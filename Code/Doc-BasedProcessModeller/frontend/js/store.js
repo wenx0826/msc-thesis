@@ -31,12 +31,39 @@ Store.project = Object.assign(
     id: null,
     name: null,
     llmModel: "gemini-2.0-flash",
-    theme: null,
+    documents: [],
+    // theme: null,
   }),
   {
     setProject(id, name) {
       this.state.id = id;
       this.state.name = name;
+    },
+    setName(val) {
+      if (this.state.name != val) {
+        this.state.name = val;
+        console.log("Project name set in store:!!!!!", val);
+        this.notify({ key: "name", newValue: val });
+      }
+    },
+    setProjectById(projectId) {
+      console.log("setProjectById called with projectId:", projectId);
+      if (projectId && projectId != this.state.id) {
+        console.log("Fetching project by ID:", projectId);
+        API.project.getProjectById(projectId).then((project) => {
+          console.log("Fetched project by ID:", projectId, project);
+          // this.setProject(project.id, project.name);
+          // this.notify({ key: "id", newValue: project.id });
+          this.state.id = project.id;
+          this.setName(project.name);
+        });
+      }
+    },
+    getProjectId() {
+      return this.state.id;
+    },
+    getProjectName() {
+      return this.state.name;
     },
     getLlmModel() {
       return this.state.llmModel;

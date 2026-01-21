@@ -1,3 +1,4 @@
+const projectStore = Store.project;
 const documentsStore = Store.documents;
 const tracesStore = Store.traces;
 const activeDocumentStore = Store.activeDocument;
@@ -66,13 +67,15 @@ function getProjectIdFromURL() {
 
 $(document).ready(async () => {
   console.log("project id from url:", getProjectIdFromURL());
+  const projectId = getProjectIdFromURL();
+  projectStore.setProjectById(projectId);
   const iframe = document.getElementById("converter-frame");
   iframe.addEventListener("load", () => {
     iframeLoaded = true;
   });
   await API.init();
   await loadData();
-  const projectId = getProjectIdFromURL();
+  // const projectId = getProjectIdFromURL();
   console.log("Setting project id in store:", projectId);
   console.log("Initialization complete.", Store.state);
   // generateModel();

@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Doc-Based Process Modeller</title>
+    <script type="text/javascript" src="https://cpee.org/js_libs/jquery.min.js"></script>
+
+
+    <script type="text/javascript" src="https://cpee.org/js_libs/jquery.browser.js"></script>
+    <script type="text/javascript" src="https://cpee.org/js_libs/jquery.caret.min.js"></script>
+    <script type="text/javascript" src="https://cpee.org/js_libs/jquery.cookie.js"></script>
+    <script type="text/javascript" src="https://cpee.org/js_libs/jquery.svg.min.js"></script>
+    <script type="text/javascript" src="https://cpee.org/js_libs/jquery.svgdom.min.js"></script>
+
+    <!-- <script type="text/javascript" src="/js_libs/build-bpmn.js"></script> -->
+    <script type="text/javascript" src="js_libs/custommenu.js"></script>
+    <script type="text/javascript" src="js_libs/marked.min.js"></script>
+    <script type="text/javascript" src="js_libs/parsequery.js"></script>
+    <script type="text/javascript" src="js_libs/printf.js"></script>
+    <script type="text/javascript" src="js_libs/relaxngui.js"></script>
+    <script type="text/javascript" src="js_libs/strftime.min.js"></script>
+    <script type="text/javascript" src="js_libs/uidash.js"></script>
+    <script type="text/javascript" src="js_libs/underscore.min.js"></script>
+    <script type="text/javascript" src="js_libs/vkbeautify.js"></script>
+
+    <link rel="stylesheet" href="js_libs/custommenu.css" type="text/css" />
+    <link rel="stylesheet" href="js_libs/relaxngui.css" type="text/css">
+    <link rel="stylesheet" href="js_libs/uidash.css" type="text/css">
+    <link rel="stylesheet" href="js_libs/uidash-icons.css" type="text/css">
+
+    <link rel="stylesheet" href="css/ui.css" type="text/css">
+    <link rel="stylesheet" href="css/globalui_cpee.css" type="text/css">
+
+    <!-- modelling ui -->
+    <link rel="stylesheet" href="js_cpee/wfadaptor.css" type="text/css" />
+
+
+    <!-- <script type="text/javascript" src="js/parameters.js"></script>
+    <script type="text/javascript" src="js/modifiers.js"></script> -->
+
+
+    <!-- Flos Stuff -->
+    <!-- <script type="text/javascript" src="js/structured.js"></script> -->
+    <!-- <style type="text/css">
+    @font-face {
+      font-family: TencentSans;
+      src: url("chrome-extension://lkjkfecdnfjopaeaibboihfkmhdjmanm/static/fonts/TencentSans.woff2");
+    }
+  </style> -->
+
+    <!-- my libs-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
+    <!-- my scripts - DB simulation -->
+    <script src="js/db/db_documents.js"></script>
+    <script src="js/db/db_models.js"></script>
+    <script src="js/db/db_traces.js"></script>
+    <script src="js/constants.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/store.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/ui/documents.js"></script>
+    <script src="js/ui/active_document.js"></script>
+    <script src="js/ui/models.js"></script>
+    <script src="js/ui/active_model.js"></script>
+    <script src="js/ui/active_model_details.js"></script>
+
+    <!-- my ui-->
+    <link rel="stylesheet" href="css/myui.css" type="text/css" />
+
+    <style>
+        /* body {
+            font-family: sans-serif;
+            padding: 20px
+        }
+
+        dialog {
+            border: none;
+            border-radius: 10px;
+            padding: 16px;
+            width: 320px
+        }
+
+        dialog::backdrop {
+            background: rgba(0, 0, 0, .35)
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 12px
+        }
+
+        .error {
+            color: #c00;
+            min-height: 18px;
+            margin-top: 8px
+        } */
+    </style>
+</head>
+<body>
+    <h1>Document-Based Process Modeller</h1>
+    <button id="btnCreate">Create a new project</button>
+    <h3>All projects</h3>
+    <table id="projectTable">
+        <template id="rowtemplate">
+            <tr class="">
+                <td> <a href=""><em>no name</em></a></td>
+                <!-- <td>This is a prototype for managing multiple projects. In a real application, projects would be stored
+                    on a
+                    server and retrieved via API calls.</td> -->
+
+            </tr>
+        </template>
+    </table>
+
+    <dialog id="dlg">
+        <form id="form" method="dialog">
+            <h3 style="margin:0 0 10px 0;">New Project</h3>
+            <input id="name" type="text" autocomplete="off" />
+            <div class="error" id="err"></div>
+            <div class="actions">
+                <button type="button" id="cancel">Cancel</button>
+                <button type="submit" id="save">Create</button>
+            </div>
+        </form>
+    </dialog>
+
+    <script>
+        function esc(s) { return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])) }
+        // const projects = [
+        //     {
+        //         "id": "proj-001",
+        //         "name": "Project Alpha",
+
+        //     },
+        //     {
+        //         "id": "proj-002",
+        //         "name": "Project Beta",
+        //     },
+        //     {
+        //         "id": "proj-003",
+        //         "name": "Project Gamma",
+        //     },
+        // ];
+
+        function renderProject(project) {
+            const $table = $("#projectTable");
+
+            const $row = $($("#rowtemplate").html());
+            $row.find("a")
+                .attr("href", "main.html?project_id=" + encodeURIComponent(project.id))
+                .text(esc(project.name));
+            $table.append($row);
+        }
+
+        function loadProjects() {
+            API.project.getProjectList().then(projects => {
+                console.log("Loaded projects:", projects);
+                projects.forEach(p => {
+                    renderProject(p);
+                });
+            }).catch(err => {
+                console.log("Failed to load projects:", err);
+            });
+        }
+
+        $(function () {
+            console.log("Loading projects..." + new Date().toISOString());
+            loadProjects();
+            const dlg = document.getElementById("dlg");
+            $("#btnCreate").on("click", function () {
+                $("#err").text("");
+                $("#name").val("");
+                dlg.showModal();
+                $("#name").trigger("focus");
+            });
+
+            $("#cancel").on("click", function () { dlg.close(); });
+
+            $("#form").on("submit", function (e) {
+                e.preventDefault();
+                const name = $("#name").val().trim();
+                $("#err").text("");
+                if (!name) { $("#err").text("Name is required."); return; }
+                $("#save").prop("disabled", true);
+                const id = crypto.randomUUID();
+                // projects.push({ id, name });
+                // const project = { id, name };
+                // renderProject(project);
+
+                // loadProjects();
+                // dlg.close();
+                // console.log("Created project:", { id, name });
+                // window.location.assign("main.html?project_id=" + encodeURIComponent(id));
+                API.project.createProject(id, name).then(resp => {
+                    console.log("Project created:", resp);
+                    dlg.close();
+                    window.location.assign("main.html?project_id=" + encodeURIComponent(id));
+                }).catch(err => {
+                    $("#err").text(err.message);
+                    $("#save").prop("disabled", false);
+                });
+
+            });
+        });
+    </script>
+
+</body>
+</html>

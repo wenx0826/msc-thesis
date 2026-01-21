@@ -46,7 +46,39 @@ window.API = {
     });
   },
 };
-
+API.project = {
+  baseURL: "http://localhost:3000", // relative URLs since frontend is served from same server
+  async getProjectList() {
+    const response = await fetch(`${this.baseURL}/projects`);
+    if (!response.ok) throw new Error("Failed to fetch projects");
+    return await response.json();
+  },
+  async createProject(id, name) {
+    const response = await fetch(`${this.baseURL}/project`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, name }),
+    });
+    if (!response.ok) {
+      const error = await response
+        .json()
+        .catch(() => ({ error: "Unknown error" }));
+      throw new Error(error.error || "Failed to create project");
+    }
+    return await response.json();
+  },
+  async getProjectById(id) {
+    // TODO: implement GET /project/:id if needed
+    const response = await fetch(`${this.baseURL}/project/${id}`);
+    if (!response.ok) {
+      const error = await response
+        .json()
+        .catch(() => ({ error: "Unknown error" }));
+      throw new Error(error.error || "Failed to fetch project");
+    }
+    return await response.json();
+  },
+};
 API.Document = {
   async getDocumentList() {
     return await getDocumentList(API.db);

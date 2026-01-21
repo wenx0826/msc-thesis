@@ -65,6 +65,7 @@
   <script src="js/api.js"></script>
   <script src="js/store.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/ui/project.js"></script>
   <script src="js/ui/documents.js"></script>
   <script src="js/ui/active_document.js"></script>
   <script src="js/ui/models.js"></script>
@@ -77,9 +78,9 @@
 </head>
 <body is="x-ui-">
   <ui-bar>
-    <div class="left">
-      <span style="font-size: 1.2em; font-weight: bold;">Demo Project</span>
-      <button>Create Project</button>
+    <div>
+      <span style="font-size: 1.2em;"><a href="index.html">Projects</a></span> >
+      <span id="projectName" style="font-size: 1.2em; font-weight: bold;">Demo Project</span>
     </div>
     <div class="right button-group">
       <span>Theme: Preset</span>
