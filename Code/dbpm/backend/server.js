@@ -1,15 +1,22 @@
-// server.js
-// A minimal Express server with simple GET and POST endpoints.
-
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
+const { get } = require("http");
 const app = express();
 const PORT = 3000;
 
 const projectsFile = path.join(__dirname, "..", "data", "projects.json");
+const documentsFile = path.join(__dirname, "..", "data", "documents.json");
+const tracesFile = path.join(__dirname, "..", "data", "traces.json");
+const documentsPath = path.join(__dirname, "..", "data", "documents");
+const modelsPath = path.join(__dirname, "..", "data", "models");
 
+const getISODate = () => new Date().toISOString();
+const createNewRecord = () => ({
+  id: crypto.randomUUID(),
+  createdAt: getISODate(),
+});
 app.use(express.json()); // Middleware to parse JSON bodies
 
 // CORS middleware
@@ -27,20 +34,40 @@ app.use((req, res, next) => {
 // Serve static files from frontend directory
 app.use(express.static(path.join(__dirname, "..", "frontend")));
 
-// Simple GET endpoint
-app.get("/hello", (req, res) => {
-  console.log("Request headers?????", req.headers);
-  res.send("Hello, world!");
+// #region Project Endpoints
+app.post("/projects", (req, res) => {
+  const { name } = req.body;
+  if (!name) {
+    return res.status(400).json({ error: "Missing name" });
+  }
+
+  const project = {
+    ...createNewRecord(),
+    name,
+    modelNumber: 0,
+  };
+  fs.readFile(projectsFile, "utf8", (err, data) => {
+    let projects = [];
+    if (!err) {
+      try {
+        projects = data.trim() ? JSON.parse(data) : [];
+      } catch (e) {
+        return res.status(500).json({ error: "Failed to parse projects file" });
+      }
+    }
+
+    projects.push(project);
+    fs.writeFile(projectsFile, JSON.stringify(projects, null, 2), (err) => {
+      if (err) {
+        return res.status(500).json({ error: "Failed to write projects file" });
+      }
+      res.json({
+        message: "Project created",
+        id: project.id,
+      });
+    });
+  });
 });
-
-// Simple POST endpoint
-app.post("/test", (req, res) => {
-  const data = req.body;
-  res.json({ message: "You sent:", data });
-});
-
-//
-
 app.get("/projects", (req, res) => {
   console.log("Fetching project list...");
   fs.readFile(projectsFile, "utf8", (err, data) => {
@@ -80,40 +107,163 @@ app.get("/projects/:id", (req, res) => {
     }
   });
 });
+app.get("/projects/:projectId/documents", (req, res) => {
+  const { projectId } = req.params;
+  console.log("Fetching documents for project:", projectId);
+  fs.readFile(documentsFile, "utf8", (err, data) => {
+    if (err) {
+      if (err.code === "ENOENT") {
+        return res.json([]);
+      }
+      return res.status(500).json({ error: "Failed to read documents file" });
+    }
+    try {
+      const documents = data.trim() ? JSON.parse(data) : [];
+      const filtered = documents.filter((doc) => doc.projectId === projectId);
+      res.json(filtered);
+    } catch (e) {
+      res.status(500).json({ error: "Failed to parse documents file" });
+    }
+  });
+});
+// #endregion
 
-app.post("/projects", (req, res) => {
-  const { name } = req.body;
-  if (!name) {
-    return res.status(400).json({ error: "Missing name" });
+// #region Document Endpoints
+app.post("/documents", (req, res) => {
+  const { name, content, projectId } = req.body;
+  if (!name || !content || !projectId) {
+    return res
+      .status(400)
+      .json({ error: "Missing name, content, or projectId" });
   }
   const id = crypto.randomUUID();
-  const timestamp = new Date().toISOString();
-  const project = {
-    id,
-    name,
-    updatedAt: timestamp,
-    documents: [],
-  };
-  fs.readFile(projectsFile, "utf8", (err, data) => {
-    let projects = [];
+  const uploadedAt = new Date().toISOString();
+  const documentMeta = { id, name, uploadedAt, projectId };
+  // Read current documents
+  fs.readFile(documentsFile, "utf8", (err, data) => {
+    let documents = [];
     if (!err) {
       try {
-        projects = data.trim() ? JSON.parse(data) : [];
+        documents = data.trim() ? JSON.parse(data) : [];
       } catch (e) {
-        return res.status(500).json({ error: "Failed to parse projects file" });
+        return res
+          .status(500)
+          .json({ error: "Failed to parse documents file" });
       }
     }
-
-    projects.push(project);
-    fs.writeFile(projectsFile, JSON.stringify(projects, null, 2), (err) => {
+    documents.push(documentMeta);
+    // Write metadata
+    fs.writeFile(documentsFile, JSON.stringify(documents, null, 2), (err) => {
       if (err) {
-        return res.status(500).json({ error: "Failed to write projects file" });
+        return res
+          .status(500)
+          .json({ error: "Failed to write documents file" });
       }
-      res.json({ message: "Project created", id, name, updatedAt: timestamp });
+      // Write content
+      const contentFile = path.join(documentsPath, `${id}.html`);
+      fs.writeFile(contentFile, content, (err) => {
+        if (err) {
+          // Rollback metadata? For simplicity, not for now
+          return res
+            .status(500)
+            .json({ error: "Failed to write document content" });
+        }
+        res.json(documentMeta);
+      });
     });
   });
 });
+app.get("/documents", (req, res) => {
+  console.log("Fetching documents list...");
+  fs.readFile(documentsFile, "utf8", (err, data) => {
+    if (err) {
+      if (err.code === "ENOENT") {
+        return res.json([]);
+      }
+      return res.status(500).json({ error: "Failed to read documents file" });
+    }
+    try {
+      const documents = data.trim() ? JSON.parse(data) : [];
+      res.json(documents);
+    } catch (e) {
+      res.status(500).json({ error: "Failed to parse documents file" });
+    }
+  });
+});
 
+app.get("/documents/:id", (req, res) => {
+  const docId = req.params.id;
+  console.log("Fetching document content for ID:", docId);
+  const contentFile = path.join(documentsPath, `${docId}.html`);
+  fs.readFile(contentFile, "utf8", (err, content) => {
+    if (err) {
+      if (err.code === "ENOENT") {
+        return res.status(404).json({ error: "Document not found" });
+      }
+      return res.status(500).json({ error: "Failed to read document content" });
+    }
+    res.json({ content });
+  });
+});
+
+app.get("/documents/:id/traces", (req, res) => {
+  const { id } = req.params;
+  console.log("Fetching traces for document ID:", id);
+  fs.readFile(tracesFile, "utf8", (err, data) => {
+    if (err) {
+      if (err.code === "ENOENT") {
+        return res.json([]);
+      }
+      return res.status(500).json({ error: "Failed to read traces file" });
+    }
+    try {
+      const traces = data.trim() ? JSON.parse(data) : [];
+      const filtered = traces.filter((trace) => trace.documentId === id);
+      res.json(filtered);
+    } catch (e) {
+      res.status(500).json({ error: "Failed to parse traces file" });
+    }
+  });
+});
+
+app.delete("/documents/:id", (req, res) => {
+  const docId = req.params.id;
+  fs.readFile(documentsFile, "utf8", (err, data) => {
+    if (err) {
+      return res.status(500).json({ error: "Failed to read documents file" });
+    }
+    try {
+      let documents = data.trim() ? JSON.parse(data) : [];
+      const index = documents.findIndex((d) => d.id === docId);
+      if (index === -1) {
+        return res.status(404).json({ error: "Document not found" });
+      }
+      documents.splice(index, 1);
+      fs.writeFile(documentsFile, JSON.stringify(documents, null, 2), (err) => {
+        if (err) {
+          return res
+            .status(500)
+            .json({ error: "Failed to update documents file" });
+        }
+        // Delete content file
+        const contentFile = path.join(documentsPath, `${docId}.txt`);
+        fs.unlink(contentFile, (err) => {
+          // Ignore error if file doesn't exist
+          res.json({ message: "Document deleted" });
+        });
+      });
+    } catch (e) {
+      res.status(500).json({ error: "Failed to parse documents file" });
+    }
+  });
+  // Delete content file
+  const contentFile = path.join(documentsPath, `${docId}.html`);
+  fs.unlink(contentFile, (err) => {
+    // Ignore error if file doesn't exist
+    res.json({ message: "Document deleted" });
+  });
+});
+// #endregion
 app.get("/test", async (req, res) => {
   try {
     const fd = new FormData();
@@ -156,6 +306,62 @@ app.get("/test", async (req, res) => {
   }
 });
 
+// #region Model Endpoints
+app.post("/models", (req, res) => {
+  const model = req.body;
+
+  const id = crypto.randomUUID();
+  // const timestamp = new Date().toISOString();
+
+  const modelFile = path.join(modelsPath, `${id}.xml`);
+  fs.writeFile(modelFile, JSON.stringify(model), (err) => {
+    if (err) {
+      return res.status(500).json({ error: "Failed to write model content" });
+    }
+    res.json({ id });
+  });
+});
+app.get("/models/:id", (req, res) => {
+  const modelId = req.params.id;
+  console.log("Fetching model content for ID:", modelId);
+  const modelFile = path.join(modelsPath, `${modelId}.xml`);
+  fs.readFile(modelFile, "utf8", (err, content) => {
+    if (err) {
+      if (err.code === "ENOENT") {
+        return res.status(404).json({ error: "Model not found" });
+      }
+      return res.status(500).json({ error: "Failed to read model content" });
+    }
+    res.json(JSON.parse(content));
+  });
+});
+// #endregion
+
+//#region Trace Endpoints
+app.post("/traces", (req, res) => {
+  const trace = req.body;
+
+  const id = crypto.randomUUID();
+  trace.id = id;
+  fs.readFile(tracesFile, "utf8", (err, data) => {
+    let traces = [];
+    if (!err) {
+      try {
+        traces = data.trim() ? JSON.parse(data) : [];
+      } catch (e) {
+        return res.status(500).json({ error: "Failed to parse traces file" });
+      }
+    }
+    traces.push(trace);
+    fs.writeFile(tracesFile, JSON.stringify(traces, null, 2), (err) => {
+      if (err) {
+        return res.status(500).json({ error: "Failed to write traces file" });
+      }
+      res.json(trace);
+    });
+  });
+});
+//#endregion
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });

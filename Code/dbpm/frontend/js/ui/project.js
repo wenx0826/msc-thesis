@@ -2,7 +2,6 @@
 // on LLM model select change, set Store llmModel
 projectStore.subscribe((state, { key, oldValue, newValue }) => {
   if (key === "name") {
-    console.log("Project name changed in store:!!!!", newValue);
     changeProjectName(newValue);
   }
 });

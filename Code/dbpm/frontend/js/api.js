@@ -1,60 +1,10 @@
 window.API = {
-  db: null,
-  async init() {
-    await this.connectDB();
-  },
-  async connectDB() {
-    return new Promise((resolve, reject) => {
-      const dbReq = indexedDB.open("MyDB", 1);
-      dbReq.onupgradeneeded = function (event) {
-        const db = event.target.result;
-        // db.deleteObjectStore("models");
-        // db.deleteObjectStore("documents");
-        // db.deleteObjectStore("traces");
-        if (!db.objectStoreNames.contains("documents")) {
-          db.createObjectStore("documents", {
-            keyPath: "id",
-            autoIncrement: true,
-          });
-        }
-        if (!db.objectStoreNames.contains("models")) {
-          db.createObjectStore("models", {
-            keyPath: "id",
-            autoIncrement: true,
-          });
-        }
-        if (!db.objectStoreNames.contains("traces")) {
-          const traceStore = db.createObjectStore("traces", {
-            keyPath: "id",
-            autoIncrement: true,
-          });
-          traceStore.createIndex("document_id", "document_id", {
-            unique: false,
-          });
-          traceStore.createIndex("model_id", "model_id", { unique: false });
-        }
-      };
-
-      dbReq.onsuccess = (event) => {
-        API.db = event.target.result;
-        resolve();
-      };
-      dbReq.onerror = (event) => {
-        console.error("Database error:", event.target.errorCode);
-        reject();
-      };
-    });
-  },
+  baseURL: "http://localhost:3000",
 };
 API.project = {
-  baseURL: "http://localhost:3000", // relative URLs since frontend is served from same server
-  async getProjectList() {
-    const response = await fetch(`${this.baseURL}/projects`);
-    if (!response.ok) throw new Error("Failed to fetch projects");
-    return await response.json();
-  },
+  path: "projects",
   async createProject(name) {
-    const response = await fetch(`${this.baseURL}/projects`, {
+    const response = await fetch(`${API.baseURL}/${this.path}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name }),
@@ -67,10 +17,14 @@ API.project = {
     }
     return await response.json();
   },
-
+  async getProjectList() {
+    const response = await fetch(`${API.baseURL}/${this.path}`);
+    if (!response.ok) throw new Error("Failed to fetch projects");
+    return await response.json();
+  },
   async getProjectById(id) {
     // TODO: implement GET /project/:id if needed
-    const response = await fetch(`${this.baseURL}/projects/${id}`);
+    const response = await fetch(`${API.baseURL}/${this.path}/${id}`);
     if (!response.ok) {
       const error = await response
         .json()
@@ -80,35 +34,91 @@ API.project = {
     return await response.json();
   },
 };
-API.Document = {
-  async getDocumentList() {
-    return await getDocumentList(API.db);
+API.document = {
+  path: "documents", // relative URLs since frontend is served from same server
+
+  async getDocumentsByProjectId(projectId) {
+    const response = await fetch(
+      `${API.baseURL}/projects/${projectId}/${this.path}`,
+    );
+    if (!response.ok) throw new Error("Failed to fetch documents");
+    return await response.json();
   },
   async getDocumentContentById(id) {
-    return await getDocumentContentById(API.db, id);
+    const response = await fetch(`${API.baseURL}/${this.path}/${id}`);
+    if (!response.ok) throw new Error("Failed to fetch document");
+    const data = await response.json();
+    return data.content;
   },
   async createDocument(doc) {
-    return await createDocument(API.db, doc);
+    const response = await fetch(`${API.baseURL}/${this.path}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(doc),
+    });
+    if (!response.ok) {
+      const error = await response
+        .json()
+        .catch(() => ({ error: "Unknown error" }));
+      throw new Error(error.error || "Failed to create document");
+    }
+    return await response.json();
   },
   async deleteDocumentById(id) {
-    return await deleteDocumentById(API.db, id);
+    const response = await fetch(`${API.baseURL}/${this.path}/${id}`, {
+      method: "DELETE",
+    });
+    if (!response.ok) {
+      const error = await response
+        .json()
+        .catch(() => ({ error: "Unknown error" }));
+      throw new Error(error.error || "Failed to delete document");
+    }
+    return await response.json();
   },
 };
 
-API.Trace = {
+API.trace = {
+  path: "traces", // relative URLs since frontend is served from same server
   async getTracesByDocumentId(docId) {
-    return await getTracesByDocumentId(API.db, docId);
+    return await fetch(`${API.baseURL}/documents/${docId}/${this.path}`).then(
+      (res) => {
+        if (!res.ok) throw new Error("Failed to fetch traces");
+        return res.json();
+      },
+    );
   },
   async createTrace(trace) {
-    return await createTrace(API.db, trace);
+    return await fetch(`${API.baseURL}/${this.path}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(trace),
+    }).then((res) => {
+      if (!res.ok) {
+        return res.json().then((error) => {
+          throw new Error(error.error || "Failed to create trace");
+        });
+      }
+      return res.json();
+    });
   },
   async deleteTraceById(id) {
-    return await deleteTraceById(API.db, id);
+    const response = await fetch(`${API.baseURL}/${this.path}/${id}`, {
+      method: "DELETE",
+    });
+    if (!response.ok) {
+      const error = await response
+        .json()
+        .catch(() => ({ error: "Unknown error" }));
+      throw new Error(error.error || "Failed to delete trace");
+    }
+    return await response.json();
   },
 };
 
-API.Model = {
-  LLMDisabled: false,
+API.model = {
+  LLMDisabled: true,
+  path: "models", // relative URLs since frontend is served from same server
   async getModelById(id) {
     return await getModelById(API.db, id);
   },
@@ -216,16 +226,32 @@ API.Model = {
     // $generateButton.prop("disabled", false);
     // $("#generatedModelActionBar").css("visibility", "visible");
   },
-  async getModelById(id) {
-    return await getModelById(API.db, id);
-  },
   async createModel(model) {
-    return await createModel(API.db, model);
+    const response = await fetch(`${API.baseURL}/${this.path}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(model),
+    });
+    if (!response.ok) {
+      const error = await response
+        .json()
+        .catch(() => ({ error: "Unknown error" }));
+      throw new Error(error.error || "Failed to create model");
+    }
+    const data = await response.json();
+    return data.id;
   },
-  async updateModelById(id, updatedFields) {
-    return await updateModelById(API.db, id, updatedFields);
+  async getModelById(id) {
+    const response = await fetch(`${API.baseURL}/${this.path}/${id}`);
+    if (!response.ok) {
+      const error = await response
+        .json()
+        .catch(() => ({ error: "Unknown error" }));
+      throw new Error(error.error || "Failed to fetch model");
+    }
+    return await response.json();
   },
-  async deleteModelById(id) {
-    return await deleteModelById(API.db, id);
-  },
+
+  async updateModelById(id, updatedFields) {},
+  async deleteModelById(id) {},
 };

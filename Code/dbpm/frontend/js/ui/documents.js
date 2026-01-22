@@ -1,22 +1,35 @@
 let $documentList;
 
-$(document).ready(function () {
+$(function () {
   $documentList = $("#documentList");
+  $("#documentsInput")
+    .closest("form")
+    .on("submit", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+    });
   $("#documentsInput").on("change", async (event) => {
+    event.preventDefault();
+    event.stopPropagation();
     for (const file of event.target.files) {
-      if (!file) continue;
-      const content = await getFileContentInHTML(file);
-      const name = file.name;
-      documentsStore.createDocument({ name, content }).then((id) => {
-        renderDocumentItem({ id, name });
-        activeDocumentStore.setActiveDocumentId(id);
-      });
+      try {
+        const content = await getFileContentInHTML(file);
+        const name = file.name;
+        documentsStore
+          .createDocument({ name, content })
+          .then((id) => {
+            activeDocumentStore.setDocumentById(id);
+          })
+          .catch((error) => console.error("Error uploading document:", error));
+      } catch (error) {
+        console.error("Error processing file:", error);
+      }
     }
   });
 });
 
 activeDocumentStore.subscribe((state, { key, oldValue, newValue }) => {
-  if (key === "activeDocumentId") {
+  if (key === "id") {
     highlightActiveDocumentItem(newValue);
   }
 });
@@ -26,9 +39,14 @@ documentsStore.subscribe((state, { key, operation, id }) => {
   //   // handle document list changes if needed
   // }
   switch (operation) {
-    // case "add":
-    //   renderDocumentItem(state.documentList.find((doc) => doc.id === id));
-    //   break;
+    case "init":
+      state.documents.forEach((doc) => {
+        renderDocumentItem(doc);
+      });
+      break;
+    case "add":
+      renderDocumentItem(state.documents.find((doc) => doc.id === id));
+      break;
     case "delete":
       removeDocumentItem(id);
       break;
@@ -38,7 +56,7 @@ documentsStore.subscribe((state, { key, operation, id }) => {
 const onDocumentItemSelect = (event) => {
   event.stopPropagation();
   const docId = $(event.currentTarget).data("docid");
-  activeDocumentStore.setActiveDocumentId(docId);
+  activeDocumentStore.setDocumentById(docId);
 };
 
 const removeDocumentItem = (documentId) => {
@@ -61,7 +79,7 @@ const renderDocumentItem = async ({ id: documentId, name: documentName }) => {
       documentsStore.deleteDocumentById(documentId).then(() => {
         // removeDocumentItem(documentId);
       });
-      // const activeDocumentId = Store.getActiveDocumentId();
+      // const activeDocumentId = Store.getId();
       // const $li = $documentList
       //   .children()
       //   .filter((index, element) => $(element).data("docid") === documentId);
@@ -83,7 +101,6 @@ const renderDocumentItem = async ({ id: documentId, name: documentName }) => {
 const highlightActiveDocumentItem = (activeDocumentId) => {
   $documentList.children().each((index, element) => {
     const $element = $(element);
-
     if ($element.data("docid") === activeDocumentId) {
       $element.addClass("active");
     } else {

@@ -12,6 +12,7 @@ let $promptContainer;
 let $promptActionBar;
 let $replaceButton;
 let $backButton;
+let $sendPromptButton;
 
 $(document).ready(function () {
   $modelActionBar = $("#modelActionBar");
@@ -41,33 +42,34 @@ $(document).ready(function () {
       activeModel.data = new XMLSerializer().serializeToString(
         activeModel.data,
       );
-      modelsStore.createModel(activeModel).then((model) => {
-        console.log("Created model with ID:", model);
-
-        renderModelInList(model);
-        activeModelStore.setModel(model);
-
-        const sections = temporarySelections.map((range) =>
-          serializeRange(range),
-        );
-        tracesStore.createTrace(sections).then((trace) => {
-          clearTemporarySelections(); //to improve
-          renderTrace(trace);
-        });
-      });
-      //
-      // const model = await modelsStore.createModel(activeModel);
-      // // modelsStore.addModel(model);
-      // activeModelStore.setModel(model);
-      // modelId = model.id;
-    } else {
-      // model = await updateModel(db, modelId, activeModel);
-      // await saveModel();
+      activeModelService.keepModel(temporarySelections);
     }
+    // const
+    // modelsStore.createModel(activeModel).then((modelId) => {
+    //   console.log("Created model with ID:", modelId);
+    //   renderModelInList(activeModel);
+    //   activeModelStore.setModel(activeModel);
+    //   // activeModelStore.setModel(model);
+
+    //   activeDocumentStore.createTrace(trace);
+    // tracesStore.createTrace(sections).then((trace) => {
+    //   clearTemporarySelections(); //to improve
+    //   renderTrace(trace);
+    // });
+    // });
+    //
+    // const model = await modelsStore.createModel(activeModel);
+    // // modelsStore.addModel(model);
+    // activeModelStore.setModel(model);
+    // modelId = model.id;
+    // } else {
+    //   // model = await updateModel(db, modelId, activeModel);
+    //   // await saveModel();
+    // }
 
     // Store.addModel(model);
     // var trace = {
-    //   document_id: activeDocumentStore.getActiveDocumentId(),
+    //   document_id: activeDocumentStore.getId(),
     //   model_id: modelId,
     //   selections: temporarySelections().map((range) => serializeRange(range)),
     // };
@@ -76,7 +78,7 @@ $(document).ready(function () {
 
     // Store.addTrace(trace);
 
-    $generateButton.prop("disabled", true);
+    // $generateButton.prop("disabled", true);
     $("#generatedModelActionBar").hide();
   });
   $replaceButton.on("click", async () => {
@@ -144,7 +146,7 @@ activeModelStore.subscribe((state, { key, oldValue, newValue }) => {
             const modelDocumentId = activeModelStore.getDocumentId();
             if (modelDocumentId)
               //mini bug here has to use this if otherwise new trace cannot be created yet for new model
-              activeDocumentStore.setActiveDocumentId(modelDocumentId);
+              activeDocumentStore.setDocumentById(modelDocumentId);
           }
         }
       } else {

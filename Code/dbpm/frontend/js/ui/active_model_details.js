@@ -6,7 +6,7 @@ const renderModelSelect = (modelValue) => {
   );
   $("<option>").val("").text("--- Please select --- ").appendTo($modelSelect);
 
-  const documentList = documentsStore.getDocumentList();
+  const documentList = documentsStore.getDocuments();
   //
   for (const { id: docId, name: docName } of documentList) {
     $optGroup = $("<optgroup>").attr("label", docName).appendTo($modelSelect);

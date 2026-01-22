@@ -6,7 +6,6 @@ let $modelTagsLayer;
 let $deleteSelectionButton;
 let $editorWrap;
 let $promptContent;
-// let $modelTagsLayer
 
 let temporarySelections = [];
 const hasTemporarySelections = () => {
@@ -20,6 +19,7 @@ $(document).ready(function () {
   $deleteSelectionButton = $("#deleteSelectionButton");
   $generateButton = $("#generateButton");
   $promptContent = $("#promptContent");
+  $promptContainer = $("#promptContainer");
   $documentContent = $("#documentContent");
   $editorWrap = $("#editorWrap");
   $documentContent.on("mouseup", handleTextSelection);
@@ -29,7 +29,7 @@ $(document).ready(function () {
     const selectedText = getSelectedText();
     console.log("Selected text:", selectedText);
     $generateButton.prop("disabled", true);
-    activeModelStore.generateModelBySelections(selectedText);
+    activeModelService.generateModelBySelections(selectedText);
     // const text = Store.activeModel.setStatus("generating");
   });
   $("#columnResizehandle1").on("dragcolumnmove", (e) => {
@@ -38,7 +38,7 @@ $(document).ready(function () {
   });
 });
 
-activeDocumentStore.subscribe((state, { key, oldValue, newValue }) => {
+activeDocumentStore.subscribe((state, { key, oldValue, newValue, ...rest }) => {
   switch (key) {
     case "status":
       if (newValue === "loading") {
@@ -65,6 +65,11 @@ activeDocumentStore.subscribe((state, { key, oldValue, newValue }) => {
           activeModelStore.setModel(null);
         }
       }
+      break;
+    case "traces":
+      rerenderTracesLayer();
+      break;
+    default:
       break;
   }
 });

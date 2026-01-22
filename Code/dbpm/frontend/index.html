@@ -54,9 +54,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
     <!-- my scripts - DB simulation -->
-    <script src="js/db/db_documents.js"></script>
-    <script src="js/db/db_models.js"></script>
-    <script src="js/db/db_traces.js"></script>
+
+
     <script src="js/constants.js"></script>
     <script src="js/api.js"></script>
     <script src="js/store.js"></script>
@@ -65,7 +64,7 @@
     <script src="js/ui/active_document.js"></script>
     <script src="js/ui/models.js"></script>
     <script src="js/ui/active_model.js"></script>
-    <script src="js/ui/active_model_details.js"></script>
+    <script src="js/ui/active_model_details.js"></script>§
 
     <!-- my ui-->
     <link rel="stylesheet" href="css/myui.css" type="text/css" />
@@ -175,7 +174,10 @@
         }
 
         $(function () {
-            console.log("Loading projects..." + new Date().toISOString());
+            console.log(
+                "index.html Starting initialization...",
+                new Date().toISOString(),
+            );
             loadProjects();
             const dlg = document.getElementById("dlg");
             $("#btnCreate").on("click", function () {

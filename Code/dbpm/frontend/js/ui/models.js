@@ -15,9 +15,12 @@ activeModelStore.subscribe((state, { key, oldValue, newValue }) => {
 
 modelsStore.subscribe((state, { key, operation, id }) => {
   switch (operation) {
-    // case "add":
-    //   renderModelInList(state.models.find((model) => model.id === id));
-    //   break;
+    case "init":
+      // renderModelInList(state.models.find((model) => model.id === id));
+      for (const model of state.models) {
+        renderModelInList(model);
+      }
+      break;
     case "update":
       // rerenderModelInList(id);
       break;

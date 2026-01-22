@@ -1,11 +1,16 @@
-window.Store = {};
+window.Store = {
+  async init(projectId) {
+    await this.project.init(projectId);
+    await this.documents.init();
+    this.activeDocument.init();
+    this.models.init();
+  },
+};
 
 function createDomainStore(initialState, options = {}) {
   const subs = new Set();
-
   return {
     state: { ...initialState },
-
     subscribe(fn) {
       subs.add(fn);
       // return unsubscribe
@@ -13,15 +18,7 @@ function createDomainStore(initialState, options = {}) {
     },
 
     notify(patch) {
-      // patch: { type, prev, next, ... }
       subs.forEach((fn) => fn(this.state, patch));
-
-      // Optional DOM event bridge (single place)
-      // if (options.domEventName) {
-      //   document.dispatchEvent(
-      //     new CustomEvent(options.domEventName, { detail: patch }),
-      //   );
-      // }
     },
   };
 }
@@ -31,35 +28,16 @@ Store.project = Object.assign(
     id: null,
     name: null,
     llmModel: "gemini-2.0-flash",
-    documents: [],
-    // theme: null,
+    theme: null,
+    modelNumber: 0,
   }),
   {
-    setProject(id, name) {
-      this.state.id = id;
-      this.state.name = name;
+    async init(projectId) {
+      this.state.id = projectId;
+      const project = await API.project.getProjectById(projectId);
+      this.setName(project.name);
     },
-    setName(val) {
-      if (this.state.name != val) {
-        this.state.name = val;
-        console.log("Project name set in store:!!!!!", val);
-        this.notify({ key: "name", newValue: val });
-      }
-    },
-    setProjectById(projectId) {
-      console.log("setProjectById called with projectId:", projectId);
-      if (projectId && projectId != this.state.id) {
-        console.log("Fetching project by ID:", projectId);
-        API.project.getProjectById(projectId).then((project) => {
-          console.log("Fetched project by ID:", projectId, project);
-          // this.setProject(project.id, project.name);
-          // this.notify({ key: "id", newValue: project.id });
-          this.state.id = project.id;
-          this.setName(project.name);
-        });
-      }
-    },
-    getProjectId() {
+    getId() {
       return this.state.id;
     },
     getProjectName() {
@@ -68,6 +46,21 @@ Store.project = Object.assign(
     getLlmModel() {
       return this.state.llmModel;
     },
+    getModelNumber() {
+      return this.state.modelNumber;
+    },
+    setName(val) {
+      if (this.state.name !== val) {
+        this.state.name = val;
+        this.notify({ key: "name", newValue: val });
+      }
+    },
+    setProject({ id, name, modelNumber }) {
+      this.state.id = id;
+      this.setName(name);
+      this.state.modelNumber = modelNumber;
+    },
+
     setLlmModel(llmModel) {
       this.state.llmModel = llmModel;
     },
@@ -76,40 +69,41 @@ Store.project = Object.assign(
     },
   },
 );
+
 Store.documents = Object.assign(
   createDomainStore({
-    documentList: [],
+    documents: [],
   }),
   {
-    setDocumentList() {
-      API.Document.getDocumentList().then((fetchedDocList) => {
-        this.state.documentList = fetchedDocList;
-        this.notify({ key: "documentList", newValue: fetchedDocList });
-      });
+    async init() {
+      const projectId = projectStore.getId();
+      const documents = await API.document.getDocumentsByProjectId(projectId);
+      this.state.documents = documents;
+      this.notify({ operation: "init" });
     },
-    getDocumentList() {
-      return this.state.documentList;
+    getDocuments() {
+      return this.state.documents;
     },
     async createDocument(doc) {
-      return API.Document.createDocument(doc).then((newDoc) => {
-        const newDocList = [...this.state.documentList, newDoc];
-        this.setDocumentList();
-        return newDoc.id;
-      });
+      const projectId = projectStore.getId();
+      const newDoc = await API.document.createDocument({ ...doc, projectId });
+      this.state.documents.push(newDoc);
+      this.notify({ operation: "add", id: newDoc.id });
+      return newDoc.id;
     },
     async deleteDocumentById(docId) {
-      this.notify({ key: "documentList", operation: "delete", id: docId });
-      this.state.documentList = this.state.documentList.filter(
+      this.notify({ key: "documents", operation: "delete", id: docId });
+      this.state.documents = this.state.documents.filter(
         (doc) => doc.id != docId,
       );
-      API.Document.deleteDocumentById(docId);
-      const activeDocumentId = activeDocumentStore.getActiveDocumentId();
+      API.document.deleteDocumentById(docId);
+      const activeDocumentId = window.Store.activeDocument.getId();
       if (activeDocumentId == docId) {
-        activeDocumentStore.setActiveDocumentId(null);
+        window.Store.activeDocument.setDocumentById(null);
       }
-      const docModelIds = tracesStore.getDocumentModelIds(docId);
+      const docModelIds = window.Store.traces.getDocumentModelIds(docId);
       docModelIds.forEach((modelId) => {
-        modelsStore.deleteModelById(modelId);
+        window.Store.models.deleteModelById(modelId);
       });
     },
   },
@@ -117,47 +111,76 @@ Store.documents = Object.assign(
 Store.activeDocument = Object.assign(
   createDomainStore({
     status: null,
-    activeDocumentId: null,
+    id: null,
     content: null,
     traces: [],
   }),
   {
-    getActiveDocumentId() {
-      return this.state.activeDocumentId;
-    },
-    getTraces() {
-      const activeDocumentId = this.getActiveDocumentId();
-      return tracesStore.getDocumentTraces(activeDocumentId);
-    },
-    setStatus(status) {
-      this.state.status = status;
-      this.notify({ key: "status", newValue: status });
-    },
-    setContent(newValue) {
-      this.state.content = newValue;
-      this.notify({ key: "content", newValue });
-    },
-    setActiveDocumentId(newValue) {
-      const oldValue = this.getActiveDocumentId();
-      if (newValue != oldValue) {
-        this.state.activeDocumentId = newValue;
-        newValue ? this.setContentById(newValue) : this.setContent(null);
-        this.notify({ key: "activeDocumentId", newValue });
+    init() {
+      const documents = documentsStore.getDocuments();
+      if (documents.length) {
+        this.setDocumentById(documents[documents.length - 1]?.id);
       }
     },
-    setContentById(docId) {
-      this.setStatus("loading");
-      API.Document.getDocumentContentById(docId).then(
+    getStatus() {
+      return this.state.status;
+    },
+    getContent() {
+      return this.state.content;
+    },
+    getId() {
+      return this.state.id;
+    },
+
+    getTraces() {
+      return this.state.traces;
+    },
+    addTrace(trace) {
+      this.state.traces.push(trace);
+    },
+    setDocumentById(id) {
+      const currentId = this.getId();
+      if (id === currentId) return;
+      this._setId(id);
+      this._setStatus("loading");
+      const contentPromise = API.document.getDocumentContentById(id);
+      const tracesPromise = API.trace.getTracesByDocumentId(id); // Start fetching traces early
+      contentPromise.then(
         (content) => {
-          this.setContent(content);
-          this.setStatus(null);
+          this._setContent(content);
+          this._setStatus(null);
+          tracesPromise
+            .then((traces) => {
+              this._setTraces(traces);
+            })
+            .catch((error) => {
+              console.log("Error loading traces:", error);
+              // Optionally set empty traces: this._setTraces([]);
+            });
         },
         (error) => {
           console.log("Error loading document content:???", error);
-          this.setContent(null);
-          this.setStatus("error");
+          this._setContent(null);
+          this._setStatus("error");
         },
       );
+    },
+    _setStatus(newValue) {
+      this.state.status = newValue;
+      this.notify({ key: "status", newValue });
+    },
+
+    _setId(newValue) {
+      this.state.id = newValue;
+      this.notify({ key: "id", newValue });
+    },
+    _setContent(newValue) {
+      this.state.content = newValue;
+      this.notify({ key: "content", newValue });
+    },
+    _setTraces(newValue) {
+      this.state.traces = newValue;
+      this.notify({ key: "traces", operation: "init", newValue });
     },
   },
 );
@@ -178,7 +201,7 @@ Store.traces = Object.assign(
     getDocumentModels(docId) {
       const modelIds = this.getDocumentModelIds(docId);
       return modelIds.map((modelId) => {
-        const model = modelsStore.getModelById(modelId);
+        const model = window.Store.models.getModelById(modelId);
         return { id: modelId, name: model ? model.name : `Model ${modelId}` };
       });
     },
@@ -196,12 +219,14 @@ Store.traces = Object.assign(
     setTraces(traces) {
       this.state.traces = traces;
     },
-
     async createTrace(sections) {
-      const documentId = Store.activeDocument.getActiveDocumentId();
-      console.log("Creating trace for document ID:", Store.activeDocument);
+      const documentId = window.Store.activeDocument.getId();
+      console.log(
+        "Creating trace for document ID:",
+        window.Store.activeDocument,
+      );
       console.log("Creating trace for document ID???:", documentId);
-      const modelId = Store.activeModel.getModelId();
+      const modelId = window.Store.activeModel.getModelId();
       const trace = {
         id: Date.now(), // Simple unique ID generation
         document_id: documentId,
@@ -229,9 +254,30 @@ Store.traces = Object.assign(
 Store.models = Object.assign(
   createDomainStore({
     models: [],
-    modelList: [],
   }),
   {
+    init() {
+      const documents = documentsStore.getDocuments();
+      const models = [];
+      documents.forEach(async (doc) => {
+        traces = await API.trace.getTracesByDocumentId(doc.id);
+        console.log("Traces for document ID", doc.id, ":", traces);
+        // ?Question
+        // traces.forEach(async (trace) => {
+        //   const model = await API.model.getModelById(trace.modelId);
+        //   console.log("Loaded model for trace:", model);
+        //   models.push(model);
+        // });
+        for (const trace of traces) {
+          const model = await API.model.getModelById(trace.modelId);
+          console.log("Loaded model for trace:", model);
+          models.push(model);
+        }
+        this.state.models = models;
+        console.log("Initialized models store with models:", models);
+        this.notify({ operation: "init" });
+      });
+    },
     addModel(model) {
       this.state.models.push(model);
     },
@@ -246,12 +292,12 @@ Store.models = Object.assign(
       return model && model.id == modelId ? model.name : `Model ${modelId}`;
     },
     async createModel(model) {
-      const modelId = await API.Model.createModel(model);
-      model = await API.Model.updateModelById(modelId, {
-        name: `Model_${modelId}`,
-      });
+      const modelId = await API.model.createModel(model);
+      // model = await API.model.updateModelById(modelId, {
+      //   name: `Model_${modelId}`,
+      // });
       this.addModel(model);
-      return model;
+      return modelId;
     },
     /*async updateActiceModel(modelId, updatedFields) {
       // const updatedModel = await API.Model.updateModel(modelId, updatedFields);
@@ -263,10 +309,10 @@ Store.models = Object.assign(
       this.state.models = this.state.models.filter(
         (model) => model.id != modelId,
       );
-      if (activeModelStore.getModelId() == modelId) {
-        activeModelStore.setModel(null);
+      if (window.Store.activeModel.getModelId() == modelId) {
+        window.Store.activeModel.setModel(null);
       }
-      tracesStore.deleteModelTrace(modelId);
+      window.Store.traces.deleteModelTrace(modelId);
       API.Model.deleteModelById(modelId);
     },
     async updateModelById(modelId, updatedFields) {
@@ -302,7 +348,7 @@ Store.activeModel = Object.assign(
     },
     getDocumentId() {
       const modelId = this.getModelId();
-      return tracesStore.getModelTrace(modelId)?.document_id;
+      return window.Store.traces.getModelTrace(modelId)?.document_id;
       // const model = this.getModel();
       // if (model) {
       //   const trace = Store.traces.getModelTrace(model.id);
@@ -329,7 +375,7 @@ Store.activeModel = Object.assign(
       var currentActiveModelId = this.getModelId();
       if (modelId != currentActiveModelId) {
         if (modelId) {
-          const model = await API.Model.getModelById(modelId);
+          const model = await API.model.getModelById(modelId);
           this.setModel(model);
         } else {
           this.setModel(null);
@@ -343,67 +389,6 @@ Store.activeModel = Object.assign(
         this.setModel(updatedModel);
       }
     },*/
-    generateModel(userInput, rpstXml) {
-      // const activeModel = this.getModel();
-      // const model = rpstXml ? rpstXml : {};
-      const model = rpstXml ? this.getModel() : {};
-      this.setStatus("generating");
-      const llm = Store.project.getLlmModel();
-      API.Model.generateModel({
-        userInput,
-        rpstXml: rpstXml ? rpstXml : window.Constants.EMPTY_MODEL,
-        llm,
-      })
-        .then((data) => {
-          this.setModel({ ...model, data });
-        })
-        .catch((error) => {
-          console.error("Error generating model:", error);
-          this.setError(String(error));
-          this.setStatus("error");
-        });
-      /*const activeModel = this.getModel();
-      const model = rpstXml ? rpstXml : {};
-      console.log("Generating model with input:", userInput, rpstXml);
-      this.setStatus("generating");
-     
-      API.Model.generateModel({ userInput, rpstXml, llm })
-        .then((data) => data)
-        .catch((error) => {
-          console.error("Error generating model:", error);
-          this.setError(String(error));
-          this.setStatus("error");
-        });
-      */
-      // return new Promise
-    },
-    regenerateModel(userInput) {
-      console.log("Regenerating model...");
-      console.log("Applying prompt to active model:", userInput);
-      const activeModel = this.getModel();
-      console.log("description of active model:", activeModel.data);
-      const rpstXml = $(activeModel.data).children().serializePrettyXML();
-      console.log("Regenerate RPST XML of active model:", rpstXml);
-
-      // console.log("RPST XML of active model:", rpstXml);
-      this.generateModel(userInput, rpstXml);
-      // const activeModel = this.getActiveModel();
-      // if (activeModel) {
-      //   this.generateModel(activeModel.source_text, activeModel.rpst_xml);
-      // }
-    },
-    generateModelByPrompt(userInput) {
-      const activeModel = this.getModel();
-      rpstXml = activeModel
-        ? $(activeModel.data).children().serializePrettyXML()
-        : window.Constants.EMPTY_MODEL;
-      this.generateModel(userInput, rpstXml);
-    },
-    generateModelBySelections(userInput) {
-      console.log("Store, Generating new model with selected text:??????");
-      // const rpstXml = window.Constants.EMPTY_MODEL;
-      this.generateModel(userInput);
-    },
     /*updateActiveModel(model) {
       const modelId = this.getModelId();
       if (modelId) {

@@ -1,9 +1,9 @@
-const projectStore = Store.project;
-const documentsStore = Store.documents;
-const tracesStore = Store.traces;
-const activeDocumentStore = Store.activeDocument;
-const modelsStore = Store.models;
-const activeModelStore = Store.activeModel;
+const projectStore = window.Store.project;
+const documentsStore = window.Store.documents;
+const tracesStore = window.Store.traces;
+const activeDocumentStore = window.Store.activeDocument;
+const modelsStore = window.Store.models;
+const activeModelStore = window.Store.activeModel;
 let iframeLoaded = false;
 
 function waitForIframe() {
@@ -23,40 +23,68 @@ function waitForIframe() {
     }
   });
 }
-async function loadData() {
-  // Wait for iframe to be ready
-  let modelIds = [];
-  const documentList = await API.Document.getDocumentList();
-  documentsStore.setDocumentList(documentList);
-  documentList.forEach((doc) => {
-    renderDocumentItem(doc);
+async function initStores(projectId) {
+  API.project
+    .getProjectById(projectId)
+    .then((project) => projectStore.setProject(project));
+
+  // const documents = await API.Document.getDocuments();
+  API.Document.getDocumentsByProjectId(projectId).then((documents) => {
+    documentsStore.setDocumentList(documents);
+    if (documents.length > 0) {
+      activeDocumentStore.setDocumentById(documents[documents.length - 1]?.id);
+    }
+    console.log("Loaded documents for project:", documents);
   });
-  console.log("Loaded documents:", documentList);
-  for (const { id: docId } of documentList) {
-    const newTraces = await API.Trace.getTracesByDocumentId(docId);
-    // console.log("Loaded traces for document", docId, newTraces);
-    tracesStore.addTraces(newTraces);
-    modelIds.push(...newTraces.map((trace) => trace.model_id));
-    // for (const { model_id: modelId } of newTraces) {
-    //   API.Model.getModelById(modelId).then(async (model) => {
-    //     await modelsStore.addModel(model);
-    //     // await renderModelInList(model);
-    //   });
-    // }
-  }
-  if (documentList.length) {
-    activeDocumentStore.setActiveDocumentId(
-      documentList[documentList.length - 1]?.id,
-    );
-  }
-  if (!iframeLoaded) {
-    await waitForIframe();
-  }
-  modelIds.forEach(async (modelId) => {
-    const model = await API.Model.getModelById(modelId);
-    modelsStore.addModel(model);
-    await renderModelInList(model);
-  });
+
+  // const documentIds = project.documents || [];
+  // if (documentIds.length > 0) {
+  //   // documentsStore.state.documentList = [];
+  //   // documentsStore.state.documentList = documents;
+  // } else {
+  //   documentsStore.state.documentList = await API.Document.getDocuments();
+  // }
+  // //
+  // await documentsStore.setDocumentList();
+
+  // const documentList = documentsStore.getDocuments();
+  // },
+  // projectStore.setProjectById(projectId).then(() => {
+  //   console.log("Project data loaded:", projectStore.state);
+  // });
+  // // Wait for iframe to be ready
+  // let modelIds = [];
+  // const documentList = await API.Document.getDocuments();
+  // documentsStore.setDocumentList(documentList);
+  // documentList.forEach((doc) => {
+  //   renderDocumentItem(doc);
+  // });
+  // console.log("Loaded documents:", documentList);
+  // for (const { id: docId } of documentList) {
+  //   const newTraces = await API.Trace.getTracesByDocumentId(docId);
+  //   // console.log("Loaded traces for document", docId, newTraces);
+  //   tracesStore.addTraces(newTraces);
+  //   modelIds.push(...newTraces.map((trace) => trace.model_id));
+  //   // for (const { model_id: modelId } of newTraces) {
+  //   //   API.Model.getModelById(modelId).then(async (model) => {
+  //   //     await modelsStore.addModel(model);
+  //   //     // await renderModelInList(model);
+  //   //   });
+  //   // }
+  // }
+  // if (documentList.length) {
+  //   activeDocumentStore.setDocumentById(
+  //     documentList[documentList.length - 1]?.id,
+  //   );
+  // }
+  // if (!iframeLoaded) {
+  //   await waitForIframe();
+  // }
+  // modelIds.forEach(async (modelId) => {
+  //   const model = await API.Model.getModelById(modelId);
+  //   modelsStore.addModel(model);
+  //   await renderModelInList(model);
+  // });
   // const modelIds = Store.models.getAllModelIds();
 }
 
@@ -66,18 +94,19 @@ function getProjectIdFromURL() {
 }
 
 $(document).ready(async () => {
+  console.log("main.html Starting initialization...", new Date().toISOString());
   console.log("project id from url:", getProjectIdFromURL());
   const projectId = getProjectIdFromURL();
-  projectStore.setProjectById(projectId);
+  Store.init(projectId);
+  // window.Store.init(projectId);
+  // projectStore.setProjectById(projectId);
   const iframe = document.getElementById("converter-frame");
   iframe.addEventListener("load", () => {
     iframeLoaded = true;
   });
-  await API.init();
-  await loadData();
   // const projectId = getProjectIdFromURL();
   console.log("Setting project id in store:", projectId);
-  console.log("Initialization complete.", Store.state);
+  console.log("Initialization complete.", window.Store);
   // generateModel();
   // var timer;
   // $(document).on('input', '#dat_details input, #dat_details textarea, #dat_details [contenteditable]', function (e) {
