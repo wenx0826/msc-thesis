@@ -4,10 +4,11 @@
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
+const crypto = require("crypto");
 const app = express();
 const PORT = 3000;
 
-const projectsPath = path.join(__dirname, "..", "data", "projects");
+const projectsFile = path.join(__dirname, "..", "data", "projects.json");
 
 app.use(express.json()); // Middleware to parse JSON bodies
 
@@ -42,48 +43,74 @@ app.post("/test", (req, res) => {
 
 app.get("/projects", (req, res) => {
   console.log("Fetching project list...");
-  fs.readdir(projectsPath, (err, files) => {
+  fs.readFile(projectsFile, "utf8", (err, data) => {
     if (err) {
-      return res.status(500).json({ error: "Failed to read projects" });
+      if (err.code === "ENOENT") {
+        return res.json([]); // File doesn't exist, return empty array
+      }
+      return res.status(500).json({ error: "Failed to read projects file" });
     }
-    const projects = files
-      .filter((f) => f.endsWith(".json"))
-      .map((f) => {
-        const id = f.replace(".json", "");
-        try {
-          const data = JSON.parse(
-            fs.readFileSync(path.join(projectsPath, f), "utf8"),
-          );
-          console.log("Loaded project data:", data);
-          return data;
-        } catch (e) {
-          return { id, name: "Error loading" };
-        }
-      });
-    res.json(projects);
+    try {
+      let projects = data.trim() ? JSON.parse(data) : [];
+      projects = projects.map(({ documents, ...rest }) => rest);
+      res.json(projects);
+    } catch (e) {
+      res.status(500).json({ error: "Failed to parse projects file" });
+    }
   });
 });
-app.get("/project/:id", (req, res) => {
+app.get("/projects/:id", (req, res) => {
   const projectId = req.params.id;
-  const filePath = path.join(projectsPath, `${projectId}.json`);
-  fs.readFile(filePath, "utf8", (err, data) => {
+  fs.readFile(projectsFile, "utf8", (err, data) => {
     if (err) {
-      return res.status(404).json({ error: "Project not found" });
+      if (err.code === "ENOENT") {
+        return res.status(404).json({ error: "Project not found" });
+      }
+      return res.status(500).json({ error: "Failed to read projects file" });
     }
-    res.json(JSON.parse(data));
+    try {
+      const projects = data.trim() ? JSON.parse(data) : [];
+      const project = projects.find((p) => p.id === projectId);
+      if (!project) {
+        return res.status(404).json({ error: "Project not found" });
+      }
+      res.json(project);
+    } catch (e) {
+      res.status(500).json({ error: "Failed to parse projects file" });
+    }
   });
 });
-app.post("/project", (req, res) => {
-  const { id, name } = req.body;
-  if (!id || !name) {
-    return res.status(400).json({ error: "Missing id or name" });
+
+app.post("/projects", (req, res) => {
+  const { name } = req.body;
+  if (!name) {
+    return res.status(400).json({ error: "Missing name" });
   }
-  const filePath = path.join(projectsPath, `${id}.json`);
-  fs.writeFile(filePath, JSON.stringify({ id, name }, null, 2), (err) => {
-    if (err) {
-      return res.status(500).json({ error: "Failed to write file" });
+  const id = crypto.randomUUID();
+  const timestamp = new Date().toISOString();
+  const project = {
+    id,
+    name,
+    updatedAt: timestamp,
+    documents: [],
+  };
+  fs.readFile(projectsFile, "utf8", (err, data) => {
+    let projects = [];
+    if (!err) {
+      try {
+        projects = data.trim() ? JSON.parse(data) : [];
+      } catch (e) {
+        return res.status(500).json({ error: "Failed to parse projects file" });
+      }
     }
-    res.json({ message: "Project created", id, name });
+
+    projects.push(project);
+    fs.writeFile(projectsFile, JSON.stringify(projects, null, 2), (err) => {
+      if (err) {
+        return res.status(500).json({ error: "Failed to write projects file" });
+      }
+      res.json({ message: "Project created", id, name, updatedAt: timestamp });
+    });
   });
 });
 

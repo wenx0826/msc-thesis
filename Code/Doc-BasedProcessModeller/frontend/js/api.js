@@ -53,11 +53,11 @@ API.project = {
     if (!response.ok) throw new Error("Failed to fetch projects");
     return await response.json();
   },
-  async createProject(id, name) {
-    const response = await fetch(`${this.baseURL}/project`, {
+  async createProject(name) {
+    const response = await fetch(`${this.baseURL}/projects`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id, name }),
+      body: JSON.stringify({ name }),
     });
     if (!response.ok) {
       const error = await response
@@ -67,9 +67,10 @@ API.project = {
     }
     return await response.json();
   },
+
   async getProjectById(id) {
     // TODO: implement GET /project/:id if needed
-    const response = await fetch(`${this.baseURL}/project/${id}`);
+    const response = await fetch(`${this.baseURL}/projects/${id}`);
     if (!response.ok) {
       const error = await response
         .json()

@@ -193,19 +193,10 @@
                 $("#err").text("");
                 if (!name) { $("#err").text("Name is required."); return; }
                 $("#save").prop("disabled", true);
-                const id = crypto.randomUUID();
-                // projects.push({ id, name });
-                // const project = { id, name };
-                // renderProject(project);
-
-                // loadProjects();
-                // dlg.close();
-                // console.log("Created project:", { id, name });
-                // window.location.assign("main.html?project_id=" + encodeURIComponent(id));
-                API.project.createProject(id, name).then(resp => {
+                API.project.createProject(name).then(resp => {
                     console.log("Project created:", resp);
                     dlg.close();
-                    window.location.assign("main.html?project_id=" + encodeURIComponent(id));
+                    window.location.assign("main.html?project_id=" + encodeURIComponent(resp.id));
                 }).catch(err => {
                     $("#err").text(err.message);
                     $("#save").prop("disabled", false);
