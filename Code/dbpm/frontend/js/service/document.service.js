@@ -8,4 +8,13 @@ const documentService = {
   getTracesById(documentId) {
     return API.trace.getTracesByDocumentId(documentId);
   },
+  async uploadDocument(doc) {
+    const projectId = workspaceStore.getProjectId();
+    const newDoc = await API.document.createDocument({ ...doc, projectId });
+    documentsStore.addDocument(newDoc);
+    const docId = newDoc.id;
+    activeDocumentStore.setDocumentById(docId);
+    workspaceStore.setActiveDocumentId(docId);
+    return docId;
+  },
 };

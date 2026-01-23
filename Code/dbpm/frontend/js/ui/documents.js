@@ -15,12 +15,7 @@ $(function () {
       try {
         const content = await getFileContentInHTML(file);
         const name = file.name;
-        documentsStore
-          .createDocument({ name, content })
-          .then((id) => {
-            activeDocumentStore.setDocumentById(id);
-          })
-          .catch((error) => console.error("Error uploading document:", error));
+        documentService.uploadDocument({ name, content });
       } catch (error) {
         console.error("Error processing file:", error);
       }
@@ -32,7 +27,6 @@ workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
   switch (key) {
     case "activeDocumentId":
       highlightActiveDocumentItem(newValue);
-
       break;
     default:
       break;
@@ -40,9 +34,6 @@ workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
 });
 
 documentsStore.subscribe((state, { key, operation, id }) => {
-  // if (key === "documentList") {
-  //   // handle document list changes if needed
-  // }
   switch (operation) {
     case "init":
       state.documents.forEach((doc) => {
@@ -61,7 +52,8 @@ documentsStore.subscribe((state, { key, operation, id }) => {
 const onDocumentItemSelect = (event) => {
   event.stopPropagation();
   const docId = $(event.currentTarget).data("docid");
-  activeDocumentStore.setDocumentById(docId);
+  //
+  workspaceStore.setActiveDocumentId(docId);
 };
 
 const removeDocumentItem = (documentId) => {

@@ -318,7 +318,7 @@ app.delete("/documents/:id", (req, res) => {
               .json({ error: "Failed to update documents file" });
           }
           // Delete content file
-          const contentFile = path.join(documentsPath, `${docId}.txt`);
+          const contentFile = path.join(documentsPath, `${docId}.html`);
           fs.unlink(contentFile, (err) => {
             // Ignore error if file doesn't exist
             res.json({ message: "Document deleted" });
@@ -330,11 +330,6 @@ app.delete("/documents/:id", (req, res) => {
     }
   });
   // Delete content file
-  const contentFile = path.join(documentsPath, `${docId}.html`);
-  fs.unlink(contentFile, (err) => {
-    // Ignore error if file doesn't exist
-    res.json({ message: "Document deleted" });
-  });
 });
 // #endregion
 

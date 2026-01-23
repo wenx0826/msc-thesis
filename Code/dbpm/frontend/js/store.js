@@ -122,6 +122,10 @@ Store.documents = Object.assign(
     getDocuments() {
       return this.state.documents;
     },
+    addDocument(document) {
+      this.state.documents.push(document);
+      this.notify({ operation: "add", id: document.id });
+    },
     async createDocument(doc) {
       const projectId = workspaceStore.getProjectId();
       const newDoc = await API.document.createDocument({ ...doc, projectId });

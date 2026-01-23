@@ -78,7 +78,7 @@
                 return;
             }
             try {
-                console.log("Converting model data to SVG:", input, args);
+                // console.log("Converting model data to SVG:", input, args);
 
                 const modelId = input.id;
                 const model = await API.model.getModelDataById(modelId);
@@ -100,7 +100,7 @@
                     graphrealization.set_label_container($("#modelGridSmall"));
                     graphrealization.set_description($(data), true);
                     const svgData = $("#modelCanvasSmall").clone().removeAttr("id");
-                    console.log("SVG data for model:", svgData);
+                    // console.log("SVG data for model:", svgData);
                     const svgString = svgData.prop('outerHTML');
                     //ToAsk why???
                     // const svgString = svgData.serializedPrettyXML()
