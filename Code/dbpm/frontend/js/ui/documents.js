@@ -28,9 +28,14 @@ $(function () {
   });
 });
 
-activeDocumentStore.subscribe((state, { key, oldValue, newValue }) => {
-  if (key === "id") {
-    highlightActiveDocumentItem(newValue);
+workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
+  switch (key) {
+    case "activeDocumentId":
+      highlightActiveDocumentItem(newValue);
+
+      break;
+    default:
+      break;
   }
 });
 

@@ -33,6 +33,33 @@ API.project = {
     }
     return await response.json();
   },
+  async updateProjectById(id, updatedFields) {
+    console.log("!!!!!!!!!Updating project!!!!!!!!!!!!:", id, updatedFields);
+    const response = await fetch(`${API.baseURL}/${this.path}/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedFields),
+    });
+    if (!response.ok) {
+      const error = await response
+        .json()
+        .catch(() => ({ error: "Unknown error" }));
+      throw new Error(error.error || "Failed to update project");
+    }
+    return await response.json();
+  },
+  async deleteProjectById(id) {
+    const response = await fetch(`${API.baseURL}/${this.path}/${id}`, {
+      method: "DELETE",
+    });
+    if (!response.ok) {
+      const error = await response
+        .json()
+        .catch(() => ({ error: "Unknown error" }));
+      throw new Error(error.error || "Failed to delete project");
+    }
+    return await response.json();
+  },
 };
 API.document = {
   path: "documents", // relative URLs since frontend is served from same server
@@ -45,10 +72,20 @@ API.document = {
     return await response.json();
   },
   async getDocumentContentById(id) {
-    const response = await fetch(`${API.baseURL}/${this.path}/${id}`);
+    const response = await fetch(`${API.baseURL}/${this.path}/${id}/content`);
     if (!response.ok) throw new Error("Failed to fetch document");
     const data = await response.json();
     return data.content;
+  },
+  async getDocumentTracesById(id) {
+    const response = await fetch(`${API.baseURL}/documents/${id}/traces`);
+    if (!response.ok) throw new Error("Failed to fetch document traces");
+    return await response.json();
+  },
+  async getDocumentModelsById(id) {
+    const response = await fetch(`${API.baseURL}/documents/${id}/models`);
+    if (!response.ok) throw new Error("Failed to fetch document models");
+    return await response.json();
   },
   async createDocument(doc) {
     const response = await fetch(`${API.baseURL}/${this.path}`, {
@@ -251,7 +288,29 @@ API.model = {
     }
     return await response.json();
   },
-
-  async updateModelById(id, updatedFields) {},
+  async getModelDataById(id) {
+    const response = await fetch(`${API.baseURL}/${this.path}/${id}/data`);
+    if (!response.ok) {
+      const error = await response
+        .json()
+        .catch(() => ({ error: "Unknown error" }));
+      throw new Error(error.error || "Failed to fetch model");
+    }
+    return await response.json();
+  },
+  async updateModelDataById(id, data) {
+    const response = await fetch(`${API.baseURL}/${this.path}/${id}/data`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/xml" },
+      body: data,
+    });
+    if (!response.ok) {
+      const error = await response
+        .json()
+        .catch(() => ({ error: "Unknown error" }));
+      throw new Error(error.error || "Failed to update model data");
+    }
+    return await response.json();
+  },
   async deleteModelById(id) {},
 };

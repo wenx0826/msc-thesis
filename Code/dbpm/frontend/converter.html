@@ -42,6 +42,7 @@
 
 <script type="text/javascript" src="js_cpee/instance.js"></script>
 <script type="text/javascript" src="js_cpee/details.js"></script>
+<script src="js/api.js"></script>
 <!-- <script type="text/javascript" src="js/parameters.js"></script>
     <script type="text/javascript" src="js/modifiers.js"></script> -->
 
@@ -72,16 +73,18 @@
             // const { id, input, args } = e.data || {};
             // console.log("Received message:", e.data);
             const { id, input, args, source } = e.data;
-            if (source !== "convertDataToSVG") {
-                console.log("Message from unknown source:", e.data);
+            if (source !== "getModelSvg") {
+                // console.log("Message from unknown source:", e.data);
                 return;
             }
             try {
                 console.log("Converting model data to SVG:", input, args);
 
-
+                const modelId = input.id;
+                const model = await API.model.getModelDataById(modelId);
+                // console.log("Model data retrieved:", model);
                 var parser = new DOMParser();
-                let data = parser.parseFromString(input.data, "application/xml");
+                let data = parser.parseFromString(model, "application/xml");
 
                 if (data.documentElement.nodeName != "description") {
                     data = $("description", data)[0];

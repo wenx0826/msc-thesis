@@ -32,53 +32,9 @@ $(document).ready(function () {
   $keepButton.on("click", async () => {
     let modelId = activeModelStore.getModelId();
     const activeModel = activeModelStore.getModel();
-
     if (!modelId) {
-      const svgContent = $("#graphcanvas");
-      const $svgCopy = svgContent.clone(false);
-      $svgCopy.removeAttr("id");
-      const svg = $svgCopy.prop("outerHTML");
-      activeModel.svg = svg;
-      activeModel.data = new XMLSerializer().serializeToString(
-        activeModel.data,
-      );
-      activeModelService.keepModel(temporarySelections);
+      modelService.keepActiveModel(temporarySelections);
     }
-    // const
-    // modelsStore.createModel(activeModel).then((modelId) => {
-    //   console.log("Created model with ID:", modelId);
-    //   renderModelInList(activeModel);
-    //   activeModelStore.setModel(activeModel);
-    //   // activeModelStore.setModel(model);
-
-    //   activeDocumentStore.createTrace(trace);
-    // tracesStore.createTrace(sections).then((trace) => {
-    //   clearTemporarySelections(); //to improve
-    //   renderTrace(trace);
-    // });
-    // });
-    //
-    // const model = await modelsStore.createModel(activeModel);
-    // // modelsStore.addModel(model);
-    // activeModelStore.setModel(model);
-    // modelId = model.id;
-    // } else {
-    //   // model = await updateModel(db, modelId, activeModel);
-    //   // await saveModel();
-    // }
-
-    // Store.addModel(model);
-    // var trace = {
-    //   document_id: activeDocumentStore.getId(),
-    //   model_id: modelId,
-    //   selections: temporarySelections().map((range) => serializeRange(range)),
-    // };
-
-    // await API.Trace.createTrace(trace);
-
-    // Store.addTrace(trace);
-
-    // $generateButton.prop("disabled", true);
     $("#generatedModelActionBar").hide();
   });
   $replaceButton.on("click", async () => {
@@ -152,26 +108,46 @@ activeModelStore.subscribe((state, { key, oldValue, newValue }) => {
       } else {
         clearModelViewer();
       }
+      // case "name":
+      //   $("#activeModelName").text(newValue ? newValue : "");
+      //   break;
+      // case "data":
+      //   if (!newValue) {
+      //     clearModelViewer();
+      //     return;
+      //   }
+      //   showActiveModel(state.data);
+      //   // console.log("Active model data updated:", newValue);
+      //   const modelId = workspaceStore.getActiveModelId();
+      //   if (!modelId) {
+      //     $generatedModelActionBar.show();
+      //   } else {
+      //     $modelActionBar.css("visibility", "visible");
+      //     if (oldValue) {
+      //       $regeneratedModelActionBar.show();
+      //     }
+      //   }
+
+      break;
+    default:
+      break;
+  }
+});
+
+workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
+  switch (key) {
+    case "activeModelId":
+      // if (newValue == oldValue) {
+
+      // }
+      break;
+    default:
       break;
   }
 });
 
 function saveActiveModel() {
-  // TODO: remove selection and check arrow
-  const activeModel = activeModelStore.getModel();
-
-  // const svgContent = $("#activeModelCanvas");
-  // const $svgCopy = svgContent.clone(false);
-  // $svgCopy.removeAttr("id");
-  // const svg = $svgCopy.prop("outerHTML");
-  // const activeModel = Store.getActiveModel();
-
-  // activeModel.data = ;
-  modelsStore.updateModelById(activeModel.id, {
-    // svg,
-    data: new XMLSerializer().serializeToString(activeModel.data),
-  });
-
+  modelService.updateActiveModelData();
   var gc = $("#graphcanvas").clone();
   var start = parseInt(gc.attr("width"));
   $("#graphgrid > svg:not(#graphcanvas)").each((i, ele) => {
@@ -222,49 +198,11 @@ function saveActiveModel() {
   gc.attr("width", start + 1);
   gc.find(".duration");
   gc.removeAttr("id");
-  console.log("Saving active model with SVG:", gc[0]);
-  $(`#modelGrid_${activeModel.id}`).empty().append(gc);
-  // updateModelInList(activeModel, gc[0].outerHTML);
-  //
-  // const updatedModel = { ...activeModel, data: new XMLSerializer().serializeToString(activeModel.data) };
-  // updateModel(db, activeModel.id, );
-  // const updatedModel = await updateModel(db, activeModel.id, {
-  //   svg: svg,
-  //   data: new XMLSerializer().serializeToString(activeModel.data),
-  // });
-  // const models = Store.getModels();
-  // const idx = models.findIndex((m) => m.id === updatedModel.id);
-  // if (idx !== -1) {
-  //   models[idx] = updatedModel;
+  // console.log("Saving active model with SVG:", gc[0]);
 
-  //   const $container = $(`.model-container[data-modelid="${updatedModel.id}"]`);
-  //   if ($container.length) {
-  //     // Rebuild container contents
-  //     $container.empty().text(updatedModel.name);
-
-  //     const $gridDiv = $("<div>").attr("id", `modelGrid_${updatedModel.id}`);
-  //     try {
-  //       const svgDoc = new DOMParser().parseFromString(
-  //         updatedModel.svg || "",
-  //         "image/svg+xml",
-  //       ).documentElement;
-  //       if (svgDoc) $gridDiv.append(svgDoc);
-  //     } catch (err) {
-  //       console.warn("Failed to parse updated model SVG:", err);
-  //     }
-  //     $container.append($gridDiv);
-
-  //     // Reattach click handler
-  //     $container.off("click").on("click", (e) => {
-  //       e.stopPropagation();
-  //       Store.setActiveModel(updatedModel.id);
-  //     });
-  //   }
-
-  // } else {
-  // models.push(updatedModel);
-  // renderModelInList(updatedModel);
-  // }
+  modelsStore.updateModelById(workspaceStore.getActiveModelId(), {
+    svg: gc[0].outerHTML,
+  });
 }
 
 function deleteActiveModel(e) {
@@ -283,27 +221,9 @@ const clearModelViewer = () => {
 };
 
 const showActiveModel = (model) => {
-  $datDetails.empty();
+  console.log("Showing active model:", model);
   $("#activeModelName").text(model.name ? model.name : "");
-  // TODO
-  let modelData = model.data;
-  console.log(typeof modelData);
-  if (typeof modelData == "string") {
-    var parser = new DOMParser();
-    let data = parser.parseFromString(modelData, "application/xml");
-    console.log("Parsed model data:", data);
-    // console.log("Parsed model data:", doc.documentElement.nodeName);
-    // let data;
-    if (data.documentElement.nodeName != "description") {
-      data = $("description", data)[0];
-    } else {
-      // console.log("Parsed model data - is description");
-      data = data.documentElement;
-    }
-
-    model.data = data;
-    console.log("Parsed model data for visualization:", data);
-  }
+  $datDetails.empty();
 
   save["state"] = model.id ? "ready" : undefined;
   save["graph_theme"] = "preset_copy";

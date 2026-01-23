@@ -8,6 +8,8 @@ let $editorWrap;
 let $promptContent;
 
 let temporarySelections = [];
+let traces = [];
+
 const hasTemporarySelections = () => {
   return temporarySelections.length > 0;
 };
@@ -27,9 +29,8 @@ $(document).ready(function () {
 
   $generateButton.on("click", async () => {
     const selectedText = getSelectedText();
-    console.log("Selected text:", selectedText);
     $generateButton.prop("disabled", true);
-    activeModelService.generateModelBySelections(selectedText);
+    modelService.generateModelBySelections(selectedText);
     // const text = Store.activeModel.setStatus("generating");
   });
   $("#columnResizehandle1").on("dragcolumnmove", (e) => {
@@ -74,31 +75,46 @@ activeDocumentStore.subscribe((state, { key, oldValue, newValue, ...rest }) => {
   }
 });
 
+workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
+  switch (key) {
+    case "activeDocumentId":
+      if (newValue) {
+        const tracesPromise = documentService.getTracesById(newValue);
+        documentService.getHtmlContentById(newValue).then((content) => {
+          $documentContent.html(content || "");
+          tracesPromise.then((data) => {
+            traces = data;
+            rerenderTracesLayer();
+          });
+        });
+      } else {
+        clearDocumentViewer();
+      }
+      break;
+    case "activeModelId":
+      if (newValue) {
+        highlightActiveModelSelections(newValue);
+        $generateButton.text("Regenerate Model");
+        $generateButton.prop("disabled", false);
+        $promptContainer.show();
+      } else {
+        $generateButton.text("Generate Model");
+        $promptContainer.hide();
+      }
+      if (oldValue) {
+        unhighlightActiveModelSelections(oldValue);
+      }
+      break;
+    default:
+      break;
+  }
+});
+
 // activeModelStore.subscribe((state, { key, oldValue, newValue }) => {
 //   if (key === "model") {
 //     if (newValue && newValue.id) highlightActiveModelSelections(newValue.id);
 //   }
 // });
-
-activeModelStore.subscribe((state, { key, oldValue, newValue }) => {
-  if (key === "model") {
-    const newModelId = newValue ? newValue.id : null;
-    const oldModelId = oldValue ? oldValue.id : null;
-    if (newModelId) {
-      // highlightActiveModelInList(newValue.id);
-      highlightActiveModelSelections(newValue.id);
-      $generateButton.text("Regenerate Model");
-      // $generateButton.prop("disabled", false);
-      $promptContainer.show();
-    } else {
-      $generateButton.text("Generate Model");
-      $promptContainer.hide();
-    }
-    if (oldModelId) {
-      unhighlightActiveModelSelections(oldValue.id);
-    }
-  }
-});
 
 const getSelectedText = () => {
   return temporarySelections.map((range) => range.toString()).join(" ");
@@ -126,7 +142,6 @@ const clearDocumentViewer = () => {
 };
 
 const onRangeSelect = (event) => {
-  console.log("Range selected");
   event.stopPropagation();
   const $target = $(event.currentTarget).parent();
   $target.addClass("selected");
@@ -257,12 +272,9 @@ const renderSelection = (range, modelId) => {
       })
       .on("click", (event) => {
         event.stopPropagation();
-        // activeModelStore.setModelById(modelId);
-        const activeModel = activeModelStore.getModel();
-        const activeModeId = activeModel ? activeModel.id : null;
-        activeModelStore.setModelById(activeModeId == modelId ? null : modelId);
+        modelService.toggleModelSelection(modelId);
       });
-    if (modelId == activeModelStore.getModelId()) {
+    if (modelId == workspaceStore.getActiveModelId()) {
       tagSpan.addClass("active");
     }
     // $selectionDiv.append(tagSpan);
@@ -310,27 +322,21 @@ const unhighlightActiveModelSelections = (activeModelId) => {
 };
 
 function removeSelectionsByModelId(modelId) {
-  console.log("Removing selections for model ID:", modelId);
   $tracesLayer.find(`.selection-wrapper[data-modelid="${modelId}"]`).remove();
 }
 
 const rerenderTemporarySelectionsLayer = () => {
-  console.log(
-    "Rerendering temporary selections layer????",
-    hasTemporarySelections(),
-  );
   if (hasTemporarySelections()) {
     $temporarySelectionsLayer.empty();
     temporarySelections.forEach((range) => renderSelection(range));
   }
 };
 
-const renderTrace = ({ selections, model_id: modelId }) => {
+const renderTrace = ({ selections, modelId }) => {
   // const
   selections.forEach((serializedRange, index) => {
     const range = deserializeRange(serializedRange);
     if (index === 0) {
-      console.log("First range!!:", modelId, "with range:", range);
     }
     renderSelection(range, modelId);
   });
@@ -339,7 +345,7 @@ const renderTrace = ({ selections, model_id: modelId }) => {
 const rerenderTracesLayer = () => {
   clearTracesLayer();
   clearTagsLayer();
-  const traces = activeDocumentStore.getTraces();
+  if (!traces || traces.length === 0) return;
   traces.forEach((trace) => renderTrace(trace));
 };
 

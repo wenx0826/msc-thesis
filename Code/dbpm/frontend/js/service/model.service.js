@@ -1,10 +1,27 @@
-const activeModelService = {
+const modelService = {
+  toggleModelSelection(modelId) {
+    // workspaceStore.setLoading(true);
+    const currentActiveModelId = workspaceStore.getActiveModelId();
+    if (currentActiveModelId === modelId) {
+      modelId = null;
+    }
+    workspaceStore.setActiveModelId(modelId);
+    activeModelStore.setModelById(modelId);
+    if (modelId) {
+      const currentActiveDocumentId = workspaceStore.getActiveDocumentId();
+      const modelDocumentId = modelsStore.getModelDocumentIdById(modelId);
+      if (currentActiveDocumentId != modelDocumentId) {
+        workspaceStore.setActiveDocumentId(modelDocumentId);
+        activeDocumentStore.setDocumentById(modelDocumentId);
+      }
+    }
+  },
   generateModel(userInput, rpstXml) {
     // const activeModel = this.getModel();
     // const model = rpstXml ? rpstXml : {};
     const model = rpstXml ? this.getModel() : {};
     activeModelStore.setStatus("generating");
-    const llm = window.Store.project.getLlmModel();
+    const llm = workspaceStore.getLlmModel();
     API.model
       .generateModel({
         userInput,
@@ -61,28 +78,42 @@ const activeModelService = {
     // const rpstXml = window.Constants.EMPTY_MODEL;
     this.generateModel(userInput);
   },
-  async keepModel(selections) {
-    const model = activeModelStore.getModel();
+  async keepActiveModel(selections) {
+    let model = {};
+    model.data = activeModelStore.getSerializedData();
     const modelNumber = projectStore.getModelNumber() + 1;
     const name = `Model_${modelNumber}`;
     model.name = name;
     const modelId = await API.model.createModel(model);
-    // API.model.createModel(model).then((modelId) => {
-    //   model.id = modelId;
-    //   //   projectStore.addModel(model);
-    //   activeModelStore.setModel(model);
-    // });
+    model.id = modelId;
+    activeModelStore.setModel(model);
+    workspaceStore.setActiveModelId(modelId);
+    modelsStore.addModel({
+      name,
+      id: modelId,
+      documentId: workspaceStore.getActiveDocumentId(),
+    });
     selections = selections.map((range) => serializeRange(range));
     const trace = {
-      documentId: activeDocumentStore.getId(),
+      documentId: workspaceStore.getActiveDocumentId(),
       modelId,
       selections,
     };
     API.trace.createTrace(trace).then(() => {
       activeDocumentStore.addTrace(trace);
-      // projectStore.setModelNumber(modelNumber);
-      // projectStore.addModel(model);
-      // activeModelStore.setModel(model);
     });
+    API.project
+      .updateProjectById(workspaceStore.getProjectId(), {
+        modelNumber,
+      })
+      .then(() => {
+        projectStore.setModelNumber(modelNumber);
+      });
+  },
+  async updateActiveModelData() {
+    const activeModelId = workspaceStore.getActiveModelId();
+    const data = activeModelStore.getSerializedData();
+    API.model.updateModelDataById(activeModelId, data);
+    // await modelsStore.updateModelDataById(activeModelId, data);
   },
 };

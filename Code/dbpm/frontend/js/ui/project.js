@@ -13,4 +13,3 @@ function changeProjectName(name) {
 
 // Initialize project display
 // changeProjectId(projectStore.state.id);
-// changeProjectName(projectStore.state.name);

@@ -7,11 +7,14 @@ const renderModelSelect = (modelValue) => {
   $("<option>").val("").text("--- Please select --- ").appendTo($modelSelect);
 
   const documentList = documentsStore.getDocuments();
-  //
+
   for (const { id: docId, name: docName } of documentList) {
     $optGroup = $("<optgroup>").attr("label", docName).appendTo($modelSelect);
-    const docModels = tracesStore.getDocumentModels(docId);
-    for (const { id: modelId, name: modelName } of docModels) {
+    const models = modelsStore
+      .getModels()
+      .filter((m) => m.documentId === docId);
+    console.log("Models for document", docId, ":", models);
+    for (const { id: modelId, name: modelName } of models) {
       const $option = $("<option>")
         .val(modelId)
         .text(modelName)

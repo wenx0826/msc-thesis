@@ -7,9 +7,15 @@ const app = express();
 const PORT = 3000;
 
 const projectsFile = path.join(__dirname, "..", "data", "projects.json");
-const documentsFile = path.join(__dirname, "..", "data", "documents.json");
 const tracesFile = path.join(__dirname, "..", "data", "traces.json");
+const documentsMetaFile = path.join(
+  __dirname,
+  "..",
+  "data",
+  "documents_meta.json",
+);
 const documentsPath = path.join(__dirname, "..", "data", "documents");
+const modelsMetaFile = path.join(__dirname, "..", "data", "models_meta.json");
 const modelsPath = path.join(__dirname, "..", "data", "models");
 
 const getISODate = () => new Date().toISOString();
@@ -110,7 +116,7 @@ app.get("/projects/:id", (req, res) => {
 app.get("/projects/:projectId/documents", (req, res) => {
   const { projectId } = req.params;
   console.log("Fetching documents for project:", projectId);
-  fs.readFile(documentsFile, "utf8", (err, data) => {
+  fs.readFile(documentsMetaFile, "utf8", (err, data) => {
     if (err) {
       if (err.code === "ENOENT") {
         return res.json([]);
@@ -123,6 +129,38 @@ app.get("/projects/:projectId/documents", (req, res) => {
       res.json(filtered);
     } catch (e) {
       res.status(500).json({ error: "Failed to parse documents file" });
+    }
+  });
+});
+app.put("/projects/:id", (req, res) => {
+  const projectId = req.params.id;
+  const updates = req.body;
+
+  fs.readFile(projectsFile, "utf8", (err, data) => {
+    if (err) {
+      if (err.code === "ENOENT") {
+        return res.status(404).json({ error: "Project not found" });
+      }
+      return res.status(500).json({ error: "Failed to read projects file" });
+    }
+    try {
+      let projects = data.trim() ? JSON.parse(data) : [];
+      const projectIndex = projects.findIndex((p) => p.id === projectId);
+      if (projectIndex === -1) {
+        return res.status(404).json({ error: "Project not found" });
+      }
+      const project = projects[projectIndex];
+      projects[projectIndex] = { ...project, ...updates };
+      fs.writeFile(projectsFile, JSON.stringify(projects, null, 2), (err) => {
+        if (err) {
+          return res
+            .status(500)
+            .json({ error: "Failed to write projects file" });
+        }
+        res.json(projects[projectIndex]);
+      });
+    } catch (e) {
+      res.status(500).json({ error: "Failed to parse projects file" });
     }
   });
 });
@@ -140,7 +178,7 @@ app.post("/documents", (req, res) => {
   const uploadedAt = new Date().toISOString();
   const documentMeta = { id, name, uploadedAt, projectId };
   // Read current documents
-  fs.readFile(documentsFile, "utf8", (err, data) => {
+  fs.readFile(documentsMetaFile, "utf8", (err, data) => {
     let documents = [];
     if (!err) {
       try {
@@ -153,29 +191,33 @@ app.post("/documents", (req, res) => {
     }
     documents.push(documentMeta);
     // Write metadata
-    fs.writeFile(documentsFile, JSON.stringify(documents, null, 2), (err) => {
-      if (err) {
-        return res
-          .status(500)
-          .json({ error: "Failed to write documents file" });
-      }
-      // Write content
-      const contentFile = path.join(documentsPath, `${id}.html`);
-      fs.writeFile(contentFile, content, (err) => {
+    fs.writeFile(
+      documentsMetaFile,
+      JSON.stringify(documents, null, 2),
+      (err) => {
         if (err) {
-          // Rollback metadata? For simplicity, not for now
           return res
             .status(500)
-            .json({ error: "Failed to write document content" });
+            .json({ error: "Failed to write documents file" });
         }
-        res.json(documentMeta);
-      });
-    });
+        // Write content
+        const contentFile = path.join(documentsPath, `${id}.html`);
+        fs.writeFile(contentFile, content, (err) => {
+          if (err) {
+            // Rollback metadata? For simplicity, not for now
+            return res
+              .status(500)
+              .json({ error: "Failed to write document content" });
+          }
+          res.json(documentMeta);
+        });
+      },
+    );
   });
 });
 app.get("/documents", (req, res) => {
   console.log("Fetching documents list...");
-  fs.readFile(documentsFile, "utf8", (err, data) => {
+  fs.readFile(documentsMetaFile, "utf8", (err, data) => {
     if (err) {
       if (err.code === "ENOENT") {
         return res.json([]);
@@ -191,7 +233,7 @@ app.get("/documents", (req, res) => {
   });
 });
 
-app.get("/documents/:id", (req, res) => {
+app.get("/documents/:id/content", (req, res) => {
   const docId = req.params.id;
   console.log("Fetching document content for ID:", docId);
   const contentFile = path.join(documentsPath, `${docId}.html`);
@@ -225,10 +267,37 @@ app.get("/documents/:id/traces", (req, res) => {
     }
   });
 });
+app.get("/documents/:id/models", (req, res) => {
+  const docId = req.params.id;
+  const models = [];
+  fs.readFile(tracesFile, "utf8", (err, data) => {
+    if (err) {
+      if (err.code === "ENOENT") {
+        return res.json([]);
+      }
+      return res.status(500).json({ error: "Failed to read traces file" });
+    }
+    try {
+      const traces = data.trim() ? JSON.parse(data) : [];
+      const docTraces = traces.filter((trace) => trace.documentId === docId);
+      for (const trace of docTraces) {
+        const modelsMeta = fs.readFileSync(modelsMetaFile, "utf8");
+        const modelsList = modelsMeta.trim() ? JSON.parse(modelsMeta) : [];
+        const model = modelsList.find((m) => m.id === trace.modelId);
+        if (model) {
+          models.push(model);
+        }
+      }
+      res.json(models);
+    } catch (e) {
+      res.status(500).json({ error: "Failed to parse traces file" });
+    }
+  });
+});
 
 app.delete("/documents/:id", (req, res) => {
   const docId = req.params.id;
-  fs.readFile(documentsFile, "utf8", (err, data) => {
+  fs.readFile(documentsMetaFile, "utf8", (err, data) => {
     if (err) {
       return res.status(500).json({ error: "Failed to read documents file" });
     }
@@ -239,19 +308,23 @@ app.delete("/documents/:id", (req, res) => {
         return res.status(404).json({ error: "Document not found" });
       }
       documents.splice(index, 1);
-      fs.writeFile(documentsFile, JSON.stringify(documents, null, 2), (err) => {
-        if (err) {
-          return res
-            .status(500)
-            .json({ error: "Failed to update documents file" });
-        }
-        // Delete content file
-        const contentFile = path.join(documentsPath, `${docId}.txt`);
-        fs.unlink(contentFile, (err) => {
-          // Ignore error if file doesn't exist
-          res.json({ message: "Document deleted" });
-        });
-      });
+      fs.writeFile(
+        documentsMetaFile,
+        JSON.stringify(documents, null, 2),
+        (err) => {
+          if (err) {
+            return res
+              .status(500)
+              .json({ error: "Failed to update documents file" });
+          }
+          // Delete content file
+          const contentFile = path.join(documentsPath, `${docId}.txt`);
+          fs.unlink(contentFile, (err) => {
+            // Ignore error if file doesn't exist
+            res.json({ message: "Document deleted" });
+          });
+        },
+      );
     } catch (e) {
       res.status(500).json({ error: "Failed to parse documents file" });
     }
@@ -264,77 +337,114 @@ app.delete("/documents/:id", (req, res) => {
   });
 });
 // #endregion
-app.get("/test", async (req, res) => {
-  try {
-    const fd = new FormData();
-    fd.append(
-      "rpst_xml",
-      new Blob([`<description xmlns="http://cpee.org/ns/description/1.0"/>`], {
-        type: "text/xml",
-      }),
-      "rpst.xml",
-    );
-    fd.append(
-      "user_input",
-      new Blob(["hello"], { type: "text/plain" }),
-      "input.txt",
-    );
-    fd.append(
-      "llm",
-      new Blob(["gemini-2.0-flash"], { type: "text/plain" }),
-      "llm.txt",
-    );
-
-    // 2️⃣ 后端直接发 POST 请求
-    const response = await fetch("https://autobpmn.ai/llm/", {
-      method: "POST",
-      body: fd,
-    });
-
-    // 3️⃣ 把结果完整返回出来，方便你看
-    const text = await response.text();
-
-    res.status(200).json({
-      upstreamStatus: response.status,
-      upstreamHeaders: Object.fromEntries(response.headers.entries()),
-      upstreamBody: text,
-    });
-  } catch (err) {
-    res.status(500).json({
-      error: String(err),
-    });
-  }
-});
 
 // #region Model Endpoints
+
 app.post("/models", (req, res) => {
   const model = req.body;
-
+  const { data: modelData, ...modelMeta } = model;
   const id = crypto.randomUUID();
   // const timestamp = new Date().toISOString();
+  modelMeta.id = id;
+  modelMeta.createdAt = getISODate();
 
-  const modelFile = path.join(modelsPath, `${id}.xml`);
-  fs.writeFile(modelFile, JSON.stringify(model), (err) => {
-    if (err) {
-      return res.status(500).json({ error: "Failed to write model content" });
+  fs.readFile(modelsMetaFile, "utf8", (err, data) => {
+    let modelsMeta = [];
+    if (!err) {
+      try {
+        modelsMeta = data.trim() ? JSON.parse(data) : [];
+      } catch (e) {
+        return res.status(500).json({ error: "Failed to parse models file" });
+      }
     }
-    res.json({ id });
+    modelsMeta.push(modelMeta);
+    // Write metadata
+    fs.writeFile(modelsMetaFile, JSON.stringify(modelsMeta, null, 2), (err) => {
+      if (err) {
+        return res.status(500).json({ error: "Failed to write models file" });
+      }
+      // Write content
+      const modelDataFile = path.join(modelsPath, `${id}.xml`);
+      fs.writeFile(modelDataFile, modelData, (err) => {
+        if (err) {
+          // Rollback metadata? For simplicity, not for now
+          return res
+            .status(500)
+            .json({ error: "Failed to write model content" });
+        }
+        res.json(modelMeta);
+      });
+    });
   });
 });
 app.get("/models/:id", (req, res) => {
   const modelId = req.params.id;
   console.log("Fetching model content for ID:", modelId);
+  fs.readFile(modelsMetaFile, "utf8", (err, data) => {
+    if (err) {
+      if (err.code === "ENOENT") {
+        return res.status(404).json({ error: "Model not found" });
+      }
+      return res.status(500).json({ error: "Failed to read models file" });
+    }
+    try {
+      const models = data.trim() ? JSON.parse(data) : [];
+      const model = models.find((m) => m.id === modelId);
+      if (!model) {
+        return res.status(404).json({ error: "Model not found" });
+      }
+      const modelFile = path.join(modelsPath, `${modelId}.xml`);
+      fs.readFile(modelFile, "utf8", (err, data) => {
+        if (err) {
+          if (err.code === "ENOENT") {
+            return res.status(404).json({ error: "Model not found" });
+          }
+          return res
+            .status(500)
+            .json({ error: "Failed to read model content" });
+        }
+        model.data = data;
+        res.json(model);
+      });
+    } catch (e) {
+      res.status(500).json({ error: "Failed to parse models file" });
+    }
+  });
+});
+
+app.get("/models/:id/data", (req, res) => {
+  const modelId = req.params.id;
+  console.log("Fetching model content for ID:", modelId);
   const modelFile = path.join(modelsPath, `${modelId}.xml`);
-  fs.readFile(modelFile, "utf8", (err, content) => {
+  fs.readFile(modelFile, "utf8", (err, data) => {
     if (err) {
       if (err.code === "ENOENT") {
         return res.status(404).json({ error: "Model not found" });
       }
       return res.status(500).json({ error: "Failed to read model content" });
     }
-    res.json(JSON.parse(content));
+    res.json(data);
   });
 });
+app.put(
+  "/models/:id/data",
+  express.raw({ type: "application/xml" }),
+  (req, res) => {
+    const modelId = req.params.id;
+    const modelData = req.body.toString(); // Convert Buffer to string
+    console.log("Updating model content for ID:", modelId);
+
+    const modelFile = path.join(modelsPath, `${modelId}.xml`);
+    fs.writeFile(modelFile, modelData, (err) => {
+      if (err) {
+        return res
+          .status(500)
+          .json({ error: "Failed to update model content" });
+      }
+      res.json({ message: "Model content updated" });
+    });
+  },
+);
 // #endregion
 
 //#region Trace Endpoints
