@@ -10,22 +10,25 @@ const modelService = {
     if (modelId) {
       const currentActiveDocumentId = workspaceStore.getActiveDocumentId();
       const modelDocumentId = modelsStore.getModelDocumentIdById(modelId);
+      console.log("same?????", currentActiveDocumentId, modelDocumentId);
       if (currentActiveDocumentId != modelDocumentId) {
+        console.log(
+          "Switching active document to model's document:???????????????????/",
+          modelDocumentId,
+        );
         workspaceStore.setActiveDocumentId(modelDocumentId);
         activeDocumentStore.setDocumentById(modelDocumentId);
       }
     }
   },
   generateModel(userInput, rpstXml) {
-    // const activeModel = this.getModel();
-    // const model = rpstXml ? rpstXml : {};
-    const model = rpstXml ? this.getModel() : {};
-    activeModelStore.setStatus("generating");
+    const model = activeModelStore.getModel() || {};
+    // activeModelStore.setStatus("generating");
     const llm = workspaceStore.getLlmModel();
     API.model
       .generateModel({
         userInput,
-        rpstXml: rpstXml ? rpstXml : window.Constants.EMPTY_MODEL,
+        rpstXml,
         llm,
       })
       .then((data) => {
@@ -33,52 +36,20 @@ const modelService = {
       })
       .catch((error) => {
         console.error("Error generating model:", error);
-        activeModelStore.setError(String(error));
-        activeModelStore.setStatus("error");
+        // activeModelStore.setError(String(error));
+        // activeModelStore.setStatus("error");
       });
-    /*const activeModel = this.getModel();
-      const model = rpstXml ? rpstXml : {};
-      console.log("Generating model with input:", userInput, rpstXml);
-      this.setStatus("generating");
-     
-      API.Model.generateModel({ userInput, rpstXml, llm })
-        .then((data) => data)
-        .catch((error) => {
-          console.error("Error generating model:", error);
-          activeModelStore.setError(String(error));
-          activeModelStore.setStatus("error");
-        });
-      */
-    // return new Promise
-  },
-  regenerateModel(userInput) {
-    console.log("Regenerating model...");
-    console.log("Applying prompt to active model:", userInput);
-    const activeModel = this.getModel();
-    console.log("description of active model:", activeModel.data);
-    const rpstXml = $(activeModel.data).children().serializePrettyXML();
-    console.log("Regenerate RPST XML of active model:", rpstXml);
-
-    // console.log("RPST XML of active model:", rpstXml);
-    this.generateModel(userInput, rpstXml);
-    // const activeModel = this.getActiveModel();
-    // if (activeModel) {
-    //   this.generateModel(activeModel.source_text, activeModel.rpst_xml);
-    // }
   },
   generateModelByPrompt(userInput) {
-    const activeModel = this.getModel();
-    rpstXml = activeModel
-      ? $(activeModel.data).children().serializePrettyXML()
-      : window.Constants.EMPTY_MODEL;
-    this.generateModel(userInput, rpstXml);
+    this.generateModel(userInput, activeDocumentStore.getSerializedData());
   },
-  generateModelBySelections(userInput) {
-    console.log(" Generating new model with selected text:??????");
-    // const rpstXml = window.Constants.EMPTY_MODEL;
-    this.generateModel(userInput);
+  generateModelBySelections() {
+    this.generateModel(
+      activeDocumentStore.getSelectedText(),
+      window.Constants.EMPTY_MODEL,
+    );
   },
-  async keepActiveModel(selections) {
+  async keepActiveModel() {
     let model = {};
     model.data = activeModelStore.getSerializedData();
     const modelNumber = projectStore.getModelNumber() + 1;
@@ -93,14 +64,25 @@ const modelService = {
       id: modelId,
       documentId: workspaceStore.getActiveDocumentId(),
     });
-    selections = selections.map((range) => serializeRange(range));
+    // selections = selections.map((range) => serializeRange(range));
+    // const selections = JSON.parse(
+    //   JSON.stringify(activeDocumentStore.getSerializedTemporarySelections()),
+    // );
+    const selections = [
+      ...activeDocumentStore.getSerializedTemporarySelections(),
+    ];
+    selections.forEach((selection) => {
+      selection.id = crypto.randomUUID();
+    });
     const trace = {
       documentId: workspaceStore.getActiveDocumentId(),
       modelId,
       selections,
     };
+    console.log("Trace to be created:!!!!!!!!!!!", trace);
     API.trace.createTrace(trace).then(() => {
       activeDocumentStore.addTrace(trace);
+      activeDocumentStore.clearTemporarySelections([]);
     });
     API.project
       .updateProjectById(workspaceStore.getProjectId(), {

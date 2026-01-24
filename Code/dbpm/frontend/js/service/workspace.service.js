@@ -2,17 +2,18 @@ const workspaceService = {
   async loadWorkspace(projectId) {
     await projectStore.init(projectId);
     await documentsStore.init(projectId);
-    const documentList = documentsStore.getDocuments();
-    await modelsStore.init(documentList);
+    const documents = documentsStore.getDocuments();
+    await modelsStore.init(documents);
 
-    let activeDocumentId = null;
-    if (documentList.length > 0) {
-      activeDocumentId = documentList[documentList.length - 1]?.id;
-      //   workspaceStore.setActiveDocumentId(lastDocId);
+    let docId = null;
+    if (documents.length > 0) {
+      docId = documents[documents.length - 1]?.id;
+      activeDocumentStore.setDocumentById(docId);
     }
+
     workspaceStore.setWorkspace({
       projectId,
-      activeDocumentId,
+      activeDocumentId: docId,
     });
   },
 };

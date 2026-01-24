@@ -57,12 +57,13 @@
   <!-- my libs-->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
-  <!-- my scripts - DB simulation -->
+
   <script src="js/service/model.service.js"></script>
   <script src="js/service/document.service.js"></script>
   <script src="js/service/workspace.service.js"></script>
   <script src="js/constants.js"></script>
   <script src="js/api.js"></script>
+  <script src="js/util/selection.js"></script>
   <script src="js/store.js"></script>
   <script src="js/main.js"></script>
   <script src="js/ui/project.js"></script>
@@ -87,7 +88,6 @@
       <span>LLM: gemini 2 Flash</span>
     </div>
   </ui-bar>
-  <iframe id="converter-frame" src="converter.html" style="position: absolute; left: -9999px; top: -9999px;"></iframe>
   <ui-rest style=" z-index: 2;" id="main">
     <ui-content>
       <!-- Left: Document Panel -->
@@ -109,13 +109,11 @@
             </ui-area>
           </ui-content>
         </ui-tabbed>
-        <!-- Text Action Bar -->
-        <button id="deleteSelectionButton"
-          style="display:none; position:absolute;  z-index:3; width: 24px; height: 24px; background-color: red; color: white;border: none; border-radius: 50%; font-weight: bold;cursor: pointer;">X</button>
         <!-- Document Viewer -->
         <ui-rest class="panel" style="margin-top: 0.5em;">
-          <ui-bar>
-            <div class="right">
+          <!-- Text Action Bar -->
+          <ui-bar id="textActionBar">
+            <div class="right button-group">
               <form id="selectionColorForm" style="margin: 0;">
                 <div class="relaxngui_cell relaxngui_color_container">
                   <span class="round">
@@ -143,22 +141,26 @@
                   </span>
                 </div>
               </form>
+              <button id="deleteSelectionButton" disabled>Delete Selection</button>
             </div>
           </ui-bar>
           <ui-divider></ui-divider>
+          <!-- Document Content Area -->
           <ui-content>
-            <!--  -->
-            <!-- <div> -->
-            <ui-area id="editorWrap">
-              <ui-area id="tracesLayer" style="z-index: 1;"></ui-area>
-              <ui-area id="temporarySelectionsLayer"></ui-area>
+            <ui-area id="viewerWrap">
+              <ui-area id="selectionsLayer" style="z-index: 1;"></ui-area>
+              <!-- <ui-area id="temporarySelectionsLayer"></ui-area> -->
               <ui-area id="documentContent"></ui-area>
-              <ui-area id="modelTagsLayer"></ui-area>
+              <ui-area id="interactionLayer">
+                <div id="modelTags"></div>
+                <!-- <div id="activeModelTags"></div> -->
+              </ui-area>
             </ui-area>
             </ui-area>
             <!-- </div> -->
           </ui-content>
           <ui-divider></ui-divider>
+          <!-- Model (Re-)generation Bar -->
           <ui-bar style="z-index: 3;">
             <div class="right button-group">
               <button id="generateButton" disabled>Generate Model</button>
@@ -174,7 +176,8 @@
           <ui-bar id="modelActionBar" style="visibility: hidden">
             <div id="activeModelName"></div>
             <div class="right button-group">
-              <button name="deselsetModelButton" onclick="activeModelStore.setModel(null)">Deselect Model</button>
+              <button name="deselsetModelButton" onclick="modelService.toggleModelSelection(null)">Deselect
+                Model</button>
               <button name="deletemodel" onclick="deleteActiveModel()">Delete Model</button>
             </div>
           </ui-bar>
@@ -241,6 +244,7 @@
       </ui-rest>
     </ui-content>
   </ui-rest>
+  <iframe id="converter-frame" src="converter.html" style="position: absolute; left: -9999px; top: -9999px;"></iframe>
   <script>
     /* instance.js 
         // #region CPEE Code

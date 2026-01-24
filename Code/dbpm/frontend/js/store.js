@@ -153,9 +153,10 @@ Store.documents = Object.assign(
 Store.activeDocument = Object.assign(
   createDomainStore({
     status: null,
-    id: null,
     content: null,
     traces: [],
+    activeTrace: null,
+    temporarySelections: [],
   }),
   {
     init() {
@@ -174,26 +175,29 @@ Store.activeDocument = Object.assign(
       return this.state.id;
     },
 
-    getTraces() {
-      return this.state.traces;
+    setStatus(newValue) {
+      this.state.status = newValue;
+      this.notify({ key: "status", newValue });
     },
-    addTrace(trace) {
-      this.state.traces.push(trace);
+    setContent(newValue) {
+      this.state.content = newValue;
+      this.notify({ key: "content", newValue });
     },
+
     setDocumentById(id) {
       const currentId = this.getId();
       if (id === currentId) return;
-      this._setId(id);
-      this._setStatus("loading");
+      this.setStatus("loading");
       const contentPromise = API.document.getDocumentContentById(id);
       const tracesPromise = API.trace.getTracesByDocumentId(id); // Start fetching traces early
       contentPromise.then(
         (content) => {
-          this._setContent(content);
-          this._setStatus(null);
+          this.setContent(content);
+          this.setStatus(null);
           tracesPromise
             .then((traces) => {
-              this._setTraces(traces);
+              console.log("11. Loaded traces for document:", traces);
+              this.setTraces(traces);
             })
             .catch((error) => {
               console.log("Error loading traces:", error);
@@ -201,98 +205,141 @@ Store.activeDocument = Object.assign(
             });
         },
         (error) => {
-          console.log("Error loading document content:???", error);
-          this._setContent(null);
-          this._setStatus("error");
+          this.setContent(null);
+          this.setStatus("error");
         },
       );
     },
-    _setStatus(newValue) {
+    setStatus(newValue) {
       this.state.status = newValue;
       this.notify({ key: "status", newValue });
     },
+    // #region traces && active trace
+    addTrace(trace) {
+      trace.selections.forEach((selection) => {
+        selection.range = deserializeRange(selection.range);
+      });
+      this.state.traces.push(trace);
+      this.notify({ key: "traces", operation: "add", value: trace });
+    },
+    setTraces(traces) {
+      if (traces.length) {
+        traces.forEach((trace) => {
+          trace.selections.forEach((selection) => {
+            selection.range = deserializeRange(selection.range);
+          });
+        });
+      }
+      this.state.traces = traces;
+      this.notify({ key: "traces", operation: "init" });
+    },
 
-    _setId(newValue) {
-      this.state.id = newValue;
-      this.notify({ key: "id", newValue });
-    },
-    _setContent(newValue) {
-      this.state.content = newValue;
-      this.notify({ key: "content", newValue });
-    },
-    _setTraces(newValue) {
-      this.state.traces = newValue;
-      this.notify({ key: "traces", operation: "init", newValue });
-    },
-  },
-);
-Store.traces = Object.assign(
-  createDomainStore({
-    traces: [],
-  }),
-  {
     getTraces() {
       return this.state.traces;
     },
-    getDocumentTraces(docId) {
-      return this.getTraces().filter((trace) => trace.document_id == docId);
+    getTraceById(traceId) {
+      return this.state.traces.find((trace) => trace.id == traceId);
     },
-    getDocumentModelIds(docId) {
-      return this.getDocumentTraces(docId).map((trace) => trace.model_id);
+    getActiveTrace() {
+      return this.state.activeTrace;
     },
-    getDocumentModels(docId) {
-      const modelIds = this.getDocumentModelIds(docId);
-      return modelIds.map((modelId) => {
-        const model = window.Store.models.getModelById(modelId);
-        return { id: modelId, name: model ? model.name : `Model ${modelId}` };
+    setActiveTrace(trace) {
+      this.state.activeTrace = trace;
+      // this.notify({ key: "activeTrace", newValue: trace });
+    },
+    setActiveTraceByModelId(modelId) {
+      const trace = this.state.traces.find((trace) => trace.modelId == modelId);
+      this.setActiveTrace(trace);
+      //
+    },
+    removeActiveTraceSelectionById(selectionId) {
+      let value;
+      const activeTrace = this.getActiveTrace();
+      if (activeTrace) {
+        const index = activeTrace.selections.findIndex(
+          (sel) => sel.id === selectionId,
+        );
+        if (index !== -1) {
+          value = activeTrace.selections[index];
+          activeTrace.selections.splice(index, 1);
+        }
+      }
+      this.notify({
+        key: "activeTrace.selections",
+        operation: "remove",
+        value,
       });
     },
-    getModelTrace(modelId) {
-      return (
-        this.state.traces.find((trace) => trace.model_id == modelId) || null
+    setActiveTraceById(traceId) {
+      const trace = this.getTraceById(traceId);
+      this.setActiveTrace(trace);
+      // this.notify({ key: "activeTrace", newValue: trace });
+    },
+    // #endregion
+    // #region temporary selections
+    getTemporarySelections() {
+      return this.state.temporarySelections;
+    },
+    getSerializedTemporarySelections() {
+      const selections = this.state.temporarySelections.selections;
+      console.log("Serializing temporary selections:!!!!!", selections);
+      this.state.temporarySelections.selections = getSortedSelectionsByRange(
+        this.getTemporarySelections(),
       );
+      return this.state.temporarySelections.map(({ range, ...rest }) => ({
+        ...rest,
+        range: serializeRange(range),
+        text: range.toString(),
+      }));
     },
-    addTrace(trace) {
-      this.state.traces.push(trace);
+    addTemporarySelection(selection) {
+      this.state.temporarySelections.push(selection);
+      this.notify({
+        key: "temporarySelections",
+        operation: "add",
+        value: selection,
+      });
     },
-    addTraces(newTraces) {
-      this.state.traces = [...this.state.traces, ...newTraces];
-    },
-    setTraces(traces) {
-      this.state.traces = traces;
-    },
-    async createTrace(sections) {
-      const documentId = window.Store.activeDocument.getId();
-      console.log(
-        "Creating trace for document ID:",
-        window.Store.activeDocument,
+    removeTemporarySelectionById(selectionId) {
+      let value;
+      const index = this.state.temporarySelections.findIndex(
+        (sel) => sel.id === selectionId,
       );
-      console.log("Creating trace for document ID???:", documentId);
-      const modelId = window.Store.activeModel.getModelId();
-      const trace = {
-        id: Date.now(), // Simple unique ID generation
-        document_id: documentId,
-        model_id: modelId,
-        selections: sections,
-      };
-      await API.Trace.createTrace(trace);
-      this.addTrace(trace);
-      // console.log("Created trace:", trace);
-      return trace;
-    },
-    async deleteModelTrace(modelId) {
-      const traceId = this.state.traces.find(
-        (trace) => trace.model_id == modelId,
-      )?.id;
-      if (traceId) {
-        await API.Trace.deleteTraceById(traceId);
-        this.state.traces = this.state.traces.filter(
-          (trace) => trace.id != traceId,
-        );
+      if (index !== -1) {
+        value = this.state.temporarySelections[index];
+        this.state.temporarySelections.splice(index, 1);
       }
+      this.notify({ key: "temporarySelections", operation: "remove", value });
+    },
+    // setTemporarySelections(selections) {
+    //   this.state.temporarySelections = selections;
+    //   this.notify({
+    //     key: "temporarySelections",
+    //     operation: "set",
+    //     value: selections,
+    //   });
+    // },
+    clearTemporarySelections() {
+      const value = this.state.temporarySelections;
+      this.state.temporarySelections = [];
+      this.notify({ key: "temporarySelections", operation: "clear", value });
+    },
+    // #endregion
+    getSelectedText() {
+      let selections = [...this.getTemporarySelections()];
+      const activeTrace = this.getActiveTrace();
+      if (activeTrace) selections = [...activeTrace.selections, ...selections];
+      let selectedText = "";
+      sortedSelections = getSortedSelectionsByRange(selections);
+      sortedSelections.forEach((selection) => {
+        selectedText += selection.range.toString() + " ";
+      });
+
+      return selectedText.trim();
     },
   },
 );
+
 Store.models = Object.assign(
   createDomainStore({
     // models: [],
@@ -370,7 +417,6 @@ Store.activeModel = Object.assign(
   createDomainStore({
     status: null, // 'loading', 'ready', 'error','generating'
     error: null,
-    // model: null,
     model: null,
   }),
   {
@@ -382,7 +428,7 @@ Store.activeModel = Object.assign(
     },
     getDocumentId() {
       const modelId = this.getModelId();
-      return window.Store.traces.getModelTrace(modelId)?.document_id;
+      return modelsStore.getModelDocumentIdById(modelId);
     },
     getSerializedData() {
       return new XMLSerializer().serializeToString(this.state.model.data);

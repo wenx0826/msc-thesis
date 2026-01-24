@@ -1,20 +1,8 @@
 [
   {
-    "id": "8b8275f7-488e-48e3-b1dc-22af1e78a165",
-    "name": "sample_model_with_subprocess.xml",
-    "uploadedAt": "2026-01-23T21:20:42.215Z",
-    "projectId": "9a56be53-5c04-48e5-811d-36ed2b4ce85c"
-  },
-  {
-    "id": "6f7c5edc-18b1-4188-8510-36762b4151cc",
-    "name": "sample_model.xml",
-    "uploadedAt": "2026-01-23T21:32:26.437Z",
-    "projectId": "9a56be53-5c04-48e5-811d-36ed2b4ce85c"
-  },
-  {
-    "id": "55236c6e-9b54-4c23-b339-3f10b4b9428b",
-    "name": "dataSchema.md",
-    "uploadedAt": "2026-01-23T21:35:23.230Z",
+    "id": "13c20d43-fa8b-484a-b992-abd60288f5bb",
+    "name": "document_based_process.txt",
+    "uploadedAt": "2026-01-24T16:07:13.408Z",
     "projectId": "9a56be53-5c04-48e5-811d-36ed2b4ce85c"
   }
 ]

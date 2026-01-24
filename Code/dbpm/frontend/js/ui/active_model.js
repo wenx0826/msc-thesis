@@ -30,12 +30,7 @@ $(document).ready(function () {
   $replaceButton = $("#replaceButton");
   $backButton = $("#backButton");
   $keepButton.on("click", async () => {
-    let modelId = activeModelStore.getModelId();
-    const activeModel = activeModelStore.getModel();
-    if (!modelId) {
-      modelService.keepActiveModel(temporarySelections);
-    }
-    $("#generatedModelActionBar").hide();
+    modelService.keepActiveModel();
   });
   $replaceButton.on("click", async () => {
     saveActiveModel();
@@ -52,6 +47,7 @@ $(document).ready(function () {
     localStorage.removeItem("marked");
     localStorage.removeItem("marked_from");
     $("#dat_details").empty();
+    // question:
     // e.stopImmediatePropagation();
   });
   $promptInput.on("input", () => {
@@ -99,10 +95,6 @@ activeModelStore.subscribe((state, { key, oldValue, newValue }) => {
             $regeneratedModelActionBar.show();
           } else if (newModelId != oldModelId) {
             // $promptContainer.removeClass("disabled");
-            const modelDocumentId = activeModelStore.getDocumentId();
-            if (modelDocumentId)
-              //mini bug here has to use this if otherwise new trace cannot be created yet for new model
-              activeDocumentStore.setDocumentById(modelDocumentId);
           }
         }
       } else {
@@ -137,9 +129,12 @@ activeModelStore.subscribe((state, { key, oldValue, newValue }) => {
 workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
   switch (key) {
     case "activeModelId":
-      // if (newValue == oldValue) {
+      if (newValue) {
+        $promptContainer.show();
+      } else {
+        $promptContainer.hide();
+      }
 
-      // }
       break;
     default:
       break;

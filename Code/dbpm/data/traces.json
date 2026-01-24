@@ -1,16 +1,67 @@
 [
   {
-    "documentId": "075200d1-4bea-4441-8f7d-332ec5e8f372",
-    "modelId": "50f407c0-6cbc-412b-99e8-cc21ce766adb",
+    "documentId": "13c20d43-fa8b-484a-b992-abd60288f5bb",
+    "modelId": "f18043b8-1564-4afb-a51c-f0f6387df875",
     "selections": [
       {
-        "id": 1769202673687,
-        "startXPath": "/0",
-        "startOffset": 25,
-        "endXPath": "/0",
-        "endOffset": 255
+        "id": "5530393b-8f87-4b8a-8e23-5e8c3c18af3a",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 325,
+          "endXPath": "/0",
+          "endOffset": 699
+        },
+        "text": "3. Process Extraction\n- System analyzes selected document text.\n- Relevant text fragments are identified and linked to process steps.\n- User triggers model generation or regeneration.\n\n4. Process Model Generation\n- System creates a visual process model from extracted information.\n- Process includes tasks, decisions, flows, and subprocesses.\n- Each model element is linked "
+      },
+      {
+        "id": "cd560440-37ea-4fb6-9f83-1db78e5ebecd",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 870,
+          "endXPath": "/0",
+          "endOffset": 1232
+        },
+        "text": ".\n- System maintains traceability between model elements and document fragments.\n\n6. Subprocess Linking\n- Subprocesses reference separate process models.\n- User can navigate between parent and child models.\n- Hierarchical model relationships are preserved.\n\n7. Model Management\n- Multiple models are stored and listed.\n- User switches between models and views pr"
       }
     ],
-    "id": "72698530-5a64-4439-8eca-0d0470d159c9"
+    "id": "977240ac-aaf5-4578-b57c-2e5c60b2c6d0"
+  },
+  {
+    "documentId": "13c20d43-fa8b-484a-b992-abd60288f5bb",
+    "modelId": "e9dd7710-06ca-484f-9019-bb58f6c73077",
+    "selections": [
+      {
+        "id": "33ab4c66-c1e0-466d-af03-14d2d9476c96",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 305,
+          "endXPath": "/0",
+          "endOffset": 310
+        },
+        "text": "ied t"
+      }
+    ],
+    "id": "c03bf6d9-bd89-467a-aa62-99c4166199ac"
+  },
+  {
+    "documentId": "13c20d43-fa8b-484a-b992-abd60288f5bb",
+    "modelId": "ae97d694-3c8f-4e03-9e0f-8cad06402b1e",
+    "selections": [
+      {
+        "id": "ba8c9396-3d06-4979-acdd-be6b04bab498",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 762,
+          "endXPath": "/0",
+          "endOffset": 768
+        },
+        "text": "s and "
+      }
+    ],
+    "id": "13422f49-7b6b-4084-a540-8356aa1efac4"
   }
 ]
