@@ -30,8 +30,8 @@ const modelService = {
   async keepActiveModel() {
     let model = {};
     model.data = activeModelStore.getSerializedData();
-    const modelNumber = projectStore.getModelNumber() + 1;
-    const name = `Model_${modelNumber}`;
+    const generatedModelNumber = projectStore.getModelNumber() + 1;
+    const name = `Model_${generatedModelNumber}`;
     model.name = name;
     const modelId = await API.model.createModel(model);
     model.id = modelId;
@@ -46,6 +46,7 @@ const modelService = {
     // const selections = JSON.parse(
     //   JSON.stringify(activeDocumentStore.getSerializedTemporarySelections()),
     // );
+
     const selections = [
       ...activeDocumentStore.getSerializedTemporarySelections(),
     ];
@@ -64,10 +65,10 @@ const modelService = {
     });
     API.project
       .updateProjectById(workspaceStore.getProjectId(), {
-        modelNumber,
+        generatedModelNumber,
       })
       .then(() => {
-        projectStore.setModelNumber(modelNumber);
+        projectStore.setModelNumber(generatedModelNumber);
       });
   },
   async updateActiveModelData() {

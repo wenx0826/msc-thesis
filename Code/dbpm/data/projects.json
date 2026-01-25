@@ -4,18 +4,18 @@
     "name": "dd",
     "created": "2026-01-22T08:50:52.384Z",
     "updated": "2026-01-22T08:50:52.384Z",
-    "modelNumber": 1
+    "generatedModelNumber": 1
   },
   {
     "id": "ebbc32e4-0165-453b-a44d-ad9727ed8293",
     "name": "ddemo",
     "updatedAt": "2026-01-22T08:55:29.906Z",
-    "modelNumber": 1
+    "generatedModelNumber": 1
   },
   {
     "id": "9a56be53-5c04-48e5-811d-36ed2b4ce85c",
     "createdAt": "2026-01-22T15:50:22.855Z",
     "name": "xin wen",
-    "modelNumber": 62
+    "generatedModelNumber": 70
   }
 ]

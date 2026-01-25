@@ -56,7 +56,7 @@ app.post("/projects", (req, res) => {
   const project = {
     ...createNewRecord(),
     name,
-    modelNumber: 0,
+    generatedModelNumber: 0,
   };
   fs.readFile(projectsFile, "utf8", (err, data) => {
     let projects = [];

@@ -29,7 +29,7 @@ $(function () {
   });
 
   $("#columnResizehandle1").on("dragcolumnmove", (e) => {
-    e.stopPropagation();
+    // e.stopPropagation();
     rerenderOverlayLayers();
   });
 
@@ -215,8 +215,9 @@ const clearSelectionsLayer = () => {
   $selectionsLayer.empty();
 };
 
-const clearTagsLayer = () => {
+const clearInteractionLayer = () => {
   $modelTags.empty();
+  $interactionLayer.children().not($modelTags).remove();
 };
 
 // const clearTemporarySelections = () => {
@@ -247,7 +248,7 @@ function removeRenderedSelection({ id: selectionId }) {
 }
 const clearOverlayLayers = () => {
   clearSelectionsLayer();
-  clearTagsLayer();
+  clearInteractionLayer();
   clearTemporarySelections();
 };
 
@@ -387,6 +388,12 @@ const renderSelection = ({ range, color, id: selectionId }, modelId) => {
     $modelTags.append(tagSpan);
   }
   if (!modelId || modelId == activeModelStore.getModelId()) {
+    // const existingSelectionBox = $selectionsLayer.find(
+    //   `.selection-wrap[data-selectionid="${selectionId}"]`,
+    // );
+    // if (existingSelectionBox.length > 0) {
+    //   existingSelectionBox.remove();
+    // }
     const $box = $selectionDiv.clone(false).empty();
     $box.appendTo($interactionLayer);
     $box.on("click", onSelectionSelect);
@@ -444,7 +451,7 @@ const renderTrace = ({ selections, modelId }) => {
 
 const rerenderSelectionsLayer = () => {
   clearSelectionsLayer();
-  clearTagsLayer();
+  clearInteractionLayer();
   const traces = activeDocumentStore.getTraces();
   if (traces.length) {
     traces.forEach((trace) => renderTrace(trace));

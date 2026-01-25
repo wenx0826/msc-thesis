@@ -79,19 +79,20 @@ Store.workspace = Object.assign(
 Store.project = Object.assign(
   createDomainStore({
     name: null,
-    modelNumber: 0,
+    generatedModelNumber: 0,
   }),
   {
     async init(projectId) {
-      const { name, modelNumber } = await API.project.getProjectById(projectId);
-      this.setProject({ name, modelNumber });
+      const { name, generatedModelNumber } =
+        await API.project.getProjectById(projectId);
+      this.setProject({ name, generatedModelNumber });
     },
     getProjectName() {
       return this.state.name;
     },
 
     getModelNumber() {
-      return this.state.modelNumber;
+      return this.state.generatedModelNumber;
     },
     setName(val) {
       if (this.state.name !== val) {
@@ -99,12 +100,12 @@ Store.project = Object.assign(
         this.notify({ key: "name", newValue: val });
       }
     },
-    setProject({ name, modelNumber }) {
+    setProject({ name, generatedModelNumber }) {
       this.setName(name);
-      this.setModelNumber(modelNumber);
+      this.setModelNumber(generatedModelNumber);
     },
-    setModelNumber(modelNumber) {
-      this.state.modelNumber = modelNumber;
+    setModelNumber(generatedModelNumber) {
+      this.state.generatedModelNumber = generatedModelNumber;
     },
   },
 );

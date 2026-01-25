@@ -260,6 +260,8 @@ li.active {
   /* z-index: 2; */
   /* background-color: yellow; */
   outline: 2px solid var(--wfadaptor-highlight);
+
+  /* outline: 2px solid var(--wfadaptor-highlight); */
   outline-offset: 2px;
   /* transition: outline-offset 0.2s; */
 }
