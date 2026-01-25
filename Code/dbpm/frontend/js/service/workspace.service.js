@@ -15,34 +15,46 @@ const workspaceService = {
       activeDocumentId: docId,
     });
   },
-  activateDocumentById(documentId) {
+  clearModelSelection() {
+    workspaceStore.setActiveModelId(null);
+    activeModelStore.setModel(null);
+    activeDocumentStore.setActiveModelTrace(null);
+  },
+  async activateDocumentById(documentId) {
     workspaceStore.setActiveDocumentId(documentId);
-    activeDocumentStore.setDocumentById(documentId);
-    const activeModelDocumentId = activeModelStore.getDocumentId();
-    if (documentId !== activeModelDocumentId) {
-      workspaceStore.setActiveModelId(null);
-      activeModelStore.setModel(null);
+    await activeDocumentStore.setDocumentById(documentId);
+    const activeModelId = workspaceStore.getActiveModelId();
+    if (activeModelId) {
+      const activeModelDocumentId =
+        modelsStore.getModelDocumentIdById(activeModelId);
+      if (documentId === activeModelDocumentId) {
+        activeDocumentStore.setActiveModelTraceByModelId(activeModelId);
+      } else {
+        this.clearModelSelection();
+      }
     }
   },
+
   toggleModelSelection(modelId) {
     // workspaceStore.setLoading(true);
     const currentActiveModelId = workspaceStore.getActiveModelId();
+
     if (currentActiveModelId === modelId) {
       modelId = null;
+      this.clearModelSelection();
+      return;
     }
     workspaceStore.setActiveModelId(modelId);
     activeModelStore.setModelById(modelId);
+
     if (modelId) {
       const currentActiveDocumentId = workspaceStore.getActiveDocumentId();
+      // activeModelStore.getDocumentId(); canbe empty
       const activeModelDocumentId = modelsStore.getModelDocumentIdById(modelId);
-      console.log(
-        "Toggling model selection. Current active document ID:",
-        currentActiveDocumentId,
-        "Active model's document ID:",
-        activeModelDocumentId,
-      );
       if (currentActiveDocumentId != activeModelDocumentId) {
         this.activateDocumentById(activeModelDocumentId);
+      } else {
+        activeDocumentStore.setActiveModelTraceByModelId(modelId);
       }
     }
   },

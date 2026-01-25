@@ -39,7 +39,7 @@ $(function () {
       if (!modelId) {
         activeDocumentStore.removeTemporarySelectionById(selectionId);
       } else {
-        activeDocumentStore.removeActiveTraceSelectionById(selectionId);
+        activeDocumentStore.removeActiveModelTraceSelectionById(selectionId);
       }
       setSelectedSelection(null);
     }
@@ -63,7 +63,7 @@ activeDocumentStore.subscribe((state, { key, operation, ...payload }) => {
             break;
         }
         break;
-      case "activeTrace.selections":
+      case "activeModelTrace.selections":
         switch (operation) {
           case "remove":
             removeRenderedSelection(value);
@@ -103,11 +103,25 @@ activeDocumentStore.subscribe((state, { key, operation, ...payload }) => {
       case "htmlContent":
         if (newValue) {
           $documentContent.html(newValue || "");
-          // clearTemporarySelections();
-          // rerenderSelectionsLayer();
         } else {
           clearDocumentViewer();
         }
+        break;
+      case "activeModelTrace":
+        if (newValue) {
+          console.log(
+            "Active model trace changed:!!!!!!!!!",
+            oldValue,
+            newValue,
+          );
+          highlightActiveModelSelections(newValue.modelId);
+          // scrollToSelection(newValue.selections[0].id);
+          scrollToRange(newValue.selections[0].range);
+        }
+        if (oldValue) {
+          unhighlightActiveModelSelections(oldValue.modelId);
+        }
+
         break;
       default:
         break;
@@ -133,15 +147,14 @@ workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
     //   break;
     case "activeModelId":
       if (newValue) {
-        highlightActiveModelSelections(newValue);
-        activeDocumentStore.setActiveTraceByModelId(newValue);
+        // highlightActiveModelSelections(newValue);
         $generateButton.text("Regenerate Model");
         $generateButton.prop("disabled", false);
       } else {
         $generateButton.text("Generate Model");
       }
       if (oldValue) {
-        unhighlightActiveModelSelections(oldValue);
+        // unhighlightActiveModelSelections(oldValue);
       }
       break;
     default:
@@ -149,9 +162,54 @@ workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
   }
 });
 
-// const getSelectedText = () => {
-//   return temporarySelections.map((range) => range.toString()).join(" ");
-// };
+function scrollToSelection(selectionId) {
+  const $selection = $selectionsLayer.find(
+    `.selection-wrap[data-selectionid="${selectionId}"]`,
+  );
+  if ($selection.length > 0) {
+    const eleViewerWrap = $viewerWrap[0];
+    const eleViewerWrapRect = eleViewerWrap.getBoundingClientRect();
+    const selectionRect = $selection[0].getBoundingClientRect();
+
+    const offsetTop =
+      selectionRect.top -
+      eleViewerWrapRect.top +
+      eleViewerWrap.scrollTop -
+      eleViewerWrapRect.height / 2 +
+      selectionRect.height / 2;
+    const offsetLeft =
+      selectionRect.left -
+      eleViewerWrapRect.left +
+      eleViewerWrap.scrollLeft -
+      eleViewerWrapRect.width / 2 +
+      selectionRect.width / 2;
+
+    eleViewerWrap.scrollTo({
+      top: offsetTop,
+      left: offsetLeft,
+      behavior: "smooth",
+    });
+  }
+}
+
+function scrollToRange(range, margin = 16) {
+  const rects = range.getClientRects();
+  if (!rects || rects.length === 0) return;
+
+  // 用第一行当 anchor（最常见）
+  const rect = rects[0];
+
+  const eleViewerWrap = $viewerWrap[0];
+  const eleViewerWrapRect = eleViewerWrap.getBoundingClientRect();
+  // 把 viewport 坐标换成 scrollWrap 内坐标
+  const y = rect.top - eleViewerWrapRect.top + eleViewerWrap.scrollTop;
+  // eleViewerWrap.scrollTop = Math.max(0, y - margin);
+  eleViewerWrap.scrollTo({
+    top: Math.max(0, y - margin),
+    // left: 0,
+    behavior: "smooth",
+  });
+}
 
 const clearSelectionsLayer = () => {
   $selectionsLayer.empty();
@@ -315,12 +373,12 @@ const renderSelection = ({ range, color, id: selectionId }, modelId) => {
       .addClass("tag-span")
       .text(`${modelName}`)
       .css({
-        top: `${lastRect.top - eleViewerWrapRect.top + eleViewerWrap.scrollTop - 5}px`,
-        left: `${lastRect.right - eleViewerWrapRect.left + eleViewerWrap.scrollLeft}px`,
+        top: `${lastRect.top - eleViewerWrapRect.top + eleViewerWrap.scrollTop - 10}px`,
+        left: `${lastRect.right - eleViewerWrapRect.left + eleViewerWrap.scrollLeft - 10}px`,
       })
       .on("click", (event) => {
         event.stopPropagation();
-        workspceService.toggleModelSelection(modelId);
+        workspaceService.toggleModelSelection(modelId);
       });
     if (modelId == workspaceStore.getActiveModelId()) {
       tagSpan.addClass("active");

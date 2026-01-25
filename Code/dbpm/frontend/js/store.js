@@ -141,6 +141,7 @@ Store.documents = Object.assign(
       API.document.deleteDocumentById(docId);
       const activeDocumentId = window.Store.activeDocument.getId();
       if (activeDocumentId == docId) {
+        // todo
         window.Store.activeDocument.setDocumentById(null);
       }
       const docModelIds = window.Store.traces.getDocumentModelIds(docId);
@@ -153,9 +154,9 @@ Store.documents = Object.assign(
 Store.activeDocument = Object.assign(
   createDomainStore({
     status: null,
-    content: null,
+    htmlContent: null,
     traces: [],
-    activeTrace: null,
+    activeModelTrace: null,
     temporarySelections: [],
   }),
   {
@@ -186,34 +187,40 @@ Store.activeDocument = Object.assign(
       this.notify({ key: "htmlContent", newValue });
     },
 
-    setDocumentById(id) {
+    async setDocumentById(id) {
       const currentId = this.getId();
-      if (id === currentId) return;
+      // ??
+      if (id === currentId) return Promise.resolve();
       this.setStatus("loading");
       this.setTraces([]);
-      this.setActiveTrace(null);
+      this.setActiveModelTrace(null);
       this.clearTemporarySelections();
       const contentPromise = API.document.getDocumentContentById(id);
       const tracesPromise = API.trace.getTracesByDocumentId(id); // Start fetching traces early
-      contentPromise.then(
-        (content) => {
-          this.setHtmlContent(content);
-          this.setStatus(null);
-          tracesPromise
-            .then((traces) => {
-              console.log("11. Loaded traces for document:", traces);
-              this.setTraces(traces);
-            })
-            .catch((error) => {
-              console.log("Error loading traces:", error);
-              // Optionally set empty traces: this._setTraces([]);
-            });
-        },
-        (error) => {
-          this.setHtmlContent(null);
-          this.setStatus("error");
-        },
-      );
+      return new Promise((resolve, reject) => {
+        contentPromise.then(
+          (content) => {
+            this.setHtmlContent(content);
+            this.setStatus(null);
+            tracesPromise
+              .then((traces) => {
+                console.log("11. Loaded traces for document:", traces);
+                this.setTraces(traces);
+                resolve();
+              })
+              .catch((error) => {
+                console.log("Error loading traces:", error);
+                // Optionally set empty traces: this._setTraces([]);
+                resolve(); // Resolve even on traces error to not block
+              });
+          },
+          (error) => {
+            this.setHtmlContent(null);
+            this.setStatus("error");
+            reject(error);
+          },
+        );
+      });
     },
     setStatus(newValue) {
       this.state.status = newValue;
@@ -245,39 +252,40 @@ Store.activeDocument = Object.assign(
     getTraceById(traceId) {
       return this.state.traces.find((trace) => trace.id == traceId);
     },
-    getActiveTrace() {
-      return this.state.activeTrace;
+    getActiveModelTrace() {
+      return this.state.activeModelTrace;
     },
-    setActiveTrace(trace) {
-      this.state.activeTrace = trace;
+    setActiveModelTrace(newValue) {
+      const oldValue = this.getActiveModelTrace();
+      this.state.activeModelTrace = newValue;
+      this.notify({ key: "activeModelTrace", oldValue, newValue });
     },
-    setActiveTraceByModelId(modelId) {
+    setActiveModelTraceByModelId(modelId) {
       const trace = this.state.traces.find((trace) => trace.modelId == modelId);
-      this.setActiveTrace(trace);
-      //
+      this.setActiveModelTrace(trace);
     },
-    removeActiveTraceSelectionById(selectionId) {
+    removeActiveModelTraceSelectionById(selectionId) {
       let value;
-      const activeTrace = this.getActiveTrace();
-      if (activeTrace) {
-        const index = activeTrace.selections.findIndex(
+      const activeModelTrace = this.getActiveModelTrace();
+      if (activeModelTrace) {
+        const index = activeModelTrace.selections.findIndex(
           (sel) => sel.id === selectionId,
         );
         if (index !== -1) {
-          value = activeTrace.selections[index];
-          activeTrace.selections.splice(index, 1);
+          value = activeModelTrace.selections[index];
+          activeModelTrace.selections.splice(index, 1);
         }
       }
       this.notify({
-        key: "activeTrace.selections",
+        key: "activeModelTrace.selections",
         operation: "remove",
         value,
       });
     },
-    setActiveTraceById(traceId) {
+    setActiveModelTraceById(traceId) {
       const trace = this.getTraceById(traceId);
-      this.setActiveTrace(trace);
-      // this.notify({ key: "activeTrace", newValue: trace });
+      this.setActiveModelTrace(trace);
+      // this.notify({ key: "activeModelTrace", newValue: trace });
     },
     // #endregion
     // #region temporary selections
@@ -332,8 +340,9 @@ Store.activeDocument = Object.assign(
     // #endregion
     getSelectedText() {
       let selections = [...this.getTemporarySelections()];
-      const activeTrace = this.getActiveTrace();
-      if (activeTrace) selections = [...activeTrace.selections, ...selections];
+      const activeModelTrace = this.getActiveModelTrace();
+      if (activeModelTrace)
+        selections = [...activeModelTrace.selections, ...selections];
       let selectedText = "";
       sortedSelections = getSortedSelectionsByRange(selections);
       sortedSelections.forEach((selection) => {
@@ -410,6 +419,7 @@ Store.models = Object.assign(
     },
   },
 );
+
 Store.activeModel = Object.assign(
   createDomainStore({
     status: null, // 'loading', 'ready', 'error','generating'

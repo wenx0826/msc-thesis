@@ -224,9 +224,10 @@ li.active {
 #documentContent {
   padding: 0.5em;
   position: relative;
-  z-index: 1; /* 文字永远在上面 */
+  z-index: 1;
   background: transparent;
   text-align: justify;
+  line-height: 1.8;
 }
 #selectionsLayer {
   position: absolute;
@@ -253,25 +254,29 @@ li.active {
 }
 
 #interactionLayer .selection-wrap {
-  border: 2px solid var(--wfadaptor-highlight);
+  /* border: 2px solid var(--wfadaptor-highlight);
   pointer-events: auto;
-  cursor: default;
+  cursor: default; */
   /* z-index: 2; */
   /* background-color: yellow; */
+  outline: 2px solid var(--wfadaptor-highlight);
+  outline-offset: 2px;
+  /* transition: outline-offset 0.2s; */
 }
+
 #interactionLayer .selection-wrap.selected {
-  border-color: var(--wfadaptor-selected);
+  outline-color: var(--wfadaptor-selected);
   /* background-color: yellow; */
 }
 #interactionLayer .selection-wrap:not([data-modelid]) {
-  border-style: dashed;
+  outline-style: dashed;
   /* background-color: yellow; */
 }
 .tag-span {
   position: absolute;
   background-color: lightgray;
   color: black;
-  font-size: 0.8em;
+  font-size: 0.7em;
   padding: 0.1em 0.3em;
   border-radius: 0.3em;
   pointer-events: auto;

@@ -146,5 +146,70 @@
       }
     ],
     "id": "bfb9af00-da19-4e15-9745-702e35cfbb18"
+  },
+  {
+    "documentId": "a1aa7fff-7d3c-4f3a-9732-593d802451e0",
+    "modelId": "0be12cea-fc80-4a1b-ba56-bfd5f2409f72",
+    "selections": [
+      {
+        "id": "d0570217-1b4c-409b-8053-eb8523648b59",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/2",
+          "startOffset": 931,
+          "endXPath": "/2",
+          "endOffset": 1403
+        },
+        "text": "ies such as healthcare and finance, where vast textual documentation exists, and manual modeling can delay process improvements. By treating the LLM as a black-box API, the project emphasizes system design around prompt optimization to handle linguistic ambiguities and implicit relations, reducing development complexity while enhancing accessibility for non-experts. Recent advancements in prompt engineering for LLMs have shown promise in improving extraction accuracy "
+      }
+    ],
+    "id": "02d4b617-9b7e-4c18-8b79-eec3cf1c0d50"
+  },
+  {
+    "documentId": "a1aa7fff-7d3c-4f3a-9732-593d802451e0",
+    "modelId": "07912731-bd80-46e2-86a3-5d0125cd6a5c",
+    "selections": [
+      {
+        "id": "b428225b-4651-4ec7-b3f6-935c7be89e6d",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/2",
+          "startOffset": 7973,
+          "endXPath": "/2",
+          "endOffset": 8635
+        },
+        "text": "07541v1)\n[] [15] Evaluating Large Language Models in Process Mining - arXiv - [https://arxiv.org/html/2403.06749v1](https://arxiv.org/html/2403.06749v1)\n- [17] (PDF) PM-LLM-Benchmark: Evaluating Large Language Models on ... - [https://www.researchgate.net/publication/382363825_PM-LLM-Benchmark_Evaluating_Large_Language_Models_on_Process_Mining_Tasks](https://www.researchgate.net/publication/382363825_PM-LLM-Benchmark_Evaluating_Large_Language_Models_on_Process_Mining_Tasks)\n- [32] Structured information extraction from scientific text with large ... - [https://www.nature.com/articles/s41467-024-45563-x](https://www.nature.com/articles/s41467-024-45563-x)"
+      }
+    ],
+    "id": "26e3d580-d8c0-426d-b69b-31260c069a1c"
+  },
+  {
+    "documentId": "a1aa7fff-7d3c-4f3a-9732-593d802451e0",
+    "modelId": "54f59a57-d741-42ae-9313-9564ab5c28a2",
+    "selections": [
+      {
+        "id": "5f0967dc-1485-46da-a2e8-96aef9668435",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/2",
+          "startOffset": 5020,
+          "endXPath": "/2",
+          "endOffset": 5321
+        },
+        "text": "(BPMN outputs), and constructs (prompt templates). Steps involve: identifying BPM automation needs via literature; designing around black-box APIs (e.g., OpenAI) with React frontend, Python backend, and database; building iteratively with agile, focusing on prompt optimization (e.g., few-shot, CoT) a"
+      },
+      {
+        "id": "8cc8383f-9197-4410-aa62-356941f67dab",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/2",
+          "startOffset": 7288,
+          "endXPath": "/2",
+          "endOffset": 7694
+        },
+        "text": "g for POWL generation, handling errors iteratively. Evaluations in PM use frameworks like PM-LLM-Benchmark, assessing tasks (e.g., model generation) with LLMs-as-Judges, showing commercial LLMs scoring ~8/10. Orientation for LLM-PM includes benchmarks for domain knowledge and visual tasks, highlighting challenges like hallucinations. This work builds on these for a web-based, black-box tool.\n\n**Citation"
+      }
+    ],
+    "id": "7f8c0088-9d4d-4d86-a356-ea67fdaacae3"
   }
 ]
