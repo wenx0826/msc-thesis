@@ -342,58 +342,50 @@ Store.activeDocument = Object.assign(
 
 Store.models = Object.assign(
   createDomainStore({
-    // models: [],
-    idMaps: {},
+    modelsById: {},
   }),
   {
     async init() {
       const documents = documentsStore.getDocuments();
-      // const models = [];
-      // documents.forEach(async (doc) => {
-      //   const modelsMeta = await API.document.getDocumentModelsById(doc.id);
-      //   // console.log("Loaded model for trace:", modelsMeta);
-      //   // models.push(model);
-      //   // this.state.models = modelsMeta;
-      //   this.state.idMaps = modelsMeta.reduce((acc, model) => {
-      //     model.documentId = doc.id;
-      //     acc[model.id] = model;
-      //     return acc;
-      //   }, {});
-      // });
+      let modelsById = {};
       for (const { id: docId } of documents) {
-        const modelsMeta = await API.document.getDocumentModelsById(docId);
-        for (const model of modelsMeta) {
-          model.documentId = docId;
-          this.state.idMaps[model.id] = model;
-        }
+        const docModels = await API.document.getDocumentModelsById(docId);
+        docModels.forEach((model) => (model.documentId = docId));
+        modelsById = {
+          ...modelsById,
+          ...docModels.reduce((acc, model) => {
+            acc[model.id] = { meta: model, documentId: docId };
+            return acc;
+          }, {}),
+        };
       }
-      // this.state.models = models;
-      console.log("Initialized models store with models:", this.state.idMaps);
+      this.state.modelsById = modelsById;
       this.notify({ operation: "init" });
     },
-    addModel(model) {
-      this.state.idMaps[model.id] = model;
-      this.notify({ operation: "add", id: model.id });
+    addModel(modelMeta) {
+      const value = { meta: modelMeta };
+      this.state.modelsById[modelMeta.id] = value;
+      this.notify({ operation: "add", value });
     },
     updateModelById(modelId, updates) {
-      const model = this.state.idMaps[modelId];
-      console.log("Updating model in store:", model, updates);
-      if (model) {
-        Object.assign(model, updates);
-        this.notify({ key: "models", operation: "update", id: modelId });
+      const value = this.state.modelsById[modelId];
+      console.log("Updating model in store:", value, updates);
+      if (value) {
+        Object.assign(value, updates);
+        this.notify({ key: "models", operation: "update", value });
       }
     },
     getModels() {
-      return Object.values(this.state.idMaps);
+      return Object.values(this.state.modelsById);
     },
     getModelById(modelId) {
       return this.state.models.find((model) => model.id == modelId) || null;
     },
     getModelNameById(modelId) {
-      return this.state.idMaps[modelId]?.name;
+      return this.state.modelsById[modelId]?.meta?.name;
     },
     getModelDocumentIdById(modelId) {
-      return this.state.idMaps[modelId]?.documentId;
+      return this.state.modelsById[modelId]?.documentId;
     },
     /*async updateActiceModel(modelId, updatedFields) {
       // const updatedModel = await API.Model.updateModel(modelId, updatedFields);

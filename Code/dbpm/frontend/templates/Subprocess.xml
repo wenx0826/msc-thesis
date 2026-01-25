@@ -17,6 +17,14 @@
     <design_dir>Templates.dir</design_dir>
   </attributes>
   <description>
+    <!-- 将自定义数据藏在注释或CDATA中 -->
+    <!-- CUSTOM_DATA: {"namespace":"myNS","data":{...}} -->
+    <![CDATA[
+    <!-- 或者使用CDATA存储 -->
+    <my:custom xmlns:my="my-namespace">
+        <my:item>value</my:item>
+    </my:custom>
+    ]]>
     <description xmlns="http://cpee.org/ns/description/1.0">
       <manipulate id="a3" label="">data.start = Time.now.to_f</manipulate>
       <call id="a1" endpoint="subprocess">

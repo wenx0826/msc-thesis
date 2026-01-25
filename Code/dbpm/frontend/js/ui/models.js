@@ -4,35 +4,34 @@ workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
   switch (key) {
     case "activeModelId":
       if (newValue) {
-        highlightActiveModelInList(newValue);
+        highlightActiveModelContainer(newValue);
       }
       if (oldValue) {
-        unhighlightActiveModelInList(oldValue);
+        unhighlightActiveModelContainer(oldValue);
       }
       break;
     default:
       break;
   }
 });
-modelsStore.subscribe(async (state, { key, operation, id }) => {
+
+modelsStore.subscribe(async (state, { key, operation, value }) => {
   switch (operation) {
     case "init":
-      const models = Object.values(state.idMaps);
-      // renderModelInList(state.models.find((model) => model.id === id));
+      const models = modelsStore.getModels();
       for (const model of models) {
         await renderModelInList(model);
       }
       break;
     case "add":
-      await renderModelInList(state.idMaps[id]);
+      await renderModelInList(value);
       break;
     case "update":
-      const model = state.idMaps[id];
-      updateModelInList(model);
+      updateModelInList(value);
       break;
     case "delete":
-      console.log("Model deleted with ID:", id);
-      removeModelFromList(id);
+      console.log("Model deleted with ID:", value.id);
+      removeModelFromList(value.id);
       break;
   }
 });
@@ -62,14 +61,17 @@ function getModelSvg(input) {
   });
 }
 async function renderModelInList(model) {
-  console.log("Calling getModelSvg to render model in list:", model.id);
-  const modelId = model.id;
-  var gridId = `modelGrid_${model.id}`;
+  const modelId = model?.meta?.id;
+  var gridId = `modelGrid_${modelId}`;
   const $modelsArea = $("#models");
   const $modelContainer = $("<div>")
     .addClass("model-container")
-    .attr("data-modelid", model.id);
-  $modelContainer.text(`${model.name}`);
+    .attr("data-modelid", modelId)
+    .attr("data-documentid", model.documentId);
+  if (modelId == workspaceStore.getActiveModelId()) {
+    $modelContainer.addClass("active");
+  }
+  $modelContainer.text(`${model.meta.name}`);
   $modelsArea.append($modelContainer);
   const $gridDiv = $("<div>").attr("id", gridId);
   $modelContainer.on("click", (event) => {
@@ -80,7 +82,7 @@ async function renderModelInList(model) {
   // console.log("Model rendered in list:", model);
   $modelContainer.append($gridDiv);
 
-  const outputFrame = await getModelSvg({ id: model.id });
+  const outputFrame = await getModelSvg({ id: modelId });
   // console.log("Converted SVG content from model data:", outputFrame);
   model.svg = new DOMParser().parseFromString(
     outputFrame,
@@ -89,19 +91,19 @@ async function renderModelInList(model) {
 
   $gridDiv.append(model.svg);
 }
+
 function updateModelInList(model) {
-  console.log("Updating model in list:", model.id);
-  const modelId = model.id;
-  var gridId = `modelGrid_${model.id}`;
+  const modelId = model?.meta?.id;
+  var gridId = `modelGrid_${modelId}`;
   const $gridDiv = $(`#${gridId}`);
   $gridDiv.empty();
   $gridDiv.append(model.svg);
 }
-const highlightActiveModelInList = (modelId) => {
+const highlightActiveModelContainer = (modelId) => {
   // $(".model-container").removeClass("active");
   $(`.model-container[data-modelid="${modelId}"]`).addClass("active");
 };
-const unhighlightActiveModelInList = (modelId) => {
+const unhighlightActiveModelContainer = (modelId) => {
   $(`.model-container[data-modelid="${modelId}"]`).removeClass("active");
 };
 const removeModelFromList = (modelId) => {

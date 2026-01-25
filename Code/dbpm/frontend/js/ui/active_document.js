@@ -406,6 +406,7 @@ const rerenderSelectionsLayer = () => {
   if (traces.length) {
     traces.forEach((trace) => renderTrace(trace));
   }
+  const temporarySelections = activeDocumentStore.getTemporarySelections();
   temporarySelections.forEach((selection) => {
     renderSelection(selection);
   });

@@ -216,7 +216,6 @@ const clearModelViewer = () => {
 };
 
 const showActiveModel = (model) => {
-  console.log("Showing active model:", model);
   $("#activeModelName").text(model.name ? model.name : "");
   $datDetails.empty();
 

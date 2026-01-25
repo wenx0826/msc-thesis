@@ -1,0 +1,48 @@
+<description xmlns="http://cpee.org/ns/properties/2.0">
+        <my:custom xmlns:my="my-namespace">
+        <my:item>value</my:item>
+    </my:custom>
+    <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+      <loop mode="pre_test" condition="true" svg-id="loop_0" svg-label="true" svg-type="loop" svg-subtype="loop_head">
+        <_probability>
+          <_probability_min/>
+          <_probability_max/>
+          <_probability_avg/>
+        </_probability>
+        <call id="a1" svg-id="a1" svg-label="Move to overview position" svg-type="call" svg-subtype="call"><parameters><label>Move to overview position</label><color>#ded0c5</color><type>task</type><model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a4" svg-id="a4" svg-type="call" svg-subtype="call"><parameters><label/><color>#e4c3e4</color><type>task</type><model/></parameters></call>
+        <call id="a3" svg-id="a3" svg-label="Get item positions" svg-type="call" svg-subtype="call"><parameters><label>Get item positions</label><color>#d8f0dd</color><type>task</type><model/></parameters></call>
+        <call id="a5" svg-id="a5" svg-label="Inspect first item" svg-type="call" svg-subtype="call"><parameters><label>Inspect first item</label><color>#deddda</color><type>task</type><model/></parameters></call>
+        <call id="a6" endpoint="get_offset_base" svg-id="a6" svg-label="Get item offset" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <label>Get item offset</label>
+            <arguments/>
+            <stream>
+              <sensors/>
+              <aggregators/>
+              <costs/>
+            </stream>
+          </parameters>
+          <code>
+            <prepare/>
+            <finalize output="result">data.adjusted = result</finalize>
+            <update output="result"/>
+            <rescue output="result"/>
+          </code>
+          <annotations>
+            <_timing>
+              <_timing_wait/>
+              <_timing_threshold/>
+              <_timing_min/>
+              <_timing_max/>
+              <_timing_avg/>
+            </_timing>
+            <_notes>
+              <_notes_general/>
+            </_notes>
+          </annotations>
+          <documentation/>
+        </call>
+        <stop id="a2" svg-id="a2" svg-type="stop" svg-subtype="stop"/>
+      </loop>
+    </description>
+  </description>

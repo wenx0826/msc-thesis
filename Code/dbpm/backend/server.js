@@ -3,19 +3,25 @@ const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
 const { get } = require("http");
+const { version } = require("os");
 const app = express();
 const PORT = 3000;
 
 const projectsFile = path.join(__dirname, "..", "data", "projects.json");
 const tracesFile = path.join(__dirname, "..", "data", "traces.json");
-const documentsMetaFile = path.join(
+const documentMetaFile = path.join(
   __dirname,
   "..",
   "data",
-  "documents_meta.json",
+  "document-meta.json",
 );
 const documentsPath = path.join(__dirname, "..", "data", "documents");
-const modelsMetaFile = path.join(__dirname, "..", "data", "models_meta.json");
+const modelMetaByIdFile = path.join(
+  __dirname,
+  "..",
+  "data",
+  "model-meta.by-id.json",
+);
 const modelsPath = path.join(__dirname, "..", "data", "models");
 
 const getISODate = () => new Date().toISOString();
@@ -116,7 +122,7 @@ app.get("/projects/:id", (req, res) => {
 app.get("/projects/:projectId/documents", (req, res) => {
   const { projectId } = req.params;
   console.log("Fetching documents for project:", projectId);
-  fs.readFile(documentsMetaFile, "utf8", (err, data) => {
+  fs.readFile(documentMetaFile, "utf8", (err, data) => {
     if (err) {
       if (err.code === "ENOENT") {
         return res.json([]);
@@ -178,7 +184,7 @@ app.post("/documents", (req, res) => {
   const uploadedAt = new Date().toISOString();
   const documentMeta = { id, name, uploadedAt, projectId };
   // Read current documents
-  fs.readFile(documentsMetaFile, "utf8", (err, data) => {
+  fs.readFile(documentMetaFile, "utf8", (err, data) => {
     let documents = [];
     if (!err) {
       try {
@@ -192,7 +198,7 @@ app.post("/documents", (req, res) => {
     documents.push(documentMeta);
     // Write metadata
     fs.writeFile(
-      documentsMetaFile,
+      documentMetaFile,
       JSON.stringify(documents, null, 2),
       (err) => {
         if (err) {
@@ -217,7 +223,7 @@ app.post("/documents", (req, res) => {
 });
 app.get("/documents", (req, res) => {
   console.log("Fetching documents list...");
-  fs.readFile(documentsMetaFile, "utf8", (err, data) => {
+  fs.readFile(documentMetaFile, "utf8", (err, data) => {
     if (err) {
       if (err.code === "ENOENT") {
         return res.json([]);
@@ -281,9 +287,9 @@ app.get("/documents/:id/models", (req, res) => {
       const traces = data.trim() ? JSON.parse(data) : [];
       const docTraces = traces.filter((trace) => trace.documentId === docId);
       for (const trace of docTraces) {
-        const modelsMeta = fs.readFileSync(modelsMetaFile, "utf8");
-        const modelsList = modelsMeta.trim() ? JSON.parse(modelsMeta) : [];
-        const model = modelsList.find((m) => m.id === trace.modelId);
+        let modelMetaById = fs.readFileSync(modelMetaByIdFile, "utf8");
+        modelMetaById = modelMetaById.trim() ? JSON.parse(modelMetaById) : {};
+        const model = modelMetaById[trace.modelId];
         if (model) {
           models.push(model);
         }
@@ -297,7 +303,7 @@ app.get("/documents/:id/models", (req, res) => {
 
 app.delete("/documents/:id", (req, res) => {
   const docId = req.params.id;
-  fs.readFile(documentsMetaFile, "utf8", (err, data) => {
+  fs.readFile(documentMetaFile, "utf8", (err, data) => {
     if (err) {
       return res.status(500).json({ error: "Failed to read documents file" });
     }
@@ -309,7 +315,7 @@ app.delete("/documents/:id", (req, res) => {
       }
       documents.splice(index, 1);
       fs.writeFile(
-        documentsMetaFile,
+        documentMetaFile,
         JSON.stringify(documents, null, 2),
         (err) => {
           if (err) {
@@ -337,45 +343,49 @@ app.delete("/documents/:id", (req, res) => {
 
 app.post("/models", (req, res) => {
   const model = req.body;
-  const { data: modelData, ...modelMeta } = model;
+  const { data: modelData, ...meta } = model;
   const id = crypto.randomUUID();
   // const timestamp = new Date().toISOString();
-  modelMeta.id = id;
-  modelMeta.createdAt = getISODate();
+  const modelMeta = { id, ...meta, version: 1 };
 
-  fs.readFile(modelsMetaFile, "utf8", (err, data) => {
-    let modelsMeta = [];
+  fs.readFile(modelMetaByIdFile, "utf8", (err, data) => {
+    let modelMetaById = {};
     if (!err) {
       try {
-        modelsMeta = data.trim() ? JSON.parse(data) : [];
+        modelMetaById = data.trim() ? JSON.parse(data) : {};
       } catch (e) {
         return res.status(500).json({ error: "Failed to parse models file" });
       }
     }
-    modelsMeta.push(modelMeta);
+    modelMetaById[id] = modelMeta;
     // Write metadata
-    fs.writeFile(modelsMetaFile, JSON.stringify(modelsMeta, null, 2), (err) => {
-      if (err) {
-        return res.status(500).json({ error: "Failed to write models file" });
-      }
-      // Write content
-      const modelDataFile = path.join(modelsPath, `${id}.xml`);
-      fs.writeFile(modelDataFile, modelData, (err) => {
+    fs.writeFile(
+      modelMetaByIdFile,
+      JSON.stringify(modelMetaById, null, 2),
+      (err) => {
         if (err) {
-          // Rollback metadata? For simplicity, not for now
-          return res
-            .status(500)
-            .json({ error: "Failed to write model content" });
+          return res.status(500).json({ error: "Failed to write models file" });
         }
-        res.json(modelMeta);
-      });
-    });
+        // Write content
+        const modelDataFile = path.join(modelsPath, `${id}.xml`);
+        fs.writeFile(modelDataFile, modelData, (err) => {
+          if (err) {
+            // Rollback metadata? For simplicity, not for now
+            return res
+              .status(500)
+              .json({ error: "Failed to write model content" });
+          }
+          res.json(modelMeta);
+        });
+      },
+    );
   });
 });
 app.get("/models/:id", (req, res) => {
   const modelId = req.params.id;
-  console.log("Fetching model content for ID:", modelId);
-  fs.readFile(modelsMetaFile, "utf8", (err, data) => {
+  console.log("Fetching model for ID:", modelId);
+  let model;
+  fs.readFile(modelMetaByIdFile, "utf8", (err, data) => {
     if (err) {
       if (err.code === "ENOENT") {
         return res.status(404).json({ error: "Model not found" });
@@ -383,11 +393,12 @@ app.get("/models/:id", (req, res) => {
       return res.status(500).json({ error: "Failed to read models file" });
     }
     try {
-      const models = data.trim() ? JSON.parse(data) : [];
-      const model = models.find((m) => m.id === modelId);
-      if (!model) {
+      const modelMetaById = data.trim() ? JSON.parse(data) : {};
+      const modelMeta = modelMetaById[modelId];
+      if (!modelMeta) {
         return res.status(404).json({ error: "Model not found" });
       }
+      model = modelMeta;
       const modelFile = path.join(modelsPath, `${modelId}.xml`);
       fs.readFile(modelFile, "utf8", (err, data) => {
         if (err) {
