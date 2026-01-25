@@ -16,7 +16,6 @@ $(function () {
   $modelTags = $("#modelTags");
   $deleteSelectionButton = $("#deleteSelectionButton");
   $generateButton = $("#generateButton");
-  $promptContainer = $("#promptContainer");
   $documentContent = $("#documentContent");
   $viewerWrap = $("#viewerWrap");
   $documentContent.on("mouseup", handleTextSelection);
@@ -101,25 +100,13 @@ activeDocumentStore.subscribe((state, { key, operation, ...payload }) => {
           $documentContent.text("Loading document...");
         }
         break;
-      case "content":
+      case "htmlContent":
         if (newValue) {
-          const htmlContent = new DOMParser().parseFromString(
-            newValue,
-            "text/html",
-          ).body.innerHTML;
-          $documentContent.html(htmlContent || "");
+          $documentContent.html(newValue || "");
           // clearTemporarySelections();
           // rerenderSelectionsLayer();
         } else {
           clearDocumentViewer();
-        }
-        break;
-      case "activeDocumentId":
-        if (newValue) {
-          const activeModelDocumentId = activeModelStore.getDocumentId();
-          if (activeModelDocumentId != newValue) {
-            activeModelStore.setModel(null);
-          }
         }
         break;
       default:
@@ -150,10 +137,8 @@ workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
         activeDocumentStore.setActiveTraceByModelId(newValue);
         $generateButton.text("Regenerate Model");
         $generateButton.prop("disabled", false);
-        $promptContainer.show();
       } else {
         $generateButton.text("Generate Model");
-        $promptContainer.hide();
       }
       if (oldValue) {
         unhighlightActiveModelSelections(oldValue);
@@ -335,7 +320,7 @@ const renderSelection = ({ range, color, id: selectionId }, modelId) => {
       })
       .on("click", (event) => {
         event.stopPropagation();
-        modelService.toggleModelSelection(modelId);
+        workspceService.toggleModelSelection(modelId);
       });
     if (modelId == workspaceStore.getActiveModelId()) {
       tagSpan.addClass("active");

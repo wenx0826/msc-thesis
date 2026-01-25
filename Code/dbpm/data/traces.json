@@ -99,5 +99,52 @@
       }
     ],
     "id": "bc05c426-15b9-4492-9bab-24b25782dbd1"
+  },
+  {
+    "documentId": "13c20d43-fa8b-484a-b992-abd60288f5bb",
+    "modelId": "7cef16fa-4f62-420b-8820-cd5a4191a114",
+    "selections": [
+      {
+        "id": "375a8918-be61-4661-b2a7-151de7397c65",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 48,
+          "endXPath": "/0",
+          "endOffset": 277
+        },
+        "text": "1. Document Ingestion\n- User uploads one or more documents (text, PDF, or Word).\n- System stores documents and extracts textual content.\n\n2. Document Selection\n- User selects a document for analysis.\n- System displays document co"
+      }
+    ],
+    "id": "a5b5c138-8fc0-43eb-970e-77f454c51962"
+  },
+  {
+    "documentId": "59a166bb-107b-404b-b859-a4066a8e865c",
+    "modelId": "c974f89a-4f7d-4c8a-8e77-3dc7f487ff1d",
+    "selections": [
+      {
+        "id": "bfeac69b-0598-4b3b-a05c-5e292cd1cbae",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 12348,
+          "endXPath": "/0",
+          "endOffset": 12463
+        },
+        "text": "1: Introduction:** Presents the motivation, research questions, contributions, and methodology.\n    \n- **Chapter 2:"
+      },
+      {
+        "id": "b06da0b0-2242-48b5-b331-4f0ce7da9740",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 12636,
+          "endXPath": "/0",
+          "endOffset": 12738
+        },
+        "text": "visual analytics for human-AI collaboration.\n    \n- **Chapter 3: System Design and Architecture:** Det"
+      }
+    ],
+    "id": "bfb9af00-da19-4e15-9745-702e35cfbb18"
   }
 ]

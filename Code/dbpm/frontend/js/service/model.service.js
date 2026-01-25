@@ -1,26 +1,4 @@
 const modelService = {
-  toggleModelSelection(modelId) {
-    // workspaceStore.setLoading(true);
-    const currentActiveModelId = workspaceStore.getActiveModelId();
-    if (currentActiveModelId === modelId) {
-      modelId = null;
-    }
-    workspaceStore.setActiveModelId(modelId);
-    activeModelStore.setModelById(modelId);
-    if (modelId) {
-      const currentActiveDocumentId = workspaceStore.getActiveDocumentId();
-      const modelDocumentId = modelsStore.getModelDocumentIdById(modelId);
-      console.log("same?????", currentActiveDocumentId, modelDocumentId);
-      if (currentActiveDocumentId != modelDocumentId) {
-        console.log(
-          "Switching active document to model's document:???????????????????/",
-          modelDocumentId,
-        );
-        workspaceStore.setActiveDocumentId(modelDocumentId);
-        activeDocumentStore.setDocumentById(modelDocumentId);
-      }
-    }
-  },
   generateModel(userInput, rpstXml) {
     const model = activeModelStore.getModel() || {};
     // activeModelStore.setStatus("generating");

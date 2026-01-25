@@ -168,8 +168,8 @@ Store.activeDocument = Object.assign(
     getStatus() {
       return this.state.status;
     },
-    getContent() {
-      return this.state.content;
+    getHtmlContent() {
+      return this.state.htmlContent;
     },
     getId() {
       return this.state.id;
@@ -179,20 +179,25 @@ Store.activeDocument = Object.assign(
       this.state.status = newValue;
       this.notify({ key: "status", newValue });
     },
-    setContent(newValue) {
-      this.state.content = newValue;
-      this.notify({ key: "content", newValue });
+    setHtmlContent(content) {
+      const newValue = new DOMParser().parseFromString(content, "text/html")
+        .body.innerHTML;
+      this.state.htmlContent = newValue;
+      this.notify({ key: "htmlContent", newValue });
     },
 
     setDocumentById(id) {
       const currentId = this.getId();
       if (id === currentId) return;
       this.setStatus("loading");
+      this.setTraces([]);
+      this.setActiveTrace(null);
+      this.clearTemporarySelections();
       const contentPromise = API.document.getDocumentContentById(id);
       const tracesPromise = API.trace.getTracesByDocumentId(id); // Start fetching traces early
       contentPromise.then(
         (content) => {
-          this.setContent(content);
+          this.setHtmlContent(content);
           this.setStatus(null);
           tracesPromise
             .then((traces) => {
@@ -205,7 +210,7 @@ Store.activeDocument = Object.assign(
             });
         },
         (error) => {
-          this.setContent(null);
+          this.setHtmlContent(null);
           this.setStatus("error");
         },
       );
@@ -245,7 +250,6 @@ Store.activeDocument = Object.assign(
     },
     setActiveTrace(trace) {
       this.state.activeTrace = trace;
-      // this.notify({ key: "activeTrace", newValue: trace });
     },
     setActiveTraceByModelId(modelId) {
       const trace = this.state.traces.find((trace) => trace.modelId == modelId);
@@ -321,6 +325,7 @@ Store.activeDocument = Object.assign(
     // },
     clearTemporarySelections() {
       const value = this.state.temporarySelections;
+      if (value.length === 0) return;
       this.state.temporarySelections = [];
       this.notify({ key: "temporarySelections", operation: "clear", value });
     },
@@ -419,7 +424,9 @@ Store.activeModel = Object.assign(
       return this.state.model ? this.state.model.id : null;
     },
     getDocumentId() {
+      console.log("Getting document ID for active model????");
       const modelId = this.getModelId();
+      // console.log("Getting document ID for active model ID:", modelId);
       return modelsStore.getModelDocumentIdById(modelId);
     },
     getSerializedData() {

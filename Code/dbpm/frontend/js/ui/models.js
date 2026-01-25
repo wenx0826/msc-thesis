@@ -76,14 +76,10 @@ async function renderModelInList(model) {
   const $gridDiv = $("<div>").attr("id", gridId);
   $modelContainer.on("click", (event) => {
     event.stopPropagation();
-    modelService.toggleModelSelection(modelId);
-    // activeModelStore.setModel(activeModeId == modelId ? null : model);
+    workspaceService.toggleModelSelection(modelId);
   });
-  // console.log("Model rendered in list:", model);
   $modelContainer.append($gridDiv);
-
   const outputFrame = await getModelSvg({ id: modelId });
-  // console.log("Converted SVG content from model data:", outputFrame);
   model.svg = new DOMParser().parseFromString(
     outputFrame,
     "image/svg+xml",

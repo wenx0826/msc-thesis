@@ -13,7 +13,8 @@ const documentService = {
     const newDoc = await API.document.createDocument({ ...doc, projectId });
     documentsStore.addDocument(newDoc);
     const docId = newDoc.id;
-    activeDocumentStore.setDocumentById(docId);
+    // activeDocumentStore.setDocumentById(docId);
+    // activeDocumentStore.clearTemporarySelections();
     workspaceStore.setActiveDocumentId(docId);
     return docId;
   },

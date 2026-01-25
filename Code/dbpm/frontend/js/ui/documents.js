@@ -52,8 +52,7 @@ documentsStore.subscribe((state, { key, operation, id }) => {
 const onDocumentItemSelect = (event) => {
   event.stopPropagation();
   const docId = $(event.currentTarget).data("docid");
-  //
-  workspaceStore.setActiveDocumentId(docId);
+  workspaceService.activateDocumentById(docId);
 };
 
 const removeDocumentItem = (documentId) => {

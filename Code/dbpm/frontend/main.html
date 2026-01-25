@@ -176,7 +176,9 @@
           <ui-bar id="modelActionBar" style="visibility: hidden">
             <div id="activeModelName"></div>
             <div class="right button-group">
-              <button name="deselsetModelButton" onclick="modelService.toggleModelSelection(null)">Deselect
+              <button name="exportModelButton" onclick="workspaceService.toggleModelSelection(null)">Export
+                Model</button>
+              <button name="deselsetModelButton" onclick="workspaceService.toggleModelSelection(null)">Deselect
                 Model</button>
               <button name="deletemodel" onclick="deleteActiveModel()">Delete Model</button>
             </div>
