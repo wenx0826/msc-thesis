@@ -9,10 +9,10 @@ const documentService = {
     return API.trace.getTracesByDocumentId(documentId);
   },
   async uploadDocument(doc) {
-    const projectId = workspaceStore.getProjectId();
+    const projectId = Store.workspace.getProjectId();
     const newDoc = await API.document.createDocument({ ...doc, projectId });
     documentsStore.addDocument(newDoc);
     const docId = newDoc.id;
-    workspaceStore.setActiveDocumentId(docId);
+    workspaceService.activateDocumentById(docId);
   },
 };

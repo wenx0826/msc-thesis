@@ -3,11 +3,11 @@ window.API = {
 };
 API.project = {
   path: "projects",
-  async createProject(name) {
+  async createProject(project) {
     const response = await fetch(`${API.baseURL}/${this.path}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name }),
+      body: JSON.stringify(project),
     });
     if (!response.ok) {
       const error = await response

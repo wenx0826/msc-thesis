@@ -57,10 +57,13 @@
   <!-- my libs-->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
+  <script src="https://unpkg.com/cytoscape@3.26.0/dist/cytoscape.min.js"></script>
+
 
   <script src="js/service/model.service.js"></script>
   <script src="js/service/document.service.js"></script>
   <script src="js/service/workspace.service.js"></script>
+  <script src="js/service/project.service.js"></script>
   <script src="js/constants.js"></script>
   <script src="js/api.js"></script>
   <script src="js/util/selection.js"></script>
@@ -72,6 +75,7 @@
   <script src="js/ui/models.js"></script>
   <script src="js/ui/active_model.js"></script>
   <script src="js/ui/active_model_details.js"></script>
+  <script src="js/ui/project_graph.ui.js"></script>
 
   <!-- my ui-->
   <link rel="stylesheet" href="css/myui.css" type="text/css" />
@@ -102,10 +106,10 @@
             <ui-area data-belongs-to-tab="documents" id="areadocuments">
               <ul id="documentList">
               </ul>
-              <form onsubmit="return false;">
-                <label for="documentsInput" style="cursor:pointer;">Upload Documents</label>
-                <input type="file" id="documentsInput" />
-              </form>
+              <!-- <form onsubmit="return false;"> -->
+              <label for="documentsInput" style="cursor:pointer;">Upload Documents</label>
+              <input type="file" id="documentsInput" multiple />
+              <!-- </form> -->
             </ui-area>
           </ui-content>
         </ui-tabbed>
@@ -163,7 +167,7 @@
           <!-- Model (Re-)generation Bar -->
           <ui-bar style="z-index: 3;">
             <div class="right button-group">
-              <button id="saveSelectionsButton">Save Selections to Model</button>
+              <button id="saveSelectionsButton" class="hidden">Save Selections</button>
               <button id="generateButton" disabled>Generate Model</button>
               <!-- <button id="regenerateButton" style="display:none;">Regenerate</button> -->
             </div>
@@ -174,15 +178,15 @@
       <!-- Middle: Current Model Panel -->
       <ui-rest class="panel" style="flex:0.4;">
         <ui-rest style="flex:1 1 0;min-height: 100px">
-          <ui-bar id="modelActionBar" style="visibility: hidden">
+          <ui-bar>
             <div id="activeModelName"></div>
-            <div class="right button-group">
+            <fieldset class="right button-group" id="modelActionBar" disabled>
               <button name="exportModelButton" onclick="workspaceService.toggleModelSelection(null)">Export
                 Model</button>
               <button name="deselsetModelButton" onclick="workspaceService.clearModelSelection()">Deselect
                 Model</button>
               <button name="deletemodel" onclick="deleteActiveModel()">Delete Model</button>
-            </div>
+            </fieldset>
           </ui-bar>
           <ui-divider></ui-divider>
           <!-- <div>
@@ -229,18 +233,28 @@
       </ui-rest>
       <ui-resizehandle data-direction="vertical"></ui-resizehandle>
       <!-- Right: Models Panel-->
-      <ui-rest style="flex:0.2" class="panel">
-        <ui-bar><span style="font-size: 1.4em; font-weight: bold;">Models</span></ui-bar>
-        <ui-divider></ui-divider>
-        <ui-rest>
-          <ui-content>
-            <ui-area id="models">
-              <div id='modelCanvasSmallContainer'>
-                <div id='modelGridSmall' style="position: absolute; left: -9999px; top: -9999px;">
-                  <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink"
-                    id='modelCanvasSmall' width='1' height='1'></svg>
+      <ui-rest style="flex:0.2" style=" overflow: hidden">
+        <ui-rest class="panel" style="min-height: 100px">
+          <ui-bar><span style="font-size: 1.4em; font-weight: bold;">Models</span></ui-bar>
+          <ui-divider></ui-divider>
+          <ui-bar>Documents: All</ui-bar>
+          <ui-rest>
+            <ui-content>
+              <!-- <ui-area id="models">
+                <div id='modelCanvasSmallContainer'>
+                  <div id='modelGridSmall' style="position: absolute; left: -9999px; top: -9999px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink"
+                      id='modelCanvasSmall' width='1' height='1'></svg>
+                  </div>
                 </div>
-              </div>
+              </ui-area> -->
+            </ui-content>
+          </ui-rest>
+        </ui-rest>
+        <ui-rest class="panel" style="margin-top: 0.5em;flex:0.3 1 0;min-height: 100px">
+          <ui-content>
+            <ui-area id="cy">
+
             </ui-area>
           </ui-content>
         </ui-rest>
@@ -573,7 +587,9 @@
     //     await renderModelInList(model);
     //   }
     // };
-    $("button[name=savemodelfile]").click(function (e) { saveModel(e); });  
+    $("button[name=savemodelfile]").click(function (e) { saveModel(e); });
+
+
   </script>
 </body>
 </html>

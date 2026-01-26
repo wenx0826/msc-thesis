@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>D3 Force Demo – Document / Model Graph</title>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: sans-serif;
+        }
+
+        svg {
+            width: 100vw;
+            height: 100vh;
+            background: #fafafa;
+            display: block;
+        }
+
+        .link {
+            stroke: #bbb;
+            stroke-width: 2px;
+        }
+
+        .link.derived {
+            stroke: #666;
+            stroke-dasharray: 5 4;
+        }
+
+        .label {
+            font-size: 12px;
+            pointer-events: none;
+        }
+
+        .edge-label {
+            font-size: 9px;
+            fill: #555;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <svg id="viz"></svg>
+
+    <script>
+        // --------- Data (you will replace this with your audit-log-derived graph later) ----------
+        const nodes = [
+            { id: "doc-1", type: "document", label: "Document 1" },
+            { id: "doc-2", type: "document", label: "Document 2" },
+            { id: "model-1", type: "model", label: "Model v1" },
+            { id: "model-2", type: "model", label: "Model v2" },
+            { id: "model-3", type: "model", label: "Model v3" },
+        ];
+
+        const links = [
+            { source: "doc-1", target: "model-1", relation: "generated" },
+            { source: "doc-1", target: "model-2", relation: "generated" },
+            { source: "doc-2", target: "model-3", relation: "generated" },
+            { source: "model-1", target: "model-2", relation: "derived" },
+            { source: "model-2", target: "model-3", relation: "derived" },
+        ];
+
+        // --------- Setup ----------
+        const svg = d3.select("#viz");
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        const g = svg.append("g");
+
+        // Zoom / pan
+        svg.call(
+            d3.zoom()
+                .scaleExtent([0.3, 4])
+                .on("zoom", (event) => g.attr("transform", event.transform))
+        );
+
+        // Build degree map -> node size
+        const degree = new Map(nodes.map(n => [n.id, 0]));
+        for (const l of links) {
+            degree.set(l.source, (degree.get(l.source) ?? 0) + 1);
+            degree.set(l.target, (degree.get(l.target) ?? 0) + 1);
+        }
+        const radius = (id) => {
+            const d = degree.get(id) ?? 0;
+            return 14 + Math.min(26, d * 6); // size grows with degree
+        };
+
+        // Color by type
+        const color = (type) => type === "document" ? "#43a047" : "#8e24aa";
+
+        // Markers for arrowheads
+        svg.append("defs").selectAll("marker")
+            .data(["generated", "derived"])
+            .join("marker")
+            .attr("id", d => `arrow-${d}`)
+            .attr("viewBox", "0 -5 10 10")
+            .attr("refX", 18) // will be adjusted visually by link endpoint calc
+            .attr("refY", 0)
+            .attr("markerWidth", 6)
+            .attr("markerHeight", 6)
+            .attr("orient", "auto")
+            .append("path")
+            .attr("d", "M0,-5L10,0L0,5")
+            .attr("fill", d => d === "derived" ? "#666" : "#bbb");
+
+        // --------- Draw links ----------
+        const link = g.append("g")
+            .attr("stroke-linecap", "round")
+            .selectAll("line")
+            .data(links)
+            .join("line")
+            .attr("class", d => `link ${d.relation === "derived" ? "derived" : ""}`)
+            .attr("marker-end", d => `url(#arrow-${d.relation})`);
+
+        // Edge labels
+        const edgeLabel = g.append("g")
+            .selectAll("text")
+            .data(links)
+            .join("text")
+            .attr("class", "edge-label")
+            .text(d => d.relation);
+
+        // --------- Draw nodes ----------
+        const node = g.append("g")
+            .selectAll("g")
+            .data(nodes)
+            .join("g")
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended)
+            );
+
+        node.append("circle")
+            .attr("r", d => radius(d.id))
+            .attr("fill", d => color(d.type));
+
+        node.append("text")
+            .attr("class", "label")
+            .attr("text-anchor", "middle")
+            .attr("dy", "0.35em")
+            .attr("fill", "#fff")
+            .text(d => d.label);
+
+        node.on("click", (event, d) => {
+            console.log("Clicked node:", d);
+        });
+
+        // --------- Force simulation ----------
+        const simulation = d3.forceSimulation(nodes)
+            .force("link", d3.forceLink(links).id(d => d.id).distance(140).strength(0.8))
+            .force("charge", d3.forceManyBody().strength(-500))
+            .force("center", d3.forceCenter(width / 2, height / 2))
+            .force("collision", d3.forceCollide().radius(d => radius(d.id) + 6))
+            .on("tick", ticked);
+
+        function ticked() {
+            // Draw links: clip endpoints to circle borders (so arrows don't go into nodes)
+            link
+                .attr("x1", d => clippedPoint(d.source, d.target).x1)
+                .attr("y1", d => clippedPoint(d.source, d.target).y1)
+                .attr("x2", d => clippedPoint(d.source, d.target).x2)
+                .attr("y2", d => clippedPoint(d.source, d.target).y2);
+
+            node.attr("transform", d => `translate(${d.x},${d.y})`);
+
+            edgeLabel
+                .attr("x", d => (d.source.x + d.target.x) / 2)
+                .attr("y", d => (d.source.y + d.target.y) / 2);
+        }
+
+        function clippedPoint(source, target) {
+            // Compute a line from source->target and shorten it by the node radii
+            const sx = source.x, sy = source.y, tx = target.x, ty = target.y;
+            const dx = tx - sx, dy = ty - sy;
+            const dist = Math.hypot(dx, dy) || 1;
+
+            const sr = radius(source.id);
+            const tr = radius(target.id);
+
+            const x1 = sx + (dx / dist) * sr;
+            const y1 = sy + (dy / dist) * sr;
+            const x2 = tx - (dx / dist) * (tr + 4); // +4 to give arrowhead space
+            const y2 = ty - (dy / dist) * (tr + 4);
+            return { x1, y1, x2, y2 };
+        }
+
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+
+        // Handle resize (optional)
+        window.addEventListener("resize", () => location.reload());
+    </script>
+</body>
+</html>

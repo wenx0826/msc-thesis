@@ -4,7 +4,9 @@ const workspaceService = {
     await documentsStore.init(projectId);
     const documents = documentsStore.getDocuments();
     await modelsStore.init(documents);
-
+    const models = modelsStore.getModels();
+    Store.projectGraph.init();
+    console.log("Store.projectGraph.init()", Store.projectGraph.getElements());
     let docId = null;
     if (documents.length > 0) {
       docId = documents[documents.length - 1]?.id;
@@ -15,6 +17,7 @@ const workspaceService = {
       activeDocumentId: docId,
     });
   },
+
   clearModelSelection() {
     workspaceStore.setActiveModelId(null);
     activeModelStore.setModel(null);

@@ -1,0 +1,52 @@
+<description xmlns="http://cpee.org/ns/properties/2.0">
+    <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+      <call id="a1" endpoint="timeout" svg-id="a1" svg-label="Task 1" svg-type="call" svg-subtype="callmanipulate">
+        <parameters>
+          <!--{{{-->
+          <label>Task 1</label>
+          <method>:post</method>
+          <arguments>
+            <timeout>2</timeout>
+          </arguments>
+        </parameters>
+        <!--}}}-->
+        <code>
+          <finalize output="result">data.x += "a1,"</finalize>
+        </code>
+        <annotations/>
+        <documentation/>
+      </call>
+      <call id="a2" endpoint="timeouts" svg-id="a2" svg-label="Resource Synchronisation" svg-type="call" svg-subtype="callmanipulate">
+        <parameters>
+          <!--{{{-->
+          <label>Resource Synchronisation</label>
+          <method>:post</method>
+          <arguments>
+            <timeout>4</timeout>
+          </arguments>
+        </parameters>
+        <!--}}}-->
+        <code>
+          <finalize output="result">data.x += "a2,"</finalize>
+        </code>
+        <annotations/>
+        <documentation/>
+      </call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color/><type>task</type><model/></parameters></call>
+      <call id="a3" endpoint="timeout" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="callmanipulate">
+        <parameters>
+          <!--{{{-->
+          <label>Task 3</label>
+          <method>:post</method>
+          <arguments>
+            <timeout>4</timeout>
+          </arguments>
+        </parameters>
+        <!--}}}-->
+        <code>
+          <finalize output="result">data.x += "a3,"</finalize>
+        </code>
+        <annotations/>
+        <documentation/>
+      </call><call xmlns="http://cpee.org/ns/description/1.0" id="a4" svg-id="a4" svg-type="call" svg-subtype="call"><parameters><label/><color/><type>task</type><model/></parameters></call>
+    </description>
+  </description>

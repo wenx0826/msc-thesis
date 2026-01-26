@@ -2,12 +2,6 @@ let $documentList;
 
 $(function () {
   $documentList = $("#documentList");
-  $("#documentsInput")
-    .closest("form")
-    .on("submit", (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-    });
   $("#documentsInput").on("change", async (event) => {
     event.preventDefault();
     event.stopPropagation();

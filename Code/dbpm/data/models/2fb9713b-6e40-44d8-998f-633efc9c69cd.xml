@@ -1,13 +1,28 @@
-<description xmlns="http://cpee.org/ns/properties/2.0">
-    <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
-      <loop mode="pre_test" condition="data.places.length &gt; 0" svg-id="loop_0" svg-label="data.places.length &gt; 0" svg-type="loop" svg-subtype="loop_head">
+<testset xmlns="http://cpee.org/ns/properties/2.0">
+  <executionhandler>ruby</executionhandler>
+  <dataelements>
+    <places>[[0,0],[1,0],[0,1],[1,1],[0,2],[1,2],[0,3],[1,3],[0,4],[1,4],[0,5],[1,5]]</places>
+  </dataelements>
+  <endpoints>
+    <overview>http-put://ryloth.wst.univie.ac.at:9329/move/overview</overview>
+    <move_tool>http-put://ryloth.wst.univie.ac.at:9329/move/position/point</move_tool>
+    <move_camera>http-put://ryloth.wst.univie.ac.at:9329/move/position/view</move_camera>
+    <get_items_base>http-get://ryloth.wst.univie.ac.at:9329/view/items</get_items_base>
+    <get_items_neural>http-get://ryloth.wst.univie.ac.at:9330/view/items</get_items_neural>
+    <get_offset_base>http-get://ryloth.wst.univie.ac.at:9329/view/details</get_offset_base>
+    <get_offset_neural>http-get://ryloth.wst.univie.ac.at:9330/view/details</get_offset_neural>
+    <grip_and_place>http-put://ryloth.wst.univie.ac.at:9329/move/grip_and_place</grip_and_place>
+  </endpoints>
+  <description>
+    <description xmlns="http://cpee.org/ns/description/1.0">
+      <loop mode="pre_test" condition="data.places.length &gt; 0">
         <_probability>
           <_probability_min/>
           <_probability_max/>
           <_probability_avg/>
         </_probability>
-        <manipulate id="a2" label="Next Place" svg-id="a2" svg-label="Next Place" svg-type="manipulate" svg-subtype="manipulate">data.place = data.places.shift</manipulate>
-        <call id="a1" endpoint="overview" svg-id="a1" svg-label="Move to overview position" svg-type="call" svg-subtype="call">
+        <manipulate id="a2" label="Next Place">data.place = data.places.shift</manipulate>
+        <call id="a1" endpoint="overview">
           <parameters>
             <label>Move to overview position</label>
             <arguments/>
@@ -31,7 +46,7 @@
           </annotations>
           <documentation/>
         </call>
-        <call id="a3" endpoint="get_items_neural" svg-id="a3" svg-label="Get item positions" svg-type="call" svg-subtype="callmanipulate">
+        <call id="a3" endpoint="get_items_neural">
           <parameters>
             <label>Get item positions</label>
             <arguments/>
@@ -62,9 +77,9 @@ data.item = result[0]</finalize>
           </annotations>
           <documentation/>
         </call>
-        <choose mode="exclusive" svg-id="choose_0" svg-type="choose" svg-subtype="choose_exclusive">
-          <alternative condition="data.items.length &gt; 0" svg-id="alternative_0" svg-label="data.items.length &gt; 0" svg-type="alternative" svg-subtype="alternative">
-            <call id="a5" endpoint="move_camera" svg-id="a5" svg-label="Inspect first item" svg-type="call" svg-subtype="call">
+        <choose mode="exclusive">
+          <alternative condition="data.items.length &gt; 0">
+            <call id="a5" endpoint="move_camera">
               <parameters>
                 <label>Inspect first item</label>
                 <arguments>
@@ -91,7 +106,7 @@ data.item = result[0]</finalize>
               </annotations>
               <documentation/>
             </call>
-            <call id="a6" endpoint="get_offset_neural" svg-id="a6" svg-label="Get item offset" svg-type="call" svg-subtype="callmanipulate">
+            <call id="a6" endpoint="get_offset_neural">
               <parameters>
                 <label>Get item offset</label>
                 <arguments/>
@@ -124,17 +139,61 @@ data.item = result[0]</finalize>
               </annotations>
               <documentation/>
             </call>
-            <call id="a8" svg-id="a8" svg-label="Grip and Place" svg-type="call" svg-subtype="call"><parameters><label>Grip and Place</label><color>#d4e1f1</color><type>task</type><model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a4" svg-id="a4" svg-type="call" svg-subtype="call"><parameters><label/><color>#deddda</color><type>task</type><model/></parameters></call>
+            <call id="a8" endpoint="grip_and_place">
+              <parameters>
+                <label>Grip and Place</label>
+                <arguments>
+                  <x>!data.adjusted['x'].round(0)</x>
+                  <y>!data.adjusted['y'].round(0)</y>
+                  <place_x>!data.place[0]</place_x>
+                  <place_y>!data.place[1]</place_y>
+                </arguments>
+                <stream>
+                  <sensors/>
+                  <aggregators/>
+                  <costs/>
+                </stream>
+              </parameters>
+              <annotations>
+                <_timing>
+                  <_timing_wait/>
+                  <_timing_threshold/>
+                  <_timing_min/>
+                  <_timing_max/>
+                  <_timing_avg/>
+                </_timing>
+                <_notes>
+                  <_notes_general/>
+                </_notes>
+              </annotations>
+              <documentation/>
+            </call>
             <_probability>
               <_probability_min/>
               <_probability_max/>
               <_probability_avg/>
             </_probability>
           </alternative>
-          <otherwise svg-id="otherwise_0" svg-type="otherwise" svg-subtype="otherwise">
-            <terminate svg-id="terminate_0" svg-type="terminate" svg-subtype="terminate"/>
+          <otherwise>
+            <terminate/>
           </otherwise>
         </choose>
       </loop>
     </description>
   </description>
+  <transformation>
+    <description type="copy"/>
+    <dataelements type="none"/>
+    <endpoints type="none"/>
+  </transformation>
+  <attributes>
+    <info>UR-VUE 2020 Solution NN</info>
+    <modeltype>CPEE</modeltype>
+    <theme>preset</theme>
+    <resource>ur51</resource>
+    <creator>Christine Ashcreek</creator>
+    <author>Christine Ashcreek</author>
+    <design_stage>development</design_stage>
+    <design_dir>Templates.dir</design_dir>
+  </attributes>
+</testset>

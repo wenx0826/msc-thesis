@@ -4,10 +4,14 @@ const path = require("path");
 const crypto = require("crypto");
 const { get } = require("http");
 const { version } = require("os");
+const { create } = require("domain");
 const app = express();
 const PORT = 3000;
 
+const statsFile = path.join(__dirname, "..", "data", "stats.json");
+const logsPath = path.join(__dirname, "..", "data", "logs");
 const projectsFile = path.join(__dirname, "..", "data", "projects.json");
+
 const tracesFile = path.join(__dirname, "..", "data", "traces.json");
 const documentMetaFile = path.join(
   __dirname,
@@ -25,10 +29,22 @@ const modelMetaByIdFile = path.join(
 const modelsPath = path.join(__dirname, "..", "data", "models");
 
 const getISODate = () => new Date().toISOString();
-const createNewRecord = () => ({
-  id: crypto.randomUUID(),
-  createdAt: getISODate(),
-});
+
+const logEvent = (projectId, event, data = {}) => {
+  const logEntry = {
+    timestamp: getISODate(),
+    event,
+    projectId,
+    data,
+  };
+  fs.appendFile(
+    path.join(logsPath, `${projectId}.jsonl`),
+    JSON.stringify(logEntry) + "\n",
+    (err) => {
+      if (err) console.error("Log write failed:", err);
+    },
+  );
+};
 app.use(express.json()); // Middleware to parse JSON bodies
 
 // CORS middleware
@@ -52,12 +68,15 @@ app.post("/projects", (req, res) => {
   if (!name) {
     return res.status(400).json({ error: "Missing name" });
   }
+  const projectId = crypto.randomUUID();
 
   const project = {
-    ...createNewRecord(),
+    id: projectId,
+    createdAt: new Date().toISOString(),
     name,
     generatedModelNumber: 0,
   };
+
   fs.readFile(projectsFile, "utf8", (err, data) => {
     let projects = [];
     if (!err) {
@@ -69,13 +88,43 @@ app.post("/projects", (req, res) => {
     }
 
     projects.push(project);
+
     fs.writeFile(projectsFile, JSON.stringify(projects, null, 2), (err) => {
       if (err) {
         return res.status(500).json({ error: "Failed to write projects file" });
       }
       res.json({
         message: "Project created",
-        id: project.id,
+        id: projectId,
+      });
+
+      logEvent(projectId, "project_created", { name });
+
+      fs.readFile(statsFile, "utf8", (err, data) => {
+        let stats = {};
+        if (!err) {
+          try {
+            stats = data.trim() ? JSON.parse(data) : {};
+          } catch (e) {
+            console.error("Failed to parse stats file");
+          }
+        }
+        stats[projectId] = {
+          documents: [],
+          models: [],
+        };
+        fs.writeFile(statsFile, JSON.stringify(stats, null, 2), (err) => {
+          if (err) {
+            console.error("Failed to write stats file");
+          }
+        });
+      });
+      // Create empty log file for the project
+      fs.writeFile(path.join(logsPath, `${projectId}.jsonl`), "", (err) => {
+        //
+        if (err) {
+          console.error("Failed to create log file for project:", projectId);
+        }
       });
     });
   });
@@ -216,6 +265,7 @@ app.post("/documents", (req, res) => {
               .json({ error: "Failed to write document content" });
           }
           res.json(documentMeta);
+          logEvent(projectId, "document_created", { documentId: id, name });
         });
       },
     );
@@ -343,10 +393,10 @@ app.delete("/documents/:id", (req, res) => {
 
 app.post("/models", (req, res) => {
   const model = req.body;
-  const { data: modelData, ...meta } = model;
+  const { data: modelData, meta } = model;
   const id = crypto.randomUUID();
   // const timestamp = new Date().toISOString();
-  const modelMeta = { id, ...meta, version: 1 };
+  const modelMeta = { id, ...meta };
 
   fs.readFile(modelMetaByIdFile, "utf8", (err, data) => {
     let modelMetaById = {};

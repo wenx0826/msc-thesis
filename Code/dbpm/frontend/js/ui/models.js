@@ -1,6 +1,6 @@
 const $modelsArea = $("#models");
 
-workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
+workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
   switch (key) {
     case "activeModelId":
       if (newValue) {

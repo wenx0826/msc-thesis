@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Cytoscape.js – Document / Model Graph</title>
+
+    <script src="https://unpkg.com/cytoscape@3.26.0/dist/cytoscape.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: sans-serif;
+        }
+
+        #cy {
+            width: 500px;
+            height: 500px;
+            background: #fafafa;
+        }
+    </style>
+</head>
+<body>
+    <div id="cy"></div>
+
+    <script>
+        const cy = cytoscape({
+            container: document.getElementById('cy'),
+
+            elements: [
+                // ---------- Documents ----------
+                { data: { id: 'doc-1', type: 'document', label: 'Document 1' } },
+                { data: { id: 'doc-2', type: 'document', label: 'Document 2' } },
+
+                // ---------- Models ----------
+                { data: { id: 'model-1', type: 'model', label: 'Model v1' } },
+                { data: { id: 'model-2', type: 'model', label: 'Model v2' } },
+                { data: { id: 'model-3', type: 'model', label: 'Model v3' } },
+
+                // ---------- Relations ----------
+                { data: { source: 'doc-1', target: 'model-1', relation: '' } },
+                { data: { source: 'doc-1', target: 'model-2', relation: '' } },
+                { data: { source: 'doc-2', target: 'model-3', relation: '' } },
+
+                { data: { source: 'model-1', target: 'model-2', relation: '' } },
+                { data: { source: 'model-2', target: 'model-3', relation: '' } }
+            ],
+
+            style: [
+                // ---------- Base node ----------
+                {
+                    selector: 'node',
+                    style: {
+                        'label': 'data(label)',
+                        'text-valign': 'center',
+                        'text-halign': 'center',
+                        'font-size': 12,
+                        'color': '#fff',
+                        'width': 'mapData(degree, 1, 5, 30, 60)',
+                        'height': 'mapData(degree, 1, 5, 30, 60)'
+                    }
+                },
+
+                // ---------- Node types ----------
+                {
+                    selector: 'node[type="document"]',
+                    style: { 'background-color': '#43a047' }
+                },
+                {
+                    selector: 'node[type="model"]',
+                    style: { 'background-color': '#8e24aa' }
+                },
+
+                // ---------- Edges ----------
+                {
+                    selector: 'edge',
+                    style: {
+                        'width': 2,
+                        'line-color': '#bbb',
+                        'target-arrow-color': '#bbb',
+                        'target-arrow-shape': 'triangle',
+                        'curve-style': 'bezier',
+                        'label': 'data(relation)',
+                        'font-size': 9,
+                        'text-rotation': 'autorotate'
+                    }
+                },
+
+                {
+                    selector: 'edge[relation="derived"]',
+                    style: {
+                        'line-style': 'dashed',
+                        'line-color': '#666',
+                        'target-arrow-color': '#666'
+                    }
+                }
+            ],
+
+            layout: {
+                name: 'cose',
+                animate: true
+            }
+        });
+
+        // ---------- Interaction ----------
+        cy.on('tap', 'node', evt => {
+            const node = evt.target;
+            console.log('Clicked:', node.id(), node.data());
+        });
+    </script>
+</body>
+</html>

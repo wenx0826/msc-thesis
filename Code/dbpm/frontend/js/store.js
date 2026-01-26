@@ -45,6 +45,9 @@ Store.workspace = Object.assign(
     getActiveModelId() {
       return this.state.activeModelId;
     },
+    hasActiveModel() {
+      return this.state.activeModelId != null;
+    },
     getLlmModel() {
       return this.state.llmModel;
     },
@@ -102,9 +105,9 @@ Store.project = Object.assign(
     },
     setProject({ name, generatedModelNumber }) {
       this.setName(name);
-      this.setModelNumber(generatedModelNumber);
+      this.setGeneratedModelNumber(generatedModelNumber);
     },
-    setModelNumber(generatedModelNumber) {
+    setGeneratedModelNumber(generatedModelNumber) {
       this.state.generatedModelNumber = generatedModelNumber;
     },
   },
@@ -157,7 +160,9 @@ Store.activeDocument = Object.assign(
     status: null,
     htmlContent: null,
     traces: [],
+    hasSelectionChanged: false,
     activeModelTrace: null,
+    originalActiveModelSerializedSelections: null,
     temporarySelections: [],
   }),
   {
@@ -195,7 +200,8 @@ Store.activeDocument = Object.assign(
       this.setStatus("loading");
       this.setTraces([]);
       this.setActiveModelTrace(null);
-      this.clearTemporarySelections();
+      this.setTemporarySelections([]);
+      this.setHasSelectionChanged(false);
       const contentPromise = API.document.getDocumentContentById(id);
       const tracesPromise = API.trace.getTracesByDocumentId(id); // Start fetching traces early
       return new Promise((resolve, reject) => {
@@ -226,6 +232,24 @@ Store.activeDocument = Object.assign(
     setStatus(newValue) {
       this.state.status = newValue;
       this.notify({ key: "status", newValue });
+    },
+    getHasSelectionChanged() {
+      return this.state.hasSelectionChanged;
+    },
+    hasActiveTraceSelectionChanged() {},
+    computeSelectionChanged() {
+      let hasSelectionChanged = false;
+      if (this.getTemporarySelections().length > 0) {
+        hasSelectionChanged = true;
+      } else {
+      }
+      this.setHasSelectionChanged(hasSelectionChanged);
+    },
+    setHasSelectionChanged(newValue) {
+      const oldValue = this.state.hasSelectionChanged;
+      if (oldValue === newValue) return;
+      this.state.hasSelectionChanged = newValue;
+      this.notify({ key: "hasSelectionChanged", oldValue, newValue });
     },
     // #region traces && active trace
     addTrace(trace) {
@@ -312,6 +336,7 @@ Store.activeDocument = Object.assign(
         operation: "add",
         value: selection,
       });
+      this.computeSelectionChanged();
     },
     removeTemporarySelectionById(selectionId) {
       let value;
@@ -323,34 +348,32 @@ Store.activeDocument = Object.assign(
         this.state.temporarySelections.splice(index, 1);
       }
       this.notify({ key: "temporarySelections", operation: "remove", value });
+      this.computeSelectionChanged();
     },
-    // setTemporarySelections(selections) {
-    //   this.state.temporarySelections = selections;
-    //   this.notify({
-    //     key: "temporarySelections",
-    //     operation: "set",
-    //     value: selections,
-    //   });
-    // },
-    clearTemporarySelections() {
-      const value = this.state.temporarySelections;
-      if (value.length === 0) return;
-      this.state.temporarySelections = [];
-      this.notify({ key: "temporarySelections", operation: "clear", value });
+
+    setTemporarySelections(newValue) {
+      const oldValue = this.state.temporarySelections;
+      this.state.temporarySelections = newValue;
+      this.notify({
+        key: "temporarySelections",
+        oldValue,
+        newValue,
+      });
     },
     // #endregion
+    getSelectionsText(selections) {
+      let selectedText = "";
+      selections.forEach((selection) => {
+        selectedText += selection.range.toString() + " ";
+      });
+      return selectedText.trim();
+    },
     getSelectedText() {
       let selections = [...this.getTemporarySelections()];
       const activeModelTrace = this.getActiveModelTrace();
       if (activeModelTrace)
         selections = [...activeModelTrace.selections, ...selections];
-      let selectedText = "";
-      sortedSelections = getSortedSelectionsByRange(selections);
-      sortedSelections.forEach((selection) => {
-        selectedText += selection.range.toString() + " ";
-      });
-
-      return selectedText.trim();
+      return this.getSelectionsText(selections);
     },
   },
 );
@@ -377,9 +400,8 @@ Store.models = Object.assign(
       this.state.modelsById = modelsById;
       this.notify({ operation: "init" });
     },
-    addModel(modelMeta) {
-      const value = { meta: modelMeta };
-      this.state.modelsById[modelMeta.id] = value;
+    addModel(value) {
+      this.state.modelsById[value?.meta?.id] = value;
       this.notify({ operation: "add", value });
     },
     updateModelById(modelId, updates) {
@@ -498,5 +520,73 @@ Store.activeModel = Object.assign(
     //   modelsStore.deleteModelById(this.getModelId());
     //   this.setModel(null);
     // },
+  },
+);
+
+Store.projectGraph = Object.assign(
+  createDomainStore({
+    elements: [],
+  }),
+  {
+    init() {
+      const docs = documentsStore.getDocuments();
+      const nodes = docs.map((doc) => ({
+        data: {
+          id: `doc-${doc.id}`,
+          type: "document",
+          label: doc.name,
+          degree: 1,
+        },
+      }));
+      let edges = [];
+      const models = modelsStore.getModels();
+      models.forEach((model) => {
+        nodes.push({
+          data: {
+            id: `model-${model.meta.id}`,
+            type: "model",
+            label: model.meta.name,
+            degree: 1,
+          },
+        });
+        // Edge from document to model
+        edges.push({
+          data: {
+            source: `doc-${model.documentId}`,
+            target: `model-${model.meta.id}`,
+            relation: "generated",
+          },
+        });
+        // Derived edges between models (if any)
+        if (model.meta.derivedFrom && model.meta.derivedFrom.length > 0) {
+          model.meta.derivedFrom.forEach((sourceModelId) => {
+            edges.push({
+              data: {
+                source: `model-${sourceModelId}`,
+                target: `model-${model.meta.id}`,
+                relation: "derived",
+              },
+            });
+          });
+        }
+      });
+      this.state.elements = [...nodes, ...edges];
+      console.log("Initialized project graph elements:", this.state.elements);
+      this.notify({ key: "elements", newValue: this.state.elements });
+    },
+    getElements() {
+      return this.state.elements;
+    },
+    setGraph({ nodes, edges }) {
+      this.state.nodes = nodes;
+      this.state.edges = edges;
+      this.notify({ key: "graph", newValue: { nodes, edges } });
+    },
+    getNodes() {
+      return this.state.nodes;
+    },
+    getEdges() {
+      return this.state.edges;
+    },
   },
 );

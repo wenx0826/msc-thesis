@@ -6,7 +6,7 @@ let $modelTags;
 let $deleteSelectionButton;
 let $viewerWrap;
 let $interactionLayer;
-
+let $saveSelectionsButton;
 let selectedSelection = null;
 
 $(function () {
@@ -20,14 +20,12 @@ $(function () {
   $viewerWrap = $("#viewerWrap");
   $documentContent.on("mouseup", handleTextSelection);
   $viewerWrap.on("scroll", rerenderOverlayLayers);
-
   $generateButton.on("click", async () => {
-    // const selectedText = getSelectedText();
-    $generateButton.prop("disabled", true);
+    // $generateButton.prop("disabled", true);
     modelService.generateModelBySelections();
     // const text = Store.activeModel.setStatus("generating");
   });
-
+  $saveSelectionsButton = $("#saveSelectionsButton");
   $("#columnResizehandle1").on("dragcolumnmove", (e) => {
     // e.stopPropagation();
     rerenderOverlayLayers();
@@ -80,11 +78,6 @@ activeDocumentStore.subscribe((state, { key, operation, ...payload }) => {
           case "remove":
             removeRenderedSelection(value);
             break;
-          case "clear":
-            value.forEach((selection) => {
-              removeRenderedSelection(selection);
-            });
-            break;
           default:
             break;
         }
@@ -123,6 +116,19 @@ activeDocumentStore.subscribe((state, { key, operation, ...payload }) => {
         }
 
         break;
+      case "temporarySelections":
+        oldValue.forEach((selection) => {
+          removeRenderedSelection(selection);
+        });
+        break;
+      case "hasSelectionChanged":
+        if (newValue) {
+          $generateButton.prop("disabled", false);
+          $saveSelectionsButton.prop("disabled", false);
+        } else {
+          $generateButton.prop("disabled", true);
+        }
+        break;
       default:
         break;
     }
@@ -132,29 +138,24 @@ activeDocumentStore.subscribe((state, { key, operation, ...payload }) => {
 workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
   switch (key) {
     // case "activeDocumentId":
-    //   if (newValue) {
-    //     const tracesPromise = documentService.getTracesById(newValue);
-    //     documentService.getHtmlContentById(newValue).then((content) => {
-    //       $documentContent.html(content || "");
-    //       tracesPromise.then((data) => {
-    //         traces = data;
-    //         rerenderSelectionsLayer();
-    //       });
-    //     });
-    //   } else {
-    //     clearDocumentViewer();
-    //   }
     //   break;
     case "activeModelId":
       if (newValue) {
-        // highlightActiveModelSelections(newValue);
         $generateButton.text("Regenerate Model");
-        $generateButton.prop("disabled", false);
+        $generateButton.prop(
+          "disabled",
+          !activeDocumentStore.getHasSelectionChanged(),
+        );
+        $saveSelectionsButton.show();
+        $saveSelectionsButton.prop(
+          "disabled",
+          !activeDocumentStore.getHasSelectionChanged(),
+        );
       } else {
         $generateButton.text("Generate Model");
+        $saveSelectionsButton.hide();
       }
       if (oldValue) {
-        // unhighlightActiveModelSelections(oldValue);
       }
       break;
     default:
@@ -196,12 +197,10 @@ function scrollToRange(range, margin = 16) {
   const rects = range.getClientRects();
   if (!rects || rects.length === 0) return;
 
-  // 用第一行当 anchor（最常见）
   const rect = rects[0];
 
   const eleViewerWrap = $viewerWrap[0];
   const eleViewerWrapRect = eleViewerWrap.getBoundingClientRect();
-  // 把 viewport 坐标换成 scrollWrap 内坐标
   const y = rect.top - eleViewerWrapRect.top + eleViewerWrap.scrollTop;
   // eleViewerWrap.scrollTop = Math.max(0, y - margin);
   eleViewerWrap.scrollTo({
@@ -480,9 +479,7 @@ const handleTextSelection = () => {
   const range = selection.getRangeAt(0);
   if (range.collapsed) return;
   // if (!content.contains(range.commonAncestorContainer)) return;
-  $generateButton.prop("disabled", false);
-  const activeModelId = activeModelStore.getModelId();
-
+  // $generateButton.prop("disabled", false);
   const temporarySelection = {
     id: crypto.randomUUID(),
     color: getSelectionColor(),

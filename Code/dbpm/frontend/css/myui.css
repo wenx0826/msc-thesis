@@ -114,6 +114,10 @@ ui-divider {
 #main {
   padding: 0.6em;
 }
+tr:nth-child(odd) {
+  background-color: #e8e8e8;
+  color: #333;
+}
 
 .panel {
   background-color: var(--x-ui-background-color);

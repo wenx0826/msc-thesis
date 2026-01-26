@@ -1,31 +1,366 @@
 [
   {
     "documentId": "6d197501-39f8-410f-b75f-551713d4fdba",
-    "modelId": "e59483d3-ef89-4b65-836e-cc47d018c23d",
+    "modelId": "03f604d3-0b27-49e6-85df-ab9adfe2999e",
     "selections": [
       {
-        "id": "2b646317-11cd-4ee9-9a1d-ec8646b686bb",
+        "id": "8245ba66-e7d0-4888-ab5f-ec3b75b818b5",
         "color": "#d4e1f1",
         "range": {
           "startXPath": "/0",
-          "startOffset": 70,
+          "startOffset": 1162,
           "endXPath": "/0",
-          "endOffset": 1073
+          "endOffset": 1429
         },
-        "text": "1. Introduction\n\n### 1.1 Motivation\n\nA significant portion of any organization's operational knowledge is not stored in structured databases but is instead embedded within a vast and growing collection of unstructured documents.1 Manuals for standard operating procedures (SOPs), internal policy documents, project reports, and interview transcripts all contain detailed, context-rich descriptions of how work is actually performed. This \"latent\" process knowledge is a valuable asset, yet it remains largely inaccessible to the powerful automated analysis and optimization techniques that define modern Business Process Management (BPM).3 The task of manually extracting this knowledge and translating it into formal process models is the primary bottleneck in the BPM lifecycle.\n\nThis manual modeling is an exceptionally demanding endeavor. It is time-consuming, requires significant financial investment, and is highly susceptible to the subjective interpretations of the analyst performing the task."
-      },
-      {
-        "id": "4a724b67-03e3-43a1-9890-b51eca945a99",
-        "color": "#deddda",
-        "range": {
-          "startXPath": "/0",
-          "startOffset": 1247,
-          "endXPath": "/0",
-          "endOffset": 1593
-        },
-        "text": "and Notation (BPMN).6 This high barrier to entry frequently leads to process documentation that is incomplete, outdated, or simply inaccurate. Such deficiencies undermine critical business initiatives that rely on a clear and precise understanding of \"as-is\" processes, including regulatory compliance audits, digital transformation projects, and"
+        "text": "ich demand specialized expertise in formal notations like the Business Process Model and Notation (BPMN).6 This high barrier to entry frequently leads to process documentation that is incomplete, outdated, or simply inaccurate. Such deficiencies undermine critical bu"
       }
     ],
-    "id": "ca215d18-3f5b-4b8d-8028-f17f54678033"
+    "id": "9a17b903-acb4-421b-92d6-40c8fa7c9521"
+  },
+  {
+    "documentId": "6d197501-39f8-410f-b75f-551713d4fdba",
+    "modelId": "394a8b33-1451-427f-9277-d6a2dcdeeb71",
+    "selections": [
+      {
+        "id": "3d08e9d0-7bc7-4ab7-99c7-49ec50bd8dfc",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 817,
+          "endXPath": "/0",
+          "endOffset": 911
+        },
+        "text": " bottleneck in the BPM lifecycle.\n\nThis manual modeling is an exceptionally demanding endeavor"
+      }
+    ],
+    "id": "a7dcabcd-cb62-44a8-b14e-1e3d6011087f"
+  },
+  {
+    "documentId": "6d197501-39f8-410f-b75f-551713d4fdba",
+    "modelId": "41eeb899-2f51-4f89-ae1d-f679ff217172",
+    "selections": [
+      {
+        "id": "78394456-c7ff-4c3d-b569-3bc7be9d3a4a",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 1673,
+          "endXPath": "/0",
+          "endOffset": 1846
+        },
+        "text": "often exists between the domain experts, who possess the deep, intrinsic knowledge of the processes, and the BPMN specialists tasked with formalizing them. This disconnect c"
+      }
+    ],
+    "id": "118ff134-a6b2-420a-b49f-6043d039d350"
+  },
+  {
+    "documentId": "6d197501-39f8-410f-b75f-551713d4fdba",
+    "modelId": "e10ac865-83e0-4bd1-8889-d281226ac112",
+    "selections": [
+      {
+        "id": "0d22c456-7bc4-4154-9978-fef2afefbcf2",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 2012,
+          "endXPath": "/0",
+          "endOffset": 2178
+        },
+        "text": "en these unstructured, human-readable texts and the structured, machine-readable process models.10 While BPMN was conceived as a common language to bridge the divide "
+      }
+    ],
+    "id": "e41c4139-f525-4dab-9843-7324fceb3864"
+  },
+  {
+    "documentId": "6d197501-39f8-410f-b75f-551713d4fdba",
+    "modelId": "98108a02-7826-4452-a367-5658c88a4bde",
+    "selections": [
+      {
+        "id": "0dc73761-99cf-4c56-a1a8-f9562f8ff292",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 2336,
+          "endXPath": "/0",
+          "endOffset": 2667
+        },
+        "text": "disenfranchises the very individuals who understand the processes most intimately from participating directly in their formalization.\n\nRecent breakthroughs in Natural Language Processing (NLP), particularly the emergence of powerful Large Language Models (LLMs), offer a transformative opportunity to automate the initial translati"
+      }
+    ],
+    "id": "8f555fda-8c82-4e32-89f8-36cfa27e9194"
+  },
+  {
+    "documentId": "6d197501-39f8-410f-b75f-551713d4fdba",
+    "modelId": "36752bff-c7fa-4f44-89fa-a95d39603a82",
+    "selections": [
+      {
+        "id": "b4c10e95-a3a8-4699-b4d3-2a5b31f01766",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 401,
+          "endXPath": "/0",
+          "endOffset": 661
+        },
+        "text": "erview transcripts all contain detailed, context-rich descriptions of how work is actually performed. This \"latent\" process knowledge is a valuable asset, yet it remains largely inaccessible to the powerful automated analysis and optimization techniques that d"
+      }
+    ],
+    "id": "022e9635-25c3-4b4a-9ac7-2fddb75a889a"
+  },
+  {
+    "documentId": "6d197501-39f8-410f-b75f-551713d4fdba",
+    "modelId": "2fb9713b-6e40-44d8-998f-633efc9c69cd",
+    "selections": [
+      {
+        "id": "bf41b075-26bf-4f2a-8093-01f485a28154",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 2758,
+          "endXPath": "/0",
+          "endOffset": 2846
+        },
+        "text": "undamentally insufficient. The inherent ambiguity, nuance, and contextual dependencies o"
+      }
+    ],
+    "id": "edfb0e90-86c5-41ac-9181-ec3e03d0806c"
+  },
+  {
+    "documentId": "6d197501-39f8-410f-b75f-551713d4fdba",
+    "modelId": "bbf9c284-f995-458c-8462-9688f56a6068",
+    "selections": [
+      {
+        "id": "7f884e32-c21d-40a1-9b12-3d83755b8a5a",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 3109,
+          "endXPath": "/0",
+          "endOffset": 3727
+        },
+        "text": "creating a verifiable and faithful representation of reality.\n\nThis project, the \"Document-based Process Model Explorer,\" is motivated by the critical need for a _human-in-the-loop_ system that transcends static, one-shot generation. The innovation, as envisioned in the project's user interface mockup, lies in the creation of an **interactive visual analytics environment**.16 This environment is designed to foster a collaborative dialogue between the user and the automated system. Instead of merely presenting a final, static model, the Explorer will empower users to visually trace the connections between source"
+      }
+    ],
+    "id": "1e022ecf-46da-4465-9e86-4fe29b70edd1"
+  },
+  {
+    "documentId": "6d197501-39f8-410f-b75f-551713d4fdba",
+    "modelId": "ead2d472-61ea-45e0-a7c8-bb49f37c9e43",
+    "selections": [
+      {
+        "id": "85804aba-9523-4210-a9bf-47238a87c733",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 4040,
+          "endXPath": "/0",
+          "endOffset": 4656
+        },
+        "text": "by making the user an active participant in the sensemaking and validation process. This ensures the final model is not only formally correct but also semantically faithful to the original procedural knowledge.\n\n### 1.2 Research Questions\n\nThis thesis is guided by the following research questions, which are designed to explore the feasibility, quality, and usability of the proposed system.\n\n- RQ1: To what extent can modern NLP techniques, specifically LLM-based pipelines, automatically generate syntactically and semantically correct BPMN 2.0 models from unstructured procedural texts?\n    \n    This question ad"
+      }
+    ],
+    "id": "db5acbb4-6f99-430a-8b85-efbc605c53c9"
+  },
+  {
+    "documentId": "6d197501-39f8-410f-b75f-551713d4fdba",
+    "modelId": "2f846d85-256d-4ad0-be44-698fb810dc2d",
+    "selections": [
+      {
+        "id": "867f4c17-433f-48ed-85a5-1e2060ff92b3",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 4789,
+          "endXPath": "/0",
+          "endOffset": 5254
+        },
+        "text": "generation. To answer this, a quantitative evaluation will be performed. A \"gold standard\" dataset of text-model pairs will be created. The system's generated models will be compared against this standard using established metrics like precision, recall, and F1-score for model elements (tasks, gateways) and graph-edit distance to measure structural similarity.18 This will provide an objective measure of the generation engine's performance.\n    \n- RQ2: How can a"
+      }
+    ],
+    "id": "877019b5-cfdf-402e-8d16-af662f705d80"
+  },
+  {
+    "documentId": "6d197501-39f8-410f-b75f-551713d4fdba",
+    "modelId": "eda7457e-4fb7-404f-b053-6615334b76c3",
+    "selections": [
+      {
+        "id": "aa4a31b9-16b1-4d4c-9a33-cdb6cf9262f5",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 5401,
+          "endXPath": "/0",
+          "endOffset": 5865
+        },
+        "text": "and refine automatically generated process models?\n    \n    This question focuses on the human-computer interaction aspect of the system. It seeks to understand the value added by the interactive features. The answer will be derived from a formal user study. Participants will perform a series of validation and refinement tasks using the system. Their performance and experience will be measured using the industry-standard System Usability Scale (SUS) questionna"
+      }
+    ],
+    "id": "c43ae353-2f26-4f0f-95af-5d900fccf4e4"
+  },
+  {
+    "documentId": "1d9e0cff-1791-441d-99f9-fbe1ac3b0ad8",
+    "modelId": "cd3efd43-0352-44c7-93bd-7e1240913c57",
+    "selections": [
+      {
+        "id": "ae1fb253-eeb1-42e4-b060-30efd43e3243",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 48,
+          "endXPath": "/0",
+          "endOffset": 385
+        },
+        "text": "1. Document Ingestion\n- User uploads one or more documents (text, PDF, or Word).\n- System stores documents and extracts textual content.\n\n2. Document Selection\n- User selects a document for analysis.\n- System displays document content and previously identified text segments.\n\n3. Process Extraction\n- System analyzes selected document te"
+      }
+    ],
+    "id": "4858bd8e-cb39-44f1-8d95-941316dcad4b"
+  },
+  {
+    "documentId": "72881c0a-0606-4e22-934f-a55e89cce7f8",
+    "modelId": "2d740176-2f8a-4a10-8b45-3b8cc1e878cd",
+    "selections": [
+      {
+        "id": "d819ac52-8f23-4068-8b41-87e125d8ef9d",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 904,
+          "endXPath": "/0",
+          "endOffset": 1171
+        },
+        "text": "draft model in seconds, a task that might take a human analyst hours or days.\n\nHowever, this automation introduces a new critical problem: the \"black box\" dilemma. The API delivers a complete process model, but ==the user has no insight into _how_ the textual descrip"
+      },
+      {
+        "id": "b20c8c9d-f952-4417-a2e9-3a0c5f1afdf4",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 1415,
+          "endXPath": "/0",
+          "endOffset": 1760
+        },
+        "text": "ram? Without a clear and intuitive way to trace the connections between the source document and the generated model, the tasks of validation and correction remain difficult and time-consuming.== The API provides a starting point, but the fundamental need for human oversight, contextual refinement, and validation remains unsolved.\n\nThis project"
+      }
+    ],
+    "id": "a904ea17-b307-4e5d-aa8f-595226cb0dea"
+  },
+  {
+    "documentId": "4f8c8602-80e3-4fee-a690-33f52a0b5f84",
+    "modelId": "ab16262b-4d79-4eda-828a-b15e44861bf3",
+    "selections": [
+      {
+        "id": "8607b07d-606e-44fb-bcb0-b3b3d9629a1d",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 465,
+          "endXPath": "/0",
+          "endOffset": 636
+        },
+        "text": "eck in the Business Process Management (BPM) lifecycle—a process that is slow, expensive, and prone to human error.  \n\nThe availability of advanced AI APIs, capable of tra"
+      },
+      {
+        "id": "528ae576-3b2c-458a-9974-105e18efff12",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 1333,
+          "endXPath": "/0",
+          "endOffset": 1837
+        },
+        "text": "text? Are there subtle misinterpretations or logical errors hidden within the diagram? Without a clear and intuitive way to trace the connections between the source document and the generated model, the tasks of validation and correction remain difficult and time-consuming.== The API provides a starting point, but the fundamental need for human oversight, contextual refinement, and validation remains unsolved.\n\nThis project, the \"Document-based Process Model Explorer,\" is motivated by this critical "
+      }
+    ],
+    "id": "5edf56f2-4625-46f7-b8dc-4085f499362a"
+  },
+  {
+    "documentId": "4f8c8602-80e3-4fee-a690-33f52a0b5f84",
+    "modelId": "6c72988a-7bad-4e34-98ba-891e053713e4",
+    "selections": [
+      {
+        "id": "bb3a25eb-ae36-46af-9c78-4eace01cb19c",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 2103,
+          "endXPath": "/0",
+          "endOffset": 2280
+        },
+        "text": "nt, verifiable, and refinable. As envisioned in the mockup, the Explorer will create an **interactive visual analytics environment**. This system will empower a user to visually"
+      }
+    ],
+    "id": "b1f7ae2c-ecbe-4ca2-8a96-5a6010366777"
+  },
+  {
+    "documentId": "4f8c8602-80e3-4fee-a690-33f52a0b5f84",
+    "modelId": "033f2271-5e80-4a80-a75a-d8aec5ba01ae",
+    "selections": [
+      {
+        "id": "30972431-2bbc-48c8-91b8-2c71d6f614df",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 2692,
+          "endXPath": "/0",
+          "endOffset": 2872
+        },
+        "text": "esearch questions, which focus on the design, effectiveness, and usability of the interactive system built around the provided API.\n\n- **RQ1: How can an interactive visual analytic"
+      }
+    ],
+    "id": "a1eda2a5-ff77-48fe-b5c3-ac676eadcae2"
+  },
+  {
+    "documentId": "4f8c8602-80e3-4fee-a690-33f52a0b5f84",
+    "modelId": "95d54fcf-8cfd-4f17-a746-9dca7c24df3b",
+    "selections": [
+      {
+        "id": "dfdbd5d4-df8c-409f-b1c4-a7a483839578",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 823,
+          "endXPath": "/0",
+          "endOffset": 1001
+        },
+        "text": "notation, is provided as a foundational component. This technology can produce a draft model in seconds, a task that might take a human analyst hours or days.\n\nHowever, this auto"
+      }
+    ],
+    "id": "73454d22-1200-4ec4-8fb0-b30b3510d4f4"
+  },
+  {
+    "documentId": "4f8c8602-80e3-4fee-a690-33f52a0b5f84",
+    "modelId": "3171aaa9-2a92-4f38-9862-32ae6f152e2d",
+    "selections": [
+      {
+        "id": "412e7713-13a2-49ee-b4cd-95b299b6ba9d",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 2941,
+          "endXPath": "/0",
+          "endOffset": 3466
+        },
+        "text": "n unstructured textual document and the structured CPEE process model generated by a black-box AI service?** This question focuses on the core design of the artifact. The answer will be the system architecture and the set of features proposed and implemented in this thesis. It addresses the challenge of creating an interface that makes the relationship between two very different representations of information (unstructured text and a formal graph model) intuitive and understandable to a user.\n    \n- **RQ2: To what exten"
+      }
+    ],
+    "id": "0002ffe4-6333-417c-a5ac-faa4f76a8690"
+  },
+  {
+    "documentId": "4f8c8602-80e3-4fee-a690-33f52a0b5f84",
+    "modelId": "fa91d5dc-ce33-45ce-b962-507a76b7c9b7",
+    "selections": [
+      {
+        "id": "c58fed51-5a74-4e5d-b5ab-a6e48798a8b3",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 3511,
+          "endXPath": "/0",
+          "endOffset": 4774
+        },
+        "text": "face, featuring bidirectional linking, improve a user's ability to validate and correct errors in an API-generated CPEE model?** This question addresses the practical effectiveness of the system. It seeks to measure the tangible value added by the interactive features. This will be answered through a formal user study where the quality of a model, after being corrected by a user with the tool, is quantitatively measured against a \"gold standard.\" The goal is to demonstrate that the system enables users to significantly improve upon the raw output of the API.\n    \n- **RQ3: What specific interactive features and visual cues are most effective in facilitating the cognitive process of aligning textual descriptions with their corresponding API-generated CPEE model elements?** This question delves deeper into the usability and HCI aspects of the system. It aims to identify which design choices contribute most to the system's success. This will be investigated through qualitative analysis of user study data, including think-aloud protocols and interviews, to understand which features users found most helpful for identifying and fixing errors.\n    \n\n### 1.3 Contribution\n\nThis research will make three primary contributions to the fields of Business Pro"
+      }
+    ],
+    "id": "86259eba-180a-441f-b7b5-60d51103bf3d"
   }
 ]

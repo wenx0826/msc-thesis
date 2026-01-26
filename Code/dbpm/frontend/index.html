@@ -52,6 +52,7 @@
     <script src="js/constants.js"></script>
     <script src="js/api.js"></script>
     <script src="js/store.js"></script>
+    <script src="js/service/project.service.js"></script>
 
 
     <!-- my ui-->
@@ -99,14 +100,22 @@
     <button id="btnCreate">Create a new project</button>
     <h3>All projects</h3>
     <table id="projectTable">
-        <template id="rowtemplate">
-            <tr class="">
-                <td> <a href=""><em>no name</em></a></td>
-                <!-- <td>This is a prototype for managing multiple projects. In a real application, projects would be stored
+        <tr>
+            <th>Project Name</th>
+            <th>Document Count</th>
+            <th>Model Count</th>
+        </tr>
+        <th>
+
+            <template id="rowtemplate">
+
+                <tr class="">
+                    <td> <a href=""><em>no name</em></a></td>
+                    <!-- <td>This is a prototype for managing multiple projects. In a real application, projects would be stored
                     on a
                     server and retrieved via API calls.</td> -->
-            </tr>
-        </template>
+                </tr>
+            </template>
     </table>
 
     <dialog id="dlg">
@@ -182,16 +191,23 @@
                 $("#err").text("");
                 if (!name) { $("#err").text("Name is required."); return; }
                 $("#save").prop("disabled", true);
-                API.project.createProject(name).then(resp => {
-                    console.log("Project created:", resp);
-                    dlg.close();
-                    window.location.assign("main.html?project_id=" + encodeURIComponent(resp.id));
+                projectService.createProject({ name }).then(project => {
+                    window.location.assign("main.html?project_id=" + encodeURIComponent(project.id));
                 }).catch(err => {
                     $("#err").text(err.message);
                     $("#save").prop("disabled", false);
                 });
+                // API.project.createProject(name).then(resp => {
+                //     console.log("Project created:", resp);
+                //     // dlg.close();
+                //     window.location.assign("main.html?project_id=" + encodeURIComponent(resp.id));
+                // }).catch(err => {
+                //     $("#err").text(err.message);
+                //     $("#save").prop("disabled", false);
+                // });
 
             });
+
         });
     </script>
 

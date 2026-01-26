@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Cytoscape.js + fCoSE 力学布局 Demo (Document / Model)</title>
+
+    <!-- Cytoscape core -->
+    <script src="https://unpkg.com/cytoscape@3.26.0/dist/cytoscape.min.js"></script>
+
+    <!-- fCoSE layout plugin -->
+    <script src="https://unpkg.com/cytoscape-fcose@2.2.0/cytoscape-fcose.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: sans-serif;
+        }
+
+        #cy {
+            width: 100vw;
+            height: 100vh;
+            background: #fafafa;
+        }
+
+        .toolbar {
+            position: fixed;
+            top: 12px;
+            left: 12px;
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #eee;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+        }
+
+        button {
+            border: 1px solid #ddd;
+            background: #fff;
+            border-radius: 8px;
+            padding: 8px 10px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #f6f6f6;
+        }
+
+        .hint {
+            font-size: 12px;
+            color: #666;
+            padding: 8px 0 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="toolbar">
+        <button id="rerun">重新跑力学布局</button>
+        <button id="addModel">新增一个 Model</button>
+        <button id="toggleDocs">隐藏/显示 Documents</button>
+        <div class="hint">拖拽节点；点击节点看 data（console）</div>
+    </div>
+
+    <div id="cy"></div>
+
+    <script>
+        // Register plugin (some bundlers need this; CDN usually auto-registers, but safe to keep)
+        if (typeof cytoscapeFcose !== 'undefined') {
+            cytoscape.use(cytoscapeFcose);
+        }
+
+        // ------------------------
+        // Demo graph data
+        // ------------------------
+        const elements = [
+            // Documents
+            { data: { id: 'doc-1', type: 'document', label: 'Document 1' } },
+            { data: { id: 'doc-2', type: 'document', label: 'Document 2' } },
+
+            // Models
+            { data: { id: 'model-1', type: 'model', label: 'Model v1' } },
+            { data: { id: 'model-2', type: 'model', label: 'Model v2' } },
+            { data: { id: 'model-3', type: 'model', label: 'Model v3' } },
+
+            // Relations: doc -> model
+            { data: { id: 'e1', source: 'doc-1', target: 'model-1', relation: 'generated', weight: 1 } },
+            { data: { id: 'e2', source: 'doc-1', target: 'model-2', relation: 'generated', weight: 1 } },
+            { data: { id: 'e3', source: 'doc-2', target: 'model-3', relation: 'generated', weight: 1 } },
+
+            // Relations: model -> model (lineage)
+            { data: { id: 'e4', source: 'model-1', target: 'model-2', relation: 'derived', weight: 2 } },
+            { data: { id: 'e5', source: 'model-2', target: 'model-3', relation: 'derived', weight: 2 } },
+        ];
+
+        const cy = cytoscape({
+            container: document.getElementById('cy'),
+            elements,
+            wheelSensitivity: 0.2,
+
+            style: [
+                // Base node styling
+                {
+                    selector: 'node',
+                    style: {
+                        'label': 'data(label)',
+                        'text-valign': 'center',
+                        'text-halign': 'center',
+                        'font-size': 12,
+                        'color': '#fff',
+                        // node size based on degree (number of incident edges)
+                        'width': 'mapData(deg, 0, 6, 28, 62)',
+                        'height': 'mapData(deg, 0, 6, 28, 62)',
+                        'border-width': 0,
+                    }
+                },
+
+                // Node types
+                { selector: 'node[type="document"]', style: { 'background-color': '#43a047' } },
+                { selector: 'node[type="model"]', style: { 'background-color': '#8e24aa' } },
+
+                // Base edge styling
+                {
+                    selector: 'edge',
+                    style: {
+                        'curve-style': 'bezier',
+                        'width': 2,
+                        'line-color': '#bbb',
+                        'target-arrow-color': '#bbb',
+                        'target-arrow-shape': 'triangle',
+                        'label': 'data(relation)',
+                        'font-size': 9,
+                        'text-rotation': 'autorotate',
+                        'text-margin-y': -6
+                    }
+                },
+
+                // Derived edges: dashed + darker
+                {
+                    selector: 'edge[relation="derived"]',
+                    style: {
+                        'line-style': 'dashed',
+                        'line-color': '#666',
+                        'target-arrow-color': '#666',
+                        'width': 2.5
+                    }
+                },
+
+                // Selected highlight
+                {
+                    selector: 'node:selected',
+                    style: { 'border-width': 4, 'border-color': '#111' }
+                },
+                {
+                    selector: 'edge:selected',
+                    style: { 'line-color': '#111', 'target-arrow-color': '#111', 'width': 4 }
+                }
+            ]
+        });
+
+        // ------------------------
+        // Compute degree for sizing (store on data.deg)
+        // ------------------------
+        function recomputeDegrees() {
+            cy.nodes().forEach(n => {
+                n.data('deg', n.degree()); // undirected degree (counts both in/out)
+            });
+        }
+        recomputeDegrees();
+
+        // ------------------------
+        // fCoSE "physics-like" layout
+        // ------------------------
+        function runPhysicsLayout({ randomize = true } = {}) {
+            recomputeDegrees();
+
+            const layout = cy.layout({
+                name: 'fcose',
+                animate: true,
+                animationDuration: 900,
+                randomize, // true gives "physics settle" feel; false keeps previous positions more stable
+
+                // Key "physics knobs" (tweak freely)
+                // Higher -> nodes repel more
+                nodeRepulsion: node => 4500 + node.data('deg') * 400,
+
+                // Edge length: derived edges tighter than generated edges
+                idealEdgeLength: edge => edge.data('relation') === 'derived' ? 90 : 180,
+
+                // Springiness: higher -> edges behave more like stiff springs
+                edgeElasticity: 0.45,
+
+                // Gravity pulls graph together; higher -> more compact
+                gravity: 0.25,
+
+                // Prevent overlaps (important for small graphs too)
+                nodeDimensionsIncludeLabels: true,
+                packComponents: true,
+
+                // Quality vs speed (for <=100 nodes, you can go higher)
+                numIter: 900,
+                sampleSize: 25
+            });
+
+            layout.run();
+        }
+
+        // Initial run
+        runPhysicsLayout({ randomize: true });
+
+        // ------------------------
+        // Interactions
+        // ------------------------
+        cy.on('tap', 'node', (evt) => {
+            const n = evt.target;
+            console.log('Clicked node:', n.id(), n.data());
+        });
+
+        // Optional: click empty space to clear selection
+        cy.on('tap', (evt) => {
+            if (evt.target === cy) cy.elements().unselect();
+        });
+
+        // ------------------------
+        // Toolbar actions
+        // ------------------------
+        document.getElementById('rerun').addEventListener('click', () => {
+            runPhysicsLayout({ randomize: true });
+        });
+
+        let modelCounter = 3;
+        document.getElementById('addModel').addEventListener('click', () => {
+            modelCounter += 1;
+            const newId = `model-${modelCounter}`;
+            cy.add({ data: { id: newId, type: 'model', label: `Model v${modelCounter}` } });
+
+            // Connect it to a random existing model as "derived"
+            const existingModels = cy.nodes('[type="model"]').filter(n => n.id() !== newId);
+            const from = existingModels[Math.floor(Math.random() * existingModels.length)].id();
+
+            cy.add({
+                data: {
+                    id: `e-new-${modelCounter}`,
+                    source: from,
+                    target: newId,
+                    relation: 'derived',
+                    weight: 2
+                }
+            });
+
+            // (Optional) Also connect a doc->model generated edge
+            const doc = Math.random() < 0.5 ? 'doc-1' : 'doc-2';
+            cy.add({
+                data: {
+                    id: `e-gen-${modelCounter}`,
+                    source: doc,
+                    target: newId,
+                    relation: 'generated',
+                    weight: 1
+                }
+            });
+
+            runPhysicsLayout({ randomize: false }); // keep it stable and "settle" a bit
+        });
+
+        let docsHidden = false;
+        document.getElementById('toggleDocs').addEventListener('click', () => {
+            docsHidden = !docsHidden;
+            const docs = cy.nodes('[type="document"]');
+            docsHidden ? docs.hide() : docs.show();
+            runPhysicsLayout({ randomize: false });
+        });
+    </script>
+</body>
+</html>

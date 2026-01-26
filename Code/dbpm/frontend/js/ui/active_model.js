@@ -29,11 +29,13 @@ $(document).ready(function () {
   $clearPromptButton = $("#clearPromptButton");
   $replaceButton = $("#replaceButton");
   $backButton = $("#backButton");
+
   $keepButton.on("click", async () => {
     modelService.keepActiveModel();
   });
   $replaceButton.on("click", async () => {
     saveActiveModel();
+    $regeneratedModelActionBar.hide();
   });
   $cancelButton.on("click", () => {
     activeModel = null;
@@ -76,7 +78,7 @@ $(document).ready(function () {
     $promptActionBar.attr("disabled", "disabled");
 
     // console.log("Applying prompt from button:", promptText);
-    activeModelStore.generateModelByPrompt(promptText);
+    modelService.generateModelByPrompt(promptText);
   });
 });
 
@@ -134,7 +136,6 @@ workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
       } else {
         $promptContainer.hide();
       }
-
       break;
     default:
       break;
@@ -219,7 +220,8 @@ const showActiveModel = (model) => {
   $("#activeModelName").text(model.name ? model.name : "");
   $datDetails.empty();
 
-  save["state"] = model.id ? "ready" : undefined;
+  // save["state"] = model.id ? "ready" : undefined;
+  save["state"] = "ready";
   save["graph_theme"] = "preset_copy";
   save["graph_adaptor"] = new WfAdaptor(
     "themes/preset_copy/theme.js",
