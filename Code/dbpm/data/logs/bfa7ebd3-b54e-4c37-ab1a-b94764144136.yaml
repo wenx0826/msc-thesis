@@ -1,0 +1,44 @@
+---
+timestamp: "2026-01-26T22:25:11.242Z"
+event: "document_uploaded"
+data: 
+  id: "21329658-082b-49cc-97cd-3633cdb02712"
+  name: "01.5 Evaluation.md"
+  chars: 4991
+  words: 719
+---
+timestamp: "2026-01-26T22:25:14.626Z"
+event: "model_generated"
+data: 
+  id: "8280b564-044f-4958-9fa1-94730aa8d95d"
+  name: "Model_1"
+  data: "<testset xmlns=\"http://cpee.org/ns/properties/2.0\">\n  <executionhandler>ruby</executionhandler>\n  <attributes>\n    <info>IUPC arXiv:1104.3609 P34 1</info>\n    <modeltype>CPEE</modeltype>\n    <theme>preset</theme>\n    <creator>Christine Ashcreek</creator>\n    <author>Christine Ashcreek</author>\n    <design_stage>development</design_stage>\n    <design_dir>Templates.dir</design_dir>\n  </attributes>\n  <positions/>\n  <dataelements>\n    <x/>\n  </dataelements>\n  <subscriptions xmlns=\"http://riddl.org/ns/common-patterns/notifications-producer/2.0\">\n    <subscription xmlns=\"http://riddl.org/ns/common-patterns/notifications-producer/2.0\" id=\"_sync\" url=\"http://localhost:9399/1/events\">\n      <topic id=\"activity\">\n        <vote>syncing_before</vote>\n        <vote>syncing_after</vote>\n      </topic>\n    </subscription>\n  </subscriptions>\n  <endpoints>\n    <timeout>http://gruppe.wst.univie.ac.at/~mangler/services/timeout.php</timeout>\n    <timeouts>http://gruppe.wst.univie.ac.at/~mangler/services/timeout-sync.php</timeouts>\n  </endpoints>\n  <description>\n    <description xmlns=\"http://cpee.org/ns/description/1.0\">\n      <call id=\"a1\" endpoint=\"timeout\">\n        <parameters>\n          <!--{{{-->\n          <label>Task 1</label>\n          <method>:post</method>\n          <arguments>\n            <timeout>2</timeout>\n          </arguments>\n        </parameters>\n        <!--}}}-->\n        <code>\n          <finalize output=\"result\">data.x += \"a1,\"</finalize>\n        </code>\n        <annotations/>\n        <documentation/>\n      </call>\n      <call id=\"a2\" endpoint=\"timeouts\">\n        <parameters>\n          <!--{{{-->\n          <label>Resource Synchronisation</label>\n          <method>:post</method>\n          <arguments>\n            <timeout>4</timeout>\n          </arguments>\n        </parameters>\n        <!--}}}-->\n        <code>\n          <finalize output=\"result\">data.x += \"a2,\"</finalize>\n        </code>\n        <annotations/>\n        <documentation/>\n      </call>\n      <call id=\"a3\" endpoint=\"timeout\">\n        <parameters>\n          <!--{{{-->\n          <label>Task 3</label>\n          <method>:post</method>\n          <arguments>\n            <timeout>4</timeout>\n          </arguments>\n        </parameters>\n        <!--}}}-->\n        <code>\n          <finalize output=\"result\">data.x += \"a3,\"</finalize>\n        </code>\n        <annotations/>\n        <documentation/>\n      </call>\n    </description>\n  </description>\n  <transformation>\n    <description type=\"copy\"/>\n    <dataelements type=\"rest\"/>\n    <endpoints type=\"rest\"/>\n  </transformation>\n</testset>\n"
+---
+timestamp: "2026-01-26T22:27:51.864Z"
+event: "document_uploaded"
+data: 
+  id: "6209910b-2704-41d6-abf7-29bc61dd873a"
+  name: "01.1 Motivation.md"
+  chars: 55901
+  words: 7295
+---
+timestamp: "2026-01-26T22:28:36.765Z"
+event: "model_generated"
+data: 
+  id: "60718a5c-0e82-4316-8713-d35d61cc376b"
+  name: "Model_2"
+  data: "<testset xmlns=\"http://cpee.org/ns/properties/2.0\">\n  <executionhandler>ruby</executionhandler>\n  <attributes>\n    <info>IUPC arXiv:1104.3609 P34 2</info>\n    <modeltype>CPEE</modeltype>\n    <theme>preset</theme>\n    <creator>Christine Ashcreek</creator>\n    <author>Christine Ashcreek</author>\n    <design_stage>development</design_stage>\n    <design_dir>Templates.dir</design_dir>\n  </attributes>\n  <positions/>\n  <dataelements>\n    <x/>\n  </dataelements>\n  <subscriptions xmlns=\"http://riddl.org/ns/common-patterns/notifications-producer/2.0\">\n    <subscription xmlns=\"http://riddl.org/ns/common-patterns/notifications-producer/2.0\" id=\"_sync\" url=\"http://localhost:9399/1/events\">\n      <topic id=\"activity\">\n        <vote>syncing_before</vote>\n        <vote>syncing_after</vote>\n      </topic>\n    </subscription>\n  </subscriptions>\n  <endpoints>\n    <timeout>http://gruppe.wst.univie.ac.at/~mangler/services/timeout.php</timeout>\n    <timeouts>http://gruppe.wst.univie.ac.at/~mangler/services/timeout-sync.php</timeouts>\n  </endpoints>\n  <description>\n    <description xmlns=\"http://cpee.org/ns/description/1.0\">\n      <call id=\"a1\" endpoint=\"timeout\">\n        <parameters>\n          <!--{{{-->\n          <label>Task 1</label>\n          <method>:post</method>\n          <arguments>\n            <timeout>2</timeout>\n          </arguments>\n        </parameters>\n        <!--}}}-->\n        <code>\n          <finalize output=\"result\">data.x += \"a1,\"</finalize>\n        </code>\n        <annotations/>\n        <documentation/>\n      </call>\n      <call id=\"a2\" endpoint=\"timeouts\">\n        <parameters>\n          <!--{{{-->\n          <label>Resource Synchronisation</label>\n          <method>:post</method>\n          <arguments>\n            <timeout>10</timeout>\n          </arguments>\n        </parameters>\n        <!--}}}-->\n        <code>\n          <finalize output=\"result\">data.x += \"a2,\"</finalize>\n        </code>\n        <annotations/>\n        <documentation/>\n      </call>\n      <call id=\"a3\" endpoint=\"timeout\">\n        <parameters>\n          <!--{{{-->\n          <label>Task 3</label>\n          <method>:post</method>\n          <arguments>\n            <timeout>4</timeout>\n          </arguments>\n        </parameters>\n        <!--}}}-->\n        <code>\n          <finalize output=\"result\">data.x += \"a3,\"</finalize>\n        </code>\n        <annotations/>\n        <documentation/>\n      </call>\n    </description>\n  </description>\n  <transformation>\n    <description type=\"copy\"/>\n    <dataelements type=\"rest\"/>\n    <endpoints type=\"rest\"/>\n  </transformation>\n</testset>\n"
+---
+timestamp: "2026-01-26T22:32:35.401Z"
+event: "model_generated"
+data: 
+  id: "5fa12587-47d9-4161-b026-310c0405c9d3"
+  name: "Model_3"
+  data: null
+---
+timestamp: "2026-01-26T22:33:27.959Z"
+event: "model_generated"
+data: 
+  id: "1d5865c8-624f-4824-a1d7-b7f7ee40db44"
+  name: "Model_3"
+  data: null

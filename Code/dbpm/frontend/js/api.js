@@ -60,10 +60,29 @@ API.project = {
     }
     return await response.json();
   },
+
+  async getModelCount(projectId) {
+    const response = await fetch(
+      `${API.baseURL}/projects/${projectId}/models/count`,
+    );
+    if (!response.ok) throw new Error("Failed to fetch models");
+    return await response.json();
+  },
+  async getDocumentCount(projectId) {
+    const response = await fetch(
+      `${API.baseURL}/projects/${projectId}/documents/count`,
+    );
+    if (!response.ok) throw new Error("Failed to fetch document count");
+    const text = await response.text();
+    // const count = parseInt(text, 10);
+    // if (isNaN(count)) {
+    //   throw new Error("Invalid document count received");
+    // }
+    return text;
+  },
 };
 API.document = {
   path: "documents", // relative URLs since frontend is served from same server
-
   async getDocumentsByProjectId(projectId) {
     const response = await fetch(
       `${API.baseURL}/projects/${projectId}/${this.path}`,
@@ -71,6 +90,7 @@ API.document = {
     if (!response.ok) throw new Error("Failed to fetch documents");
     return await response.json();
   },
+
   async getDocumentContentById(id) {
     const response = await fetch(`${API.baseURL}/${this.path}/${id}/content`);
     if (!response.ok) throw new Error("Failed to fetch document");
@@ -189,7 +209,10 @@ API.model = {
           `Failed to fetch template ${chosen}, status ${resp.status}`,
         );
       }
-      return await resp.text();
+      const testset = await resp.text();
+      let data = new DOMParser().parseFromString(testset, "application/xml");
+      data = $("description", data)[0].children[0];
+      return new XMLSerializer().serializeToString(data);
     } catch (err) {
       console.error("generateSampleModel error:", err);
       // final fallback
@@ -263,11 +286,11 @@ API.model = {
     // $generateButton.prop("disabled", false);
     // $("#generatedModelActionBar").css("visibility", "visible");
   },
-  async createModel(model) {
+  async createModelAndTrace({ model, trace }) {
     const response = await fetch(`${API.baseURL}/${this.path}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(model),
+      body: JSON.stringify({ projectId, model, trace }),
     });
     if (!response.ok) {
       const error = await response
@@ -275,8 +298,7 @@ API.model = {
         .catch(() => ({ error: "Unknown error" }));
       throw new Error(error.error || "Failed to create model");
     }
-    const data = await response.json();
-    return data.id;
+    return await response.json();
   },
   async getModelById(id) {
     const response = await fetch(`${API.baseURL}/${this.path}/${id}`);

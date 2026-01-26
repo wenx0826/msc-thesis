@@ -6,7 +6,7 @@
   <attributes>
     <guarded>none</guarded>
     <modeltype>CPEE</modeltype>
-    <theme>extended</theme>
+    <theme>preset</theme>
     <guarded_id/>
     <info>Subprocess</info>
     <creator>Christine Ashcreek</creator>
@@ -16,15 +16,13 @@
     <design_stage>development</design_stage>
     <design_dir>Templates.dir</design_dir>
   </attributes>
-  <description>
-    <!-- 将自定义数据藏在注释或CDATA中 -->
+  <description xmlns:my="my-namespace">
     <!-- CUSTOM_DATA: {"namespace":"myNS","data":{...}} -->
-    <![CDATA[
-    <!-- 或者使用CDATA存储 -->
+    <!-- <![CDATA[ -->
     <my:custom xmlns:my="my-namespace">
         <my:item>value</my:item>
     </my:custom>
-    ]]>
+    <!-- ]]> -->
     <description xmlns="http://cpee.org/ns/description/1.0">
       <manipulate id="a3" label="">data.start = Time.now.to_f</manipulate>
       <call id="a1" endpoint="subprocess">

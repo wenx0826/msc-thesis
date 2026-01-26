@@ -13,4 +13,14 @@ const projectService = {
       return createdProject;
     });
   },
+  async getDocumentCount(projectId) {
+    return API.project.getDocumentCount(projectId).then((count) => {
+      return count;
+    });
+  },
+  async getModelCount(projectId) {
+    return API.project.getModelCount(projectId).then((count) => {
+      return count;
+    });
+  },
 };

@@ -68,7 +68,7 @@
   <script src="js/api.js"></script>
   <script src="js/util/selection.js"></script>
   <script src="js/store.js"></script>
-  <script src="js/main.js"></script>
+  <script src="js/ui/workspace.ui.js"></script>
   <script src="js/ui/project.js"></script>
   <script src="js/ui/documents.js"></script>
   <script src="js/ui/active_document.js"></script>
@@ -87,9 +87,11 @@
       <span style="font-size: 1.2em;"><a href="index.html">Projects</a></span> >
       <span id="projectName" style="font-size: 1.2em; font-weight: bold;"></span>
     </div>
-    <div class="right button-group">
+    <div class="right action-group">
       <span>Theme: Preset</span>
       <span>LLM: gemini 2 Flash</span>
+      <a id="logLink" href="" target="_blank">Log</a>
+      <a id="statsLink" href="stats.html" target="_blank">Stats</a>
     </div>
   </ui-bar>
   <ui-rest style=" z-index: 2;" id="main">
@@ -117,7 +119,7 @@
         <ui-rest class="panel" style="margin-top: 0.5em;">
           <!-- Text Action Bar -->
           <ui-bar id="textActionBar">
-            <div class="right button-group">
+            <div class="right action-group">
               <form id="selectionColorForm" style="margin: 0;">
                 <div class="relaxngui_cell relaxngui_color_container">
                   <span class="round">
@@ -166,7 +168,7 @@
           <ui-divider></ui-divider>
           <!-- Model (Re-)generation Bar -->
           <ui-bar style="z-index: 3;">
-            <div class="right button-group">
+            <div class="right action-group">
               <button id="saveSelectionsButton" class="hidden">Save Selections</button>
               <button id="generateButton" disabled>Generate Model</button>
               <!-- <button id="regenerateButton" style="display:none;">Regenerate</button> -->
@@ -180,7 +182,7 @@
         <ui-rest style="flex:1 1 0;min-height: 100px">
           <ui-bar>
             <div id="activeModelName"></div>
-            <fieldset class="right button-group" id="modelActionBar" disabled>
+            <fieldset class="right action-group" id="modelActionBar" disabled>
               <button name="exportModelButton" onclick="workspaceService.toggleModelSelection(null)">Export
                 Model</button>
               <button name="deselsetModelButton" onclick="workspaceService.clearModelSelection()">Deselect
@@ -205,13 +207,13 @@
           <div id="dat_details" class='x-ui-layout'></div>
           <div id="relaxngworker" class='hidden'></div>
           <ui-bar id="generatedModelActionBar" class="hidden">
-            <div class="right button-group">
+            <div class="right action-group">
               <button id="cancelButton">Cancel</button>
               <button id="keepButton">Keep</button>
             </div>
           </ui-bar>
           <ui-bar id="regeneratedModelActionBar" class="hidden">
-            <div class="right button-group">
+            <div class="right action-group">
               <button id="backButton">Back</button>
               <button id="cancelButton">Cancel</button>
               <button id="replaceButton">Replace</button>
@@ -223,7 +225,7 @@
           <!-- <textarea id="modelXmlContent" style="width:100%; height:100%;"></textarea> -->
           <div id="promptInput" contenteditable="true" style="width:100%; height:100%;"></div>
           <ui-bar>
-            <fieldset class="right button-group" id="promptActionBar" disabled>
+            <fieldset class="right action-group" id="promptActionBar" disabled>
               <button id="clearPromptButton">Clear</button>
               <button id="sendPromptButton">Send</button>
             </fieldset>
@@ -233,25 +235,25 @@
       </ui-rest>
       <ui-resizehandle data-direction="vertical"></ui-resizehandle>
       <!-- Right: Models Panel-->
-      <ui-rest style="flex:0.2" style=" overflow: hidden">
-        <ui-rest class="panel" style="min-height: 100px">
+      <ui-rest style="flex:0.2; overflow: hidden">
+        <ui-rest class="panel" style="flex:0.68 1 0;min-height: 100px">
           <ui-bar><span style="font-size: 1.4em; font-weight: bold;">Models</span></ui-bar>
           <ui-divider></ui-divider>
           <ui-bar>Documents: All</ui-bar>
           <ui-rest>
             <ui-content>
-              <!-- <ui-area id="models">
+              <ui-area id="models">
                 <div id='modelCanvasSmallContainer'>
                   <div id='modelGridSmall' style="position: absolute; left: -9999px; top: -9999px;">
                     <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink"
                       id='modelCanvasSmall' width='1' height='1'></svg>
                   </div>
                 </div>
-              </ui-area> -->
+              </ui-area>
             </ui-content>
           </ui-rest>
         </ui-rest>
-        <ui-rest class="panel" style="margin-top: 0.5em;flex:0.3 1 0;min-height: 100px">
+        <ui-rest class="panel" style="margin-top: 0.5em;flex:0.32 1 0;min-height: 100px">
           <ui-content>
             <ui-area id="cy">
 
@@ -588,6 +590,7 @@
     //   }
     // };
     $("button[name=savemodelfile]").click(function (e) { saveModel(e); });
+
 
 
   </script>

@@ -5,7 +5,7 @@ const tracesStore = window.Store.traces;
 const activeDocumentStore = window.Store.activeDocument;
 const modelsStore = window.Store.models;
 const activeModelStore = window.Store.activeModel;
-
+let projectId;
 let iframeLoaded = false;
 
 function waitForIframe() {
@@ -34,8 +34,17 @@ function getProjectIdFromURL() {
 $(document).ready(async () => {
   console.log("main.html Starting initialization...", new Date().toISOString());
   console.log("project id from url:", getProjectIdFromURL());
-  const projectId = getProjectIdFromURL();
-  await workspaceService.loadWorkspace(projectId);
+  projectId = getProjectIdFromURL();
+  workspaceService.loadWorkspace(projectId);
+
+  const statsLink = $("#statsLink")[0];
+  if (statsLink) {
+    statsLink.href = "stats.html" + window.location.search;
+  }
+  const logLink = $("#logLink")[0];
+  const urlParams = new URLSearchParams(window.location.search);
+  logLink.href = "/data/logs/" + projectId + ".yaml";
+
   // Store.init(projectId);
   // window.Store.init(projectId);
   // projectStore.setProjectById(projectId);

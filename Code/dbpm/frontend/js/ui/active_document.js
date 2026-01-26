@@ -288,7 +288,7 @@ const onSelectionSelect = (event) => {
   const traceId = $target.attr("data-traceid");
   setSelectedSelection({ selectionId, modelId, traceId });
 
-  const $buttonGroup = $("#textActionBar .button-group");
+  const $buttonGroup = $("#textActionBar .action-group");
   $(document).one("mousedown", (e) => {
     const $t = $(e.target);
     const isInsideTarget = $t.closest($target).length > 0;

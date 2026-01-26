@@ -2,9 +2,8 @@ const express = require("express");
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
-const { get } = require("http");
-const { version } = require("os");
-const { create } = require("domain");
+const { log } = require("console");
+
 const app = express();
 const PORT = 3000;
 
@@ -34,16 +33,29 @@ const logEvent = (projectId, event, data = {}) => {
   const logEntry = {
     timestamp: getISODate(),
     event,
-    projectId,
+    // projectId,
     data,
   };
-  fs.appendFile(
-    path.join(logsPath, `${projectId}.jsonl`),
-    JSON.stringify(logEntry) + "\n",
-    (err) => {
-      if (err) console.error("Log write failed:", err);
-    },
-  );
+
+  // Simple YAML formatter for log entry
+  const toYAML = (obj, indent = 0) => {
+    let yaml = "";
+    for (const [key, value] of Object.entries(obj)) {
+      yaml += "  ".repeat(indent) + key + ": ";
+      if (typeof value === "object" && value !== null) {
+        yaml += "\n" + toYAML(value, indent + 1);
+      } else {
+        yaml += JSON.stringify(value) + "\n";
+      }
+    }
+    return yaml;
+  };
+
+  const yamlEntry = "---\n" + toYAML(logEntry);
+
+  fs.appendFile(path.join(logsPath, `${projectId}.yaml`), yamlEntry, (err) => {
+    if (err) console.error("Log write failed:", err);
+  });
 };
 app.use(express.json()); // Middleware to parse JSON bodies
 
@@ -61,6 +73,9 @@ app.use((req, res, next) => {
 
 // Serve static files from frontend directory
 app.use(express.static(path.join(__dirname, "..", "frontend")));
+
+// Serve static files from data directory
+app.use("/data", express.static(path.join(__dirname, "..", "data")));
 
 // #region Project Endpoints
 app.post("/projects", (req, res) => {
@@ -94,11 +109,8 @@ app.post("/projects", (req, res) => {
         return res.status(500).json({ error: "Failed to write projects file" });
       }
       res.json({
-        message: "Project created",
         id: projectId,
       });
-
-      logEvent(projectId, "project_created", { name });
 
       fs.readFile(statsFile, "utf8", (err, data) => {
         let stats = {};
@@ -120,12 +132,12 @@ app.post("/projects", (req, res) => {
         });
       });
       // Create empty log file for the project
-      fs.writeFile(path.join(logsPath, `${projectId}.jsonl`), "", (err) => {
-        //
+      fs.writeFile(path.join(logsPath, `${projectId}.yaml`), "", (err) => {
         if (err) {
           console.error("Failed to create log file for project:", projectId);
         }
       });
+      logEvent(projectId, "project_created", { id: projectId, name });
     });
   });
 });
@@ -168,6 +180,7 @@ app.get("/projects/:id", (req, res) => {
     }
   });
 });
+
 app.get("/projects/:projectId/documents", (req, res) => {
   const { projectId } = req.params;
   console.log("Fetching documents for project:", projectId);
@@ -182,6 +195,67 @@ app.get("/projects/:projectId/documents", (req, res) => {
       const documents = data.trim() ? JSON.parse(data) : [];
       const filtered = documents.filter((doc) => doc.projectId === projectId);
       res.json(filtered);
+    } catch (e) {
+      res.status(500).json({ error: "Failed to parse documents file" });
+    }
+  });
+});
+app.get("/projects/:projectId/documents/count", (req, res) => {
+  const { projectId } = req.params;
+  console.log("Fetching documents for project:", projectId);
+  fs.readFile(documentMetaFile, "utf8", (err, data) => {
+    if (err) {
+      if (err.code === "ENOENT") {
+        return res.send("error");
+      }
+      return res.status(500).json({ error: "Failed to read documents file" });
+    }
+    try {
+      const documents = data.trim() ? JSON.parse(data) : [];
+      const filtered = documents.filter((doc) => doc.projectId === projectId);
+      res.send(filtered.length);
+    } catch (e) {
+      res.status(500).json({ error: "Failed to parse documents file" });
+    }
+  });
+});
+app.get("/projects/:projectId/models/count", (req, res) => {
+  const { projectId } = req.params;
+  console.log("Fetching documents for project:", projectId);
+  fs.readFile(documentMetaFile, "utf8", (err, data) => {
+    if (err) {
+      if (err.code === "ENOENT") {
+        return res.send("error");
+      }
+      return res.status(500).json({ error: "Failed to read documents file" });
+    }
+    try {
+      const documents = data.trim() ? JSON.parse(data) : [];
+      const filtered = documents.filter((doc) => doc.projectId === projectId);
+      fs.readFile(tracesFile, "utf8", (err, modelData) => {
+        if (err) {
+          if (err.code === "ENOENT") {
+            return res.send("error");
+          }
+          return res.status(500).json({ error: "Failed to read models file" });
+        }
+        try {
+          const traces = modelData.trim() ? JSON.parse(modelData) : [];
+          let modelIds = new Set();
+          for (const doc of filtered) {
+            const docTraces = traces.filter(
+              (trace) => trace.documentId === doc.id,
+            );
+            for (const trace of docTraces) {
+              modelIds.add(trace.modelId);
+            }
+          }
+          res.send(modelIds.size.toString());
+        } catch (e) {
+          res.status(500).json({ error: "Failed to parse models file" });
+        }
+      });
+      // res.send(filtered.length);
     } catch (e) {
       res.status(500).json({ error: "Failed to parse documents file" });
     }
@@ -265,7 +339,35 @@ app.post("/documents", (req, res) => {
               .json({ error: "Failed to write document content" });
           }
           res.json(documentMeta);
-          logEvent(projectId, "document_created", { documentId: id, name });
+        });
+
+        /// Log event
+        const documentStats = {
+          id,
+          name,
+          chars: content.length,
+          words: content.split(/\s+/).filter(Boolean).length,
+        };
+        logEvent(projectId, "document_uploaded", documentStats);
+
+        fs.readFile(statsFile, "utf8", (err, data) => {
+          let stats = {};
+          if (!err) {
+            try {
+              stats = data.trim() ? JSON.parse(data) : {};
+            } catch (e) {
+              console.error("Failed to parse stats file");
+            }
+          }
+          if (!stats[projectId]) {
+            stats[projectId] = { documents: [], models: [] };
+          }
+          stats[projectId].documents.push(documentStats);
+          fs.writeFile(statsFile, JSON.stringify(stats, null, 2), (err) => {
+            if (err) {
+              console.error("Failed to write stats file");
+            }
+          });
         });
       },
     );
@@ -392,11 +494,13 @@ app.delete("/documents/:id", (req, res) => {
 // #region Model Endpoints
 
 app.post("/models", (req, res) => {
-  const model = req.body;
+  const { projectId, model, trace } = req.body;
   const { data: modelData, meta } = model;
   const id = crypto.randomUUID();
   // const timestamp = new Date().toISOString();
   const modelMeta = { id, ...meta };
+  trace.modelId = id;
+  trace.id = crypto.randomUUID();
 
   fs.readFile(modelMetaByIdFile, "utf8", (err, data) => {
     let modelMetaById = {};
@@ -425,10 +529,61 @@ app.post("/models", (req, res) => {
               .status(500)
               .json({ error: "Failed to write model content" });
           }
-          res.json(modelMeta);
+
+          res.json({ modelMeta, trace });
         });
       },
     );
+  });
+  fs.readFile(tracesFile, "utf8", (err, data) => {
+    let traces = [];
+    if (!err) {
+      try {
+        traces = data.trim() ? JSON.parse(data) : [];
+      } catch (e) {
+        console.error("Failed to parse traces file");
+      }
+    }
+    traces.push(trace);
+    fs.writeFile(tracesFile, JSON.stringify(traces, null, 2), (err) => {
+      if (err) {
+        console.error("Failed to write traces file");
+      }
+    });
+  });
+  fs.readFile(statsFile, "utf8", (err, data) => {
+    let stats = {};
+    if (!err) {
+      try {
+        stats = data.trim() ? JSON.parse(data) : {};
+      } catch (e) {
+        console.error("Failed to parse stats file");
+      }
+    }
+    if (!stats[projectId]) {
+      stats[projectId] = { documents: [], models: [] };
+    }
+    stats[projectId].models.push({
+      id: id,
+      documentId: trace.documentId,
+      name: modelMeta.name,
+      status: "generated",
+      words: trace.selections.reduce(
+        (acc, sel) => acc + sel.text.split(/\s+/).filter(Boolean).length,
+        0,
+      ),
+      chars: trace.selections.reduce((acc, sel) => acc + sel.text.length, 0),
+    });
+    fs.writeFile(statsFile, JSON.stringify(stats, null, 2), (err) => {
+      if (err) {
+        console.error("Failed to write stats file");
+      }
+    });
+  });
+  logEvent(projectId, "model_generated", {
+    id: id,
+    name: modelMeta.name,
+    data: modelData,
   });
 });
 app.get("/models/:id", (req, res) => {

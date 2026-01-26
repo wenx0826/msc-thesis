@@ -531,6 +531,7 @@ Store.projectGraph = Object.assign(
     init() {
       const docs = documentsStore.getDocuments();
       const nodes = docs.map((doc) => ({
+        group: "nodes",
         data: {
           id: `doc-${doc.id}`,
           type: "document",
@@ -542,6 +543,7 @@ Store.projectGraph = Object.assign(
       const models = modelsStore.getModels();
       models.forEach((model) => {
         nodes.push({
+          group: "nodes",
           data: {
             id: `model-${model.meta.id}`,
             type: "model",
@@ -551,6 +553,7 @@ Store.projectGraph = Object.assign(
         });
         // Edge from document to model
         edges.push({
+          group: "edges",
           data: {
             source: `doc-${model.documentId}`,
             target: `model-${model.meta.id}`,
@@ -558,21 +561,63 @@ Store.projectGraph = Object.assign(
           },
         });
         // Derived edges between models (if any)
-        if (model.meta.derivedFrom && model.meta.derivedFrom.length > 0) {
-          model.meta.derivedFrom.forEach((sourceModelId) => {
-            edges.push({
-              data: {
-                source: `model-${sourceModelId}`,
-                target: `model-${model.meta.id}`,
-                relation: "derived",
-              },
-            });
-          });
-        }
+        // if (model.meta.derivedFrom && model.meta.derivedFrom.length > 0) {
+        //   model.meta.derivedFrom.forEach((sourceModelId) => {
+        //     edges.push({
+        //       data: {
+        //         source: `model-${sourceModelId}`,
+        //         target: `model-${model.meta.id}`,
+        //         relation: "derived",
+        //       },
+        //     });
+        //   });
+        // }
       });
       this.state.elements = [...nodes, ...edges];
       console.log("Initialized project graph elements:", this.state.elements);
       this.notify({ key: "elements", newValue: this.state.elements });
+    },
+    addDocumentNode(document) {
+      const node = {
+        data: {
+          id: `doc-${document.id}`,
+          type: "document",
+          label: document.name,
+          degree: 1,
+        },
+      };
+      this.state.elements.push(node);
+      this.notify({
+        key: "elements.documentNode",
+        operation: "add",
+        value: node,
+      });
+    },
+    addModelNodeAndEdge(modelMeta, documentId) {
+      const modelNode = {
+        data: {
+          group: "nodes",
+          id: `model-${modelMeta.id}`,
+          type: "model",
+          label: modelMeta.name,
+          degree: 1,
+        },
+      };
+      const edge = {
+        group: "edges",
+        data: {
+          source: `doc-${documentId}`,
+          target: `model-${modelMeta.id}`,
+          relation: "generated",
+        },
+      };
+      this.state.elements.push(modelNode, edge);
+      // this.notify({ key: "elements", operation: "add", value: modelNode });
+      this.notify({
+        key: "elements.modelNodeAndEdge",
+        operation: "add",
+        value: { modelNode, edge },
+      });
     },
     getElements() {
       return this.state.elements;

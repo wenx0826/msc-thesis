@@ -157,7 +157,7 @@ ui-bar fieldset {
 ui-bar > .right {
   margin-left: auto;
 }
-.button-group {
+.action-group {
   display: flex;
   gap: 1em;
 }
@@ -337,6 +337,7 @@ li.active {
   padding: 0.5em;
   margin: 0.5em;
   cursor: pointer;
+  overflow-x: hidden;
 }
 
 .model-container:hover {

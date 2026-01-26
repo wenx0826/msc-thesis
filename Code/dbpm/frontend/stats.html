@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Doc-Based Process Modeller</title>
+    <script type="text/javascript" src="https://cpee.org/js_libs/jquery.min.js"></script>
+
+
+    <script type="text/javascript" src="https://cpee.org/js_libs/jquery.browser.js"></script>
+    <script type="text/javascript" src="https://cpee.org/js_libs/jquery.caret.min.js"></script>
+    <script type="text/javascript" src="https://cpee.org/js_libs/jquery.cookie.js"></script>
+    <script type="text/javascript" src="https://cpee.org/js_libs/jquery.svg.min.js"></script>
+    <script type="text/javascript" src="https://cpee.org/js_libs/jquery.svgdom.min.js"></script>
+
+    <!-- <script type="text/javascript" src="/js_libs/build-bpmn.js"></script> -->
+    <script type="text/javascript" src="js_libs/custommenu.js"></script>
+    <script type="text/javascript" src="js_libs/marked.min.js"></script>
+    <script type="text/javascript" src="js_libs/parsequery.js"></script>
+    <script type="text/javascript" src="js_libs/printf.js"></script>
+    <script type="text/javascript" src="js_libs/relaxngui.js"></script>
+    <script type="text/javascript" src="js_libs/strftime.min.js"></script>
+    <script type="text/javascript" src="js_libs/uidash.js"></script>
+    <script type="text/javascript" src="js_libs/underscore.min.js"></script>
+    <script type="text/javascript" src="js_libs/vkbeautify.js"></script>
+
+    <link rel="stylesheet" href="js_libs/custommenu.css" type="text/css" />
+    <link rel="stylesheet" href="js_libs/relaxngui.css" type="text/css">
+    <link rel="stylesheet" href="js_libs/uidash.css" type="text/css">
+    <link rel="stylesheet" href="js_libs/uidash-icons.css" type="text/css">
+
+    <link rel="stylesheet" href="css/ui.css" type="text/css">
+    <link rel="stylesheet" href="css/globalui_cpee.css" type="text/css">
+
+    <!-- modelling ui -->
+    <link rel="stylesheet" href="js_cpee/wfadaptor.css" type="text/css" />
+
+
+    <!-- <script type="text/javascript" src="js/parameters.js"></script>
+    <script type="text/javascript" src="js/modifiers.js"></script> -->
+    <!-- Flos Stuff -->
+    <!-- <script type="text/javascript" src="js/structured.js"></script> -->
+    <!-- <style type="text/css">
+    @font-face {
+      font-family: TencentSans;
+      src: url("chrome-extension://lkjkfecdnfjopaeaibboihfkmhdjmanm/static/fonts/TencentSans.woff2");
+    }
+  </style> -->
+
+    <!-- my scripts -->
+    <script src="js/constants.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/store.js"></script>
+    <script src="js/service/project.service.js"></script>
+
+
+    <!-- my ui-->
+    <link rel="stylesheet" href="css/myui.css" type="text/css" />
+
+    <style>
+        /* body {
+            font-family: sans-serif;
+            padding: 20px
+        }
+
+        dialog {
+            border: none;
+            border-radius: 10px;
+            padding: 16px;
+            width: 320px
+        }
+
+        dialog::backdrop {
+            background: rgba(0, 0, 0, .35)
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 12px
+        }
+
+        .error {
+            color: #c00;
+            min-height: 18px;
+            margin-top: 8px
+        } */
+    </style>
+</head>
+<body>
+    <h1>Statistics</h1>
+    <pre> <code id="JSON"></code></pre>
+
+    <script>
+        function getProjectIdFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get("project_id");
+        }
+        document.addEventListener('DOMContentLoaded', async () => {
+            const projectId = getProjectIdFromURL();
+            try {
+                const projectsResponse = await fetch('/data/projects.json');
+                const projects = await projectsResponse.json();
+
+                const statsResponse = await fetch('/data/stats.json');
+                let stats = await statsResponse.json();
+                if (projectId) {
+                    // Filter stats for the specific project
+                    stats = stats[projectId];
+                    console.log('Filtered stats for project:', projectId, stats);
+                }
+
+                document.getElementById('JSON').textContent = JSON.stringify(stats, null, 2);
+                // const table = document.getElementById('projectTable');
+                // const template = document.getElementById('rowtemplate').content;
+
+                projects.forEach(project => {
+                    // const row = template.cloneNode(true);
+                    // const link = row.querySelector('a');
+                    // link.href = `main.html?project=${project.id}`;
+                    // link.textContent = project.name;
+
+                    // const docCount = row.querySelector('.doc-count');
+                    // const modelCount = row.querySelector('.model-count');
+
+                    // const projectStats = stats[project.id] || { documents: [], models: [] };
+                    // docCount.textContent = projectStats.documents.length;
+                    // modelCount.textContent = projectStats.models.length;
+
+                    // table.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        });
+    </script>
+
+</body>
+</html>

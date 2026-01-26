@@ -23,46 +23,14 @@
             "id": "f5b021513b788b17",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "布局.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "布局"
-            }
-          },
-          {
-            "id": "8454e0c854458529",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Untitled.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "Untitled"
-            }
-          },
-          {
-            "id": "ff7f180d72352ced",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "libraries X to HTML.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "libraries X to HTML"
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Graph view"
             }
           }
         ],
-        "currentTab": 3
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -182,13 +150,12 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "libraries X to HTML.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of libraries X to HTML"
+              "title": "Outline"
             }
           },
           {
@@ -223,23 +190,23 @@
       "table-editor-obsidian:Advanced Tables Toolbar": false
     }
   },
-  "active": "ff7f180d72352ced",
+  "active": "f5b021513b788b17",
   "lastOpenFiles": [
-    "Code/dbpm/data/logs/e47262c1-598f-4718-9684-c6b4f075c5e2.jsonl",
-    "Code/dbpm/data/logs/d377e55a-4813-4912-9efd-4fab32e0e7c3.jsonl",
-    "Code/dbpm/data/logs/896687b1-f9db-4717-b8e5-dfffc28d7a15.jsonl",
-    "Code/dbpm/data/logs/a4a7cfe8-1f6a-4cc3-a0ab-f1702cf5086b.jsonl",
-    "Code/dbpm/data/stats.json",
-    "Code/dbpm/frontend/js/ui/project_graph.ui.js",
-    "Code/dbpm/frontend/js/ui/projectGraph.ui.js",
-    "Code/dbpm/data/models/fa91d5dc-ce33-45ce-b962-507a76b7c9b7.xml",
-    "Code/Tests/Graph/cytoscape2.html",
-    "Code/Tests/Graph/d3.html",
-    "Code/Tests/Graph/cytoscape.html",
+    "Code/dbpm/data/models/0af71a85-78c0-40be-87b7-9bfe9830d16b.xml",
+    "Code/dbpm/data/models/7e0c54d9-8c04-4ce7-833b-a97618bbfe45.xml",
+    "Code/dbpm/data/models/5c7a1007-c85c-41be-a96f-e5a5181c7580.xml",
+    "Code/dbpm/data/models/03f922d9-bd4a-45da-9f8f-8098c72deb4a.xml",
+    "Code/dbpm/data/models/f0bbaa0a-145a-4716-bc37-0b7ff1f541aa.xml",
+    "Code/dbpm/data/models/68edfb7b-c2db-4894-8f73-ecae86b9bd6b.xml",
+    "Code/dbpm/data/models/08268e19-aa61-4d6d-ad7c-409a30a0f9fc.xml",
+    "Code/dbpm/data/models/3dc90885-0185-45f8-b1a0-36212be96070.xml",
+    "Code/dbpm/data/models/5280c43d-d566-4dc0-89f4-d95b48b3e0d1.xml",
+    "Code/dbpm/data/models/50743859-07f7-4f4a-9536-d07901ef19ba.xml",
+    "Code/dbpm/data/documents/0f61e255-9b8b-43d1-bd51-9d874302b8ce.html",
+    "布局.md",
     "Untitled.md",
     "libraries X to HTML.md",
     "Prelexity related work.md",
-    "布局.md",
     "Code/MyCode/backend/node_modules/content-disposition/README.md",
     "Code/MyCode/backend/node_modules/content-disposition/HISTORY.md",
     "Code/MyCode/backend/node_modules/finalhandler/HISTORY.md",

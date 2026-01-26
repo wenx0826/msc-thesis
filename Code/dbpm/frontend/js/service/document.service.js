@@ -14,5 +14,6 @@ const documentService = {
     documentsStore.addDocument(newDoc);
     const docId = newDoc.id;
     workspaceService.activateDocumentById(docId);
+    Store.projectGraph.addDocumentNode(newDoc);
   },
 };

@@ -133,8 +133,10 @@ workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
     case "activeModelId":
       if (newValue) {
         $promptContainer.show();
+        $modelActionBar.prop("disabled", false);
       } else {
         $promptContainer.hide();
+        $modelActionBar.prop("disabled", true);
       }
       break;
     default:
