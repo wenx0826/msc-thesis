@@ -262,10 +262,10 @@ API.model = {
         generatedModel = await this.generateSampleModel();
       } else {
         let res = await this.generateModelLLM(params);
-        if (res) {
-          res = res.replace('<?xml version="1.0"?>\n', "");
-          generatedModel = "<description>" + res + "</description>";
-        }
+        // if (res) {
+        //   res = res.replace('<?xml version="1.0"?>\n', "");
+        //   generatedModel = "<description>" + res + "</description>";
+        // }
       }
     } catch (err) {
       console.log("001 Error generating model:", err);
@@ -320,17 +320,31 @@ API.model = {
     }
     return await response.json();
   },
-  async updateModelDataById(id, data) {
+  async updateModelDataById(id, modelData) {
     const response = await fetch(`${API.baseURL}/${this.path}/${id}/data`, {
       method: "PUT",
-      headers: { "Content-Type": "application/xml" },
-      body: data,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ projectId, modelData }),
     });
     if (!response.ok) {
       const error = await response
         .json()
         .catch(() => ({ error: "Unknown error" }));
       throw new Error(error.error || "Failed to update model data");
+    }
+    return await response.json();
+  },
+  async updateModel({ modelId, modelData, trace }) {
+    const response = await fetch(`${API.baseURL}/${this.path}/${modelId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ projectId, modelData, trace }),
+    });
+    if (!response.ok) {
+      const error = await response
+        .json()
+        .catch(() => ({ error: "Unknown error" }));
+      throw new Error(error.error || "Failed to update model and trace");
     }
     return await response.json();
   },

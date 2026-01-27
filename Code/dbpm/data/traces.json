@@ -1,20 +1,222 @@
 [
   {
-    "documentId": "0f61e255-9b8b-43d1-bd51-9d874302b8ce",
     "selections": [
       {
-        "id": "04b07d84-9423-4786-b3b4-cca2d6c8336b",
+        "id": "598eeda7-cdc4-4a78-862a-a1dc4dcbca5e",
         "color": "#d4e1f1",
         "range": {
           "startXPath": "/0",
-          "startOffset": 549,
+          "startOffset": 1112,
           "endXPath": "/0",
-          "endOffset": 744
+          "endOffset": 1683
         },
-        "text": "discovery?\n\nHow accurately can a document-based explorer detect deviations between prescribed processes and processes inferred from real document traces?\n\nRQ1. Research about related work\ne.g wha"
+        "text": "nowledge Management**\nIn what ways does integrated document-process modeling impact knowledge sharing and process improvement within organizations?\n\nHow can conflicts or inconsistencies between overlapping documents and process models be detected and resolved automatically?\n\n**Object & Multi-Artifact Modeling**\nHow should the explorer support modeling and analysis for processes involving multiple types of artifacts (documents, data, subprocesses, etc.) with complex interdependencies?\n\nRQ3. **Evaluation & Impact**\nWhat metrics can be used to measure the effectivenes"
+      }
+    ]
+  },
+  {
+    "selections": [
+      {
+        "id": "05fd37c1-0725-4d39-8f54-4376c8298434",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 610,
+          "endXPath": "/0",
+          "endOffset": 783
+        },
+        "text": "ct deviations between prescribed processes and processes inferred from real document traces?\n\nRQ1. Research about related work\ne.g what's the current modeling tools\n\nRQ2. **"
+      }
+    ]
+  },
+  {
+    "documentId": "6906159e-cc78-43d0-93bb-fee9e7f08029",
+    "selections": [
+      {
+        "id": "5c53109c-0755-4761-b8cb-108c11ceaa83",
+        "color": "#d4e1f1",
+        "text": "*Automation & Process Mining**\nTo what extent can process mining techniques b",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 389,
+          "endXPath": "/0",
+          "endOffset": 466
+        }
+      },
+      {
+        "id": "744ca2a7-bc64-41a1-8b3d-5e8c4ff33593",
+        "color": "#d4e1f1",
+        "text": "del discovery?\n\nHow accurately can a document-based explorer detect deviations between prescribed processes and processes inferred from real document traces?\n\nRQ1. Rese",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 545,
+          "endXPath": "/0",
+          "endOffset": 713
+        }
+      },
+      {
+        "id": "594e90ac-38c3-4ac8-b9ea-a82766851d45",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 790,
+          "endXPath": "/0",
+          "endOffset": 876
+        },
+        "text": "ability & User Experience**\nWhat interaction paradigms increase user efficiency and ac"
       }
     ],
-    "modelId": "0af71a85-78c0-40be-87b7-9bfe9830d16b",
-    "id": "ffc98a26-10ef-4ed9-84d4-d9752535d2d4"
+    "modelId": "15177b71-0984-42a9-b955-e12e8b36036f",
+    "id": "49a5cb3a-7b9c-4b87-baff-d3f07790d91b"
+  },
+  {
+    "documentId": "057c76c1-a545-4d7a-9799-3a1d1a68f60f",
+    "selections": [
+      {
+        "id": "0105fa56-cc77-4a2d-84bf-4b0f85104fa5",
+        "color": "#d4e1f1",
+        "text": " of the developed artifact (addressing RQ",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 397,
+          "endXPath": "/0",
+          "endOffset": 438
+        }
+      },
+      {
+        "id": "4225ae4e-00af-42e2-bbd7-b1074e107312",
+        "color": "#d4e1f1",
+        "text": "Systema",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 468,
+          "endXPath": "/0",
+          "endOffset": 475
+        }
+      },
+      {
+        "id": "d4b712f9-5248-422b-b713-5897f25b7a52",
+        "color": "#d4e1f1",
+        "text": " through a **Systematic Literature Review**.",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 520,
+          "endXPath": "/0",
+          "endOffset": 564
+        }
+      },
+      {
+        "id": "32486779-ee52-48e1-8c86-0cd25417914f",
+        "color": "#d4e1f1",
+        "text": "d survey ",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 590,
+          "endXPath": "/0",
+          "endOffset": 599
+        }
+      },
+      {
+        "id": "9a52ab6e-f3d7-4c94-a9fa-374cd7cc218a",
+        "color": "#d4e1f1",
+        "text": "demic",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 605,
+          "endXPath": "/0",
+          "endOffset": 610
+        }
+      },
+      {
+        "id": "28cd6837-5003-4899-bce4-d06e6716abd2",
+        "color": "#d4e1f1",
+        "text": "   Identify and categorize existing tools and approach",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 640,
+          "endXPath": "/0",
+          "endOffset": 694
+        }
+      },
+      {
+        "id": "429f7a44-d9f4-42a2-9578-39677a19fd37",
+        "color": "#d4e1f1",
+        "text": "g, f",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 725,
+          "endXPath": "/0",
+          "endOffset": 729
+        }
+      },
+      {
+        "id": "abe7fa2d-8395-424f-b6c1-3597a2c47d13",
+        "color": "#d4e1f1",
+        "text": "al edit",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 737,
+          "endXPath": "/0",
+          "endOffset": 744
+        }
+      },
+      {
+        "id": "24d0a377-4073-425e-931e-5345dd30894f",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 753,
+          "endXPath": "/0",
+          "endOffset": 765
+        },
+        "text": "tomated text"
+      },
+      {
+        "id": "a237c71b-0bd3-4045-b2ab-55e364aae2a5",
+        "color": "#d4e1f1",
+        "text": "   Analyze the documented performance and challenges of using Generative AI for this task, with a specific focus on the well-known issues of \"hallucinations,\" lack of traceability, and the resulting trust deficit.\n*   Explore the interaction paradigms of other document-centric AI tools to identify novel design patterns.\n\nThe successful outcome of this review will be a clear articulation of the research gap that the DBPME, as depicted in the mockup, is designed to fill.\n\n**Answering RQ2 & RQ3: Formal User Stud",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 785,
+          "endXPath": "/0",
+          "endOffset": 1299
+        }
+      },
+      {
+        "id": "083767e7-1ae0-4d2a-87f4-69e0d05e7656",
+        "color": "#d4e1f1",
+        "text": "ormal, comparative user study**. This study will be designed to measure the practical v",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 1346,
+          "endXPath": "/0",
+          "endOffset": 1433
+        }
+      },
+      {
+        "id": "dd0efaf3-f305-4856-8f3b-28c1db71fb3c",
+        "color": "#d4e1f1",
+        "text": "The study will recruit 10-15 participants from the t",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 1484,
+          "endXPath": "/0",
+          "endOffset": 1536
+        }
+      },
+      {
+        "id": "d243d977-a694-4ac5-bc74-c3c5a55c4458",
+        "color": "#d4e1f1",
+        "text": "designers (or",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 1604,
+          "endXPath": "/0",
+          "endOffset": 1617
+        }
+      }
+    ],
+    "modelId": "ce838894-8379-41c7-9835-8cea6033a5cc",
+    "id": "9796f96e-2584-4d2b-8bc4-130ec4a23cd1"
   }
 ]

@@ -1,5 +1,5 @@
 function getXPath(node, root = document.getElementById("documentContent")) {
-  console.log("getXPath called with  root:", root);
+  // console.log("getXPath called with  root:", root);
   if (node === root) return "/";
   const path = [];
   let cur = node;

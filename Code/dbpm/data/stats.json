@@ -1,95 +1,215 @@
 {
-  "bfa7ebd3-b54e-4c37-ab1a-b94764144136": {
-    "documents": [],
-    "models": [
-      {
-        "modelId": "1d5865c8-624f-4824-a1d7-b7f7ee40db44",
-        "name": "Model_3",
-        "status": "generated",
-        "words": 131,
-        "chars": 894
-      }
-    ]
-  },
-  "091b98f2-ea86-4fdb-8b26-1c4b9917da29": {
+  "2dbefacc-a93e-4ac2-b1b4-582fba828a5f": {
     "documents": [
       {
-        "id": "0f61e255-9b8b-43d1-bd51-9d874302b8ce",
+        "id": "6906159e-cc78-43d0-93bb-fee9e7f08029",
         "name": "01.2 Research Questions.md",
         "chars": 19831,
         "words": 2792
+      },
+      {
+        "id": "9658614c-37f2-4d3a-83c8-37e03955e1cd",
+        "name": "01.5 Evaluation.md",
+        "chars": 4991,
+        "words": 719
       }
     ],
     "models": [
       {
-        "modelId": "50743859-07f7-4f4a-9536-d07901ef19ba",
+        "id": "4a940048-e029-49f6-9ecd-f3441fea9c24",
+        "documentId": "6906159e-cc78-43d0-93bb-fee9e7f08029",
         "name": "Model_1",
-        "status": "generated",
-        "words": 37,
-        "chars": 290
+        "status": "regenerated_by_new_selections",
+        "words": 33,
+        "chars": 246,
+        "updates": [
+          {
+            "timestamp": "2026-01-27T11:00:13.102Z",
+            "type": "generation",
+            "words": 33,
+            "chars": 246
+          },
+          {
+            "timestamp": "2026-01-27T11:00:24.699Z",
+            "type": "regeneration_by_new_selections",
+            "words": 44,
+            "chars": 332
+          }
+        ]
       },
       {
-        "modelId": "5280c43d-d566-4dc0-89f4-d95b48b3e0d1",
+        "id": "d516e389-92e9-4e5a-bd1a-5fd4de10ea55",
+        "documentId": "6906159e-cc78-43d0-93bb-fee9e7f08029",
         "name": "Model_2",
-        "status": "generated",
-        "words": 41,
-        "chars": 304
+        "status": "regenerated_by_new_selections",
+        "words": 23,
+        "chars": 173,
+        "updates": [
+          {
+            "timestamp": "2026-01-27T11:01:25.708Z",
+            "type": "generation",
+            "words": 23,
+            "chars": 173
+          },
+          {
+            "timestamp": "2026-01-27T11:01:36.313Z",
+            "type": "regeneration_by_new_selections",
+            "words": 72,
+            "chars": 571
+          }
+        ]
       },
       {
-        "modelId": "3dc90885-0185-45f8-b1a0-36212be96070",
+        "id": "564849ee-055a-43d0-b7f8-67e515ab266d",
+        "documentId": "6906159e-cc78-43d0-93bb-fee9e7f08029",
         "name": "Model_3",
-        "status": "generated",
-        "words": 48,
-        "chars": 310
+        "status": "regenerated_by_new_selections",
+        "words": 34,
+        "chars": 247,
+        "updates": [
+          {
+            "timestamp": "2026-01-27T11:02:06.887Z",
+            "type": "generation",
+            "words": 34,
+            "chars": 247
+          },
+          {
+            "timestamp": "2026-01-27T11:02:12.168Z",
+            "type": "regeneration_by_new_selections",
+            "words": 25,
+            "chars": 173
+          }
+        ]
       },
       {
-        "modelId": "08268e19-aa61-4d6d-ad7c-409a30a0f9fc",
+        "id": "15177b71-0984-42a9-b955-e12e8b36036f",
+        "documentId": "6906159e-cc78-43d0-93bb-fee9e7f08029",
         "name": "Model_4",
-        "status": "generated",
-        "words": 15,
-        "chars": 101
-      },
+        "status": "updated_manual",
+        "words": 12,
+        "chars": 77,
+        "updates": [
+          {
+            "timestamp": "2026-01-27T11:06:10.246Z",
+            "type": "generation",
+            "words": 12,
+            "chars": 77
+          },
+          {
+            "timestamp": "2026-01-27T11:07:55.591Z",
+            "type": "regeneration_by_new_selections",
+            "words": 34,
+            "chars": 245
+          },
+          {
+            "timestamp": "2026-01-27T11:08:06.033Z",
+            "type": "regeneration_by_new_selections",
+            "words": 46,
+            "chars": 331
+          },
+          {
+            "timestamp": "2026-01-27T11:08:35.565Z",
+            "type": "manual_update"
+          }
+        ]
+      }
+    ]
+  },
+  "66951e56-d029-4702-9efb-6df6f81e7da9": {
+    "documents": [
       {
-        "modelId": "68edfb7b-c2db-4894-8f73-ecae86b9bd6b",
-        "name": "Model_5",
-        "status": "generated",
-        "words": 42,
-        "chars": 299
-      },
+        "id": "057c76c1-a545-4d7a-9799-3a1d1a68f60f",
+        "name": "01.5 Evaluation.md",
+        "chars": 4991,
+        "words": 719
+      }
+    ],
+    "models": [
       {
-        "modelId": "f0bbaa0a-145a-4716-bc37-0b7ff1f541aa",
-        "name": "Model_6",
-        "status": "generated",
-        "words": 30,
-        "chars": 207
-      },
-      {
-        "modelId": "03f922d9-bd4a-45da-9f8f-8098c72deb4a",
-        "name": "Model_7",
-        "status": "generated",
-        "words": 13,
-        "chars": 100
-      },
-      {
-        "modelId": "5c7a1007-c85c-41be-a96f-e5a5181c7580",
-        "name": "Model_8",
-        "status": "generated",
-        "words": 26,
-        "chars": 196
-      },
-      {
-        "modelId": "7e0c54d9-8c04-4ce7-833b-a97618bbfe45",
-        "name": "Model_9",
-        "status": "generated",
-        "words": 2,
-        "chars": 9
-      },
-      {
-        "modelId": "0af71a85-78c0-40be-87b7-9bfe9830d16b",
-        "name": "Model_10",
-        "status": "generated",
-        "words": 26,
-        "chars": 195
+        "id": "ce838894-8379-41c7-9835-8cea6033a5cc",
+        "documentId": "057c76c1-a545-4d7a-9799-3a1d1a68f60f",
+        "name": "Model_1",
+        "status": "regenerated_by_new_selections",
+        "words": 80,
+        "chars": 514,
+        "updates": [
+          {
+            "timestamp": "2026-01-27T11:16:24.139Z",
+            "type": "generation",
+            "words": 80,
+            "chars": 514
+          },
+          {
+            "timestamp": "2026-01-27T11:18:08.365Z",
+            "type": "manual_update"
+          },
+          {
+            "timestamp": "2026-01-27T12:28:32.653Z",
+            "type": "regeneration_by_new_selections",
+            "words": 94,
+            "chars": 601
+          },
+          {
+            "timestamp": "2026-01-27T12:40:17.799Z",
+            "type": "regeneration_by_new_selections",
+            "words": 103,
+            "chars": 653
+          },
+          {
+            "timestamp": "2026-01-27T12:40:44.335Z",
+            "type": "regeneration_by_new_selections",
+            "words": 105,
+            "chars": 666
+          },
+          {
+            "timestamp": "2026-01-27T12:42:25.421Z",
+            "type": "regeneration_by_new_selections",
+            "words": 112,
+            "chars": 720
+          },
+          {
+            "timestamp": "2026-01-27T12:43:24.551Z",
+            "type": "regeneration_by_new_selections",
+            "words": 117,
+            "chars": 764
+          },
+          {
+            "timestamp": "2026-01-27T12:45:38.579Z",
+            "type": "regeneration_by_new_selections",
+            "words": 118,
+            "chars": 769
+          },
+          {
+            "timestamp": "2026-01-27T13:32:46.139Z",
+            "type": "regeneration_by_new_selections",
+            "words": 120,
+            "chars": 778
+          },
+          {
+            "timestamp": "2026-01-27T13:35:03.191Z",
+            "type": "regeneration_by_new_selections",
+            "words": 122,
+            "chars": 785
+          },
+          {
+            "timestamp": "2026-01-27T13:36:49.228Z",
+            "type": "regeneration_by_new_selections",
+            "words": 130,
+            "chars": 830
+          },
+          {
+            "timestamp": "2026-01-27T13:38:14.016Z",
+            "type": "regeneration_by_new_selections",
+            "words": 131,
+            "chars": 837
+          },
+          {
+            "timestamp": "2026-01-27T13:45:11.531Z",
+            "type": "regeneration_by_new_selections",
+            "words": 133,
+            "chars": 849
+          }
+        ]
       }
     ]
   }

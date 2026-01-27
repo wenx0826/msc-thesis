@@ -3,6 +3,8 @@ const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
 const { log } = require("console");
+const { version } = require("os");
+const yaml = require("js-yaml");
 
 const app = express();
 const PORT = 3000;
@@ -37,21 +39,13 @@ const logEvent = (projectId, event, data = {}) => {
     data,
   };
 
-  // Simple YAML formatter for log entry
-  const toYAML = (obj, indent = 0) => {
-    let yaml = "";
-    for (const [key, value] of Object.entries(obj)) {
-      yaml += "  ".repeat(indent) + key + ": ";
-      if (typeof value === "object" && value !== null) {
-        yaml += "\n" + toYAML(value, indent + 1);
-      } else {
-        yaml += JSON.stringify(value) + "\n";
-      }
-    }
-    return yaml;
-  };
-
-  const yamlEntry = "---\n" + toYAML(logEntry);
+  const yamlEntry =
+    "---\n" +
+    yaml.dump(logEntry, {
+      indent: 2,
+      lineWidth: -1, // No line wrapping
+      noRefs: true, // Avoid circular references
+    });
 
   fs.appendFile(path.join(logsPath, `${projectId}.yaml`), yamlEntry, (err) => {
     if (err) console.error("Log write failed:", err);
@@ -501,7 +495,11 @@ app.post("/models", (req, res) => {
   const modelMeta = { id, ...meta };
   trace.modelId = id;
   trace.id = crypto.randomUUID();
-
+  const words = trace.selections.reduce(
+    (acc, sel) => acc + sel.text.split(/\s+/).filter(Boolean).length,
+    0,
+  );
+  const chars = trace.selections.reduce((acc, sel) => acc + sel.text.length, 0);
   fs.readFile(modelMetaByIdFile, "utf8", (err, data) => {
     let modelMetaById = {};
     if (!err) {
@@ -568,11 +566,16 @@ app.post("/models", (req, res) => {
       documentId: trace.documentId,
       name: modelMeta.name,
       status: "generated",
-      words: trace.selections.reduce(
-        (acc, sel) => acc + sel.text.split(/\s+/).filter(Boolean).length,
-        0,
-      ),
-      chars: trace.selections.reduce((acc, sel) => acc + sel.text.length, 0),
+      words,
+      chars,
+      updates: [
+        {
+          timestamp: getISODate(),
+          type: "generation",
+          words,
+          chars,
+        },
+      ],
     });
     fs.writeFile(statsFile, JSON.stringify(stats, null, 2), (err) => {
       if (err) {
@@ -580,6 +583,7 @@ app.post("/models", (req, res) => {
       }
     });
   });
+
   logEvent(projectId, "model_generated", {
     id: id,
     name: modelMeta.name,
@@ -637,25 +641,136 @@ app.get("/models/:id/data", (req, res) => {
     res.json(data);
   });
 });
-app.put(
-  "/models/:id/data",
-  express.raw({ type: "application/xml" }),
-  (req, res) => {
-    const modelId = req.params.id;
-    const modelData = req.body.toString(); // Convert Buffer to string
-    console.log("Updating model content for ID:", modelId);
+app.put("/models/:id", (req, res) => {
+  const modelId = req.params.id;
+  const { projectId, modelData, trace } = req.body;
+  console.log("Updating model content for ID:", modelId);
 
-    const modelFile = path.join(modelsPath, `${modelId}.xml`);
-    fs.writeFile(modelFile, modelData, (err) => {
-      if (err) {
-        return res
-          .status(500)
-          .json({ error: "Failed to update model content" });
+  const modelFile = path.join(modelsPath, `${modelId}.xml`);
+  fs.writeFile(modelFile, modelData, (err) => {
+    if (err) {
+      return res.status(500).json({ error: "Failed to update model content" });
+    }
+
+    res.json({ message: "Model content updated" });
+  });
+
+  fs.readFile(statsFile, "utf8", (err, data) => {
+    let stats = {};
+    if (!err) {
+      try {
+        stats = data.trim() ? JSON.parse(data) : {};
+      } catch (e) {
+        console.error("Failed to parse stats file");
       }
-      res.json({ message: "Model content updated" });
+    }
+
+    const projectStats = stats[projectId];
+    const modelStats = projectStats.models.find((m) => m.id === modelId);
+    if (modelStats) {
+      modelStats.status = trace
+        ? "regenerated_by_new_selections"
+        : "updated_by_prompt";
+      const update = {
+        timestamp: getISODate(),
+        type: trace ? "regeneration_by_new_selections" : "update_by_prompt",
+      };
+      if (trace) {
+        const words = trace.selections.reduce(
+          (acc, sel) => acc + sel.text.split(/\s+/).filter(Boolean).length,
+          0,
+        );
+        const chars = trace.selections.reduce(
+          (acc, sel) => acc + sel.text.length,
+          0,
+        );
+        update.words = words;
+        update.chars = chars;
+      }
+      modelStats.updates.push(update);
+    }
+
+    fs.writeFile(statsFile, JSON.stringify(stats, null, 2), (err) => {
+      if (err) {
+        console.error("Failed to write stats file");
+      }
     });
-  },
-);
+  });
+
+  logEvent(
+    projectId,
+    trace ? "model_regeneratied_by_new_selections" : "model_updated_by_prompt",
+    {
+      id: modelId,
+      data: modelData,
+    },
+  );
+  if (trace) {
+    fs.readFile(tracesFile, "utf8", (err, data) => {
+      let traces = [];
+      if (!err) {
+        try {
+          traces = data.trim() ? JSON.parse(data) : [];
+        } catch (e) {
+          console.error("Failed to parse traces file");
+        }
+      }
+      const traceIndex = traces.findIndex((t) => t.modelId === modelId);
+      if (traceIndex !== -1) {
+        traces[traceIndex] = trace;
+        fs.writeFile(tracesFile, JSON.stringify(traces, null, 2), (err) => {
+          if (err) {
+            console.error("Failed to write traces file");
+          }
+        });
+      }
+    });
+  }
+});
+app.put("/models/:id/data", (req, res) => {
+  const modelId = req.params.id;
+  const { projectId, modelData } = req.body;
+  console.log("Updating model content for ID:", modelId);
+
+  const modelFile = path.join(modelsPath, `${modelId}.xml`);
+  fs.writeFile(modelFile, modelData, (err) => {
+    if (err) {
+      return res.status(500).json({ error: "Failed to update model content" });
+    }
+    res.json({ message: "Model content updated" });
+  });
+
+  fs.readFile(statsFile, "utf8", (err, data) => {
+    let stats = {};
+    if (!err) {
+      try {
+        stats = data.trim() ? JSON.parse(data) : {};
+      } catch (e) {
+        console.error("Failed to parse stats file");
+      }
+    }
+    const projectStats = stats[projectId];
+    const modelStats = projectStats.models.find((m) => m.id === modelId);
+    if (modelStats) {
+      modelStats.status = "updated_manual";
+      modelStats.updates.push({
+        timestamp: getISODate(),
+        type: "manual_update",
+      });
+    }
+
+    fs.writeFile(statsFile, JSON.stringify(stats, null, 2), (err) => {
+      if (err) {
+        console.error("Failed to write stats file");
+      }
+    });
+  });
+
+  logEvent(projectId, "model_updated_manual", {
+    id: modelId,
+    data: modelData,
+  });
+});
 // #endregion
 
 //#region Trace Endpoints

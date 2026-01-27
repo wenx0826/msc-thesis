@@ -1,0 +1,69 @@
+<description>
+  <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+    <dbpm:document_info>
+      <dbpm:document_id>057c76c1-a545-4d7a-9799-3a1d1a68f60f</dbpm:document_id>
+      <dbpm:text_selections>of the developed artifact (addressing RQ Systema  through a **Systematic Literature Review**. d survey  demic    Identify and categorize existing tools and approach g, f al edit tomated text    Analyze the documented performance and challenges of using Generative AI for this task, with a specific focus on the well-known issues of "hallucinations," lack of traceability, and the resulting trust deficit.
+*   Explore the interaction paradigms of other document-centric AI tools to identify novel design patterns.
+
+The successful outcome of this review will be a clear articulation of the research gap that the DBPME, as depicted in the mockup, is designed to fill.
+
+**Answering RQ2 &amp; RQ3: Formal User Stud ormal, comparative user study**. This study will be designed to measure the practical v The study will recruit 10-15 participants from the t designers (or</dbpm:text_selections>
+    </dbpm:document_info>
+  </dbpm:info>
+  <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+    <call id="a1" endpoint="worklist" svg-id="a1" svg-label="OK OR NOT OK" svg-type="call" svg-subtype="callmanipulate">
+      <parameters>
+        <label>OK OR NOT OK</label>
+        <arguments>
+          <orgmodel>https://cpee.org/~demo/orgviz/organisation_informatik.xml</orgmodel>
+          <form>https://cpee.org/~demo/form/form-f.html</form>
+          <role>Assistant</role>
+          <priority>42</priority>
+          <handling>single</handling>
+          <restrictions/>
+          <data>
+            <schaden>10000</schaden>
+            <text>destroyed</text>
+          </data>
+        </arguments>
+      </parameters>
+      <code>
+        <prepare/>
+        <finalize output="result">data.bla = result</finalize>
+        <update output="result"/>
+        <rescue output="result"/>
+      </code>
+      <annotations>
+        <_generic/>
+        <_timing>
+          <_timing_weight/>
+          <_timing_avg/>
+          <explanations/>
+        </_timing>
+        <_shifting>
+          <_shifting_type>Duration</_shifting_type>
+        </_shifting>
+        <_context_data_analysis>
+          <probes/>
+          <ips/>
+        </_context_data_analysis>
+        <report>
+          <url/>
+        </report>
+        <_notes>
+          <_notes_general/>
+        </_notes>
+      </annotations>
+      <documentation>
+        <input/>
+        <output/>
+        <implementation>
+          <description/>
+        </implementation>
+        <code>
+          <description/>
+        </code>
+      </documentation>
+    </call>
+  </description>
+</description>

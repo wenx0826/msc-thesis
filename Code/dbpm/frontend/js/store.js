@@ -27,8 +27,8 @@ Store.workspace = Object.assign(
     activeModelId: null,
     llmModel: "gemini-2.0-flash",
     theme: null,
-    documentIdMap: {},
-    modelIdMap: {},
+    // documentIdMap: {},
+    // modelIdMap: {},
     project: {},
   }),
   {
@@ -129,6 +129,10 @@ Store.documents = Object.assign(
     addDocument(document) {
       this.state.documents.push(document);
       this.notify({ operation: "add", id: document.id });
+    },
+    getDocumentNameById(docId) {
+      const doc = this.state.documents.find((d) => d.id == docId);
+      return doc ? doc.name : null;
     },
     async createDocument(doc) {
       const projectId = workspaceStore.getProjectId();
@@ -280,6 +284,7 @@ Store.activeDocument = Object.assign(
     getActiveModelTrace() {
       return this.state.activeModelTrace;
     },
+
     setActiveModelTrace(newValue) {
       const oldValue = this.getActiveModelTrace();
       this.state.activeModelTrace = newValue;
@@ -288,6 +293,25 @@ Store.activeDocument = Object.assign(
     setActiveModelTraceByModelId(modelId) {
       const trace = this.state.traces.find((trace) => trace.modelId == modelId);
       this.setActiveModelTrace(trace);
+    },
+    setActiveModelTraceSelections(serializedSelections) {
+      console.log(serializedSelections);
+      // this.activeTrace.
+      const activeModelTrace = this.getActiveModelTrace();
+      activeModelTrace.selections = serializedSelections.map((selection) => ({
+        ...selection,
+        range: deserializeRange(selection.range),
+      }));
+      console.log(
+        "Updated active model trace selections:",
+        activeModelTrace.selections,
+      );
+      this.notify({
+        key: "activeModelTrace.selections",
+        operation: "set",
+        value: activeModelTrace.selections,
+      });
+      // activeModelTrace.selections =
     },
     removeActiveModelTraceSelectionById(selectionId) {
       let value;
@@ -319,7 +343,6 @@ Store.activeDocument = Object.assign(
     },
     getSerializedTemporarySelections() {
       const selections = this.state.temporarySelections.selections;
-      console.log("Serializing temporary selections:!!!!!", selections);
       this.state.temporarySelections.selections = getSortedSelectionsByRange(
         this.getTemporarySelections(),
       );
@@ -368,12 +391,35 @@ Store.activeDocument = Object.assign(
       });
       return selectedText.trim();
     },
-    getSelectedText() {
+    getSortedNewSelections() {
       let selections = [...this.getTemporarySelections()];
       const activeModelTrace = this.getActiveModelTrace();
       if (activeModelTrace)
         selections = [...activeModelTrace.selections, ...selections];
-      return this.getSelectionsText(selections);
+      return getSortedSelectionsByRange(selections);
+    },
+    getSelectedText() {
+      const sortedSeleltions = this.getSortedNewSelections();
+      return this.getSelectionsText(sortedSeleltions);
+    },
+    getSerializedSelections(selections) {
+      return selections.map(({ range, ...rest }) => ({
+        ...rest,
+        range: serializeRange(range),
+        text: range.toString(),
+      }));
+    },
+    getSerializedNewActiveModelTrace() {
+      const selections = this.getSortedNewSelections();
+      const serializedSelections = this.getSerializedSelections(selections);
+      const activeTrace = this.getActiveModelTrace();
+      console.log("Active trace:", activeTrace);
+      return Object.assign(
+        { ...activeTrace },
+        {
+          selections: serializedSelections,
+        },
+      );
     },
   },
 );

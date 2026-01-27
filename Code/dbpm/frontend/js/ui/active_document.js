@@ -45,8 +45,21 @@ $(function () {
 });
 
 activeDocumentStore.subscribe((state, { key, operation, ...payload }) => {
+  console.log(
+    "00 activeDocumentStore subscription with operation:!!",
+    key,
+    operation,
+    payload,
+  );
+
   if (operation) {
     const { value } = payload;
+    console.log(
+      "11 activeDocumentStore subscription with operation:!!",
+      key,
+      operation,
+      value,
+    );
     // console.log("11 activeDocumentStore subscription with operation:!!", value);
     switch (key) {
       case "traces":
@@ -62,10 +75,18 @@ activeDocumentStore.subscribe((state, { key, operation, ...payload }) => {
         }
         break;
       case "activeModelTrace.selections":
+        console.log("65 here!!!", operation, value);
         switch (operation) {
+          case "set":
+            console.log("67here!!!");
+            for (const selection of value) {
+              renderSelection(selection, workspaceStore.getActiveModelId());
+            }
+            break;
           case "remove":
             removeRenderedSelection(value);
             break;
+
           default:
             break;
         }
@@ -102,11 +123,7 @@ activeDocumentStore.subscribe((state, { key, operation, ...payload }) => {
         break;
       case "activeModelTrace":
         if (newValue) {
-          console.log(
-            "Active model trace changed:!!!!!!!!!",
-            oldValue,
-            newValue,
-          );
+          console.log(oldValue, newValue);
           highlightActiveModelSelections(newValue.modelId);
           // scrollToSelection(newValue.selections[0].id);
           scrollToRange(newValue.selections[0].range);

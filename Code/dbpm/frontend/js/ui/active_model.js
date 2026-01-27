@@ -34,8 +34,10 @@ $(document).ready(function () {
     modelService.keepActiveModel();
   });
   $replaceButton.on("click", async () => {
-    saveActiveModel();
+    // saveActiveModel();
     $regeneratedModelActionBar.hide();
+    modelService.updateModel();
+    syncActiveModelGraphInList();
   });
   $cancelButton.on("click", () => {
     activeModel = null;
@@ -144,8 +146,7 @@ workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
   }
 });
 
-function saveActiveModel() {
-  modelService.updateActiveModelData();
+function syncActiveModelGraphInList() {
   var gc = $("#graphcanvas").clone();
   var start = parseInt(gc.attr("width"));
   $("#graphgrid > svg:not(#graphcanvas)").each((i, ele) => {
@@ -201,6 +202,11 @@ function saveActiveModel() {
   modelsStore.updateModelById(workspaceStore.getActiveModelId(), {
     svg: gc[0].outerHTML,
   });
+}
+
+function saveActiveModel() {
+  modelService.updateActiveModelData();
+  syncActiveModelGraphInList();
 }
 
 function deleteActiveModel(e) {

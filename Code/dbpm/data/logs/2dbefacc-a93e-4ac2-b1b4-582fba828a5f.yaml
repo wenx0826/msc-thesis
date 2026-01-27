@@ -1,0 +1,1183 @@
+---
+timestamp: '2026-01-27T11:00:03.246Z'
+event: project_created
+data:
+  id: 2dbefacc-a93e-4ac2-b1b4-582fba828a5f
+  name: dd
+---
+timestamp: '2026-01-27T11:00:10.030Z'
+event: document_uploaded
+data:
+  id: 6906159e-cc78-43d0-93bb-fee9e7f08029
+  name: 01.2 Research Questions.md
+  chars: 19831
+  words: 2792
+---
+timestamp: '2026-01-27T11:00:13.101Z'
+event: model_generated
+data:
+  id: 4a940048-e029-49f6-9ecd-f3441fea9c24
+  name: Model_1
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>6906159e-cc78-43d0-93bb-fee9e7f08029</dbpm:document_id>
+          <dbpm:text_selections>o process model elements to ensure traceability between business requirements and process design?
+    What are the best practices for visualizing and navigating the relationships between documents and process models in collaborative environments?
+
+    **</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <loop mode="pre_test" condition="true">
+          <parallel wait="-1" cancel="last">
+            <loop mode="pre_test" condition="data.i &lt; 4">
+              <_probability>
+                <_probability_min/>
+                <_probability_max/>
+                <_probability_avg/>
+              </_probability>
+              <parallel_branch>
+                <call id="a1" endpoint="start_url">
+                  <parameters>
+                    <label>Start</label>
+                    <method>:post</method>
+                    <arguments>
+                      <behavior>wait_running</behavior>
+                      <url>https://cpee.org/flow/templates/instantiate/Take_Sub.xml</url>
+                      <init>
+                        <time>5</time>
+                      </init>
+                      <endpoints/>
+                      <customization/>
+                    </arguments>
+                  </parameters>
+                  <annotations>
+                    <_timing>
+                      <_timing_weight/>
+                      <_timing_avg/>
+                      <_context_data_analysis>
+                        <probes/>
+                        <ips/>
+                      </_context_data_analysis>
+                      <report>
+                        <url/>
+                      </report>
+                      <explanations/>
+                    </_timing>
+                    <_notes>
+                      <_notes_general/>
+                    </_notes>
+                  </annotations>
+                  <documentation>
+                    <input/>
+                    <output/>
+                    <implementation>
+                      <description/>
+                    </implementation>
+                  </documentation>
+                </call>
+              </parallel_branch>
+              <manipulate id="a4" label="">data.i += 1</manipulate>
+            </loop>
+          </parallel>
+          <manipulate id="a3" label="">data.i = 0</manipulate>
+          <_probability>
+            <_probability_min/>
+            <_probability_max/>
+            <_probability_avg/>
+          </_probability>
+          <stop id="a2"/>
+        </loop>
+      </description>
+    </description>
+---
+timestamp: '2026-01-27T11:00:24.698Z'
+event: model_regeneratied_by_new_selections
+data:
+  id: 4a940048-e029-49f6-9ecd-f3441fea9c24
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>6906159e-cc78-43d0-93bb-fee9e7f08029</dbpm:document_id>
+          <dbpm:text_selections>o process model elements to ensure traceability between business requirements and process design?
+    What are the best practices for visualizing and navigating the relationships between documents and process models in collaborative environments?
+
+    ** model discovery?
+
+    How accurately can a document-based explorer detect deviations betwe</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <loop mode="pre_test" condition="true" svg-id="loop_0" svg-label="true" svg-type="loop" svg-subtype="loop_head">
+          <_probability>
+            <_probability_min/>
+            <_probability_max/>
+            <_probability_avg/>
+          </_probability>
+          <call id="a1" endpoint="overview" svg-id="a1" svg-label="Move to overview position" svg-type="call" svg-subtype="call">
+            <parameters>
+              <label>Move to overview position</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <call id="a3" endpoint="get_items_base" svg-id="a3" svg-label="Get item positions" svg-type="call" svg-subtype="callmanipulate">
+            <parameters>
+              <label>Get item positions</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <code>
+              <prepare/>
+              <finalize output="result">data.items = result
+    data.item = result[0]</finalize>
+              <update output="result"/>
+              <rescue output="result"/>
+            </code>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <call id="a5" endpoint="move_camera" svg-id="a5" svg-label="Inspect first item" svg-type="call" svg-subtype="call">
+            <parameters>
+              <label>Inspect first item</label>
+              <arguments>
+                <x>!data.item['x']</x>
+                <y>!data.item['y']</y>
+              </arguments>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <call id="a6" endpoint="get_offset_base" svg-id="a6" svg-label="Get item offset" svg-type="call" svg-subtype="callmanipulate">
+            <parameters>
+              <label>Get item offset</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <code>
+              <prepare/>
+              <finalize output="result">data.adjusted = result</finalize>
+              <update output="result"/>
+              <rescue output="result"/>
+            </code>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <stop id="a2" svg-id="a2" svg-type="stop" svg-subtype="stop"/>
+        </loop>
+      </description>
+    </description>
+---
+timestamp: '2026-01-27T11:01:25.704Z'
+event: model_generated
+data:
+  id: d516e389-92e9-4e5a-bd1a-5fd4de10ea55
+  name: Model_2
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>6906159e-cc78-43d0-93bb-fee9e7f08029</dbpm:document_id>
+          <dbpm:text_selections>ser efficiency and accuracy when working with document-driven process modeling tools?
+
+    How do different user groups (e.g., business analysts vs. engineers) utilize document-</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <loop mode="pre_test" condition="data.places.length &gt; 0">
+          <_probability>
+            <_probability_min/>
+            <_probability_max/>
+            <_probability_avg/>
+          </_probability>
+          <call id="a1" endpoint="overview">
+            <parameters>
+              <label>Move to overview position</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <call id="a3" endpoint="get_items_base">
+            <parameters>
+              <label>Get item positions</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <code>
+              <prepare/>
+              <finalize output="result">data.items = result</finalize>
+              <update output="result"/>
+              <rescue output="result"/>
+            </code>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <choose mode="exclusive">
+            <alternative condition="data.items.length &gt; 0">
+              <call id="a5" endpoint="move_camera">
+                <parameters>
+                  <label>Inspect first item</label>
+                  <arguments>
+                    <x>!data.items.first['x']</x>
+                    <y>!data.items.first['y']</y>
+                  </arguments>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <call id="a2" endpoint="subprocess">
+                <parameters>
+                  <label>Adjust</label>
+                  <method>:post</method>
+                  <arguments>
+                    <behavior>wait_running</behavior>
+                    <url>https://cpee.org/flow/templates/UR-VUE%202020%20Manual%20Adjust.xml</url>
+                    <init/>
+                    <endpoints/>
+                    <stream/>
+                  </arguments>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <code>
+                  <prepare/>
+                  <finalize output="result">data.place = data.places.shift
+    data.item = result['item']
+    data.item['x'] = data.items.first['x'] + data.item['adjust_x']
+    data.item['y'] = data.items.first['y'] + data.item['adjust_y']</finalize>
+                  <update output="result"/>
+                  <rescue output="result"/>
+                </code>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <call id="a8" endpoint="grip_and_place">
+                <parameters>
+                  <label>Grip and Place</label>
+                  <arguments>
+                    <x>!data.item['x']</x>
+                    <y>!data.item['y']</y>
+                    <place_x>!data.place[0]</place_x>
+                    <place_y>!data.place[1]</place_y>
+                  </arguments>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <_probability>
+                <_probability_min/>
+                <_probability_max/>
+                <_probability_avg/>
+              </_probability>
+            </alternative>
+            <otherwise>
+              <terminate/>
+            </otherwise>
+          </choose>
+        </loop>
+      </description>
+    </description>
+---
+timestamp: '2026-01-27T11:01:36.311Z'
+event: model_regeneratied_by_new_selections
+data:
+  id: d516e389-92e9-4e5a-bd1a-5fd4de10ea55
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>6906159e-cc78-43d0-93bb-fee9e7f08029</dbpm:document_id>
+          <dbpm:text_selections>nowledge Management**
+    In what ways does integrated document-process modeling impact knowledge sharing and process improvement within organizations?
+
+    How can conflicts or inconsistencies between overlapping documents and process models be detected and resolved automatically?
+
+    **Object &amp; Multi-Artifact Modeling**
+    How should the explorer support modeling and analysis for processes involving multiple types of artifacts (documents, data, subprocesses, etc.) with complex interdependencies?
+
+    RQ3. **Evaluation &amp; Impact**
+    What metrics can be used to measure the effectivenes</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <loop mode="pre_test" condition="true" svg-id="loop_1" svg-label="true" svg-type="loop" svg-subtype="loop_head">
+          <parallel wait="-1" svg-id="parallel_0" svg-type="parallel" svg-subtype="parallel_eventbased_parallel">
+            <loop mode="pre_test" condition="data.i &lt; 4" svg-id="loop_0" svg-label="data.i &lt; 4" svg-type="loop" svg-subtype="loop_head">
+              <_probability>
+                <_probability_min/>
+                <_probability_max/>
+                <_probability_avg/>
+              </_probability>
+              <parallel_branch svg-id="parallel_branch_0" svg-type="parallel_branch" svg-subtype="parallel_branch_event">
+                <call id="a1" endpoint="start_url" svg-id="a1" svg-label="Start" svg-type="call" svg-subtype="call">
+                  <parameters>
+                    <label>Start</label>
+                    <method>:post</method>
+                    <arguments>
+                      <behavior>wait_running</behavior>
+                      <url>http://localhost/flow/templates/instantiate.local/Take_Sub.xml</url>
+                      <init>
+                        <time>4</time>
+                      </init>
+                      <endpoints/>
+                      <stream/>
+                    </arguments>
+                    <stream>
+                      <sensors/>
+                      <aggregators/>
+                      <costs/>
+                    </stream>
+                    <report>
+                      <url/>
+                    </report>
+                  </parameters>
+                  <annotations>
+                    <_timing>
+                      <_timing_wait/>
+                      <_timing_threshold/>
+                      <_timing_min/>
+                      <_timing_max/>
+                      <_timing_avg/>
+                    </_timing>
+                    <_notes>
+                      <_notes_general/>
+                    </_notes>
+                  </annotations>
+                  <documentation/>
+                </call>
+              </parallel_branch>
+              <manipulate id="a4" label="" svg-id="a4" svg-type="manipulate" svg-subtype="manipulate">data.i += 1</manipulate>
+            </loop>
+          </parallel>
+          <manipulate id="a3" label="" svg-id="a3" svg-type="manipulate" svg-subtype="manipulate">data.i = 0</manipulate>
+          <_probability>
+            <_probability_min/>
+            <_probability_max/>
+            <_probability_avg/>
+          </_probability>
+          <stop id="a2" svg-id="a2" svg-type="stop" svg-subtype="stop"/>
+        </loop>
+      </description>
+    </description>
+---
+timestamp: '2026-01-27T11:02:06.886Z'
+event: model_generated
+data:
+  id: 564849ee-055a-43d0-b7f8-67e515ab266d
+  name: Model_3
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>6906159e-cc78-43d0-93bb-fee9e7f08029</dbpm:document_id>
+          <dbpm:text_selections>een business requirements and process design?
+    What are the best practices for visualizing and navigating the relationships between documents and process models in collaborative environments?
+
+    **Automation &amp; Process Mining**
+    To what extent can proc</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <call id="a1" endpoint="worklist">
+          <parameters>
+            <label>OK OR NOT OK</label>
+            <arguments>
+              <orgmodel>https://cpee.org/~demo/orgviz/organisation_informatik.xml</orgmodel>
+              <form>https://cpee.org/~demo/form/form-f.html</form>
+              <role>Assistant</role>
+              <priority>42</priority>
+              <handling>single</handling>
+              <restrictions/>
+              <data>
+                <schaden>10000</schaden>
+                <text>destroyed</text>
+              </data>
+            </arguments>
+          </parameters>
+          <code>
+            <prepare/>
+            <finalize output="result">data.bla = result</finalize>
+            <update output="result"/>
+            <rescue output="result"/>
+          </code>
+          <annotations>
+            <_generic/>
+            <_timing>
+              <_timing_weight/>
+              <_timing_avg/>
+              <explanations/>
+            </_timing>
+            <_shifting>
+              <_shifting_type>Duration</_shifting_type>
+            </_shifting>
+            <_context_data_analysis>
+              <probes/>
+              <ips/>
+            </_context_data_analysis>
+            <report>
+              <url/>
+            </report>
+            <_notes>
+              <_notes_general/>
+            </_notes>
+          </annotations>
+          <documentation>
+            <input/>
+            <output/>
+            <implementation>
+              <description/>
+            </implementation>
+            <code>
+              <description/>
+            </code>
+          </documentation>
+        </call>
+      </description>
+    </description>
+---
+timestamp: '2026-01-27T11:02:12.166Z'
+event: model_regeneratied_by_new_selections
+data:
+  id: 564849ee-055a-43d0-b7f8-67e515ab266d
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>6906159e-cc78-43d0-93bb-fee9e7f08029</dbpm:document_id>
+          <dbpm:text_selections>ct deviations between prescribed processes and processes inferred from real document traces?
+
+    RQ1. Research about related work
+    e.g what's the current modeling tools
+
+    RQ2. **</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <loop mode="pre_test" condition="true" svg-id="loop_0" svg-label="true" svg-type="loop" svg-subtype="loop_head">
+          <_probability>
+            <_probability_min/>
+            <_probability_max/>
+            <_probability_avg/>
+          </_probability>
+          <call id="a1" endpoint="overview" svg-id="a1" svg-label="Move to overview position" svg-type="call" svg-subtype="call">
+            <parameters>
+              <label>Move to overview position</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <call id="a3" endpoint="get_items_base" svg-id="a3" svg-label="Get item positions" svg-type="call" svg-subtype="callmanipulate">
+            <parameters>
+              <label>Get item positions</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <code>
+              <prepare/>
+              <finalize output="result">data.items = result
+    data.item = result[0]</finalize>
+              <update output="result"/>
+              <rescue output="result"/>
+            </code>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <call id="a5" endpoint="move_camera" svg-id="a5" svg-label="Inspect first item" svg-type="call" svg-subtype="call">
+            <parameters>
+              <label>Inspect first item</label>
+              <arguments>
+                <x>!data.item['x']</x>
+                <y>!data.item['y']</y>
+              </arguments>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <call id="a6" endpoint="get_offset_base" svg-id="a6" svg-label="Get item offset" svg-type="call" svg-subtype="callmanipulate">
+            <parameters>
+              <label>Get item offset</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <code>
+              <prepare/>
+              <finalize output="result">data.adjusted = result</finalize>
+              <update output="result"/>
+              <rescue output="result"/>
+            </code>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <stop id="a2" svg-id="a2" svg-type="stop" svg-subtype="stop"/>
+        </loop>
+      </description>
+    </description>
+---
+timestamp: '2026-01-27T11:06:10.243Z'
+event: model_generated
+data:
+  id: 15177b71-0984-42a9-b955-e12e8b36036f
+  name: Model_4
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>6906159e-cc78-43d0-93bb-fee9e7f08029</dbpm:document_id>
+          <dbpm:text_selections>*Automation &amp; Process Mining**
+    To what extent can process mining techniques b</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <call id="a1" endpoint="bookAir">
+          <parameters>
+            <label>Book Airline 1</label>
+            <method>:post</method>
+            <arguments>
+              <from>!data.from</from>
+              <to>!data.to</to>
+              <persons>!data.persons</persons>
+            </arguments>
+          </parameters>
+          <code>
+            <prepare/>
+            <finalize output="result">data.airline = result.value('id')
+    data.costs += result.value('costs').to_f
+    status.update 1, 'Hotel'</finalize>
+            <update output="result"/>
+            <rescue output="result"/>
+          </code>
+          <annotations>
+            <_timing>
+              <_timing_weight/>
+              <_timing_avg/>
+              <explanations/>
+            </_timing>
+            <_shifting>
+              <_shifting_type>Duration</_shifting_type>
+            </_shifting>
+            <_context_data_analysis>
+              <probes/>
+              <ips/>
+            </_context_data_analysis>
+            <report>
+              <url/>
+            </report>
+            <_notes>
+              <_notes_general/>
+            </_notes>
+          </annotations>
+          <documentation>
+            <input/>
+            <output/>
+            <implementation>
+              <description/>
+            </implementation>
+            <code>
+              <description/>
+            </code>
+          </documentation>
+        </call>
+        <parallel wait="-1" cancel="last">
+          <loop mode="pre_test" condition="data.persons &gt; 0">
+            <parallel_branch>
+              <call id="a2" endpoint="bookHotel">
+                <parameters>
+                  <label>Book Hotel</label>
+                  <method>:post</method>
+                  <arguments>
+                    <to>!data.to</to>
+                  </arguments>
+                </parameters>
+                <code>
+                  <prepare/>
+                  <finalize output="result">data.hotels &lt;&lt; result.value('id')
+    data.costs += result.value('costs').to_f</finalize>
+                  <update output="result"/>
+                  <rescue output="result"/>
+                </code>
+                <annotations>
+                  <_timing>
+                    <_timing_weight/>
+                    <_timing_avg/>
+                    <explanations/>
+                  </_timing>
+                  <_shifting>
+                    <_shifting_type>Duration</_shifting_type>
+                  </_shifting>
+                  <_context_data_analysis>
+                    <probes/>
+                    <ips/>
+                  </_context_data_analysis>
+                  <report>
+                    <url/>
+                  </report>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation>
+                  <input/>
+                  <output/>
+                  <implementation>
+                    <description/>
+                  </implementation>
+                  <code>
+                    <description/>
+                  </code>
+                </documentation>
+              </call>
+            </parallel_branch>
+            <manipulate id="a3">data.persons -= 1</manipulate>
+          </loop>
+        </parallel>
+        <choose mode="exclusive">
+          <alternative condition="data.costs &gt; 700">
+            <_probability>
+              <_probability_min/>
+              <_probability_max/>
+              <_probability_avg/>
+            </_probability>
+            <call id="a4" endpoint="approve">
+              <parameters>
+                <label>Approve Hotel</label>
+                <method>:post</method>
+                <arguments>
+                  <costs>!data.costs</costs>
+                </arguments>
+              </parameters>
+              <annotations>
+                <_timing>
+                  <_timing_weight/>
+                  <_timing_avg/>
+                  <explanations/>
+                </_timing>
+                <_shifting>
+                  <_shifting_type>Duration</_shifting_type>
+                </_shifting>
+                <_context_data_analysis>
+                  <probes/>
+                  <ips/>
+                </_context_data_analysis>
+                <report>
+                  <url/>
+                </report>
+                <_notes>
+                  <_notes_general/>
+                </_notes>
+              </annotations>
+              <documentation>
+                <input/>
+                <output/>
+                <implementation>
+                  <description/>
+                </implementation>
+              </documentation>
+            </call>
+          </alternative>
+          <otherwise/>
+        </choose>
+      </description>
+    </description>
+---
+timestamp: '2026-01-27T11:07:55.589Z'
+event: model_regeneratied_by_new_selections
+data:
+  id: 15177b71-0984-42a9-b955-e12e8b36036f
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>6906159e-cc78-43d0-93bb-fee9e7f08029</dbpm:document_id>
+          <dbpm:text_selections>*Automation &amp; Process Mining**
+    To what extent can process mining techniques b del discovery?
+
+    How accurately can a document-based explorer detect deviations between prescribed processes and processes inferred from real document traces?
+
+    RQ1. Rese</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <loop mode="pre_test" condition="data.places.length &gt; 0" svg-id="loop_0" svg-label="data.places.length &gt; 0" svg-type="loop" svg-subtype="loop_head">
+          <_probability>
+            <_probability_min/>
+            <_probability_max/>
+            <_probability_avg/>
+          </_probability>
+          <manipulate id="a2" label="Next Place" svg-id="a2" svg-label="Next Place" svg-type="manipulate" svg-subtype="manipulate">data.place = data.places.shift</manipulate>
+          <call id="a1" endpoint="overview" svg-id="a1" svg-label="Move to overview position" svg-type="call" svg-subtype="call">
+            <parameters>
+              <label>Move to overview position</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <call id="a3" endpoint="get_items_neural" svg-id="a3" svg-label="Get item positions" svg-type="call" svg-subtype="callmanipulate">
+            <parameters>
+              <label>Get item positions</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <code>
+              <prepare/>
+              <finalize output="result">data.items = result
+    data.item = result[0]</finalize>
+              <update output="result"/>
+              <rescue output="result"/>
+            </code>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <choose mode="exclusive" svg-id="choose_0" svg-type="choose" svg-subtype="choose_exclusive">
+            <alternative condition="data.items.length &gt; 0" svg-id="alternative_0" svg-label="data.items.length &gt; 0" svg-type="alternative" svg-subtype="alternative">
+              <call id="a5" endpoint="move_camera" svg-id="a5" svg-label="Inspect first item" svg-type="call" svg-subtype="call">
+                <parameters>
+                  <label>Inspect first item</label>
+                  <arguments>
+                    <x>!data.item['x']</x>
+                    <y>!data.item['y']</y>
+                  </arguments>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <call id="a6" endpoint="get_offset_neural" svg-id="a6" svg-label="Get item offset" svg-type="call" svg-subtype="callmanipulate">
+                <parameters>
+                  <label>Get item offset</label>
+                  <arguments/>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <code>
+                  <prepare/>
+                  <finalize output="result">data.adjusted = {
+      'x' =&gt; data.item['x'] + result['dir_x'],
+      'y' =&gt; data.item['y'] + result['dir_y']
+    }</finalize>
+                  <update output="result"/>
+                  <rescue output="result"/>
+                </code>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <call id="a8" endpoint="grip_and_place" svg-id="a8" svg-label="Grip and Place" svg-type="call" svg-subtype="call">
+                <parameters>
+                  <label>Grip and Place</label>
+                  <arguments>
+                    <x>!data.adjusted['x'].round(0)</x>
+                    <y>!data.adjusted['y'].round(0)</y>
+                    <place_x>!data.place[0]</place_x>
+                    <place_y>!data.place[1]</place_y>
+                  </arguments>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <_probability>
+                <_probability_min/>
+                <_probability_max/>
+                <_probability_avg/>
+              </_probability>
+            </alternative>
+            <otherwise svg-id="otherwise_0" svg-type="otherwise" svg-subtype="otherwise">
+              <terminate svg-id="terminate_0" svg-type="terminate" svg-subtype="terminate"/>
+            </otherwise>
+          </choose>
+        </loop>
+      </description>
+    </description>
+---
+timestamp: '2026-01-27T11:08:06.033Z'
+event: model_regeneratied_by_new_selections
+data:
+  id: 15177b71-0984-42a9-b955-e12e8b36036f
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>6906159e-cc78-43d0-93bb-fee9e7f08029</dbpm:document_id>
+          <dbpm:text_selections>*Automation &amp; Process Mining**
+    To what extent can process mining techniques b del discovery?
+
+    How accurately can a document-based explorer detect deviations between prescribed processes and processes inferred from real document traces?
+
+    RQ1. Rese ability &amp; User Experience**
+    What interaction paradigms increase user efficiency and ac</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="worklist" svg-id="a1" svg-label="OK OR NOT OK" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <label>OK OR NOT OK</label>
+            <arguments>
+              <orgmodel>https://cpee.org/~demo/orgviz/organisation_informatik.xml</orgmodel>
+              <form>https://cpee.org/~demo/form/form-f.html</form>
+              <role>Assistant</role>
+              <priority>42</priority>
+              <handling>single</handling>
+              <restrictions/>
+              <data>
+                <schaden>10000</schaden>
+                <text>destroyed</text>
+              </data>
+            </arguments>
+          </parameters>
+          <code>
+            <prepare/>
+            <finalize output="result">data.bla = result</finalize>
+            <update output="result"/>
+            <rescue output="result"/>
+          </code>
+          <annotations>
+            <_generic/>
+            <_timing>
+              <_timing_weight/>
+              <_timing_avg/>
+              <explanations/>
+            </_timing>
+            <_shifting>
+              <_shifting_type>Duration</_shifting_type>
+            </_shifting>
+            <_context_data_analysis>
+              <probes/>
+              <ips/>
+            </_context_data_analysis>
+            <report>
+              <url/>
+            </report>
+            <_notes>
+              <_notes_general/>
+            </_notes>
+          </annotations>
+          <documentation>
+            <input/>
+            <output/>
+            <implementation>
+              <description/>
+            </implementation>
+            <code>
+              <description/>
+            </code>
+          </documentation>
+        </call>
+      </description>
+    </description>
+---
+timestamp: '2026-01-27T11:08:35.564Z'
+event: model_updated_manual
+data:
+  id: 15177b71-0984-42a9-b955-e12e8b36036f
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>6906159e-cc78-43d0-93bb-fee9e7f08029</dbpm:document_id>
+          <dbpm:text_selections>*Automation &amp; Process Mining**
+    To what extent can process mining techniques b del discovery?
+
+    How accurately can a document-based explorer detect deviations between prescribed processes and processes inferred from real document traces?
+
+    RQ1. Rese ability &amp; User Experience**
+    What interaction paradigms increase user efficiency and ac</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" svg-id="a1" svg-label="OK OR NOT OK ttt" svg-type="call" svg-subtype="call"><parameters><label>OK OR NOT OK ttt</label><color/><type>task</type><model/></parameters></call>
+      </description>
+    </description>
+---
+timestamp: '2026-01-27T11:15:37.546Z'
+event: document_uploaded
+data:
+  id: 9658614c-37f2-4d3a-83c8-37e03955e1cd
+  name: 01.5 Evaluation.md
+  chars: 4991
+  words: 719
