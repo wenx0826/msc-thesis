@@ -1,0 +1,43 @@
+<description>
+  <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+    <dbpm:document_info>
+      <dbpm:document_id>d67ffe19-8580-4818-94d5-e537089ae51d</dbpm:document_id>
+      <dbpm:text_selections>nfidence in their incorrect predictions. The analysis will also consider related document-centric AI tools (e.g., Google's NotebookLM) to understand different interaction paradig</dbpm:text_selections>
+    </dbpm:document_info>
+  </dbpm:info>
+  <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+    <call id="a1" endpoint="timeout" svg-id="a1" svg-label="Task 1" svg-type="call" svg-subtype="callmanipulate">
+      <parameters>
+        <!--{{{-->
+        <label>Task 1</label>
+        <method>:post</method>
+        <arguments>
+          <timeout>2</timeout>
+        </arguments>
+      </parameters>
+      <!--}}}-->
+      <code>
+        <finalize output="result">data.x += "a1,"</finalize>
+      </code>
+      <annotations/>
+      <documentation/>
+    </call>
+    <call id="a2" svg-id="a2" svg-label="Resource Synchronisation" svg-type="call" svg-subtype="call"><parameters><label>Resource Synchronisation</label><color>#ffffcc</color><type>task</type><model/></parameters></call>
+    <call id="a3" endpoint="timeout" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="callmanipulate">
+      <parameters>
+        <!--{{{-->
+        <label>Task 3</label>
+        <method>:post</method>
+        <arguments>
+          <timeout>4</timeout>
+        </arguments>
+      </parameters>
+      <!--}}}-->
+      <code>
+        <finalize output="result">data.x += "a3,"</finalize>
+      </code>
+      <annotations/>
+      <documentation/>
+    </call>
+  </description>
+</description>

@@ -6,7 +6,7 @@ let $modelTags;
 let $deleteSelectionButton;
 let $viewerWrap;
 let $interactionLayer;
-let $saveSelectionsButton;
+let $addSelectionsButton;
 let selectedSelection = null;
 
 $(function () {
@@ -25,7 +25,7 @@ $(function () {
     modelService.generateModelBySelections();
     // const text = Store.activeModel.setStatus("generating");
   });
-  $saveSelectionsButton = $("#saveSelectionsButton");
+  $addSelectionsButton = $("#addSelectionsButton");
   $("#columnResizehandle1").on("dragcolumnmove", (e) => {
     // e.stopPropagation();
     rerenderOverlayLayers();
@@ -37,7 +37,9 @@ $(function () {
       if (!modelId) {
         activeDocumentStore.removeTemporarySelectionById(selectionId);
       } else {
-        activeDocumentStore.removeActiveModelTraceSelectionById(selectionId);
+        // todo change it to rerender after trace update
+        Store.activeDocument.removeActiveModelTraceSelectionById(selectionId);
+        modelService.updat;
       }
       setSelectedSelection(null);
     }
@@ -123,15 +125,16 @@ activeDocumentStore.subscribe((state, { key, operation, ...payload }) => {
         break;
       case "activeModelTrace":
         if (newValue) {
-          console.log(oldValue, newValue);
-          highlightActiveModelSelections(newValue.modelId);
+          // highlightActiveModelSelections(newValue.modelId);
+          removeRenderedTrace(newValue);
+          renderTrace(newValue);
+          // TODO if selection is in viewport, do not scroll
           // scrollToSelection(newValue.selections[0].id);
           scrollToRange(newValue.selections[0].range);
         }
         if (oldValue) {
-          unhighlightActiveModelSelections(oldValue.modelId);
+          unhighlightModelSelections(oldValue.modelId);
         }
-
         break;
       case "temporarySelections":
         oldValue.forEach((selection) => {
@@ -141,7 +144,7 @@ activeDocumentStore.subscribe((state, { key, operation, ...payload }) => {
       case "hasSelectionChanged":
         if (newValue) {
           $generateButton.prop("disabled", false);
-          $saveSelectionsButton.prop("disabled", false);
+          $addSelectionsButton.prop("disabled", false);
         } else {
           $generateButton.prop("disabled", true);
         }
@@ -163,14 +166,14 @@ workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
           "disabled",
           !activeDocumentStore.getHasSelectionChanged(),
         );
-        $saveSelectionsButton.show();
-        $saveSelectionsButton.prop(
+        $addSelectionsButton.show();
+        $addSelectionsButton.prop(
           "disabled",
           !activeDocumentStore.getHasSelectionChanged(),
         );
       } else {
         $generateButton.text("Generate Model");
-        $saveSelectionsButton.hide();
+        $addSelectionsButton.hide();
       }
       if (oldValue) {
       }
@@ -210,19 +213,27 @@ function scrollToSelection(selectionId) {
   }
 }
 
-function scrollToRange(range, margin = 16) {
+function scrollToRange(range) {
   const rects = range.getClientRects();
   if (!rects || rects.length === 0) return;
 
-  const rect = rects[0];
-
   const eleViewerWrap = $viewerWrap[0];
   const eleViewerWrapRect = eleViewerWrap.getBoundingClientRect();
+
+  const rect = rects[0];
+  const margin = 20;
+  const isVisible =
+    rect.top >= eleViewerWrapRect.top + margin &&
+    rect.bottom <= eleViewerWrapRect.bottom - margin;
+
+  if (isVisible) {
+    return;
+  }
+
   const y = rect.top - eleViewerWrapRect.top + eleViewerWrap.scrollTop;
-  // eleViewerWrap.scrollTop = Math.max(0, y - margin);
+
   eleViewerWrap.scrollTo({
     top: Math.max(0, y - margin),
-    // left: 0,
     behavior: "smooth",
   });
 }
@@ -236,12 +247,37 @@ const clearInteractionLayer = () => {
   $interactionLayer.children().not($modelTags).remove();
 };
 
+const clearOverlayLayers = () => {
+  clearSelectionsLayer();
+  clearInteractionLayer();
+};
+
+const clearDocumentViewer = () => {
+  $("#documentContent").empty();
+  clearOverlayLayers();
+};
+
 // const clearTemporarySelections = () => {
 //   if (hasTemporarySelections()) {
 //     temporarySelections = [];
 //     // $temporarySelectionsLayer.empty();
 //   }
 // };
+function removeRenderedTrace({ modelId }) {
+  $selectionsLayer
+    .find(`.selection-wrap[data-modelid="${modelId}"]`)
+    .each((index, element) => {
+      const $element = $(element);
+      const selectionId = $element.attr("data-selectionid");
+      $modelTags
+        .find(
+          `.tag-span[data-modelid="${modelId}"][data-selectionid="${selectionId}"]`,
+        )
+        .remove();
+      $element.remove();
+    });
+  $interactionLayer.find(`.selection-wrap[data-modelid="${modelId}"]`).remove();
+}
 function removeRenderedSelection({ id: selectionId }) {
   $selectionsLayer
     .find(`.selection-wrap[data-selectionid="${selectionId}"]`)
@@ -262,16 +298,6 @@ function removeRenderedSelection({ id: selectionId }) {
     .find(`.selection-wrap[data-selectionid="${selectionId}"]`)
     .remove();
 }
-const clearOverlayLayers = () => {
-  clearSelectionsLayer();
-  clearInteractionLayer();
-  clearTemporarySelections();
-};
-
-const clearDocumentViewer = () => {
-  $("#documentContent").empty();
-  clearOverlayLayers();
-};
 
 function setSelectedSelection(selection) {
   const currentSelectedSelection = selectedSelection;
@@ -331,11 +357,18 @@ const onSelectionSelect = (event) => {
   //   });
 };
 
-// #region Selection Range Serialization and Deserialization
-
-// #endregion
+// function isActiveModel(modelId) {
+//   return modelId == workspaceStore.getActiveModelId();
+// }
 
 const renderSelection = ({ range, color, id: selectionId }, modelId) => {
+  const isActiveModel = modelId === Store.workspace.getActiveModelId();
+  console.log(
+    "Rendering selection:",
+    Store.workspace.getActiveModelId(),
+    modelId,
+    isActiveModel,
+  );
   const eleViewerWrap = $viewerWrap[0];
   const eleViewerWrapRect = eleViewerWrap.getBoundingClientRect();
 
@@ -354,14 +387,12 @@ const renderSelection = ({ range, color, id: selectionId }, modelId) => {
       height: `${selectionRect.height}px`,
     });
 
-  const existingSelectionDiv = $selectionsLayer.find(
-    `.selection-wrap[data-selectionid="${selectionId}"]`,
-  );
-  if (existingSelectionDiv.length > 0) {
-    existingSelectionDiv.remove();
+  if (isActiveModel) {
+    $selectionDiv.addClass("active");
   }
 
   const $rangeRect = $("<div>").addClass("range-rect");
+
   for (const rect of rects) {
     const $rectDiv = $rangeRect.clone();
     $rectDiv
@@ -400,16 +431,10 @@ const renderSelection = ({ range, color, id: selectionId }, modelId) => {
     if (modelId == workspaceStore.getActiveModelId()) {
       tagSpan.addClass("active");
     }
-    // $selectionDiv.append(tagSpan);
     $modelTags.append(tagSpan);
   }
-  if (!modelId || modelId == activeModelStore.getModelId()) {
-    // const existingSelectionBox = $selectionsLayer.find(
-    //   `.selection-wrap[data-selectionid="${selectionId}"]`,
-    // );
-    // if (existingSelectionBox.length > 0) {
-    //   existingSelectionBox.remove();
-    // }
+  if (!modelId || isActiveModel) {
+    // TODO if is selected selection, add selected class
     const $box = $selectionDiv.clone(false).empty();
     $box.appendTo($interactionLayer);
     $box.on("click", onSelectionSelect);
@@ -431,26 +456,14 @@ const highlightActiveModelSelections = (activeModelId) => {
     });
 };
 
-const unhighlightActiveModelSelections = (activeModelId) => {
-  $modelTags
-    .find(`.tag-span[data-modelid="${activeModelId}"]`)
-    .removeClass("active");
+function unhighlightModelSelections(modelId) {
   $selectionsLayer
-    .find(`.selection-wrap[data-modelid="${activeModelId}"]`)
+    .find(`.selection-wrap[data-modelid="${modelId}"]`)
     .removeClass("active");
-  $interactionLayer
-    .find(`.selection-wrap[data-modelid="${activeModelId}"]`)
-    .remove();
-  // $selectionsLayer.find(".selection-wrapper").each((index, element) => {
-  //   const $element = $(element);
-  //   const elementModelId = $element.data("modelid");
-  //   if (elementModelId === activeModelId) {
-  //     $element.addClass("active");
-  //   } else {
-  //     $element.removeClass("active");
-  //   }
-  // });
-};
+  $modelTags.find(`.tag-span[data-modelid="${modelId}"]`).removeClass("active");
+
+  $interactionLayer.find(`.selection-wrap[data-modelid="${modelId}"]`).remove();
+}
 
 const rerenderTemporarySelectionsLayer = () => {
   // if (hasTemporarySelections()) {

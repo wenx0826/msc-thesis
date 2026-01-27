@@ -210,6 +210,228 @@
             "chars": 849
           }
         ]
+      },
+      {
+        "id": "7cce479f-4d47-4bca-975e-92634283b47f",
+        "documentId": "057c76c1-a545-4d7a-9799-3a1d1a68f60f",
+        "name": "Model_2",
+        "status": "regenerated_by_new_selections",
+        "words": 8,
+        "chars": 57,
+        "updates": [
+          {
+            "timestamp": "2026-01-27T14:25:46.602Z",
+            "type": "generation",
+            "words": 8,
+            "chars": 57
+          },
+          {
+            "timestamp": "2026-01-27T14:32:56.896Z",
+            "type": "regeneration_by_new_selections",
+            "words": 65,
+            "chars": 460
+          },
+          {
+            "timestamp": "2026-01-27T16:33:53.621Z",
+            "type": "regeneration_by_selections",
+            "words": 88,
+            "chars": 599
+          }
+        ]
+      },
+      {
+        "id": "ce177ef6-58bb-40bd-a50a-b040862f4c2d",
+        "documentId": "057c76c1-a545-4d7a-9799-3a1d1a68f60f",
+        "name": "Model_3",
+        "status": "generated",
+        "words": 8,
+        "chars": 59,
+        "updates": [
+          {
+            "timestamp": "2026-01-27T16:29:18.681Z",
+            "type": "generation",
+            "words": 8,
+            "chars": 59
+          }
+        ]
+      }
+    ]
+  },
+  "aff25c73-50c4-452b-9eab-cd2796fe19c3": {
+    "documents": [
+      {
+        "id": "d67ffe19-8580-4818-94d5-e537089ae51d",
+        "name": "01.2 Research Questions.md",
+        "chars": 19831,
+        "words": 2792
+      }
+    ],
+    "models": [
+      {
+        "id": "bc10304a-32a6-42dd-a092-e1feb4b8fc93",
+        "documentId": "d67ffe19-8580-4818-94d5-e537089ae51d",
+        "name": "Model_1",
+        "status": "regenerated_by_new_selections",
+        "words": 6,
+        "chars": 37,
+        "updates": [
+          {
+            "timestamp": "2026-01-27T16:34:13.734Z",
+            "type": "generation",
+            "words": 6,
+            "chars": 37
+          },
+          {
+            "timestamp": "2026-01-27T16:35:40.259Z",
+            "type": "regeneration_by_selections",
+            "words": 6,
+            "chars": 45
+          }
+        ]
+      },
+      {
+        "id": "6edf1bb1-0882-4e75-96b3-ca0033cafce2",
+        "documentId": "d67ffe19-8580-4818-94d5-e537089ae51d",
+        "name": "Model_2",
+        "status": "regenerated_by_new_selections",
+        "words": 7,
+        "chars": 39,
+        "updates": [
+          {
+            "timestamp": "2026-01-27T16:38:05.839Z",
+            "type": "generation",
+            "words": 7,
+            "chars": 39
+          },
+          {
+            "timestamp": "2026-01-27T16:38:13.749Z",
+            "type": "regeneration_by_selections",
+            "words": 6,
+            "chars": 43
+          }
+        ]
+      },
+      {
+        "id": "c63b8480-b9ac-4bf6-8fc8-1930fede720a",
+        "documentId": "d67ffe19-8580-4818-94d5-e537089ae51d",
+        "name": "Model_3",
+        "status": "generated",
+        "words": 31,
+        "chars": 220,
+        "updates": [
+          {
+            "timestamp": "2026-01-27T19:18:08.120Z",
+            "type": "generation",
+            "words": 31,
+            "chars": 220
+          }
+        ]
+      },
+      {
+        "id": "01bf06c0-738c-467d-8052-17e9084a7522",
+        "documentId": "d67ffe19-8580-4818-94d5-e537089ae51d",
+        "name": "Model_4",
+        "status": "generated",
+        "words": 35,
+        "chars": 267,
+        "updates": [
+          {
+            "timestamp": "2026-01-27T19:18:25.095Z",
+            "type": "generation",
+            "words": 35,
+            "chars": 267
+          }
+        ]
+      },
+      {
+        "id": "6327673a-c2ed-4be4-b6f1-d56677136a13",
+        "documentId": "d67ffe19-8580-4818-94d5-e537089ae51d",
+        "name": "Model_5",
+        "status": "generated",
+        "words": 23,
+        "chars": 181,
+        "updates": [
+          {
+            "timestamp": "2026-01-27T19:39:46.023Z",
+            "type": "generation",
+            "words": 23,
+            "chars": 181
+          }
+        ]
+      },
+      {
+        "id": "a6a05e42-8aa3-4ecf-bf71-73b4479c6feb",
+        "documentId": "d67ffe19-8580-4818-94d5-e537089ae51d",
+        "name": "Model_6",
+        "status": "updated_manual",
+        "words": 22,
+        "chars": 178,
+        "updates": [
+          {
+            "timestamp": "2026-01-27T20:18:09.511Z",
+            "type": "generation",
+            "words": 22,
+            "chars": 178
+          },
+          {
+            "timestamp": "2026-01-27T20:35:52.296Z",
+            "type": "manual_update"
+          }
+        ]
+      },
+      {
+        "id": "cee9a655-9dc6-4e3d-84aa-c2940f994dce",
+        "documentId": "d67ffe19-8580-4818-94d5-e537089ae51d",
+        "name": "Model_7",
+        "status": "generated",
+        "words": 24,
+        "chars": 177,
+        "updates": [
+          {
+            "timestamp": "2026-01-27T20:18:40.457Z",
+            "type": "generation",
+            "words": 24,
+            "chars": 177
+          }
+        ]
+      },
+      {
+        "id": "d140a8f7-22ad-4c9b-acbc-f3bc36d010df",
+        "documentId": "d67ffe19-8580-4818-94d5-e537089ae51d",
+        "name": "Model_8",
+        "status": "generated",
+        "words": 6,
+        "chars": 51,
+        "updates": [
+          {
+            "timestamp": "2026-01-27T20:22:05.334Z",
+            "type": "generation",
+            "words": 6,
+            "chars": 51
+          }
+        ]
+      },
+      {
+        "id": "22bd804d-8e6a-498a-85dc-6e8520ad97cc",
+        "documentId": "d67ffe19-8580-4818-94d5-e537089ae51d",
+        "name": "Model_9",
+        "status": "regenerated_by_new_selections",
+        "words": 7,
+        "chars": 59,
+        "updates": [
+          {
+            "timestamp": "2026-01-27T20:22:56.496Z",
+            "type": "generation",
+            "words": 7,
+            "chars": 59
+          },
+          {
+            "timestamp": "2026-01-27T20:40:45.205Z",
+            "type": "regeneration_by_selections",
+            "words": 29,
+            "chars": 226
+          }
+        ]
       }
     ]
   }

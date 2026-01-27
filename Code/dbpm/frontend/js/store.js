@@ -159,6 +159,7 @@ Store.documents = Object.assign(
     },
   },
 );
+
 Store.activeDocument = Object.assign(
   createDomainStore({
     status: null,
@@ -245,7 +246,16 @@ Store.activeDocument = Object.assign(
       let hasSelectionChanged = false;
       if (this.getTemporarySelections().length > 0) {
         hasSelectionChanged = true;
-      } else {
+      } else if (this.getActiveModelTrace()) {
+        const originalText = this.state.originalActiveModelSerializedSelections
+          .map((sel) => sel.text)
+          .join(" ");
+        const currentText = this.getSelectionsText(
+          this.getActiveModelTrace().selections,
+        );
+        if (originalText !== currentText) {
+          hasSelectionChanged = true;
+        }
       }
       this.setHasSelectionChanged(hasSelectionChanged);
     },
@@ -285,10 +295,28 @@ Store.activeDocument = Object.assign(
       return this.state.activeModelTrace;
     },
 
+    // setOriginalActiveModelSerializedTrace(deSerializedSelections) {
+    //   this.state.originalActiveModelSerializedSelections =
+    //     deSerializedSelections.map(({ range, ...rest }) => ({
+    //       ...rest,
+    //       range: serializeRange(range),
+    //       text: range.toString(),
+    //     }));
+    // },
     setActiveModelTrace(newValue) {
       const oldValue = this.getActiveModelTrace();
+      // this.setOriginalActiveModelSerializedSelections(
+      //   newValue ? newValue.selections : [],
+      // );
       this.state.activeModelTrace = newValue;
       this.notify({ key: "activeModelTrace", oldValue, newValue });
+    },
+    setActiveModelTraceBySerializedTrace(trace) {
+      trace.selections = trace.selections.map((selection) => ({
+        ...selection,
+        range: deserializeRange(selection.range),
+      }));
+      this.setActiveModelTrace(trace);
     },
     setActiveModelTraceByModelId(modelId) {
       const trace = this.state.traces.find((trace) => trace.modelId == modelId);
@@ -330,6 +358,7 @@ Store.activeDocument = Object.assign(
         operation: "remove",
         value,
       });
+      this.computeSelectionChanged();
     },
     setActiveModelTraceById(traceId) {
       const trace = this.getTraceById(traceId);

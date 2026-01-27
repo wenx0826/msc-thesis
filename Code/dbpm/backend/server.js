@@ -643,7 +643,7 @@ app.get("/models/:id/data", (req, res) => {
 });
 app.put("/models/:id", (req, res) => {
   const modelId = req.params.id;
-  const { projectId, modelData, trace } = req.body;
+  const { projectId, modelData, trace, type } = req.body;
   console.log("Updating model content for ID:", modelId);
 
   const modelFile = path.join(modelsPath, `${modelId}.xml`);
@@ -673,7 +673,7 @@ app.put("/models/:id", (req, res) => {
         : "updated_by_prompt";
       const update = {
         timestamp: getISODate(),
-        type: trace ? "regeneration_by_new_selections" : "update_by_prompt",
+        type: type,
       };
       if (trace) {
         const words = trace.selections.reduce(
@@ -697,14 +697,10 @@ app.put("/models/:id", (req, res) => {
     });
   });
 
-  logEvent(
-    projectId,
-    trace ? "model_regeneratied_by_new_selections" : "model_updated_by_prompt",
-    {
-      id: modelId,
-      data: modelData,
-    },
-  );
+  logEvent(projectId, `model_updated_${type}`, {
+    id: modelId,
+    data: modelData,
+  });
   if (trace) {
     fs.readFile(tracesFile, "utf8", (err, data) => {
       let traces = [];

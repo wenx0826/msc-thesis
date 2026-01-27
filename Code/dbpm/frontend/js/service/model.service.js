@@ -16,6 +16,7 @@ const modelService = {
     }
   },
   generateModelByPrompt(userInput) {
+    model.updateType = MODEL_UPDATE_TYPE.REGENERATION_BY_PROMPT;
     const generatedModel = this.generateModel(
       userInput,
       activeDocumentStore.getSerializedData(),
@@ -66,7 +67,7 @@ const modelService = {
 
     if (workspaceStore.hasActiveModel()) {
       const model = activeModelStore.getModel();
-      model.hasSelectionsChanged = true; // Mark that selections have changed
+      model.updateType = MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS;
       model.data = modelData;
       activeModelStore.setModel(model);
       // this.updateModelAndTrace(generatedModel, selectedText);
@@ -145,41 +146,73 @@ const modelService = {
 
     // });
   },
-  async updateModel() {
+  async updateActiveModel(type) {
     const model = Store.activeModel.getModel();
     const modelId = Store.workspace.getActiveModelId();
     const modelData = Store.activeModel.getSerializedData();
-    console.log("Updating model ID:", modelId);
-    if (model.hasSelectionsChanged) {
-      console.log("Updating model and trace due to selection changes");
-      const trace = Store.activeDocument.getSerializedNewActiveModelTrace();
-      console.log("Trace to update:", trace);
-      const res = await API.model.updateModel({ modelId, modelData, trace });
-      console.log("Update result:", res);
-      model.hasSelectionsChanged = false;
-      Store.activeDocument.setTemporarySelections([]);
-      Store.activeDocument.setActiveModelTraceSelections(trace.selections);
-      // Store.activeModel.setModel(model);
-      // const trace = Store.activeModel.getActiveModelTrace();
-      // trace.selections;
-      // const selectedText = Store.getTemporarySelections()
-      //   .map((range) => range.toString())
-      //   .join(" ");
-      // const trace = {
-      //   documentId: Store.workspace.getActiveDocumentId(),
-      //   selections: Store.getSerializedTemporarySelections(),
-      // };
-      // await API.model.updateModelAndTrace(model.id, model.data, trace);
-      // model.hasSelectionsChanged = false;
-      // Store.activeModel.setModel(model);
-    } else {
+
+    if (model.updateType) type = model.updateType;
+
+    const trace =
+      type === MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS ||
+      type === MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS
+        ? Store.activeDocument.getSerializedNewActiveModelTrace()
+        : null;
+
+    const res = await API.model.updateModel(modelId, {
+      modelData,
+      trace,
+      type,
+    });
+    //   console.log("Update result:", res);
+    //   Store.activeDocument.setTemporarySelections([]);
+    //   Store.activeDocument.setActiveModelTraceSelections(trace.selections);
+    // } else {
+    // }
+
+    switch (type) {
+      case MODEL_UPDATE_TYPE.REGENERATION_BY_PROMPT:
+      case MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS:
+      case MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS:
+        Store.activeDocument.setTemporarySelections([]);
+        Store.activeDocument.setActiveModelTraceBySerializedTrace(trace);
+        // Store.activeDocument.setActiveModelTraceSelections(
+        //   res.trace.selections,
+        // );
+        break;
+      case MODEL_UPDATE_TYPE.MANUAL_UPDATE_GRAPH_CHANGED:
+      case MODEL_UPDATE_TYPE.MANUAL_UPDATE_GRAPH_PROPERTIES_ONLY:
+        break;
+      default:
+        console.warn("Unknown model update type:", type);
+        break;
     }
   },
+
   async updateActiveModelData() {
     const activeModelId = Store.workspace.getActiveModelId();
     const data = Store.activeModel.getSerializedData();
-    console.log("Updating model data for model ID:", activeModelId, data);
     API.model.updateModelDataById(activeModelId, data);
     // await modelsStore.updateModelDataById(activeModelId, data);
+  },
+
+  async updateActiveModelTrace() {
+    const activeModelId = Store.workspace.getActiveModelId();
+    const documentId = Store.workspace.getActiveDocumentId();
+    const selections = Store.activeDocument.getSerializedTemporarySelections();
+    console.log(
+      "Updating model trace for model ID:",
+      activeModelId,
+      documentId,
+      selections,
+    );
+    API.model.updateModelTraceByModelId(activeModelId, {
+      documentId,
+      selections,
+    });
+    // await modelsStore.updateModelTraceByModelId(activeModelId, {
+    //   documentId,
+    //   selections,
+    // });
   },
 };

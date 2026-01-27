@@ -1,5 +1,4 @@
 let $modelActionBar;
-let $keepButton;
 let $cancelButton;
 let $generatedModelActionBar;
 let $regeneratedModelActionBar;
@@ -16,7 +15,6 @@ let $sendPromptButton;
 
 $(document).ready(function () {
   $modelActionBar = $("#modelActionBar");
-  $keepButton = $("#keepButton");
   $cancelButton = $("#cancelButton");
   $generatedModelActionBar = $("#generatedModelActionBar");
   $regeneratedModelActionBar = $("#regeneratedModelActionBar");
@@ -30,13 +28,9 @@ $(document).ready(function () {
   $replaceButton = $("#replaceButton");
   $backButton = $("#backButton");
 
-  $keepButton.on("click", async () => {
-    modelService.keepActiveModel();
-  });
   $replaceButton.on("click", async () => {
-    // saveActiveModel();
     $regeneratedModelActionBar.hide();
-    modelService.updateModel();
+    modelService.updateActiveModel();
     syncActiveModelGraphInList();
   });
   $cancelButton.on("click", () => {

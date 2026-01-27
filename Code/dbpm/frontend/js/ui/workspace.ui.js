@@ -5,6 +5,8 @@ const tracesStore = window.Store.traces;
 const activeDocumentStore = window.Store.activeDocument;
 const modelsStore = window.Store.models;
 const activeModelStore = window.Store.activeModel;
+
+const MODEL_UPDATE_TYPE = window.Constants.MODEL_UPDATE_TYPE;
 let projectId;
 let iframeLoaded = false;
 

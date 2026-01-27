@@ -1562,3 +1562,673 @@ data:
         </call>
       </description>
     </description>
+---
+timestamp: '2026-01-27T14:25:46.601Z'
+event: model_generated
+data:
+  id: 7cce479f-4d47-4bca-975e-92634283b47f
+  name: Model_2
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>057c76c1-a545-4d7a-9799-3a1d1a68f60f</dbpm:document_id>
+          <dbpm:text_selections>the contributions of this thesis, a multi-faceted evalua</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <call id="a1" endpoint="bookAir">
+          <parameters>
+            <label>Book Airline 1</label>
+            <method>:post</method>
+            <arguments>
+              <from>!data.from</from>
+              <to>!data.to</to>
+              <persons>!data.persons</persons>
+            </arguments>
+          </parameters>
+          <code>
+            <prepare/>
+            <finalize output="result">data.airline = result.value('id')
+    data.costs += result.value('costs').to_f
+    status.update 1, 'Hotel'</finalize>
+            <update output="result"/>
+            <rescue output="result"/>
+          </code>
+          <annotations>
+            <_timing>
+              <_timing_weight/>
+              <_timing_avg/>
+              <explanations/>
+            </_timing>
+            <_shifting>
+              <_shifting_type>Duration</_shifting_type>
+            </_shifting>
+            <_context_data_analysis>
+              <probes/>
+              <ips/>
+            </_context_data_analysis>
+            <report>
+              <url/>
+            </report>
+            <_notes>
+              <_notes_general/>
+            </_notes>
+          </annotations>
+          <documentation>
+            <input/>
+            <output/>
+            <implementation>
+              <description/>
+            </implementation>
+            <code>
+              <description/>
+            </code>
+          </documentation>
+        </call>
+        <parallel wait="-1" cancel="last">
+          <loop mode="pre_test" condition="data.persons &gt; 0">
+            <parallel_branch>
+              <call id="a2" endpoint="bookHotel">
+                <parameters>
+                  <label>Book Hotel</label>
+                  <method>:post</method>
+                  <arguments>
+                    <to>!data.to</to>
+                  </arguments>
+                </parameters>
+                <code>
+                  <prepare/>
+                  <finalize output="result">data.hotels &lt;&lt; result.value('id')
+    data.costs += result.value('costs').to_f</finalize>
+                  <update output="result"/>
+                  <rescue output="result"/>
+                </code>
+                <annotations>
+                  <_timing>
+                    <_timing_weight/>
+                    <_timing_avg/>
+                    <explanations/>
+                  </_timing>
+                  <_shifting>
+                    <_shifting_type>Duration</_shifting_type>
+                  </_shifting>
+                  <_context_data_analysis>
+                    <probes/>
+                    <ips/>
+                  </_context_data_analysis>
+                  <report>
+                    <url/>
+                  </report>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation>
+                  <input/>
+                  <output/>
+                  <implementation>
+                    <description/>
+                  </implementation>
+                  <code>
+                    <description/>
+                  </code>
+                </documentation>
+              </call>
+            </parallel_branch>
+            <manipulate id="a3">data.persons -= 1</manipulate>
+          </loop>
+        </parallel>
+        <choose mode="exclusive">
+          <alternative condition="data.costs &gt; 700">
+            <_probability>
+              <_probability_min/>
+              <_probability_max/>
+              <_probability_avg/>
+            </_probability>
+            <call id="a4" endpoint="approve">
+              <parameters>
+                <label>Approve Hotel</label>
+                <method>:post</method>
+                <arguments>
+                  <costs>!data.costs</costs>
+                </arguments>
+              </parameters>
+              <annotations>
+                <_timing>
+                  <_timing_weight/>
+                  <_timing_avg/>
+                  <explanations/>
+                </_timing>
+                <_shifting>
+                  <_shifting_type>Duration</_shifting_type>
+                </_shifting>
+                <_context_data_analysis>
+                  <probes/>
+                  <ips/>
+                </_context_data_analysis>
+                <report>
+                  <url/>
+                </report>
+                <_notes>
+                  <_notes_general/>
+                </_notes>
+              </annotations>
+              <documentation>
+                <input/>
+                <output/>
+                <implementation>
+                  <description/>
+                </implementation>
+              </documentation>
+            </call>
+          </alternative>
+          <otherwise/>
+        </choose>
+      </description>
+    </description>
+---
+timestamp: '2026-01-27T14:32:56.894Z'
+event: model_regeneratied_by_new_selections
+data:
+  id: 7cce479f-4d47-4bca-975e-92634283b47f
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>057c76c1-a545-4d7a-9799-3a1d1a68f60f</dbpm:document_id>
+          <dbpm:text_selections>context and novelty of the work (addressing RQ1) and then empirically measure the usability and impact of the developed artifact (addressing RQ2 and RQ3).
+
+    **Answering RQ1: Systematic Literature Review**
+
+    RQ1 will be answe Literature Review**. This involves a structured survey of academic and industry literature to:
+    *   Identify and categorize existing tools and approaches for business process modeling, from manual editors to automated text-to-model systems</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="bookAir" svg-id="a1" svg-label="Book Airline 1" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <label>Book Airline 1</label>
+            <method>:post</method>
+            <arguments>
+              <from>!data.from</from>
+              <to>!data.to</to>
+              <persons>!data.persons</persons>
+            </arguments>
+          </parameters>
+          <code>
+            <prepare/>
+            <finalize output="result">data.airline = result.value('id')
+    data.costs += result.value('costs').to_f
+    status.update 1, 'Hotel'</finalize>
+            <update output="result"/>
+            <rescue output="result"/>
+          </code>
+          <annotations>
+            <_timing>
+              <_timing_weight/>
+              <_timing_avg/>
+              <explanations/>
+            </_timing>
+            <_shifting>
+              <_shifting_type>Duration</_shifting_type>
+            </_shifting>
+            <_context_data_analysis>
+              <probes/>
+              <ips/>
+            </_context_data_analysis>
+            <report>
+              <url/>
+            </report>
+            <_notes>
+              <_notes_general/>
+            </_notes>
+          </annotations>
+          <documentation>
+            <input/>
+            <output/>
+            <implementation>
+              <description/>
+            </implementation>
+            <code>
+              <description/>
+            </code>
+          </documentation>
+        </call>
+        <parallel wait="-1" cancel="last" svg-id="parallel_0" svg-type="parallel" svg-subtype="parallel_start">
+          <loop mode="pre_test" condition="data.persons &gt; 0" svg-id="loop_0" svg-label="data.persons &gt; 0" svg-type="loop" svg-subtype="loop_head">
+            <parallel_branch svg-id="parallel_branch_0" svg-type="parallel_branch" svg-subtype="parallel_branch_event">
+              <call id="a2" endpoint="bookHotel" svg-id="a2" svg-label="Book Hotel" svg-type="call" svg-subtype="callmanipulate">
+                <parameters>
+                  <label>Book Hotel</label>
+                  <method>:post</method>
+                  <arguments>
+                    <to>!data.to</to>
+                  </arguments>
+                </parameters>
+                <code>
+                  <prepare/>
+                  <finalize output="result">data.hotels &lt;&lt; result.value('id')
+    data.costs += result.value('costs').to_f</finalize>
+                  <update output="result"/>
+                  <rescue output="result"/>
+                </code>
+                <annotations>
+                  <_timing>
+                    <_timing_weight/>
+                    <_timing_avg/>
+                    <explanations/>
+                  </_timing>
+                  <_shifting>
+                    <_shifting_type>Duration</_shifting_type>
+                  </_shifting>
+                  <_context_data_analysis>
+                    <probes/>
+                    <ips/>
+                  </_context_data_analysis>
+                  <report>
+                    <url/>
+                  </report>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation>
+                  <input/>
+                  <output/>
+                  <implementation>
+                    <description/>
+                  </implementation>
+                  <code>
+                    <description/>
+                  </code>
+                </documentation>
+              </call>
+            </parallel_branch>
+            <manipulate id="a3" svg-id="a3" svg-type="manipulate" svg-subtype="manipulate">data.persons -= 1</manipulate>
+          </loop>
+        </parallel>
+        <choose mode="exclusive" svg-id="choose_0" svg-type="choose" svg-subtype="choose_exclusive">
+          <alternative condition="data.costs &gt; 700" svg-id="alternative_0" svg-label="data.costs &gt; 700" svg-type="alternative" svg-subtype="alternative">
+            <_probability>
+              <_probability_min/>
+              <_probability_max/>
+              <_probability_avg/>
+            </_probability>
+            <call id="a4" endpoint="approve" svg-id="a4" svg-label="Approve Hotel" svg-type="call" svg-subtype="call">
+              <parameters>
+                <label>Approve Hotel</label>
+                <method>:post</method>
+                <arguments>
+                  <costs>!data.costs</costs>
+                </arguments>
+              </parameters>
+              <annotations>
+                <_timing>
+                  <_timing_weight/>
+                  <_timing_avg/>
+                  <explanations/>
+                </_timing>
+                <_shifting>
+                  <_shifting_type>Duration</_shifting_type>
+                </_shifting>
+                <_context_data_analysis>
+                  <probes/>
+                  <ips/>
+                </_context_data_analysis>
+                <report>
+                  <url/>
+                </report>
+                <_notes>
+                  <_notes_general/>
+                </_notes>
+              </annotations>
+              <documentation>
+                <input/>
+                <output/>
+                <implementation>
+                  <description/>
+                </implementation>
+              </documentation>
+            </call>
+          </alternative>
+          <otherwise svg-id="otherwise_0" svg-type="otherwise" svg-subtype="otherwise"/>
+        </choose>
+      </description>
+    </description>
+---
+timestamp: '2026-01-27T16:29:18.679Z'
+event: model_generated
+data:
+  id: ce177ef6-58bb-40bd-a50a-b040862f4c2d
+  name: Model_3
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>057c76c1-a545-4d7a-9799-3a1d1a68f60f</dbpm:document_id>
+          <dbpm:text_selections>validate the contributions of this thesis, a multi-faceted</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <call id="a1" endpoint="bookAir">
+          <parameters>
+            <label>Book Airline 1</label>
+            <method>:post</method>
+            <arguments>
+              <from>!data.from</from>
+              <to>!data.to</to>
+              <persons>!data.persons</persons>
+            </arguments>
+          </parameters>
+          <code>
+            <prepare/>
+            <finalize output="result">data.airline = result.value('id')
+    data.costs += result.value('costs').to_f
+    status.update 1, 'Hotel'</finalize>
+            <update output="result"/>
+            <rescue output="result"/>
+          </code>
+          <annotations>
+            <_timing>
+              <_timing_weight/>
+              <_timing_avg/>
+              <explanations/>
+            </_timing>
+            <_shifting>
+              <_shifting_type>Duration</_shifting_type>
+            </_shifting>
+            <_context_data_analysis>
+              <probes/>
+              <ips/>
+            </_context_data_analysis>
+            <report>
+              <url/>
+            </report>
+            <_notes>
+              <_notes_general/>
+            </_notes>
+          </annotations>
+          <documentation>
+            <input/>
+            <output/>
+            <implementation>
+              <description/>
+            </implementation>
+            <code>
+              <description/>
+            </code>
+          </documentation>
+        </call>
+        <parallel wait="-1" cancel="last">
+          <loop mode="pre_test" condition="data.persons &gt; 0">
+            <parallel_branch>
+              <call id="a2" endpoint="bookHotel">
+                <parameters>
+                  <label>Book Hotel</label>
+                  <method>:post</method>
+                  <arguments>
+                    <to>!data.to</to>
+                  </arguments>
+                </parameters>
+                <code>
+                  <prepare/>
+                  <finalize output="result">data.hotels &lt;&lt; result.value('id')
+    data.costs += result.value('costs').to_f</finalize>
+                  <update output="result"/>
+                  <rescue output="result"/>
+                </code>
+                <annotations>
+                  <_timing>
+                    <_timing_weight/>
+                    <_timing_avg/>
+                    <explanations/>
+                  </_timing>
+                  <_shifting>
+                    <_shifting_type>Duration</_shifting_type>
+                  </_shifting>
+                  <_context_data_analysis>
+                    <probes/>
+                    <ips/>
+                  </_context_data_analysis>
+                  <report>
+                    <url/>
+                  </report>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation>
+                  <input/>
+                  <output/>
+                  <implementation>
+                    <description/>
+                  </implementation>
+                  <code>
+                    <description/>
+                  </code>
+                </documentation>
+              </call>
+            </parallel_branch>
+            <manipulate id="a3">data.persons -= 1</manipulate>
+          </loop>
+        </parallel>
+        <choose mode="exclusive">
+          <alternative condition="data.costs &gt; 700">
+            <_probability>
+              <_probability_min/>
+              <_probability_max/>
+              <_probability_avg/>
+            </_probability>
+            <call id="a4" endpoint="approve">
+              <parameters>
+                <label>Approve Hotel</label>
+                <method>:post</method>
+                <arguments>
+                  <costs>!data.costs</costs>
+                </arguments>
+              </parameters>
+              <annotations>
+                <_timing>
+                  <_timing_weight/>
+                  <_timing_avg/>
+                  <explanations/>
+                </_timing>
+                <_shifting>
+                  <_shifting_type>Duration</_shifting_type>
+                </_shifting>
+                <_context_data_analysis>
+                  <probes/>
+                  <ips/>
+                </_context_data_analysis>
+                <report>
+                  <url/>
+                </report>
+                <_notes>
+                  <_notes_general/>
+                </_notes>
+              </annotations>
+              <documentation>
+                <input/>
+                <output/>
+                <implementation>
+                  <description/>
+                </implementation>
+              </documentation>
+            </call>
+          </alternative>
+          <otherwise/>
+        </choose>
+      </description>
+    </description>
+---
+timestamp: '2026-01-27T16:33:53.618Z'
+event: model_updated_regeneration_by_selections
+data:
+  id: 7cce479f-4d47-4bca-975e-92634283b47f
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>057c76c1-a545-4d7a-9799-3a1d1a68f60f</dbpm:document_id>
+          <dbpm:text_selections>context and novelty of the work (addressing RQ1) and then empirically measure the usability and impact of the developed artifact (addressing RQ2 and RQ3).
+
+    **Answering RQ1: Systematic Literature Review**
+
+    RQ1 will be answe Literature Review**. This involves a structured survey of academic and industry literature to:
+    *   Identify and categorize existing tools and approaches for business process modeling, from manual editors to automated text-to-model systems ce and challenges of using Generative AI for this task, with a specific focus on the well-known issues of "hallucinations," lack of traceab</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="bookAir" svg-id="a1" svg-label="Book Airline 1" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <label>Book Airline 1</label>
+            <method>:post</method>
+            <arguments>
+              <from>!data.from</from>
+              <to>!data.to</to>
+              <persons>!data.persons</persons>
+            </arguments>
+          </parameters>
+          <code>
+            <prepare/>
+            <finalize output="result">data.airline = result.value('id')
+    data.costs += result.value('costs').to_f
+    status.update 1, 'Hotel'</finalize>
+            <update output="result"/>
+            <rescue output="result"/>
+          </code>
+          <annotations>
+            <_timing>
+              <_timing_weight/>
+              <_timing_avg/>
+              <explanations/>
+            </_timing>
+            <_shifting>
+              <_shifting_type>Duration</_shifting_type>
+            </_shifting>
+            <_context_data_analysis>
+              <probes/>
+              <ips/>
+            </_context_data_analysis>
+            <report>
+              <url/>
+            </report>
+            <_notes>
+              <_notes_general/>
+            </_notes>
+          </annotations>
+          <documentation>
+            <input/>
+            <output/>
+            <implementation>
+              <description/>
+            </implementation>
+            <code>
+              <description/>
+            </code>
+          </documentation>
+        </call>
+        <parallel wait="-1" cancel="last" svg-id="parallel_0" svg-type="parallel" svg-subtype="parallel_start">
+          <loop mode="pre_test" condition="data.persons &gt; 0" svg-id="loop_0" svg-label="data.persons &gt; 0" svg-type="loop" svg-subtype="loop_head">
+            <parallel_branch svg-id="parallel_branch_0" svg-type="parallel_branch" svg-subtype="parallel_branch_event">
+              <call id="a2" endpoint="bookHotel" svg-id="a2" svg-label="Book Hotel" svg-type="call" svg-subtype="callmanipulate">
+                <parameters>
+                  <label>Book Hotel</label>
+                  <method>:post</method>
+                  <arguments>
+                    <to>!data.to</to>
+                  </arguments>
+                </parameters>
+                <code>
+                  <prepare/>
+                  <finalize output="result">data.hotels &lt;&lt; result.value('id')
+    data.costs += result.value('costs').to_f</finalize>
+                  <update output="result"/>
+                  <rescue output="result"/>
+                </code>
+                <annotations>
+                  <_timing>
+                    <_timing_weight/>
+                    <_timing_avg/>
+                    <explanations/>
+                  </_timing>
+                  <_shifting>
+                    <_shifting_type>Duration</_shifting_type>
+                  </_shifting>
+                  <_context_data_analysis>
+                    <probes/>
+                    <ips/>
+                  </_context_data_analysis>
+                  <report>
+                    <url/>
+                  </report>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation>
+                  <input/>
+                  <output/>
+                  <implementation>
+                    <description/>
+                  </implementation>
+                  <code>
+                    <description/>
+                  </code>
+                </documentation>
+              </call>
+            </parallel_branch>
+            <manipulate id="a3" svg-id="a3" svg-type="manipulate" svg-subtype="manipulate">data.persons -= 1</manipulate>
+          </loop>
+        </parallel>
+        <choose mode="exclusive" svg-id="choose_0" svg-type="choose" svg-subtype="choose_exclusive">
+          <alternative condition="data.costs &gt; 700" svg-id="alternative_0" svg-label="data.costs &gt; 700" svg-type="alternative" svg-subtype="alternative">
+            <_probability>
+              <_probability_min/>
+              <_probability_max/>
+              <_probability_avg/>
+            </_probability>
+            <call id="a4" endpoint="approve" svg-id="a4" svg-label="Approve Hotel" svg-type="call" svg-subtype="call">
+              <parameters>
+                <label>Approve Hotel</label>
+                <method>:post</method>
+                <arguments>
+                  <costs>!data.costs</costs>
+                </arguments>
+              </parameters>
+              <annotations>
+                <_timing>
+                  <_timing_weight/>
+                  <_timing_avg/>
+                  <explanations/>
+                </_timing>
+                <_shifting>
+                  <_shifting_type>Duration</_shifting_type>
+                </_shifting>
+                <_context_data_analysis>
+                  <probes/>
+                  <ips/>
+                </_context_data_analysis>
+                <report>
+                  <url/>
+                </report>
+                <_notes>
+                  <_notes_general/>
+                </_notes>
+              </annotations>
+              <documentation>
+                <input/>
+                <output/>
+                <implementation>
+                  <description/>
+                </implementation>
+              </documentation>
+            </call>
+          </alternative>
+          <otherwise svg-id="otherwise_0" svg-type="otherwise" svg-subtype="otherwise"/>
+        </choose>
+      </description>
+    </description>

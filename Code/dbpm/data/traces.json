@@ -218,5 +218,230 @@
     ],
     "modelId": "ce838894-8379-41c7-9835-8cea6033a5cc",
     "id": "9796f96e-2584-4d2b-8bc4-130ec4a23cd1"
+  },
+  {
+    "documentId": "057c76c1-a545-4d7a-9799-3a1d1a68f60f",
+    "selections": [
+      {
+        "id": "58cb8fab-3104-4cbb-bdb5-ed4d87d51dc5",
+        "color": "#d4e1f1",
+        "text": "context and novelty of the work (addressing RQ1) and then empirically measure the usability and impact of the developed artifact (addressing RQ2 and RQ3).\n\n**Answering RQ1: Systematic Literature Review**\n\nRQ1 will be answe",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 295,
+          "endXPath": "/0",
+          "endOffset": 517
+        }
+      },
+      {
+        "id": "ea13914c-ed2a-4bfe-8b4c-e97ef21134ff",
+        "color": "#d4e1f1",
+        "text": "Literature Review**. This involves a structured survey of academic and industry literature to:\n*   Identify and categorize existing tools and approaches for business process modeling, from manual editors to automated text-to-model systems",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 544,
+          "endXPath": "/0",
+          "endOffset": 782
+        }
+      },
+      {
+        "id": "a4f39d51-032f-4bc4-b21b-959a9a1f695c",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 820,
+          "endXPath": "/0",
+          "endOffset": 959
+        },
+        "text": "ce and challenges of using Generative AI for this task, with a specific focus on the well-known issues of \"hallucinations,\" lack of traceab"
+      }
+    ],
+    "modelId": "7cce479f-4d47-4bca-975e-92634283b47f",
+    "id": "7528dc30-5ba2-45e8-8d0d-f5a6c0795c31"
+  },
+  {
+    "documentId": "057c76c1-a545-4d7a-9799-3a1d1a68f60f",
+    "selections": [
+      {
+        "id": "d7b93222-dae7-4fa1-84a2-45a6b7163f63",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 148,
+          "endXPath": "/0",
+          "endOffset": 207
+        },
+        "text": " validate the contributions of this thesis, a multi-faceted"
+      }
+    ],
+    "modelId": "ce177ef6-58bb-40bd-a50a-b040862f4c2d",
+    "id": "bd9e315f-f2a5-4e47-b392-633aa2d892b2"
+  },
+  {
+    "selections": [
+      {
+        "id": "8274c133-2602-4986-981c-1c86f7544d51",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 153,
+          "endXPath": "/0",
+          "endOffset": 198
+        },
+        "text": " model elements to ensure traceability betwee"
+      }
+    ]
+  },
+  {
+    "selections": [
+      {
+        "id": "cec6e455-2b26-4bab-a408-db7980c40989",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 192,
+          "endXPath": "/0",
+          "endOffset": 235
+        },
+        "text": "between business requirements and process d"
+      }
+    ]
+  },
+  {
+    "documentId": "d67ffe19-8580-4818-94d5-e537089ae51d",
+    "selections": [
+      {
+        "id": "92074c27-7590-4c99-bb87-ffdfdb7fb698",
+        "color": "#e4c3e4",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 229,
+          "endXPath": "/0",
+          "endOffset": 449
+        },
+        "text": "cess design?\nWhat are the best practices for visualizing and navigating the relationships between documents and process models in collaborative environments?\n\n**Automation & Process Mining**\nTo what extent can process mi"
+      }
+    ],
+    "modelId": "c63b8480-b9ac-4bf6-8fc8-1930fede720a",
+    "id": "d6333279-bd11-4d29-a78b-8e43f9a1b0cf"
+  },
+  {
+    "documentId": "d67ffe19-8580-4818-94d5-e537089ae51d",
+    "selections": [
+      {
+        "id": "960e74d7-168f-49b8-8d0a-f3a181dd0ec5",
+        "color": "#ffffcc",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 328,
+          "endXPath": "/0",
+          "endOffset": 595
+        },
+        "text": "ocuments and process models in collaborative environments?\n\n**Automation & Process Mining**\nTo what extent can process mining techniques be applied to unstructured or semi-structured documents for automated process model discovery?\n\nHow accurately can a document-base"
+      }
+    ],
+    "modelId": "01bf06c0-738c-467d-8052-17e9084a7522",
+    "id": "0a57922f-8e3b-4e80-9b10-e73400cc5e9a"
+  },
+  {
+    "documentId": "d67ffe19-8580-4818-94d5-e537089ae51d",
+    "selections": [
+      {
+        "id": "a9251f1d-a750-41c2-856f-b28b54df2586",
+        "color": "#d8f0dd",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 514,
+          "endXPath": "/0",
+          "endOffset": 695
+        },
+        "text": "uments for automated process model discovery?\n\nHow accurately can a document-based explorer detect deviations between prescribed processes and processes inferred from real document "
+      }
+    ],
+    "modelId": "6327673a-c2ed-4be4-b6f1-d56677136a13",
+    "id": "566659f3-0bd0-4b38-b583-a4464f45a8af"
+  },
+  {
+    "documentId": "d67ffe19-8580-4818-94d5-e537089ae51d",
+    "selections": [
+      {
+        "id": "3fff0160-d5f1-431f-b85d-d1d85cb732c8",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 14418,
+          "endXPath": "/0",
+          "endOffset": 14596
+        },
+        "text": "nfidence in their incorrect predictions. The analysis will also consider related document-centric AI tools (e.g., Google's NotebookLM) to understand different interaction paradig"
+      }
+    ],
+    "modelId": "a6a05e42-8aa3-4ecf-bf71-73b4479c6feb",
+    "id": "95b5b33f-c5fc-4db6-9e46-dc1ae69f3c26"
+  },
+  {
+    "documentId": "d67ffe19-8580-4818-94d5-e537089ae51d",
+    "selections": [
+      {
+        "id": "441aab4d-58a8-4430-ba90-e2441cc061ec",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 8520,
+          "endXPath": "/0",
+          "endOffset": 8697
+        },
+        "text": "designed to ensure high usability, effective functionality, and a positive user experience in a human-in-the-loop workflow?**\n**RQ3: To what extent does the Document-Based Proce"
+      }
+    ],
+    "modelId": "cee9a655-9dc6-4e3d-84aa-c2940f994dce",
+    "id": "ce3ac331-5726-4ae1-854e-a98e9ae991a6"
+  },
+  {
+    "documentId": "d67ffe19-8580-4818-94d5-e537089ae51d",
+    "selections": [
+      {
+        "id": "75454a29-ea8a-4a20-9427-1ea6b3e08b53",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 889,
+          "endXPath": "/0",
+          "endOffset": 940
+        },
+        "text": "orking with document-driven process modeling tools?"
+      }
+    ],
+    "modelId": "d140a8f7-22ad-4c9b-acbc-f3bc36d010df",
+    "id": "59f7d651-8223-4e49-8cc7-24046f1cc428"
+  },
+  {
+    "documentId": "d67ffe19-8580-4818-94d5-e537089ae51d",
+    "selections": [
+      {
+        "id": "f4f2b1ad-6f34-40eb-9e48-589e00ce8ed9",
+        "color": "#d4e1f1",
+        "text": "sts vs. engineers) utilize document-based explorers compare",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 992,
+          "endXPath": "/0",
+          "endOffset": 1051
+        }
+      },
+      {
+        "id": "ff43a9dd-599f-4d36-be1b-20ae46c17426",
+        "color": "#d4e1f1",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 1204,
+          "endXPath": "/0",
+          "endOffset": 1371
+        },
+        "text": "e sharing and process improvement within organizations?\n\nHow can conflicts or inconsistencies between overlapping documents and process models be detected and resolved"
+      }
+    ],
+    "modelId": "22bd804d-8e6a-498a-85dc-6e8520ad97cc",
+    "id": "c8e668e0-eb9a-4f31-a8db-7c48b5135098"
   }
 ]

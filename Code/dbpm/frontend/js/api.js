@@ -334,11 +334,11 @@ API.model = {
     }
     return await response.json();
   },
-  async updateModel({ modelId, modelData, trace }) {
+  async updateModel(modelId, params) {
     const response = await fetch(`${API.baseURL}/${this.path}/${modelId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ projectId, modelData, trace }),
+      body: JSON.stringify({ projectId, ...params }),
     });
     if (!response.ok) {
       const error = await response

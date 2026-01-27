@@ -1,0 +1,132 @@
+<description>
+  <dbpm:info
+    xmlns:dbpm="https://example.com/dbpm">
+    <dbpm:document_info>
+      <dbpm:document_id>d67ffe19-8580-4818-94d5-e537089ae51d</dbpm:document_id>
+      <dbpm:text_selections>designed to ensure high usability, effective functionality, and a positive user experience in a human-in-the-loop workflow?**
+**RQ3: To what extent does the Document-Based Proce</dbpm:text_selections>
+    </dbpm:document_info>
+  </dbpm:info>
+  <description xmlns="http://cpee.org/ns/description/1.0">
+    <loop mode="pre_test" condition="true">
+      <_probability>
+        <_probability_min/>
+        <_probability_max/>
+        <_probability_avg/>
+      </_probability>
+      <call id="a1" endpoint="overview">
+        <parameters>
+          <label>Move to overview position</label>
+          <arguments/>
+          <stream>
+            <sensors/>
+            <aggregators/>
+            <costs/>
+          </stream>
+        </parameters>
+        <annotations>
+          <_timing>
+            <_timing_wait/>
+            <_timing_threshold/>
+            <_timing_min/>
+            <_timing_max/>
+            <_timing_avg/>
+          </_timing>
+          <_notes>
+            <_notes_general/>
+          </_notes>
+        </annotations>
+        <documentation/>
+      </call>
+      <call id="a3" endpoint="get_items_base">
+        <parameters>
+          <label>Get item positions</label>
+          <arguments/>
+          <stream>
+            <sensors/>
+            <aggregators/>
+            <costs/>
+          </stream>
+        </parameters>
+        <code>
+          <prepare/>
+          <finalize output="result">data.items = result
+data.item = result[0]</finalize>
+          <update output="result"/>
+          <rescue output="result"/>
+        </code>
+        <annotations>
+          <_timing>
+            <_timing_wait/>
+            <_timing_threshold/>
+            <_timing_min/>
+            <_timing_max/>
+            <_timing_avg/>
+          </_timing>
+          <_notes>
+            <_notes_general/>
+          </_notes>
+        </annotations>
+        <documentation/>
+      </call>
+      <call id="a5" endpoint="move_camera">
+        <parameters>
+          <label>Inspect first item</label>
+          <arguments>
+            <x>!data.item['x']</x>
+            <y>!data.item['y']</y>
+          </arguments>
+          <stream>
+            <sensors/>
+            <aggregators/>
+            <costs/>
+          </stream>
+        </parameters>
+        <annotations>
+          <_timing>
+            <_timing_wait/>
+            <_timing_threshold/>
+            <_timing_min/>
+            <_timing_max/>
+            <_timing_avg/>
+          </_timing>
+          <_notes>
+            <_notes_general/>
+          </_notes>
+        </annotations>
+        <documentation/>
+      </call>
+      <call id="a6" endpoint="get_offset_base">
+        <parameters>
+          <label>Get item offset</label>
+          <arguments/>
+          <stream>
+            <sensors/>
+            <aggregators/>
+            <costs/>
+          </stream>
+        </parameters>
+        <code>
+          <prepare/>
+          <finalize output="result">data.adjusted = result</finalize>
+          <update output="result"/>
+          <rescue output="result"/>
+        </code>
+        <annotations>
+          <_timing>
+            <_timing_wait/>
+            <_timing_threshold/>
+            <_timing_min/>
+            <_timing_max/>
+            <_timing_avg/>
+          </_timing>
+          <_notes>
+            <_notes_general/>
+          </_notes>
+        </annotations>
+        <documentation/>
+      </call>
+      <stop id="a2"/>
+    </loop>
+  </description>
+</description>

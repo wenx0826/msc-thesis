@@ -257,6 +257,10 @@ li.active {
   /* background-color: yellow; */
 }
 
+#selectionsLayer .selection-wrap.active * {
+  z-index: 4;
+}
+
 #interactionLayer .selection-wrap {
   /* border: 2px solid var(--wfadaptor-highlight);
   pointer-events: auto;
