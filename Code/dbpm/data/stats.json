@@ -1,435 +1,518 @@
 {
-  "2dbefacc-a93e-4ac2-b1b4-582fba828a5f": {
+  "0f0dc256-f3c4-4513-bae1-3ffcfdecb110": {
     "documents": [
       {
-        "id": "6906159e-cc78-43d0-93bb-fee9e7f08029",
-        "name": "01.2 Research Questions.md",
-        "chars": 19831,
-        "words": 2792
-      },
-      {
-        "id": "9658614c-37f2-4d3a-83c8-37e03955e1cd",
-        "name": "01.5 Evaluation.md",
-        "chars": 4991,
-        "words": 719
+        "id": "497e7161-499f-4ab8-9e7b-6818002e74bc",
+        "name": "01.1 Motivation.md",
+        "words": 7295
       }
     ],
     "models": [
       {
-        "id": "4a940048-e029-49f6-9ecd-f3441fea9c24",
-        "documentId": "6906159e-cc78-43d0-93bb-fee9e7f08029",
+        "id": "5a27becf-b0cf-4428-bf33-a47fd2197337",
+        "documentId": "497e7161-499f-4ab8-9e7b-6818002e74bc",
         "name": "Model_1",
-        "status": "regenerated_by_new_selections",
-        "words": 33,
-        "chars": 246,
-        "updates": [
-          {
-            "timestamp": "2026-01-27T11:00:13.102Z",
-            "type": "generation",
-            "words": 33,
-            "chars": 246
-          },
-          {
-            "timestamp": "2026-01-27T11:00:24.699Z",
-            "type": "regeneration_by_new_selections",
-            "words": 44,
-            "chars": 332
-          }
-        ]
-      },
-      {
-        "id": "d516e389-92e9-4e5a-bd1a-5fd4de10ea55",
-        "documentId": "6906159e-cc78-43d0-93bb-fee9e7f08029",
-        "name": "Model_2",
-        "status": "regenerated_by_new_selections",
-        "words": 23,
-        "chars": 173,
-        "updates": [
-          {
-            "timestamp": "2026-01-27T11:01:25.708Z",
-            "type": "generation",
-            "words": 23,
-            "chars": 173
-          },
-          {
-            "timestamp": "2026-01-27T11:01:36.313Z",
-            "type": "regeneration_by_new_selections",
-            "words": 72,
-            "chars": 571
-          }
-        ]
-      },
-      {
-        "id": "564849ee-055a-43d0-b7f8-67e515ab266d",
-        "documentId": "6906159e-cc78-43d0-93bb-fee9e7f08029",
-        "name": "Model_3",
-        "status": "regenerated_by_new_selections",
-        "words": 34,
-        "chars": 247,
-        "updates": [
-          {
-            "timestamp": "2026-01-27T11:02:06.887Z",
-            "type": "generation",
-            "words": 34,
-            "chars": 247
-          },
-          {
-            "timestamp": "2026-01-27T11:02:12.168Z",
-            "type": "regeneration_by_new_selections",
-            "words": 25,
-            "chars": 173
-          }
-        ]
-      },
-      {
-        "id": "15177b71-0984-42a9-b955-e12e8b36036f",
-        "documentId": "6906159e-cc78-43d0-93bb-fee9e7f08029",
-        "name": "Model_4",
-        "status": "updated_manual",
-        "words": 12,
-        "chars": 77,
-        "updates": [
-          {
-            "timestamp": "2026-01-27T11:06:10.246Z",
-            "type": "generation",
-            "words": 12,
-            "chars": 77
-          },
-          {
-            "timestamp": "2026-01-27T11:07:55.591Z",
-            "type": "regeneration_by_new_selections",
-            "words": 34,
-            "chars": 245
-          },
-          {
-            "timestamp": "2026-01-27T11:08:06.033Z",
-            "type": "regeneration_by_new_selections",
-            "words": 46,
-            "chars": 331
-          },
-          {
-            "timestamp": "2026-01-27T11:08:35.565Z",
-            "type": "manual_update"
-          }
-        ]
-      }
-    ]
-  },
-  "66951e56-d029-4702-9efb-6df6f81e7da9": {
-    "documents": [
-      {
-        "id": "057c76c1-a545-4d7a-9799-3a1d1a68f60f",
-        "name": "01.5 Evaluation.md",
-        "chars": 4991,
-        "words": 719
-      }
-    ],
-    "models": [
-      {
-        "id": "ce838894-8379-41c7-9835-8cea6033a5cc",
-        "documentId": "057c76c1-a545-4d7a-9799-3a1d1a68f60f",
-        "name": "Model_1",
-        "status": "regenerated_by_new_selections",
-        "words": 80,
-        "chars": 514,
-        "updates": [
-          {
-            "timestamp": "2026-01-27T11:16:24.139Z",
-            "type": "generation",
-            "words": 80,
-            "chars": 514
-          },
-          {
-            "timestamp": "2026-01-27T11:18:08.365Z",
-            "type": "manual_update"
-          },
-          {
-            "timestamp": "2026-01-27T12:28:32.653Z",
-            "type": "regeneration_by_new_selections",
-            "words": 94,
-            "chars": 601
-          },
-          {
-            "timestamp": "2026-01-27T12:40:17.799Z",
-            "type": "regeneration_by_new_selections",
-            "words": 103,
-            "chars": 653
-          },
-          {
-            "timestamp": "2026-01-27T12:40:44.335Z",
-            "type": "regeneration_by_new_selections",
-            "words": 105,
-            "chars": 666
-          },
-          {
-            "timestamp": "2026-01-27T12:42:25.421Z",
-            "type": "regeneration_by_new_selections",
-            "words": 112,
-            "chars": 720
-          },
-          {
-            "timestamp": "2026-01-27T12:43:24.551Z",
-            "type": "regeneration_by_new_selections",
-            "words": 117,
-            "chars": 764
-          },
-          {
-            "timestamp": "2026-01-27T12:45:38.579Z",
-            "type": "regeneration_by_new_selections",
-            "words": 118,
-            "chars": 769
-          },
-          {
-            "timestamp": "2026-01-27T13:32:46.139Z",
-            "type": "regeneration_by_new_selections",
-            "words": 120,
-            "chars": 778
-          },
-          {
-            "timestamp": "2026-01-27T13:35:03.191Z",
-            "type": "regeneration_by_new_selections",
-            "words": 122,
-            "chars": 785
-          },
-          {
-            "timestamp": "2026-01-27T13:36:49.228Z",
-            "type": "regeneration_by_new_selections",
-            "words": 130,
-            "chars": 830
-          },
-          {
-            "timestamp": "2026-01-27T13:38:14.016Z",
-            "type": "regeneration_by_new_selections",
-            "words": 131,
-            "chars": 837
-          },
-          {
-            "timestamp": "2026-01-27T13:45:11.531Z",
-            "type": "regeneration_by_new_selections",
-            "words": 133,
-            "chars": 849
-          }
-        ]
-      },
-      {
-        "id": "7cce479f-4d47-4bca-975e-92634283b47f",
-        "documentId": "057c76c1-a545-4d7a-9799-3a1d1a68f60f",
-        "name": "Model_2",
-        "status": "regenerated_by_new_selections",
-        "words": 8,
-        "chars": 57,
-        "updates": [
-          {
-            "timestamp": "2026-01-27T14:25:46.602Z",
-            "type": "generation",
-            "words": 8,
-            "chars": 57
-          },
-          {
-            "timestamp": "2026-01-27T14:32:56.896Z",
-            "type": "regeneration_by_new_selections",
-            "words": 65,
-            "chars": 460
-          },
-          {
-            "timestamp": "2026-01-27T16:33:53.621Z",
-            "type": "regeneration_by_selections",
-            "words": 88,
-            "chars": 599
-          }
-        ]
-      },
-      {
-        "id": "ce177ef6-58bb-40bd-a50a-b040862f4c2d",
-        "documentId": "057c76c1-a545-4d7a-9799-3a1d1a68f60f",
-        "name": "Model_3",
-        "status": "generated",
-        "words": 8,
-        "chars": 59,
-        "updates": [
-          {
-            "timestamp": "2026-01-27T16:29:18.681Z",
-            "type": "generation",
-            "words": 8,
-            "chars": 59
-          }
-        ]
-      }
-    ]
-  },
-  "aff25c73-50c4-452b-9eab-cd2796fe19c3": {
-    "documents": [
-      {
-        "id": "d67ffe19-8580-4818-94d5-e537089ae51d",
-        "name": "01.2 Research Questions.md",
-        "chars": 19831,
-        "words": 2792
-      }
-    ],
-    "models": [
-      {
-        "id": "bc10304a-32a6-42dd-a092-e1feb4b8fc93",
-        "documentId": "d67ffe19-8580-4818-94d5-e537089ae51d",
-        "name": "Model_1",
-        "status": "regenerated_by_new_selections",
-        "words": 6,
-        "chars": 37,
-        "updates": [
-          {
-            "timestamp": "2026-01-27T16:34:13.734Z",
-            "type": "generation",
-            "words": 6,
-            "chars": 37
-          },
-          {
-            "timestamp": "2026-01-27T16:35:40.259Z",
-            "type": "regeneration_by_selections",
-            "words": 6,
-            "chars": 45
-          }
-        ]
-      },
-      {
-        "id": "6edf1bb1-0882-4e75-96b3-ca0033cafce2",
-        "documentId": "d67ffe19-8580-4818-94d5-e537089ae51d",
-        "name": "Model_2",
-        "status": "regenerated_by_new_selections",
-        "words": 7,
-        "chars": 39,
-        "updates": [
-          {
-            "timestamp": "2026-01-27T16:38:05.839Z",
-            "type": "generation",
-            "words": 7,
-            "chars": 39
-          },
-          {
-            "timestamp": "2026-01-27T16:38:13.749Z",
-            "type": "regeneration_by_selections",
-            "words": 6,
-            "chars": 43
-          }
-        ]
-      },
-      {
-        "id": "c63b8480-b9ac-4bf6-8fc8-1930fede720a",
-        "documentId": "d67ffe19-8580-4818-94d5-e537089ae51d",
-        "name": "Model_3",
-        "status": "generated",
-        "words": 31,
-        "chars": 220,
-        "updates": [
-          {
-            "timestamp": "2026-01-27T19:18:08.120Z",
-            "type": "generation",
-            "words": 31,
-            "chars": 220
-          }
-        ]
-      },
-      {
-        "id": "01bf06c0-738c-467d-8052-17e9084a7522",
-        "documentId": "d67ffe19-8580-4818-94d5-e537089ae51d",
-        "name": "Model_4",
-        "status": "generated",
-        "words": 35,
-        "chars": 267,
-        "updates": [
-          {
-            "timestamp": "2026-01-27T19:18:25.095Z",
-            "type": "generation",
-            "words": 35,
-            "chars": 267
-          }
-        ]
-      },
-      {
-        "id": "6327673a-c2ed-4be4-b6f1-d56677136a13",
-        "documentId": "d67ffe19-8580-4818-94d5-e537089ae51d",
-        "name": "Model_5",
-        "status": "generated",
-        "words": 23,
-        "chars": 181,
-        "updates": [
-          {
-            "timestamp": "2026-01-27T19:39:46.023Z",
-            "type": "generation",
-            "words": 23,
-            "chars": 181
-          }
-        ]
-      },
-      {
-        "id": "a6a05e42-8aa3-4ecf-bf71-73b4479c6feb",
-        "documentId": "d67ffe19-8580-4818-94d5-e537089ae51d",
-        "name": "Model_6",
-        "status": "updated_manual",
-        "words": 22,
-        "chars": 178,
-        "updates": [
-          {
-            "timestamp": "2026-01-27T20:18:09.511Z",
-            "type": "generation",
-            "words": 22,
-            "chars": 178
-          },
-          {
-            "timestamp": "2026-01-27T20:35:52.296Z",
-            "type": "manual_update"
-          }
-        ]
-      },
-      {
-        "id": "cee9a655-9dc6-4e3d-84aa-c2940f994dce",
-        "documentId": "d67ffe19-8580-4818-94d5-e537089ae51d",
-        "name": "Model_7",
-        "status": "generated",
+        "status": "updated",
         "words": 24,
-        "chars": 177,
         "updates": [
           {
-            "timestamp": "2026-01-27T20:18:40.457Z",
+            "timestamp": "2026-01-27T21:53:07.471Z",
             "type": "generation",
-            "words": 24,
-            "chars": 177
-          }
-        ]
-      },
-      {
-        "id": "d140a8f7-22ad-4c9b-acbc-f3bc36d010df",
-        "documentId": "d67ffe19-8580-4818-94d5-e537089ae51d",
-        "name": "Model_8",
-        "status": "generated",
-        "words": 6,
-        "chars": 51,
-        "updates": [
-          {
-            "timestamp": "2026-01-27T20:22:05.334Z",
-            "type": "generation",
-            "words": 6,
-            "chars": 51
-          }
-        ]
-      },
-      {
-        "id": "22bd804d-8e6a-498a-85dc-6e8520ad97cc",
-        "documentId": "d67ffe19-8580-4818-94d5-e537089ae51d",
-        "name": "Model_9",
-        "status": "regenerated_by_new_selections",
-        "words": 7,
-        "chars": 59,
-        "updates": [
-          {
-            "timestamp": "2026-01-27T20:22:56.496Z",
-            "type": "generation",
-            "words": 7,
-            "chars": 59
+            "words": 24
           },
           {
-            "timestamp": "2026-01-27T20:40:45.205Z",
+            "timestamp": "2026-01-27T21:53:14.386Z",
             "type": "regeneration_by_selections",
-            "words": 29,
-            "chars": 226
+            "words": 29
+          }
+        ]
+      },
+      {
+        "id": "9f5a958b-96d6-403d-84e5-439679195ad0",
+        "documentId": "497e7161-499f-4ab8-9e7b-6818002e74bc",
+        "name": "Model_2",
+        "status": "updated",
+        "words": 57,
+        "updates": [
+          {
+            "timestamp": "2026-01-27T21:58:27.686Z",
+            "type": "generation",
+            "words": 57
+          },
+          {
+            "timestamp": "2026-01-27T22:06:57.178Z",
+            "type": "regeneration_by_selections",
+            "words": 91
+          },
+          {
+            "timestamp": "2026-01-27T22:07:09.493Z",
+            "type": "manual_update_selections",
+            "words": 108
+          },
+          {
+            "timestamp": "2026-01-27T22:07:17.552Z",
+            "type": "manual_update_selections",
+            "words": 125
+          },
+          {
+            "timestamp": "2026-01-27T22:07:28.400Z",
+            "type": "manual_update_selections",
+            "words": 178
+          },
+          {
+            "timestamp": "2026-01-27T22:07:49.823Z",
+            "type": "manual_update_selections",
+            "words": 214
+          },
+          {
+            "timestamp": "2026-01-27T22:08:00.358Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-28T18:01:00.387Z",
+            "type": "manual_update_selections",
+            "words": 197
+          },
+          {
+            "timestamp": "2026-01-28T18:03:16.413Z",
+            "type": "manual_update_selections",
+            "words": 212
+          },
+          {
+            "timestamp": "2026-01-28T18:17:59.485Z",
+            "type": "manual_update_selections",
+            "words": 222
+          },
+          {
+            "timestamp": "2026-01-28T18:30:28.853Z",
+            "type": "manual_update_selections",
+            "words": 183
+          },
+          {
+            "timestamp": "2026-01-28T18:30:37.019Z",
+            "type": "manual_update_selections",
+            "words": 198
+          },
+          {
+            "timestamp": "2026-01-28T18:52:54.941Z",
+            "type": "manual_update_selections",
+            "words": 199
+          }
+        ]
+      },
+      {
+        "id": "60b142cf-4535-4b46-b5e2-e08cbf1aabaa",
+        "documentId": "497e7161-499f-4ab8-9e7b-6818002e74bc",
+        "name": "Model_3",
+        "status": "generated",
+        "words": 34,
+        "updates": [
+          {
+            "timestamp": "2026-01-28T18:53:23.211Z",
+            "type": "generation",
+            "words": 34
+          }
+        ]
+      }
+    ]
+  },
+  "438516e9-f62e-4a38-a38b-614a8d0d1ef2": {
+    "documents": [
+      {
+        "id": "52d9c770-b308-42e7-92ff-6b935115344e",
+        "name": "document_based_process.txt",
+        "words": 204
+      }
+    ],
+    "models": [
+      {
+        "id": "dc5d37aa-e7cd-4430-b411-5706b379e83f",
+        "documentId": "52d9c770-b308-42e7-92ff-6b935115344e",
+        "name": "Model_1",
+        "status": "updated",
+        "words": 38,
+        "updates": [
+          {
+            "timestamp": "2026-01-28T18:56:54.401Z",
+            "type": "generation",
+            "words": 38
+          },
+          {
+            "timestamp": "2026-01-28T18:57:26.661Z",
+            "type": "manual_update_selections",
+            "words": 67
+          },
+          {
+            "timestamp": "2026-01-28T19:25:27.247Z",
+            "type": "regeneration_by_selections",
+            "words": 99
+          },
+          {
+            "timestamp": "2026-01-28T19:25:46.687Z",
+            "type": "regeneration_by_selections",
+            "words": 125
+          },
+          {
+            "timestamp": "2026-01-28T19:31:04.459Z",
+            "type": "regeneration_by_selections",
+            "words": 128
+          },
+          {
+            "timestamp": "2026-01-28T19:59:50.356Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-28T20:00:02.211Z",
+            "type": "manual_update_graph_properties_only"
+          }
+        ]
+      },
+      {
+        "id": "25a41e8e-15ef-47f1-9857-e9859d5182b8",
+        "documentId": "52d9c770-b308-42e7-92ff-6b935115344e",
+        "name": "Model_2",
+        "status": "updated",
+        "words": 5,
+        "updates": [
+          {
+            "timestamp": "2026-01-28T19:26:11.735Z",
+            "type": "generation",
+            "words": 5
+          },
+          {
+            "timestamp": "2026-01-28T19:26:52.151Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-28T19:57:01.312Z",
+            "type": "manual_update_graph_changed"
+          },
+          {
+            "timestamp": "2026-01-28T19:57:04.520Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-28T19:59:32.990Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-28T19:59:36.311Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-28T19:59:40.570Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-28T20:00:14.393Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-28T20:14:24.480Z",
+            "type": "manual_update_selections",
+            "words": 8
+          }
+        ]
+      },
+      {
+        "id": "9431fed2-1bf3-4446-8519-d679ba6cfcc7",
+        "documentId": "52d9c770-b308-42e7-92ff-6b935115344e",
+        "name": "Model_3",
+        "status": "updated",
+        "words": 3,
+        "updates": [
+          {
+            "timestamp": "2026-01-28T19:28:05.018Z",
+            "type": "generation",
+            "words": 3
+          },
+          {
+            "timestamp": "2026-01-28T20:14:43.043Z",
+            "type": "regeneration_by_selections",
+            "words": 21
+          }
+        ]
+      },
+      {
+        "id": "44950cb6-6371-4c82-937a-5003785e6820",
+        "documentId": "52d9c770-b308-42e7-92ff-6b935115344e",
+        "name": "Model_4",
+        "status": "updated",
+        "words": 198,
+        "updates": [
+          {
+            "timestamp": "2026-01-28T21:19:36.603Z",
+            "type": "generation",
+            "words": 198
+          },
+          {
+            "timestamp": "2026-01-28T21:19:57.987Z",
+            "type": "manual_update_selections",
+            "words": 42
+          },
+          {
+            "timestamp": "2026-01-28T21:19:59.384Z",
+            "type": "manual_update_selections",
+            "words": 0
+          },
+          {
+            "timestamp": "2026-01-28T21:20:15.582Z",
+            "type": "regeneration_by_selections",
+            "words": 155
+          },
+          {
+            "timestamp": "2026-01-28T21:20:34.210Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-28T21:20:43.040Z",
+            "type": "manual_update_selections",
+            "words": 106
+          },
+          {
+            "timestamp": "2026-01-28T21:20:54.496Z",
+            "type": "manual_update_selections",
+            "words": 173
+          }
+        ]
+      }
+    ]
+  },
+  "e1117c22-ccfa-4e80-86f7-c2e53d8e66e6": {
+    "documents": [
+      {
+        "id": "7410888c-2812-49ee-93c8-bb3b9b0882ec",
+        "name": "document_based_process.txt",
+        "words": 204
+      }
+    ],
+    "models": [
+      {
+        "id": "19c9c81b-5bff-49da-a3dc-e5f71fbe8eed",
+        "documentId": "7410888c-2812-49ee-93c8-bb3b9b0882ec",
+        "name": "Model_1",
+        "status": "updated",
+        "words": 20,
+        "updates": [
+          {
+            "timestamp": "2026-01-28T20:15:42.571Z",
+            "type": "generation",
+            "words": 20
+          },
+          {
+            "timestamp": "2026-01-28T20:16:31.286Z",
+            "type": "manual_update_selections",
+            "words": 22
+          }
+        ]
+      },
+      {
+        "id": "8504b3ef-1be5-42f3-81e1-7541127eeca2",
+        "documentId": "7410888c-2812-49ee-93c8-bb3b9b0882ec",
+        "name": "Model_2",
+        "status": "updated",
+        "words": 20,
+        "updates": [
+          {
+            "timestamp": "2026-01-28T20:17:42.624Z",
+            "type": "generation",
+            "words": 20
+          },
+          {
+            "timestamp": "2026-01-28T20:17:51.042Z",
+            "type": "regeneration_by_selections",
+            "words": 22
+          }
+        ]
+      },
+      {
+        "id": "337b7a20-8c6f-4c66-817f-64686f47bbea",
+        "documentId": "7410888c-2812-49ee-93c8-bb3b9b0882ec",
+        "name": "Model_3",
+        "status": "updated",
+        "words": 29,
+        "updates": [
+          {
+            "timestamp": "2026-01-28T20:18:58.932Z",
+            "type": "generation",
+            "words": 29
+          },
+          {
+            "timestamp": "2026-01-28T20:19:03.771Z",
+            "type": "manual_update_selections",
+            "words": 18
+          }
+        ]
+      },
+      {
+        "id": "283d7150-47a1-4677-a513-306006ff474f",
+        "documentId": "7410888c-2812-49ee-93c8-bb3b9b0882ec",
+        "name": "Model_4",
+        "status": "updated",
+        "words": 45,
+        "updates": [
+          {
+            "timestamp": "2026-01-28T20:20:22.353Z",
+            "type": "generation",
+            "words": 45
+          },
+          {
+            "timestamp": "2026-01-28T20:20:48.749Z",
+            "type": "manual_update_selections",
+            "words": 61
+          },
+          {
+            "timestamp": "2026-01-28T20:21:06.564Z",
+            "type": "manual_update_selections",
+            "words": 83
+          },
+          {
+            "timestamp": "2026-01-28T20:21:49.800Z",
+            "type": "regeneration_by_selections",
+            "words": 108
+          },
+          {
+            "timestamp": "2026-01-28T20:28:01.237Z",
+            "type": "manual_update_selections",
+            "words": 108
+          },
+          {
+            "timestamp": "2026-01-28T20:28:09.211Z",
+            "type": "manual_update_selections",
+            "words": 108
+          },
+          {
+            "timestamp": "2026-01-28T20:28:41.658Z",
+            "type": "manual_update_selections",
+            "words": 92
+          },
+          {
+            "timestamp": "2026-01-28T20:28:48.616Z",
+            "type": "manual_update_selections",
+            "words": 47
+          },
+          {
+            "timestamp": "2026-01-28T21:18:02.700Z",
+            "type": "manual_update_selections",
+            "words": 25
+          },
+          {
+            "timestamp": "2026-01-28T21:18:05.130Z",
+            "type": "manual_update_selections",
+            "words": 0
+          },
+          {
+            "timestamp": "2026-01-28T21:23:00.205Z",
+            "type": "manual_update_graph_properties_only"
+          }
+        ]
+      },
+      {
+        "id": "833057a8-072a-4341-a22e-9c235eb62b32",
+        "documentId": "7410888c-2812-49ee-93c8-bb3b9b0882ec",
+        "name": "Model_5",
+        "status": "updated",
+        "words": 30,
+        "updates": [
+          {
+            "timestamp": "2026-01-28T21:21:46.985Z",
+            "type": "generation",
+            "words": 30
+          },
+          {
+            "timestamp": "2026-01-28T21:22:42.247Z",
+            "type": "manual_update_selections",
+            "words": 0
+          }
+        ]
+      },
+      {
+        "id": "86d01008-2afb-4cfa-951d-ef21e1520296",
+        "documentId": "7410888c-2812-49ee-93c8-bb3b9b0882ec",
+        "name": "Model_6",
+        "status": "updated",
+        "words": 64,
+        "updates": [
+          {
+            "timestamp": "2026-01-28T21:25:09.292Z",
+            "type": "generation",
+            "words": 64
+          },
+          {
+            "timestamp": "2026-01-28T21:40:46.347Z",
+            "type": "manual_update_selections",
+            "words": 0
+          }
+        ]
+      }
+    ]
+  },
+  "f6291a4d-85f1-40e2-8152-d5928cc10f65": {
+    "documents": [
+      {
+        "id": "cadb1979-cff1-4bcc-b66e-8c0559b56f0a",
+        "name": "document_based_process.txt",
+        "words": 204
+      }
+    ],
+    "models": [
+      {
+        "id": "09480b87-9aa2-46e6-9c81-2837f64f6542",
+        "documentId": "cadb1979-cff1-4bcc-b66e-8c0559b56f0a",
+        "name": "Model_1",
+        "status": "updated",
+        "words": 42,
+        "updates": [
+          {
+            "timestamp": "2026-01-28T21:41:48.976Z",
+            "type": "generation",
+            "words": 42
+          },
+          {
+            "timestamp": "2026-01-28T21:42:43.964Z",
+            "type": "regeneration_by_selections",
+            "words": 113
+          },
+          {
+            "timestamp": "2026-01-28T21:42:51.515Z",
+            "type": "manual_update_selections",
+            "words": 42
+          },
+          {
+            "timestamp": "2026-01-28T21:43:02.435Z",
+            "type": "manual_update_selections",
+            "words": 83
+          },
+          {
+            "timestamp": "2026-01-28T21:43:08.714Z",
+            "type": "manual_update_graph_changed"
+          },
+          {
+            "timestamp": "2026-01-28T21:43:11.089Z",
+            "type": "manual_update_graph_changed"
+          },
+          {
+            "timestamp": "2026-01-28T21:43:48.386Z",
+            "type": "manual_update_selections",
+            "words": 42
+          },
+          {
+            "timestamp": "2026-01-28T21:44:00.658Z",
+            "type": "manual_update_graph_changed"
+          },
+          {
+            "timestamp": "2026-01-28T21:48:21.757Z",
+            "type": "manual_update_selections",
+            "words": 0
+          },
+          {
+            "timestamp": "2026-01-28T21:48:43.986Z",
+            "type": "manual_update_selections",
+            "words": 38
+          },
+          {
+            "timestamp": "2026-01-28T22:22:28.104Z",
+            "type": "regeneration_by_prompt"
           }
         ]
       }

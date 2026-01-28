@@ -180,7 +180,9 @@ function do_main_work(svgid) {
       }
 
       console.log("herer???");
-      saveActiveModel();
+      saveActiveModel(
+        window.Constants.MODEL_UPDATE_TYPE.MANUAL_UPDATE_GRAPH_PROPERTIES_ONLY,
+      );
     }
   });
 } //}}}

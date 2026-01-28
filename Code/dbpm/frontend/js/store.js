@@ -247,15 +247,15 @@ Store.activeDocument = Object.assign(
       if (this.getTemporarySelections().length > 0) {
         hasSelectionChanged = true;
       } else if (this.getActiveModelTrace()) {
-        const originalText = this.state.originalActiveModelSerializedSelections
-          .map((sel) => sel.text)
-          .join(" ");
-        const currentText = this.getSelectionsText(
-          this.getActiveModelTrace().selections,
-        );
-        if (originalText !== currentText) {
-          hasSelectionChanged = true;
-        }
+        // const originalText = this.state.originalActiveModelSerializedSelections
+        //   .map((sel) => sel.text)
+        //   .join(" ");
+        // const currentText = this.getSelectionsText(
+        //   this.getActiveModelTrace().selections,
+        // );
+        // if (originalText !== currentText) {
+        //   hasSelectionChanged = true;
+        // }
       }
       this.setHasSelectionChanged(hasSelectionChanged);
     },
@@ -284,6 +284,19 @@ Store.activeDocument = Object.assign(
       this.state.traces = traces;
       this.notify({ key: "traces", operation: "init" });
     },
+    updateTrace(serializedTrace) {
+      const index = this.state.traces.findIndex(
+        (trace) => trace.id === serializedTrace.id,
+      );
+      if (index !== -1) {
+        const trace = this.state.traces[index];
+        trace.selections = serializedTrace.selections.map((selection) => ({
+          ...selection,
+          range: deserializeRange(selection.range),
+        }));
+        this.setActiveModelTrace(trace);
+      }
+    },
 
     getTraces() {
       return this.state.traces;
@@ -305,9 +318,6 @@ Store.activeDocument = Object.assign(
     // },
     setActiveModelTrace(newValue) {
       const oldValue = this.getActiveModelTrace();
-      // this.setOriginalActiveModelSerializedSelections(
-      //   newValue ? newValue.selections : [],
-      // );
       this.state.activeModelTrace = newValue;
       this.notify({ key: "activeModelTrace", oldValue, newValue });
     },
@@ -321,25 +331,6 @@ Store.activeDocument = Object.assign(
     setActiveModelTraceByModelId(modelId) {
       const trace = this.state.traces.find((trace) => trace.modelId == modelId);
       this.setActiveModelTrace(trace);
-    },
-    setActiveModelTraceSelections(serializedSelections) {
-      console.log(serializedSelections);
-      // this.activeTrace.
-      const activeModelTrace = this.getActiveModelTrace();
-      activeModelTrace.selections = serializedSelections.map((selection) => ({
-        ...selection,
-        range: deserializeRange(selection.range),
-      }));
-      console.log(
-        "Updated active model trace selections:",
-        activeModelTrace.selections,
-      );
-      this.notify({
-        key: "activeModelTrace.selections",
-        operation: "set",
-        value: activeModelTrace.selections,
-      });
-      // activeModelTrace.selections =
     },
     removeActiveModelTraceSelectionById(selectionId) {
       let value;
@@ -358,7 +349,7 @@ Store.activeDocument = Object.assign(
         operation: "remove",
         value,
       });
-      this.computeSelectionChanged();
+      // this.computeSelectionChanged();
     },
     setActiveModelTraceById(traceId) {
       const trace = this.getTraceById(traceId);
@@ -423,6 +414,7 @@ Store.activeDocument = Object.assign(
     getSortedNewSelections() {
       let selections = [...this.getTemporarySelections()];
       const activeModelTrace = this.getActiveModelTrace();
+      console.log("Active trace:", activeModelTrace);
       if (activeModelTrace)
         selections = [...activeModelTrace.selections, ...selections];
       return getSortedSelectionsByRange(selections);
@@ -441,10 +433,10 @@ Store.activeDocument = Object.assign(
     getSerializedNewActiveModelTrace() {
       const selections = this.getSortedNewSelections();
       const serializedSelections = this.getSerializedSelections(selections);
-      const activeTrace = this.getActiveModelTrace();
-      console.log("Active trace:", activeTrace);
+      const activeModelTrace = this.getActiveModelTrace();
+      console.log("Active trace:", activeModelTrace);
       return Object.assign(
-        { ...activeTrace },
+        { ...activeModelTrace },
         {
           selections: serializedSelections,
         },
@@ -532,7 +524,6 @@ Store.activeModel = Object.assign(
       return this.state.model ? this.state.model.id : null;
     },
     getDocumentId() {
-      console.log("Getting document ID for active model????");
       const modelId = this.getModelId();
       // console.log("Getting document ID for active model ID:", modelId);
       return modelsStore.getModelDocumentIdById(modelId);
@@ -540,7 +531,6 @@ Store.activeModel = Object.assign(
     getSerializedData() {
       return new XMLSerializer().serializeToString(this.state.model.data);
     },
-
     setStatus(status) {
       this.state.status = status;
       this.notify({ key: "status", newValue: status });
@@ -549,8 +539,8 @@ Store.activeModel = Object.assign(
       this.state.error = error;
       this.notify({ key: "error", newValue: error });
     },
-
     setModel(newValue) {
+      console.log("!!!!!!!Active model set to:!!!!", newValue);
       const oldValue = this.state.model;
       this.state.model = newValue;
       if (newValue) {
@@ -563,9 +553,20 @@ Store.activeModel = Object.assign(
         }
         newValue.data = data;
       }
+      console.log("!!!!!!!!!Active model set to:", newValue);
       this.notify({ key: "model", oldValue, newValue });
     },
-
+    // updateModelData(newData) {
+    //   if (this.state.model) {
+    //     const oldData = this.state.model.data;
+    //     this.state.model.data = newData;
+    //     this.notify({
+    //       key: "model.data",
+    //       // oldValue: oldData,
+    //       // newValue: newData,
+    //     });
+    //   }
+    // },
     async setModelById(modelId) {
       if (modelId) {
         API.model.getModelById(modelId).then((model) => {
@@ -575,7 +576,32 @@ Store.activeModel = Object.assign(
         this.setModel(null);
       }
     },
+    updateModelDbpmTextSelections(selectedText) {
+      let model = this.getModel();
+      if (model) {
+        let data = model.data;
 
+        const dbpmInfo = $("dbpm\\:info", data)[0];
+        if (!dbpmInfo) {
+          console.warn("No dbpm:info found in model data.");
+          // return modelData;
+        }
+        const documentInfo = $("dbpm\\:document_info", dbpmInfo)[0];
+        if (!documentInfo) {
+          console.warn("No dbpm:document_info found in model data.");
+          // return modelData;
+        }
+        let textSelections = $("dbpm\\:text_selections", documentInfo)[0];
+        if (!textSelections) {
+          textSelections = data.createElementNS(
+            "https://example.com/dbpm",
+            "dbpm:text_selections",
+          );
+          documentInfo.appendChild(textSelections);
+        }
+        textSelections.textContent = selectedText;
+      }
+    },
     /*async updateActiceModel() {
       const modelId = this.getModelId();
       if (modelId) {

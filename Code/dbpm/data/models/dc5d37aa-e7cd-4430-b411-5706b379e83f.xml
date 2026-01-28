@@ -1,0 +1,49 @@
+<description>
+  <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+    <dbpm:document_info>
+      <dbpm:document_id>52d9c770-b308-42e7-92ff-6b935115344e</dbpm:document_id>
+      <dbpm:text_selections>1. Document Ingestion
+- User uploads one or more documents (text, PDF, or Word).
+- System stores documents and extracts textual content 
+
+2. Document Selection
+- User selects a document for analysis.
+- System displays document content and previously identified text segments.
+
+3. Process Extraction
+- System analyzes selected document text. nked to pro ocess model from extracted information.
+- Process includes tasks, decisions, flows, and subprocesses.
+- Each model element is linked to its source document text.
+
+5. Model Refinement
+- User reviews and e relationships.
+- System maintains traceability between model elements and document fragments.
+
+6. Subprocess Linking
+- Subprocesses reference separate process models.
+- User can navigate between pare 8. Output
+- Finalized process models are exported.
+- Traceability between documents and processes is retained.</dbpm:text_selections>
+    </dbpm:document_info>
+  </dbpm:info>
+  <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+    <call id="a1" endpoint="timeout" svg-id="a1" svg-label="Task 1" svg-type="call" svg-subtype="callmanipulate">
+      <parameters>
+        <!--{{{-->
+        <label>Task 1</label>
+        <method>:post</method>
+        <arguments>
+          <timeout>2</timeout>
+        </arguments>
+      </parameters>
+      <!--}}}-->
+      <code>
+        <finalize output="result">data.x += "a1,"</finalize>
+      </code>
+      <annotations/>
+      <documentation/>
+    </call>
+    <call id="a2" svg-id="a2" svg-label="Resource Synchronisation" svg-type="call" svg-subtype="call"><parameters><label>Resource Synchronisation</label><color>#f8a8c6</color><type>task</type><model/></parameters></call>
+    <call id="a3" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color>#e4c3e4</color><type>task</type><model/></parameters></call>
+  </description>
+</description>

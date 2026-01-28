@@ -2,13 +2,8 @@
   <dbpm:info
     xmlns:dbpm="https://example.com/dbpm">
     <dbpm:document_info>
-      <dbpm:document_id>d67ffe19-8580-4818-94d5-e537089ae51d</dbpm:document_id>
-      <dbpm:text_selections>ocuments and process models in collaborative environments?
-
-**Automation &amp; Process Mining**
-To what extent can process mining techniques be applied to unstructured or semi-structured documents for automated process model discovery?
-
-How accurately can a document-base</dbpm:text_selections>
+      <dbpm:document_id>497e7161-499f-4ab8-9e7b-6818002e74bc</dbpm:document_id>
+      <dbpm:text_selections>problem. This bidirectional synchronization transforms the "black box" into a "glass box," allowing users to instantly see the textual basis for each model. By empowering users to explore, validate, and iteratively refine AI output</dbpm:text_selections>
     </dbpm:document_info>
   </dbpm:info>
   <description xmlns="http://cpee.org/ns/description/1.0">
@@ -34,7 +29,7 @@ How accurately can a document-base</dbpm:text_selections>
         <label>Resource Synchronisation</label>
         <method>:post</method>
         <arguments>
-          <timeout>4</timeout>
+          <timeout>10</timeout>
         </arguments>
       </parameters>
       <!--}}}-->

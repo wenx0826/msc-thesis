@@ -1,6 +1,5 @@
 let $modelActionBar;
 let $cancelButton;
-let $generatedModelActionBar;
 let $regeneratedModelActionBar;
 let $deleteModelButton;
 let $datDetails;
@@ -16,7 +15,7 @@ let $sendPromptButton;
 $(document).ready(function () {
   $modelActionBar = $("#modelActionBar");
   $cancelButton = $("#cancelButton");
-  $generatedModelActionBar = $("#generatedModelActionBar");
+
   $regeneratedModelActionBar = $("#regeneratedModelActionBar");
   $deleteModelButton = $("#deleteModelButton");
   $datDetails = $("#dat_details");
@@ -82,42 +81,26 @@ activeModelStore.subscribe((state, { key, oldValue, newValue }) => {
   switch (key) {
     case "model":
       const newModelId = newValue ? newValue.id : null;
-      const oldModelId = oldValue ? oldValue.id : null;
+      const modelUpdateType = newValue ? newValue.updateType : null;
       if (newValue) {
+        $("#activeModelName").text(newValue.name ? newValue.name : "");
+        $modelActionBar.prop("disabled", false);
+        $datDetails.empty();
         showActiveModel(newValue);
-        if (!newModelId) {
-          $generatedModelActionBar.show();
-        } else {
-          $modelActionBar.css("visibility", "visible");
-          if (newModelId == oldModelId) {
-            $regeneratedModelActionBar.show();
-          } else if (newModelId != oldModelId) {
-            // $promptContainer.removeClass("disabled");
-          }
+        if (newModelId) {
+          $promptContainer.show();
+        }
+        if (
+          [
+            MODEL_UPDATE_TYPE.REGENERATION_BY_PROMPT,
+            MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS,
+          ].includes(modelUpdateType)
+        ) {
+          $regeneratedModelActionBar.show();
         }
       } else {
         clearModelViewer();
       }
-      // case "name":
-      //   $("#activeModelName").text(newValue ? newValue : "");
-      //   break;
-      // case "data":
-      //   if (!newValue) {
-      //     clearModelViewer();
-      //     return;
-      //   }
-      //   showActiveModel(state.data);
-      //   // console.log("Active model data updated:", newValue);
-      //   const modelId = workspaceStore.getActiveModelId();
-      //   if (!modelId) {
-      //     $generatedModelActionBar.show();
-      //   } else {
-      //     $modelActionBar.css("visibility", "visible");
-      //     if (oldValue) {
-      //       $regeneratedModelActionBar.show();
-      //     }
-      //   }
-
       break;
     default:
       break;
@@ -127,13 +110,6 @@ activeModelStore.subscribe((state, { key, oldValue, newValue }) => {
 workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
   switch (key) {
     case "activeModelId":
-      if (newValue) {
-        $promptContainer.show();
-        $modelActionBar.prop("disabled", false);
-      } else {
-        $promptContainer.hide();
-        $modelActionBar.prop("disabled", true);
-      }
       break;
     default:
       break;
@@ -198,8 +174,8 @@ function syncActiveModelGraphInList() {
   });
 }
 
-function saveActiveModel() {
-  modelService.updateActiveModelData();
+function saveActiveModel(type) {
+  modelService.updateActiveModel(type);
   syncActiveModelGraphInList();
 }
 
@@ -210,18 +186,16 @@ function deleteActiveModel(e) {
   removeSelectionsByModelId(activeModelId);
 }
 
-const clearModelViewer = () => {
-  // $("#activeModelName").text("");
+function clearModelViewer() {
   // console.log('Clearing active model canvas');
+  $("#activeModelName").text("");
+  $modelActionBar.prop("disabled", true);
   $("#graphcanvas").empty();
-  $modelActionBar.css("visibility", "hidden");
   $datDetails.empty();
-};
+  $promptContainer.hide();
+}
 
 const showActiveModel = (model) => {
-  $("#activeModelName").text(model.name ? model.name : "");
-  $datDetails.empty();
-
   // save["state"] = model.id ? "ready" : undefined;
   save["state"] = "ready";
   save["graph_theme"] = "preset_copy";
@@ -251,7 +225,7 @@ const showActiveModel = (model) => {
           // nothing selected
           $("#dat_details").empty();
         }
-        saveActiveModel();
+        saveActiveModel(MODEL_UPDATE_TYPE.MANUAL_UPDATE_GRAPH_CHANGED);
       };
     },
   );

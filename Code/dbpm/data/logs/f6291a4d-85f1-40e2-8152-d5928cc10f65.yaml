@@ -1,0 +1,934 @@
+---
+timestamp: '2026-01-28T21:41:37.297Z'
+event: project_created
+data:
+  id: f6291a4d-85f1-40e2-8152-d5928cc10f65
+  name: rtt
+---
+timestamp: '2026-01-28T21:41:43.657Z'
+event: document_uploaded
+data:
+  id: cadb1979-cff1-4bcc-b66e-8c0559b56f0a
+  name: document_based_process.txt
+  words: 204
+---
+timestamp: '2026-01-28T21:41:48.975Z'
+event: model_generated
+data:
+  id: 09480b87-9aa2-46e6-9c81-2837f64f6542
+  name: Model_1
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>cadb1979-cff1-4bcc-b66e-8c0559b56f0a</dbpm:document_id>
+          <dbpm:text_selections>1. Document Ingestion
+    - User uploads one or more documents (text, PDF, or Word).
+    - System stores documents and extracts textual content.
+
+    2. Document Selection
+    - User selects a document for analysis.
+    - System displays document content and previously identified text segments.</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <loop mode="pre_test" condition="data.places.length &gt; 0">
+          <_probability>
+            <_probability_min/>
+            <_probability_max/>
+            <_probability_avg/>
+          </_probability>
+          <manipulate id="a2" label="Next Place">data.place = data.places.shift</manipulate>
+          <call id="a1" endpoint="overview">
+            <parameters>
+              <label>Move to overview position</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <call id="a3" endpoint="get_items_neural">
+            <parameters>
+              <label>Get item positions</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <code>
+              <prepare/>
+              <finalize output="result">data.items = result
+    data.item = result[0]</finalize>
+              <update output="result"/>
+              <rescue output="result"/>
+            </code>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <choose mode="exclusive">
+            <alternative condition="data.items.length &gt; 0">
+              <call id="a5" endpoint="move_camera">
+                <parameters>
+                  <label>Inspect first item</label>
+                  <arguments>
+                    <x>!data.item['x']</x>
+                    <y>!data.item['y']</y>
+                  </arguments>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <call id="a6" endpoint="get_offset_neural">
+                <parameters>
+                  <label>Get item offset</label>
+                  <arguments/>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <code>
+                  <prepare/>
+                  <finalize output="result">data.adjusted = {
+      'x' =&gt; data.item['x'] + result['dir_x'],
+      'y' =&gt; data.item['y'] + result['dir_y']
+    }</finalize>
+                  <update output="result"/>
+                  <rescue output="result"/>
+                </code>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <call id="a8" endpoint="grip_and_place">
+                <parameters>
+                  <label>Grip and Place</label>
+                  <arguments>
+                    <x>!data.adjusted['x'].round(0)</x>
+                    <y>!data.adjusted['y'].round(0)</y>
+                    <place_x>!data.place[0]</place_x>
+                    <place_y>!data.place[1]</place_y>
+                  </arguments>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <_probability>
+                <_probability_min/>
+                <_probability_max/>
+                <_probability_avg/>
+              </_probability>
+            </alternative>
+            <otherwise>
+              <terminate/>
+            </otherwise>
+          </choose>
+        </loop>
+      </description>
+    </description>
+---
+timestamp: '2026-01-28T21:42:43.964Z'
+event: model_updated_regeneration_by_selections
+data:
+  id: 09480b87-9aa2-46e6-9c81-2837f64f6542
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>cadb1979-cff1-4bcc-b66e-8c0559b56f0a</dbpm:document_id>
+          <dbpm:text_selections>1. Document Ingestion
+    - User uploads one or more documents (text, PDF, or Word).
+    - System stores documents and extracts textual content.
+
+    2. Document Selection
+    - User selects a document for analysis.
+    - System displays document content and previously identified text segments.
+     a visual process model from extracted information.
+    - Process includes tasks, decisions, flows, and subprocesses.
+    - Each model element is linked to its source document text.
+
+    5. Model Refinement
+    - User reviews and edits the generated process model.
+    - User defines task types, conditions, and subprocess relationships.
+    - System maintains traceability between model elements and document fragments.
+
+    6. Subprocess Linking
+    - Subprocesses reference separate process models.
+    - User can navigate b</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="timeout" svg-id="a1" svg-label="Task 1" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Task 1</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>2</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a1,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a2" endpoint="timeouts" svg-id="a2" svg-label="Resource Synchronisation" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Resource Synchronisation</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>10</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a2,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a3" endpoint="timeout" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Task 3</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>4</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a3,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+      </description>
+    </description>
+---
+timestamp: '2026-01-28T21:42:51.514Z'
+event: model_updated_manual_update_selections
+data:
+  id: 09480b87-9aa2-46e6-9c81-2837f64f6542
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>cadb1979-cff1-4bcc-b66e-8c0559b56f0a</dbpm:document_id>
+          <dbpm:text_selections>1. Document Ingestion
+    - User uploads one or more documents (text, PDF, or Word).
+    - System stores documents and extracts textual content.
+
+    2. Document Selection
+    - User selects a document for analysis.
+    - System displays document content and previously identified text segments.</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="timeout" svg-id="a1" svg-label="Task 1" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Task 1</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>2</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a1,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a2" endpoint="timeouts" svg-id="a2" svg-label="Resource Synchronisation" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Resource Synchronisation</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>10</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a2,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a3" endpoint="timeout" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Task 3</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>4</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a3,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+      </description>
+    </description>
+---
+timestamp: '2026-01-28T21:43:02.434Z'
+event: model_updated_manual_update_selections
+data:
+  id: 09480b87-9aa2-46e6-9c81-2837f64f6542
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>cadb1979-cff1-4bcc-b66e-8c0559b56f0a</dbpm:document_id>
+          <dbpm:text_selections>1. Document Ingestion
+    - User uploads one or more documents (text, PDF, or Word).
+    - System stores documents and extracts textual content.
+
+    2. Document Selection
+    - User selects a document for analysis.
+    - System displays document content and previously identified text segments.
+     7. Model Management
+    - Multiple models are stored and listed.
+    - User switches between models and views previews.
+    - Models can be updated or reused.
+
+    8. Output
+    - Finalized process models are exported.
+    - Traceability between documents and processes is retained.</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="timeout" svg-id="a1" svg-label="Task 1" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Task 1</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>2</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a1,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a2" endpoint="timeouts" svg-id="a2" svg-label="Resource Synchronisation" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Resource Synchronisation</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>10</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a2,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a3" endpoint="timeout" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Task 3</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>4</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a3,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+      </description>
+    </description>
+---
+timestamp: '2026-01-28T21:43:08.713Z'
+event: model_updated_manual_update_graph_changed
+data:
+  id: 09480b87-9aa2-46e6-9c81-2837f64f6542
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>cadb1979-cff1-4bcc-b66e-8c0559b56f0a</dbpm:document_id>
+          <dbpm:text_selections>1. Document Ingestion
+    - User uploads one or more documents (text, PDF, or Word).
+    - System stores documents and extracts textual content.
+
+    2. Document Selection
+    - User selects a document for analysis.
+    - System displays document content and previously identified text segments.
+     7. Model Management
+    - Multiple models are stored and listed.
+    - User switches between models and views previews.
+    - Models can be updated or reused.
+
+    8. Output
+    - Finalized process models are exported.
+    - Traceability between documents and processes is retained.</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="timeout" svg-id="a1" svg-label="Task 1" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Task 1</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>2</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a1,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a2" endpoint="timeouts" svg-id="a2" svg-label="Resource Synchronisation" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Resource Synchronisation</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>10</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a2,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a3" endpoint="timeout" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Task 3</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>4</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a3,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call><call xmlns="http://cpee.org/ns/description/1.0" id="a4" svg-id="a4" svg-type="call" svg-subtype="call"><parameters><label/><color/><type>task</type><model/></parameters></call>
+      </description>
+    </description>
+---
+timestamp: '2026-01-28T21:43:11.088Z'
+event: model_updated_manual_update_graph_changed
+data:
+  id: 09480b87-9aa2-46e6-9c81-2837f64f6542
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>cadb1979-cff1-4bcc-b66e-8c0559b56f0a</dbpm:document_id>
+          <dbpm:text_selections>1. Document Ingestion
+    - User uploads one or more documents (text, PDF, or Word).
+    - System stores documents and extracts textual content.
+
+    2. Document Selection
+    - User selects a document for analysis.
+    - System displays document content and previously identified text segments.
+     7. Model Management
+    - Multiple models are stored and listed.
+    - User switches between models and views previews.
+    - Models can be updated or reused.
+
+    8. Output
+    - Finalized process models are exported.
+    - Traceability between documents and processes is retained.</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="timeout" svg-id="a1" svg-label="Task 1" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Task 1</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>2</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a1,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a2" endpoint="timeouts" svg-id="a2" svg-label="Resource Synchronisation" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Resource Synchronisation</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>10</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a2,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a3" endpoint="timeout" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Task 3</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>4</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a3,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call><call xmlns="http://cpee.org/ns/description/1.0" id="a4" svg-id="a4" svg-type="call" svg-subtype="call"><parameters><label/><color/><type>task</type><model/></parameters></call><manipulate xmlns="http://cpee.org/ns/description/1.0" id="a5" label="" svg-id="a5" svg-type="manipulate" svg-subtype="manipulate"/>
+      </description>
+    </description>
+---
+timestamp: '2026-01-28T21:43:48.385Z'
+event: model_updated_manual_update_selections
+data:
+  id: 09480b87-9aa2-46e6-9c81-2837f64f6542
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>cadb1979-cff1-4bcc-b66e-8c0559b56f0a</dbpm:document_id>
+          <dbpm:text_selections>1. Document Ingestion
+    - User uploads one or more documents (text, PDF, or Word).
+    - System stores documents and extracts textual content.
+
+    2. Document Selection
+    - User selects a document for analysis.
+    - System displays document content and previously identified text segments.</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="timeout" svg-id="a1" svg-label="Task 1" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Task 1</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>2</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a1,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a2" endpoint="timeouts" svg-id="a2" svg-label="Resource Synchronisation" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Resource Synchronisation</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>10</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a2,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a3" endpoint="timeout" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Task 3</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>4</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a3,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call><call xmlns="http://cpee.org/ns/description/1.0" id="a4" svg-id="a4" svg-type="call" svg-subtype="call"><parameters><label/><color/><type>task</type><model/></parameters></call><manipulate xmlns="http://cpee.org/ns/description/1.0" id="a5" label="" svg-id="a5" svg-type="manipulate" svg-subtype="manipulate"/>
+      </description>
+    </description>
+---
+timestamp: '2026-01-28T21:44:00.655Z'
+event: model_updated_manual_update_graph_changed
+data:
+  id: 09480b87-9aa2-46e6-9c81-2837f64f6542
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>cadb1979-cff1-4bcc-b66e-8c0559b56f0a</dbpm:document_id>
+          <dbpm:text_selections>1. Document Ingestion
+    - User uploads one or more documents (text, PDF, or Word).
+    - System stores documents and extracts textual content.
+
+    2. Document Selection
+    - User selects a document for analysis.
+    - System displays document content and previously identified text segments.</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="timeout" svg-id="a1" svg-label="Task 1" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Task 1</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>2</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a1,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a2" endpoint="timeouts" svg-id="a2" svg-label="Resource Synchronisation" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Resource Synchronisation</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>10</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a2,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a3" endpoint="timeout" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Task 3</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>4</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a3,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call><manipulate xmlns="http://cpee.org/ns/description/1.0" id="a5" label="" svg-id="a5" svg-type="manipulate" svg-subtype="manipulate"/>
+      </description>
+    </description>
+---
+timestamp: '2026-01-28T21:48:21.756Z'
+event: model_updated_manual_update_selections
+data:
+  id: 09480b87-9aa2-46e6-9c81-2837f64f6542
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>cadb1979-cff1-4bcc-b66e-8c0559b56f0a</dbpm:document_id>
+          <dbpm:text_selections/>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="timeout" svg-id="a1" svg-label="Task 1" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Task 1</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>2</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a1,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a2" endpoint="timeouts" svg-id="a2" svg-label="Resource Synchronisation" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Resource Synchronisation</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>10</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a2,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a3" endpoint="timeout" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Task 3</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>4</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a3,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call><manipulate xmlns="http://cpee.org/ns/description/1.0" id="a5" label="" svg-id="a5" svg-type="manipulate" svg-subtype="manipulate"/>
+      </description>
+    </description>
+---
+timestamp: '2026-01-28T21:48:43.985Z'
+event: model_updated_manual_update_selections
+data:
+  id: 09480b87-9aa2-46e6-9c81-2837f64f6542
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>cadb1979-cff1-4bcc-b66e-8c0559b56f0a</dbpm:document_id>
+          <dbpm:text_selections>conditions, and subprocess relationships.
+    - System maintains traceability between model elements and document fragments.
+
+    6. Subprocess Linking
+    - Subprocesses reference separate process models.
+    - User can navigate between parent and child models.
+    - Hierarchical model relationships are preserv</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="timeout" svg-id="a1" svg-label="Task 1" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Task 1</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>2</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a1,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a2" endpoint="timeouts" svg-id="a2" svg-label="Resource Synchronisation" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Resource Synchronisation</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>10</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a2,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a3" endpoint="timeout" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Task 3</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>4</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a3,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call><manipulate xmlns="http://cpee.org/ns/description/1.0" id="a5" label="" svg-id="a5" svg-type="manipulate" svg-subtype="manipulate"/>
+      </description>
+    </description>
+---
+timestamp: '2026-01-28T22:22:28.101Z'
+event: model_updated_regeneration_by_prompt
+data:
+  id: 09480b87-9aa2-46e6-9c81-2837f64f6542
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>cadb1979-cff1-4bcc-b66e-8c0559b56f0a</dbpm:document_id>
+          <dbpm:text_selections>conditions, and subprocess relationships.
+    - System maintains traceability between model elements and document fragments.
+
+    6. Subprocess Linking
+    - Subprocesses reference separate process models.
+    - User can navigate between parent and child models.
+    - Hierarchical model relationships are preserv</dbpm:text_selections>
+        </dbpm:document_info>
+        <dbpm:prompt>bb</dbpm:prompt>
+        <dbpm:prompt>gggg</dbpm:prompt>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="timeout" svg-id="a1" svg-label="Task 1" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Task 1</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>2</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a1,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a2" endpoint="timeouts" svg-id="a2" svg-label="Resource Synchronisation" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Resource Synchronisation</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>10</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a2,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a3" endpoint="timeout" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Task 3</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>4</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a3,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <manipulate xmlns="http://cpee.org/ns/description/1.0" id="a5" label="" svg-id="a5" svg-type="manipulate" svg-subtype="manipulate"/>
+      </description>
+    </description>

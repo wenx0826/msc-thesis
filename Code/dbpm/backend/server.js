@@ -339,7 +339,6 @@ app.post("/documents", (req, res) => {
         const documentStats = {
           id,
           name,
-          chars: content.length,
           words: content.split(/\s+/).filter(Boolean).length,
         };
         logEvent(projectId, "document_uploaded", documentStats);
@@ -499,7 +498,6 @@ app.post("/models", (req, res) => {
     (acc, sel) => acc + sel.text.split(/\s+/).filter(Boolean).length,
     0,
   );
-  const chars = trace.selections.reduce((acc, sel) => acc + sel.text.length, 0);
   fs.readFile(modelMetaByIdFile, "utf8", (err, data) => {
     let modelMetaById = {};
     if (!err) {
@@ -567,13 +565,11 @@ app.post("/models", (req, res) => {
       name: modelMeta.name,
       status: "generated",
       words,
-      chars,
       updates: [
         {
           timestamp: getISODate(),
           type: "generation",
           words,
-          chars,
         },
       ],
     });
@@ -644,7 +640,7 @@ app.get("/models/:id/data", (req, res) => {
 app.put("/models/:id", (req, res) => {
   const modelId = req.params.id;
   const { projectId, modelData, trace, type } = req.body;
-  console.log("Updating model content for ID:", modelId);
+  console.log("Updating model for ID:", modelId);
 
   const modelFile = path.join(modelsPath, `${modelId}.xml`);
   fs.writeFile(modelFile, modelData, (err) => {
@@ -668,9 +664,7 @@ app.put("/models/:id", (req, res) => {
     const projectStats = stats[projectId];
     const modelStats = projectStats.models.find((m) => m.id === modelId);
     if (modelStats) {
-      modelStats.status = trace
-        ? "regenerated_by_new_selections"
-        : "updated_by_prompt";
+      modelStats.status = "updated";
       const update = {
         timestamp: getISODate(),
         type: type,
@@ -680,12 +674,7 @@ app.put("/models/:id", (req, res) => {
           (acc, sel) => acc + sel.text.split(/\s+/).filter(Boolean).length,
           0,
         );
-        const chars = trace.selections.reduce(
-          (acc, sel) => acc + sel.text.length,
-          0,
-        );
         update.words = words;
-        update.chars = chars;
       }
       modelStats.updates.push(update);
     }
@@ -697,10 +686,6 @@ app.put("/models/:id", (req, res) => {
     });
   });
 
-  logEvent(projectId, `model_updated_${type}`, {
-    id: modelId,
-    data: modelData,
-  });
   if (trace) {
     fs.readFile(tracesFile, "utf8", (err, data) => {
       let traces = [];
@@ -722,6 +707,10 @@ app.put("/models/:id", (req, res) => {
       }
     });
   }
+  logEvent(projectId, `model_updated_${type}`, {
+    id: modelId,
+    data: modelData,
+  });
 });
 app.put("/models/:id/data", (req, res) => {
   const modelId = req.params.id;

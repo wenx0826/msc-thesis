@@ -1,0 +1,31 @@
+<description>
+  <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+    <dbpm:document_info>
+      <dbpm:document_id>52d9c770-b308-42e7-92ff-6b935115344e</dbpm:document_id>
+      <dbpm:text_selections>relationships are prese . Model Management
+- Multi</dbpm:text_selections>
+    </dbpm:document_info>
+  </dbpm:info>
+  <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+    <call id="a1" svg-id="a1" svg-label="Book Airline 1" svg-type="call" svg-subtype="call"><parameters><label>Book Airline 1</label><color>#f8a8c6</color><type>task</type><model/></parameters></call>
+    <parallel wait="-1" cancel="last" svg-id="parallel_0" svg-type="parallel" svg-subtype="parallel_start">
+      <loop mode="pre_test" condition="data.persons &gt; 0" svg-id="loop_0" svg-label="data.persons &gt; 0" svg-type="loop" svg-subtype="loop_head">
+        <parallel_branch svg-id="parallel_branch_0" svg-type="parallel_branch" svg-subtype="parallel_branch_event">
+          <call id="a2" svg-id="a2" svg-label="Book Hotel" svg-type="call" svg-subtype="call"><parameters><label>Book Hotel</label><color>#ded0c5</color><type>task</type><model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color>#ded0c5</color><type>task</type><model/></parameters></call>
+        </parallel_branch>
+        <manipulate id="a3" svg-id="a3" svg-type="manipulate" svg-subtype="manipulate">data.persons -= 1</manipulate>
+      </loop>
+    </parallel>
+    <choose mode="exclusive" svg-id="choose_0" svg-type="choose" svg-subtype="choose_exclusive">
+      <alternative condition="data.costs &gt; 700" svg-id="alternative_0" svg-label="data.costs &gt; 700" svg-type="alternative" svg-subtype="alternative">
+        <_probability>
+          <_probability_min/>
+          <_probability_max/>
+          <_probability_avg/>
+        </_probability>
+        <call id="a4" svg-id="a4" svg-label="Approve Hotel" svg-type="call" svg-subtype="call"><parameters><label>Approve Hotel</label><color>#ded0c5</color><type>task</type><model/></parameters></call>
+      </alternative>
+      <otherwise svg-id="otherwise_0" svg-type="otherwise" svg-subtype="otherwise"/>
+    </choose>
+  </description>
+</description>

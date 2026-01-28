@@ -23,7 +23,6 @@ $(function () {
   $generateButton.on("click", async () => {
     // $generateButton.prop("disabled", true);
     modelService.generateModelBySelections();
-    // const text = Store.activeModel.setStatus("generating");
   });
   $addSelectionsButton = $("#addSelectionsButton");
   $("#columnResizehandle1").on("dragcolumnmove", (e) => {
@@ -39,10 +38,15 @@ $(function () {
       } else {
         // todo change it to rerender after trace update
         Store.activeDocument.removeActiveModelTraceSelectionById(selectionId);
-        modelService.updat;
+        modelService.updateActiveModel(
+          MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
+        );
       }
       setSelectedSelection(null);
     }
+  });
+  $addSelectionsButton.on("click", () => {
+    modelService.updateActiveModel(MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS);
   });
 });
 
@@ -79,16 +83,9 @@ activeDocumentStore.subscribe((state, { key, operation, ...payload }) => {
       case "activeModelTrace.selections":
         console.log("65 here!!!", operation, value);
         switch (operation) {
-          case "set":
-            console.log("67here!!!");
-            for (const selection of value) {
-              renderSelection(selection, workspaceStore.getActiveModelId());
-            }
-            break;
           case "remove":
             removeRenderedSelection(value);
             break;
-
           default:
             break;
         }
@@ -128,11 +125,11 @@ activeDocumentStore.subscribe((state, { key, operation, ...payload }) => {
           // highlightActiveModelSelections(newValue.modelId);
           removeRenderedTrace(newValue);
           renderTrace(newValue);
-          // TODO if selection is in viewport, do not scroll
+          // TODO if has selection within viewer DONOT SCROLL
           // scrollToSelection(newValue.selections[0].id);
           scrollToRange(newValue.selections[0].range);
         }
-        if (oldValue) {
+        if (oldValue && oldValue.modelId !== newValue?.modelId) {
           unhighlightModelSelections(oldValue.modelId);
         }
         break;
@@ -264,19 +261,8 @@ const clearDocumentViewer = () => {
 //   }
 // };
 function removeRenderedTrace({ modelId }) {
-  $selectionsLayer
-    .find(`.selection-wrap[data-modelid="${modelId}"]`)
-    .each((index, element) => {
-      const $element = $(element);
-      const selectionId = $element.attr("data-selectionid");
-      $modelTags
-        .find(
-          `.tag-span[data-modelid="${modelId}"][data-selectionid="${selectionId}"]`,
-        )
-        .remove();
-      $element.remove();
-    });
-  $interactionLayer.find(`.selection-wrap[data-modelid="${modelId}"]`).remove();
+  $selectionsLayer.find(`[data-modelid="${modelId}"]`).remove();
+  $interactionLayer.find(`[data-modelid="${modelId}"]`).remove();
 }
 function removeRenderedSelection({ id: selectionId }) {
   $selectionsLayer
@@ -434,10 +420,14 @@ const renderSelection = ({ range, color, id: selectionId }, modelId) => {
     $modelTags.append(tagSpan);
   }
   if (!modelId || isActiveModel) {
+    // console.log("Rendering interaction layer selection????");
     // TODO if is selected selection, add selected class
     const $box = $selectionDiv.clone(false).empty();
     $box.appendTo($interactionLayer);
     $box.on("click", onSelectionSelect);
+    if (selectedSelection && selectedSelection.selectionId === selectionId) {
+      $box.addClass("selected");
+    }
   }
 };
 

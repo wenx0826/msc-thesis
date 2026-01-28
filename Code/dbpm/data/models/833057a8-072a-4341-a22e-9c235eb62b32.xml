@@ -1,15 +1,12 @@
 <description>
-  <dbpm:info
-    xmlns:dbpm="https://example.com/dbpm">
+  <dbpm:info xmlns:dbpm="https://example.com/dbpm">
     <dbpm:document_info>
-      <dbpm:document_id>d67ffe19-8580-4818-94d5-e537089ae51d</dbpm:document_id>
-      <dbpm:text_selections>uments for automated process model discovery?
-
-How accurately can a document-based explorer detect deviations between prescribed processes and processes inferred from real document</dbpm:text_selections>
+      <dbpm:document_id>7410888c-2812-49ee-93c8-bb3b9b0882ec</dbpm:document_id>
+      <dbpm:text_selections/>
     </dbpm:document_info>
   </dbpm:info>
-  <description xmlns="http://cpee.org/ns/description/1.0">
-    <call id="a1" endpoint="timeout">
+  <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+    <call id="a1" endpoint="timeout" svg-id="a1" svg-label="Task 1" svg-type="call" svg-subtype="callmanipulate">
       <parameters>
         <!--{{{-->
         <label>Task 1</label>
@@ -25,7 +22,7 @@ How accurately can a document-based explorer detect deviations between prescribe
       <annotations/>
       <documentation/>
     </call>
-    <call id="a2" endpoint="timeouts">
+    <call id="a2" endpoint="timeouts" svg-id="a2" svg-label="Resource Synchronisation" svg-type="call" svg-subtype="callmanipulate">
       <parameters>
         <!--{{{-->
         <label>Resource Synchronisation</label>
@@ -41,7 +38,7 @@ How accurately can a document-based explorer detect deviations between prescribe
       <annotations/>
       <documentation/>
     </call>
-    <call id="a3" endpoint="timeout">
+    <call id="a3" endpoint="timeout" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="callmanipulate">
       <parameters>
         <!--{{{-->
         <label>Task 3</label>

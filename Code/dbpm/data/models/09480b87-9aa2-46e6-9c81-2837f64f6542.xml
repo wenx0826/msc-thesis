@@ -1,9 +1,17 @@
 <description>
   <dbpm:info xmlns:dbpm="https://example.com/dbpm">
     <dbpm:document_info>
-      <dbpm:document_id>d67ffe19-8580-4818-94d5-e537089ae51d</dbpm:document_id>
-      <dbpm:text_selections>nfidence in their incorrect predictions. The analysis will also consider related document-centric AI tools (e.g., Google's NotebookLM) to understand different interaction paradig</dbpm:text_selections>
+      <dbpm:document_id>cadb1979-cff1-4bcc-b66e-8c0559b56f0a</dbpm:document_id>
+      <dbpm:text_selections>conditions, and subprocess relationships.
+- System maintains traceability between model elements and document fragments.
+
+6. Subprocess Linking
+- Subprocesses reference separate process models.
+- User can navigate between parent and child models.
+- Hierarchical model relationships are preserv</dbpm:text_selections>
     </dbpm:document_info>
+    <dbpm:prompt>bb</dbpm:prompt>
+    <dbpm:prompt>gggg</dbpm:prompt>
   </dbpm:info>
   <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
     <call id="a1" endpoint="timeout" svg-id="a1" svg-label="Task 1" svg-type="call" svg-subtype="callmanipulate">
@@ -22,7 +30,22 @@
       <annotations/>
       <documentation/>
     </call>
-    <call id="a2" svg-id="a2" svg-label="Resource Synchronisation" svg-type="call" svg-subtype="call"><parameters><label>Resource Synchronisation</label><color>#ffffcc</color><type>task</type><model/></parameters></call>
+    <call id="a2" endpoint="timeouts" svg-id="a2" svg-label="Resource Synchronisation" svg-type="call" svg-subtype="callmanipulate">
+      <parameters>
+        <!--{{{-->
+        <label>Resource Synchronisation</label>
+        <method>:post</method>
+        <arguments>
+          <timeout>10</timeout>
+        </arguments>
+      </parameters>
+      <!--}}}-->
+      <code>
+        <finalize output="result">data.x += "a2,"</finalize>
+      </code>
+      <annotations/>
+      <documentation/>
+    </call>
     <call id="a3" endpoint="timeout" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="callmanipulate">
       <parameters>
         <!--{{{-->
@@ -39,5 +62,6 @@
       <annotations/>
       <documentation/>
     </call>
+    <manipulate xmlns="http://cpee.org/ns/description/1.0" id="a5" label="" svg-id="a5" svg-type="manipulate" svg-subtype="manipulate"/>
   </description>
 </description>

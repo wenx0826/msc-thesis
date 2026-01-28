@@ -1,8 +1,28 @@
 <description>
   <dbpm:info xmlns:dbpm="https://example.com/dbpm">
     <dbpm:document_info>
-      <dbpm:document_id>d67ffe19-8580-4818-94d5-e537089ae51d</dbpm:document_id>
-      <dbpm:text_selections>between business requirements and process d</dbpm:text_selections>
+      <dbpm:document_id>497e7161-499f-4ab8-9e7b-6818002e74bc</dbpm:document_id>
+      <dbpm:text_selections>nce, and discover opportunities for automation, making process modeling an indispensable activity for continuous improvement and strategic transformation (Ferreira et al., 2009; Spree, 2021).
+
+
+****
+
+Gemini v3
+![[#^geminidrv3-1-1-1]]
+
+Grok v3
+![[#^grokv3-1-1-1]]
+
+
+## 2. The Challenge of Creating Process Models (Efficiently)
+
+
+Gemini v3
+![[#^geminidrv3-1-1-2]]
+Grok v3
+![[#^grokv3-1-1-2]]
+## 3. The Promise and Limitations of Large Language Models (LLMs textual data, significantly reducing the manual effort involved (Brown et al., 2020). However, this automation introduces critical new limitations:
+- **Lack of Traceability and Trust:** An LLM has black-box nature. It provides a finis</dbpm:text_selections>
     </dbpm:document_info>
   </dbpm:info>
   <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
@@ -115,42 +135,7 @@ data.costs += result.value('costs').to_f</finalize>
           <_probability_max/>
           <_probability_avg/>
         </_probability>
-        <call id="a4" endpoint="approve" svg-id="a4" svg-label="Approve Hotel" svg-type="call" svg-subtype="call">
-          <parameters>
-            <label>Approve Hotel</label>
-            <method>:post</method>
-            <arguments>
-              <costs>!data.costs</costs>
-            </arguments>
-          </parameters>
-          <annotations>
-            <_timing>
-              <_timing_weight/>
-              <_timing_avg/>
-              <explanations/>
-            </_timing>
-            <_shifting>
-              <_shifting_type>Duration</_shifting_type>
-            </_shifting>
-            <_context_data_analysis>
-              <probes/>
-              <ips/>
-            </_context_data_analysis>
-            <report>
-              <url/>
-            </report>
-            <_notes>
-              <_notes_general/>
-            </_notes>
-          </annotations>
-          <documentation>
-            <input/>
-            <output/>
-            <implementation>
-              <description/>
-            </implementation>
-          </documentation>
-        </call>
+        <call id="a4" svg-id="a4" svg-label="Approve Hotel" svg-type="call" svg-subtype="call"><parameters><label>Approve Hotel</label><color>#d4e1f1</color><type>task</type><model/></parameters></call>
       </alternative>
       <otherwise svg-id="otherwise_0" svg-type="otherwise" svg-subtype="otherwise"/>
     </choose>

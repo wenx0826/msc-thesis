@@ -1,20 +1,21 @@
 <description>
-  <dbpm:info
-    xmlns:dbpm="https://example.com/dbpm">
+  <dbpm:info xmlns:dbpm="https://example.com/dbpm">
     <dbpm:document_info>
-      <dbpm:document_id>d67ffe19-8580-4818-94d5-e537089ae51d</dbpm:document_id>
-      <dbpm:text_selections>designed to ensure high usability, effective functionality, and a positive user experience in a human-in-the-loop workflow?**
-**RQ3: To what extent does the Document-Based Proce</dbpm:text_selections>
+      <dbpm:document_id>52d9c770-b308-42e7-92ff-6b935115344e</dbpm:document_id>
+      <dbpm:text_selections>. Model Management
+- Multiple models are stored and listed.
+- User switches between models and views previ ws.
+- Mode</dbpm:text_selections>
     </dbpm:document_info>
   </dbpm:info>
-  <description xmlns="http://cpee.org/ns/description/1.0">
-    <loop mode="pre_test" condition="true">
+  <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+    <loop mode="pre_test" condition="true" svg-id="loop_0" svg-label="true" svg-type="loop" svg-subtype="loop_head">
       <_probability>
         <_probability_min/>
         <_probability_max/>
         <_probability_avg/>
       </_probability>
-      <call id="a1" endpoint="overview">
+      <call id="a1" endpoint="overview" svg-id="a1" svg-label="Move to overview position" svg-type="call" svg-subtype="call">
         <parameters>
           <label>Move to overview position</label>
           <arguments/>
@@ -38,7 +39,7 @@
         </annotations>
         <documentation/>
       </call>
-      <call id="a3" endpoint="get_items_base">
+      <call id="a3" endpoint="get_items_base" svg-id="a3" svg-label="Get item positions" svg-type="call" svg-subtype="callmanipulate">
         <parameters>
           <label>Get item positions</label>
           <arguments/>
@@ -69,7 +70,7 @@ data.item = result[0]</finalize>
         </annotations>
         <documentation/>
       </call>
-      <call id="a5" endpoint="move_camera">
+      <call id="a5" endpoint="move_camera" svg-id="a5" svg-label="Inspect first item" svg-type="call" svg-subtype="call">
         <parameters>
           <label>Inspect first item</label>
           <arguments>
@@ -96,7 +97,7 @@ data.item = result[0]</finalize>
         </annotations>
         <documentation/>
       </call>
-      <call id="a6" endpoint="get_offset_base">
+      <call id="a6" endpoint="get_offset_base" svg-id="a6" svg-label="Get item offset" svg-type="call" svg-subtype="callmanipulate">
         <parameters>
           <label>Get item offset</label>
           <arguments/>
@@ -126,7 +127,7 @@ data.item = result[0]</finalize>
         </annotations>
         <documentation/>
       </call>
-      <stop id="a2"/>
+      <stop id="a2" svg-id="a2" svg-type="stop" svg-subtype="stop"/>
     </loop>
   </description>
 </description>

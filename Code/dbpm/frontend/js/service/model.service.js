@@ -16,12 +16,37 @@ const modelService = {
     }
   },
   generateModelByPrompt(userInput) {
+    const model = activeModelStore.getModel() || {};
     model.updateType = MODEL_UPDATE_TYPE.REGENERATION_BY_PROMPT;
     const generatedModel = this.generateModel(
       userInput,
-      activeDocumentStore.getSerializedData(),
+      Store.activeModel.getSerializedData(), //todo get rpstXml only
     );
-    // const model = activeModelStore.getModel();
+    const data = model.data;
+
+    // model.data is the root element, get its document
+    const doc = data.ownerDocument;
+    const dbpmInfo = doc.getElementsByTagNameNS(
+      "https://example.com/dbpm",
+      "info",
+    )[0];
+
+    if (dbpmInfo) {
+      // Insert new tag inside dbpmInfo
+      const newTag = doc.createElementNS(
+        "https://example.com/dbpm",
+        "dbpm:prompt",
+      );
+      newTag.textContent = userInput;
+      dbpmInfo.appendChild(newTag);
+
+      // Serialize the updated document back to string
+      model.data = $(doc.documentElement).serializePrettyXML();
+    } else {
+      console.warn("No dbpm:info found in model data.");
+    }
+
+    activeModelStore.setModel(model);
   },
   async generateModelBySelections() {
     const selectedText = activeDocumentStore.getSelectedText();
@@ -102,6 +127,31 @@ const modelService = {
     root.appendChild(importedOriginal);
     return $(root).serializePrettyXML();
   },
+  updateDbpmTextSelections(modelData, selectedText) {
+    const parser = new DOMParser();
+    const data = parser.parseFromString(modelData, "application/xml");
+
+    const dbpmInfo = $("dbpm\\:info", data)[0];
+    if (!dbpmInfo) {
+      console.warn("No dbpm:info found in model data.");
+      // return modelData;
+    }
+    const documentInfo = $("dbpm\\:document_info", dbpmInfo)[0];
+    if (!documentInfo) {
+      console.warn("No dbpm:document_info found in model data.");
+      // return modelData;
+    }
+    let textSelections = $("dbpm\\:text_selections", documentInfo)[0];
+    if (!textSelections) {
+      textSelections = data.createElementNS(
+        "https://example.com/dbpm",
+        "dbpm:text_selections",
+      );
+      documentInfo.appendChild(textSelections);
+    }
+    textSelections.textContent = selectedText;
+    return $(data.documentElement).serializePrettyXML();
+  },
   async createModelAndTrace(modelData) {
     let model = {};
     const generatedModelNumber = projectStore.getModelNumber() + 1;
@@ -149,70 +199,53 @@ const modelService = {
   async updateActiveModel(type) {
     const model = Store.activeModel.getModel();
     const modelId = Store.workspace.getActiveModelId();
-    const modelData = Store.activeModel.getSerializedData();
 
-    if (model.updateType) type = model.updateType;
+    if (model.updateType) {
+      type = model.updateType;
+      delete model.updateType;
+    }
+    if (
+      [
+        MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
+        // MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS,
+      ].includes(type)
+    ) {
+      const selectedText = Store.activeDocument.getSelectedText();
+      Store.activeModel.updateModelDbpmTextSelections(selectedText);
+    }
+    const modelData = Store.activeModel.getSerializedData();
 
     const trace =
       type === MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS ||
       type === MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS
         ? Store.activeDocument.getSerializedNewActiveModelTrace()
         : null;
-
+    console.log("Updating active model TRACE:", trace);
     const res = await API.model.updateModel(modelId, {
       modelData,
       trace,
       type,
     });
-    //   console.log("Update result:", res);
-    //   Store.activeDocument.setTemporarySelections([]);
-    //   Store.activeDocument.setActiveModelTraceSelections(trace.selections);
-    // } else {
-    // }
-
-    switch (type) {
-      case MODEL_UPDATE_TYPE.REGENERATION_BY_PROMPT:
-      case MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS:
-      case MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS:
-        Store.activeDocument.setTemporarySelections([]);
-        Store.activeDocument.setActiveModelTraceBySerializedTrace(trace);
-        // Store.activeDocument.setActiveModelTraceSelections(
-        //   res.trace.selections,
-        // );
-        break;
-      case MODEL_UPDATE_TYPE.MANUAL_UPDATE_GRAPH_CHANGED:
-      case MODEL_UPDATE_TYPE.MANUAL_UPDATE_GRAPH_PROPERTIES_ONLY:
-        break;
-      default:
-        console.warn("Unknown model update type:", type);
-        break;
+    if (
+      [
+        MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
+        MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS,
+      ].includes(type)
+    ) {
+      Store.activeDocument.setTemporarySelections([]);
+      Store.activeDocument.updateTrace(trace);
     }
-  },
 
-  async updateActiveModelData() {
-    const activeModelId = Store.workspace.getActiveModelId();
-    const data = Store.activeModel.getSerializedData();
-    API.model.updateModelDataById(activeModelId, data);
-    // await modelsStore.updateModelDataById(activeModelId, data);
+    // modelData = res.modelData;
   },
 
   async updateActiveModelTrace() {
     const activeModelId = Store.workspace.getActiveModelId();
     const documentId = Store.workspace.getActiveDocumentId();
     const selections = Store.activeDocument.getSerializedTemporarySelections();
-    console.log(
-      "Updating model trace for model ID:",
-      activeModelId,
-      documentId,
-      selections,
-    );
     API.model.updateModelTraceByModelId(activeModelId, {
       documentId,
       selections,
     });
-    // await modelsStore.updateModelTraceByModelId(activeModelId, {
-    //   documentId,
-    //   selections,
-    // });
   },
 };

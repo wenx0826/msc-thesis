@@ -1,0 +1,3059 @@
+---
+timestamp: '2026-01-28T18:56:40.118Z'
+event: project_created
+data:
+  id: 438516e9-f62e-4a38-a38b-614a8d0d1ef2
+  name: err
+---
+timestamp: '2026-01-28T18:56:46.699Z'
+event: document_uploaded
+data:
+  id: 52d9c770-b308-42e7-92ff-6b935115344e
+  name: document_based_process.txt
+  words: 204
+---
+timestamp: '2026-01-28T18:56:54.400Z'
+event: model_generated
+data:
+  id: dc5d37aa-e7cd-4430-b411-5706b379e83f
+  name: Model_1
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>52d9c770-b308-42e7-92ff-6b935115344e</dbpm:document_id>
+          <dbpm:text_selections>1. Document Ingestion
+    - User uploads one or more documents (text, PDF, or Word).
+    - System stores documents and extracts textual content 8. Output
+    - Finalized process models are exported.
+    - Traceability between documents and processes is retained.</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <call id="a1" endpoint="worklist">
+          <parameters>
+            <label>OK OR NOT OK</label>
+            <arguments>
+              <orgmodel>https://cpee.org/~demo/orgviz/organisation_informatik.xml</orgmodel>
+              <form>https://cpee.org/~demo/form/form-f.html</form>
+              <role>Assistant</role>
+              <priority>42</priority>
+              <handling>single</handling>
+              <restrictions/>
+              <data>
+                <schaden>10000</schaden>
+                <text>destroyed</text>
+              </data>
+            </arguments>
+          </parameters>
+          <code>
+            <prepare/>
+            <finalize output="result">data.bla = result</finalize>
+            <update output="result"/>
+            <rescue output="result"/>
+          </code>
+          <annotations>
+            <_generic/>
+            <_timing>
+              <_timing_weight/>
+              <_timing_avg/>
+              <explanations/>
+            </_timing>
+            <_shifting>
+              <_shifting_type>Duration</_shifting_type>
+            </_shifting>
+            <_context_data_analysis>
+              <probes/>
+              <ips/>
+            </_context_data_analysis>
+            <report>
+              <url/>
+            </report>
+            <_notes>
+              <_notes_general/>
+            </_notes>
+          </annotations>
+          <documentation>
+            <input/>
+            <output/>
+            <implementation>
+              <description/>
+            </implementation>
+            <code>
+              <description/>
+            </code>
+          </documentation>
+        </call>
+      </description>
+    </description>
+---
+timestamp: '2026-01-28T18:57:26.660Z'
+event: model_updated_manual_update_selections
+data:
+  id: dc5d37aa-e7cd-4430-b411-5706b379e83f
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>52d9c770-b308-42e7-92ff-6b935115344e</dbpm:document_id>
+          <dbpm:text_selections>1. Document Ingestion
+    - User uploads one or more documents (text, PDF, or Word).
+    - System stores documents and extracts textual content 8. Output
+    - Finalized process models are exported.
+    - Traceability between documents and processes is retained.</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="worklist" svg-id="a1" svg-label="OK OR NOT OK" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <label>OK OR NOT OK</label>
+            <arguments>
+              <orgmodel>https://cpee.org/~demo/orgviz/organisation_informatik.xml</orgmodel>
+              <form>https://cpee.org/~demo/form/form-f.html</form>
+              <role>Assistant</role>
+              <priority>42</priority>
+              <handling>single</handling>
+              <restrictions/>
+              <data>
+                <schaden>10000</schaden>
+                <text>destroyed</text>
+              </data>
+            </arguments>
+          </parameters>
+          <code>
+            <prepare/>
+            <finalize output="result">data.bla = result</finalize>
+            <update output="result"/>
+            <rescue output="result"/>
+          </code>
+          <annotations>
+            <_generic/>
+            <_timing>
+              <_timing_weight/>
+              <_timing_avg/>
+              <explanations/>
+            </_timing>
+            <_shifting>
+              <_shifting_type>Duration</_shifting_type>
+            </_shifting>
+            <_context_data_analysis>
+              <probes/>
+              <ips/>
+            </_context_data_analysis>
+            <report>
+              <url/>
+            </report>
+            <_notes>
+              <_notes_general/>
+            </_notes>
+          </annotations>
+          <documentation>
+            <input/>
+            <output/>
+            <implementation>
+              <description/>
+            </implementation>
+            <code>
+              <description/>
+            </code>
+          </documentation>
+        </call>
+      </description>
+    </description>
+---
+timestamp: '2026-01-28T19:25:27.246Z'
+event: model_updated_regeneration_by_selections
+data:
+  id: dc5d37aa-e7cd-4430-b411-5706b379e83f
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>52d9c770-b308-42e7-92ff-6b935115344e</dbpm:document_id>
+          <dbpm:text_selections>1. Document Ingestion
+    - User uploads one or more documents (text, PDF, or Word).
+    - System stores documents and extracts textual content 
+
+    2. Document Selection
+    - User selects a document for analysis.
+    - System displays document content and previously identified text segments.
+
+    3. Process Extraction
+    - System analyzes selected document text. ocess model from extracted information.
+    - Process includes tasks, decisions, flows, and subprocesses.
+    - Each model element is linked to its source document text.
+
+    5. Model Refinement
+    - User reviews and e 8. Output
+    - Finalized process models are exported.
+    - Traceability between documents and processes is retained.</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="bookAir" svg-id="a1" svg-label="Book Airline 1" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <label>Book Airline 1</label>
+            <method>:post</method>
+            <arguments>
+              <from>!data.from</from>
+              <to>!data.to</to>
+              <persons>!data.persons</persons>
+            </arguments>
+          </parameters>
+          <code>
+            <prepare/>
+            <finalize output="result">data.airline = result.value('id')
+    data.costs += result.value('costs').to_f
+    status.update 1, 'Hotel'</finalize>
+            <update output="result"/>
+            <rescue output="result"/>
+          </code>
+          <annotations>
+            <_timing>
+              <_timing_weight/>
+              <_timing_avg/>
+              <explanations/>
+            </_timing>
+            <_shifting>
+              <_shifting_type>Duration</_shifting_type>
+            </_shifting>
+            <_context_data_analysis>
+              <probes/>
+              <ips/>
+            </_context_data_analysis>
+            <report>
+              <url/>
+            </report>
+            <_notes>
+              <_notes_general/>
+            </_notes>
+          </annotations>
+          <documentation>
+            <input/>
+            <output/>
+            <implementation>
+              <description/>
+            </implementation>
+            <code>
+              <description/>
+            </code>
+          </documentation>
+        </call>
+        <parallel wait="-1" cancel="last" svg-id="parallel_0" svg-type="parallel" svg-subtype="parallel_start">
+          <loop mode="pre_test" condition="data.persons &gt; 0" svg-id="loop_0" svg-label="data.persons &gt; 0" svg-type="loop" svg-subtype="loop_head">
+            <parallel_branch svg-id="parallel_branch_0" svg-type="parallel_branch" svg-subtype="parallel_branch_event">
+              <call id="a2" endpoint="bookHotel" svg-id="a2" svg-label="Book Hotel" svg-type="call" svg-subtype="callmanipulate">
+                <parameters>
+                  <label>Book Hotel</label>
+                  <method>:post</method>
+                  <arguments>
+                    <to>!data.to</to>
+                  </arguments>
+                </parameters>
+                <code>
+                  <prepare/>
+                  <finalize output="result">data.hotels &lt;&lt; result.value('id')
+    data.costs += result.value('costs').to_f</finalize>
+                  <update output="result"/>
+                  <rescue output="result"/>
+                </code>
+                <annotations>
+                  <_timing>
+                    <_timing_weight/>
+                    <_timing_avg/>
+                    <explanations/>
+                  </_timing>
+                  <_shifting>
+                    <_shifting_type>Duration</_shifting_type>
+                  </_shifting>
+                  <_context_data_analysis>
+                    <probes/>
+                    <ips/>
+                  </_context_data_analysis>
+                  <report>
+                    <url/>
+                  </report>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation>
+                  <input/>
+                  <output/>
+                  <implementation>
+                    <description/>
+                  </implementation>
+                  <code>
+                    <description/>
+                  </code>
+                </documentation>
+              </call>
+            </parallel_branch>
+            <manipulate id="a3" svg-id="a3" svg-type="manipulate" svg-subtype="manipulate">data.persons -= 1</manipulate>
+          </loop>
+        </parallel>
+        <choose mode="exclusive" svg-id="choose_0" svg-type="choose" svg-subtype="choose_exclusive">
+          <alternative condition="data.costs &gt; 700" svg-id="alternative_0" svg-label="data.costs &gt; 700" svg-type="alternative" svg-subtype="alternative">
+            <_probability>
+              <_probability_min/>
+              <_probability_max/>
+              <_probability_avg/>
+            </_probability>
+            <call id="a4" endpoint="approve" svg-id="a4" svg-label="Approve Hotel" svg-type="call" svg-subtype="call">
+              <parameters>
+                <label>Approve Hotel</label>
+                <method>:post</method>
+                <arguments>
+                  <costs>!data.costs</costs>
+                </arguments>
+              </parameters>
+              <annotations>
+                <_timing>
+                  <_timing_weight/>
+                  <_timing_avg/>
+                  <explanations/>
+                </_timing>
+                <_shifting>
+                  <_shifting_type>Duration</_shifting_type>
+                </_shifting>
+                <_context_data_analysis>
+                  <probes/>
+                  <ips/>
+                </_context_data_analysis>
+                <report>
+                  <url/>
+                </report>
+                <_notes>
+                  <_notes_general/>
+                </_notes>
+              </annotations>
+              <documentation>
+                <input/>
+                <output/>
+                <implementation>
+                  <description/>
+                </implementation>
+              </documentation>
+            </call>
+          </alternative>
+          <otherwise svg-id="otherwise_0" svg-type="otherwise" svg-subtype="otherwise"/>
+        </choose>
+      </description>
+    </description>
+---
+timestamp: '2026-01-28T19:25:46.685Z'
+event: model_updated_regeneration_by_selections
+data:
+  id: dc5d37aa-e7cd-4430-b411-5706b379e83f
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>52d9c770-b308-42e7-92ff-6b935115344e</dbpm:document_id>
+          <dbpm:text_selections>1. Document Ingestion
+    - User uploads one or more documents (text, PDF, or Word).
+    - System stores documents and extracts textual content 
+
+    2. Document Selection
+    - User selects a document for analysis.
+    - System displays document content and previously identified text segments.
+
+    3. Process Extraction
+    - System analyzes selected document text. ocess model from extracted information.
+    - Process includes tasks, decisions, flows, and subprocesses.
+    - Each model element is linked to its source document text.
+
+    5. Model Refinement
+    - User reviews and e relationships.
+    - System maintains traceability between model elements and document fragments.
+
+    6. Subprocess Linking
+    - Subprocesses reference separate process models.
+    - User can navigate between pare 8. Output
+    - Finalized process models are exported.
+    - Traceability between documents and processes is retained.</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="worklist" svg-id="a1" svg-label="OK OR NOT OK" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <label>OK OR NOT OK</label>
+            <arguments>
+              <orgmodel>https://cpee.org/~demo/orgviz/organisation_informatik.xml</orgmodel>
+              <form>https://cpee.org/~demo/form/form-f.html</form>
+              <role>Assistant</role>
+              <priority>42</priority>
+              <handling>single</handling>
+              <restrictions/>
+              <data>
+                <schaden>10000</schaden>
+                <text>destroyed</text>
+              </data>
+            </arguments>
+          </parameters>
+          <code>
+            <prepare/>
+            <finalize output="result">data.bla = result</finalize>
+            <update output="result"/>
+            <rescue output="result"/>
+          </code>
+          <annotations>
+            <_generic/>
+            <_timing>
+              <_timing_weight/>
+              <_timing_avg/>
+              <explanations/>
+            </_timing>
+            <_shifting>
+              <_shifting_type>Duration</_shifting_type>
+            </_shifting>
+            <_context_data_analysis>
+              <probes/>
+              <ips/>
+            </_context_data_analysis>
+            <report>
+              <url/>
+            </report>
+            <_notes>
+              <_notes_general/>
+            </_notes>
+          </annotations>
+          <documentation>
+            <input/>
+            <output/>
+            <implementation>
+              <description/>
+            </implementation>
+            <code>
+              <description/>
+            </code>
+          </documentation>
+        </call>
+      </description>
+    </description>
+---
+timestamp: '2026-01-28T19:26:11.733Z'
+event: model_generated
+data:
+  id: 25a41e8e-15ef-47f1-9857-e9859d5182b8
+  name: Model_2
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>52d9c770-b308-42e7-92ff-6b935115344e</dbpm:document_id>
+          <dbpm:text_selections>. Model Management
+    - Multi</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <call id="a1" endpoint="bookAir">
+          <parameters>
+            <label>Book Airline 1</label>
+            <method>:post</method>
+            <arguments>
+              <from>!data.from</from>
+              <to>!data.to</to>
+              <persons>!data.persons</persons>
+            </arguments>
+          </parameters>
+          <code>
+            <prepare/>
+            <finalize output="result">data.airline = result.value('id')
+    data.costs += result.value('costs').to_f
+    status.update 1, 'Hotel'</finalize>
+            <update output="result"/>
+            <rescue output="result"/>
+          </code>
+          <annotations>
+            <_timing>
+              <_timing_weight/>
+              <_timing_avg/>
+              <explanations/>
+            </_timing>
+            <_shifting>
+              <_shifting_type>Duration</_shifting_type>
+            </_shifting>
+            <_context_data_analysis>
+              <probes/>
+              <ips/>
+            </_context_data_analysis>
+            <report>
+              <url/>
+            </report>
+            <_notes>
+              <_notes_general/>
+            </_notes>
+          </annotations>
+          <documentation>
+            <input/>
+            <output/>
+            <implementation>
+              <description/>
+            </implementation>
+            <code>
+              <description/>
+            </code>
+          </documentation>
+        </call>
+        <parallel wait="-1" cancel="last">
+          <loop mode="pre_test" condition="data.persons &gt; 0">
+            <parallel_branch>
+              <call id="a2" endpoint="bookHotel">
+                <parameters>
+                  <label>Book Hotel</label>
+                  <method>:post</method>
+                  <arguments>
+                    <to>!data.to</to>
+                  </arguments>
+                </parameters>
+                <code>
+                  <prepare/>
+                  <finalize output="result">data.hotels &lt;&lt; result.value('id')
+    data.costs += result.value('costs').to_f</finalize>
+                  <update output="result"/>
+                  <rescue output="result"/>
+                </code>
+                <annotations>
+                  <_timing>
+                    <_timing_weight/>
+                    <_timing_avg/>
+                    <explanations/>
+                  </_timing>
+                  <_shifting>
+                    <_shifting_type>Duration</_shifting_type>
+                  </_shifting>
+                  <_context_data_analysis>
+                    <probes/>
+                    <ips/>
+                  </_context_data_analysis>
+                  <report>
+                    <url/>
+                  </report>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation>
+                  <input/>
+                  <output/>
+                  <implementation>
+                    <description/>
+                  </implementation>
+                  <code>
+                    <description/>
+                  </code>
+                </documentation>
+              </call>
+            </parallel_branch>
+            <manipulate id="a3">data.persons -= 1</manipulate>
+          </loop>
+        </parallel>
+        <choose mode="exclusive">
+          <alternative condition="data.costs &gt; 700">
+            <_probability>
+              <_probability_min/>
+              <_probability_max/>
+              <_probability_avg/>
+            </_probability>
+            <call id="a4" endpoint="approve">
+              <parameters>
+                <label>Approve Hotel</label>
+                <method>:post</method>
+                <arguments>
+                  <costs>!data.costs</costs>
+                </arguments>
+              </parameters>
+              <annotations>
+                <_timing>
+                  <_timing_weight/>
+                  <_timing_avg/>
+                  <explanations/>
+                </_timing>
+                <_shifting>
+                  <_shifting_type>Duration</_shifting_type>
+                </_shifting>
+                <_context_data_analysis>
+                  <probes/>
+                  <ips/>
+                </_context_data_analysis>
+                <report>
+                  <url/>
+                </report>
+                <_notes>
+                  <_notes_general/>
+                </_notes>
+              </annotations>
+              <documentation>
+                <input/>
+                <output/>
+                <implementation>
+                  <description/>
+                </implementation>
+              </documentation>
+            </call>
+          </alternative>
+          <otherwise/>
+        </choose>
+      </description>
+    </description>
+---
+timestamp: '2026-01-28T19:26:52.150Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: 25a41e8e-15ef-47f1-9857-e9859d5182b8
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>52d9c770-b308-42e7-92ff-6b935115344e</dbpm:document_id>
+          <dbpm:text_selections>. Model Management
+    - Multi</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="bookAir" svg-id="a1" svg-label="Book Airline 1" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <label>Book Airline 1</label>
+            <method>:post</method>
+            <arguments>
+              <from>!data.from</from>
+              <to>!data.to</to>
+              <persons>!data.persons</persons>
+            </arguments>
+          </parameters>
+          <code>
+            <prepare/>
+            <finalize output="result">data.airline = result.value('id')
+    data.costs += result.value('costs').to_f
+    status.update 1, 'Hotel'</finalize>
+            <update output="result"/>
+            <rescue output="result"/>
+          </code>
+          <annotations>
+            <_timing>
+              <_timing_weight/>
+              <_timing_avg/>
+              <explanations/>
+            </_timing>
+            <_shifting>
+              <_shifting_type>Duration</_shifting_type>
+            </_shifting>
+            <_context_data_analysis>
+              <probes/>
+              <ips/>
+            </_context_data_analysis>
+            <report>
+              <url/>
+            </report>
+            <_notes>
+              <_notes_general/>
+            </_notes>
+          </annotations>
+          <documentation>
+            <input/>
+            <output/>
+            <implementation>
+              <description/>
+            </implementation>
+            <code>
+              <description/>
+            </code>
+          </documentation>
+        </call>
+        <parallel wait="-1" cancel="last" svg-id="parallel_0" svg-type="parallel" svg-subtype="parallel_start">
+          <loop mode="pre_test" condition="data.persons &gt; 0" svg-id="loop_0" svg-label="data.persons &gt; 0" svg-type="loop" svg-subtype="loop_head">
+            <parallel_branch svg-id="parallel_branch_0" svg-type="parallel_branch" svg-subtype="parallel_branch_event">
+              <call id="a2" endpoint="bookHotel" svg-id="a2" svg-label="Book Hotel" svg-type="call" svg-subtype="callmanipulate">
+                <parameters>
+                  <label>Book Hotel</label>
+                  <method>:post</method>
+                  <arguments>
+                    <to>!data.to</to>
+                  </arguments>
+                </parameters>
+                <code>
+                  <prepare/>
+                  <finalize output="result">data.hotels &lt;&lt; result.value('id')
+    data.costs += result.value('costs').to_f</finalize>
+                  <update output="result"/>
+                  <rescue output="result"/>
+                </code>
+                <annotations>
+                  <_timing>
+                    <_timing_weight/>
+                    <_timing_avg/>
+                    <explanations/>
+                  </_timing>
+                  <_shifting>
+                    <_shifting_type>Duration</_shifting_type>
+                  </_shifting>
+                  <_context_data_analysis>
+                    <probes/>
+                    <ips/>
+                  </_context_data_analysis>
+                  <report>
+                    <url/>
+                  </report>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation>
+                  <input/>
+                  <output/>
+                  <implementation>
+                    <description/>
+                  </implementation>
+                  <code>
+                    <description/>
+                  </code>
+                </documentation>
+              </call>
+            </parallel_branch>
+            <manipulate id="a3" svg-id="a3" svg-type="manipulate" svg-subtype="manipulate">data.persons -= 1</manipulate>
+          </loop>
+        </parallel>
+        <choose mode="exclusive" svg-id="choose_0" svg-type="choose" svg-subtype="choose_exclusive">
+          <alternative condition="data.costs &gt; 700" svg-id="alternative_0" svg-label="data.costs &gt; 700" svg-type="alternative" svg-subtype="alternative">
+            <_probability>
+              <_probability_min/>
+              <_probability_max/>
+              <_probability_avg/>
+            </_probability>
+            <call id="a4" svg-id="a4" svg-label="Approve Hotel" svg-type="call" svg-subtype="call"><parameters><label>Approve Hotel</label><color>#ded0c5</color><type>task</type><model/></parameters></call>
+          </alternative>
+          <otherwise svg-id="otherwise_0" svg-type="otherwise" svg-subtype="otherwise"/>
+        </choose>
+      </description>
+    </description>
+---
+timestamp: '2026-01-28T19:28:05.016Z'
+event: model_generated
+data:
+  id: 9431fed2-1bf3-4446-8519-d679ba6cfcc7
+  name: Model_3
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>52d9c770-b308-42e7-92ff-6b935115344e</dbpm:document_id>
+          <dbpm:text_selections>ws.
+    - Mode</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <loop mode="pre_test" condition="data.places.length &gt; 0">
+          <_probability>
+            <_probability_min/>
+            <_probability_max/>
+            <_probability_avg/>
+          </_probability>
+          <manipulate id="a2" label="Next Place">data.place = data.places.shift</manipulate>
+          <call id="a1" endpoint="overview">
+            <parameters>
+              <label>Move to overview position</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <call id="a3" endpoint="get_items_neural">
+            <parameters>
+              <label>Get item positions</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <code>
+              <prepare/>
+              <finalize output="result">data.items = result
+    data.item = result[0]</finalize>
+              <update output="result"/>
+              <rescue output="result"/>
+            </code>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <choose mode="exclusive">
+            <alternative condition="data.items.length &gt; 0">
+              <call id="a5" endpoint="move_camera">
+                <parameters>
+                  <label>Inspect first item</label>
+                  <arguments>
+                    <x>!data.item['x']</x>
+                    <y>!data.item['y']</y>
+                  </arguments>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <call id="a6" endpoint="get_offset_neural">
+                <parameters>
+                  <label>Get item offset</label>
+                  <arguments/>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <code>
+                  <prepare/>
+                  <finalize output="result">data.adjusted = {
+      'x' =&gt; data.item['x'] + result['dir_x'],
+      'y' =&gt; data.item['y'] + result['dir_y']
+    }</finalize>
+                  <update output="result"/>
+                  <rescue output="result"/>
+                </code>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <call id="a8" endpoint="grip_and_place">
+                <parameters>
+                  <label>Grip and Place</label>
+                  <arguments>
+                    <x>!data.adjusted['x'].round(0)</x>
+                    <y>!data.adjusted['y'].round(0)</y>
+                    <place_x>!data.place[0]</place_x>
+                    <place_y>!data.place[1]</place_y>
+                  </arguments>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <_probability>
+                <_probability_min/>
+                <_probability_max/>
+                <_probability_avg/>
+              </_probability>
+            </alternative>
+            <otherwise>
+              <terminate/>
+            </otherwise>
+          </choose>
+        </loop>
+      </description>
+    </description>
+---
+timestamp: '2026-01-28T19:31:04.458Z'
+event: model_updated_regeneration_by_selections
+data:
+  id: dc5d37aa-e7cd-4430-b411-5706b379e83f
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>52d9c770-b308-42e7-92ff-6b935115344e</dbpm:document_id>
+          <dbpm:text_selections>1. Document Ingestion
+    - User uploads one or more documents (text, PDF, or Word).
+    - System stores documents and extracts textual content 
+
+    2. Document Selection
+    - User selects a document for analysis.
+    - System displays document content and previously identified text segments.
+
+    3. Process Extraction
+    - System analyzes selected document text. nked to pro ocess model from extracted information.
+    - Process includes tasks, decisions, flows, and subprocesses.
+    - Each model element is linked to its source document text.
+
+    5. Model Refinement
+    - User reviews and e relationships.
+    - System maintains traceability between model elements and document fragments.
+
+    6. Subprocess Linking
+    - Subprocesses reference separate process models.
+    - User can navigate between pare 8. Output
+    - Finalized process models are exported.
+    - Traceability between documents and processes is retained.</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="timeout" svg-id="a1" svg-label="Task 1" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Task 1</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>2</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a1,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a2" endpoint="timeouts" svg-id="a2" svg-label="Resource Synchronisation" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Resource Synchronisation</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>4</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a2,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a3" endpoint="timeout" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Task 3</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>4</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a3,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+      </description>
+    </description>
+---
+timestamp: '2026-01-28T19:57:01.310Z'
+event: model_updated_manual_update_graph_changed
+data:
+  id: 25a41e8e-15ef-47f1-9857-e9859d5182b8
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>52d9c770-b308-42e7-92ff-6b935115344e</dbpm:document_id>
+          <dbpm:text_selections>. Model Management
+    - Multi</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="bookAir" svg-id="a1" svg-label="Book Airline 1" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <label>Book Airline 1</label>
+            <method>:post</method>
+            <arguments>
+              <from>!data.from</from>
+              <to>!data.to</to>
+              <persons>!data.persons</persons>
+            </arguments>
+          </parameters>
+          <code>
+            <prepare/>
+            <finalize output="result">data.airline = result.value('id')
+    data.costs += result.value('costs').to_f
+    status.update 1, 'Hotel'</finalize>
+            <update output="result"/>
+            <rescue output="result"/>
+          </code>
+          <annotations>
+            <_timing>
+              <_timing_weight/>
+              <_timing_avg/>
+              <explanations/>
+            </_timing>
+            <_shifting>
+              <_shifting_type>Duration</_shifting_type>
+            </_shifting>
+            <_context_data_analysis>
+              <probes/>
+              <ips/>
+            </_context_data_analysis>
+            <report>
+              <url/>
+            </report>
+            <_notes>
+              <_notes_general/>
+            </_notes>
+          </annotations>
+          <documentation>
+            <input/>
+            <output/>
+            <implementation>
+              <description/>
+            </implementation>
+            <code>
+              <description/>
+            </code>
+          </documentation>
+        </call>
+        <parallel wait="-1" cancel="last" svg-id="parallel_0" svg-type="parallel" svg-subtype="parallel_start">
+          <loop mode="pre_test" condition="data.persons &gt; 0" svg-id="loop_0" svg-label="data.persons &gt; 0" svg-type="loop" svg-subtype="loop_head">
+            <parallel_branch svg-id="parallel_branch_0" svg-type="parallel_branch" svg-subtype="parallel_branch_event">
+              <call id="a2" endpoint="bookHotel" svg-id="a2" svg-label="Book Hotel" svg-type="call" svg-subtype="callmanipulate">
+                <parameters>
+                  <label>Book Hotel</label>
+                  <method>:post</method>
+                  <arguments>
+                    <to>!data.to</to>
+                  </arguments>
+                </parameters>
+                <code>
+                  <prepare/>
+                  <finalize output="result">data.hotels &lt;&lt; result.value('id')
+    data.costs += result.value('costs').to_f</finalize>
+                  <update output="result"/>
+                  <rescue output="result"/>
+                </code>
+                <annotations>
+                  <_timing>
+                    <_timing_weight/>
+                    <_timing_avg/>
+                    <explanations/>
+                  </_timing>
+                  <_shifting>
+                    <_shifting_type>Duration</_shifting_type>
+                  </_shifting>
+                  <_context_data_analysis>
+                    <probes/>
+                    <ips/>
+                  </_context_data_analysis>
+                  <report>
+                    <url/>
+                  </report>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation>
+                  <input/>
+                  <output/>
+                  <implementation>
+                    <description/>
+                  </implementation>
+                  <code>
+                    <description/>
+                  </code>
+                </documentation>
+              </call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color/><type>task</type><model/></parameters></call>
+            </parallel_branch>
+            <manipulate id="a3" svg-id="a3" svg-type="manipulate" svg-subtype="manipulate">data.persons -= 1</manipulate>
+          </loop>
+        </parallel>
+        <choose mode="exclusive" svg-id="choose_0" svg-type="choose" svg-subtype="choose_exclusive">
+          <alternative condition="data.costs &gt; 700" svg-id="alternative_0" svg-label="data.costs &gt; 700" svg-type="alternative" svg-subtype="alternative">
+            <_probability>
+              <_probability_min/>
+              <_probability_max/>
+              <_probability_avg/>
+            </_probability>
+            <call id="a4" svg-id="a4" svg-label="Approve Hotel" svg-type="call" svg-subtype="call"><parameters><label>Approve Hotel</label><color>#ded0c5</color><type>task</type><model/></parameters></call>
+          </alternative>
+          <otherwise svg-id="otherwise_0" svg-type="otherwise" svg-subtype="otherwise"/>
+        </choose>
+      </description>
+    </description>
+---
+timestamp: '2026-01-28T19:57:04.519Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: 25a41e8e-15ef-47f1-9857-e9859d5182b8
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>52d9c770-b308-42e7-92ff-6b935115344e</dbpm:document_id>
+          <dbpm:text_selections>. Model Management
+    - Multi</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="bookAir" svg-id="a1" svg-label="Book Airline 1" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <label>Book Airline 1</label>
+            <method>:post</method>
+            <arguments>
+              <from>!data.from</from>
+              <to>!data.to</to>
+              <persons>!data.persons</persons>
+            </arguments>
+          </parameters>
+          <code>
+            <prepare/>
+            <finalize output="result">data.airline = result.value('id')
+    data.costs += result.value('costs').to_f
+    status.update 1, 'Hotel'</finalize>
+            <update output="result"/>
+            <rescue output="result"/>
+          </code>
+          <annotations>
+            <_timing>
+              <_timing_weight/>
+              <_timing_avg/>
+              <explanations/>
+            </_timing>
+            <_shifting>
+              <_shifting_type>Duration</_shifting_type>
+            </_shifting>
+            <_context_data_analysis>
+              <probes/>
+              <ips/>
+            </_context_data_analysis>
+            <report>
+              <url/>
+            </report>
+            <_notes>
+              <_notes_general/>
+            </_notes>
+          </annotations>
+          <documentation>
+            <input/>
+            <output/>
+            <implementation>
+              <description/>
+            </implementation>
+            <code>
+              <description/>
+            </code>
+          </documentation>
+        </call>
+        <parallel wait="-1" cancel="last" svg-id="parallel_0" svg-type="parallel" svg-subtype="parallel_start">
+          <loop mode="pre_test" condition="data.persons &gt; 0" svg-id="loop_0" svg-label="data.persons &gt; 0" svg-type="loop" svg-subtype="loop_head">
+            <parallel_branch svg-id="parallel_branch_0" svg-type="parallel_branch" svg-subtype="parallel_branch_event">
+              <call id="a2" endpoint="bookHotel" svg-id="a2" svg-label="Book Hotel" svg-type="call" svg-subtype="callmanipulate">
+                <parameters>
+                  <label>Book Hotel</label>
+                  <method>:post</method>
+                  <arguments>
+                    <to>!data.to</to>
+                  </arguments>
+                </parameters>
+                <code>
+                  <prepare/>
+                  <finalize output="result">data.hotels &lt;&lt; result.value('id')
+    data.costs += result.value('costs').to_f</finalize>
+                  <update output="result"/>
+                  <rescue output="result"/>
+                </code>
+                <annotations>
+                  <_timing>
+                    <_timing_weight/>
+                    <_timing_avg/>
+                    <explanations/>
+                  </_timing>
+                  <_shifting>
+                    <_shifting_type>Duration</_shifting_type>
+                  </_shifting>
+                  <_context_data_analysis>
+                    <probes/>
+                    <ips/>
+                  </_context_data_analysis>
+                  <report>
+                    <url/>
+                  </report>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation>
+                  <input/>
+                  <output/>
+                  <implementation>
+                    <description/>
+                  </implementation>
+                  <code>
+                    <description/>
+                  </code>
+                </documentation>
+              </call><call id="a5" svg-id="a5" xmlns="http://cpee.org/ns/description/1.0" svg-type="call" svg-subtype="call"><parameters><label/><color>#ded0c5</color><type>task</type><model/></parameters></call>
+            </parallel_branch>
+            <manipulate id="a3" svg-id="a3" svg-type="manipulate" svg-subtype="manipulate">data.persons -= 1</manipulate>
+          </loop>
+        </parallel>
+        <choose mode="exclusive" svg-id="choose_0" svg-type="choose" svg-subtype="choose_exclusive">
+          <alternative condition="data.costs &gt; 700" svg-id="alternative_0" svg-label="data.costs &gt; 700" svg-type="alternative" svg-subtype="alternative">
+            <_probability>
+              <_probability_min/>
+              <_probability_max/>
+              <_probability_avg/>
+            </_probability>
+            <call id="a4" svg-id="a4" svg-label="Approve Hotel" svg-type="call" svg-subtype="call"><parameters><label>Approve Hotel</label><color>#ded0c5</color><type>task</type><model/></parameters></call>
+          </alternative>
+          <otherwise svg-id="otherwise_0" svg-type="otherwise" svg-subtype="otherwise"/>
+        </choose>
+      </description>
+    </description>
+---
+timestamp: '2026-01-28T19:59:32.989Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: 25a41e8e-15ef-47f1-9857-e9859d5182b8
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>52d9c770-b308-42e7-92ff-6b935115344e</dbpm:document_id>
+          <dbpm:text_selections>. Model Management
+    - Multi</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="bookAir" svg-id="a1" svg-label="Book Airline 1" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <label>Book Airline 1</label>
+            <method>:post</method>
+            <arguments>
+              <from>!data.from</from>
+              <to>!data.to</to>
+              <persons>!data.persons</persons>
+            </arguments>
+          </parameters>
+          <code>
+            <prepare/>
+            <finalize output="result">data.airline = result.value('id')
+    data.costs += result.value('costs').to_f
+    status.update 1, 'Hotel'</finalize>
+            <update output="result"/>
+            <rescue output="result"/>
+          </code>
+          <annotations>
+            <_timing>
+              <_timing_weight/>
+              <_timing_avg/>
+              <explanations/>
+            </_timing>
+            <_shifting>
+              <_shifting_type>Duration</_shifting_type>
+            </_shifting>
+            <_context_data_analysis>
+              <probes/>
+              <ips/>
+            </_context_data_analysis>
+            <report>
+              <url/>
+            </report>
+            <_notes>
+              <_notes_general/>
+            </_notes>
+          </annotations>
+          <documentation>
+            <input/>
+            <output/>
+            <implementation>
+              <description/>
+            </implementation>
+            <code>
+              <description/>
+            </code>
+          </documentation>
+        </call>
+        <parallel wait="-1" cancel="last" svg-id="parallel_0" svg-type="parallel" svg-subtype="parallel_start">
+          <loop mode="pre_test" condition="data.persons &gt; 0" svg-id="loop_0" svg-label="data.persons &gt; 0" svg-type="loop" svg-subtype="loop_head">
+            <parallel_branch svg-id="parallel_branch_0" svg-type="parallel_branch" svg-subtype="parallel_branch_event">
+              <call id="a2" svg-id="a2" svg-label="Book Hotel" svg-type="call" svg-subtype="call"><parameters><label>Book Hotel</label><color>#f8a8c6</color><type>task</type><model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color>#ded0c5</color><type>task</type><model/></parameters></call>
+            </parallel_branch>
+            <manipulate id="a3" svg-id="a3" svg-type="manipulate" svg-subtype="manipulate">data.persons -= 1</manipulate>
+          </loop>
+        </parallel>
+        <choose mode="exclusive" svg-id="choose_0" svg-type="choose" svg-subtype="choose_exclusive">
+          <alternative condition="data.costs &gt; 700" svg-id="alternative_0" svg-label="data.costs &gt; 700" svg-type="alternative" svg-subtype="alternative">
+            <_probability>
+              <_probability_min/>
+              <_probability_max/>
+              <_probability_avg/>
+            </_probability>
+            <call id="a4" svg-id="a4" svg-label="Approve Hotel" svg-type="call" svg-subtype="call"><parameters><label>Approve Hotel</label><color>#ded0c5</color><type>task</type><model/></parameters></call>
+          </alternative>
+          <otherwise svg-id="otherwise_0" svg-type="otherwise" svg-subtype="otherwise"/>
+        </choose>
+      </description>
+    </description>
+---
+timestamp: '2026-01-28T19:59:36.311Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: 25a41e8e-15ef-47f1-9857-e9859d5182b8
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>52d9c770-b308-42e7-92ff-6b935115344e</dbpm:document_id>
+          <dbpm:text_selections>. Model Management
+    - Multi</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="bookAir" svg-id="a1" svg-label="Book Airline 1" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <label>Book Airline 1</label>
+            <method>:post</method>
+            <arguments>
+              <from>!data.from</from>
+              <to>!data.to</to>
+              <persons>!data.persons</persons>
+            </arguments>
+          </parameters>
+          <code>
+            <prepare/>
+            <finalize output="result">data.airline = result.value('id')
+    data.costs += result.value('costs').to_f
+    status.update 1, 'Hotel'</finalize>
+            <update output="result"/>
+            <rescue output="result"/>
+          </code>
+          <annotations>
+            <_timing>
+              <_timing_weight/>
+              <_timing_avg/>
+              <explanations/>
+            </_timing>
+            <_shifting>
+              <_shifting_type>Duration</_shifting_type>
+            </_shifting>
+            <_context_data_analysis>
+              <probes/>
+              <ips/>
+            </_context_data_analysis>
+            <report>
+              <url/>
+            </report>
+            <_notes>
+              <_notes_general/>
+            </_notes>
+          </annotations>
+          <documentation>
+            <input/>
+            <output/>
+            <implementation>
+              <description/>
+            </implementation>
+            <code>
+              <description/>
+            </code>
+          </documentation>
+        </call>
+        <parallel wait="-1" cancel="last" svg-id="parallel_0" svg-type="parallel" svg-subtype="parallel_start">
+          <loop mode="pre_test" condition="data.persons &gt; 0" svg-id="loop_0" svg-label="data.persons &gt; 0" svg-type="loop" svg-subtype="loop_head">
+            <parallel_branch svg-id="parallel_branch_0" svg-type="parallel_branch" svg-subtype="parallel_branch_event">
+              <call id="a2" svg-id="a2" svg-label="Book Hotel" svg-type="call" svg-subtype="call"><parameters><label>Book Hotel</label><color>#deddda</color><type>task</type><model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color>#ded0c5</color><type>task</type><model/></parameters></call>
+            </parallel_branch>
+            <manipulate id="a3" svg-id="a3" svg-type="manipulate" svg-subtype="manipulate">data.persons -= 1</manipulate>
+          </loop>
+        </parallel>
+        <choose mode="exclusive" svg-id="choose_0" svg-type="choose" svg-subtype="choose_exclusive">
+          <alternative condition="data.costs &gt; 700" svg-id="alternative_0" svg-label="data.costs &gt; 700" svg-type="alternative" svg-subtype="alternative">
+            <_probability>
+              <_probability_min/>
+              <_probability_max/>
+              <_probability_avg/>
+            </_probability>
+            <call id="a4" svg-id="a4" svg-label="Approve Hotel" svg-type="call" svg-subtype="call"><parameters><label>Approve Hotel</label><color>#ded0c5</color><type>task</type><model/></parameters></call>
+          </alternative>
+          <otherwise svg-id="otherwise_0" svg-type="otherwise" svg-subtype="otherwise"/>
+        </choose>
+      </description>
+    </description>
+---
+timestamp: '2026-01-28T19:59:40.569Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: 25a41e8e-15ef-47f1-9857-e9859d5182b8
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>52d9c770-b308-42e7-92ff-6b935115344e</dbpm:document_id>
+          <dbpm:text_selections>. Model Management
+    - Multi</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="bookAir" svg-id="a1" svg-label="Book Airline 1" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <label>Book Airline 1</label>
+            <method>:post</method>
+            <arguments>
+              <from>!data.from</from>
+              <to>!data.to</to>
+              <persons>!data.persons</persons>
+            </arguments>
+          </parameters>
+          <code>
+            <prepare/>
+            <finalize output="result">data.airline = result.value('id')
+    data.costs += result.value('costs').to_f
+    status.update 1, 'Hotel'</finalize>
+            <update output="result"/>
+            <rescue output="result"/>
+          </code>
+          <annotations>
+            <_timing>
+              <_timing_weight/>
+              <_timing_avg/>
+              <explanations/>
+            </_timing>
+            <_shifting>
+              <_shifting_type>Duration</_shifting_type>
+            </_shifting>
+            <_context_data_analysis>
+              <probes/>
+              <ips/>
+            </_context_data_analysis>
+            <report>
+              <url/>
+            </report>
+            <_notes>
+              <_notes_general/>
+            </_notes>
+          </annotations>
+          <documentation>
+            <input/>
+            <output/>
+            <implementation>
+              <description/>
+            </implementation>
+            <code>
+              <description/>
+            </code>
+          </documentation>
+        </call>
+        <parallel wait="-1" cancel="last" svg-id="parallel_0" svg-type="parallel" svg-subtype="parallel_start">
+          <loop mode="pre_test" condition="data.persons &gt; 0" svg-id="loop_0" svg-label="data.persons &gt; 0" svg-type="loop" svg-subtype="loop_head">
+            <parallel_branch svg-id="parallel_branch_0" svg-type="parallel_branch" svg-subtype="parallel_branch_event">
+              <call id="a2" svg-id="a2" svg-label="Book Hotel" svg-type="call" svg-subtype="call"><parameters><label>Book Hotel</label><color>#ded0c5</color><type>task</type><model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color>#ded0c5</color><type>task</type><model/></parameters></call>
+            </parallel_branch>
+            <manipulate id="a3" svg-id="a3" svg-type="manipulate" svg-subtype="manipulate">data.persons -= 1</manipulate>
+          </loop>
+        </parallel>
+        <choose mode="exclusive" svg-id="choose_0" svg-type="choose" svg-subtype="choose_exclusive">
+          <alternative condition="data.costs &gt; 700" svg-id="alternative_0" svg-label="data.costs &gt; 700" svg-type="alternative" svg-subtype="alternative">
+            <_probability>
+              <_probability_min/>
+              <_probability_max/>
+              <_probability_avg/>
+            </_probability>
+            <call id="a4" svg-id="a4" svg-label="Approve Hotel" svg-type="call" svg-subtype="call"><parameters><label>Approve Hotel</label><color>#ded0c5</color><type>task</type><model/></parameters></call>
+          </alternative>
+          <otherwise svg-id="otherwise_0" svg-type="otherwise" svg-subtype="otherwise"/>
+        </choose>
+      </description>
+    </description>
+---
+timestamp: '2026-01-28T19:59:50.355Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: dc5d37aa-e7cd-4430-b411-5706b379e83f
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>52d9c770-b308-42e7-92ff-6b935115344e</dbpm:document_id>
+          <dbpm:text_selections>1. Document Ingestion
+    - User uploads one or more documents (text, PDF, or Word).
+    - System stores documents and extracts textual content 
+
+    2. Document Selection
+    - User selects a document for analysis.
+    - System displays document content and previously identified text segments.
+
+    3. Process Extraction
+    - System analyzes selected document text. nked to pro ocess model from extracted information.
+    - Process includes tasks, decisions, flows, and subprocesses.
+    - Each model element is linked to its source document text.
+
+    5. Model Refinement
+    - User reviews and e relationships.
+    - System maintains traceability between model elements and document fragments.
+
+    6. Subprocess Linking
+    - Subprocesses reference separate process models.
+    - User can navigate between pare 8. Output
+    - Finalized process models are exported.
+    - Traceability between documents and processes is retained.</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="timeout" svg-id="a1" svg-label="Task 1" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Task 1</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>2</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a1,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a2" svg-id="a2" svg-label="Resource Synchronisation" svg-type="call" svg-subtype="call"><parameters><label>Resource Synchronisation</label><color>#f8a8c6</color><type>task</type><model/></parameters></call>
+        <call id="a3" endpoint="timeout" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Task 3</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>4</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a3,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+      </description>
+    </description>
+---
+timestamp: '2026-01-28T20:00:02.209Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: dc5d37aa-e7cd-4430-b411-5706b379e83f
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>52d9c770-b308-42e7-92ff-6b935115344e</dbpm:document_id>
+          <dbpm:text_selections>1. Document Ingestion
+    - User uploads one or more documents (text, PDF, or Word).
+    - System stores documents and extracts textual content 
+
+    2. Document Selection
+    - User selects a document for analysis.
+    - System displays document content and previously identified text segments.
+
+    3. Process Extraction
+    - System analyzes selected document text. nked to pro ocess model from extracted information.
+    - Process includes tasks, decisions, flows, and subprocesses.
+    - Each model element is linked to its source document text.
+
+    5. Model Refinement
+    - User reviews and e relationships.
+    - System maintains traceability between model elements and document fragments.
+
+    6. Subprocess Linking
+    - Subprocesses reference separate process models.
+    - User can navigate between pare 8. Output
+    - Finalized process models are exported.
+    - Traceability between documents and processes is retained.</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="timeout" svg-id="a1" svg-label="Task 1" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Task 1</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>2</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a1,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a2" svg-id="a2" svg-label="Resource Synchronisation" svg-type="call" svg-subtype="call"><parameters><label>Resource Synchronisation</label><color>#f8a8c6</color><type>task</type><model/></parameters></call>
+        <call id="a3" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color>#e4c3e4</color><type>task</type><model/></parameters></call>
+      </description>
+    </description>
+---
+timestamp: '2026-01-28T20:00:14.392Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: 25a41e8e-15ef-47f1-9857-e9859d5182b8
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>52d9c770-b308-42e7-92ff-6b935115344e</dbpm:document_id>
+          <dbpm:text_selections>. Model Management
+    - Multi</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" svg-id="a1" svg-label="Book Airline 1" svg-type="call" svg-subtype="call"><parameters><label>Book Airline 1</label><color>#f8a8c6</color><type>task</type><model/></parameters></call>
+        <parallel wait="-1" cancel="last" svg-id="parallel_0" svg-type="parallel" svg-subtype="parallel_start">
+          <loop mode="pre_test" condition="data.persons &gt; 0" svg-id="loop_0" svg-label="data.persons &gt; 0" svg-type="loop" svg-subtype="loop_head">
+            <parallel_branch svg-id="parallel_branch_0" svg-type="parallel_branch" svg-subtype="parallel_branch_event">
+              <call id="a2" svg-id="a2" svg-label="Book Hotel" svg-type="call" svg-subtype="call"><parameters><label>Book Hotel</label><color>#ded0c5</color><type>task</type><model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color>#ded0c5</color><type>task</type><model/></parameters></call>
+            </parallel_branch>
+            <manipulate id="a3" svg-id="a3" svg-type="manipulate" svg-subtype="manipulate">data.persons -= 1</manipulate>
+          </loop>
+        </parallel>
+        <choose mode="exclusive" svg-id="choose_0" svg-type="choose" svg-subtype="choose_exclusive">
+          <alternative condition="data.costs &gt; 700" svg-id="alternative_0" svg-label="data.costs &gt; 700" svg-type="alternative" svg-subtype="alternative">
+            <_probability>
+              <_probability_min/>
+              <_probability_max/>
+              <_probability_avg/>
+            </_probability>
+            <call id="a4" svg-id="a4" svg-label="Approve Hotel" svg-type="call" svg-subtype="call"><parameters><label>Approve Hotel</label><color>#ded0c5</color><type>task</type><model/></parameters></call>
+          </alternative>
+          <otherwise svg-id="otherwise_0" svg-type="otherwise" svg-subtype="otherwise"/>
+        </choose>
+      </description>
+    </description>
+---
+timestamp: '2026-01-28T20:14:24.478Z'
+event: model_updated_manual_update_selections
+data:
+  id: 25a41e8e-15ef-47f1-9857-e9859d5182b8
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>52d9c770-b308-42e7-92ff-6b935115344e</dbpm:document_id>
+          <dbpm:text_selections>relationships are prese . Model Management
+    - Multi</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" svg-id="a1" svg-label="Book Airline 1" svg-type="call" svg-subtype="call"><parameters><label>Book Airline 1</label><color>#f8a8c6</color><type>task</type><model/></parameters></call>
+        <parallel wait="-1" cancel="last" svg-id="parallel_0" svg-type="parallel" svg-subtype="parallel_start">
+          <loop mode="pre_test" condition="data.persons &gt; 0" svg-id="loop_0" svg-label="data.persons &gt; 0" svg-type="loop" svg-subtype="loop_head">
+            <parallel_branch svg-id="parallel_branch_0" svg-type="parallel_branch" svg-subtype="parallel_branch_event">
+              <call id="a2" svg-id="a2" svg-label="Book Hotel" svg-type="call" svg-subtype="call"><parameters><label>Book Hotel</label><color>#ded0c5</color><type>task</type><model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color>#ded0c5</color><type>task</type><model/></parameters></call>
+            </parallel_branch>
+            <manipulate id="a3" svg-id="a3" svg-type="manipulate" svg-subtype="manipulate">data.persons -= 1</manipulate>
+          </loop>
+        </parallel>
+        <choose mode="exclusive" svg-id="choose_0" svg-type="choose" svg-subtype="choose_exclusive">
+          <alternative condition="data.costs &gt; 700" svg-id="alternative_0" svg-label="data.costs &gt; 700" svg-type="alternative" svg-subtype="alternative">
+            <_probability>
+              <_probability_min/>
+              <_probability_max/>
+              <_probability_avg/>
+            </_probability>
+            <call id="a4" svg-id="a4" svg-label="Approve Hotel" svg-type="call" svg-subtype="call"><parameters><label>Approve Hotel</label><color>#ded0c5</color><type>task</type><model/></parameters></call>
+          </alternative>
+          <otherwise svg-id="otherwise_0" svg-type="otherwise" svg-subtype="otherwise"/>
+        </choose>
+      </description>
+    </description>
+---
+timestamp: '2026-01-28T20:14:43.043Z'
+event: model_updated_regeneration_by_selections
+data:
+  id: 9431fed2-1bf3-4446-8519-d679ba6cfcc7
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>52d9c770-b308-42e7-92ff-6b935115344e</dbpm:document_id>
+          <dbpm:text_selections>. Model Management
+    - Multiple models are stored and listed.
+    - User switches between models and views previ ws.
+    - Mode</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <loop mode="pre_test" condition="true" svg-id="loop_0" svg-label="true" svg-type="loop" svg-subtype="loop_head">
+          <_probability>
+            <_probability_min/>
+            <_probability_max/>
+            <_probability_avg/>
+          </_probability>
+          <call id="a1" endpoint="overview" svg-id="a1" svg-label="Move to overview position" svg-type="call" svg-subtype="call">
+            <parameters>
+              <label>Move to overview position</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <call id="a3" endpoint="get_items_base" svg-id="a3" svg-label="Get item positions" svg-type="call" svg-subtype="callmanipulate">
+            <parameters>
+              <label>Get item positions</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <code>
+              <prepare/>
+              <finalize output="result">data.items = result
+    data.item = result[0]</finalize>
+              <update output="result"/>
+              <rescue output="result"/>
+            </code>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <call id="a5" endpoint="move_camera" svg-id="a5" svg-label="Inspect first item" svg-type="call" svg-subtype="call">
+            <parameters>
+              <label>Inspect first item</label>
+              <arguments>
+                <x>!data.item['x']</x>
+                <y>!data.item['y']</y>
+              </arguments>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <call id="a6" endpoint="get_offset_base" svg-id="a6" svg-label="Get item offset" svg-type="call" svg-subtype="callmanipulate">
+            <parameters>
+              <label>Get item offset</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <code>
+              <prepare/>
+              <finalize output="result">data.adjusted = result</finalize>
+              <update output="result"/>
+              <rescue output="result"/>
+            </code>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <stop id="a2" svg-id="a2" svg-type="stop" svg-subtype="stop"/>
+        </loop>
+      </description>
+    </description>
+---
+timestamp: '2026-01-28T21:19:36.600Z'
+event: model_generated
+data:
+  id: 44950cb6-6371-4c82-937a-5003785e6820
+  name: Model_4
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>52d9c770-b308-42e7-92ff-6b935115344e</dbpm:document_id>
+          <dbpm:text_selections>1. Document Ingestion
+    - User uploads one or more documents (text, PDF, or Word).
+    - System stores documents and extracts textual content.
+
+    2. Document Selection
+    - User selects a document for analysis.
+    - System displays document content and previously identified text segments.
+
+    3. Process Extraction
+    - System analyzes selected document text.
+    - Relevant text fragments are identified and linked to process steps.
+    - User triggers model generation or regeneration.
+
+    4. Process Model Generation
+    - System creates a visual process model from extracted information.
+    - Process includes tasks, decisions, flows, and subprocesses.
+    - Each model element is linked to its source document text.
+
+    5. Model Refinement
+    - User reviews and edits the generated process model.
+    - User defines task types, conditions, and subprocess relationships.
+    - System maintains traceability between model elements and document fragments.
+
+    6. Subprocess Linking
+    - Subprocesses reference separate process models.
+    - User can navigate between parent and child models.
+    - Hierarchical model relationships are preserved.
+
+    7. Model Management
+    - Multiple models are stored and listed.
+    - User switches between models and views previews.
+    - Models can be updated or reused.
+
+    8. Output
+    - Finalized process models are exported.
+    - Traceability between documents and processes is retained.</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <loop mode="pre_test" condition="data.places.length &gt; 0">
+          <_probability>
+            <_probability_min/>
+            <_probability_max/>
+            <_probability_avg/>
+          </_probability>
+          <manipulate id="a2" label="Next Place">data.place = data.places.shift</manipulate>
+          <call id="a1" endpoint="overview">
+            <parameters>
+              <label>Move to overview position</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <call id="a3" endpoint="get_items_neural">
+            <parameters>
+              <label>Get item positions</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <code>
+              <prepare/>
+              <finalize output="result">data.items = result
+    data.item = result[0]</finalize>
+              <update output="result"/>
+              <rescue output="result"/>
+            </code>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <choose mode="exclusive">
+            <alternative condition="data.items.length &gt; 0">
+              <call id="a5" endpoint="move_camera">
+                <parameters>
+                  <label>Inspect first item</label>
+                  <arguments>
+                    <x>!data.item['x']</x>
+                    <y>!data.item['y']</y>
+                  </arguments>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <call id="a6" endpoint="get_offset_neural">
+                <parameters>
+                  <label>Get item offset</label>
+                  <arguments/>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <code>
+                  <prepare/>
+                  <finalize output="result">data.adjusted = {
+      'x' =&gt; data.item['x'] + result['dir_x'],
+      'y' =&gt; data.item['y'] + result['dir_y']
+    }</finalize>
+                  <update output="result"/>
+                  <rescue output="result"/>
+                </code>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <call id="a8" endpoint="grip_and_place">
+                <parameters>
+                  <label>Grip and Place</label>
+                  <arguments>
+                    <x>!data.adjusted['x'].round(0)</x>
+                    <y>!data.adjusted['y'].round(0)</y>
+                    <place_x>!data.place[0]</place_x>
+                    <place_y>!data.place[1]</place_y>
+                  </arguments>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <_probability>
+                <_probability_min/>
+                <_probability_max/>
+                <_probability_avg/>
+              </_probability>
+            </alternative>
+            <otherwise>
+              <terminate/>
+            </otherwise>
+          </choose>
+        </loop>
+      </description>
+    </description>
+---
+timestamp: '2026-01-28T21:19:57.986Z'
+event: model_updated_manual_update_selections
+data:
+  id: 44950cb6-6371-4c82-937a-5003785e6820
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>52d9c770-b308-42e7-92ff-6b935115344e</dbpm:document_id>
+          <dbpm:text_selections>1. Document Ingestion
+    - User uploads one or more documents (text, PDF, or Word).
+    - System stores documents and extracts textual content.
+
+    2. Document Selection
+    - User selects a document for analysis.
+    - System displays document content and previously identified text segment</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <loop mode="pre_test" condition="data.places.length &gt; 0" svg-id="loop_0" svg-label="data.places.length &gt; 0" svg-type="loop" svg-subtype="loop_head">
+          <_probability>
+            <_probability_min/>
+            <_probability_max/>
+            <_probability_avg/>
+          </_probability>
+          <manipulate id="a2" label="Next Place" svg-id="a2" svg-label="Next Place" svg-type="manipulate" svg-subtype="manipulate">data.place = data.places.shift</manipulate>
+          <call id="a1" endpoint="overview" svg-id="a1" svg-label="Move to overview position" svg-type="call" svg-subtype="call">
+            <parameters>
+              <label>Move to overview position</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <call id="a3" endpoint="get_items_neural" svg-id="a3" svg-label="Get item positions" svg-type="call" svg-subtype="callmanipulate">
+            <parameters>
+              <label>Get item positions</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <code>
+              <prepare/>
+              <finalize output="result">data.items = result
+    data.item = result[0]</finalize>
+              <update output="result"/>
+              <rescue output="result"/>
+            </code>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <choose mode="exclusive" svg-id="choose_0" svg-type="choose" svg-subtype="choose_exclusive">
+            <alternative condition="data.items.length &gt; 0" svg-id="alternative_0" svg-label="data.items.length &gt; 0" svg-type="alternative" svg-subtype="alternative">
+              <call id="a5" endpoint="move_camera" svg-id="a5" svg-label="Inspect first item" svg-type="call" svg-subtype="call">
+                <parameters>
+                  <label>Inspect first item</label>
+                  <arguments>
+                    <x>!data.item['x']</x>
+                    <y>!data.item['y']</y>
+                  </arguments>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <call id="a6" endpoint="get_offset_neural" svg-id="a6" svg-label="Get item offset" svg-type="call" svg-subtype="callmanipulate">
+                <parameters>
+                  <label>Get item offset</label>
+                  <arguments/>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <code>
+                  <prepare/>
+                  <finalize output="result">data.adjusted = {
+      'x' =&gt; data.item['x'] + result['dir_x'],
+      'y' =&gt; data.item['y'] + result['dir_y']
+    }</finalize>
+                  <update output="result"/>
+                  <rescue output="result"/>
+                </code>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <call id="a8" endpoint="grip_and_place" svg-id="a8" svg-label="Grip and Place" svg-type="call" svg-subtype="call">
+                <parameters>
+                  <label>Grip and Place</label>
+                  <arguments>
+                    <x>!data.adjusted['x'].round(0)</x>
+                    <y>!data.adjusted['y'].round(0)</y>
+                    <place_x>!data.place[0]</place_x>
+                    <place_y>!data.place[1]</place_y>
+                  </arguments>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <_probability>
+                <_probability_min/>
+                <_probability_max/>
+                <_probability_avg/>
+              </_probability>
+            </alternative>
+            <otherwise svg-id="otherwise_0" svg-type="otherwise" svg-subtype="otherwise">
+              <terminate svg-id="terminate_0" svg-type="terminate" svg-subtype="terminate"/>
+            </otherwise>
+          </choose>
+        </loop>
+      </description>
+    </description>
+---
+timestamp: '2026-01-28T21:19:59.383Z'
+event: model_updated_manual_update_selections
+data:
+  id: 44950cb6-6371-4c82-937a-5003785e6820
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>52d9c770-b308-42e7-92ff-6b935115344e</dbpm:document_id>
+          <dbpm:text_selections/>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <loop mode="pre_test" condition="data.places.length &gt; 0" svg-id="loop_0" svg-label="data.places.length &gt; 0" svg-type="loop" svg-subtype="loop_head">
+          <_probability>
+            <_probability_min/>
+            <_probability_max/>
+            <_probability_avg/>
+          </_probability>
+          <manipulate id="a2" label="Next Place" svg-id="a2" svg-label="Next Place" svg-type="manipulate" svg-subtype="manipulate">data.place = data.places.shift</manipulate>
+          <call id="a1" endpoint="overview" svg-id="a1" svg-label="Move to overview position" svg-type="call" svg-subtype="call">
+            <parameters>
+              <label>Move to overview position</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <call id="a3" endpoint="get_items_neural" svg-id="a3" svg-label="Get item positions" svg-type="call" svg-subtype="callmanipulate">
+            <parameters>
+              <label>Get item positions</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <code>
+              <prepare/>
+              <finalize output="result">data.items = result
+    data.item = result[0]</finalize>
+              <update output="result"/>
+              <rescue output="result"/>
+            </code>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <choose mode="exclusive" svg-id="choose_0" svg-type="choose" svg-subtype="choose_exclusive">
+            <alternative condition="data.items.length &gt; 0" svg-id="alternative_0" svg-label="data.items.length &gt; 0" svg-type="alternative" svg-subtype="alternative">
+              <call id="a5" endpoint="move_camera" svg-id="a5" svg-label="Inspect first item" svg-type="call" svg-subtype="call">
+                <parameters>
+                  <label>Inspect first item</label>
+                  <arguments>
+                    <x>!data.item['x']</x>
+                    <y>!data.item['y']</y>
+                  </arguments>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <call id="a6" endpoint="get_offset_neural" svg-id="a6" svg-label="Get item offset" svg-type="call" svg-subtype="callmanipulate">
+                <parameters>
+                  <label>Get item offset</label>
+                  <arguments/>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <code>
+                  <prepare/>
+                  <finalize output="result">data.adjusted = {
+      'x' =&gt; data.item['x'] + result['dir_x'],
+      'y' =&gt; data.item['y'] + result['dir_y']
+    }</finalize>
+                  <update output="result"/>
+                  <rescue output="result"/>
+                </code>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <call id="a8" endpoint="grip_and_place" svg-id="a8" svg-label="Grip and Place" svg-type="call" svg-subtype="call">
+                <parameters>
+                  <label>Grip and Place</label>
+                  <arguments>
+                    <x>!data.adjusted['x'].round(0)</x>
+                    <y>!data.adjusted['y'].round(0)</y>
+                    <place_x>!data.place[0]</place_x>
+                    <place_y>!data.place[1]</place_y>
+                  </arguments>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <_probability>
+                <_probability_min/>
+                <_probability_max/>
+                <_probability_avg/>
+              </_probability>
+            </alternative>
+            <otherwise svg-id="otherwise_0" svg-type="otherwise" svg-subtype="otherwise">
+              <terminate svg-id="terminate_0" svg-type="terminate" svg-subtype="terminate"/>
+            </otherwise>
+          </choose>
+        </loop>
+      </description>
+    </description>
+---
+timestamp: '2026-01-28T21:20:15.580Z'
+event: model_updated_regeneration_by_selections
+data:
+  id: 44950cb6-6371-4c82-937a-5003785e6820
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>52d9c770-b308-42e7-92ff-6b935115344e</dbpm:document_id>
+          <dbpm:text_selections>. Document Ingestion
+    - User uploads one or more documents (text, PDF, or Word).
+    - System stores documents and extracts textual content.
+
+    2. Document Selection
+    - User selects a document for analysis.
+    - System displays document content and previously identified text segments.
+
+    3. Process Extraction
+    - System analyzes selected document text.
+    - Relevant text fragments are identified and linked to process steps.
+    - User triggers model generation or regeneration.
+
+    4. Process Model Generation
+    - System creates a visual process model from extracted information.
+    - Process includes tasks, decisions, flows, and subprocesses.
+    - Each model element is linked to its source document text.
+
+    5. Model Refinement
+    - 6. Subprocess Linking
+    - Subprocesses reference separate process models.
+    - User can navigate between parent and child models.
+    - Hierarchical model relationships are preserved.
+
+    7. Model Management
+    - Multiple models are stored and listed.
+    - User switches between models and views previews.
+    - Models can be updated or reused.</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="bookAir" svg-id="a1" svg-label="Book Airline 1" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <label>Book Airline 1</label>
+            <method>:post</method>
+            <arguments>
+              <from>!data.from</from>
+              <to>!data.to</to>
+              <persons>!data.persons</persons>
+            </arguments>
+          </parameters>
+          <code>
+            <prepare/>
+            <finalize output="result">data.airline = result.value('id')
+    data.costs += result.value('costs').to_f
+    status.update 1, 'Hotel'</finalize>
+            <update output="result"/>
+            <rescue output="result"/>
+          </code>
+          <annotations>
+            <_timing>
+              <_timing_weight/>
+              <_timing_avg/>
+              <explanations/>
+            </_timing>
+            <_shifting>
+              <_shifting_type>Duration</_shifting_type>
+            </_shifting>
+            <_context_data_analysis>
+              <probes/>
+              <ips/>
+            </_context_data_analysis>
+            <report>
+              <url/>
+            </report>
+            <_notes>
+              <_notes_general/>
+            </_notes>
+          </annotations>
+          <documentation>
+            <input/>
+            <output/>
+            <implementation>
+              <description/>
+            </implementation>
+            <code>
+              <description/>
+            </code>
+          </documentation>
+        </call>
+        <parallel wait="-1" cancel="last" svg-id="parallel_0" svg-type="parallel" svg-subtype="parallel_start">
+          <loop mode="pre_test" condition="data.persons &gt; 0" svg-id="loop_0" svg-label="data.persons &gt; 0" svg-type="loop" svg-subtype="loop_head">
+            <parallel_branch svg-id="parallel_branch_0" svg-type="parallel_branch" svg-subtype="parallel_branch_event">
+              <call id="a2" endpoint="bookHotel" svg-id="a2" svg-label="Book Hotel" svg-type="call" svg-subtype="callmanipulate">
+                <parameters>
+                  <label>Book Hotel</label>
+                  <method>:post</method>
+                  <arguments>
+                    <to>!data.to</to>
+                  </arguments>
+                </parameters>
+                <code>
+                  <prepare/>
+                  <finalize output="result">data.hotels &lt;&lt; result.value('id')
+    data.costs += result.value('costs').to_f</finalize>
+                  <update output="result"/>
+                  <rescue output="result"/>
+                </code>
+                <annotations>
+                  <_timing>
+                    <_timing_weight/>
+                    <_timing_avg/>
+                    <explanations/>
+                  </_timing>
+                  <_shifting>
+                    <_shifting_type>Duration</_shifting_type>
+                  </_shifting>
+                  <_context_data_analysis>
+                    <probes/>
+                    <ips/>
+                  </_context_data_analysis>
+                  <report>
+                    <url/>
+                  </report>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation>
+                  <input/>
+                  <output/>
+                  <implementation>
+                    <description/>
+                  </implementation>
+                  <code>
+                    <description/>
+                  </code>
+                </documentation>
+              </call>
+            </parallel_branch>
+            <manipulate id="a3" svg-id="a3" svg-type="manipulate" svg-subtype="manipulate">data.persons -= 1</manipulate>
+          </loop>
+        </parallel>
+        <choose mode="exclusive" svg-id="choose_0" svg-type="choose" svg-subtype="choose_exclusive">
+          <alternative condition="data.costs &gt; 700" svg-id="alternative_0" svg-label="data.costs &gt; 700" svg-type="alternative" svg-subtype="alternative">
+            <_probability>
+              <_probability_min/>
+              <_probability_max/>
+              <_probability_avg/>
+            </_probability>
+            <call id="a4" endpoint="approve" svg-id="a4" svg-label="Approve Hotel" svg-type="call" svg-subtype="call">
+              <parameters>
+                <label>Approve Hotel</label>
+                <method>:post</method>
+                <arguments>
+                  <costs>!data.costs</costs>
+                </arguments>
+              </parameters>
+              <annotations>
+                <_timing>
+                  <_timing_weight/>
+                  <_timing_avg/>
+                  <explanations/>
+                </_timing>
+                <_shifting>
+                  <_shifting_type>Duration</_shifting_type>
+                </_shifting>
+                <_context_data_analysis>
+                  <probes/>
+                  <ips/>
+                </_context_data_analysis>
+                <report>
+                  <url/>
+                </report>
+                <_notes>
+                  <_notes_general/>
+                </_notes>
+              </annotations>
+              <documentation>
+                <input/>
+                <output/>
+                <implementation>
+                  <description/>
+                </implementation>
+              </documentation>
+            </call>
+          </alternative>
+          <otherwise svg-id="otherwise_0" svg-type="otherwise" svg-subtype="otherwise"/>
+        </choose>
+      </description>
+    </description>
+---
+timestamp: '2026-01-28T21:20:34.209Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: 44950cb6-6371-4c82-937a-5003785e6820
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>52d9c770-b308-42e7-92ff-6b935115344e</dbpm:document_id>
+          <dbpm:text_selections>. Document Ingestion
+    - User uploads one or more documents (text, PDF, or Word).
+    - System stores documents and extracts textual content.
+
+    2. Document Selection
+    - User selects a document for analysis.
+    - System displays document content and previously identified text segments.
+
+    3. Process Extraction
+    - System analyzes selected document text.
+    - Relevant text fragments are identified and linked to process steps.
+    - User triggers model generation or regeneration.
+
+    4. Process Model Generation
+    - System creates a visual process model from extracted information.
+    - Process includes tasks, decisions, flows, and subprocesses.
+    - Each model element is linked to its source document text.
+
+    5. Model Refinement
+    - 6. Subprocess Linking
+    - Subprocesses reference separate process models.
+    - User can navigate between parent and child models.
+    - Hierarchical model relationships are preserved.
+
+    7. Model Management
+    - Multiple models are stored and listed.
+    - User switches between models and views previews.
+    - Models can be updated or reused.</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="bookAir" svg-id="a1" svg-label="Book Airline 1" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <label>Book Airline 1</label>
+            <method>:post</method>
+            <arguments>
+              <from>!data.from</from>
+              <to>!data.to</to>
+              <persons>!data.persons</persons>
+            </arguments>
+          </parameters>
+          <code>
+            <prepare/>
+            <finalize output="result">data.airline = result.value('id')
+    data.costs += result.value('costs').to_f
+    status.update 1, 'Hotel'</finalize>
+            <update output="result"/>
+            <rescue output="result"/>
+          </code>
+          <annotations>
+            <_timing>
+              <_timing_weight/>
+              <_timing_avg/>
+              <explanations/>
+            </_timing>
+            <_shifting>
+              <_shifting_type>Duration</_shifting_type>
+            </_shifting>
+            <_context_data_analysis>
+              <probes/>
+              <ips/>
+            </_context_data_analysis>
+            <report>
+              <url/>
+            </report>
+            <_notes>
+              <_notes_general/>
+            </_notes>
+          </annotations>
+          <documentation>
+            <input/>
+            <output/>
+            <implementation>
+              <description/>
+            </implementation>
+            <code>
+              <description/>
+            </code>
+          </documentation>
+        </call>
+        <parallel wait="-1" cancel="last" svg-id="parallel_0" svg-type="parallel" svg-subtype="parallel_start">
+          <loop mode="pre_test" condition="data.persons &gt; 0" svg-id="loop_0" svg-label="data.persons &gt; 0" svg-type="loop" svg-subtype="loop_head">
+            <parallel_branch svg-id="parallel_branch_0" svg-type="parallel_branch" svg-subtype="parallel_branch_event">
+              <call id="a2" svg-id="a2" svg-label="Book Hotel" svg-type="call" svg-subtype="call"><parameters><label>Book Hotel</label><color>#e4c3e4</color><type>task</type><model/></parameters></call>
+            </parallel_branch>
+            <manipulate id="a3" svg-id="a3" svg-type="manipulate" svg-subtype="manipulate">data.persons -= 1</manipulate>
+          </loop>
+        </parallel>
+        <choose mode="exclusive" svg-id="choose_0" svg-type="choose" svg-subtype="choose_exclusive">
+          <alternative condition="data.costs &gt; 700" svg-id="alternative_0" svg-label="data.costs &gt; 700" svg-type="alternative" svg-subtype="alternative">
+            <_probability>
+              <_probability_min/>
+              <_probability_max/>
+              <_probability_avg/>
+            </_probability>
+            <call id="a4" endpoint="approve" svg-id="a4" svg-label="Approve Hotel" svg-type="call" svg-subtype="call">
+              <parameters>
+                <label>Approve Hotel</label>
+                <method>:post</method>
+                <arguments>
+                  <costs>!data.costs</costs>
+                </arguments>
+              </parameters>
+              <annotations>
+                <_timing>
+                  <_timing_weight/>
+                  <_timing_avg/>
+                  <explanations/>
+                </_timing>
+                <_shifting>
+                  <_shifting_type>Duration</_shifting_type>
+                </_shifting>
+                <_context_data_analysis>
+                  <probes/>
+                  <ips/>
+                </_context_data_analysis>
+                <report>
+                  <url/>
+                </report>
+                <_notes>
+                  <_notes_general/>
+                </_notes>
+              </annotations>
+              <documentation>
+                <input/>
+                <output/>
+                <implementation>
+                  <description/>
+                </implementation>
+              </documentation>
+            </call>
+          </alternative>
+          <otherwise svg-id="otherwise_0" svg-type="otherwise" svg-subtype="otherwise"/>
+        </choose>
+      </description>
+    </description>
+---
+timestamp: '2026-01-28T21:20:43.040Z'
+event: model_updated_manual_update_selections
+data:
+  id: 44950cb6-6371-4c82-937a-5003785e6820
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>52d9c770-b308-42e7-92ff-6b935115344e</dbpm:document_id>
+          <dbpm:text_selections>. Document Ingestion
+    - User uploads one or more documents (text, PDF, or Word).
+    - System stores documents and extracts textual content.
+
+    2. Document Selection
+    - User selects a document for analysis.
+    - System displays document content and previously identified text segments.
+
+    3. Process Extraction
+    - System analyzes selected document text.
+    - Relevant text fragments are identified and linked to process steps.
+    - User triggers model generation or regeneration.
+
+    4. Process Model Generation
+    - System creates a visual process model from extracted information.
+    - Process includes tasks, decisions, flows, and subprocesses.
+    - Each model element is linked to its source document text.
+
+    5. Model Refinement
+    -</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="bookAir" svg-id="a1" svg-label="Book Airline 1" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <label>Book Airline 1</label>
+            <method>:post</method>
+            <arguments>
+              <from>!data.from</from>
+              <to>!data.to</to>
+              <persons>!data.persons</persons>
+            </arguments>
+          </parameters>
+          <code>
+            <prepare/>
+            <finalize output="result">data.airline = result.value('id')
+    data.costs += result.value('costs').to_f
+    status.update 1, 'Hotel'</finalize>
+            <update output="result"/>
+            <rescue output="result"/>
+          </code>
+          <annotations>
+            <_timing>
+              <_timing_weight/>
+              <_timing_avg/>
+              <explanations/>
+            </_timing>
+            <_shifting>
+              <_shifting_type>Duration</_shifting_type>
+            </_shifting>
+            <_context_data_analysis>
+              <probes/>
+              <ips/>
+            </_context_data_analysis>
+            <report>
+              <url/>
+            </report>
+            <_notes>
+              <_notes_general/>
+            </_notes>
+          </annotations>
+          <documentation>
+            <input/>
+            <output/>
+            <implementation>
+              <description/>
+            </implementation>
+            <code>
+              <description/>
+            </code>
+          </documentation>
+        </call>
+        <parallel wait="-1" cancel="last" svg-id="parallel_0" svg-type="parallel" svg-subtype="parallel_start">
+          <loop mode="pre_test" condition="data.persons &gt; 0" svg-id="loop_0" svg-label="data.persons &gt; 0" svg-type="loop" svg-subtype="loop_head">
+            <parallel_branch svg-id="parallel_branch_0" svg-type="parallel_branch" svg-subtype="parallel_branch_event">
+              <call id="a2" svg-id="a2" svg-label="Book Hotel" svg-type="call" svg-subtype="call"><parameters><label>Book Hotel</label><color>#e4c3e4</color><type>task</type><model/></parameters></call>
+            </parallel_branch>
+            <manipulate id="a3" svg-id="a3" svg-type="manipulate" svg-subtype="manipulate">data.persons -= 1</manipulate>
+          </loop>
+        </parallel>
+        <choose mode="exclusive" svg-id="choose_0" svg-type="choose" svg-subtype="choose_exclusive">
+          <alternative condition="data.costs &gt; 700" svg-id="alternative_0" svg-label="data.costs &gt; 700" svg-type="alternative" svg-subtype="alternative">
+            <_probability>
+              <_probability_min/>
+              <_probability_max/>
+              <_probability_avg/>
+            </_probability>
+            <call id="a4" endpoint="approve" svg-id="a4" svg-label="Approve Hotel" svg-type="call" svg-subtype="call">
+              <parameters>
+                <label>Approve Hotel</label>
+                <method>:post</method>
+                <arguments>
+                  <costs>!data.costs</costs>
+                </arguments>
+              </parameters>
+              <annotations>
+                <_timing>
+                  <_timing_weight/>
+                  <_timing_avg/>
+                  <explanations/>
+                </_timing>
+                <_shifting>
+                  <_shifting_type>Duration</_shifting_type>
+                </_shifting>
+                <_context_data_analysis>
+                  <probes/>
+                  <ips/>
+                </_context_data_analysis>
+                <report>
+                  <url/>
+                </report>
+                <_notes>
+                  <_notes_general/>
+                </_notes>
+              </annotations>
+              <documentation>
+                <input/>
+                <output/>
+                <implementation>
+                  <description/>
+                </implementation>
+              </documentation>
+            </call>
+          </alternative>
+          <otherwise svg-id="otherwise_0" svg-type="otherwise" svg-subtype="otherwise"/>
+        </choose>
+      </description>
+    </description>
+---
+timestamp: '2026-01-28T21:20:54.495Z'
+event: model_updated_manual_update_selections
+data:
+  id: 44950cb6-6371-4c82-937a-5003785e6820
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>52d9c770-b308-42e7-92ff-6b935115344e</dbpm:document_id>
+          <dbpm:text_selections>. Document Ingestion
+    - User uploads one or more documents (text, PDF, or Word).
+    - System stores documents and extracts textual content.
+
+    2. Document Selection
+    - User selects a document for analysis.
+    - System displays document content and previously identified text segments.
+
+    3. Process Extraction
+    - System analyzes selected document text.
+    - Relevant text fragments are identified and linked to process steps.
+    - User triggers model generation or regeneration.
+
+    4. Process Model Generation
+    - System creates a visual process model from extracted information.
+    - Process includes tasks, decisions, flows, and subprocesses.
+    - Each model element is linked to its source document text.
+
+    5. Model Refinement
+    - User defines task types, conditions, and subprocess relationships.
+    - System maintains traceability between model elements and document fragments.
+
+    6. Subprocess Linking
+    - Subprocesses reference separate process models.
+    - User can navigate between parent and child models.
+    - Hierarchical model relationships are preserved.
+
+    7. Model Management
+    - Multiple models are stored and listed.
+    - User switches between models and views previews.
+    - Models can be updated or reused.</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="bookAir" svg-id="a1" svg-label="Book Airline 1" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <label>Book Airline 1</label>
+            <method>:post</method>
+            <arguments>
+              <from>!data.from</from>
+              <to>!data.to</to>
+              <persons>!data.persons</persons>
+            </arguments>
+          </parameters>
+          <code>
+            <prepare/>
+            <finalize output="result">data.airline = result.value('id')
+    data.costs += result.value('costs').to_f
+    status.update 1, 'Hotel'</finalize>
+            <update output="result"/>
+            <rescue output="result"/>
+          </code>
+          <annotations>
+            <_timing>
+              <_timing_weight/>
+              <_timing_avg/>
+              <explanations/>
+            </_timing>
+            <_shifting>
+              <_shifting_type>Duration</_shifting_type>
+            </_shifting>
+            <_context_data_analysis>
+              <probes/>
+              <ips/>
+            </_context_data_analysis>
+            <report>
+              <url/>
+            </report>
+            <_notes>
+              <_notes_general/>
+            </_notes>
+          </annotations>
+          <documentation>
+            <input/>
+            <output/>
+            <implementation>
+              <description/>
+            </implementation>
+            <code>
+              <description/>
+            </code>
+          </documentation>
+        </call>
+        <parallel wait="-1" cancel="last" svg-id="parallel_0" svg-type="parallel" svg-subtype="parallel_start">
+          <loop mode="pre_test" condition="data.persons &gt; 0" svg-id="loop_0" svg-label="data.persons &gt; 0" svg-type="loop" svg-subtype="loop_head">
+            <parallel_branch svg-id="parallel_branch_0" svg-type="parallel_branch" svg-subtype="parallel_branch_event">
+              <call id="a2" svg-id="a2" svg-label="Book Hotel" svg-type="call" svg-subtype="call"><parameters><label>Book Hotel</label><color>#e4c3e4</color><type>task</type><model/></parameters></call>
+            </parallel_branch>
+            <manipulate id="a3" svg-id="a3" svg-type="manipulate" svg-subtype="manipulate">data.persons -= 1</manipulate>
+          </loop>
+        </parallel>
+        <choose mode="exclusive" svg-id="choose_0" svg-type="choose" svg-subtype="choose_exclusive">
+          <alternative condition="data.costs &gt; 700" svg-id="alternative_0" svg-label="data.costs &gt; 700" svg-type="alternative" svg-subtype="alternative">
+            <_probability>
+              <_probability_min/>
+              <_probability_max/>
+              <_probability_avg/>
+            </_probability>
+            <call id="a4" endpoint="approve" svg-id="a4" svg-label="Approve Hotel" svg-type="call" svg-subtype="call">
+              <parameters>
+                <label>Approve Hotel</label>
+                <method>:post</method>
+                <arguments>
+                  <costs>!data.costs</costs>
+                </arguments>
+              </parameters>
+              <annotations>
+                <_timing>
+                  <_timing_weight/>
+                  <_timing_avg/>
+                  <explanations/>
+                </_timing>
+                <_shifting>
+                  <_shifting_type>Duration</_shifting_type>
+                </_shifting>
+                <_context_data_analysis>
+                  <probes/>
+                  <ips/>
+                </_context_data_analysis>
+                <report>
+                  <url/>
+                </report>
+                <_notes>
+                  <_notes_general/>
+                </_notes>
+              </annotations>
+              <documentation>
+                <input/>
+                <output/>
+                <implementation>
+                  <description/>
+                </implementation>
+              </documentation>
+            </call>
+          </alternative>
+          <otherwise svg-id="otherwise_0" svg-type="otherwise" svg-subtype="otherwise"/>
+        </choose>
+      </description>
+    </description>
