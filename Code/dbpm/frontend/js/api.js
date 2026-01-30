@@ -174,7 +174,8 @@ API.trace = {
 };
 
 API.model = {
-  LLMDisabled: true,
+  LLMDisabled: false,
+  // LLMDisabled: true,
   path: "models", // relative URLs since frontend is served from same server
   async getModelById(id) {
     return await getModelById(API.db, id);
@@ -262,6 +263,7 @@ API.model = {
         generatedModel = await this.generateSampleModel();
       } else {
         let res = await this.generateModelLLM(params);
+        generatedModel = res;
         // if (res) {
         //   res = res.replace('<?xml version="1.0"?>\n', "");
         //   generatedModel = "<description>" + res + "</description>";

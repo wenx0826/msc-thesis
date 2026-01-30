@@ -2,19 +2,21 @@ const renderModelSelect = (modelValue) => {
   const activeModelId = activeModelStore.getModelId();
 
   const $modelSelect = $(
-    `#dat_details select[data-relaxngui-path=" > call > parameters > model"]`,
+    `#dat_details select[data-relaxngui-path=" > call > parameters > dbpm_subprocess_model"]`,
   );
-  $("<option>").val("").text("--- Please select --- ").appendTo($modelSelect);
+  $modelSelect.parent().show();
+  $modelSelect.empty();
+  $("<option>").val("").text("--- Please select ---").appendTo($modelSelect);
 
   const documentList = documentsStore.getDocuments();
-
+  console.log("Document List:", documentList);
   for (const { id: docId, name: docName } of documentList) {
     $optGroup = $("<optgroup>").attr("label", docName).appendTo($modelSelect);
     const models = modelsStore
       .getModels()
       .filter((m) => m.documentId === docId);
-    console.log("Models for document", docId, ":", models);
-    for (const { id: modelId, name: modelName } of models) {
+    for (const { meta } of models) {
+      const { id: modelId, name: modelName } = meta;
       const $option = $("<option>")
         .val(modelId)
         .text(modelName)
@@ -25,69 +27,50 @@ const renderModelSelect = (modelValue) => {
   }
 };
 
-// Example for CustomEvent with payload
 $(document).on("wf:call-clicked", function (e) {
   console.log(`Event Listener 'wf:call-clicked' listened`);
   const nn = e.detail.nn;
   const tagName = nn.prop("tagName");
   const endpoint = nn.attr("endpoint");
-  // console.log(
-  //   "Savewf:details-updated detail tagName:",
-  //   tagName,
-  //   "endpoint:",
-  //   endpoint,
-  // );
-  // console.log("nn:", nn);
-  //   const typeValue = nn.children("parameters").children("type").val();
-  //   console.log(
-  //     "Type value from call's children parameters's children type:",
-  //     typeValue
-  //   );
-  const typeValue = nn.children("parameters").children("type").text();
-  const modelValue = nn.children("parameters").children("model").text();
-  // console.log(
-  //   "Type value from call's children parameters's children type:",
-  //   typeValue,
-  // );
-  // console.log(
-  //   "Model value from call's children parameters's children model:",
-  //   modelValue,
-  // );
+
+  const typeValue = nn.children("parameters").children("dbpm_type").text();
+  const modelValue = nn
+    .children("parameters")
+    .children("dbpm_subprocess_model")
+    .text();
+
   const tab = $("#dat_details");
   const firstElement = tab.children().first().children().first();
+
   console.log("First element of the first element of the tab:", firstElement);
+
   firstElement.css("visibility", "hidden");
-  // console.log("Value of <type> tag:", typeValue);
-  //   console.log(
-  //     `${fileName}: Call clicked - tagName: ${tagName}, endpoint: ${endpoint}, type: ${type}`
-  //   );
-  // const id = nn.attr('id')
-  // const state = nn.attr('state')
-  // save['activity_red_states'][id] = state
-  // console.log(
-  //   "!!! Savewf:details-updated detail call:q save:",
-  //   document.getElementById("dat_details"),
-  // );
+
   const $typeSeclect = $(
-    `#dat_details select[data-relaxngui-path=" > call > parameters > type"]`,
+    `#dat_details select[data-relaxngui-path=" > call > parameters > dbpm_type"]`,
   );
-  $typeSeclect.append(
-    $("<option>")
-      .val("task")
-      .text("Task")
-      .prop("selected", typeValue == "task"),
-  );
-  $typeSeclect.append(
-    $("<option>")
-      .val("subprocess")
-      .text("Subprocess")
-      .prop("selected", typeValue == "subprocess"),
-  );
+  $typeSeclect.val(typeValue ? typeValue : "task");
+
+  $typeSeclect.on("change", function (e) {
+    const typeValue = $(this).val();
+    // console.log("Type changed to:", typeValue);
+    if (typeValue == "subprocess") {
+      renderModelSelect(modelValue);
+    } else {
+      $modelSelect.val("");
+      $modelSelect.parent().hide();
+    }
+  });
   const $modelSelect = $(
-    `#dat_details select[data-relaxngui-path=" > call > parameters > model"]`,
+    `#dat_details select[data-relaxngui-path=" > call > parameters > dbpm_subprocess_model"]`,
   );
-  renderModelSelect(modelValue);
-  // }
+
+  if (typeValue == "subprocess") {
+    renderModelSelect(modelValue);
+  } else {
+    $modelSelect.parent().hide();
+    // $modelSelect.prop("disabled", true);
+  }
   // $('#dat_details select[data-relaxngui-path=" > call > parameters > type"]').val(endpoint);
   // $('#dat_details select[data-relaxngui-path=" > call > parameters > type"]').val(endpoint);
 });

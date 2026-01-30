@@ -18,11 +18,11 @@
   </attributes>
   <description xmlns:my="my-namespace">
     <!-- CUSTOM_DATA: {"namespace":"myNS","data":{...}} -->
-    <!-- <![CDATA[ -->
+    <![CDATA[
     <my:custom xmlns:my="my-namespace">
         <my:item>value</my:item>
     </my:custom>
-    <!-- ]]> -->
+    ]]>
     <description xmlns="http://cpee.org/ns/description/1.0">
       <manipulate id="a3" label="">data.start = Time.now.to_f</manipulate>
       <call id="a1" endpoint="subprocess">

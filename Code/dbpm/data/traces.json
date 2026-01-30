@@ -1,97 +1,227 @@
 [
   {
+    "documentId": "9276885a-9027-4fb4-bc67-fc41258a3fa8",
     "selections": [
       {
-        "id": "67bd8807-db38-4358-8d51-309e644cdae2",
+        "id": "6f9f468d-dc00-474e-8ed8-3fa249cc34d5",
+        "color": "#d4e1f1",
+        "text": "Subprocesses reference separate process models.\n- User can navigate between parent and child models.\n- Hierarchical model relationships are preserved.\n\n7. Model Management\n- Multiple models are stored and listed.\n- User switches between models and views previews.\n- Models can be updated or reused.\n\n8. Output\n- Finalized process models are exported.\n- Traceability between documents and processes is retained.",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 976,
+          "endXPath": "/0",
+          "endOffset": 1386
+        }
+      }
+    ],
+    "modelId": "3dea3bfb-ad3c-4900-bdd7-8209a776a08b",
+    "id": "dc19ea73-879e-472a-93d6-9c979a477b17"
+  },
+  {
+    "documentId": "9276885a-9027-4fb4-bc67-fc41258a3fa8",
+    "selections": [
+      {
+        "id": "608d727b-f682-4c25-8a49-fac8a225cdac",
+        "color": "#d4e1f1",
+        "text": "Word).\n- System stores documents and extracts textual content.\n\n2. Document Selection\n- User selects a document for analysis.\n- System displays document content and previously identified text segments.\n\n3. Process Extraction\n- System analyzes selected document te",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 122,
+          "endXPath": "/0",
+          "endOffset": 385
+        }
+      },
+      {
+        "id": "d92694b4-4c6c-4fc8-aad1-65769b0d896c",
         "color": "#d4e1f1",
         "range": {
           "startXPath": "/0",
-          "startOffset": 48,
+          "startOffset": 510,
           "endXPath": "/0",
-          "endOffset": 184
+          "endOffset": 833
         },
-        "text": "1. Document Ingestion\n- User uploads one or more documents (text, PDF, or Word).\n- System stores documents and extracts textual content."
+        "text": "4. Process Model Generation\n- System creates a visual process model from extracted information.\n- Process includes tasks, decisions, flows, and subprocesses.\n- Each model element is linked to its source document text.\n\n5. Model Refinement\n- User reviews and edits the generated process model.\n- User defines task types, con"
       }
-    ]
+    ],
+    "modelId": "4a5e7488-2966-4f41-8918-4e1b128f03b9",
+    "id": "f40c283e-62b9-4f44-847d-02fcd871f98e"
   },
   {
+    "documentId": "df31f25d-3cef-4aa1-ba6f-1178772e0f5a",
     "selections": [
       {
-        "id": "5f788060-7024-4165-b004-c8aa9b0741ca",
+        "id": "452fae5e-9800-49c5-bf3d-637565b2e9e1",
         "color": "#d4e1f1",
-        "range": {
-          "startXPath": "/0",
-          "startOffset": 153,
-          "endXPath": "/0",
-          "endOffset": 265
-        },
-        "text": "s and extracts textual content.\n\n2. Document Selection\n- User selects a document for analysis.\n- System displays"
-      }
-    ]
-  },
-  {
-    "documentId": "7410888c-2812-49ee-93c8-bb3b9b0882ec",
-    "selections": [],
-    "modelId": "283d7150-47a1-4677-a513-306006ff474f",
-    "id": "407005b5-1c47-4024-b4ca-41d0ebf845d2"
-  },
-  {
-    "documentId": "52d9c770-b308-42e7-92ff-6b935115344e",
-    "selections": [
-      {
-        "id": "be03cad9-b21d-4d4e-8820-8bc6634b02d7",
-        "color": "#d4e1f1",
-        "text": ". Document Ingestion\n- User uploads one or more documents (text, PDF, or Word).\n- System stores documents and extracts textual content.\n\n2. Document Selection\n- User selects a document for analysis.\n- System displays document content and previously identified text segments.\n\n3. Process Extraction\n- System analyzes selected document text.\n- Relevant text fragments are identified and linked to process steps.\n- User triggers model generation or regeneration.\n\n4. Process Model Generation\n- System creates a visual process model from extracted information.\n- Process includes tasks, decisions, flows, and subprocesses.\n- Each model element is linked to its source document text.\n\n5. Model Refinement\n-",
         "range": {
           "startXPath": "/0",
           "startOffset": 49,
           "endXPath": "/0",
-          "endOffset": 750
+          "endOffset": 323
+        },
+        "text": ". Document Ingestion\n- User uploads one or more documents (text, PDF, or Word).\n- System stores documents and extracts textual content.\n\n2. Document Selection\n- User selects a document for analysis.\n- System displays document content and previously identified text segments."
+      }
+    ],
+    "modelId": "9498dfe2-d1e6-4fc2-9ff2-60073d1de8dc",
+    "id": "9460b67d-84f5-4618-857c-1a528128758b"
+  },
+  {
+    "documentId": "4f6eff71-3a89-4a48-9721-558da3af0543",
+    "selections": [
+      {
+        "id": "9061493f-13f7-433e-b263-e97c97f9b5ee",
+        "color": "#d4e1f1",
+        "text": "4. Process Model Generation\n- System creates a visual process model from extracted information.\n- Process includes tasks, decisions, flows, and subprocesses.\n- Each model element is linked to its source document text.\n\n5. Model Refinement\n- User reviews and edits the generated process model.\n- User defines task types, conditions, and subprocess relationships.\n- System maintains traceability between model elements and document fragments.\n\n6. Subprocess Linking\n- Subprocesses reference separate process models.\n- User can navigate between parent and child models.\n- Hierarchical model relationships are preserved.\n\n7. Model Management\n- Multiple models are stored and listed.\n- User switches between models and views previews.\n- Models can be updated or reused.\n\n8. Output\n- Finalized process",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 510,
+          "endXPath": "/0",
+          "endOffset": 1305
+        }
+      }
+    ],
+    "modelId": "c709de0a-e940-4c98-a59d-bf5754f0889f",
+    "id": "8aa68135-29c5-47ef-b435-4adb8d46bafd"
+  },
+  {
+    "documentId": "5d95d333-5a77-4a6b-8492-2e7356b397aa",
+    "selections": [
+      {
+        "id": "4ab4f26b-155b-4449-af5f-bc45a7d8c598",
+        "color": "#d4e1f1",
+        "text": "\n\n1. Document Ingestion\n- User uploads one or more documents (text, PDF, or Word).\n- System stores documents and extracts textual content.\n\n2. Document Selection\n- User selects a document for analysis.\n- System displays document content and previously identified text segments.\n\n3. Process Extraction\n- System analyzes selected document text.\n- Relevant text fragments are identified and linked to process steps.\n- User triggers model generation or regeneration.",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 46,
+          "endXPath": "/0",
+          "endOffset": 508
+        }
+      }
+    ],
+    "modelId": "d7f85c90-a367-4b7d-8f53-8bafab7ae47d",
+    "id": "7acd9ebf-a194-4e1c-ba49-9cc8259e919e"
+  },
+  {
+    "documentId": "7a188ad8-66f2-433c-9629-2dacf16f26c0",
+    "selections": [],
+    "modelId": "814506ba-2ed4-4384-bb70-325e128bca71",
+    "id": "c0d79f33-c271-4c29-b5c5-d78cb6b2e92b"
+  },
+  {
+    "documentId": "aa21ec19-d805-4b19-b22e-4feb4212e962",
+    "selections": [
+      {
+        "id": "100d4347-8d83-43d1-a4f4-98533a9accf2",
+        "color": "#d4e1f1",
+        "text": "1. Document Ingestion\n- User uploads one or more documents (text, PDF, or Word).\n- System stores documents and extracts textual content.\n\n2. Document Selection\n- User selects a document for analysis.\n- System displays document content and previously identified text segments.\n\n3. Process Extraction\n- System analyzes selected document text.\n- Relevant text fragments are identified and linked to process steps.\n- User triggers model generation or regeneration.",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 48,
+          "endXPath": "/0",
+          "endOffset": 508
         }
       },
       {
-        "id": "3addb222-4636-4d5e-a5b1-4cf4aed09bb9",
+        "id": "f4edbfb2-af5a-4a36-9932-cb0cb1311d1d",
         "color": "#d4e1f1",
+        "text": "6. Subprocess Linking\n- Subprocesses reference separate process models.\n- User can navigate between parent and child models.\n- Hierarchical model relationships are preserved.",
         "range": {
           "startXPath": "/0",
-          "startOffset": 805,
+          "startOffset": 952,
           "endXPath": "/0",
-          "endOffset": 1274
-        },
-        "text": "User defines task types, conditions, and subprocess relationships.\n- System maintains traceability between model elements and document fragments.\n\n6. Subprocess Linking\n- Subprocesses reference separate process models.\n- User can navigate between parent and child models.\n- Hierarchical model relationships are preserved.\n\n7. Model Management\n- Multiple models are stored and listed.\n- User switches between models and views previews.\n- Models can be updated or reused."
+          "endOffset": 1126
+        }
       }
     ],
-    "modelId": "44950cb6-6371-4c82-937a-5003785e6820",
-    "id": "35ccc094-a718-40fd-a276-6ae8eee604e8"
+    "modelId": "410da7a7-617b-425c-9690-048399c61920",
+    "id": "9897e187-96bf-4044-abf0-8e3ba650d272"
   },
   {
-    "documentId": "7410888c-2812-49ee-93c8-bb3b9b0882ec",
-    "selections": [],
-    "modelId": "833057a8-072a-4341-a22e-9c235eb62b32",
-    "id": "1250701c-6f48-4b8a-a3be-cbe512850049"
-  },
-  {
-    "documentId": "7410888c-2812-49ee-93c8-bb3b9b0882ec",
-    "selections": [],
-    "modelId": "86d01008-2afb-4cfa-951d-ef21e1520296",
-    "id": "5856201a-a70a-41d3-a92c-46ecca2c4db7"
-  },
-  {
-    "documentId": "cadb1979-cff1-4bcc-b66e-8c0559b56f0a",
+    "documentId": "aa21ec19-d805-4b19-b22e-4feb4212e962",
     "selections": [
       {
-        "id": "731a5303-55ab-4de8-838f-42aa6103f7cc",
+        "id": "ce8898ca-9f1b-4c8f-b39b-08dcb6454c8a",
+        "color": "#ded0c5",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 1,
+          "endXPath": "/0",
+          "endOffset": 1386
+        },
+        "text": "ocument-Based Process Modeling – Core Process\n\n1. Document Ingestion\n- User uploads one or more documents (text, PDF, or Word).\n- System stores documents and extracts textual content.\n\n2. Document Selection\n- User selects a document for analysis.\n- System displays document content and previously identified text segments.\n\n3. Process Extraction\n- System analyzes selected document text.\n- Relevant text fragments are identified and linked to process steps.\n- User triggers model generation or regeneration.\n\n4. Process Model Generation\n- System creates a visual process model from extracted information.\n- Process includes tasks, decisions, flows, and subprocesses.\n- Each model element is linked to its source document text.\n\n5. Model Refinement\n- User reviews and edits the generated process model.\n- User defines task types, conditions, and subprocess relationships.\n- System maintains traceability between model elements and document fragments.\n\n6. Subprocess Linking\n- Subprocesses reference separate process models.\n- User can navigate between parent and child models.\n- Hierarchical model relationships are preserved.\n\n7. Model Management\n- Multiple models are stored and listed.\n- User switches between models and views previews.\n- Models can be updated or reused.\n\n8. Output\n- Finalized process models are exported.\n- Traceability between documents and processes is retained."
+      },
+      {
+        "id": "eb6ea0f5-bbe8-4f48-b27e-accc21b141dd",
+        "color": "#d4e1f1",
+        "text": "7. Model Management\n- Multiple models are stored and listed.\n- User switches between models and views previews.\n- Models can be updated or reused.\n\n8. Output\n- Finalized process models are exported.\n- Traceability between documents and processes is retained.",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 1128,
+          "endXPath": "/0",
+          "endOffset": 1386
+        }
+      }
+    ],
+    "modelId": "2ee68549-f07e-4e78-bc96-1668467c91ef",
+    "id": "c9830249-c6e8-4889-8776-9c1ed571313b"
+  },
+  {
+    "documentId": "06f97759-4e85-4282-b3bb-cc160317eb16",
+    "selections": [],
+    "modelId": "e0d9a0cd-d230-422b-b884-e229013c1aa7",
+    "id": "ff9dad6d-f002-4ead-9cd8-68e19a7e4593"
+  },
+  {
+    "documentId": "aa21ec19-d805-4b19-b22e-4feb4212e962",
+    "selections": [
+      {
+        "id": "2f45308f-9950-4c07-b05e-c916f0947069",
+        "color": "#ded0c5",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 0,
+          "endXPath": "/0",
+          "endOffset": 1386
+        },
+        "text": "Document-Based Process Modeling – Core Process\n\n1. Document Ingestion\n- User uploads one or more documents (text, PDF, or Word).\n- System stores documents and extracts textual content.\n\n2. Document Selection\n- User selects a document for analysis.\n- System displays document content and previously identified text segments.\n\n3. Process Extraction\n- System analyzes selected document text.\n- Relevant text fragments are identified and linked to process steps.\n- User triggers model generation or regeneration.\n\n4. Process Model Generation\n- System creates a visual process model from extracted information.\n- Process includes tasks, decisions, flows, and subprocesses.\n- Each model element is linked to its source document text.\n\n5. Model Refinement\n- User reviews and edits the generated process model.\n- User defines task types, conditions, and subprocess relationships.\n- System maintains traceability between model elements and document fragments.\n\n6. Subprocess Linking\n- Subprocesses reference separate process models.\n- User can navigate between parent and child models.\n- Hierarchical model relationships are preserved.\n\n7. Model Management\n- Multiple models are stored and listed.\n- User switches between models and views previews.\n- Models can be updated or reused.\n\n8. Output\n- Finalized process models are exported.\n- Traceability between documents and processes is retained."
+      }
+    ],
+    "modelId": "f7d1d331-3619-498b-b2be-84ae9f1ff664",
+    "id": "03c6eafd-2c72-4c5e-83cd-c2c6c4225aaa"
+  },
+  {
+    "documentId": "7410888c-2812-49ee-93c8-bb3b9b0882ec",
+    "selections": [
+      {
+        "id": "b1af8b34-5564-46b0-8039-e4d711533189",
         "color": "#d4e1f1",
         "range": {
           "startXPath": "/0",
-          "startOffset": 830,
+          "startOffset": 46,
           "endXPath": "/0",
-          "endOffset": 1123
+          "endOffset": 576
         },
-        "text": "conditions, and subprocess relationships.\n- System maintains traceability between model elements and document fragments.\n\n6. Subprocess Linking\n- Subprocesses reference separate process models.\n- User can navigate between parent and child models.\n- Hierarchical model relationships are preserv"
+        "text": "\n\n1. Document Ingestion\n- User uploads one or more documents (text, PDF, or Word).\n- System stores documents and extracts textual content.\n\n2. Document Selection\n- User selects a document for analysis.\n- System displays document content and previously identified text segments.\n\n3. Process Extraction\n- System analyzes selected document text.\n- Relevant text fragments are identified and linked to process steps.\n- User triggers model generation or regeneration.\n\n4. Process Model Generation\n- System creates a visual process mode"
       }
     ],
-    "modelId": "09480b87-9aa2-46e6-9c81-2837f64f6542",
-    "id": "035521e7-58c1-4b61-ac0f-adc02650f397"
+    "modelId": "3a30bd54-91de-4957-97df-58c4b322a32c",
+    "id": "1caf0e32-0f04-4fc7-a2e4-97c1d55fe3bb"
+  },
+  {
+    "documentId": "7410888c-2812-49ee-93c8-bb3b9b0882ec",
+    "selections": [
+      {
+        "id": "84cf3302-4198-4c8c-9cab-0f9b9c941a5e",
+        "color": "#ded0c5",
+        "range": {
+          "startXPath": "/0",
+          "startOffset": 510,
+          "endXPath": "/0",
+          "endOffset": 1329
+        },
+        "text": "4. Process Model Generation\n- System creates a visual process model from extracted information.\n- Process includes tasks, decisions, flows, and subprocesses.\n- Each model element is linked to its source document text.\n\n5. Model Refinement\n- User reviews and edits the generated process model.\n- User defines task types, conditions, and subprocess relationships.\n- System maintains traceability between model elements and document fragments.\n\n6. Subprocess Linking\n- Subprocesses reference separate process models.\n- User can navigate between parent and child models.\n- Hierarchical model relationships are preserved.\n\n7. Model Management\n- Multiple models are stored and listed.\n- User switches between models and views previews.\n- Models can be updated or reused.\n\n8. Output\n- Finalized process models are exported.\n- "
+      }
+    ],
+    "modelId": "9d59fac1-4789-4207-b0eb-a157549826f8",
+    "id": "f5d081a2-27ed-4a81-bb02-91b49ef01620"
   }
 ]

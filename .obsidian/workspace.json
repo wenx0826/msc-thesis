@@ -18,19 +18,8 @@
               "icon": "lucide-image",
               "title": "mock-up1"
             }
-          },
-          {
-            "id": "f5b021513b788b17",
-            "type": "leaf",
-            "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Graph view"
-            }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -150,12 +139,13 @@
             "state": {
               "type": "outline",
               "state": {
+                "file": "Mock-up/mock-up1.jpg",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline"
+              "title": "Outline of mock-up1"
             }
           },
           {
@@ -190,19 +180,19 @@
       "table-editor-obsidian:Advanced Tables Toolbar": false
     }
   },
-  "active": "f5b021513b788b17",
+  "active": "279053b3089b8b05",
   "lastOpenFiles": [
-    "Code/dbpm/data/models/09480b87-9aa2-46e6-9c81-2837f64f6542.xml",
-    "Code/dbpm/data/documents/cadb1979-cff1-4bcc-b66e-8c0559b56f0a.html",
-    "Code/dbpm/data/logs/f6291a4d-85f1-40e2-8152-d5928cc10f65.yaml",
-    "Code/dbpm/data/models/86d01008-2afb-4cfa-951d-ef21e1520296.xml",
-    "Code/dbpm/data/models/833057a8-072a-4341-a22e-9c235eb62b32.xml",
-    "Code/dbpm/data/models/44950cb6-6371-4c82-937a-5003785e6820.xml",
-    "Code/dbpm/data/models/283d7150-47a1-4677-a513-306006ff474f.xml",
-    "Code/dbpm/data/models/337b7a20-8c6f-4c66-817f-64686f47bbea.xml",
-    "Code/dbpm/data/models/8504b3ef-1be5-42f3-81e1-7541127eeca2.xml",
-    "Code/dbpm/data/models/19c9c81b-5bff-49da-a3dc-e5f71fbe8eed.xml",
-    "Code/dbpm/data/documents/7410888c-2812-49ee-93c8-bb3b9b0882ec.html",
+    "Code/dbpm/data/models/9d59fac1-4789-4207-b0eb-a157549826f8.xml",
+    "Code/dbpm/data/models/3a30bd54-91de-4957-97df-58c4b322a32c.xml",
+    "Code/dbpm/data/models/f7d1d331-3619-498b-b2be-84ae9f1ff664.xml",
+    "Code/dbpm/data/models/e0d9a0cd-d230-422b-b884-e229013c1aa7.xml",
+    "Code/dbpm/data/models/2ee68549-f07e-4e78-bc96-1668467c91ef.xml",
+    "Code/dbpm/data/models/410da7a7-617b-425c-9690-048399c61920.xml",
+    "Code/dbpm/data/documents/d16d7cfc-6543-4185-9a62-5ee69530df53.html",
+    "Code/dbpm/data/documents/be9a2c91-15e5-4475-b799-cba78f5d863d.html",
+    "Code/dbpm/data/documents/aa21ec19-d805-4b19-b22e-4feb4212e962.html",
+    "Code/dbpm/data/logs/20ecf09f-cd17-44fc-bf57-fae36b40402b.yaml",
+    "Code/dbpm/data/models/814506ba-2ed4-4384-bb70-325e128bca71.xml",
     "Code/dbpm/backend/node_modules/js-yaml/README.md",
     "Code/dbpm/backend/node_modules/fsevents/README.md",
     "Code/dbpm/backend/node_modules/argparse/README.md",

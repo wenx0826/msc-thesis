@@ -64,6 +64,7 @@ const renderDocumentItem = async ({ id: documentId, name: documentName }) => {
   $span = $("<span>").text(documentName);
   const deleteDocButton = $("<button>")
     .text("Delete")
+    .prop("disabled", true)
     .on("click", async (event) => {
       event.stopPropagation();
       documentsStore.deleteDocumentById(documentId).then(() => {

@@ -18,13 +18,13 @@
         <value>#deddda</value>
       </choice>
     </element>
-    <element name="type" rngui:label="Type">
+    <element name="dbpm_type" rngui:label="Type">
       <choice>
         <value>task</value>
         <value>subprocess</value>
       </choice>
     </element>
-    <element name="model" rngui:label="Model">
+    <element name="dbpm_subprocess_model" rngui:label="Subprocess Model">
       <choice>
       </choice>
     </element> 

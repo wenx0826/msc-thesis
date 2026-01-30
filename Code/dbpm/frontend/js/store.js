@@ -271,7 +271,8 @@ Store.activeDocument = Object.assign(
         selection.range = deserializeRange(selection.range);
       });
       this.state.traces.push(trace);
-      this.notify({ key: "traces", operation: "add", value: trace });
+      this.setActiveModelTrace(trace);
+      // this.notify({ key: "traces", operation: "add", value: trace });
     },
     setTraces(traces) {
       if (traces.length) {
@@ -434,7 +435,7 @@ Store.activeDocument = Object.assign(
       const selections = this.getSortedNewSelections();
       const serializedSelections = this.getSerializedSelections(selections);
       const activeModelTrace = this.getActiveModelTrace();
-      console.log("Active trace:", activeModelTrace);
+      console.log("!!Active trace:", activeModelTrace);
       return Object.assign(
         { ...activeModelTrace },
         {
@@ -528,6 +529,23 @@ Store.activeModel = Object.assign(
       // console.log("Getting document ID for active model ID:", modelId);
       return modelsStore.getModelDocumentIdById(modelId);
     },
+    getSerializedRpstData() {
+      const model = this.getModel();
+      if (model) {
+        // console.log("!!Extracted rpst:rpst element:", rpstElement);
+        const rpstElement = $("description", model.data)[0];
+        // console.log("!!Extracted rpst:rpst element:", rpstElement);
+        if (rpstElement) {
+          return new XMLSerializer().serializeToString(rpstElement);
+        } else {
+          console.warn("No rpst:rpst element found in model data.");
+          return null;
+        }
+      } else {
+        console.warn("No active model available.");
+        return null;
+      }
+    },
     getSerializedData() {
       return new XMLSerializer().serializeToString(this.state.model.data);
     },
@@ -602,6 +620,7 @@ Store.activeModel = Object.assign(
         textSelections.textContent = selectedText;
       }
     },
+
     /*async updateActiceModel() {
       const modelId = this.getModelId();
       if (modelId) {
@@ -634,7 +653,7 @@ Store.projectGraph = Object.assign(
       const nodes = docs.map((doc) => ({
         group: "nodes",
         data: {
-          id: `doc-${doc.id}`,
+          id: `cy-${doc.id}`,
           type: "document",
           label: doc.name,
           degree: 1,
@@ -646,7 +665,7 @@ Store.projectGraph = Object.assign(
         nodes.push({
           group: "nodes",
           data: {
-            id: `model-${model.meta.id}`,
+            id: `cy-${model.meta.id}`,
             type: "model",
             label: model.meta.name,
             degree: 1,
@@ -656,8 +675,8 @@ Store.projectGraph = Object.assign(
         edges.push({
           group: "edges",
           data: {
-            source: `doc-${model.documentId}`,
-            target: `model-${model.meta.id}`,
+            source: `cy-${model.documentId}`,
+            target: `cy-${model.meta.id}`,
             relation: "generated",
           },
         });
@@ -681,7 +700,7 @@ Store.projectGraph = Object.assign(
     addDocumentNode(document) {
       const node = {
         data: {
-          id: `doc-${document.id}`,
+          id: `cy-${document.id}`,
           type: "document",
           label: document.name,
           degree: 1,
@@ -707,8 +726,8 @@ Store.projectGraph = Object.assign(
       const edge = {
         group: "edges",
         data: {
-          source: `doc-${documentId}`,
-          target: `model-${modelMeta.id}`,
+          source: `cy-${documentId}`,
+          target: `cy-${modelMeta.id}`,
           relation: "generated",
         },
       };

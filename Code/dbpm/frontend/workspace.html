@@ -183,11 +183,13 @@
           <ui-bar>
             <div id="activeModelName"></div>
             <fieldset class="right action-group" id="modelActionBar" disabled>
-              <button name="exportModelButton" onclick="workspaceService.toggleModelSelection(null)">Export
-                Model</button>
+              <a id="viewModelDataLink">
+                View XML Data
+              </a>
+              <button id="exportTestsetButton">Export Testset</button>
               <button name="deselsetModelButton" onclick="workspaceService.clearModelSelection()">Deselect
                 Model</button>
-              <button name="deletemodel" onclick="deleteActiveModel()">Delete Model</button>
+              <button name="deletemodel" onclick="deleteActiveModel()" disabled>Delete Model</button>
             </fieldset>
           </ui-bar>
           <ui-divider></ui-divider>

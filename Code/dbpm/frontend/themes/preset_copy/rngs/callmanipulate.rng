@@ -24,7 +24,7 @@
         <value>subprocess</value>
       </choice>
     </element>
-    <element name="model" rngui:label="Model">
+    <element name="model" rngui:label="Subprocess Model">
       <choice>
       </choice>
     </element>

@@ -1,0 +1,58 @@
+<description>
+  <dbpm:info
+    xmlns:dbpm="https://example.com/dbpm">
+    <dbpm:document_info>
+      <dbpm:document_id>7410888c-2812-49ee-93c8-bb3b9b0882ec</dbpm:document_id>
+      <dbpm:text_selections>1. Document Ingestion
+- User uploads one or more documents (text, PDF, or Word).
+- System stores documents and extracts textual content.
+
+2. Document Selection
+- User selects a document for analysis.
+- System displays document content and previously identified text segments.
+
+3. Process Extraction
+- System analyzes selected document text.
+- Relevant text fragments are identified and linked to process steps.
+- User triggers model generation or regeneration.
+
+4. Process Model Generation
+- System creates a visual process mode</dbpm:text_selections>
+    </dbpm:document_info>
+  </dbpm:info>
+  <description xmlns="http://cpee.org/ns/description/1.0"
+    xmlns:a="http://cpee.org/ns/annotation/1.0">
+    <call id="a1" endpoint="" a:alt_id="1">
+      <parameters>
+        <label>Document Ingestion</label>
+        <method/>
+        <type>:task</type>
+        <arguments/>
+      </parameters>
+    </call>
+    <call id="a3" endpoint="" a:alt_id="2">
+      <parameters>
+        <label>Document Selection</label>
+        <method/>
+        <type>:task</type>
+        <arguments/>
+      </parameters>
+    </call>
+    <call id="a5" endpoint="" a:alt_id="3">
+      <parameters>
+        <label>Process Extraction</label>
+        <method/>
+        <type>:task</type>
+        <arguments/>
+      </parameters>
+    </call>
+    <call id="a7" endpoint="" a:alt_id="4">
+      <parameters>
+        <label>Process Model Generation</label>
+        <method/>
+        <type>:task</type>
+        <arguments/>
+      </parameters>
+    </call>
+  </description>
+</description>

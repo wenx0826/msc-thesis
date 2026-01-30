@@ -444,6 +444,34 @@
             "words": 0
           }
         ]
+      },
+      {
+        "id": "3a30bd54-91de-4957-97df-58c4b322a32c",
+        "documentId": "7410888c-2812-49ee-93c8-bb3b9b0882ec",
+        "name": "Model_7",
+        "status": "generated",
+        "words": 80,
+        "updates": [
+          {
+            "timestamp": "2026-01-29T18:53:48.047Z",
+            "type": "generation",
+            "words": 80
+          }
+        ]
+      },
+      {
+        "id": "9d59fac1-4789-4207-b0eb-a157549826f8",
+        "documentId": "7410888c-2812-49ee-93c8-bb3b9b0882ec",
+        "name": "Model_8",
+        "status": "generated",
+        "words": 122,
+        "updates": [
+          {
+            "timestamp": "2026-01-29T18:54:32.728Z",
+            "type": "generation",
+            "words": 122
+          }
+        ]
       }
     ]
   },
@@ -513,6 +541,1054 @@
           {
             "timestamp": "2026-01-28T22:22:28.104Z",
             "type": "regeneration_by_prompt"
+          },
+          {
+            "timestamp": "2026-01-29T07:28:12.878Z",
+            "type": "manual_update_selections",
+            "words": 0
+          },
+          {
+            "timestamp": "2026-01-29T07:30:52.291Z",
+            "type": "manual_update_selections",
+            "words": 45
+          },
+          {
+            "timestamp": "2026-01-29T07:32:14.366Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T07:36:51.380Z",
+            "type": "manual_update_selections",
+            "words": 102
+          },
+          {
+            "timestamp": "2026-01-29T07:37:02.096Z",
+            "type": "manual_update_selections",
+            "words": 45
+          },
+          {
+            "timestamp": "2026-01-29T07:45:50.096Z",
+            "type": "manual_update_selections",
+            "words": 0
+          },
+          {
+            "timestamp": "2026-01-29T07:46:47.997Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:01:11.672Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:01:48.096Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:01:55.186Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:02:30.203Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:04:03.538Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:04:09.977Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:13:23.419Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:14:02.380Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:14:04.672Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:15:01.988Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:15:04.028Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:15:46.852Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:15:48.605Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:16:45.063Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:16:47.072Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:16:49.178Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:16:59.173Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:17:02.226Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:17:21.686Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:18:33.666Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:18:38.406Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:18:40.800Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:18:43.816Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:18:45.691Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:39:19.604Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:39:21.370Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:39:30.422Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:39:41.027Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:39:43.200Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:40:09.720Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:40:25.153Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:40:27.099Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:40:29.062Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:45:50.399Z",
+            "type": "manual_update_selections",
+            "words": 69
+          },
+          {
+            "timestamp": "2026-01-29T08:47:36.373Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:48:17.946Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:49:45.515Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:49:57.570Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:50:00.072Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:50:13.457Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:50:15.076Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:51:55.363Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T09:13:15.513Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T09:13:28.859Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T09:13:31.608Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T09:16:39.000Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T10:55:02.941Z",
+            "type": "manual_update_selections",
+            "words": 0
+          }
+        ]
+      },
+      {
+        "id": "9f1bc165-8e24-4af3-9774-30176b6df5fd",
+        "documentId": "cadb1979-cff1-4bcc-b66e-8c0559b56f0a",
+        "name": "Model_2",
+        "status": "updated",
+        "words": 59,
+        "updates": [
+          {
+            "timestamp": "2026-01-29T07:37:09.748Z",
+            "type": "generation",
+            "words": 59
+          },
+          {
+            "timestamp": "2026-01-29T07:38:02.857Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T07:38:13.097Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T07:38:20.666Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T07:38:22.118Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T07:38:25.479Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T07:44:38.001Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:19:16.090Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:19:21.291Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:19:43.941Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:21:29.040Z",
+            "type": "manual_update_selections",
+            "words": 0
+          },
+          {
+            "timestamp": "2026-01-29T08:22:48.029Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:22:50.492Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:22:51.249Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:22:51.831Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:24:16.782Z",
+            "type": "manual_update_graph_changed"
+          },
+          {
+            "timestamp": "2026-01-29T08:24:18.798Z",
+            "type": "manual_update_graph_changed"
+          },
+          {
+            "timestamp": "2026-01-29T08:24:26.208Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:24:26.920Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:24:28.326Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:24:35.188Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:24:48.344Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T08:24:50.402Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T09:10:13.819Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T09:12:27.660Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T09:12:29.827Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T09:16:19.000Z",
+            "type": "manual_update_selections",
+            "words": 60
+          },
+          {
+            "timestamp": "2026-01-29T09:17:33.564Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T10:49:28.840Z",
+            "type": "manual_update_selections",
+            "words": 0
+          },
+          {
+            "timestamp": "2026-01-29T10:53:37.269Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T10:53:43.025Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T10:53:46.041Z",
+            "type": "manual_update_graph_properties_only"
+          }
+        ]
+      },
+      {
+        "id": "031ab991-b167-4a51-8a9b-4c2e9a02ce29",
+        "documentId": "cadb1979-cff1-4bcc-b66e-8c0559b56f0a",
+        "name": "Model_3",
+        "status": "updated",
+        "words": 32,
+        "updates": [
+          {
+            "timestamp": "2026-01-29T11:04:53.597Z",
+            "type": "generation",
+            "words": 32
+          },
+          {
+            "timestamp": "2026-01-29T11:06:25.682Z",
+            "type": "regeneration_by_selections",
+            "words": 156
+          }
+        ]
+      },
+      {
+        "id": "b1363aba-e431-4a13-a425-20e5f9a29574",
+        "documentId": "cadb1979-cff1-4bcc-b66e-8c0559b56f0a",
+        "name": "Model_4",
+        "status": "updated",
+        "words": 42,
+        "updates": [
+          {
+            "timestamp": "2026-01-29T11:06:51.049Z",
+            "type": "generation",
+            "words": 42
+          },
+          {
+            "timestamp": "2026-01-29T11:07:17.964Z",
+            "type": "regeneration_by_selections",
+            "words": 60
+          }
+        ]
+      },
+      {
+        "id": "08669909-8b54-46ac-9f0b-cfb7f7d92478",
+        "documentId": "cadb1979-cff1-4bcc-b66e-8c0559b56f0a",
+        "name": "Model_5",
+        "status": "updated",
+        "words": 40,
+        "updates": [
+          {
+            "timestamp": "2026-01-29T11:07:43.455Z",
+            "type": "generation",
+            "words": 40
+          },
+          {
+            "timestamp": "2026-01-29T11:07:54.923Z",
+            "type": "regeneration_by_selections",
+            "words": 24
+          }
+        ]
+      }
+    ]
+  },
+  "06d17a45-db2c-497a-8461-66f112bebbf7": {
+    "documents": [
+      {
+        "id": "9276885a-9027-4fb4-bc67-fc41258a3fa8",
+        "name": "document_based_process.txt",
+        "words": 204
+      },
+      {
+        "id": "df31f25d-3cef-4aa1-ba6f-1178772e0f5a",
+        "name": "document_based_process.txt",
+        "words": 204
+      }
+    ],
+    "models": [
+      {
+        "id": "78c395aa-c32d-44ea-8c50-492c59d5fd6f",
+        "documentId": "9276885a-9027-4fb4-bc67-fc41258a3fa8",
+        "name": "Model_1",
+        "status": "updated",
+        "words": 22,
+        "updates": [
+          {
+            "timestamp": "2026-01-29T11:08:28.746Z",
+            "type": "generation",
+            "words": 22
+          },
+          {
+            "timestamp": "2026-01-29T11:08:36.360Z",
+            "type": "regeneration_by_selections",
+            "words": 60
+          }
+        ]
+      },
+      {
+        "id": "74abae46-2b51-4b41-808e-6b9aebe5272c",
+        "documentId": "9276885a-9027-4fb4-bc67-fc41258a3fa8",
+        "name": "Model_2",
+        "status": "updated",
+        "words": 22,
+        "updates": [
+          {
+            "timestamp": "2026-01-29T11:09:30.717Z",
+            "type": "generation",
+            "words": 22
+          },
+          {
+            "timestamp": "2026-01-29T11:09:38.099Z",
+            "type": "manual_update_selections",
+            "words": 49
+          },
+          {
+            "timestamp": "2026-01-29T11:10:57.463Z",
+            "type": "manual_update_selections",
+            "words": 27
+          }
+        ]
+      },
+      {
+        "id": "c7e8c3ee-c527-4349-9002-741669939adb",
+        "documentId": "9276885a-9027-4fb4-bc67-fc41258a3fa8",
+        "name": "Model_3",
+        "status": "updated",
+        "words": 22,
+        "updates": [
+          {
+            "timestamp": "2026-01-29T11:13:26.929Z",
+            "type": "generation",
+            "words": 22
+          },
+          {
+            "timestamp": "2026-01-29T11:13:34.474Z",
+            "type": "manual_update_selections",
+            "words": 23
+          },
+          {
+            "timestamp": "2026-01-29T11:14:09.293Z",
+            "type": "manual_update_selections",
+            "words": 64
+          }
+        ]
+      },
+      {
+        "id": "b5ff5643-b308-46c7-b8f9-5c154cc80cd8",
+        "documentId": "9276885a-9027-4fb4-bc67-fc41258a3fa8",
+        "name": "Model_4",
+        "status": "updated",
+        "words": 22,
+        "updates": [
+          {
+            "timestamp": "2026-01-29T11:16:14.885Z",
+            "type": "generation",
+            "words": 22
+          },
+          {
+            "timestamp": "2026-01-29T11:16:21.388Z",
+            "type": "manual_update_selections",
+            "words": 44
+          },
+          {
+            "timestamp": "2026-01-29T11:17:16.885Z",
+            "type": "regeneration_by_selections",
+            "words": 85
+          },
+          {
+            "timestamp": "2026-01-29T11:18:44.589Z",
+            "type": "manual_update_selections",
+            "words": 63
+          },
+          {
+            "timestamp": "2026-01-29T11:18:57.125Z",
+            "type": "regeneration_by_selections",
+            "words": 77
+          },
+          {
+            "timestamp": "2026-01-29T11:19:11.922Z",
+            "type": "manual_update_selections",
+            "words": 63
+          }
+        ]
+      },
+      {
+        "id": "3dea3bfb-ad3c-4900-bdd7-8209a776a08b",
+        "documentId": "9276885a-9027-4fb4-bc67-fc41258a3fa8",
+        "name": "Model_5",
+        "status": "updated",
+        "words": 42,
+        "updates": [
+          {
+            "timestamp": "2026-01-29T11:20:12.847Z",
+            "type": "generation",
+            "words": 42
+          },
+          {
+            "timestamp": "2026-01-29T11:20:39.436Z",
+            "type": "regeneration_by_selections",
+            "words": 194
+          },
+          {
+            "timestamp": "2026-01-29T11:23:32.440Z",
+            "type": "regeneration_by_prompt"
+          },
+          {
+            "timestamp": "2026-01-29T11:43:09.885Z",
+            "type": "manual_update_selections",
+            "words": 103
+          },
+          {
+            "timestamp": "2026-01-29T11:43:11.111Z",
+            "type": "manual_update_selections",
+            "words": 61
+          },
+          {
+            "timestamp": "2026-01-29T11:43:13.410Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T11:43:14.018Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T11:43:17.662Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T11:46:06.645Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T12:42:51.663Z",
+            "type": "regeneration_by_prompt"
+          },
+          {
+            "timestamp": "2026-01-29T12:42:58.217Z",
+            "type": "regeneration_by_prompt"
+          }
+        ]
+      },
+      {
+        "id": "4a5e7488-2966-4f41-8918-4e1b128f03b9",
+        "documentId": "9276885a-9027-4fb4-bc67-fc41258a3fa8",
+        "name": "Model_6",
+        "status": "updated",
+        "words": 38,
+        "updates": [
+          {
+            "timestamp": "2026-01-29T12:19:41.174Z",
+            "type": "generation",
+            "words": 38
+          },
+          {
+            "timestamp": "2026-01-29T12:22:00.305Z",
+            "type": "regeneration_by_selections",
+            "words": 89
+          },
+          {
+            "timestamp": "2026-01-29T12:41:02.228Z",
+            "type": "regeneration_by_prompt"
+          },
+          {
+            "timestamp": "2026-01-29T12:41:28.130Z",
+            "type": "regeneration_by_prompt"
+          }
+        ]
+      },
+      {
+        "id": "9498dfe2-d1e6-4fc2-9ff2-60073d1de8dc",
+        "documentId": "df31f25d-3cef-4aa1-ba6f-1178772e0f5a",
+        "name": "Model_7",
+        "status": "updated",
+        "words": 42,
+        "updates": [
+          {
+            "timestamp": "2026-01-29T12:44:17.019Z",
+            "type": "generation",
+            "words": 42
+          },
+          {
+            "timestamp": "2026-01-29T12:47:18.465Z",
+            "type": "regeneration_by_prompt"
+          },
+          {
+            "timestamp": "2026-01-29T12:48:36.969Z",
+            "type": "regeneration_by_prompt"
+          },
+          {
+            "timestamp": "2026-01-29T12:48:43.956Z"
+          },
+          {
+            "timestamp": "2026-01-29T12:57:00.266Z",
+            "type": "manual_update_graph_properties_only"
+          }
+        ]
+      }
+    ]
+  },
+  "17774e56-9852-4288-bf4c-65f10a5006ea": {
+    "documents": [
+      {
+        "id": "4f6eff71-3a89-4a48-9721-558da3af0543",
+        "name": "demo_document_based_process.txt",
+        "words": 204
+      },
+      {
+        "id": "06f97759-4e85-4282-b3bb-cc160317eb16",
+        "name": "demo_uc_document_upload.txt",
+        "words": 35
+      }
+    ],
+    "models": [
+      {
+        "id": "c709de0a-e940-4c98-a59d-bf5754f0889f",
+        "documentId": "4f6eff71-3a89-4a48-9721-558da3af0543",
+        "name": "Model_1",
+        "status": "updated",
+        "words": 42,
+        "updates": [
+          {
+            "timestamp": "2026-01-29T13:36:39.700Z",
+            "type": "generation",
+            "words": 42
+          },
+          {
+            "timestamp": "2026-01-29T13:38:00.548Z",
+            "type": "regeneration_by_selections",
+            "words": 133
+          },
+          {
+            "timestamp": "2026-01-29T13:38:53.760Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T13:39:11.388Z",
+            "type": "manual_update_graph_changed"
+          },
+          {
+            "timestamp": "2026-01-29T13:40:26.034Z",
+            "type": "regeneration_by_prompt"
+          },
+          {
+            "timestamp": "2026-01-29T13:41:00.595Z",
+            "type": "regeneration_by_prompt"
+          },
+          {
+            "timestamp": "2026-01-29T13:42:24.907Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T16:24:16.933Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T16:24:18.894Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T16:25:41.883Z",
+            "type": "manual_update_selections",
+            "words": 42
+          },
+          {
+            "timestamp": "2026-01-29T16:26:46.033Z",
+            "type": "manual_update_selections",
+            "words": 0
+          },
+          {
+            "timestamp": "2026-01-29T16:27:04.907Z",
+            "type": "manual_update_selections",
+            "words": 42
+          },
+          {
+            "timestamp": "2026-01-29T16:27:26.795Z",
+            "type": "manual_update_selections",
+            "words": 102
+          },
+          {
+            "timestamp": "2026-01-29T16:27:28.271Z",
+            "type": "manual_update_selections",
+            "words": 102
+          },
+          {
+            "timestamp": "2026-01-29T16:27:29.014Z",
+            "type": "manual_update_selections",
+            "words": 102
+          },
+          {
+            "timestamp": "2026-01-29T16:33:13.401Z",
+            "type": "manual_update_selections",
+            "words": 42
+          },
+          {
+            "timestamp": "2026-01-29T16:33:30.959Z",
+            "type": "manual_update_selections",
+            "words": 160
+          },
+          {
+            "timestamp": "2026-01-29T16:42:04.452Z",
+            "type": "manual_update_graph_changed"
+          },
+          {
+            "timestamp": "2026-01-29T16:42:07.480Z",
+            "type": "manual_update_graph_changed"
+          },
+          {
+            "timestamp": "2026-01-29T16:42:10.093Z",
+            "type": "manual_update_graph_changed"
+          },
+          {
+            "timestamp": "2026-01-29T16:42:22.598Z",
+            "type": "manual_update_graph_changed"
+          },
+          {
+            "timestamp": "2026-01-29T16:42:25.281Z",
+            "type": "manual_update_graph_changed"
+          },
+          {
+            "timestamp": "2026-01-29T16:42:29.009Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T17:32:19.955Z",
+            "type": "manual_update_selections",
+            "words": 118
+          }
+        ]
+      },
+      {
+        "id": "e0d9a0cd-d230-422b-b884-e229013c1aa7",
+        "documentId": "06f97759-4e85-4282-b3bb-cc160317eb16",
+        "name": "Model_2",
+        "status": "updated",
+        "words": 28,
+        "updates": [
+          {
+            "timestamp": "2026-01-29T16:23:42.028Z",
+            "type": "generation",
+            "words": 28
+          },
+          {
+            "timestamp": "2026-01-29T16:34:00.596Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T16:34:02.427Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T16:38:01.429Z",
+            "type": "regeneration_by_selections",
+            "words": 3
+          },
+          {
+            "timestamp": "2026-01-29T16:38:02.899Z",
+            "type": "manual_update_selections",
+            "words": 0
+          },
+          {
+            "timestamp": "2026-01-29T16:38:47.576Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T16:38:49.423Z",
+            "type": "manual_update_graph_properties_only"
+          }
+        ]
+      }
+    ]
+  },
+  "9497f021-ea83-452a-94d8-377d301fb35b": {
+    "documents": [
+      {
+        "id": "5d95d333-5a77-4a6b-8492-2e7356b397aa",
+        "name": "demo_document_based_process.txt",
+        "words": 204
+      },
+      {
+        "id": "7a188ad8-66f2-433c-9629-2dacf16f26c0",
+        "name": "demo_uc_document_upload.txt",
+        "words": 35
+      }
+    ],
+    "models": [
+      {
+        "id": "d7f85c90-a367-4b7d-8f53-8bafab7ae47d",
+        "documentId": "5d95d333-5a77-4a6b-8492-2e7356b397aa",
+        "name": "Model_1",
+        "status": "updated",
+        "words": 69,
+        "updates": [
+          {
+            "timestamp": "2026-01-29T13:43:33.556Z",
+            "type": "generation",
+            "words": 69
+          },
+          {
+            "timestamp": "2026-01-29T13:44:13.516Z",
+            "type": "regeneration_by_selections",
+            "words": 133
+          },
+          {
+            "timestamp": "2026-01-29T13:44:36.017Z",
+            "type": "regeneration_by_prompt"
+          },
+          {
+            "timestamp": "2026-01-29T13:44:48.508Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T13:44:51.922Z",
+            "type": "manual_update_graph_changed"
+          },
+          {
+            "timestamp": "2026-01-29T16:05:53.439Z",
+            "type": "manual_update_selections",
+            "words": 69
+          }
+        ]
+      },
+      {
+        "id": "814506ba-2ed4-4384-bb70-325e128bca71",
+        "documentId": "7a188ad8-66f2-433c-9629-2dacf16f26c0",
+        "name": "Model_2",
+        "status": "updated",
+        "words": 31,
+        "updates": [
+          {
+            "timestamp": "2026-01-29T14:00:38.638Z",
+            "type": "generation",
+            "words": 31
+          },
+          {
+            "timestamp": "2026-01-29T16:19:11.512Z",
+            "type": "manual_update_selections",
+            "words": 0
+          },
+          {
+            "timestamp": "2026-01-29T16:19:19.613Z",
+            "type": "manual_update_graph_changed"
+          }
+        ]
+      }
+    ]
+  },
+  "20ecf09f-cd17-44fc-bf57-fae36b40402b": {
+    "documents": [
+      {
+        "id": "aa21ec19-d805-4b19-b22e-4feb4212e962",
+        "name": "demo_document_based_process.txt",
+        "words": 204
+      },
+      {
+        "id": "be9a2c91-15e5-4475-b799-cba78f5d863d",
+        "name": "sample_model_with_subprocess.xml",
+        "words": 154
+      },
+      {
+        "id": "d16d7cfc-6543-4185-9a62-5ee69530df53",
+        "name": "demo_uc_document_upload.txt",
+        "words": 35
+      }
+    ],
+    "models": [
+      {
+        "id": "410da7a7-617b-425c-9690-048399c61920",
+        "documentId": "aa21ec19-d805-4b19-b22e-4feb4212e962",
+        "name": "Model_1",
+        "status": "updated",
+        "words": 69,
+        "updates": [
+          {
+            "timestamp": "2026-01-29T16:12:13.322Z",
+            "type": "generation",
+            "words": 69
+          },
+          {
+            "timestamp": "2026-01-29T16:12:44.462Z",
+            "type": "regeneration_by_selections",
+            "words": 133
+          },
+          {
+            "timestamp": "2026-01-29T16:13:12.489Z",
+            "type": "manual_update_selections",
+            "words": 157
+          },
+          {
+            "timestamp": "2026-01-29T16:13:42.224Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T16:13:47.064Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T16:13:48.959Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T16:14:30.161Z",
+            "type": "regeneration_by_prompt"
+          },
+          {
+            "timestamp": "2026-01-29T16:17:46.742Z",
+            "type": "manual_update_selections",
+            "words": 93
+          },
+          {
+            "timestamp": "2026-01-29T18:51:19.889Z",
+            "type": "manual_update_graph_changed"
+          },
+          {
+            "timestamp": "2026-01-29T19:03:14.956Z",
+            "type": "manual_update_graph_changed"
+          }
+        ]
+      },
+      {
+        "id": "2ee68549-f07e-4e78-bc96-1668467c91ef",
+        "documentId": "aa21ec19-d805-4b19-b22e-4feb4212e962",
+        "name": "Model_2",
+        "status": "updated",
+        "words": 41,
+        "updates": [
+          {
+            "timestamp": "2026-01-29T16:18:01.383Z",
+            "type": "generation",
+            "words": 41
+          },
+          {
+            "timestamp": "2026-01-29T20:51:00.459Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-29T20:51:02.886Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-30T12:11:53.245Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-30T12:11:54.910Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-30T12:11:57.294Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-30T12:11:58.115Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-30T12:11:58.901Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-30T12:12:56.046Z",
+            "type": "manual_update_selections",
+            "words": 245
+          }
+        ]
+      },
+      {
+        "id": "f7d1d331-3619-498b-b2be-84ae9f1ff664",
+        "documentId": "aa21ec19-d805-4b19-b22e-4feb4212e962",
+        "name": "Model_3",
+        "status": "updated",
+        "words": 76,
+        "updates": [
+          {
+            "timestamp": "2026-01-29T18:50:32.972Z",
+            "type": "generation",
+            "words": 76
+          },
+          {
+            "timestamp": "2026-01-29T18:52:43.096Z",
+            "type": "manual_update_selections",
+            "words": 0
+          },
+          {
+            "timestamp": "2026-01-30T12:13:07.788Z",
+            "type": "manual_update_selections",
+            "words": 204
           }
         ]
       }

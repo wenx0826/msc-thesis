@@ -296,6 +296,10 @@ li.active {
   background-color: var(--wfadaptor-highlight);
   color: white;
 }
+/* .tag-span:hover {
+  background-color: var(--wfadaptor-hover-border);
+  color: white;
+} */
 /*---------------- end ----------------*/
 /*
 .selected {

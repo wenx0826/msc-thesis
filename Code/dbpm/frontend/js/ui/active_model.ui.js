@@ -11,11 +11,12 @@ let $promptActionBar;
 let $replaceButton;
 let $backButton;
 let $sendPromptButton;
+let $viewModelDataLink;
+let $exportTestsetButton;
 
 $(document).ready(function () {
   $modelActionBar = $("#modelActionBar");
-  $cancelButton = $("#cancelButton");
-
+  $exportTestsetButton = $("#exportTestsetButton");
   $regeneratedModelActionBar = $("#regeneratedModelActionBar");
   $deleteModelButton = $("#deleteModelButton");
   $datDetails = $("#dat_details");
@@ -26,7 +27,46 @@ $(document).ready(function () {
   $clearPromptButton = $("#clearPromptButton");
   $replaceButton = $("#replaceButton");
   $backButton = $("#backButton");
+  $cancelButton = $("#cancelButton");
+  $viewModelDataLink = $("#viewModelDataLink");
 
+  $viewModelDataLink.on("click", (e) => {
+    e.preventDefault();
+    window.open(
+      "/data/models/" + Store.workspace.getActiveModelId() + ".xml",
+      "_blank",
+    );
+  });
+  $exportTestsetButton.on("click", (e) => {
+    e.preventDefault();
+    console.log("Exporting testset by active model");
+    const filename = "testset_" + Store.workspace.getActiveModelId() + ".xml";
+    // const text =
+    //   '<?xml version="1.0"?>\n<testset xmlns="http://cpee.org/ns/properties/2.0">\n<executionhandler>ruby</executionhandler>\n<dataelements/>\n<endpoints/>\n<attributes>\n<guarded>none</guarded>\n<modeltype>CPEE</modeltype>\n<theme>preset</theme>\n<guarded_id/>\n<info>Subprocess</info>\n<creator>Christine Ashcreek</creator>\n<author>Christine Ashcreek</author>\n<model_uuid>1fc43528-3e4a-40ee-8503-c0ed7e5d883c</model_uuid>\n<model_version/>\n<design_stage>development</design_stage>\n<design_dir>Templates.dir</design_dir>\n</attributes>' +
+    //   Store.activeModel.getSerializedData() +
+    //   "\n</testset>";
+
+    const text =
+      '<?xml version="1.0"?>\n<testset xmlns="http://cpee.org/ns/properties/2.0">\n<executionhandler>ruby</executionhandler>\n<dataelements/>\n<endpoints/>\n<attributes>\n<guarded>none</guarded>\n<modeltype>CPEE</modeltype>\n<theme>preset</theme>\n<guarded_id/>\n<info>Subprocess</info>\n<creator>Christine Ashcreek</creator>\n<author>Christine Ashcreek</author>\n<model_uuid>1fc43528-3e4a-40ee-8503-c0ed7e5d883c</model_uuid>\n<model_version/>\n<design_stage>development</design_stage>\n<design_dir>Templates.dir</design_dir>\n</attributes>\n<description>' +
+      Store.activeModel.getSerializedData() +
+      "\n</description>\n</testset>";
+    const mime = "application/xml;charset=utf-8";
+
+    const blob = new Blob([text], { type: mime });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+
+    a.remove();
+    URL.revokeObjectURL(url);
+
+    // workspaceService.exportTestsetByActiveModel();
+  });
+  $deleteModelButton.on("click", deleteActiveModel);
   $replaceButton.on("click", async () => {
     $regeneratedModelActionBar.hide();
     modelService.updateActiveModel();
@@ -49,7 +89,7 @@ $(document).ready(function () {
   });
   $promptInput.on("input", () => {
     const promptText = $promptInput.text();
-    console.log("Prompt input changed:", promptText);
+    // console.log("Prompt input changed:", promptText);
     if (promptText && promptText.trim() !== "") {
       $promptActionBar.removeAttr("disabled");
     } else {
@@ -108,6 +148,7 @@ activeModelStore.subscribe((state, { key, oldValue, newValue }) => {
 });
 
 workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
+  console.log("???Workspace store changed:", key, oldValue, newValue);
   switch (key) {
     case "activeModelId":
       break;

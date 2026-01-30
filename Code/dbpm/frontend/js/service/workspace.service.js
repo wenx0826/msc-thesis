@@ -24,6 +24,10 @@ const workspaceService = {
     activeDocumentStore.setActiveModelTrace(null);
   },
   async activateDocumentById(documentId) {
+    const currentActiveDocumentId = workspaceStore.getActiveDocumentId();
+    if (currentActiveDocumentId === documentId) {
+      return;
+    }
     workspaceStore.setActiveDocumentId(documentId);
     await activeDocumentStore.setDocumentById(documentId);
     const activeModelId = workspaceStore.getActiveModelId();

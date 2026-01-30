@@ -127,7 +127,10 @@ activeDocumentStore.subscribe((state, { key, operation, ...payload }) => {
           renderTrace(newValue);
           // TODO if has selection within viewer DONOT SCROLL
           // scrollToSelection(newValue.selections[0].id);
-          scrollToRange(newValue.selections[0].range);
+          const firstSelection = newValue.selections[0];
+          if (firstSelection) {
+            scrollToRange(newValue.selections[0].range);
+          }
         }
         if (oldValue && oldValue.modelId !== newValue?.modelId) {
           unhighlightModelSelections(oldValue.modelId);
@@ -349,12 +352,12 @@ const onSelectionSelect = (event) => {
 
 const renderSelection = ({ range, color, id: selectionId }, modelId) => {
   const isActiveModel = modelId === Store.workspace.getActiveModelId();
-  console.log(
-    "Rendering selection:",
-    Store.workspace.getActiveModelId(),
-    modelId,
-    isActiveModel,
-  );
+  // console.log(
+  //   "Rendering selection:",
+  //   Store.workspace.getActiveModelId(),
+  //   modelId,
+  //   isActiveModel,
+  // );
   const eleViewerWrap = $viewerWrap[0];
   const eleViewerWrapRect = eleViewerWrap.getBoundingClientRect();
 

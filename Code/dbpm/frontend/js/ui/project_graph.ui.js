@@ -4,8 +4,6 @@ const cyLayoutOptions = {
   animate: true,
 };
 $(document).ready(() => {
-  console.log("Initializing project graph UI...");
-  console.log(Store.projectGraph.getElements());
   cy = cytoscape({
     container: document.getElementById("cy"),
     minZoom: 0.3,
@@ -21,9 +19,15 @@ $(document).ready(() => {
           "text-halign": "center",
           "font-size": 8,
           color: "#000000",
+          "text-events": "yes",
+          "min-zoomed-font-size": 6,
           // width: "mapData(degree, 1, 5, 30, 60)",
           // height: "mapData(degree, 1, 5, 30, 60)",
         },
+      },
+      {
+        selector: "node:hover",
+        style: {},
       },
       // ---------- Node types ----------
       {
@@ -36,6 +40,7 @@ $(document).ready(() => {
           "text-halign": "center",
           "text-wrap": "wrap",
           "text-max-width": 40,
+
           // "border-color": "#000",
           // "border-width": 1,
           // "border-opacity": 1,
@@ -51,15 +56,20 @@ $(document).ready(() => {
           "text-margin-y": 2,
           // "background-color": "#8e24aa",
           "text-background-opacity": 1,
-          color: "#000",
           "text-background-color": "lightGrey",
           "text-background-shape": "roundrectangle",
+
           // "text-border-color": "#000",
           // "text-border-width": 1,
           // "text-border-opacity": 1,
         },
       },
-
+      {
+        selector: "node.active",
+        style: {
+          "background-color": "blue",
+        },
+      },
       // ---------- Edges ----------
       {
         selector: "edge",
@@ -89,10 +99,33 @@ $(document).ready(() => {
   });
 
   // ---------- Interaction ----------
-  // cy.on("tap", "node", (evt) => {
-  //   const node = evt.target;
-  //   console.log("Clicked:", node.id(), node.data());
-  // });
+  cy.on("tap", "node", (evt) => {
+    const node = evt.target;
+    // node.unselectify();
+    console.log("Clicked:", node.id(), node.data());
+    const nodeId = node.id().replace("cy-", "");
+    switch (node.data().type) {
+      case "document":
+        workspaceService.activateDocumentById(nodeId);
+        break;
+      case "model":
+        workspaceService.toggleModelSelection(nodeId);
+        break;
+      default:
+        break;
+    }
+  });
+  cy.on("mouseover", "node", () => {
+    cy.container().style.cursor = "pointer";
+  });
+
+  cy.on("mouseout", "node", () => {
+    cy.container().style.cursor = "default";
+  });
+  // cy.on("grab", "node", (e) => console.log("grab", e.target.id()));
+  // cy.on("drag", "node", (e) => console.log("drag", e.target.id()));
+  // cy.on("free", "node", (e) => console.log("free", e.target.id()));
+  // cy.on("mouseover", "node", (e) => console.log("hover", e.target.id()));
 });
 
 Store.projectGraph.subscribe((state, { key, operation, ...payload }) => {
@@ -148,6 +181,7 @@ Store.projectGraph.subscribe((state, { key, operation, ...payload }) => {
         cy.elements().remove();
         cy.add(Store.projectGraph.getElements());
         cy.layout({ name: "cose", animate: true }).run();
+        cy.elements().unselectify();
         break;
       default:
         break;
@@ -155,25 +189,50 @@ Store.projectGraph.subscribe((state, { key, operation, ...payload }) => {
   }
 });
 
-workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
+// Store.workspace.subscribe((state, { key, oldValue, newValue }) => {
+//   console.log("???Workspace store changed:", key, oldValue, newValue);
+//   switch (key) {
+//     case "activeModelId":
+//       if (newValue) {
+//         cy.getElementById(newValue).select();
+//       }
+//       if (oldValue) {
+//         cy.getElementById(oldValue).unselect();
+//       }
+//       break;
+//     case "activeDocumentId":
+//       if (newValue) {
+//         console.log("±±±±±±±Selecting document node in cy:", newValue);
+//         cy.getElementById(newValue).select();
+//       }
+//       if (oldValue) {
+//         cy.getElementById(oldValue).unselect();
+//       }
+//       // Handle active document change if needed
+//       break;
+//     default:
+//       break;
+//   }
+// });
+workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
   switch (key) {
-    case "activeModelId":
-      if (newValue) {
-        console.log("Active model ID changed in project graph UI:", newValue);
-        // highlightActiveModelContainer(newValue);
-      }
-      if (oldValue) {
-        // unhighlightActiveModelContainer(oldValue);
-      }
-      break;
     case "activeDocumentId":
       if (newValue) {
-        console.log(
-          "Active document ID changed in project graph UI:",
-          newValue,
-        );
+        cy.getElementById(`cy-${newValue}`).addClass("active");
+      }
+      if (oldValue) {
+        cy.getElementById(`cy-${oldValue}`).removeClass("active");
       }
       // Handle active document change if needed
+      break;
+    case "activeModelId":
+      if (newValue) {
+        cy.getElementById(`cy-${newValue}`).addClass("active");
+      }
+      if (oldValue) {
+        cy.getElementById(`cy-${oldValue}`).removeClass("active");
+      }
+      break;
       break;
     default:
       break;

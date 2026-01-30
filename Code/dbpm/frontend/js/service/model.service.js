@@ -15,37 +15,54 @@ const modelService = {
       return;
     }
   },
-  generateModelByPrompt(userInput) {
+  async generateModelByPrompt(userInput) {
+    // console.log("???? Generating model by prompt:!!!!!", userInput);
     const model = activeModelStore.getModel() || {};
     model.updateType = MODEL_UPDATE_TYPE.REGENERATION_BY_PROMPT;
-    const generatedModel = this.generateModel(
-      userInput,
-      Store.activeModel.getSerializedData(), //todo get rpstXml only
-    );
-    const data = model.data;
-
-    // model.data is the root element, get its document
-    const doc = data.ownerDocument;
-    const dbpmInfo = doc.getElementsByTagNameNS(
-      "https://example.com/dbpm",
-      "info",
-    )[0];
-
-    if (dbpmInfo) {
-      // Insert new tag inside dbpmInfo
-      const newTag = doc.createElementNS(
-        "https://example.com/dbpm",
-        "dbpm:prompt",
+    const rpstXml = Store.activeModel.getSerializedRpstData(); //todo get rpstXml only
+    console.log("0000 Current RPST XML:", rpstXml);
+    if (rpstXml) {
+      const generatedModel = await this.generateModel(
+        userInput,
+        rpstXml, //todo get rpstXml only
       );
-      newTag.textContent = userInput;
-      dbpmInfo.appendChild(newTag);
+      // console.log("!!!!Generated Model from prompt:", generatedModel);
+      const data = model.data;
+      const doc = data.ownerDocument;
 
-      // Serialize the updated document back to string
+      // const newRpstXml = $("description", generatedDoc)[0];
+      const dbpmInfo = doc.getElementsByTagNameNS(
+        "https://example.com/dbpm",
+        "info",
+      )[0];
+      if (dbpmInfo) {
+        // Insert new tag inside dbpmInfo
+        const newTag = doc.createElementNS(
+          "https://example.com/dbpm",
+          "dbpm:prompt",
+        );
+        newTag.textContent = userInput;
+        dbpmInfo.appendChild(newTag);
+        // Serialize the updated document back to string
+      } else {
+        console.warn("No dbpm:info found in model data.");
+      }
+
+      let currentRpst = $("description", data)[0];
+      const generatedModelDoc = new DOMParser().parseFromString(
+        generatedModel,
+        "application/xml",
+      );
+      currentRpst.parentNode.replaceChild(
+        doc.importNode(generatedModelDoc.documentElement, true),
+        currentRpst,
+      );
       model.data = $(doc.documentElement).serializePrettyXML();
-    } else {
-      console.warn("No dbpm:info found in model data.");
+      // model.data = doc.documentElement;
+      console.log("Updated model data:", model.data);
+      console.log("!!Current Setting active model data:", model.data);
     }
-
+    // console.log("Setting active model:", model);
     activeModelStore.setModel(model);
   },
   async generateModelBySelections() {
@@ -54,7 +71,7 @@ const modelService = {
       selectedText,
       window.Constants.EMPTY_MODEL,
     );
-
+    console.log("!!Generated Model from selections:", generatedModel);
     const DBPM_NS = "https://example.com/dbpm";
     const eleDbpmInfo = document.implementation.createDocument(
       DBPM_NS,
