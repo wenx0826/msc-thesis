@@ -1,0 +1,787 @@
+---
+timestamp: '2026-01-31T12:29:46.245Z'
+event: project_created
+data:
+  id: 84bc5211-e71d-4426-9fa3-62d6eca95114
+  name: test1
+---
+timestamp: '2026-01-31T12:30:12.259Z'
+event: document_uploaded
+data:
+  id: d4914b7b-7dd6-4982-9c97-b7c502cb63c2
+  name: demo_document_based_process.txt
+  words: 204
+---
+timestamp: '2026-01-31T12:30:19.765Z'
+event: model_generated
+data:
+  id: f8fa38be-6129-40aa-aebd-15086311852f
+  name: Model_1
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d4914b7b-7dd6-4982-9c97-b7c502cb63c2</dbpm:document_id>
+          <dbpm:text_selections>1. Document Ingestion
+    - User uploads one or more documents (text, PDF, or Word).
+    - System stores documents and extracts textual content.
+
+    2. Document Selection
+    - User selects a document for analysis.
+    - System displays document content and previously identified text segments.</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <call id="a1" endpoint="worklist">
+          <parameters>
+            <label>OK OR NOT OK</label>
+            <arguments>
+              <orgmodel>https://cpee.org/~demo/orgviz/organisation_informatik.xml</orgmodel>
+              <form>https://cpee.org/~demo/form/form-f.html</form>
+              <role>Assistant</role>
+              <priority>42</priority>
+              <handling>single</handling>
+              <restrictions/>
+              <data>
+                <schaden>10000</schaden>
+                <text>destroyed</text>
+              </data>
+            </arguments>
+          </parameters>
+          <code>
+            <prepare/>
+            <finalize output="result">data.bla = result</finalize>
+            <update output="result"/>
+            <rescue output="result"/>
+          </code>
+          <annotations>
+            <_generic/>
+            <_timing>
+              <_timing_weight/>
+              <_timing_avg/>
+              <explanations/>
+            </_timing>
+            <_shifting>
+              <_shifting_type>Duration</_shifting_type>
+            </_shifting>
+            <_context_data_analysis>
+              <probes/>
+              <ips/>
+            </_context_data_analysis>
+            <report>
+              <url/>
+            </report>
+            <_notes>
+              <_notes_general/>
+            </_notes>
+          </annotations>
+          <documentation>
+            <input/>
+            <output/>
+            <implementation>
+              <description/>
+            </implementation>
+            <code>
+              <description/>
+            </code>
+          </documentation>
+        </call>
+      </description>
+    </description>
+---
+timestamp: '2026-01-31T12:30:27.720Z'
+event: model_updated_manual_update_selections
+data:
+  id: f8fa38be-6129-40aa-aebd-15086311852f
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d4914b7b-7dd6-4982-9c97-b7c502cb63c2</dbpm:document_id>
+          <dbpm:text_selections/>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="worklist" svg-id="a1" svg-label="OK OR NOT OK" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <label>OK OR NOT OK</label>
+            <arguments>
+              <orgmodel>https://cpee.org/~demo/orgviz/organisation_informatik.xml</orgmodel>
+              <form>https://cpee.org/~demo/form/form-f.html</form>
+              <role>Assistant</role>
+              <priority>42</priority>
+              <handling>single</handling>
+              <restrictions/>
+              <data>
+                <schaden>10000</schaden>
+                <text>destroyed</text>
+              </data>
+            </arguments>
+          </parameters>
+          <code>
+            <prepare/>
+            <finalize output="result">data.bla = result</finalize>
+            <update output="result"/>
+            <rescue output="result"/>
+          </code>
+          <annotations>
+            <_generic/>
+            <_timing>
+              <_timing_weight/>
+              <_timing_avg/>
+              <explanations/>
+            </_timing>
+            <_shifting>
+              <_shifting_type>Duration</_shifting_type>
+            </_shifting>
+            <_context_data_analysis>
+              <probes/>
+              <ips/>
+            </_context_data_analysis>
+            <report>
+              <url/>
+            </report>
+            <_notes>
+              <_notes_general/>
+            </_notes>
+          </annotations>
+          <documentation>
+            <input/>
+            <output/>
+            <implementation>
+              <description/>
+            </implementation>
+            <code>
+              <description/>
+            </code>
+          </documentation>
+        </call>
+      </description>
+    </description>
+---
+timestamp: '2026-01-31T12:31:26.148Z'
+event: model_generated
+data:
+  id: 6cf6e1c7-ecb4-4e5b-b11c-2e822278c29d
+  name: Model_2
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d4914b7b-7dd6-4982-9c97-b7c502cb63c2</dbpm:document_id>
+          <dbpm:text_selections>3. Process Extraction
+    - System analyzes selected document text.
+    - Relevant text fragments are identified and linked to process steps.
+    - User triggers model generation or regeneration.
+
+    4. Process Model Generation
+    - System creates a visual process model from extracted information.
+    - Process includes tasks, decisions, flows, and subprocesses.
+    - Each model element is linked to its source docu</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <call id="a1" endpoint="timeout">
+          <parameters>
+            <!--{{{-->
+            <label>Task 1</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>2</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a1,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a2" endpoint="timeouts">
+          <parameters>
+            <!--{{{-->
+            <label>Resource Synchronisation</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>10</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a2,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a3" endpoint="timeout">
+          <parameters>
+            <!--{{{-->
+            <label>Task 3</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>4</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a3,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+      </description>
+    </description>
+---
+timestamp: '2026-01-31T12:31:55.746Z'
+event: model_regenerated_by_selections
+data:
+  modelId: 6cf6e1c7-ecb4-4e5b-b11c-2e822278c29d
+---
+timestamp: '2026-01-31T12:31:59.209Z'
+event: model_updated_regeneration_by_selections
+data:
+  id: 6cf6e1c7-ecb4-4e5b-b11c-2e822278c29d
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d4914b7b-7dd6-4982-9c97-b7c502cb63c2</dbpm:document_id>
+          <dbpm:text_selections>3. Process Extraction
+    - System analyzes selected document text.
+    - Relevant text fragments are identified and linked to process steps.
+    - User triggers model generation or regeneration.
+
+    4. Process Model Generation
+    - System creates a visual process model from extracted information.
+    - Process includes tasks, decisions, flows, and subprocesses.
+    - Each model element is linked to its source docu 5. Model Refinement
+    - User reviews and edits the generated process model.
+    - User defines task types, conditions, and subprocess relationships.
+    - System maintains traceability between model elements and document fragments.
+
+    6. Subprocess Linking
+    - Subprocesses reference separate process models.
+    - User can navigate between parent and child models.
+    -</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <loop mode="pre_test" condition="data.places.length &gt; 0" svg-id="loop_0" svg-label="data.places.length &gt; 0" svg-type="loop" svg-subtype="loop_head">
+          <_probability>
+            <_probability_min/>
+            <_probability_max/>
+            <_probability_avg/>
+          </_probability>
+          <call id="a1" endpoint="overview" svg-id="a1" svg-label="Move to overview position" svg-type="call" svg-subtype="call">
+            <parameters>
+              <label>Move to overview position</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <call id="a3" endpoint="get_items_base" svg-id="a3" svg-label="Get item positions" svg-type="call" svg-subtype="callmanipulate">
+            <parameters>
+              <label>Get item positions</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <code>
+              <prepare/>
+              <finalize output="result">data.items = result</finalize>
+              <update output="result"/>
+              <rescue output="result"/>
+            </code>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <choose mode="exclusive" svg-id="choose_0" svg-type="choose" svg-subtype="choose_exclusive">
+            <alternative condition="data.items.length &gt; 0" svg-id="alternative_0" svg-label="data.items.length &gt; 0" svg-type="alternative" svg-subtype="alternative">
+              <call id="a5" endpoint="move_camera" svg-id="a5" svg-label="Inspect first item" svg-type="call" svg-subtype="call">
+                <parameters>
+                  <label>Inspect first item</label>
+                  <arguments>
+                    <x>!data.items.first['x']</x>
+                    <y>!data.items.first['y']</y>
+                  </arguments>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="Adjust" svg-type="call" svg-subtype="callmanipulate">
+                <parameters>
+                  <label>Adjust</label>
+                  <method>:post</method>
+                  <arguments>
+                    <behavior>wait_running</behavior>
+                    <url>https://cpee.org/flow/templates/UR-VUE%202020%20Manual%20Adjust.xml</url>
+                    <init/>
+                    <endpoints/>
+                    <stream/>
+                  </arguments>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <code>
+                  <prepare/>
+                  <finalize output="result">data.place = data.places.shift
+    data.item = result['item']
+    data.item['x'] = data.items.first['x'] + data.item['adjust_x']
+    data.item['y'] = data.items.first['y'] + data.item['adjust_y']</finalize>
+                  <update output="result"/>
+                  <rescue output="result"/>
+                </code>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <call id="a8" endpoint="grip_and_place" svg-id="a8" svg-label="Grip and Place" svg-type="call" svg-subtype="call">
+                <parameters>
+                  <label>Grip and Place</label>
+                  <arguments>
+                    <x>!data.item['x']</x>
+                    <y>!data.item['y']</y>
+                    <place_x>!data.place[0]</place_x>
+                    <place_y>!data.place[1]</place_y>
+                  </arguments>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <_probability>
+                <_probability_min/>
+                <_probability_max/>
+                <_probability_avg/>
+              </_probability>
+            </alternative>
+            <otherwise svg-id="otherwise_0" svg-type="otherwise" svg-subtype="otherwise">
+              <terminate svg-id="terminate_0" svg-type="terminate" svg-subtype="terminate"/>
+            </otherwise>
+          </choose>
+        </loop>
+      </description>
+    </description>
+---
+timestamp: '2026-01-31T12:32:56.597Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: 6cf6e1c7-ecb4-4e5b-b11c-2e822278c29d
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d4914b7b-7dd6-4982-9c97-b7c502cb63c2</dbpm:document_id>
+          <dbpm:text_selections>3. Process Extraction
+    - System analyzes selected document text.
+    - Relevant text fragments are identified and linked to process steps.
+    - User triggers model generation or regeneration.
+
+    4. Process Model Generation
+    - System creates a visual process model from extracted information.
+    - Process includes tasks, decisions, flows, and subprocesses.
+    - Each model element is linked to its source docu 5. Model Refinement
+    - User reviews and edits the generated process model.
+    - User defines task types, conditions, and subprocess relationships.
+    - System maintains traceability between model elements and document fragments.
+
+    6. Subprocess Linking
+    - Subprocesses reference separate process models.
+    - User can navigate between parent and child models.
+    -</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <loop mode="pre_test" condition="data.places.length &gt; 0" svg-id="loop_0" svg-label="data.places.length &gt; 0" svg-type="loop" svg-subtype="loop_head">
+          <_probability>
+            <_probability_min/>
+            <_probability_max/>
+            <_probability_avg/>
+          </_probability>
+          <call id="a1" endpoint="overview" svg-id="a1" svg-label="Move to overview position" svg-type="call" svg-subtype="call">
+            <parameters>
+              <label>Move to overview position</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <call id="a3" endpoint="get_items_base" svg-id="a3" svg-label="Get item positions" svg-type="call" svg-subtype="callmanipulate">
+            <parameters>
+              <label>Get item positions</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <code>
+              <prepare/>
+              <finalize output="result">data.items = result</finalize>
+              <update output="result"/>
+              <rescue output="result"/>
+            </code>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <choose mode="exclusive" svg-id="choose_0" svg-type="choose" svg-subtype="choose_exclusive">
+            <alternative condition="data.items.length &gt; 0" svg-id="alternative_0" svg-label="data.items.length &gt; 0" svg-type="alternative" svg-subtype="alternative">
+              <call id="a5" endpoint="move_camera" svg-id="a5" svg-label="Inspect first item" svg-type="call" svg-subtype="call">
+                <parameters>
+                  <label>Inspect first item</label>
+                  <arguments>
+                    <x>!data.items.first['x']</x>
+                    <y>!data.items.first['y']</y>
+                  </arguments>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="Adjust" svg-type="call" svg-subtype="callmanipulate">
+                <parameters>
+                  <label>Adjust</label>
+                  <method>:post</method>
+                  <arguments>
+                    <behavior>wait_running</behavior>
+                    <url>https://cpee.org/flow/templates/UR-VUE%202020%20Manual%20Adjust.xml</url>
+                    <init/>
+                    <endpoints/>
+                    <stream/>
+                  </arguments>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <code>
+                  <prepare/>
+                  <finalize output="result">data.place = data.places.shift
+    data.item = result['item']
+    data.item['x'] = data.items.first['x'] + data.item['adjust_x']
+    data.item['y'] = data.items.first['y'] + data.item['adjust_y']</finalize>
+                  <update output="result"/>
+                  <rescue output="result"/>
+                </code>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <call id="a8" svg-id="a8" svg-label="Grip and Place" svg-type="call" svg-subtype="call"><parameters><label>Grip and Place</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call>
+              <_probability>
+                <_probability_min/>
+                <_probability_max/>
+                <_probability_avg/>
+              </_probability>
+            </alternative>
+            <otherwise svg-id="otherwise_0" svg-type="otherwise" svg-subtype="otherwise">
+              <terminate svg-id="terminate_0" svg-type="terminate" svg-subtype="terminate"/>
+            </otherwise>
+          </choose>
+        </loop>
+      </description>
+    </description>
+---
+timestamp: '2026-01-31T12:33:06.696Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: 6cf6e1c7-ecb4-4e5b-b11c-2e822278c29d
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d4914b7b-7dd6-4982-9c97-b7c502cb63c2</dbpm:document_id>
+          <dbpm:text_selections>3. Process Extraction
+    - System analyzes selected document text.
+    - Relevant text fragments are identified and linked to process steps.
+    - User triggers model generation or regeneration.
+
+    4. Process Model Generation
+    - System creates a visual process model from extracted information.
+    - Process includes tasks, decisions, flows, and subprocesses.
+    - Each model element is linked to its source docu 5. Model Refinement
+    - User reviews and edits the generated process model.
+    - User defines task types, conditions, and subprocess relationships.
+    - System maintains traceability between model elements and document fragments.
+
+    6. Subprocess Linking
+    - Subprocesses reference separate process models.
+    - User can navigate between parent and child models.
+    -</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <loop mode="pre_test" condition="data.places.length &gt; 0" svg-id="loop_0" svg-label="data.places.length &gt; 0" svg-type="loop" svg-subtype="loop_head">
+          <_probability>
+            <_probability_min/>
+            <_probability_max/>
+            <_probability_avg/>
+          </_probability>
+          <call id="a1" endpoint="overview" svg-id="a1" svg-label="Move to overview position" svg-type="call" svg-subtype="call">
+            <parameters>
+              <label>Move to overview position</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <call id="a3" endpoint="get_items_base" svg-id="a3" svg-label="Get item positions" svg-type="call" svg-subtype="callmanipulate">
+            <parameters>
+              <label>Get item positions</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <code>
+              <prepare/>
+              <finalize output="result">data.items = result</finalize>
+              <update output="result"/>
+              <rescue output="result"/>
+            </code>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <choose mode="exclusive" svg-id="choose_0" svg-type="choose" svg-subtype="choose_exclusive">
+            <alternative condition="data.items.length &gt; 0" svg-id="alternative_0" svg-label="data.items.length &gt; 0" svg-type="alternative" svg-subtype="alternative">
+              <call id="a5" endpoint="move_camera" svg-id="a5" svg-label="Inspect first item" svg-type="call" svg-subtype="call">
+                <parameters>
+                  <label>Inspect first item</label>
+                  <arguments>
+                    <x>!data.items.first['x']</x>
+                    <y>!data.items.first['y']</y>
+                  </arguments>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="Adjust" svg-type="call" svg-subtype="callmanipulate">
+                <parameters>
+                  <label>Adjust</label>
+                  <method>:post</method>
+                  <arguments>
+                    <behavior>wait_running</behavior>
+                    <url>https://cpee.org/flow/templates/UR-VUE%202020%20Manual%20Adjust.xml</url>
+                    <init/>
+                    <endpoints/>
+                    <stream/>
+                  </arguments>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <code>
+                  <prepare/>
+                  <finalize output="result">data.place = data.places.shift
+    data.item = result['item']
+    data.item['x'] = data.items.first['x'] + data.item['adjust_x']
+    data.item['y'] = data.items.first['y'] + data.item['adjust_y']</finalize>
+                  <update output="result"/>
+                  <rescue output="result"/>
+                </code>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <call id="a8" svg-id="a8" svg-label="Grip and Place" svg-type="call" svg-subtype="call"><parameters><label>Grip and Place</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>f8fa38be-6129-40aa-aebd-15086311852f</dbpm_subprocess_model></parameters></call>
+              <_probability>
+                <_probability_min/>
+                <_probability_max/>
+                <_probability_avg/>
+              </_probability>
+            </alternative>
+            <otherwise svg-id="otherwise_0" svg-type="otherwise" svg-subtype="otherwise">
+              <terminate svg-id="terminate_0" svg-type="terminate" svg-subtype="terminate"/>
+            </otherwise>
+          </choose>
+        </loop>
+      </description>
+    </description>

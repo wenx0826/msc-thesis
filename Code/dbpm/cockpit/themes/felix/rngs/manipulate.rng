@@ -1,0 +1,29 @@
+<element xmlns="http://relaxng.org/ns/structure/1.0" xmlns:rngui="http://rngui.org" rngui:version="1.2" name="manipulate" rngui:label="Script" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes" ns="http://cpee.org/ns/description/1.0">
+  <attribute name="id" rngui:label="ID" rngui:default="javascript:get_free_id()">
+    <data type="string" rngui:readonly="true"/>
+  </attribute>
+  <attribute name="label" rngui:label="Label">
+    <data type="string" rngui:label="Short description of the task"/>
+  </attribute>
+  <text rngui:label="Script that is executed"/>
+  <element name="resources" rngui:header="Resources">
+    <zeroOrMore rngui:label="Create Resources">
+      <element name='resource' rngui:label="Resource" rngui:labeltype="xml">
+        <data type="string" rngui:label="Name"/>
+      </element>
+    </zeroOrMore>
+    <attribute name="allocated_to" rngui:label="allocated_to" rngui:default="not_allocated">
+      <data type="string" rngui:readonly="true"/>
+    </attribute>
+  </element>
+  <element name="expectedready" rngui:label="Expected Ready">
+    <data name="expectedready" type="decimal" rngui:readonly="true"/>
+  </element>
+  <element name="plannedstart" rngui:label="Planned Start Time">
+    <data name="plannedstart" type="decimal" rngui:readonly="true"/>
+  </element>
+  <element name="plannedend" rngui:label="Planned End Time">
+    <data name="plannedend" type="decimal" rngui:readonly="true"/>
+  </element>
+
+</element>

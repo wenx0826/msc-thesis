@@ -3,28 +3,13 @@ const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
 const yaml = require("js-yaml");
+const db = require("./database");
 
 const app = express();
 const PORT = 3000;
 
-const statsFile = path.join(__dirname, "..", "data", "stats.json");
 const logsPath = path.join(__dirname, "..", "data", "logs");
-const projectsFile = path.join(__dirname, "..", "data", "projects.json");
-
-const tracesFile = path.join(__dirname, "..", "data", "traces.json");
-const documentMetaFile = path.join(
-  __dirname,
-  "..",
-  "data",
-  "document-meta.json",
-);
 const documentsPath = path.join(__dirname, "..", "data", "documents");
-const modelMetaByIdFile = path.join(
-  __dirname,
-  "..",
-  "data",
-  "model-meta.by-id.json",
-);
 const modelsPath = path.join(__dirname, "..", "data", "models");
 
 const getISODate = () => new Date().toISOString();
@@ -78,57 +63,24 @@ app.post("/logs", (req, res) => {
   logEvent(projectId, event, data);
   switch (event) {
     case "model_regenerated_by_prompt":
-      fs.readFile(statsFile, "utf8", (err, fileData) => {
-        let stats = {};
-        if (!err) {
-          try {
-            stats = fileData.trim() ? JSON.parse(fileData) : {};
-          } catch (e) {
-            console.error("Failed to parse stats file");
-          }
-        }
-        if (stats[projectId]) {
-          const modelStats = stats[projectId].models.find(
-            (m) => m.id === data.modelId,
-          );
-          if (modelStats) {
-            modelStats.regeneratedByPromptTimes =
-              (modelStats.regeneratedByPromptTimes || 0) + 1;
-          }
-          fs.writeFile(statsFile, JSON.stringify(stats, null, 2), (err) => {
-            if (err) {
-              console.error("Failed to write stats file");
-            }
-          });
-        }
-      });
+      try {
+        const stmt = db.prepare(
+          "UPDATE models SET regeneratedByPromptTimes = regeneratedByPromptTimes + 1 WHERE id = ?",
+        );
+        stmt.run(data.modelId);
+      } catch (err) {
+        console.error("Failed to update regeneratedByPromptTimes:", err);
+      }
       break;
     case "model_regenerated_by_selections":
-      // Update stats
-      fs.readFile(statsFile, "utf8", (err, fileData) => {
-        let stats = {};
-        if (!err) {
-          try {
-            stats = fileData.trim() ? JSON.parse(fileData) : {};
-          } catch (e) {
-            console.error("Failed to parse stats file");
-          }
-        }
-        if (stats[projectId]) {
-          const modelStats = stats[projectId].models.find(
-            (m) => m.id === data.modelId,
-          );
-          if (modelStats) {
-            modelStats.regeneratedBySelectionsTimes =
-              (modelStats.regeneratedBySelectionsTimes || 0) + 1;
-          }
-          fs.writeFile(statsFile, JSON.stringify(stats, null, 2), (err) => {
-            if (err) {
-              console.error("Failed to write stats file");
-            }
-          });
-        }
-      });
+      try {
+        const stmt = db.prepare(
+          "UPDATE models SET regeneratedBySelectionsTimes = regeneratedBySelectionsTimes + 1 WHERE id = ?",
+        );
+        stmt.run(data.modelId);
+      } catch (err) {
+        console.error("Failed to update regeneratedBySelectionsTimes:", err);
+      }
       break;
     default:
       break;
@@ -145,214 +97,137 @@ app.post("/projects", (req, res) => {
     return res.status(400).json({ error: "Missing name" });
   }
   const projectId = crypto.randomUUID();
+  const createdAt = new Date().toISOString();
 
-  const project = {
-    id: projectId,
-    createdAt: new Date().toISOString(),
-    name,
-    generatedModelNumber: 0,
-  };
+  try {
+    const stmt = db.prepare(
+      "INSERT INTO projects (id, name, createdAt, generatedModelNumber) VALUES (?, ?, ?, ?)",
+    );
+    stmt.run(projectId, name, createdAt, 0);
 
-  fs.readFile(projectsFile, "utf8", (err, data) => {
-    let projects = [];
-    if (!err) {
-      try {
-        projects = data.trim() ? JSON.parse(data) : [];
-      } catch (e) {
-        return res.status(500).json({ error: "Failed to parse projects file" });
-      }
-    }
+    res.json({ id: projectId });
 
-    projects.push(project);
-
-    fs.writeFile(projectsFile, JSON.stringify(projects, null, 2), (err) => {
+    // Create empty log file for the project
+    fs.writeFile(path.join(logsPath, `${projectId}.yaml`), "", (err) => {
       if (err) {
-        return res.status(500).json({ error: "Failed to write projects file" });
+        console.error("Failed to create log file for project:", projectId);
       }
-      res.json({
-        id: projectId,
-      });
-
-      fs.readFile(statsFile, "utf8", (err, data) => {
-        let stats = {};
-        if (!err) {
-          try {
-            stats = data.trim() ? JSON.parse(data) : {};
-          } catch (e) {
-            console.error("Failed to parse stats file");
-          }
-        }
-        stats[projectId] = {
-          documents: [],
-          models: [],
-        };
-        fs.writeFile(statsFile, JSON.stringify(stats, null, 2), (err) => {
-          if (err) {
-            console.error("Failed to write stats file");
-          }
-        });
-      });
-      // Create empty log file for the project
-      fs.writeFile(path.join(logsPath, `${projectId}.yaml`), "", (err) => {
-        if (err) {
-          console.error("Failed to create log file for project:", projectId);
-        }
-      });
-      logEvent(projectId, "project_created", { id: projectId, name });
     });
-  });
+    logEvent(projectId, "project_created", { id: projectId, name });
+  } catch (err) {
+    console.error("Failed to create project:", err);
+    res.status(500).json({ error: "Failed to create project" });
+  }
 });
 app.get("/projects", (req, res) => {
   console.log("Fetching project list...");
-  fs.readFile(projectsFile, "utf8", (err, data) => {
-    if (err) {
-      if (err.code === "ENOENT") {
-        return res.json([]); // File doesn't exist, return empty array
-      }
-      return res.status(500).json({ error: "Failed to read projects file" });
-    }
-    try {
-      let projects = data.trim() ? JSON.parse(data) : [];
-      projects = projects.map(({ documents, ...rest }) => rest);
-      res.json(projects);
-    } catch (e) {
-      res.status(500).json({ error: "Failed to parse projects file" });
-    }
-  });
+  try {
+    const stmt = db.prepare("SELECT * FROM projects");
+    const projects = stmt.all();
+    res.json(projects);
+  } catch (err) {
+    console.error("Failed to fetch projects:", err);
+    res.status(500).json({ error: "Failed to fetch projects" });
+  }
 });
 app.get("/projects/:id", (req, res) => {
   const projectId = req.params.id;
-  fs.readFile(projectsFile, "utf8", (err, data) => {
-    if (err) {
-      if (err.code === "ENOENT") {
-        return res.status(404).json({ error: "Project not found" });
-      }
-      return res.status(500).json({ error: "Failed to read projects file" });
+  try {
+    const stmt = db.prepare("SELECT * FROM projects WHERE id = ?");
+    const project = stmt.get(projectId);
+    if (!project) {
+      return res.status(404).json({ error: "Project not found" });
     }
-    try {
-      const projects = data.trim() ? JSON.parse(data) : [];
-      const project = projects.find((p) => p.id === projectId);
-      if (!project) {
-        return res.status(404).json({ error: "Project not found" });
-      }
-      res.json(project);
-    } catch (e) {
-      res.status(500).json({ error: "Failed to parse projects file" });
-    }
-  });
+    res.json(project);
+  } catch (err) {
+    console.error("Failed to fetch project:", err);
+    res.status(500).json({ error: "Failed to fetch project" });
+  }
 });
 
 app.get("/projects/:projectId/documents", (req, res) => {
   const { projectId } = req.params;
   console.log("Fetching documents for project:", projectId);
-  fs.readFile(documentMetaFile, "utf8", (err, data) => {
-    if (err) {
-      if (err.code === "ENOENT") {
-        return res.json([]);
-      }
-      return res.status(500).json({ error: "Failed to read documents file" });
-    }
-    try {
-      const documents = data.trim() ? JSON.parse(data) : [];
-      const filtered = documents.filter((doc) => doc.projectId === projectId);
-      res.json(filtered);
-    } catch (e) {
-      res.status(500).json({ error: "Failed to parse documents file" });
-    }
-  });
+  try {
+    const stmt = db.prepare(
+      "SELECT id, name, uploadedAt, projectId FROM documents WHERE projectId = ?",
+    );
+    const documents = stmt.all(projectId);
+    res.json(documents);
+  } catch (err) {
+    console.error("Failed to fetch documents:", err);
+    res.status(500).json({ error: "Failed to fetch documents" });
+  }
 });
 app.get("/projects/:projectId/documents/count", (req, res) => {
   const { projectId } = req.params;
-  console.log("Fetching documents for project:", projectId);
-  fs.readFile(documentMetaFile, "utf8", (err, data) => {
-    if (err) {
-      if (err.code === "ENOENT") {
-        return res.send("error");
-      }
-      return res.status(500).json({ error: "Failed to read documents file" });
-    }
-    try {
-      const documents = data.trim() ? JSON.parse(data) : [];
-      const filtered = documents.filter((doc) => doc.projectId === projectId);
-      res.send(filtered.length);
-    } catch (e) {
-      res.status(500).json({ error: "Failed to parse documents file" });
-    }
-  });
+  console.log("Fetching document count for project:", projectId);
+  try {
+    const stmt = db.prepare(
+      "SELECT COUNT(*) as count FROM documents WHERE projectId = ?",
+    );
+    const result = stmt.get(projectId);
+    res.send(result.count.toString());
+  } catch (err) {
+    console.error("Failed to count documents:", err);
+    res.send("error");
+  }
 });
 app.get("/projects/:projectId/models/count", (req, res) => {
   const { projectId } = req.params;
-  console.log("Fetching documents for project:", projectId);
-  fs.readFile(documentMetaFile, "utf8", (err, data) => {
-    if (err) {
-      if (err.code === "ENOENT") {
-        return res.send("error");
-      }
-      return res.status(500).json({ error: "Failed to read documents file" });
-    }
-    try {
-      const documents = data.trim() ? JSON.parse(data) : [];
-      const filtered = documents.filter((doc) => doc.projectId === projectId);
-      fs.readFile(tracesFile, "utf8", (err, modelData) => {
-        if (err) {
-          if (err.code === "ENOENT") {
-            return res.send("error");
-          }
-          return res.status(500).json({ error: "Failed to read models file" });
-        }
-        try {
-          const traces = modelData.trim() ? JSON.parse(modelData) : [];
-          let modelIds = new Set();
-          for (const doc of filtered) {
-            const docTraces = traces.filter(
-              (trace) => trace.documentId === doc.id,
-            );
-            for (const trace of docTraces) {
-              modelIds.add(trace.modelId);
-            }
-          }
-          res.send(modelIds.size.toString());
-        } catch (e) {
-          res.status(500).json({ error: "Failed to parse models file" });
-        }
-      });
-      // res.send(filtered.length);
-    } catch (e) {
-      res.status(500).json({ error: "Failed to parse documents file" });
-    }
-  });
+  console.log("Fetching model count for project:", projectId);
+  try {
+    const stmt = db.prepare(`
+      SELECT COUNT(DISTINCT m.id) as count 
+      FROM models m
+      JOIN documents d ON m.documentId = d.id
+      WHERE d.projectId = ?
+    `);
+    const result = stmt.get(projectId);
+    res.send(result.count.toString());
+  } catch (err) {
+    console.error("Failed to count models:", err);
+    res.send("error");
+  }
 });
 app.put("/projects/:id", (req, res) => {
   const projectId = req.params.id;
   const updates = req.body;
 
-  fs.readFile(projectsFile, "utf8", (err, data) => {
-    if (err) {
-      if (err.code === "ENOENT") {
-        return res.status(404).json({ error: "Project not found" });
-      }
-      return res.status(500).json({ error: "Failed to read projects file" });
+  try {
+    const fields = [];
+    const values = [];
+
+    if (updates.name !== undefined) {
+      fields.push("name = ?");
+      values.push(updates.name);
     }
-    try {
-      let projects = data.trim() ? JSON.parse(data) : [];
-      const projectIndex = projects.findIndex((p) => p.id === projectId);
-      if (projectIndex === -1) {
-        return res.status(404).json({ error: "Project not found" });
-      }
-      const project = projects[projectIndex];
-      projects[projectIndex] = { ...project, ...updates };
-      fs.writeFile(projectsFile, JSON.stringify(projects, null, 2), (err) => {
-        if (err) {
-          return res
-            .status(500)
-            .json({ error: "Failed to write projects file" });
-        }
-        res.json(projects[projectIndex]);
-      });
-    } catch (e) {
-      res.status(500).json({ error: "Failed to parse projects file" });
+    if (updates.generatedModelNumber !== undefined) {
+      fields.push("generatedModelNumber = ?");
+      values.push(updates.generatedModelNumber);
     }
-  });
+
+    if (fields.length === 0) {
+      return res.status(400).json({ error: "No valid fields to update" });
+    }
+
+    values.push(projectId);
+    const stmt = db.prepare(
+      `UPDATE projects SET ${fields.join(", ")} WHERE id = ?`,
+    );
+    const result = stmt.run(...values);
+
+    if (result.changes === 0) {
+      return res.status(404).json({ error: "Project not found" });
+    }
+
+    const getStmt = db.prepare("SELECT * FROM projects WHERE id = ?");
+    const project = getStmt.get(projectId);
+    res.json(project);
+  } catch (err) {
+    console.error("Failed to update project:", err);
+    res.status(500).json({ error: "Failed to update project" });
+  }
 });
 // #endregion
 
@@ -366,188 +241,126 @@ app.post("/documents", (req, res) => {
   }
   const id = crypto.randomUUID();
   const uploadedAt = new Date().toISOString();
-  const documentMeta = { id, name, uploadedAt, projectId };
-  // Read current documents
-  fs.readFile(documentMetaFile, "utf8", (err, data) => {
-    let documents = [];
-    if (!err) {
-      try {
-        documents = data.trim() ? JSON.parse(data) : [];
-      } catch (e) {
-        return res
-          .status(500)
-          .json({ error: "Failed to parse documents file" });
-      }
-    }
-    documents.push(documentMeta);
-    // Write metadata
-    fs.writeFile(
-      documentMetaFile,
-      JSON.stringify(documents, null, 2),
-      (err) => {
-        if (err) {
-          return res
-            .status(500)
-            .json({ error: "Failed to write documents file" });
-        }
-        // Write content
-        const contentFile = path.join(documentsPath, `${id}.html`);
-        fs.writeFile(contentFile, content, (err) => {
-          if (err) {
-            // Rollback metadata? For simplicity, not for now
-            return res
-              .status(500)
-              .json({ error: "Failed to write document content" });
-          }
-          res.json(documentMeta);
-        });
 
-        /// Log event
-        const documentStats = {
-          id,
-          name,
-          words: content.split(/\s+/).filter(Boolean).length,
-        };
-        logEvent(projectId, "document_uploaded", documentStats);
+  try {
+    // Write content file first
+    const contentFile = path.join(documentsPath, `${id}.html`);
+    fs.writeFileSync(contentFile, content);
 
-        fs.readFile(statsFile, "utf8", (err, data) => {
-          let stats = {};
-          if (!err) {
-            try {
-              stats = data.trim() ? JSON.parse(data) : {};
-            } catch (e) {
-              console.error("Failed to parse stats file");
-            }
-          }
-          if (!stats[projectId]) {
-            stats[projectId] = { documents: [], models: [] };
-          }
-          stats[projectId].documents.push(documentStats);
-          fs.writeFile(statsFile, JSON.stringify(stats, null, 2), (err) => {
-            if (err) {
-              console.error("Failed to write stats file");
-            }
-          });
-        });
-      },
+    // Count words (ensure it's a valid number)
+    const words = content.split(/\s+/).filter(Boolean).length || 0;
+
+    // Insert into database with words
+    const stmt = db.prepare(
+      "INSERT INTO documents (id, name, uploadedAt, projectId, words) VALUES (?, ?, ?, ?, ?)",
     );
-  });
+    stmt.run(id, name, uploadedAt, projectId, words);
+
+    res.json({ id, name, uploadedAt, projectId });
+
+    // Log event
+    logEvent(projectId, "document_uploaded", { id, name, words });
+  } catch (err) {
+    console.error("Failed to create document:", err);
+    console.error("Error details:", err.message);
+    console.error("Stack trace:", err.stack);
+    // Try to cleanup file if DB insert failed
+    const contentFile = path.join(documentsPath, `${id}.html`);
+    fs.unlink(contentFile, () => {});
+    res
+      .status(500)
+      .json({ error: "Failed to create document", details: err.message });
+  }
 });
 app.get("/documents", (req, res) => {
   console.log("Fetching documents list...");
-  fs.readFile(documentMetaFile, "utf8", (err, data) => {
-    if (err) {
-      if (err.code === "ENOENT") {
-        return res.json([]);
-      }
-      return res.status(500).json({ error: "Failed to read documents file" });
-    }
-    try {
-      const documents = data.trim() ? JSON.parse(data) : [];
-      res.json(documents);
-    } catch (e) {
-      res.status(500).json({ error: "Failed to parse documents file" });
-    }
-  });
+  try {
+    const stmt = db.prepare(
+      "SELECT id, name, uploadedAt, projectId FROM documents",
+    );
+    const documents = stmt.all();
+    res.json(documents);
+  } catch (err) {
+    console.error("Failed to fetch documents:", err);
+    res.status(500).json({ error: "Failed to fetch documents" });
+  }
 });
 
 app.get("/documents/:id/content", (req, res) => {
   const docId = req.params.id;
   console.log("Fetching document content for ID:", docId);
-  const contentFile = path.join(documentsPath, `${docId}.html`);
-  fs.readFile(contentFile, "utf8", (err, content) => {
-    if (err) {
-      if (err.code === "ENOENT") {
-        return res.status(404).json({ error: "Document not found" });
-      }
-      return res.status(500).json({ error: "Failed to read document content" });
+  try {
+    // Verify document exists
+    const stmt = db.prepare("SELECT id FROM documents WHERE id = ?");
+    const doc = stmt.get(docId);
+    if (!doc) {
+      return res.status(404).json({ error: "Document not found" });
     }
+    const contentFile = path.join(documentsPath, `${docId}.html`);
+    const content = fs.readFileSync(contentFile, "utf8");
     res.json({ content });
-  });
+  } catch (err) {
+    console.error("Failed to read document content:", err);
+    res.status(500).json({ error: "Failed to read document content" });
+  }
 });
 
 app.get("/documents/:id/traces", (req, res) => {
   const { id } = req.params;
   console.log("Fetching traces for document ID:", id);
-  fs.readFile(tracesFile, "utf8", (err, data) => {
-    if (err) {
-      if (err.code === "ENOENT") {
-        return res.json([]);
-      }
-      return res.status(500).json({ error: "Failed to read traces file" });
-    }
-    try {
-      const traces = data.trim() ? JSON.parse(data) : [];
-      const filtered = traces.filter((trace) => trace.documentId === id);
-      res.json(filtered);
-    } catch (e) {
-      res.status(500).json({ error: "Failed to parse traces file" });
-    }
-  });
+  try {
+    const stmt = db.prepare("SELECT * FROM traces WHERE documentId = ?");
+    const traces = stmt.all(id);
+    // Parse selections JSON
+    const parsedTraces = traces.map((trace) => ({
+      ...trace,
+      selections: JSON.parse(trace.selections),
+    }));
+    res.json(parsedTraces);
+  } catch (err) {
+    console.error("Failed to fetch traces:", err);
+    res.status(500).json({ error: "Failed to fetch traces" });
+  }
 });
 app.get("/documents/:id/models", (req, res) => {
   const docId = req.params.id;
-  const models = [];
-  fs.readFile(tracesFile, "utf8", (err, data) => {
-    if (err) {
-      if (err.code === "ENOENT") {
-        return res.json([]);
-      }
-      return res.status(500).json({ error: "Failed to read traces file" });
-    }
-    try {
-      const traces = data.trim() ? JSON.parse(data) : [];
-      const docTraces = traces.filter((trace) => trace.documentId === docId);
-      for (const trace of docTraces) {
-        let modelMetaById = fs.readFileSync(modelMetaByIdFile, "utf8");
-        modelMetaById = modelMetaById.trim() ? JSON.parse(modelMetaById) : {};
-        const model = modelMetaById[trace.modelId];
-        if (model) {
-          models.push(model);
-        }
-      }
-      res.json(models);
-    } catch (e) {
-      res.status(500).json({ error: "Failed to parse traces file" });
-    }
-  });
+  try {
+    const stmt = db.prepare(`
+      SELECT DISTINCT m.* FROM models m
+      INNER JOIN traces t ON t.modelId = m.id
+      WHERE t.documentId = ?
+    `);
+    const models = stmt.all(docId);
+    res.json(models);
+  } catch (err) {
+    console.error("Failed to fetch models for document:", err);
+    res.status(500).json({ error: "Failed to fetch models" });
+  }
 });
 
 app.delete("/documents/:id", (req, res) => {
   const docId = req.params.id;
-  fs.readFile(documentMetaFile, "utf8", (err, data) => {
-    if (err) {
-      return res.status(500).json({ error: "Failed to read documents file" });
+  try {
+    // Verify document exists before deleting
+    const getStmt = db.prepare("SELECT id FROM documents WHERE id = ?");
+    const doc = getStmt.get(docId);
+    if (!doc) {
+      return res.status(404).json({ error: "Document not found" });
     }
-    try {
-      let documents = data.trim() ? JSON.parse(data) : [];
-      const index = documents.findIndex((d) => d.id === docId);
-      if (index === -1) {
-        return res.status(404).json({ error: "Document not found" });
-      }
-      documents.splice(index, 1);
-      fs.writeFile(
-        documentMetaFile,
-        JSON.stringify(documents, null, 2),
-        (err) => {
-          if (err) {
-            return res
-              .status(500)
-              .json({ error: "Failed to update documents file" });
-          }
-          // Delete content file
-          const contentFile = path.join(documentsPath, `${docId}.html`);
-          fs.unlink(contentFile, (err) => {
-            // Ignore error if file doesn't exist
-            res.json({ message: "Document deleted" });
-          });
-        },
-      );
-    } catch (e) {
-      res.status(500).json({ error: "Failed to parse documents file" });
-    }
-  });
-  // Delete content file
+
+    // Delete from database (will cascade to traces and stats)
+    const deleteStmt = db.prepare("DELETE FROM documents WHERE id = ?");
+    deleteStmt.run(docId);
+
+    // Delete content file
+    const contentFile = path.join(documentsPath, `${docId}.html`);
+    fs.unlink(contentFile, () => {}); // Ignore errors
+
+    res.json({ message: "Document deleted" });
+  } catch (err) {
+    console.error("Failed to delete document:", err);
+    res.status(500).json({ error: "Failed to delete document" });
+  }
 });
 // #endregion
 
@@ -556,325 +369,265 @@ app.post("/models", (req, res) => {
   const { projectId, model, trace } = req.body;
   const { data: modelData, meta } = model;
   const id = crypto.randomUUID();
-  // const timestamp = new Date().toISOString();
-  const modelMeta = { id, ...meta };
+  const timestamp = new Date().toISOString();
+
   trace.modelId = id;
   trace.id = crypto.randomUUID();
+  trace.timestamp = timestamp;
   const words = trace.selections.reduce(
     (acc, sel) => acc + sel.text.split(/\s+/).filter(Boolean).length,
     0,
   );
-  fs.readFile(modelMetaByIdFile, "utf8", (err, data) => {
-    let modelMetaById = {};
-    if (!err) {
-      try {
-        modelMetaById = data.trim() ? JSON.parse(data) : {};
-      } catch (e) {
-        return res.status(500).json({ error: "Failed to parse models file" });
-      }
-    }
-    modelMetaById[id] = modelMeta;
-    // Write metadata
-    fs.writeFile(
-      modelMetaByIdFile,
-      JSON.stringify(modelMetaById, null, 2),
-      (err) => {
-        if (err) {
-          return res.status(500).json({ error: "Failed to write models file" });
-        }
-        // Write content
-        const modelDataFile = path.join(modelsPath, `${id}.xml`);
-        fs.writeFile(modelDataFile, modelData, (err) => {
-          if (err) {
-            // Rollback metadata? For simplicity, not for now
-            return res
-              .status(500)
-              .json({ error: "Failed to write model content" });
-          }
 
-          res.json({ modelMeta, trace });
-        });
-      },
+  try {
+    // Write model data file
+    const modelDataFile = path.join(modelsPath, `${id}.xml`);
+    fs.writeFileSync(modelDataFile, modelData);
+
+    // Insert model into database with stats
+    const modelStmt = db.prepare(
+      "INSERT INTO models (id, name, timestamp, documentId, status, regeneratedByPromptTimes, regeneratedBySelectionsTimes, words) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
     );
-  });
-  fs.readFile(tracesFile, "utf8", (err, data) => {
-    let traces = [];
-    if (!err) {
-      try {
-        traces = data.trim() ? JSON.parse(data) : [];
-      } catch (e) {
-        console.error("Failed to parse traces file");
-      }
-    }
-    traces.push(trace);
-    fs.writeFile(tracesFile, JSON.stringify(traces, null, 2), (err) => {
-      if (err) {
-        console.error("Failed to write traces file");
-      }
-    });
-  });
-  fs.readFile(statsFile, "utf8", (err, data) => {
-    let stats = {};
-    if (!err) {
-      try {
-        stats = data.trim() ? JSON.parse(data) : {};
-      } catch (e) {
-        console.error("Failed to parse stats file");
-      }
-    }
-    if (!stats[projectId]) {
-      stats[projectId] = { documents: [], models: [] };
-    }
-    stats[projectId].models.push({
-      id: id,
-      documentId: trace.documentId,
-      name: modelMeta.name,
-      status: "generated",
-      regeneratedByPromptTimes: 0,
-      regeneratedBySelectionsTimes: 0,
+    modelStmt.run(
+      id,
+      meta.name,
+      timestamp,
+      trace.documentId,
+      "generated",
+      0,
+      0,
       words,
-      updates: [
-        {
-          timestamp: getISODate(),
-          type: "generation",
-          words,
-        },
-      ],
-    });
-    fs.writeFile(statsFile, JSON.stringify(stats, null, 2), (err) => {
-      if (err) {
-        console.error("Failed to write stats file");
-      }
-    });
-  });
+    );
 
-  logEvent(projectId, "model_generated", {
-    id: id,
-    name: modelMeta.name,
-    data: modelData,
-  });
+    const traceStmt = db.prepare(
+      "INSERT INTO traces (id, documentId, modelId, prompt, selections, timestamp) VALUES (?, ?, ?, ?, ?, ?)",
+    );
+    traceStmt.run(
+      trace.id,
+      trace.documentId,
+      trace.modelId,
+      trace.prompt || null,
+      JSON.stringify(trace.selections),
+      trace.timestamp,
+    );
+
+    // Insert initial update
+    const updateStmt = db.prepare(
+      "INSERT INTO model_stat_updates (modelId, timestamp, type, words) VALUES (?, ?, ?, ?)",
+    );
+    updateStmt.run(id, getISODate(), "generation", words);
+
+    res.json({ modelMeta: { id, name: meta.name, timestamp }, trace });
+
+    logEvent(projectId, "model_generated", {
+      id: id,
+      name: meta.name,
+      data: modelData,
+    });
+  } catch (err) {
+    console.error("Failed to create model:", err);
+    // Cleanup file if DB insert failed
+    const modelDataFile = path.join(modelsPath, `${id}.xml`);
+    fs.unlink(modelDataFile, () => {});
+    res.status(500).json({ error: "Failed to create model" });
+  }
 });
 app.get("/models/:id", (req, res) => {
   const modelId = req.params.id;
   console.log("Fetching model for ID:", modelId);
-  let model;
-  fs.readFile(modelMetaByIdFile, "utf8", (err, data) => {
-    if (err) {
-      if (err.code === "ENOENT") {
-        return res.status(404).json({ error: "Model not found" });
-      }
-      return res.status(500).json({ error: "Failed to read models file" });
+  try {
+    const stmt = db.prepare("SELECT * FROM models WHERE id = ?");
+    const model = stmt.get(modelId);
+    if (!model) {
+      return res.status(404).json({ error: "Model not found" });
     }
-    try {
-      const modelMetaById = data.trim() ? JSON.parse(data) : {};
-      const modelMeta = modelMetaById[modelId];
-      if (!modelMeta) {
-        return res.status(404).json({ error: "Model not found" });
-      }
-      model = modelMeta;
-      const modelFile = path.join(modelsPath, `${modelId}.xml`);
-      fs.readFile(modelFile, "utf8", (err, data) => {
-        if (err) {
-          if (err.code === "ENOENT") {
-            return res.status(404).json({ error: "Model not found" });
-          }
-          return res
-            .status(500)
-            .json({ error: "Failed to read model content" });
-        }
-        model.data = data;
-        res.json(model);
-      });
-    } catch (e) {
-      res.status(500).json({ error: "Failed to parse models file" });
-    }
-  });
+
+    // Read model data from file
+    const modelFile = path.join(modelsPath, `${modelId}.xml`);
+    const data = fs.readFileSync(modelFile, "utf8");
+    model.data = data;
+
+    res.json(model);
+  } catch (err) {
+    console.error("Failed to fetch model:", err);
+    res.status(500).json({ error: "Failed to fetch model" });
+  }
 });
 
 app.get("/models/:id/data", (req, res) => {
   const modelId = req.params.id;
   console.log("Fetching model content for ID:", modelId);
-  const modelFile = path.join(modelsPath, `${modelId}.xml`);
-  fs.readFile(modelFile, "utf8", (err, data) => {
-    if (err) {
-      if (err.code === "ENOENT") {
-        return res.status(404).json({ error: "Model not found" });
-      }
-      return res.status(500).json({ error: "Failed to read model content" });
-    }
+  try {
+    const modelFile = path.join(modelsPath, `${modelId}.xml`);
+    const data = fs.readFileSync(modelFile, "utf8");
     res.json(data);
-  });
+  } catch (err) {
+    console.error("Failed to read model data:", err);
+    res.status(500).json({ error: "Failed to read model data" });
+  }
 });
 app.put("/models/:id", (req, res) => {
   const modelId = req.params.id;
   const { projectId, modelData, trace, type } = req.body;
   console.log("Updating model for ID:", modelId);
 
-  const modelFile = path.join(modelsPath, `${modelId}.xml`);
-  fs.writeFile(modelFile, modelData, (err) => {
-    if (err) {
-      return res.status(500).json({ error: "Failed to update model content" });
+  try {
+    // Write model data file
+    const modelFile = path.join(modelsPath, `${modelId}.xml`);
+    fs.writeFileSync(modelFile, modelData);
+
+    // Update model status
+    const updateModelStmt = db.prepare(
+      "UPDATE models SET status = ? WHERE id = ?",
+    );
+    updateModelStmt.run("updated", modelId);
+
+    // Calculate words and add update record
+    let words = null;
+    if (trace) {
+      words = trace.selections.reduce(
+        (acc, sel) => acc + sel.text.split(/\s+/).filter(Boolean).length,
+        0,
+      );
+    }
+
+    const updateStmt = db.prepare(
+      "INSERT INTO model_stat_updates (modelId, timestamp, type, words) VALUES (?, ?, ?, ?)",
+    );
+    updateStmt.run(modelId, getISODate(), type, words);
+
+    // Update trace if provided
+    if (trace) {
+      const traceStmt = db.prepare(
+        "UPDATE traces SET prompt = ?, selections = ? WHERE modelId = ?",
+      );
+      traceStmt.run(
+        trace.prompt || null,
+        JSON.stringify(trace.selections),
+        modelId,
+      );
     }
 
     res.json({ message: "Model content updated" });
-  });
 
-  fs.readFile(statsFile, "utf8", (err, data) => {
-    let stats = {};
-    if (!err) {
-      try {
-        stats = data.trim() ? JSON.parse(data) : {};
-      } catch (e) {
-        console.error("Failed to parse stats file");
-      }
-    }
-
-    const projectStats = stats[projectId];
-    const modelStats = projectStats.models.find((m) => m.id === modelId);
-    if (modelStats) {
-      modelStats.status = "updated";
-      const update = {
-        timestamp: getISODate(),
-        type: type,
-      };
-      if (trace) {
-        const words = trace.selections.reduce(
-          (acc, sel) => acc + sel.text.split(/\s+/).filter(Boolean).length,
-          0,
-        );
-        update.words = words;
-      }
-      modelStats.updates.push(update);
-    }
-
-    fs.writeFile(statsFile, JSON.stringify(stats, null, 2), (err) => {
-      if (err) {
-        console.error("Failed to write stats file");
-      }
+    logEvent(projectId, `model_updated_${type}`, {
+      id: modelId,
+      data: modelData,
     });
-  });
-
-  if (trace) {
-    fs.readFile(tracesFile, "utf8", (err, data) => {
-      let traces = [];
-      if (!err) {
-        try {
-          traces = data.trim() ? JSON.parse(data) : [];
-        } catch (e) {
-          console.error("Failed to parse traces file");
-        }
-      }
-      const traceIndex = traces.findIndex((t) => t.modelId === modelId);
-      if (traceIndex !== -1) {
-        traces[traceIndex] = trace;
-        fs.writeFile(tracesFile, JSON.stringify(traces, null, 2), (err) => {
-          if (err) {
-            console.error("Failed to write traces file");
-          }
-        });
-      }
-    });
+  } catch (err) {
+    console.error("Failed to update model:", err);
+    res.status(500).json({ error: "Failed to update model" });
   }
-  logEvent(projectId, `model_updated_${type}`, {
-    id: modelId,
-    data: modelData,
-  });
 });
 app.put("/models/:id/data", (req, res) => {
   const modelId = req.params.id;
   const { projectId, modelData } = req.body;
   console.log("Updating model content for ID:", modelId);
 
-  const modelFile = path.join(modelsPath, `${modelId}.xml`);
-  fs.writeFile(modelFile, modelData, (err) => {
-    if (err) {
-      return res.status(500).json({ error: "Failed to update model content" });
-    }
+  try {
+    // Write model data file
+    const modelFile = path.join(modelsPath, `${modelId}.xml`);
+    fs.writeFileSync(modelFile, modelData);
+
+    // Update model status
+    const updateModelStmt = db.prepare(
+      "UPDATE models SET status = ? WHERE id = ?",
+    );
+    updateModelStmt.run("updated_manual", modelId);
+
+    // Add update record
+    const updateStmt = db.prepare(
+      "INSERT INTO model_stat_updates (modelId, timestamp, type, words) VALUES (?, ?, ?, ?)",
+    );
+    updateStmt.run(modelId, getISODate(), "manual_update", null);
+
     res.json({ message: "Model content updated" });
-  });
 
-  fs.readFile(statsFile, "utf8", (err, data) => {
-    let stats = {};
-    if (!err) {
-      try {
-        stats = data.trim() ? JSON.parse(data) : {};
-      } catch (e) {
-        console.error("Failed to parse stats file");
-      }
-    }
-    const projectStats = stats[projectId];
-    const modelStats = projectStats.models.find((m) => m.id === modelId);
-    if (modelStats) {
-      modelStats.status = "updated_manual";
-      modelStats.updates.push({
-        timestamp: getISODate(),
-        type: "manual_update",
-      });
-    }
-
-    fs.writeFile(statsFile, JSON.stringify(stats, null, 2), (err) => {
-      if (err) {
-        console.error("Failed to write stats file");
-      }
+    logEvent(projectId, "model_updated_manual", {
+      id: modelId,
+      data: modelData,
     });
-  });
+  } catch (err) {
+    console.error("Failed to update model data:", err);
+    res.status(500).json({ error: "Failed to update model data" });
+  }
+});
+app.delete("/models/:id", (req, res) => {
+  const modelId = req.params.id;
+  try {
+    // Verify model exists before deleting
+    const getStmt = db.prepare("SELECT id FROM models WHERE id = ?");
+    const model = getStmt.get(modelId);
+    if (!model) {
+      return res.status(404).json({ error: "Model not found" });
+    }
 
-  logEvent(projectId, "model_updated_manual", {
-    id: modelId,
-    data: modelData,
-  });
+    // Delete from database (will cascade to traces and stats)
+    const deleteStmt = db.prepare("DELETE FROM models WHERE id = ?");
+    deleteStmt.run(modelId);
+
+    // Delete data file
+    const dataFile = path.join(modelsPath, `${modelId}.xml`);
+    fs.unlink(dataFile, () => {}); // Ignore errors
+
+    res.json({ message: "Model deleted" });
+  } catch (err) {
+    console.error("Failed to delete model:", err);
+    res.status(500).json({ error: "Failed to delete model" });
+  }
 });
 // #endregion
 
 //#region Trace Endpoints
 app.post("/traces", (req, res) => {
   const trace = req.body;
-
   const id = crypto.randomUUID();
   trace.id = id;
-  fs.readFile(tracesFile, "utf8", (err, data) => {
-    let traces = [];
-    if (!err) {
-      try {
-        traces = data.trim() ? JSON.parse(data) : [];
-      } catch (e) {
-        return res.status(500).json({ error: "Failed to parse traces file" });
-      }
-    }
-    traces.push(trace);
-    fs.writeFile(tracesFile, JSON.stringify(traces, null, 2), (err) => {
-      if (err) {
-        return res.status(500).json({ error: "Failed to write traces file" });
-      }
-      res.json(trace);
-    });
-  });
+  trace.timestamp = new Date().toISOString();
+
+  try {
+    const stmt = db.prepare(
+      "INSERT INTO traces (id, documentId, modelId, prompt, selections, timestamp) VALUES (?, ?, ?, ?, ?, ?)",
+    );
+    stmt.run(
+      trace.id,
+      trace.documentId,
+      trace.modelId,
+      trace.prompt || null,
+      JSON.stringify(trace.selections),
+      trace.timestamp,
+    );
+    res.json(trace);
+  } catch (err) {
+    console.error("Failed to create trace:", err);
+    res.status(500).json({ error: "Failed to create trace" });
+  }
 });
 app.put("/traces/:id", (req, res) => {
   const traceId = req.params.id;
   const updatedTrace = req.body;
 
-  fs.readFile(tracesFile, "utf8", (err, data) => {
-    if (err) {
-      return res.status(500).json({ error: "Failed to read traces file" });
+  try {
+    const stmt = db.prepare(
+      "UPDATE traces SET documentId = ?, modelId = ?, prompt = ?, selections = ? WHERE id = ?",
+    );
+    const result = stmt.run(
+      updatedTrace.documentId,
+      updatedTrace.modelId,
+      updatedTrace.prompt || null,
+      JSON.stringify(updatedTrace.selections),
+      traceId,
+    );
+
+    if (result.changes === 0) {
+      return res.status(404).json({ error: "Trace not found" });
     }
-    try {
-      let traces = data.trim() ? JSON.parse(data) : [];
-      const traceIndex = traces.findIndex((t) => t.id === traceId);
-      if (traceIndex === -1) {
-        return res.status(404).json({ error: "Trace not found" });
-      }
-      traces[traceIndex] = updatedTrace;
-      fs.writeFile(tracesFile, JSON.stringify(traces, null, 2), (err) => {
-        if (err) {
-          return res.status(500).json({ error: "Failed to write traces file" });
-        }
-        res.json(updatedTrace);
-      });
-    } catch (e) {
-      res.status(500).json({ error: "Failed to parse traces file" });
-    }
-  });
+
+    res.json(updatedTrace);
+  } catch (err) {
+    console.error("Failed to update trace:", err);
+    res.status(500).json({ error: "Failed to update trace" });
+  }
 });
 //#endregion
 app.listen(PORT, () => {

@@ -1,0 +1,75 @@
+<description>
+  <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+    <dbpm:document_info>
+      <dbpm:document_id>dbd90827-7297-48de-85dc-999382902f81</dbpm:document_id>
+      <dbpm:text_selections>. Document Ingestion
+- User uploads one or more documents (text, PDF, or Word).
+- System stores documents and extracts textual content.
+
+2. Document Selection
+- User selects a document for analysi 3. Process Extraction
+- System analyzes selected document text.
+- Relevant text fragments are identified and linked to process steps.
+- User triggers model generation or regeneration.
+
+4. Process Model Generation
+- System creates a visual process model from extracted information.
+- Process includes tasks, decisions, flows, and subprocesses.
+- Each model element is linked to its source document text.
+
+5. Model Refinement
+- User reviews and edits the generated process model.
+- User</dbpm:text_selections>
+    </dbpm:document_info>
+  </dbpm:info>
+  <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+    <call id="a1" endpoint="timeout" svg-id="a1" svg-label="Task 1" svg-type="call" svg-subtype="callmanipulate">
+      <parameters>
+        <!--{{{-->
+        <label>Task 1</label>
+        <method>:post</method>
+        <arguments>
+          <timeout>2</timeout>
+        </arguments>
+      </parameters>
+      <!--}}}-->
+      <code>
+        <finalize output="result">data.x += "a1,"</finalize>
+      </code>
+      <annotations/>
+      <documentation/>
+    </call>
+    <call id="a2" endpoint="timeouts" svg-id="a2" svg-label="Resource Synchronisation" svg-type="call" svg-subtype="callmanipulate">
+      <parameters>
+        <!--{{{-->
+        <label>Resource Synchronisation</label>
+        <method>:post</method>
+        <arguments>
+          <timeout>10</timeout>
+        </arguments>
+      </parameters>
+      <!--}}}-->
+      <code>
+        <finalize output="result">data.x += "a2,"</finalize>
+      </code>
+      <annotations/>
+      <documentation/>
+    </call>
+    <call id="a3" endpoint="timeout" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="callmanipulate">
+      <parameters>
+        <!--{{{-->
+        <label>Task 3</label>
+        <method>:post</method>
+        <arguments>
+          <timeout>4</timeout>
+        </arguments>
+      </parameters>
+      <!--}}}-->
+      <code>
+        <finalize output="result">data.x += "a3,"</finalize>
+      </code>
+      <annotations/>
+      <documentation/>
+    </call>
+  </description>
+</description>
