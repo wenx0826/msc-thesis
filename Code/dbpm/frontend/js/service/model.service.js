@@ -16,8 +16,7 @@ const modelService = {
     }
   },
   async generateModelByPrompt(userInput) {
-    // console.log("???? Generating model by prompt:!!!!!", userInput);
-    const model = activeModelStore.getModel() || {};
+    const model = { ...activeModelStore.getModel() };
     model.updateType = MODEL_UPDATE_TYPE.REGENERATION_BY_PROMPT;
     const rpstXml = Store.activeModel.getSerializedRpstData(); //todo get rpstXml only
     console.log("0000 Current RPST XML:", rpstXml);
@@ -62,16 +61,22 @@ const modelService = {
       console.log("Updated model data:", model.data);
       console.log("!!Current Setting active model data:", model.data);
     }
+    // console.log("Updating active model by prompt...");
     // console.log("Setting active model:", model);
     activeModelStore.setModel(model);
+    API.log.createLogEntry({
+      event: "model_regenerated_by_prompt",
+      data: { modelId: model.id },
+    });
   },
+
   async generateModelBySelections() {
     const selectedText = activeDocumentStore.getSelectedText();
     const generatedModel = await this.generateModel(
       selectedText,
       window.Constants.EMPTY_MODEL,
     );
-    console.log("!!Generated Model from selections:", generatedModel);
+
     const DBPM_NS = "https://example.com/dbpm";
     const eleDbpmInfo = document.implementation.createDocument(
       DBPM_NS,
@@ -108,10 +113,14 @@ const modelService = {
     modelData = this.injectDbpmData(generatedModel, eleDbpmInfo);
 
     if (workspaceStore.hasActiveModel()) {
-      const model = activeModelStore.getModel();
+      const model = { ...activeModelStore.getModel() };
       model.updateType = MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS;
       model.data = modelData;
       activeModelStore.setModel(model);
+      API.log.createLogEntry({
+        event: "model_regenerated_by_selections",
+        data: { modelId: model.id },
+      });
       // this.updateModelAndTrace(generatedModel, selectedText);
     } else {
       this.createModelAndTrace(modelData, selectedText);
@@ -252,17 +261,39 @@ const modelService = {
       Store.activeDocument.setTemporarySelections([]);
       Store.activeDocument.updateTrace(trace);
     }
-
+    // this.updateActiveModel
     // modelData = res.modelData;
   },
 
+  // async updateActiveModelTrace() {
+  //   const activeModelId = Store.workspace.getActiveModelId();
+  //   const documentId = Store.workspace.getActiveDocumentId();
+  //   const selections = Store.activeDocument.getSerializedTemporarySelections();
+  //   API.model.updateModelTraceByModelId(activeModelId, {
+  //     documentId,
+  //     selections,
+  //   });
+  // },
   async updateActiveModelTrace() {
-    const activeModelId = Store.workspace.getActiveModelId();
-    const documentId = Store.workspace.getActiveDocumentId();
-    const selections = Store.activeDocument.getSerializedTemporarySelections();
-    API.model.updateModelTraceByModelId(activeModelId, {
-      documentId,
-      selections,
-    });
+    const updatedTrace = Store.activeDocument.getSerializedActiveModelTrace();
+    API.trace
+      .updateTrace(updatedTrace)
+      .then(() => Store.activeDocument.updateTrace(updatedTrace));
+  },
+  async deleteModel(modelId) {
+    API.model.deleteModelById(modelId);
+    if (modelId === workspaceStore.getActiveModelId()) {
+      workspaceService.clearModelSelection();
+    }
+    const documentId = modelsStore.getModelDocumentIdById(modelId);
+    // if (documentId === workspaceStore.getActiveDocumentId()) {
+    //   activeDocumentStore.setActiveModelTrace(null);
+    // }
+    // await API.model.deleteModelById(modelId);
+    // Store.models.removeModelById(modelId);
+    // if (Store.workspace.getActiveModelId() === modelId) {
+    //   Store.workspace.setActiveModelId(null);
+    // }
+    // Store.projectGraph.removeModelNodeAndEdges(modelId);
   },
 };

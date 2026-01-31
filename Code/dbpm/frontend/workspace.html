@@ -31,8 +31,8 @@
   <link rel="stylesheet" href="css/globalui_cpee.css" type="text/css">
 
   <!-- modelling ui -->
-  <script type="text/javascript" src="js_cpee/wfadaptor.js"></script>
-  <link rel="stylesheet" href="js_cpee/wfadaptor.css" type="text/css" />
+  <script type="text/javascript" src="https://cpee.org/flow/js/wfadaptor.js"></script>
+  <link rel="stylesheet" href="https://cpee.org/flow/css/wfadaptor.css" type="text/css" />
   <script type="text/javascript" src="themes/base_new.js"></script>
 
   <script type="text/javascript" src="js_cpee/extended_columns.js"></script>
@@ -69,13 +69,13 @@
   <script src="js/util/selection.js"></script>
   <script src="js/store.js"></script>
   <script src="js/ui/workspace.ui.js"></script>
-  <script src="js/ui/project.ui.js"></script>
-  <script src="js/ui/documents.ui.js"></script>
-  <script src="js/ui/active_document.ui.js"></script>
-  <script src="js/ui/models.ui.js"></script>
-  <script src="js/ui/active_model.ui.js"></script>
-  <script src="js/ui/active_model_details.js"></script>
-  <script src="js/ui/project_graph.ui.js"></script>
+  <script src="js/ui/project.ui.js" defer></script>
+  <script src="js/ui/documents.ui.js" defer></script>
+  <script src="js/ui/active_document.ui.js" defer></script>
+  <script src="js/ui/models.ui.js" defer></script>
+  <script src="js/ui/active_model.ui.js" defer></script>
+  <script src="js/ui/active_model_details.js" defer></script>
+  <script src="js/ui/project_graph.ui.js" defer></script>
 
   <!-- my ui-->
   <link rel="stylesheet" href="css/myui.css" type="text/css" />
@@ -189,7 +189,7 @@
               <button id="exportTestsetButton">Export Testset</button>
               <button name="deselsetModelButton" onclick="workspaceService.clearModelSelection()">Deselect
                 Model</button>
-              <button name="deletemodel" onclick="deleteActiveModel()" disabled>Delete Model</button>
+              <button id="deleteModelButton">Delete Model</button>
             </fieldset>
           </ui-bar>
           <ui-divider></ui-divider>
@@ -208,17 +208,12 @@
           </ui-content>
           <div id="dat_details" class='x-ui-layout'></div>
           <div id="relaxngworker" class='hidden'></div>
-          <ui-bar id="generatedModelActionBar" class="hidden">
-            <div class="right action-group">
-              <button id="cancelButton">Cancel</button>
-              <button id="keepButton">Keep</button>
-            </div>
-          </ui-bar>
           <ui-bar id="regeneratedModelActionBar" class="hidden">
             <div class="right action-group">
-              <button id="backButton">Back</button>
-              <button id="cancelButton">Cancel</button>
-              <button id="replaceButton">Replace</button>
+              <button id="viewPrevModelButton">Previous</button>
+              <button id="viewNewModelButton">New</button>
+              <button id="revertPrevModelButton" title="Revert to the previous version">Revert</button>
+              <button id="keepNewModelButton" title="Keep the new version">Keep</button>
             </div>
           </ui-bar>
         </ui-rest>
@@ -237,11 +232,17 @@
       </ui-rest>
       <ui-resizehandle data-direction="vertical"></ui-resizehandle>
       <!-- Right: Models Panel-->
-      <ui-rest style="flex:0.2; overflow: hidden">
+      <ui-rest style="flex:0.2; min-width:180px;">
         <ui-rest class="panel" style="flex:0.68 1 0;min-height: 100px">
           <ui-bar><span style="font-size: 1.4em; font-weight: bold;">Models</span></ui-bar>
           <ui-divider></ui-divider>
-          <ui-bar>Documents: All</ui-bar>
+          <ui-bar><label for="cars">Documents:</label>
+            <select name="cars" id="cars">
+              <option value="volvo">All</option>
+              <option value="saab">Saab</option>
+              <option value="mercedes">Mercedes</option>
+              <option value="audi">Audi</option>
+            </select></ui-bar>
           <ui-rest>
             <ui-content>
               <ui-area id="models">

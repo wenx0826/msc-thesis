@@ -34,8 +34,6 @@ function getProjectIdFromURL() {
 }
 
 $(document).ready(async () => {
-  console.log("main.html Starting initialization...", new Date().toISOString());
-  console.log("project id from url:", getProjectIdFromURL());
   projectId = getProjectIdFromURL();
   workspaceService.loadWorkspace(projectId);
 

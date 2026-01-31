@@ -1,0 +1,100 @@
+<description>
+  <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+    <dbpm:document_info>
+      <dbpm:document_id>be9a2c91-15e5-4475-b799-cba78f5d863d</dbpm:document_id>
+      <dbpm:text_selections>e.org/services/timeout-user.php
+    https-post://cpee.org/services/timeout-auto.php
+    https-post://cpee.org/flow/start/url/
+    https-post://cpee.org/services/timeout.php
+    https-post://cpee.org/ing/correlator &lt;_logging_behavior&gt;
+            &lt;_exclude/&gt;
+            &lt;_include/&gt;
+          
+          &lt;_timing&gt;
+            &lt;_timing_weight/&gt;
+            &lt;_timing_avg/&gt;
+            
+          
+          &lt;_shifting&gt;
+            &lt;_shifting_type&gt;Duration
+          
+          &lt;_context_data_analysis&gt;
+            
+            
+          
+          
+            
+          
+          &lt;_notes&gt;
+            &lt;_notes_general/&gt;
+          
+        
+        
+          
+          
+          
+            
+          
+          
+            
+          
+        
+      
+      
+        
+          
+          
+          :post</dbpm:text_selections>
+    </dbpm:document_info>
+  </dbpm:info>
+  <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+    <call id="a1" endpoint="timeout" svg-id="a1" svg-label="Task 1" svg-type="call" svg-subtype="callmanipulate">
+      <parameters>
+        <!--{{{-->
+        <label>Task 1</label>
+        <method>:post</method>
+        <arguments>
+          <timeout>2</timeout>
+        </arguments>
+      </parameters>
+      <!--}}}-->
+      <code>
+        <finalize output="result">data.x += "a1,"</finalize>
+      </code>
+      <annotations/>
+      <documentation/>
+    </call>
+    <call id="a2" endpoint="timeouts" svg-id="a2" svg-label="Resource Synchronisation" svg-type="call" svg-subtype="callmanipulate">
+      <parameters>
+        <!--{{{-->
+        <label>Resource Synchronisation</label>
+        <method>:post</method>
+        <arguments>
+          <timeout>4</timeout>
+        </arguments>
+      </parameters>
+      <!--}}}-->
+      <code>
+        <finalize output="result">data.x += "a2,"</finalize>
+      </code>
+      <annotations/>
+      <documentation/>
+    </call>
+    <call id="a3" endpoint="timeout" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="callmanipulate">
+      <parameters>
+        <!--{{{-->
+        <label>Task 3</label>
+        <method>:post</method>
+        <arguments>
+          <timeout>4</timeout>
+        </arguments>
+      </parameters>
+      <!--}}}-->
+      <code>
+        <finalize output="result">data.x += "a3,"</finalize>
+      </code>
+      <annotations/>
+      <documentation/>
+    </call>
+  </description>
+</description>

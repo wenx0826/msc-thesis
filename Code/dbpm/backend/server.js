@@ -2,8 +2,6 @@ const express = require("express");
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
-const { log } = require("console");
-const { version } = require("os");
 const yaml = require("js-yaml");
 
 const app = express();
@@ -70,6 +68,75 @@ app.use(express.static(path.join(__dirname, "..", "frontend")));
 
 // Serve static files from data directory
 app.use("/data", express.static(path.join(__dirname, "..", "data")));
+
+// #region Logs Endpoints
+app.post("/logs", (req, res) => {
+  const { projectId, event, data } = req.body;
+  if (!projectId || !event) {
+    return res.status(400).json({ error: "Missing projectId or event" });
+  }
+  logEvent(projectId, event, data);
+  switch (event) {
+    case "model_regenerated_by_prompt":
+      fs.readFile(statsFile, "utf8", (err, fileData) => {
+        let stats = {};
+        if (!err) {
+          try {
+            stats = fileData.trim() ? JSON.parse(fileData) : {};
+          } catch (e) {
+            console.error("Failed to parse stats file");
+          }
+        }
+        if (stats[projectId]) {
+          const modelStats = stats[projectId].models.find(
+            (m) => m.id === data.modelId,
+          );
+          if (modelStats) {
+            modelStats.regeneratedByPromptTimes =
+              (modelStats.regeneratedByPromptTimes || 0) + 1;
+          }
+          fs.writeFile(statsFile, JSON.stringify(stats, null, 2), (err) => {
+            if (err) {
+              console.error("Failed to write stats file");
+            }
+          });
+        }
+      });
+      break;
+    case "model_regenerated_by_selections":
+      // Update stats
+      fs.readFile(statsFile, "utf8", (err, fileData) => {
+        let stats = {};
+        if (!err) {
+          try {
+            stats = fileData.trim() ? JSON.parse(fileData) : {};
+          } catch (e) {
+            console.error("Failed to parse stats file");
+          }
+        }
+        if (stats[projectId]) {
+          const modelStats = stats[projectId].models.find(
+            (m) => m.id === data.modelId,
+          );
+          if (modelStats) {
+            modelStats.regeneratedBySelectionsTimes =
+              (modelStats.regeneratedBySelectionsTimes || 0) + 1;
+          }
+          fs.writeFile(statsFile, JSON.stringify(stats, null, 2), (err) => {
+            if (err) {
+              console.error("Failed to write stats file");
+            }
+          });
+        }
+      });
+      break;
+    default:
+      break;
+  }
+
+  res.json({ message: "Log entry added" });
+});
+// #endregion
 
 // #region Project Endpoints
 app.post("/projects", (req, res) => {
@@ -485,7 +552,6 @@ app.delete("/documents/:id", (req, res) => {
 // #endregion
 
 // #region Model Endpoints
-
 app.post("/models", (req, res) => {
   const { projectId, model, trace } = req.body;
   const { data: modelData, meta } = model;
@@ -564,6 +630,8 @@ app.post("/models", (req, res) => {
       documentId: trace.documentId,
       name: modelMeta.name,
       status: "generated",
+      regeneratedByPromptTimes: 0,
+      regeneratedBySelectionsTimes: 0,
       words,
       updates: [
         {
@@ -780,6 +848,32 @@ app.post("/traces", (req, res) => {
       }
       res.json(trace);
     });
+  });
+});
+app.put("/traces/:id", (req, res) => {
+  const traceId = req.params.id;
+  const updatedTrace = req.body;
+
+  fs.readFile(tracesFile, "utf8", (err, data) => {
+    if (err) {
+      return res.status(500).json({ error: "Failed to read traces file" });
+    }
+    try {
+      let traces = data.trim() ? JSON.parse(data) : [];
+      const traceIndex = traces.findIndex((t) => t.id === traceId);
+      if (traceIndex === -1) {
+        return res.status(404).json({ error: "Trace not found" });
+      }
+      traces[traceIndex] = updatedTrace;
+      fs.writeFile(tracesFile, JSON.stringify(traces, null, 2), (err) => {
+        if (err) {
+          return res.status(500).json({ error: "Failed to write traces file" });
+        }
+        res.json(updatedTrace);
+      });
+    } catch (e) {
+      res.status(500).json({ error: "Failed to parse traces file" });
+    }
   });
 });
 //#endregion

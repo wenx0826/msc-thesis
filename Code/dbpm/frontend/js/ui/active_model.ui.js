@@ -1,35 +1,23 @@
-let $modelActionBar;
-let $cancelButton;
-let $regeneratedModelActionBar;
-let $deleteModelButton;
-let $datDetails;
-let $applyPromptButton;
-let $promptInput;
-let $clearPromptButton;
-let $promptContainer;
-let $promptActionBar;
-let $replaceButton;
-let $backButton;
-let $sendPromptButton;
-let $viewModelDataLink;
-let $exportTestsetButton;
+const $modelActionBar = $("#modelActionBar");
+const $exportTestsetButton = $("#exportTestsetButton");
+
+const $deleteModelButton = $("#deleteModelButton");
+const $datDetails = $("#dat_details");
+const $regeneratedModelActionBar = $("#regeneratedModelActionBar");
+const $viewPrevModelButton = $("#viewPrevModelButton");
+const $viewNewModelButton = $("#viewNewModelButton");
+const $revertPrevModelButton = $("#revertPrevModelButton");
+const $keepNewModelButton = $("#keepNewModelButton");
+
+const $promptInput = $("#promptInput");
+const $promptContainer = $("#promptContainer");
+const $promptActionBar = $("#promptActionBar");
+const $sendPromptButton = $("#sendPromptButton");
+const $clearPromptButton = $("#clearPromptButton");
+
+const $viewModelDataLink = $("#viewModelDataLink");
 
 $(document).ready(function () {
-  $modelActionBar = $("#modelActionBar");
-  $exportTestsetButton = $("#exportTestsetButton");
-  $regeneratedModelActionBar = $("#regeneratedModelActionBar");
-  $deleteModelButton = $("#deleteModelButton");
-  $datDetails = $("#dat_details");
-  $promptInput = $("#promptInput");
-  $promptContainer = $("#promptContainer");
-  $promptActionBar = $("#promptActionBar");
-  $sendPromptButton = $("#sendPromptButton");
-  $clearPromptButton = $("#clearPromptButton");
-  $replaceButton = $("#replaceButton");
-  $backButton = $("#backButton");
-  $cancelButton = $("#cancelButton");
-  $viewModelDataLink = $("#viewModelDataLink");
-
   $viewModelDataLink.on("click", (e) => {
     e.preventDefault();
     window.open(
@@ -39,7 +27,7 @@ $(document).ready(function () {
   });
   $exportTestsetButton.on("click", (e) => {
     e.preventDefault();
-    console.log("Exporting testset by active model");
+    // console.log("Exporting testset by active model");
     const filename = "testset_" + Store.workspace.getActiveModelId() + ".xml";
     // const text =
     //   '<?xml version="1.0"?>\n<testset xmlns="http://cpee.org/ns/properties/2.0">\n<executionhandler>ruby</executionhandler>\n<dataelements/>\n<endpoints/>\n<attributes>\n<guarded>none</guarded>\n<modeltype>CPEE</modeltype>\n<theme>preset</theme>\n<guarded_id/>\n<info>Subprocess</info>\n<creator>Christine Ashcreek</creator>\n<author>Christine Ashcreek</author>\n<model_uuid>1fc43528-3e4a-40ee-8503-c0ed7e5d883c</model_uuid>\n<model_version/>\n<design_stage>development</design_stage>\n<design_dir>Templates.dir</design_dir>\n</attributes>' +
@@ -66,13 +54,15 @@ $(document).ready(function () {
 
     // workspaceService.exportTestsetByActiveModel();
   });
-  $deleteModelButton.on("click", deleteActiveModel);
-  $replaceButton.on("click", async () => {
+  $deleteModelButton.on("click", () => {
+    modelService.deleteModel(workspaceStore.getActiveModelId());
+  });
+  $keepNewModelButton.on("click", async () => {
     $regeneratedModelActionBar.hide();
     modelService.updateActiveModel();
     syncActiveModelGraphInList();
   });
-  $cancelButton.on("click", () => {
+  $revertPrevModelButton.on("click", () => {
     activeModel = null;
     $("#activeModelName").text("");
     $("#graphcanvas").empty();
@@ -120,23 +110,60 @@ $(document).ready(function () {
 activeModelStore.subscribe((state, { key, oldValue, newValue }) => {
   switch (key) {
     case "model":
-      const newModelId = newValue ? newValue.id : null;
-      const modelUpdateType = newValue ? newValue.updateType : null;
+      // const newSerializedData =
+      // const newSerializedData = newValue ? newValue.data : null;
+      const serializer = new XMLSerializer();
+      console.log("???Active model store changed:", oldValue, newValue);
+      if (oldValue)
+        console.log(
+          "???Active model dat: Oldvalue",
+          serializer.serializeToString(oldValue.data),
+        );
+      if (newValue)
+        console.log(
+          "???Active model store Newvalue:",
+          serializer.serializeToString(newValue.data),
+        );
+
       if (newValue) {
         $("#activeModelName").text(newValue.name ? newValue.name : "");
         $modelActionBar.prop("disabled", false);
         $datDetails.empty();
         showActiveModel(newValue);
+        const newModelId = newValue.id;
         if (newModelId) {
           $promptContainer.show();
         }
+        const modelUpdateType = newValue.updateType;
         if (
           [
             MODEL_UPDATE_TYPE.REGENERATION_BY_PROMPT,
             MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS,
           ].includes(modelUpdateType)
         ) {
+          $viewPrevModelButton.prop("disabled", false);
+          $viewNewModelButton.prop("disabled", true);
+          $revertPrevModelButton.prop("disabled", true);
+          $keepNewModelButton.prop("disabled", false);
           $regeneratedModelActionBar.show();
+          $viewPrevModelButton.on("click", () => {
+            showActiveModel(oldValue);
+            $viewPrevModelButton.prop("disabled", true);
+            $viewNewModelButton.prop("disabled", false);
+            $revertPrevModelButton.prop("disabled", false);
+            $keepNewModelButton.prop("disabled", true);
+          });
+          $viewNewModelButton.on("click", () => {
+            showActiveModel(newValue);
+            $viewPrevModelButton.prop("disabled", false);
+            $viewNewModelButton.prop("disabled", true);
+            $revertPrevModelButton.prop("disabled", true);
+            $keepNewModelButton.prop("disabled", false);
+          });
+          $revertPrevModelButton.on("click", () => {
+            showActiveModel(oldValue);
+            $regeneratedModelActionBar.hide();
+          });
         }
       } else {
         clearModelViewer();
@@ -220,13 +247,6 @@ function saveActiveModel(type) {
   syncActiveModelGraphInList();
 }
 
-function deleteActiveModel(e) {
-  const activeModelId = activeModelStore.getModelId();
-  // activeModelStore.deleteModel();
-  modelsStore.deleteModelById(activeModelId);
-  removeSelectionsByModelId(activeModelId);
-}
-
 function clearModelViewer() {
   // console.log('Clearing active model canvas');
   $("#activeModelName").text("");
@@ -270,23 +290,4 @@ const showActiveModel = (model) => {
       };
     },
   );
-};
-
-const regenerateModel = async () => {
-  const selectedText = Store.getTemporarySelections()
-    .map((range) => range.toString())
-    .join(" ");
-  const generatedModel = await createSampleModel();
-  const activeModel = Store.getActiveModel();
-
-  const model = {
-    ...activeModel,
-    data: generatedModel,
-  };
-  //   setActiveModel(activeModel.id);
-  Store.setActiveModel(model);
-  showActiveModel(model);
-  $generateButton.prop("disabled", false);
-  $regenerateButton.prop("disabled", false);
-  $("#generatedModelActionBar").css("visibility", "visible");
 };

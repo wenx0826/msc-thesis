@@ -1,77 +1,28 @@
-let $documentContent;
-let $generateButton;
-let $selectionsLayer;
-let $temporarySelectionsLayer;
-let $modelTags;
-let $deleteSelectionButton;
-let $viewerWrap;
-let $interactionLayer;
-let $addSelectionsButton;
+const $selectionColorForm = $("#selectionColorForm");
+const $deleteSelectionButton = $("#deleteSelectionButton");
+
+const $documentContent = $("#documentContent");
+const $viewerWrap = $("#viewerWrap");
+const $selectionsLayer = $("#selectionsLayer");
 let selectedSelection = null;
+const $temporarySelectionsLayer = $("#temporarySelectionsLayer");
+const $interactionLayer = $("#interactionLayer");
+const $modelTags = $("#modelTags");
 
-$(function () {
-  $interactionLayer = $("#interactionLayer");
-  $selectionsLayer = $("#selectionsLayer");
-  $temporarySelectionsLayer = $("#temporarySelectionsLayer");
-  $modelTags = $("#modelTags");
-  $deleteSelectionButton = $("#deleteSelectionButton");
-  $generateButton = $("#generateButton");
-  $documentContent = $("#documentContent");
-  $viewerWrap = $("#viewerWrap");
-  $documentContent.on("mouseup", handleTextSelection);
-  $viewerWrap.on("scroll", rerenderOverlayLayers);
-  $generateButton.on("click", async () => {
-    // $generateButton.prop("disabled", true);
-    modelService.generateModelBySelections();
-  });
-  $addSelectionsButton = $("#addSelectionsButton");
-  $("#columnResizehandle1").on("dragcolumnmove", (e) => {
-    // e.stopPropagation();
-    rerenderOverlayLayers();
-  });
+const $addSelectionsButton = $("#addSelectionsButton");
+const $generateButton = $("#generateButton");
 
-  $deleteSelectionButton.on("click", () => {
-    if (selectedSelection) {
-      const { selectionId, modelId } = selectedSelection;
-      if (!modelId) {
-        activeDocumentStore.removeTemporarySelectionById(selectionId);
-      } else {
-        // todo change it to rerender after trace update
-        Store.activeDocument.removeActiveModelTraceSelectionById(selectionId);
-        modelService.updateActiveModel(
-          MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
-        );
-      }
-      setSelectedSelection(null);
-    }
-  });
-  $addSelectionsButton.on("click", () => {
-    modelService.updateActiveModel(MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS);
-  });
-});
+$(function () {});
 
 activeDocumentStore.subscribe((state, { key, operation, ...payload }) => {
-  console.log(
-    "00 activeDocumentStore subscription with operation:!!",
-    key,
-    operation,
-    payload,
-  );
-
   if (operation) {
     const { value } = payload;
-    console.log(
-      "11 activeDocumentStore subscription with operation:!!",
-      key,
-      operation,
-      value,
-    );
     // console.log("11 activeDocumentStore subscription with operation:!!", value);
     switch (key) {
       case "traces":
         switch (operation) {
           case "init":
-            rerenderSelectionsLayer();
+            rerenderOverlayLayers();
             break;
           case "add":
             renderTrace(value);
@@ -81,8 +32,11 @@ activeDocumentStore.subscribe((state, { key, operation, ...payload }) => {
         }
         break;
       case "activeModelTrace.selections":
-        console.log("65 here!!!", operation, value);
         switch (operation) {
+          case "update":
+            removeRenderedSelection(value);
+            renderSelection(value, workspaceStore.getActiveModelId());
+            break;
           case "remove":
             removeRenderedSelection(value);
             break;
@@ -93,6 +47,10 @@ activeDocumentStore.subscribe((state, { key, operation, ...payload }) => {
       case "temporarySelections":
         switch (operation) {
           case "add":
+            renderSelection(value);
+            break;
+          case "update":
+            removeRenderedSelection(value);
             renderSelection(value);
             break;
           case "remove":
@@ -471,7 +429,9 @@ const renderTrace = ({ selections, modelId }) => {
   });
 };
 
-const rerenderSelectionsLayer = () => {
+// const rerenderSelectionsLayer = () => {};
+
+const rerenderOverlayLayers = () => {
   clearSelectionsLayer();
   clearInteractionLayer();
   const traces = activeDocumentStore.getTraces();
@@ -482,16 +442,11 @@ const rerenderSelectionsLayer = () => {
   temporarySelections.forEach((selection) => {
     renderSelection(selection);
   });
-};
-
-const rerenderOverlayLayers = () => {
-  rerenderSelectionsLayer();
   // rerenderTemporarySelectionsLayer();
 };
 
 function getSelectionColor() {
-  const form = document.getElementById("selectionColorForm");
-  const color = new FormData(form).get("color");
+  const color = new FormData($selectionColorForm[0]).get("color");
   return color;
 }
 
@@ -514,4 +469,54 @@ const handleTextSelection = () => {
   selection.removeAllRanges();
 };
 
+$selectionColorForm.on("input", (e) => {
+  console.log("Selection color input.");
+  console.log(e.target.value);
+  const newColor = e.target.value;
+  if (selectedSelection) {
+    if (!selectedSelection.modelId) {
+      Store.activeDocument.updateTemporarySelectionColor(
+        selectedSelection.selectionId,
+        newColor,
+      );
+    } else {
+      Store.activeDocument.updateActiveModelTraceSelectionColor(
+        selectedSelection.selectionId,
+        newColor,
+      );
+      modelService.updateActiveModelTrace();
+    }
+  }
+});
+$deleteSelectionButton.on("click", () => {
+  if (selectedSelection) {
+    const { selectionId, modelId } = selectedSelection;
+    if (!modelId) {
+      activeDocumentStore.removeTemporarySelection(selectionId);
+    } else {
+      // todo change it to rerender after trace update
+      Store.activeDocument.removeActiveModelTraceSelectionById(selectionId);
+      modelService.updateActiveModel(
+        MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
+      );
+    }
+    setSelectedSelection(null);
+  }
+});
+
+$documentContent.on("mouseup", handleTextSelection);
+
+$addSelectionsButton.on("click", () => {
+  modelService.updateActiveModel(MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS);
+});
+
+$generateButton.on("click", async () => {
+  modelService.generateModelBySelections();
+});
+
+$viewerWrap.on("scroll", rerenderOverlayLayers);
+$("#columnResizehandle1").on("dragcolumnmove", (e) => {
+  // e.stopPropagation();
+  rerenderOverlayLayers();
+});
 $(window).on("resize", rerenderOverlayLayers);

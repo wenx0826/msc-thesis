@@ -1,7 +1,6 @@
-let $documentList;
+const $documentList = $("#documentList");
 
 $(function () {
-  $documentList = $("#documentList");
   $("#documentsInput").on("change", async (event) => {
     event.preventDefault();
     event.stopPropagation();

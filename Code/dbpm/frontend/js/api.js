@@ -1,6 +1,24 @@
 window.API = {
   baseURL: "http://localhost:3000",
 };
+API.log = {
+  path: "logs",
+  async createLogEntry(entry) {
+    const response = await fetch(`${API.baseURL}/${this.path}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ projectId, ...entry }),
+    });
+    if (!response.ok) {
+      const error = await response
+        .json()
+        .catch(() => ({ error: "Unknown error" }));
+      throw new Error(error.error || "Failed to create log entry");
+    }
+
+    return await response.json();
+  },
+};
 API.project = {
   path: "projects",
   async createProject(project) {
@@ -159,6 +177,23 @@ API.trace = {
       return res.json();
     });
   },
+  async updateTrace(updatedTrace) {
+    const response = await fetch(
+      `${API.baseURL}/${this.path}/${updatedTrace.id}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedTrace),
+      },
+    );
+    if (!response.ok) {
+      const error = await response
+        .json()
+        .catch(() => ({ error: "Unknown error" }));
+      throw new Error(error.error || "Failed to update trace");
+    }
+    return await response.json();
+  },
   async deleteTraceById(id) {
     const response = await fetch(`${API.baseURL}/${this.path}/${id}`, {
       method: "DELETE",
@@ -174,7 +209,7 @@ API.trace = {
 };
 
 API.model = {
-  LLMDisabled: false,
+  LLMDisabled: true,
   // LLMDisabled: true,
   path: "models", // relative URLs since frontend is served from same server
   async getModelById(id) {

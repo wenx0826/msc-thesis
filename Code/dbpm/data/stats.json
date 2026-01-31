@@ -275,6 +275,27 @@
             "words": 173
           }
         ]
+      },
+      {
+        "id": "cc5a1ad3-1d37-4824-a8a7-d80ac8bd1d71",
+        "documentId": "52d9c770-b308-42e7-92ff-6b935115344e",
+        "name": "Model_5",
+        "status": "updated",
+        "regeneratedByPromptTimes": 2,
+        "regeneratedBySelectionsTimes": 1,
+        "words": 31,
+        "updates": [
+          {
+            "timestamp": "2026-01-30T16:29:07.109Z",
+            "type": "generation",
+            "words": 31
+          },
+          {
+            "timestamp": "2026-01-30T16:29:28.274Z",
+            "type": "regeneration_by_selections",
+            "words": 58
+          }
+        ]
       }
     ]
   },
@@ -1465,6 +1486,16 @@
         "id": "d16d7cfc-6543-4185-9a62-5ee69530df53",
         "name": "demo_uc_document_upload.txt",
         "words": 35
+      },
+      {
+        "id": "496b0ccd-4a2c-4038-b9fd-179029c2c059",
+        "name": "demo_document_based_process.txt",
+        "words": 204
+      },
+      {
+        "id": "8ba2f40a-32a9-4472-821f-b6b9048f2dfa",
+        "name": "demo_uc_document_upload.txt",
+        "words": 35
       }
     ],
     "models": [
@@ -1518,6 +1549,131 @@
           {
             "timestamp": "2026-01-29T19:03:14.956Z",
             "type": "manual_update_graph_changed"
+          },
+          {
+            "timestamp": "2026-01-30T12:30:26.901Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-30T12:30:28.516Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-30T12:32:14.119Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-30T12:34:58.625Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-30T16:01:13.914Z",
+            "type": "regeneration_by_selections",
+            "words": 116
+          },
+          {
+            "timestamp": "2026-01-30T16:02:00.231Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-30T16:02:03.842Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-30T16:03:46.117Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-30T16:03:49.552Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-30T16:03:50.947Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-30T16:03:51.812Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-30T16:03:54.087Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-30T16:04:07.946Z",
+            "type": "manual_update_graph_changed"
+          },
+          {
+            "timestamp": "2026-01-30T16:14:09.490Z",
+            "type": "regeneration_by_prompt"
+          },
+          {
+            "timestamp": "2026-01-30T20:51:08.348Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-30T20:51:09.940Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-30T20:51:19.683Z",
+            "type": "manual_update_graph_changed"
+          },
+          {
+            "timestamp": "2026-01-30T20:51:21.435Z",
+            "type": "manual_update_graph_changed"
+          },
+          {
+            "timestamp": "2026-01-30T20:51:23.037Z",
+            "type": "manual_update_graph_changed"
+          },
+          {
+            "timestamp": "2026-01-30T20:51:26.569Z",
+            "type": "manual_update_graph_changed"
+          },
+          {
+            "timestamp": "2026-01-30T20:51:30.216Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-30T22:51:46.656Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-31T08:16:47.195Z",
+            "type": "manual_update_graph_changed"
+          },
+          {
+            "timestamp": "2026-01-31T08:16:51.284Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-31T08:21:56.454Z",
+            "type": "manual_update_graph_changed"
+          },
+          {
+            "timestamp": "2026-01-31T08:21:58.820Z",
+            "type": "manual_update_graph_changed"
+          },
+          {
+            "timestamp": "2026-01-31T08:22:02.429Z",
+            "type": "manual_update_graph_changed"
+          },
+          {
+            "timestamp": "2026-01-31T08:32:25.348Z",
+            "type": "manual_update_graph_changed"
+          },
+          {
+            "timestamp": "2026-01-31T08:32:32.382Z",
+            "type": "manual_update_graph_changed"
+          },
+          {
+            "timestamp": "2026-01-31T08:32:36.234Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-31T09:00:14.279Z",
+            "type": "manual_update_graph_changed"
           }
         ]
       },
@@ -1565,6 +1721,30 @@
             "timestamp": "2026-01-30T12:12:56.046Z",
             "type": "manual_update_selections",
             "words": 245
+          },
+          {
+            "timestamp": "2026-01-30T12:29:53.975Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-30T12:33:06.420Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-31T07:43:12.438Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-31T07:43:38.266Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-31T08:24:01.347Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-31T08:24:04.423Z",
+            "type": "manual_update_graph_properties_only"
           }
         ]
       },
@@ -1589,6 +1769,297 @@
             "timestamp": "2026-01-30T12:13:07.788Z",
             "type": "manual_update_selections",
             "words": 204
+          },
+          {
+            "timestamp": "2026-01-30T13:12:59.262Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-30T13:13:05.609Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-30T13:48:34.229Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-30T16:08:31.133Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-30T20:48:31.801Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-30T20:48:32.724Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-30T20:48:34.643Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-30T20:48:35.653Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-30T20:48:36.930Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-30T20:48:38.551Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-30T20:48:44.776Z",
+            "type": "manual_update_graph_properties_only"
+          }
+        ]
+      },
+      {
+        "id": "de7ede16-8ff0-42a0-a6a1-248fe2841232",
+        "documentId": "be9a2c91-15e5-4475-b799-cba78f5d863d",
+        "name": "Model_4",
+        "status": "updated",
+        "words": 5,
+        "updates": [
+          {
+            "timestamp": "2026-01-30T12:35:13.955Z",
+            "type": "generation",
+            "words": 5
+          },
+          {
+            "timestamp": "2026-01-30T15:25:36.313Z",
+            "type": "regeneration_by_selections",
+            "words": 24
+          },
+          {
+            "timestamp": "2026-01-30T15:49:10.126Z",
+            "type": "manual_update_selections",
+            "words": 27
+          },
+          {
+            "timestamp": "2026-01-30T16:06:35.097Z",
+            "type": "manual_update_selections",
+            "words": 24
+          },
+          {
+            "timestamp": "2026-01-30T16:07:16.178Z",
+            "type": "manual_update_selections",
+            "words": 5
+          },
+          {
+            "timestamp": "2026-01-30T16:33:55.709Z",
+            "type": "regeneration_by_selections",
+            "words": 17
+          }
+        ],
+        "regeneratedBySelectionsTimes": 4
+      },
+      {
+        "id": "12db61b6-6577-43bb-9a72-e0c58538e697",
+        "documentId": "496b0ccd-4a2c-4038-b9fd-179029c2c059",
+        "name": "Model_5",
+        "status": "updated",
+        "words": 22,
+        "updates": [
+          {
+            "timestamp": "2026-01-30T12:42:07.848Z",
+            "type": "generation",
+            "words": 22
+          },
+          {
+            "timestamp": "2026-01-30T14:26:17.712Z",
+            "type": "regeneration_by_selections",
+            "words": 83
+          },
+          {
+            "timestamp": "2026-01-30T14:28:13.402Z",
+            "type": "regeneration_by_selections",
+            "words": 108
+          },
+          {
+            "timestamp": "2026-01-30T14:30:15.481Z",
+            "type": "manual_update_selections",
+            "words": 83
+          },
+          {
+            "timestamp": "2026-01-30T14:36:03.452Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-30T14:36:05.465Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-30T14:36:06.756Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-30T14:36:07.505Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-30T14:36:08.817Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-30T14:36:09.529Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-30T14:36:16.383Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-30T15:04:40.138Z",
+            "type": "regeneration_by_selections",
+            "words": 97
+          },
+          {
+            "timestamp": "2026-01-30T15:04:44.775Z",
+            "type": "manual_update_selections",
+            "words": 83
+          },
+          {
+            "timestamp": "2026-01-30T15:04:46.285Z",
+            "type": "manual_update_selections",
+            "words": 22
+          },
+          {
+            "timestamp": "2026-01-30T15:10:06.458Z",
+            "type": "regeneration_by_selections",
+            "words": 72
+          },
+          {
+            "timestamp": "2026-01-30T15:12:22.784Z",
+            "type": "manual_update_selections",
+            "words": 22
+          },
+          {
+            "timestamp": "2026-01-30T15:20:44.526Z",
+            "type": "regeneration_by_selections",
+            "words": 107
+          },
+          {
+            "timestamp": "2026-01-30T15:21:46.715Z",
+            "type": "manual_update_selections",
+            "words": 72
+          },
+          {
+            "timestamp": "2026-01-30T15:21:53.750Z",
+            "type": "regeneration_by_selections",
+            "words": 88
+          },
+          {
+            "timestamp": "2026-01-30T15:22:20.842Z",
+            "type": "regeneration_by_selections",
+            "words": 98
+          },
+          {
+            "timestamp": "2026-01-30T15:22:30.943Z",
+            "type": "manual_update_selections",
+            "words": 88
+          },
+          {
+            "timestamp": "2026-01-30T15:39:46.431Z",
+            "type": "manual_update_selections",
+            "words": 72
+          },
+          {
+            "timestamp": "2026-01-30T15:40:00.929Z",
+            "type": "regeneration_by_selections",
+            "words": 123
+          },
+          {
+            "timestamp": "2026-01-30T16:30:58.652Z",
+            "type": "manual_update_selections",
+            "words": 72
+          },
+          {
+            "timestamp": "2026-01-30T16:31:38.823Z",
+            "type": "regeneration_by_selections",
+            "words": 118
+          }
+        ],
+        "regeneratedBySelectionsTimes": 2
+      },
+      {
+        "id": "5d74768b-5b09-4cd6-b101-895537134807",
+        "documentId": "496b0ccd-4a2c-4038-b9fd-179029c2c059",
+        "name": "Model_6",
+        "status": "generated",
+        "regeneratedByPromptTimes": 0,
+        "regeneratedBySelectionsTimes": 0,
+        "words": 13,
+        "updates": [
+          {
+            "timestamp": "2026-01-30T21:26:15.342Z",
+            "type": "generation",
+            "words": 13
+          }
+        ]
+      },
+      {
+        "id": "12caffa3-dee5-4189-8e15-01714e66d951",
+        "documentId": "496b0ccd-4a2c-4038-b9fd-179029c2c059",
+        "name": "Model_7",
+        "status": "generated",
+        "regeneratedByPromptTimes": 0,
+        "regeneratedBySelectionsTimes": 0,
+        "words": 33,
+        "updates": [
+          {
+            "timestamp": "2026-01-30T21:26:23.850Z",
+            "type": "generation",
+            "words": 33
+          }
+        ]
+      },
+      {
+        "id": "ff87f01d-66f3-463d-ad6b-1a6c88343f7c",
+        "documentId": "8ba2f40a-32a9-4472-821f-b6b9048f2dfa",
+        "name": "Model_8",
+        "status": "updated",
+        "regeneratedByPromptTimes": 0,
+        "regeneratedBySelectionsTimes": 2,
+        "words": 21,
+        "updates": [
+          {
+            "timestamp": "2026-01-30T22:15:15.081Z",
+            "type": "generation",
+            "words": 21
+          },
+          {
+            "timestamp": "2026-01-31T08:12:26.961Z",
+            "type": "regeneration_by_selections",
+            "words": 34
+          },
+          {
+            "timestamp": "2026-01-31T08:15:31.991Z",
+            "type": "manual_update_selections",
+            "words": 21
+          },
+          {
+            "timestamp": "2026-01-31T08:15:34.182Z",
+            "type": "manual_update_selections",
+            "words": 0
+          },
+          {
+            "timestamp": "2026-01-31T08:24:21.268Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-31T08:24:26.087Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-31T08:24:29.513Z",
+            "type": "manual_update_graph_properties_only"
+          },
+          {
+            "timestamp": "2026-01-31T08:24:33.709Z",
+            "type": "manual_update_graph_changed"
           }
         ]
       }

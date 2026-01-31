@@ -308,7 +308,19 @@ Store.activeDocument = Object.assign(
     getActiveModelTrace() {
       return this.state.activeModelTrace;
     },
-
+    getSerializedActiveModelTrace() {
+      const activeModelTrace = this.getActiveModelTrace();
+      if (activeModelTrace) {
+        return {
+          ...activeModelTrace,
+          selections: activeModelTrace.selections.map(({ range, ...rest }) => ({
+            ...rest,
+            range: serializeRange(range),
+            text: range.toString(),
+          })),
+        };
+      }
+    },
     // setOriginalActiveModelSerializedTrace(deSerializedSelections) {
     //   this.state.originalActiveModelSerializedSelections =
     //     deSerializedSelections.map(({ range, ...rest }) => ({
@@ -352,6 +364,22 @@ Store.activeDocument = Object.assign(
       });
       // this.computeSelectionChanged();
     },
+    updateActiveModelTraceSelectionColor(selectionId, color) {
+      const activeModelTrace = this.getActiveModelTrace();
+      if (activeModelTrace) {
+        const selection = activeModelTrace.selections.find(
+          (sel) => sel.id === selectionId,
+        );
+        if (selection && selection.color !== color) {
+          selection.color = color;
+          this.notify({
+            key: "activeModelTrace.selections",
+            operation: "update",
+            value: selection,
+          });
+        }
+      }
+    },
     setActiveModelTraceById(traceId) {
       const trace = this.getTraceById(traceId);
       this.setActiveModelTrace(trace);
@@ -382,7 +410,7 @@ Store.activeDocument = Object.assign(
       });
       this.computeSelectionChanged();
     },
-    removeTemporarySelectionById(selectionId) {
+    removeTemporarySelection(selectionId) {
       let value;
       const index = this.state.temporarySelections.findIndex(
         (sel) => sel.id === selectionId,
@@ -393,6 +421,19 @@ Store.activeDocument = Object.assign(
       }
       this.notify({ key: "temporarySelections", operation: "remove", value });
       this.computeSelectionChanged();
+    },
+    updateTemporarySelectionColor(selectionId, color) {
+      const selection = this.state.temporarySelections.find(
+        (sel) => sel.id === selectionId,
+      );
+      if (selection && selection.color !== color) {
+        selection.color = color;
+        this.notify({
+          key: "temporarySelections",
+          operation: "update",
+          value: selection,
+        });
+      }
     },
 
     setTemporarySelections(newValue) {
@@ -435,7 +476,7 @@ Store.activeDocument = Object.assign(
       const selections = this.getSortedNewSelections();
       const serializedSelections = this.getSerializedSelections(selections);
       const activeModelTrace = this.getActiveModelTrace();
-      console.log("!!Active trace:", activeModelTrace);
+      // console.log("!!Active trace:", activeModelTrace);
       return Object.assign(
         { ...activeModelTrace },
         {
@@ -558,12 +599,22 @@ Store.activeModel = Object.assign(
       this.notify({ key: "error", newValue: error });
     },
     setModel(newValue) {
-      console.log("!!!!!!!Active model set to:!!!!", newValue);
-      const oldValue = this.state.model;
+      const currentModel = this.getModel();
+      let oldValue = null;
+      var parser = new DOMParser();
+      if (currentModel) {
+        oldValue = { ...currentModel };
+        oldValue.data = new DOMParser().parseFromString(
+          $(currentModel.data).serializePrettyXML(),
+          "application/xml",
+        ).documentElement;
+      }
       this.state.model = newValue;
       if (newValue) {
-        var parser = new DOMParser();
-        let data = parser.parseFromString(newValue.data, "application/xml");
+        let data = new DOMParser().parseFromString(
+          newValue.data,
+          "application/xml",
+        );
         if (data.documentElement.nodeName != "description") {
           data = $("description", data)[0];
         } else {
@@ -571,7 +622,6 @@ Store.activeModel = Object.assign(
         }
         newValue.data = data;
       }
-      console.log("!!!!!!!!!Active model set to:", newValue);
       this.notify({ key: "model", oldValue, newValue });
     },
     // updateModelData(newData) {

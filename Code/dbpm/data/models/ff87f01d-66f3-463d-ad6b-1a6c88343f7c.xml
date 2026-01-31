@@ -1,0 +1,45 @@
+<description>
+  <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+    <dbpm:document_info>
+      <dbpm:document_id>8ba2f40a-32a9-4472-821f-b6b9048f2dfa</dbpm:document_id>
+      <dbpm:text_selections/>
+    </dbpm:document_info>
+  </dbpm:info>
+  <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+    <loop mode="pre_test" condition="true" svg-id="loop_0" svg-label="true" svg-type="loop" svg-subtype="loop_head">
+      <_probability>
+        <_probability_min/>
+        <_probability_max/>
+        <_probability_avg/>
+      </_probability>
+      <call id="a1" endpoint="overview" svg-id="a1" svg-label="Move to overview position" svg-type="call" svg-subtype="call">
+        <parameters>
+          <label>Move to overview position</label>
+          <arguments/>
+          <stream>
+            <sensors/>
+            <aggregators/>
+            <costs/>
+          </stream>
+        </parameters>
+        <annotations>
+          <_timing>
+            <_timing_wait/>
+            <_timing_threshold/>
+            <_timing_min/>
+            <_timing_max/>
+            <_timing_avg/>
+          </_timing>
+          <_notes>
+            <_notes_general/>
+          </_notes>
+        </annotations>
+        <documentation/>
+      </call>
+      <call id="a3" svg-id="a3" svg-label="Get item positions" svg-type="call" svg-subtype="call"><parameters><label>Get item positions</label><color>#ded0c5</color><dbpm_type>task</dbpm_type><dbpm_subprocess_model/></parameters></call>
+      
+      <call id="a6" svg-id="a6" svg-label="Get item offset" svg-type="call" svg-subtype="call"><parameters><label>Get item offset</label><color>#ffffcc</color><dbpm_type>task</dbpm_type><dbpm_subprocess_model/></parameters></call>
+      <stop id="a2" svg-id="a2" svg-type="stop" svg-subtype="stop"/>
+    </loop>
+  </description>
+</description>
