@@ -1,5 +1,5 @@
 window.API = {
-  baseURL: "http://localhost:3000",
+  baseURL: window.location.origin
 };
 API.log = {
   path: "logs",
@@ -386,4 +386,21 @@ API.model = {
     return await response.json();
   },
   async deleteModelById(id) {},
+};
+
+API.stats = {
+  path: "stats",
+  async getStats(projectId = null) {
+    const url = projectId
+      ? `${API.baseURL}/${this.path}?projectId=${projectId}`
+      : `${API.baseURL}/${this.path}`;
+    const response = await fetch(url);
+    if (!response.ok) {
+      const error = await response
+        .json()
+        .catch(() => ({ error: "Unknown error" }));
+      throw new Error(error.error || "Failed to fetch stats");
+    }
+    return await response.json();
+  },
 };

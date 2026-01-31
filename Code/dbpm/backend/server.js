@@ -3,10 +3,22 @@ const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
 const yaml = require("js-yaml");
-const db = require("./database");
+
+// Database is now a promise
+let db;
+require("./database")
+  .then((database) => {
+    db = database;
+    console.log("Database initialized successfully");
+  })
+  .catch((err) => {
+    console.error("Failed to initialize database:", err);
+    process.exit(1);
+  });
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
+const HOST = process.env.HOST || 'localhost';
 
 const logsPath = path.join(__dirname, "..", "data", "logs");
 const documentsPath = path.join(__dirname, "..", "data", "documents");
@@ -630,6 +642,100 @@ app.put("/traces/:id", (req, res) => {
   }
 });
 //#endregion
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+
+//#region Stats Endpoints
+app.get("/stats", (req, res) => {
+  const { projectId } = req.query;
+
+  try {
+    if (projectId) {
+      // Get stats for a specific project
+      const projectStmt = db.prepare("SELECT * FROM projects WHERE id = ?");
+      const project = projectStmt.get(projectId);
+
+      if (!project) {
+        return res.status(404).json({ error: "Project not found" });
+      }
+
+      // Get documents for this project
+      const docsStmt = db.prepare(`
+        SELECT id, name, uploadedAt, words 
+        FROM documents 
+        WHERE projectId = ?
+        ORDER BY uploadedAt DESC
+      `);
+      const documents = docsStmt.all(projectId);
+
+      // Get models with their stats
+      const modelsStmt = db.prepare(`
+        SELECT m.id, m.name, m.timestamp, m.status, 
+               m.regeneratedByPromptTimes, m.regeneratedBySelectionsTimes, 
+               m.words, d.name as documentName
+        FROM models m
+        JOIN documents d ON m.documentId = d.id
+        WHERE d.projectId = ?
+        ORDER BY m.timestamp DESC
+      `);
+      const models = modelsStmt.all(projectId);
+
+      // Get model stat updates
+      const updatesStmt = db.prepare(`
+        SELECT msu.id, msu.modelId, msu.timestamp, msu.type, msu.words,
+               m.name as modelName
+        FROM model_stat_updates msu
+        JOIN models m ON msu.modelId = m.id
+        JOIN documents d ON m.documentId = d.id
+        WHERE d.projectId = ?
+        ORDER BY msu.timestamp DESC
+      `);
+      const updates = updatesStmt.all(projectId);
+
+      res.json({
+        project,
+        documents,
+        models,
+        updates,
+      });
+    } else {
+      // Get stats for all projects
+      const projectsStmt = db.prepare(
+        "SELECT * FROM projects ORDER BY createdAt DESC",
+      );
+      const projects = projectsStmt.all();
+
+      const stats = projects.map((project) => {
+        const docsStmt = db.prepare(
+          "SELECT COUNT(*) as count, SUM(words) as totalWords FROM documents WHERE projectId = ?",
+        );
+        const docStats = docsStmt.get(project.id);
+
+        const modelsStmt = db.prepare(`
+          SELECT COUNT(*) as count, SUM(m.words) as totalWords
+          FROM models m
+          JOIN documents d ON m.documentId = d.id
+          WHERE d.projectId = ?
+        `);
+        const modelStats = modelsStmt.get(project.id);
+
+        return {
+          ...project,
+          documentCount: docStats.count || 0,
+          documentTotalWords: docStats.totalWords || 0,
+          modelCount: modelStats.count || 0,
+          modelTotalWords: modelStats.totalWords || 0,
+        };
+      });
+
+      res.json(stats);
+    }
+  } catch (err) {
+    console.error("Failed to fetch stats:", err);
+    res.status(500).json({ error: "Failed to fetch stats" });
+  }
+});
+//#endregion
+
+app.listen(PORT, HOST, () => {
+  console.log(`Server is running on http://${HOST}:${PORT}`);
+  console.log("Waiting for database initialization...");
 });

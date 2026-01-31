@@ -59,85 +59,380 @@
     <link rel="stylesheet" href="css/myui.css" type="text/css" />
 
     <style>
-        /* body {
-            font-family: sans-serif;
-            padding: 20px
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #f5f5f5;
         }
 
-        dialog {
-            border: none;
-            border-radius: 10px;
-            padding: 16px;
-            width: 320px
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
         }
 
-        dialog::backdrop {
-            background: rgba(0, 0, 0, .35)
+        .project-info {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        input {
+        .project-info h2 {
+            margin: 0 0 10px 0;
+            color: #444;
+        }
+
+        .project-info p {
+            margin: 5px 0;
+            color: #666;
+        }
+
+        .stats-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-section h3 {
+            margin: 0 0 15px 0;
+            color: #444;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+
+        table {
             width: 100%;
-            padding: 8px;
-            box-sizing: border-box
+            border-collapse: collapse;
+            margin-top: 10px;
         }
 
-        .actions {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-            margin-top: 12px
+        th {
+            background: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #495057;
+            border-bottom: 2px solid #dee2e6;
         }
 
-        .error {
-            color: #c00;
-            min-height: 18px;
-            margin-top: 8px
-        } */
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #dee2e6;
+            color: #495057;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-generated {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-updated {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-manual {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .summary-card h4 {
+            margin: 0 0 10px 0;
+            color: #666;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .summary-card .value {
+            font-size: 28px;
+            font-weight: 600;
+            color: #007bff;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
-    <h1>Statistics</h1>
-    <pre> <code id="JSON"></code></pre>
+    <a href="index.html" class="back-link">← Back to Projects</a>
+    <h1>Project Statistics</h1>
+
+    <div id="loading" style="text-align: center; padding: 40px; color: #666;">
+        Loading statistics...
+    </div>
+
+    <div id="content" style="display: none;">
+        <!-- Project Info -->
+        <div id="projectInfo" class="project-info"></div>
+
+        <!-- Summary Cards -->
+        <div id="summaryCards" class="summary-cards"></div>
+
+        <!-- Documents Table -->
+        <div class="stats-section">
+            <h3>Documents</h3>
+            <table id="documentsTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Uploaded At</th>
+                        <th>Words</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <div id="documentsEmpty" class="empty-state" style="display: none;">
+                No documents found
+            </div>
+        </div>
+
+        <!-- Models Table -->
+        <div class="stats-section">
+            <h3>Models</h3>
+            <table id="modelsTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Document</th>
+                        <th>Created At</th>
+                        <th>Status</th>
+                        <th>Regenerated (Prompt)</th>
+                        <th>Regenerated (Selections)</th>
+                        <th>Words</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <div id="modelsEmpty" class="empty-state" style="display: none;">
+                No models found
+            </div>
+        </div>
+
+        <!-- Model Updates Table -->
+        <div class="stats-section">
+            <h3>Model Update History</h3>
+            <table id="updatesTable">
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>Timestamp</th>
+                        <th>Type</th>
+                        <th>Words</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <div id="updatesEmpty" class="empty-state" style="display: none;">
+                No updates found
+            </div>
+        </div>
+    </div>
+
     <script>
         function getProjectIdFromURL() {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get("project_id");
         }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString();
+        }
+
+        function getStatusBadge(status) {
+            const statusMap = {
+                'generated': 'badge-generated',
+                'updated': 'badge-updated',
+                'updated_manual': 'badge-manual'
+            };
+            const badgeClass = statusMap[status] || 'badge-generated';
+            return `<span class="badge ${badgeClass}">${status}</span>`;
+        }
+
         document.addEventListener('DOMContentLoaded', async () => {
             const projectId = getProjectIdFromURL();
+
             try {
-                const projectsResponse = await fetch('/data/projects.json');
-                const projects = await projectsResponse.json();
+                const data = await API.stats.getStats(projectId);
 
-                const statsResponse = await fetch('/data/stats.json');
-                let stats = await statsResponse.json();
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('content').style.display = 'block';
+
                 if (projectId) {
-                    // Filter stats for the specific project
-                    stats = stats[projectId];
-                    console.log('Filtered stats for project:', projectId, stats);
+                    // Single project view
+                    const { project, documents, models, updates } = data;
+
+                    // Project Info
+                    document.getElementById('projectInfo').innerHTML = `
+                        <h2>${project.name}</h2>
+                        <p>Created: ${formatDate(project.createdAt)}</p>
+                        <p>Generated Models: ${project.generatedModelNumber}</p>
+                    `;
+
+                    // Summary Cards
+                    const totalDocWords = documents.reduce((sum, doc) => sum + (doc.words || 0), 0);
+                    const totalModelWords = models.reduce((sum, model) => sum + (model.words || 0), 0);
+
+                    document.getElementById('summaryCards').innerHTML = `
+                        <div class="summary-card">
+                            <h4>Total Documents</h4>
+                            <div class="value">${documents.length}</div>
+                        </div>
+                        <div class="summary-card">
+                            <h4>Document Words</h4>
+                            <div class="value">${totalDocWords.toLocaleString()}</div>
+                        </div>
+                        <div class="summary-card">
+                            <h4>Total Models</h4>
+                            <div class="value">${models.length}</div>
+                        </div>
+                        <div class="summary-card">
+                            <h4>Model Input Words</h4>
+                            <div class="value">${totalModelWords.toLocaleString()}</div>
+                        </div>
+                    `;
+
+                    // Documents Table
+                    const documentsBody = document.querySelector('#documentsTable tbody');
+                    if (documents.length > 0) {
+                        documents.forEach(doc => {
+                            const row = documentsBody.insertRow();
+                            row.innerHTML = `
+                                <td>${doc.name}</td>
+                                <td>${formatDate(doc.uploadedAt)}</td>
+                                <td>${(doc.words || 0).toLocaleString()}</td>
+                            `;
+                        });
+                    } else {
+                        document.getElementById('documentsTable').style.display = 'none';
+                        document.getElementById('documentsEmpty').style.display = 'block';
+                    }
+
+                    // Models Table
+                    const modelsBody = document.querySelector('#modelsTable tbody');
+                    if (models.length > 0) {
+                        models.forEach(model => {
+                            const row = modelsBody.insertRow();
+                            row.innerHTML = `
+                                <td>${model.name}</td>
+                                <td>${model.documentName}</td>
+                                <td>${formatDate(model.timestamp)}</td>
+                                <td>${getStatusBadge(model.status)}</td>
+                                <td>${model.regeneratedByPromptTimes || 0}</td>
+                                <td>${model.regeneratedBySelectionsTimes || 0}</td>
+                                <td>${(model.words || 0).toLocaleString()}</td>
+                            `;
+                        });
+                    } else {
+                        document.getElementById('modelsTable').style.display = 'none';
+                        document.getElementById('modelsEmpty').style.display = 'block';
+                    }
+
+                    // Updates Table
+                    const updatesBody = document.querySelector('#updatesTable tbody');
+                    if (updates.length > 0) {
+                        updates.forEach(update => {
+                            const row = updatesBody.insertRow();
+                            row.innerHTML = `
+                                <td>${update.modelName}</td>
+                                <td>${formatDate(update.timestamp)}</td>
+                                <td>${update.type}</td>
+                                <td>${update.words ? update.words.toLocaleString() : '-'}</td>
+                            `;
+                        });
+                    } else {
+                        document.getElementById('updatesTable').style.display = 'none';
+                        document.getElementById('updatesEmpty').style.display = 'block';
+                    }
+                } else {
+                    // All projects overview
+                    document.getElementById('projectInfo').innerHTML = '<h2>All Projects Overview</h2>';
+
+                    // Hide individual sections for overview
+                    document.querySelectorAll('.stats-section').forEach(el => el.style.display = 'none');
+
+                    // Show summary in a table
+                    const summaryHtml = `
+                        <div class="stats-section">
+                            <h3>Projects Summary</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Project Name</th>
+                                        <th>Created</th>
+                                        <th>Documents</th>
+                                        <th>Doc Words</th>
+                                        <th>Models</th>
+                                        <th>Model Words</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${data.map(proj => `
+                                        <tr>
+                                            <td><a href="stats.html?project_id=${proj.id}">${proj.name}</a></td>
+                                            <td>${formatDate(proj.createdAt)}</td>
+                                            <td>${proj.documentCount}</td>
+                                            <td>${proj.documentTotalWords.toLocaleString()}</td>
+                                            <td>${proj.modelCount}</td>
+                                            <td>${proj.modelTotalWords.toLocaleString()}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+                    document.getElementById('content').innerHTML = summaryHtml;
                 }
-
-                document.getElementById('JSON').textContent = JSON.stringify(stats, null, 2);
-                // const table = document.getElementById('projectTable');
-                // const template = document.getElementById('rowtemplate').content;
-
-                projects.forEach(project => {
-                    // const row = template.cloneNode(true);
-                    // const link = row.querySelector('a');
-                    // link.href = `main.html?project=${project.id}`;
-                    // link.textContent = project.name;
-
-                    // const docCount = row.querySelector('.doc-count');
-                    // const modelCount = row.querySelector('.model-count');
-
-                    // const projectStats = stats[project.id] || { documents: [], models: [] };
-                    // docCount.textContent = projectStats.documents.length;
-                    // modelCount.textContent = projectStats.models.length;
-
-                    // table.appendChild(row);
-                });
             } catch (error) {
                 console.error('Error loading stats:', error);
+                document.getElementById('loading').innerHTML = `
+                    <div style="color: red;">Error loading statistics: ${error.message}</div>
+                `;
             }
         });
     </script>

@@ -1,16 +1,44 @@
-const Database = require("better-sqlite3");
+const initSqlJs = require("sql.js");
+const fs = require("fs");
 const path = require("path");
 
 const dbPath = path.join(__dirname, "..", "data", "database.sqlite");
-const db = new Database(dbPath);
+let db;
 
-// Enable foreign keys
-db.pragma("foreign_keys = ON");
+// Initialize database
+async function initDatabase() {
+  const SQL = await initSqlJs();
 
-// Initialize database schema
-function initializeDatabase() {
+  // Try to load existing database
+  if (fs.existsSync(dbPath)) {
+    const buffer = fs.readFileSync(dbPath);
+    db = new SQL.Database(buffer);
+  } else {
+    db = new SQL.Database();
+  }
+
+  // Enable foreign keys
+  db.run("PRAGMA foreign_keys = ON");
+
+  // Initialize database schema
+  initializeSchema();
+
+  // Save database
+  saveDatabase();
+
+  return db;
+}
+
+function saveDatabase() {
+  if (!db) return;
+  const data = db.export();
+  const buffer = Buffer.from(data);
+  fs.writeFileSync(dbPath, buffer);
+}
+
+function initializeSchema() {
   // Projects table
-  db.exec(`
+  db.run(`
     CREATE TABLE IF NOT EXISTS projects (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
@@ -20,7 +48,7 @@ function initializeDatabase() {
   `);
 
   // Documents table
-  db.exec(`
+  db.run(`
     CREATE TABLE IF NOT EXISTS documents (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
@@ -32,7 +60,7 @@ function initializeDatabase() {
   `);
 
   // Models table
-  db.exec(`
+  db.run(`
     CREATE TABLE IF NOT EXISTS models (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
@@ -47,7 +75,7 @@ function initializeDatabase() {
   `);
 
   // Traces table
-  db.exec(`
+  db.run(`
     CREATE TABLE IF NOT EXISTS traces (
       id TEXT PRIMARY KEY,
       documentId TEXT NOT NULL,
@@ -61,7 +89,7 @@ function initializeDatabase() {
   `);
 
   // Model stat updates table
-  db.exec(`
+  db.run(`
     CREATE TABLE IF NOT EXISTS model_stat_updates (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       modelId TEXT NOT NULL,
@@ -73,15 +101,58 @@ function initializeDatabase() {
   `);
 
   // Create indexes for common queries
-  db.exec(`
-    CREATE INDEX IF NOT EXISTS idx_documents_projectId ON documents(projectId);
-    CREATE INDEX IF NOT EXISTS idx_models_documentId ON models(documentId);
-    CREATE INDEX IF NOT EXISTS idx_traces_documentId ON traces(documentId);
-    CREATE INDEX IF NOT EXISTS idx_traces_modelId ON traces(modelId);
-  `);
+  db.run(
+    `CREATE INDEX IF NOT EXISTS idx_documents_projectId ON documents(projectId)`,
+  );
+  db.run(
+    `CREATE INDEX IF NOT EXISTS idx_models_documentId ON models(documentId)`,
+  );
+  db.run(
+    `CREATE INDEX IF NOT EXISTS idx_traces_documentId ON traces(documentId)`,
+  );
+  db.run(`CREATE INDEX IF NOT EXISTS idx_traces_modelId ON traces(modelId)`);
 }
 
-// Initialize on load
-initializeDatabase();
+// Helper functions to match better-sqlite3 API
+const dbWrapper = {
+  prepare(sql) {
+    return {
+      run(...params) {
+        const stmt = db.prepare(sql);
+        stmt.bind(params);
+        stmt.step();
+        const changes = db.getRowsModified();
+        stmt.free();
+        saveDatabase();
+        return { changes };
+      },
+      get(...params) {
+        const stmt = db.prepare(sql);
+        stmt.bind(params);
+        const result = stmt.step() ? stmt.getAsObject() : null;
+        stmt.free();
+        return result;
+      },
+      all(...params) {
+        const stmt = db.prepare(sql);
+        stmt.bind(params);
+        const results = [];
+        while (stmt.step()) {
+          results.push(stmt.getAsObject());
+        }
+        stmt.free();
+        return results;
+      },
+    };
+  },
+  exec(sql) {
+    db.run(sql);
+    saveDatabase();
+  },
+  pragma(pragmaString) {
+    db.run(`PRAGMA ${pragmaString}`);
+  },
+};
 
-module.exports = db;
+// Export a promise that resolves to the db wrapper
+module.exports = initDatabase().then(() => dbWrapper);
