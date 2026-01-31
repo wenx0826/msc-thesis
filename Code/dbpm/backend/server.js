@@ -18,7 +18,7 @@ require("./database")
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const HOST = process.env.HOST || 'localhost';
+const HOST = process.env.HOST || "localhost";
 
 const logsPath = path.join(__dirname, "..", "data", "logs");
 const documentsPath = path.join(__dirname, "..", "data", "documents");
@@ -735,7 +735,20 @@ app.get("/stats", (req, res) => {
 });
 //#endregion
 
-app.listen(PORT, HOST, () => {
+const server = app.listen(PORT, HOST, () => {
+  console.log("Starting server...");
   console.log(`Server is running on http://${HOST}:${PORT}`);
+  if (server) {
+    console.log(server.address());
+  }
   console.log("Waiting for database initialization...");
+});
+
+server.on("error", (err) => {
+  console.error("Failed to start server:", err.message);
+  if (err.code === "EADDRINUSE") {
+    console.error(`Port ${PORT} is already in use.`);
+  } else if (err.code === "EACCES") {
+    console.error(`Permission denied for port ${PORT}.`);
+  }
 });

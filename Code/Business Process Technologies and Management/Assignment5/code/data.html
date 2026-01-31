@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Data</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      p {
+        font-weight: bold;
+      }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+  </head>
+  <body>
+    <p>Number of instances in design:
+      <span id="instances_in_design">0</span>
+    </p>
+    <p>Number of instances in build:
+      <span id="instances_in_building">0</span>
+    </p>
+    <p>Number of finished instance:
+      <span id="finished_instances">0</span>
+    </p>
+    <p>Total revenue:
+      <span id="total_revenue">0</span>€
+    </p>
+    <script>
+      const rerender = () => {
+        let instances_in_design = 0
+        let instances_in_building = 0
+        let finished_instances = 0
+        let total_revenue = 0
+        let paidRevenue = 0
+        $.getJSON("/~ga94hor/data.json", (data) => {
+          for (const item of data) {
+            const {
+              satisfied,
+              built,
+              paid,
+              bill,
+            } = item
+            if (!satisfied) {
+              instances_in_design += 1
+            } else if (!built) {
+              instances_in_building += 1
+            } else if (paid) {
+              finished_instances += 1
+            }
+            if (bill) {
+              const {
+                designFee,
+                buildFee
+              } = item.bill
+              const totalPrice = designFee + buildFee
+              total_revenue += totalPrice
+              if (paid) paidRevenue += totalPrice;
+            }
+          }
+          $('#instances_in_design').html(instances_in_design)
+          $('#instances_in_building').html(instances_in_building)
+          $('#finished_instances').html(finished_instances)
+          $('#total_revenue').html(total_revenue)
+        });
+      }
+      window.setInterval(() => {
+        setTimeout(rerender, 0)
+      }, 3000)
+    </script>
+  </body>

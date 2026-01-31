@@ -1,0 +1,12 @@
+<form role="form" name="form">
+  <script cam-script type="text/form-script">
+    camForm.on('form-loaded', function() {
+      camForm.variableManager.fetchVariable('bill');
+    });
+    camForm.on('variables-fetched', function() {
+      $scope.bill = camForm.variableManager.variableValue('bill');
+    });
+  </script>
+  <b>Please pay your bill</b>
+  <pre>{{bill}}</pre>
+</form>

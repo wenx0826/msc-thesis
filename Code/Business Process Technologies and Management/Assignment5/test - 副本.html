@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Data</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      table {
+        width: 600px;
+        text-align: center;
+      }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+  </head>
+  <body>
+    <b>Number of orders in design: </b>
+    <b id="order_in_design">0</b>
+    <br />
+    <b>Total revenue: </b>
+    <b id="total_revenue">0</b>
+    <table border="1" cellspacing="0">
+      <thead>
+        <tr>
+          <th>Instance</th>
+          <th>Refine Times</th>
+          <th>Build Method</th>
+          <th>Total Price</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+    <script>
+      const rerender = () => {
+        $("tbody").remove();
+        $("table").append("<tbody></tbody>")
+        let totalRevenue = 0
+        let paidRevenue = 0
+        $.getJSON("/~ga94hor/data.json", (data) => {
+          const keys = ["instance", "refineTimes", "buildMethod"]
+          for (const item of data) {
+            const tr = document.createElement('tr')
+            for (const key of keys) {
+              const td = document.createElement('td')
+              td.innerHTML = item[key];
+              $(tr).append(td)
+            }
+            $("tbody").append(tr)
+            if (item.bill) {
+              const { designFee, buildFee} = item.bill
+              const totalPrice = designFee + buildFee
+              totalRevenue += totalPrice
+              if (item["paid"]) paidRevenue += totalPrice;
+            }
+          }
+          console.log(totalRevenue)
+          $('#total_revenue').html(totalRevenue)
+        });
+        
+      }
+      window.setInterval(() => {
+        setTimeout(rerender, 0)
+      }, 3000)
+
+      // const tbody = document.querySelector('tbody')
+      // const keys = ['instance', 'refineTimes']
+      // for (const item of data) {
+      //   const tr = document.createElement('tr')
+      //   for (const key of keys) {
+      //     const td = document.createElement('td')
+      //     td.innerHTML = item[key];
+      //     tr.appendChild(td)
+      //   }
+      // }
+      // tbody.appendChild(tr)
+
+      // users.forEach(function(item) {
+      //   const tr = document.createElement('tr')
+      //   for (const key in item) {
+      //     const td = document.createElement('td')
+      //     td.innerHTML = item[key]
+      //     tr.appendChild(td)
+      //   }
+      //   tbody.appendChild(tr)
+      // })
+    </script>
+  </body>

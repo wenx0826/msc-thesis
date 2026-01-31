@@ -1,0 +1,461 @@
+log:
+  properties:
+    xmlns: http://www.xes-standard.org
+    xes.version: 1
+    xes.creator: cpee.org
+    xes.features: nested-attributes
+  extension:
+    time: http://www.xes-standard.org/time.xesext
+    concept: http://www.xes-standard.org/concept.xesext
+    organisational: http://www.xes-standard.org/org.xesext
+    lifecycle: http://www.xes-standard.org/lifecycle.xesext
+    cpee: http://cpee.org/cpee.xesext
+  global:
+    trace:
+      concept:name: __INVALID__
+      concept:instance: -1
+      cpee:instance_uuid: __INVALID__
+    event:
+      concept:name: __INVALID__
+      concept:endpoint: ""
+      id:id: ""
+      cpee:uuid: ""
+      lifecycle:transition: complete
+      cpee:lifecycle:transition: activity/calling
+      time:timestamp: ""
+  classifier:
+    Data: data_send data_received data_changed data_values
+    Data_Received: data_receiver
+    Data_Send: data_send
+    Data_Changed: data_changer
+    Data_Values: data_values
+  traces:
+    - concept:name: Build a treee house
+      concept:instance: 74025
+      cpee:instance_uuid: 72d88e56-72b3-4be7-9c7d-d8fe4f2bc289
+      events:
+        - id:id: external
+          lifecycle:transition: unknown
+          cpee:lifecycle:transition: state/change
+          cpee:state: running
+          time:timestamp: 2022-08-22T13:54:40.382+02:00
+        - concept:name: Collect requirements
+          id:id: u1
+          lifecycle:transition: start
+          cpee:lifecycle:transition: activity/calling
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.386+02:00
+        - concept:name: Collect requirements
+          id:id: u1
+          lifecycle:transition: unknown
+          cpee:lifecycle:transition: activity/receiving
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.399+02:00
+        - concept:name: Collect requirements
+          id:id: u1
+          lifecycle:transition: complete
+          cpee:lifecycle:transition: activity/done
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.403+02:00
+        - concept:name: Draw the draft
+          id:id: u2
+          lifecycle:transition: start
+          cpee:lifecycle:transition: activity/calling
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.416+02:00
+        - concept:name: Draw the draft
+          id:id: u2
+          lifecycle:transition: unknown
+          cpee:lifecycle:transition: activity/receiving
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.418+02:00
+        - concept:name: Draw the draft
+          id:id: u2
+          lifecycle:transition: complete
+          cpee:lifecycle:transition: activity/done
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.432+02:00
+        - concept:name: Review the draft
+          id:id: u3
+          lifecycle:transition: start
+          cpee:lifecycle:transition: activity/calling
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.436+02:00
+        - concept:name: Review the draft
+          id:id: u3
+          lifecycle:transition: unknown
+          cpee:lifecycle:transition: activity/receiving
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.440+02:00
+        - concept:name: Review the draft
+          id:id: u3
+          lifecycle:transition: unknown
+          cpee:lifecycle:transition: activity/manipulating
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.442+02:00
+        - concept:name: Review the draft
+          id:id: u3
+          lifecycle:transition: unknown
+          cpee:lifecycle:transition: dataelements/change
+          data:
+            data_changer:
+              - satisfied
+              - refineTimes
+            data_values:
+              satisfied: false
+              refineTimes: 1
+          time:timestamp: 2022-08-22T13:54:40.459+02:00
+        - concept:name: Review the draft
+          id:id: u3
+          lifecycle:transition: complete
+          cpee:lifecycle:transition: activity/done
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.459+02:00
+        - concept:name: Collect requirements
+          id:id: u1
+          lifecycle:transition: start
+          cpee:lifecycle:transition: activity/calling
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.469+02:00
+        - concept:name: Collect requirements
+          id:id: u1
+          lifecycle:transition: unknown
+          cpee:lifecycle:transition: activity/receiving
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.471+02:00
+        - concept:name: Collect requirements
+          id:id: u1
+          lifecycle:transition: complete
+          cpee:lifecycle:transition: activity/done
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.496+02:00
+        - concept:name: Draw the draft
+          id:id: u2
+          lifecycle:transition: start
+          cpee:lifecycle:transition: activity/calling
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.500+02:00
+        - concept:name: Draw the draft
+          id:id: u2
+          lifecycle:transition: unknown
+          cpee:lifecycle:transition: activity/receiving
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.502+02:00
+        - concept:name: Draw the draft
+          id:id: u2
+          lifecycle:transition: complete
+          cpee:lifecycle:transition: activity/done
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.535+02:00
+        - concept:name: Review the draft
+          id:id: u3
+          lifecycle:transition: start
+          cpee:lifecycle:transition: activity/calling
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.538+02:00
+        - concept:name: Review the draft
+          id:id: u3
+          lifecycle:transition: unknown
+          cpee:lifecycle:transition: activity/receiving
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.542+02:00
+        - concept:name: Review the draft
+          id:id: u3
+          lifecycle:transition: unknown
+          cpee:lifecycle:transition: activity/manipulating
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.575+02:00
+        - concept:name: Review the draft
+          id:id: u3
+          lifecycle:transition: unknown
+          cpee:lifecycle:transition: dataelements/change
+          data:
+            data_changer:
+              - satisfied
+              - refineTimes
+            data_values:
+              satisfied: false
+              refineTimes: 2
+          time:timestamp: 2022-08-22T13:54:40.576+02:00
+        - concept:name: Review the draft
+          id:id: u3
+          lifecycle:transition: complete
+          cpee:lifecycle:transition: activity/done
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.576+02:00
+        - concept:name: Collect requirements
+          id:id: u1
+          lifecycle:transition: start
+          cpee:lifecycle:transition: activity/calling
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.578+02:00
+        - concept:name: Collect requirements
+          id:id: u1
+          lifecycle:transition: unknown
+          cpee:lifecycle:transition: activity/receiving
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.580+02:00
+        - concept:name: Collect requirements
+          id:id: u1
+          lifecycle:transition: complete
+          cpee:lifecycle:transition: activity/done
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.613+02:00
+        - concept:name: Draw the draft
+          id:id: u2
+          lifecycle:transition: start
+          cpee:lifecycle:transition: activity/calling
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.615+02:00
+        - concept:name: Draw the draft
+          id:id: u2
+          lifecycle:transition: unknown
+          cpee:lifecycle:transition: activity/receiving
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.617+02:00
+        - concept:name: Draw the draft
+          id:id: u2
+          lifecycle:transition: complete
+          cpee:lifecycle:transition: activity/done
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.647+02:00
+        - concept:name: Review the draft
+          id:id: u3
+          lifecycle:transition: start
+          cpee:lifecycle:transition: activity/calling
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.649+02:00
+        - concept:name: Review the draft
+          id:id: u3
+          lifecycle:transition: unknown
+          cpee:lifecycle:transition: activity/receiving
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.651+02:00
+        - concept:name: Review the draft
+          id:id: u3
+          lifecycle:transition: unknown
+          cpee:lifecycle:transition: activity/manipulating
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.681+02:00
+        - concept:name: Review the draft
+          id:id: u3
+          lifecycle:transition: unknown
+          cpee:lifecycle:transition: dataelements/change
+          data:
+            data_changer:
+              - satisfied
+              - refineTimes
+            data_values:
+              satisfied: false
+              refineTimes: 3
+          time:timestamp: 2022-08-22T13:54:40.681+02:00
+        - concept:name: Review the draft
+          id:id: u3
+          lifecycle:transition: complete
+          cpee:lifecycle:transition: activity/done
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.682+02:00
+        - concept:name: Collect requirements
+          id:id: u1
+          lifecycle:transition: start
+          cpee:lifecycle:transition: activity/calling
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.684+02:00
+        - concept:name: Collect requirements
+          id:id: u1
+          lifecycle:transition: unknown
+          cpee:lifecycle:transition: activity/receiving
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.686+02:00
+        - concept:name: Collect requirements
+          id:id: u1
+          lifecycle:transition: complete
+          cpee:lifecycle:transition: activity/done
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.721+02:00
+        - concept:name: Draw the draft
+          id:id: u2
+          lifecycle:transition: start
+          cpee:lifecycle:transition: activity/calling
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.723+02:00
+        - concept:name: Draw the draft
+          id:id: u2
+          lifecycle:transition: unknown
+          cpee:lifecycle:transition: activity/receiving
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.726+02:00
+        - concept:name: Draw the draft
+          id:id: u2
+          lifecycle:transition: complete
+          cpee:lifecycle:transition: activity/done
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.757+02:00
+        - concept:name: Review the draft
+          id:id: u3
+          lifecycle:transition: start
+          cpee:lifecycle:transition: activity/calling
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.759+02:00
+        - concept:name: Review the draft
+          id:id: u3
+          lifecycle:transition: unknown
+          cpee:lifecycle:transition: activity/receiving
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.761+02:00
+        - concept:name: Review the draft
+          id:id: u3
+          lifecycle:transition: unknown
+          cpee:lifecycle:transition: activity/manipulating
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.791+02:00
+        - concept:name: Review the draft
+          id:id: u3
+          lifecycle:transition: unknown
+          cpee:lifecycle:transition: dataelements/change
+          data:
+            data_changer:
+              - satisfied
+              - buildMethod
+            data_values:
+              satisfied: true
+              buildMethod: company
+          time:timestamp: 2022-08-22T13:54:40.791+02:00
+        - concept:name: Review the draft
+          id:id: u3
+          lifecycle:transition: complete
+          cpee:lifecycle:transition: activity/done
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.793+02:00
+        - concept:name: Generate material list
+          id:id: a1
+          lifecycle:transition: start
+          cpee:lifecycle:transition: activity/calling
+          concept:endpoint: https-post://cpee.org/services/timeout-auto.php
+          time:timestamp: 2022-08-22T13:54:40.795+02:00
+        - concept:name: Generate material list
+          id:id: a1
+          lifecycle:transition: unknown
+          cpee:lifecycle:transition: activity/receiving
+          concept:endpoint: https-post://cpee.org/services/timeout-auto.php
+          time:timestamp: 2022-08-22T13:54:40.797+02:00
+        - concept:name: Generate material list
+          id:id: a1
+          lifecycle:transition: complete
+          cpee:lifecycle:transition: activity/done
+          concept:endpoint: https-post://cpee.org/services/timeout-auto.php
+          time:timestamp: 2022-08-22T13:54:40.826+02:00
+        - concept:name: Generate bill
+          id:id: a2
+          lifecycle:transition: start
+          cpee:lifecycle:transition: activity/calling
+          concept:endpoint: https://lehre.bpm.in.tum.de/~ga94hor/bill.php
+          time:timestamp: 2022-08-22T13:54:40.829+02:00
+        - concept:name: Generate bill
+          id:id: a2
+          lifecycle:transition: unknown
+          cpee:lifecycle:transition: activity/receiving
+          concept:endpoint: https://lehre.bpm.in.tum.de/~ga94hor/bill.php
+          time:timestamp: 2022-08-22T13:54:40.905+02:00
+        - concept:name: Generate bill
+          id:id: a2
+          lifecycle:transition: unknown
+          cpee:lifecycle:transition: activity/manipulating
+          concept:endpoint: https://lehre.bpm.in.tum.de/~ga94hor/bill.php
+          time:timestamp: 2022-08-22T13:54:40.936+02:00
+        - concept:name: Generate bill
+          id:id: a2
+          lifecycle:transition: unknown
+          cpee:lifecycle:transition: dataelements/change
+          data:
+            data_changer:
+              - bill
+            data_values:
+              bill:
+                designFee: 500
+                buildFee: 3000
+          time:timestamp: 2022-08-22T13:54:40.940+02:00
+        - concept:name: Generate bill
+          id:id: a2
+          lifecycle:transition: complete
+          cpee:lifecycle:transition: activity/done
+          concept:endpoint: https://lehre.bpm.in.tum.de/~ga94hor/bill.php
+          time:timestamp: 2022-08-22T13:54:40.945+02:00
+        - concept:name: Pay the bill
+          id:id: u4
+          lifecycle:transition: start
+          cpee:lifecycle:transition: activity/calling
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.951+02:00
+        - concept:name: Build the house
+          id:id: u6
+          lifecycle:transition: start
+          cpee:lifecycle:transition: activity/calling
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.952+02:00
+        - concept:name: Pay the bill
+          id:id: u4
+          lifecycle:transition: unknown
+          cpee:lifecycle:transition: activity/receiving
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.955+02:00
+        - concept:name: Pay the bill
+          id:id: u4
+          lifecycle:transition: unknown
+          cpee:lifecycle:transition: activity/manipulating
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.984+02:00
+        - concept:name: Pay the bill
+          id:id: u4
+          lifecycle:transition: unknown
+          cpee:lifecycle:transition: dataelements/change
+          data:
+            data_changer:
+              - paid
+            data_values:
+              paid: true
+          time:timestamp: 2022-08-22T13:54:40.984+02:00
+        - concept:name: Pay the bill
+          id:id: u4
+          lifecycle:transition: complete
+          cpee:lifecycle:transition: activity/done
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.985+02:00
+        - concept:name: Build the house
+          id:id: u6
+          lifecycle:transition: unknown
+          cpee:lifecycle:transition: activity/receiving
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:40.992+02:00
+        - concept:name: Build the house
+          id:id: u6
+          lifecycle:transition: unknown
+          cpee:lifecycle:transition: activity/manipulating
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:41.016+02:00
+        - concept:name: Build the house
+          id:id: u6
+          lifecycle:transition: unknown
+          cpee:lifecycle:transition: dataelements/change
+          data:
+            data_changer:
+              - finished
+            data_values:
+              finished: true
+          time:timestamp: 2022-08-22T13:54:41.016+02:00
+        - concept:name: Build the house
+          id:id: u6
+          lifecycle:transition: complete
+          cpee:lifecycle:transition: activity/done
+          concept:endpoint: https-post://cpee.org/services/timeout-user.php
+          time:timestamp: 2022-08-22T13:54:41.017+02:00
+        - id:id: external
+          lifecycle:transition: unknown
+          cpee:lifecycle:transition: state/change
+          cpee:state: stopping
+          time:timestamp: 2022-08-22T13:54:41.025+02:00
+        - id:id: external
+          lifecycle:transition: unknown
+          cpee:lifecycle:transition: state/change
+          cpee:state: stopped
+          time:timestamp: 2022-08-22T13:54:41.025+02:00

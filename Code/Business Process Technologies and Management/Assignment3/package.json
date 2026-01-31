@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "camunda-external-task-client-js": "^2.2.0",
+    "camunda-worker-node": "^7.1.0"
+  }
+}

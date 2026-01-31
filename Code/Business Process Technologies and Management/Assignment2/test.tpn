@@ -1,0 +1,7 @@
+place P1 init 1;
+
+
+trans T1
+ in P1
+ out P1;
+

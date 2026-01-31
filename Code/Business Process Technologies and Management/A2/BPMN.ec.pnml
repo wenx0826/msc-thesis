@@ -1,0 +1,530 @@
+<?xml version="1.0" encoding="UTF-8"?><pnml><net id="net1" type="http://www.pnml.org/version-2009/grammar/pnmlcoremodel"><place id="P0">
+                <name>
+                    <text>P0</text>
+                </name>
+                <initialMarking>
+                    <text>o</text>
+                </initialMarking>
+                <capacity>
+                    <text>1</text>
+                </capacity>
+              </place><place id="P1">
+                <name>
+                    <text>P1</text>
+                </name>
+                <initialMarking>
+                    <text>o</text>
+                </initialMarking>
+                <capacity>
+                    <text>1</text>
+                </capacity>
+              </place><place id="P2">
+                <name>
+                    <text>P2</text>
+                </name>
+                <initialMarking>
+                    <text>o</text>
+                </initialMarking>
+                <capacity>
+                    <text>1</text>
+                </capacity>
+              </place><place id="P3">
+                <name>
+                    <text>P3</text>
+                </name>
+                <initialMarking>
+                    <text>o</text>
+                </initialMarking>
+                <capacity>
+                    <text>1</text>
+                </capacity>
+              </place><place id="P4">
+                <name>
+                    <text>P4</text>
+                </name>
+                <initialMarking>
+                    <text>o</text>
+                </initialMarking>
+                <capacity>
+                    <text>1</text>
+                </capacity>
+              </place><place id="P5">
+                <name>
+                    <text>P5</text>
+                </name>
+                <initialMarking>
+                    <text>o</text>
+                </initialMarking>
+                <capacity>
+                    <text>1</text>
+                </capacity>
+              </place><place id="P6">
+                <name>
+                    <text>P6</text>
+                </name>
+                <initialMarking>
+                    <text>o</text>
+                </initialMarking>
+                <capacity>
+                    <text>1</text>
+                </capacity>
+              </place><place id="P7">
+                <name>
+                    <text>P7</text>
+                </name>
+                <initialMarking>
+                    <text>o</text>
+                </initialMarking>
+                <capacity>
+                    <text>1</text>
+                </capacity>
+              </place><place id="P8">
+                <name>
+                    <text>P8</text>
+                </name>
+                <initialMarking>
+                    <text>o</text>
+                </initialMarking>
+                <capacity>
+                    <text>1</text>
+                </capacity>
+              </place><place id="P9">
+                <name>
+                    <text>P9</text>
+                </name>
+                <initialMarking>
+                    <text>o</text>
+                </initialMarking>
+                <capacity>
+                    <text>1</text>
+                </capacity>
+              </place><place id="P10">
+                <name>
+                    <text>P10</text>
+                </name>
+                <initialMarking>
+                    <text>o</text>
+                </initialMarking>
+                <capacity>
+                    <text>1</text>
+                </capacity>
+              </place><place id="P11">
+                <name>
+                    <text>P11</text>
+                </name>
+                <initialMarking>
+                    <text>1</text>
+                </initialMarking>
+                <capacity>
+                    <text>1</text>
+                </capacity>
+              </place><place id="P12">
+                <name>
+                    <text>P12</text>
+                </name>
+                <initialMarking>
+                    <text>o</text>
+                </initialMarking>
+                <capacity>
+                    <text>1</text>
+                </capacity>
+              </place><place id="P13">
+                <name>
+                    <text>P13</text>
+                </name>
+                <initialMarking>
+                    <text>o</text>
+                </initialMarking>
+                <capacity>
+                    <text>1</text>
+                </capacity>
+              </place><place id="P14">
+                <name>
+                    <text>P14</text>
+                </name>
+                <initialMarking>
+                    <text>o</text>
+                </initialMarking>
+                <capacity>
+                    <text>1</text>
+                </capacity>
+              </place><place id="P15">
+                <name>
+                    <text>P15</text>
+                </name>
+                <initialMarking>
+                    <text>o</text>
+                </initialMarking>
+                <capacity>
+                    <text>1</text>
+                </capacity>
+              </place><place id="P16">
+                <name>
+                    <text>P16</text>
+                </name>
+                <initialMarking>
+                    <text>o</text>
+                </initialMarking>
+                <capacity>
+                    <text>1</text>
+                </capacity>
+              </place><place id="P17">
+                <name>
+                    <text>P17</text>
+                </name>
+                <initialMarking>
+                    <text>o</text>
+                </initialMarking>
+                <capacity>
+                    <text>1</text>
+                </capacity>
+              </place><place id="P18">
+                <name>
+                    <text>P18</text>
+                </name>
+                <initialMarking>
+                    <text>o</text>
+                </initialMarking>
+                <capacity>
+                    <text>1</text>
+                </capacity>
+              </place><place id="P19">
+                <name>
+                    <text>P19</text>
+                </name>
+                <initialMarking>
+                    <text>o</text>
+                </initialMarking>
+                <capacity>
+                    <text>1</text>
+                </capacity>
+              </place><place id="P20">
+                <name>
+                    <text>P20</text>
+                </name>
+                <initialMarking>
+                    <text>o</text>
+                </initialMarking>
+                <capacity>
+                    <text>1</text>
+                </capacity>
+              </place><place id="P21">
+                <name>
+                    <text>P21</text>
+                </name>
+                <initialMarking>
+                    <text>o</text>
+                </initialMarking>
+                <capacity>
+                    <text>1</text>
+                </capacity>
+              </place>
+<transition id="T0">
+  <name>
+      <text>Review Characters</text>
+  </name>
+</transition><transition id="T1">
+  <name>
+      <text>View the generated Character</text>
+  </name>
+</transition><transition id="T2">
+  <name>
+      <text> Check the Meeting Date</text>
+  </name>
+</transition><transition id="T3">
+  <name>
+      <text>Vote on Characters</text>
+  </name>
+</transition><transition id="T4">
+  <name>
+      <text>Select First Meeting Date</text>
+  </name>
+</transition><transition id="T5">
+  <name>
+      <text> Create Account</text>
+  </name>
+</transition><transition id="T6">
+  <name>
+      <text>Select Character Name</text>
+  </name>
+</transition><transition id="T7">
+  <name>
+      <text>Set Character Properties</text>
+  </name>
+</transition><transition id="T8">
+  <name>
+      <text>Open the Tool</text>
+  </name>
+</transition><transition id="T9">
+  <name>
+      <text>Login with your account</text>
+  </name>
+</transition><transition id="T10">
+  <name>
+      <text>Log out</text>
+  </name>
+</transition><transition id="T11">
+  <name>
+      <text>Notify before the Meeting Date</text>
+  </name>
+</transition><transition id="T12">
+  <name>
+      <text>Distribute the Date among your Party</text>
+  </name>
+</transition><transition id="T13">
+  <name>
+      <text>Wait for the Characters Details of your Party Members</text>
+  </name>
+</transition><transition id="T14">
+  <name>
+      <text>Receive Character Details</text>
+  </name>
+</transition><transition id="T15">
+  <name>
+      <text>Submit Character for Review</text>
+  </name>
+</transition><transition id="T16">
+  <name>
+      <text>Send Invitations</text>
+  </name>
+</transition><transition id="T17">
+  <name>
+      <text></text>
+  </name>
+</transition><transition id="T18">
+  <name>
+      <text></text>
+  </name>
+</transition><transition id="T19">
+  <name>
+      <text></text>
+  </name>
+</transition><transition id="T20">
+  <name>
+      <text></text>
+  </name>
+</transition><transition id="T21">
+  <name>
+      <text></text>
+  </name>
+</transition><transition id="T22">
+  <name>
+      <text></text>
+  </name>
+</transition><transition id="T23">
+  <name>
+      <text></text>
+  </name>
+</transition><transition id="T24">
+  <name>
+      <text></text>
+  </name>
+</transition><arc id="a_P11_T8" source="P11" target="T8">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_T8_P7" source="T8" target="P7">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_P7_T9" source="P7" target="T9">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_T6_P12" source="T6" target="P12">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_P12_T7" source="P12" target="T7">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_T7_P13" source="T7" target="P13">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_P13_T17" source="P13" target="T17">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_T15_P14" source="T15" target="P14">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_P14_T18" source="P14" target="T18">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_T17_P15" source="T17" target="P15">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_P15_T15" source="P15" target="T15">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_T17_P16" source="T17" target="P16">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_P16_T16" source="P16" target="T16">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_T18_P4" source="T18" target="P4">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_T16_P17" source="T16" target="P17">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_P17_T18" source="P17" target="T18">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_P4_T19" source="P4" target="T19">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_T19_P5" source="T19" target="P5">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_P2_T14" source="P2" target="T14">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_T13_P2" source="T13" target="P2">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_T0_P18" source="T0" target="P18">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_P18_T3" source="P18" target="T3">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_T1_P6" source="T1" target="P6">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_P0_T20" source="P0" target="T20">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_T20_P8" source="T20" target="P8">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_T4_P19" source="T4" target="P19">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_P19_T12" source="P19" target="T12">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_P1_T11" source="P1" target="T11">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_T11_P10" source="T11" target="P10">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_T12_P1" source="T12" target="P1">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_P5_T13" source="P5" target="T13">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_P6_T2" source="P6" target="T2">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_P3_T10" source="P3" target="T10">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_T2_P3" source="T2" target="P3">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_P7_T5" source="P7" target="T5">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_P6_T21" source="P6" target="T21">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_T21_P3" source="T21" target="P3">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_P4_T22" source="P4" target="T22">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_T22_P2" source="T22" target="P2">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_P0_T4" source="P0" target="T4">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_T14_P20" source="T14" target="P20">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_P20_T0" source="P20" target="T0">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_T9_P21" source="T9" target="P21">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_P21_T1" source="P21" target="T1">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_T5_P9" source="T5" target="P9">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_T3_P0" source="T3" target="P0">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_P8_T23" source="P8" target="T23">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_T23_P5" source="T23" target="P5">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_P9_T6" source="P9" target="T6">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_P8_T24" source="P8" target="T24">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_T24_P9" source="T24" target="P9">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc><arc id="a_T10_P1" source="T10" target="P1">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc></net></pnml>

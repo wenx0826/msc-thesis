@@ -1,0 +1,248 @@
+#!/usr/bin/env node
+
+const pnmlFileName = process.argv[2];
+const fs = require("fs");
+const pnml = fs.readFileSync(`${pnmlFileName}`, {
+  encoding: "utf8",
+});
+
+let net;
+
+const parseString = require("xml2js").parseString;
+
+parseString(pnml, (err, result) => {
+  if (err) console.log("Invalid PNML file.");
+  else net = result.pnml.net[0];
+});
+
+const places = [],
+  transitions = [],
+  arcs = [],
+  M0 = [],
+  nets = [];
+
+let output = "",
+  reachability = "M    ",
+  interpretation = "";
+
+for (const { $, initialMarking } of net.place) {
+  const pId = $.id;
+  places.push(pId);
+  M0.push(Number(initialMarking[0].text[0]));
+  reachability += `${pId} `;
+}
+reachability += "Transitions\n";
+
+for (const { $, name } of net.arc) {
+  const source = $.source;
+  const target = $.target;
+  arcs.push({ source, target });
+}
+
+for (const { $, name } of net.transition) {
+  const id = $.id;
+  const tName = name[0].text[0] ? name[0].text[0] : "Silent Transition";
+  output += `${id} ... ${tName}\n`;
+  const inPlaces = [],
+    outPlaces = [];
+  for (const { source, target } of arcs) {
+    if (target === id) {
+      inPlaces.push(places.indexOf(source));
+    }
+    if (source === id) {
+      outPlaces.push(places.indexOf(target));
+    }
+  }
+  transitions.push({
+    id,
+    inPlaces,
+    outPlaces,
+  });
+}
+
+function addNet(marking) {
+  const id = "M" + nets.length;
+  nets.push({
+    id,
+    marking,
+    enabledTrans: [],
+    firingTrans: [],
+  });
+  return id;
+}
+
+addNet(M0);
+
+function getCurrentNet(checkedState) {
+  for (const net of nets) {
+    if (net.enabledTrans.length) return net;
+    else if (!net.firingTrans.length) {
+      if (checkedState === net.id) continue;
+      return net;
+    }
+  }
+  return nets[nets.length - 1];
+}
+
+function isEnabled({ inPlaces, outPlaces }, marking) {
+  let isEnabled = true;
+  inPlaces.forEach((index) => {
+    if (!marking[index]) isEnabled = false;
+  });
+  outPlaces.forEach((index) => {
+    if (marking[index] && !inPlaces.includes(index)) isEnabled = false;
+  });
+  return isEnabled;
+}
+
+function fire(
+  { id: tId, inPlaces, outPlaces },
+  { marking: currentMarking, firingTrans }
+) {
+  const newMarking = [...currentMarking];
+  inPlaces.forEach((index) => (newMarking[index] -= 1));
+  outPlaces.forEach((index) => (newMarking[index] += 1));
+  for (const { id, marking } of nets) {
+    if (JSON.stringify(marking) === JSON.stringify(newMarking)) {
+      if (!firingTrans.some((ele) => ele.tId === tId))
+        firingTrans.push({
+          tId,
+          mId: id,
+        });
+      return;
+    }
+  }
+  const mId = addNet(newMarking);
+  firingTrans.push({
+    tId,
+    mId,
+  });
+}
+
+let checkedState = "";
+
+for (let i = 1; i < 1000; i++) {
+  const net = getCurrentNet(checkedState);
+  const { id: mId, marking, enabledTrans } = net;
+  checkedState = mId;
+  if (!enabledTrans.length) {
+    for (const trans of transitions) {
+      if (isEnabled(trans, marking)) enabledTrans.push(trans);
+    }
+    if (!enabledTrans.length && i === nets.length + 1) {
+      break;
+    }
+  }
+  if (enabledTrans.length) {
+    let trans = enabledTrans.shift();
+    fire(trans, net);
+  }
+}
+
+let k = 0,
+  isM0Live = false;
+const firedTrans = [],
+  deadlockMarkings = [];
+placeToken = new Array(places.length).fill(false);
+nets.forEach(({ id, marking, firingTrans }, index) => {
+  const len = index.toString().length;
+  reachability += `${id}${len === 1 ? "   " : len === 2 ? "  " : " "}`;
+  marking.forEach((val, i) => {
+    if (val > k) k = val;
+    if (val) placeToken[i] = true;
+    const len = (i + 1).toString().length;
+    reachability += `${val}${len === 1 ? "  " : "   "}`;
+  });
+  if (firingTrans.length) {
+    firingTrans.forEach(({ tId, mId }, i) => {
+      if (firedTrans.indexOf(tId) === -1) firedTrans.push(tId);
+      if (mId === "M0") isM0Live = true;
+      reachability += `${tId} -> ${mId}${
+        i < firingTrans.length - 1 ? ", " : "\n"
+      }`;
+    });
+  } else {
+    deadlockMarkings.push(id);
+    reachability += "\n";
+  }
+});
+const isAllTransFired = firedTrans.length === transitions.length;
+
+const paths = [],
+  loops = [];
+for (const ele of nets[0].firingTrans) {
+  let path = [ele];
+  paths.push(path);
+
+  function findNextTrans(mId) {
+    const { firingTrans } = nets.find((net) => net.id === mId);
+    const currentPath = [...path];
+    for (let i in firingTrans) {
+      const ele = firingTrans[i];
+      const { mId } = ele;
+      if (i > 0) {
+        path = [...currentPath];
+        paths.push(path);
+      }
+      const index = path.findIndex((val) => val.mId === mId);
+      if (index > -1) {
+        path.push(ele);
+        loops.push(path.slice(index, path.length - 1));
+      } else {
+        path.push(ele);
+        findNextTrans(mId);
+      }
+    }
+  }
+  findNextTrans(ele.mId);
+}
+
+deadlockMarkings.length
+  ? deadlockMarkings.forEach((id, i) => (interpretation += `${id}: deadlock\n`))
+  : (interpretation += "The process does not end.\n");
+interpretation += `Bounded: ${
+  typeof k === "number" ? k + "-bounded" : "none"
+}\n`;
+interpretation += `Safe: ${k === 1 ? "true" : "false"}\n`;
+const liveTrans = [];
+loops.forEach((path) =>
+  path.forEach(({ tId }) => {
+    if (liveTrans.indexOf(tId) === -1) liveTrans.push(tId);
+  })
+);
+const isAllTransLive = liveTrans.length === transitions.length;
+
+let live = !deadlockMarkings.length && isM0Live && isAllTransLive;
+interpretation += `Live: ${live}\n`;
+
+interpretation += `Quasi-live: ${
+  !live && !deadlockMarkings.length ? "true" : "false"
+}\n`;
+interpretation += `Liveness: `;
+const l0Trans = transitions
+  .filter(({ id }) => firedTrans.indexOf(id) === -1)
+  .map(({ id }) => id);
+const l1Trans = transitions
+  .filter(
+    ({ id }) => firedTrans.indexOf(id) > -1 && liveTrans.indexOf(id) === -1
+  )
+  .map(({ id }) => id);
+interpretation +=
+  `L0:(${l0Trans.sort().join(",")}), ` +
+  `L1:(${l1Trans.sort().join(",")}), ` +
+  `L3:(${liveTrans.sort().join(",")})` +
+  `L4:()\n`;
+
+// interpretation += `Loop: ${
+//   loopRecords.length ? loopRecords.map(([a, b]) => a + b).join(", ") : "none"
+// }\n`;
+
+interpretation += "Soundness: ";
+const isAllPlacesHadToken = placeToken.every((val) => val === true);
+let soundness = "false";
+if (isAllPlacesHadToken && isAllTransFired)
+  soundness = "all places had tokens, all transitions fired at least once.";
+// else if (isAllPlacesHadToken && !isAllTransFired)
+interpretation += soundness;
+output += "\n" + reachability + "\n" + interpretation;
+console.log(output);

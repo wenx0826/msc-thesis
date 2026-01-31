@@ -1,0 +1,23 @@
+traces:
+  - concept:instance: 3
+    event:
+      - concept:name: accept
+        time:timestamp: ‘2010-12-30T14:32:00.000+01:00’
+        id:id: a1
+        lifecycle:transition: start
+        role: Clerk
+        costs: 50
+      - concept:name: accept
+        time:timestamp: ‘2010-12-30T14:32:00.000+01:00’
+        id:id: a1
+        lifecycle:transition: start
+        role: Clerk
+        costs: 50
+  - concept:instance: 4
+    event:
+      concept:name: accept
+      time:timestamp: ‘2010-12-30T14:32:00.000+01:00’
+      id:id: a1
+      lifecycle:transition: start
+      role: Clerk
+      costs: 50

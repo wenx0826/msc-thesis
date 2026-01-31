@@ -1,0 +1,122 @@
+place P1;
+place P2;
+place P3;
+place P4;
+place P5;
+place P6;
+place P7;
+place P8;
+place P9;
+place P10;
+place P11;
+place P12 init 1;
+place P13;
+place P14;
+place P15;
+place P16;
+place P17;
+place P18;
+place P19;
+place P20;
+place P21;
+place P22;
+
+trans T1~Review_Characters
+ in P21
+ out P19;
+
+trans T2~View_the_generated_Character
+ in P22
+ out P7;
+
+trans T3~Check_the_Meeting_Date
+ in P7
+ out P4;
+
+trans T4~Vote_on_Characters
+ in P19
+ out P1;
+
+trans T5~Select_First_Meeting_Date
+ in P1
+ out P20;
+
+trans T6~Create_Account
+ in P8
+ out P10;
+
+trans T7~Select_Character_Name
+ in P10
+ out P13;
+
+trans T8~Set_Character_Properties
+ in P13
+ out P14;
+
+trans T9~Open_the_Tool
+ in P12
+ out P8;
+
+trans T10~Login_with_your_account
+ in P8
+ out P22;
+
+trans T11~Log_out
+ in P4
+ out P2;
+
+trans T12~Notify_before_the_Meeting_Date
+ in P2
+ out P11;
+
+trans T13~Distribute_the_Date_among_your_Party
+ in P20
+ out P2;
+
+trans T14~Wait_for_the_Characters_Details_of_your_Party_Members
+ in P6
+ out P3;
+
+trans T15~Receive_Character_Details
+ in P3
+ out P21;
+
+trans T16~Submit_Character_for_Review
+ in P16
+ out P15;
+
+trans T17~Send_Invitations
+ in P17
+ out P18;
+
+trans T18
+ in P14
+ out P16, P17;
+
+trans T19
+ in P15, P18
+ out P5;
+
+trans T20
+ in P5
+ out P6;
+
+trans T21
+ in P1
+ out P9;
+
+trans T22
+ in P7
+ out P4;
+
+trans T23
+ in P5
+ out P3;
+
+trans T24
+ in P9
+ out P6;
+
+trans T25
+ in P9
+ out P10;

@@ -1,0 +1,33 @@
+<form role="form" name="form">
+  <script cam-script type="text/form-script">
+    const variableManager = camForm.variableManager;
+    camForm.on('form-loaded', function() {
+      variableManager.fetchVariable('materialList');
+      variableManager.fetchVariable('boughtAll');
+    });
+    camForm.on('variables-fetched', function() {
+      $scope.materialList = JSON.parse(camForm.variableManager.variableValue('materialList'));
+      $scope.boughtAll = variableManager.variableValue('boughtAll').toString();
+    });
+    camForm.on('submit', function() {
+      if ($scope.boughtAll === 'true') {
+        variableManager.variableValue('boughtAll', true);
+      } 
+    });
+  </script>
+  <div>
+    <label>Material List</label>
+    <ul>
+      <li ng-repeat="x in materialList">
+        {{ x }}
+      </li>
+    </ul>
+  </div>
+  <div>
+    <b>Have all the needed materials been bought?</b><br>
+    <input type="radio" id="boughtAll_yes" ng-model="boughtAll" value="true">
+    <label for="boughtAll_yes">Yes</label><br>
+    <input type="radio" id="boughtAll_no" ng-model="boughtAll" value="false">
+    <label for="boughtAll_no">No</label><br>
+  </div><br>
+</form>

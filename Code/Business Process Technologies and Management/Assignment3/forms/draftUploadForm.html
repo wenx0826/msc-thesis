@@ -1,0 +1,28 @@
+<form role="form" name="form">
+  <script cam-script type="text/form-script">
+    camForm.on('form-loaded', function() {
+      camForm.variableManager.fetchVariable('history');
+      camForm.variableManager.fetchVariable('userName');
+    });
+    camForm.on('variables-fetched', function() {
+      $scope.history = JSON.parse(camForm.variableManager.variableValue('history'));
+      $scope.userName = camForm.variableManager.variableValue('userName');
+      $scope.current = $scope.history.shift();
+    });
+  </script>
+  <b>{{ history.length ? "New requirements" : "Requirements" }} from user {{userName}}</b>
+  <p>{{ current.date.toString() }}: {{ current.requirements }}</p>
+  <div ng-if="history.length">
+    <label>Requirements History</label>
+    <ul>
+      <li ng-repeat="x in history">
+        {{ x.date.toString() }}: {{ x.requirements }}
+      </li>
+    </ul>
+    <a cam-file-download="draft"></a>
+  </div>
+  <div class="form-group">
+    <label for="draft-field">Upload the draft</label>
+    <input type="file" cam-variable-name="draft" cam-variable-type="File" cam-max-filesize="10000000" class="form-control" />
+  </div>
+</form>

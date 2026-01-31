@@ -1,0 +1,38 @@
+[
+  {
+    "cpee": "https://cpee.org/flow/engine/",
+    "instance-url": "https://cpee.org/flow/engine/73580",
+    "instance": 73580,
+    "topic": "dataelements",
+    "type": "event",
+    "name": "change",
+    "timestamp": "2022-08-20T21:27:03.326+02:00",
+    "content": {
+      "activity-uuid": "2b111ea2946305219bfd627453085a47",
+      "endpoint": "https-post://cpee.org/services/timeout-user.php",
+      "label": "Review the draft",
+      "activity": "u3",
+      "changed": [
+        "satisfied",
+        "buildMethod"
+      ],
+      "values": {
+        "satisfied": true,
+        "buildMethod": "company"
+      },
+      "attributes": {
+        "uuid": "1b0974de-d7a5-4033-b026-e0d8bb6bf333",
+        "info": "Build a treee house",
+        "modeltype": "CPEE",
+        "theme": "default",
+        "customer": "user",
+        "status": "development",
+        "creator": "ga94hor",
+        "author": "ga94hor",
+        "design_stage": "development"
+      }
+    },
+    "instance-uuid": "1b0974de-d7a5-4033-b026-e0d8bb6bf333",
+    "instance-name": "Build a treee house"
+  }
+]

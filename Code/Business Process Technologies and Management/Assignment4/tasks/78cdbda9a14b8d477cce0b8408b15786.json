@@ -1,0 +1,23 @@
+{
+    "headers": {
+        "Content-Length": "11",
+        "Content-Type": "application\/x-www-form-urlencoded",
+        "Cpee-Attr-Theme": "preset",
+        "Cpee-Attr-Modeltype": "CPEE",
+        "Cpee-Attr-Info": "Enter info here",
+        "Cpee-Attr-Uuid": "268ff327-1b11-47d9-b437-ed91ce65b468",
+        "Cpee-Activity": "a1",
+        "Cpee-Callback-Id": "78cdbda9a14b8d477cce0b8408b15786",
+        "Cpee-Callback": "https:\/\/cpee.org\/flow\/engine\/56977\/callbacks\/78cdbda9a14b8d477cce0b8408b15786\/",
+        "Cpee-Instance-Uuid": "268ff327-1b11-47d9-b437-ed91ce65b468",
+        "Cpee-Instance-Url": "https:\/\/cpee.org\/flow\/engine\/56977\/",
+        "Cpee-Instance": "56977",
+        "Cpee-Base": "https:\/\/cpee.org\/flow\/engine\/",
+        "User-Agent": "Typhoeus - https:\/\/github.com\/typhoeus\/typhoeus",
+        "Accept": "*\/*",
+        "Host": "lehre.bpm.in.tum.de"
+    },
+    "content": {
+        "role": "Client"
+    }
+}

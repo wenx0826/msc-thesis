@@ -1,0 +1,37 @@
+[
+  {
+    "instance": 73769,
+    "satisfied": true,
+    "refineTimes": 1,
+    "buildMethod": "client",
+    "designFee": 400,
+    "boughtAll": true,
+    "paid": true,
+    "finished": true
+  },
+  {
+    "instance": 74023,
+    "satisfied": true,
+    "buildMethod": "company"
+  },
+  {
+    "instance": 74024,
+    "satisfied": true,
+    "buildMethod": "client",
+    "boughtAll": true,
+    "refineTimes": 1
+  },
+  {
+    "instance": 74025,
+    "satisfied": true,
+    "refineTimes": 3,
+    "buildMethod": "company",
+    "bill": {
+      "designFee": 500,
+      "buildFee": 3000
+    },
+    "boughtAll": "false",
+    "paid": true,
+    "finished": true
+  }
+]

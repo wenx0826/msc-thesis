@@ -1,0 +1,15 @@
+{
+    "headers": {
+        "Content-Length": "1209",
+        "Content-Type": "multipart\/form-data; boundary=\"Time_is_an_illusion._Lunchtime_doubly_so.0xriddldata\"",
+        "User-Agent": "Typhoeus - https:\/\/github.com\/typhoeus\/typhoeus",
+        "Accept": "*\/*",
+        "Host": "lehre.bpm.in.tum.de"
+    },
+    "content": {
+        "type": "event",
+        "topic": "state",
+        "event": "change",
+        "notification": "{\"cpee\":\"https:\/\/cpee.org\/flow\/engine\/\",\"instance-url\":\"https:\/\/cpee.org\/flow\/engine\/64410\",\"instance\":64410,\"topic\":\"state\",\"type\":\"event\",\"name\":\"change\",\"timestamp\":\"2022-07-30T16:55:27.263+02:00\",\"content\":{\"state\":\"stopped\",\"attributes\":{\"uuid\":\"737f7ee4-b69c-410d-a93b-e1a35741d5e2\",\"info\":\"Build a treee house\",\"modeltype\":\"CPEE\",\"theme\":\"default\",\"customer\":\"user\",\"status\":\"development\",\"creator\":\"ga94hor\",\"author\":\"ga94hor\",\"design_stage\":\"development\"}},\"instance-uuid\":\"737f7ee4-b69c-410d-a93b-e1a35741d5e2\",\"instance-name\":\"Build a treee house\"}"
+    }
+}

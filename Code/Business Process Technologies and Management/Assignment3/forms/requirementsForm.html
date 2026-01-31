@@ -1,0 +1,26 @@
+<form role="form" name="form">
+  <script cam-script type="text/form-script">
+    camForm.on('form-loaded', function() {
+      camForm.variableManager.fetchVariable('history');
+    });
+    camForm.on('variables-fetched', function() {
+      $scope.history = JSON.parse(camForm.variableManager.variableValue('history'));
+    });
+  </script>
+  <div class="form-group">
+    <label for="draft-field">Name</label>
+    <input required type="text" cam-variable-name="userName" cam-variable-type="String" class="form-control" />
+  </div>
+  <div class="form-group">
+    <label for="requirements-field">{{ history.length ? "New requirements" : "Requirements" }}</label>
+    <textarea required cam-variable-name="newRequirements" cam-variable-type="String" class="form-control"></textarea>
+  </div>
+  <div ng-show="history.length">
+    <label>Requirements History</label>
+    <ul>
+      <li ng-repeat="x in history">
+        {{ x.date.toString() }}: {{ x.requirements }}
+      </li>
+    </ul>
+  </div>
+</form>

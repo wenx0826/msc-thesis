@@ -1,0 +1,137 @@
+#!/usr/bin/env node
+
+const fileName = process.argv[2];
+
+const fs = require("fs");
+const bpmn = fs.readFileSync(`${fileName}`, {
+  encoding: "utf8",
+});
+
+let processes;
+
+const parseString = require("xml2js").parseString;
+
+parseString(bpmn, (err, result) => {
+  if (err) console.log(err);
+  processes = result.definitions.process;
+});
+
+let totalPlaces = [];
+let totalTrans = [];
+let totalArcs = [];
+
+function readProcess(process) {
+  let places = [];
+  let transitions = [];
+  let arcs = [];
+
+  function concatTrans(arr) {
+    arr.forEach(({ $ }) => transitions.push($));
+  }
+
+  function concatPlaces(arr, opt) {
+    arr.forEach(({ $ }) => places.push(Object.assign({ ...opt }, $)));
+  }
+
+  for (const [key, value] of Object.entries(process)) {
+    switch (key) {
+      case "task":
+      case "parallelGateway":
+      case "intermediateCatchEvent":
+        concatTrans(value);
+        break;
+      case "startEvent":
+        concatPlaces(value, { init: true });
+        break;
+      case "endEvent":
+      case "exclusiveGateway":
+        concatPlaces(value);
+        break;
+      default:
+        if (key.search("Task") !== -1) concatTrans(value);
+        break;
+    }
+  }
+
+  function findElement(id) {
+    for (const place of places) {
+      if (id === place.id) return { type: "place", element: place };
+    }
+    for (const trans of transitions) {
+      if (id === trans.id) return { type: "trans", element: trans };
+    }
+    return undefined;
+  }
+
+  for (const { $: flow } of process.sequenceFlow) {
+    const source = findElement(flow.sourceRef);
+    const target = findElement(flow.targetRef);
+    if (!source || !target) continue;
+    const { type: sourceType, element: sourceEle } = source;
+    const { type: targetType, element: targetEle } = target;
+    if (sourceType !== targetType) {
+      arcs.push({ source: sourceEle, target: targetEle });
+    } else {
+      if (sourceType === "place") {
+        const trans = { id: flow.id };
+        transitions.push(trans);
+        arcs.push({ source: sourceEle, target: trans });
+        arcs.push({ source: trans, target: targetEle });
+      } else {
+        const place = { id: flow.id };
+        places.push(place);
+        arcs.push({ source: sourceEle, target: place });
+        arcs.push({ source: place, target: targetEle });
+      }
+    }
+  }
+  totalPlaces.push(...places);
+  totalTrans.push(...transitions);
+  totalArcs.push(...arcs);
+}
+
+processes.forEach((process) => readProcess(process));
+
+let output =
+  '<?xml version="1.0" encoding="UTF-8"?><pnml><net id="net1" type="http://www.pnml.org/version-2009/grammar/pnmlcoremodel">';
+let pNr = 0;
+let tNr = 0;
+for (place of totalPlaces) {
+  const id = `P${pNr++}`;
+  place.id = id;
+  output += `<place id="${id}">
+                <name>
+                    <text>${id}</text>
+                </name>
+                <initialMarking>
+                    <text>${place.init ? "1" : "0"}</text>
+                </initialMarking>
+                <capacity>
+                    <text>1</text>
+                </capacity>
+              </place>`;
+}
+output += "\n";
+
+for (trans of totalTrans) {
+  const id = `T${tNr++}`;
+  trans.id = id;
+  output += `<transition id="${id}">
+  <name>
+      <text>${trans.name ? trans.name : ""}</text>
+  </name>
+</transition>`;
+}
+
+for (const { source, target } of totalArcs) {
+  const id = `a_${source.id}_${target.id}`;
+  output += `<arc id="${id}" source="${source.id}" target="${target.id}">
+  <inscription>
+      <text>1</text>
+  </inscription>
+  </arc>`;
+}
+output += "</net></pnml>";
+console.log(output);
+
+fs.writeFileSync("my.ec.pnml", output);

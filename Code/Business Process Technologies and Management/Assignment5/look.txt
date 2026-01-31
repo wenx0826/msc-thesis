@@ -1,0 +1,1879 @@
+---
+log:
+  extension:
+    time: http://www.xes-standard.org/time.xesext
+    concept: http://www.xes-standard.org/concept.xesext
+    organisational: http://www.xes-standard.org/org.xesext
+    lifecycle: http://www.xes-standard.org/lifecycle.xesext
+    cpee: http://cpee.org/cpee.xesext
+  global:
+    trace:
+      concept:name: __INVALID__
+      cpee:name: __INVALID__
+    event:
+      concept:instance: -1
+      concept:name: __INVALID__
+      concept:endpoint: ''
+      id:id: ''
+      cpee:uuid: ''
+      lifecycle:transition: complete
+      cpee:lifecycle:transition: activity/calling
+      time:timestamp: ''
+  classifier:
+    Data: data_send data_received data_changed data_values
+    Data_Received: data_receiver
+    Data_Send: data_send
+    Data_Changed: data_changer
+    Data_Values: data_values
+  trace:
+    concept:name: 64413
+    cpee:name: Enter info here
+    cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: ready
+  time:timestamp: '2022-07-30T15:46:03.400+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: dataelements/change
+  data:
+    data_changer:
+    - refineTimes
+    - satisfied
+    - buildMethod
+    - boughtAll
+    data_values:
+      refineTimes: "-1"
+      satisfied: 'false'
+      buildMethod: company
+      boughtAll: 'false'
+  time:timestamp: '2022-07-30T15:46:21.222+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: endpoints/change
+  data:
+    data_changer:
+    - start_url
+    - timeout
+    - subprocess
+    - send
+    - receive
+    - user
+    - auto
+    data_values:
+      start_url: https://cpee.org/flow/start/url/
+      timeout: http://cpee.org/services/timeout.php
+      subprocess: https-post://cpee.org/flow/start/url/
+      send: https-post://cpee.org/ing/correlators/message/send/
+      receive: https-get://cpee.org/ing/correlators/message/receive/
+      user: https-post://cpee.org/services/timeout-user.php
+      auto: https-post://cpee.org/services/timeout-auto.php
+  time:timestamp: '2022-07-30T15:46:21.242+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: attributes/change
+  data:
+    data_changer:
+    - info
+    - modeltype
+    - theme
+    - customer
+    - status
+    - creator
+    - author
+    - design_stage
+    data_values:
+      info: Build a treee house
+      modeltype: CPEE
+      theme: default
+      customer: user
+      status: development
+      creator: ga94hor
+      author: ga94hor
+      design_stage: development
+  time:timestamp: '2022-07-30T15:46:21.254+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: description/change
+  cpee:description: |
+    <?xml version="1.0"?>
+    <description xmlns="http://cpee.org/ns/description/1.0">
+      <loop mode="post_test" condition="!data.satisfied">
+        <manipulate id="s1" label="data.refineTimes += 1">data.refineTimes += 1</manipulate>
+        <call id="u1" endpoint="user">
+          <parameters>
+            <label>Collect requirements</label>
+          </parameters>
+        </call>
+        <call id="u2" endpoint="user">
+          <parameters>
+            <label>Draw the draft</label>
+          </parameters>
+        </call>
+        <call id="u3" endpoint="user">
+          <parameters>
+            <label>Review the draft</label>
+          </parameters>
+          <code>
+            <finalize output="result">data.satisfied = [true, false].sample
+    data.buildMethod = ["company", "client"].sample
+                </finalize>
+          </code>
+        </call>
+      </loop>
+      <call id="a1" endpoint="auto">
+        <parameters>
+          <label>Generate material list</label>
+        </parameters>
+      </call>
+      <call id="a2" endpoint="auto">
+        <parameters>
+          <label>Generate bill</label>
+        </parameters>
+      </call>
+      <parallel wait="-1" cancel="last">
+        <parallel_branch>
+          <call id="u4" endpoint="user">
+            <parameters>
+              <label>Pay the bill</label>
+            </parameters>
+          </call>
+        </parallel_branch>
+        <parallel_branch>
+          <choose mode="exclusive">
+            <alternative condition="data.buildMethod == &quot;client&quot;">
+              <loop mode="post_test" condition="!data.boughtAll">
+                <call id="u5" endpoint="user">
+                  <parameters>
+                    <label>Buy materials</label>
+                  </parameters>
+                  <code>
+                    <finalize output="result">data.boughtAll = [true, false].sample</finalize>
+                  </code>
+                </call>
+              </loop>
+            </alternative>
+            <otherwise/>
+          </choose>
+          <call id="u6" endpoint="user">
+            <parameters>
+              <label>Build the house</label>
+            </parameters>
+          </call>
+        </parallel_branch>
+      </parallel>
+    </description>
+  time:timestamp: '2022-07-30T15:46:21.263+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: ready
+  time:timestamp: '2022-07-30T15:46:21.620+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: description/change
+  cpee:description: |
+    <?xml version="1.0"?>
+    <description xmlns="http://cpee.org/ns/description/1.0">
+      <loop mode="post_test" condition="!data.satisfied">
+        <manipulate id="s1" label="data.refineTimes += 1">data.refineTimes += 1</manipulate>
+        <call id="u1" endpoint="user">
+          <parameters>
+            <label>Collect requirements</label>
+          </parameters>
+        </call>
+        <stop id="a3"/>
+        <call id="u2" endpoint="user">
+          <parameters>
+            <label>Draw the draft</label>
+          </parameters>
+        </call>
+        <call id="u3" endpoint="user">
+          <parameters>
+            <label>Review the draft</label>
+          </parameters>
+          <code>
+            <finalize output="result">data.satisfied = [true, false].sample
+    data.buildMethod = ["company", "client"].sample
+                </finalize>
+          </code>
+        </call>
+      </loop>
+      <call id="a1" endpoint="auto">
+        <parameters>
+          <label>Generate material list</label>
+        </parameters>
+      </call>
+      <call id="a2" endpoint="auto">
+        <parameters>
+          <label>Generate bill</label>
+        </parameters>
+      </call>
+      <parallel wait="-1" cancel="last">
+        <parallel_branch>
+          <call id="u4" endpoint="user">
+            <parameters>
+              <label>Pay the bill</label>
+            </parameters>
+          </call>
+        </parallel_branch>
+        <parallel_branch>
+          <choose mode="exclusive">
+            <alternative condition="data.buildMethod == &quot;client&quot;">
+              <loop mode="post_test" condition="!data.boughtAll">
+                <call id="u5" endpoint="user">
+                  <parameters>
+                    <label>Buy materials</label>
+                  </parameters>
+                  <code>
+                    <finalize output="result">data.boughtAll = [true, false].sample</finalize>
+                  </code>
+                </call>
+              </loop>
+            </alternative>
+            <otherwise/>
+          </choose>
+          <call id="u6" endpoint="user">
+            <parameters>
+              <label>Build the house</label>
+            </parameters>
+          </call>
+        </parallel_branch>
+      </parallel>
+    </description>
+  time:timestamp: '2022-07-30T15:46:26.949+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: running
+  time:timestamp: '2022-07-30T15:46:50.332+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: data.refineTimes += 1
+  id:id: s1
+  cpee:activity: s1
+  cpee:activity_uuid: 06dc1e018e0eee1c05ae262a7d72ea39
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: dataelements/change
+  data:
+    data_changer:
+    - refineTimes
+    data_values:
+      refineTimes: 0
+  time:timestamp: '2022-07-30T15:46:50.413+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: data.refineTimes += 1
+  id:id: s1
+  cpee:activity: s1
+  cpee:activity_uuid: 06dc1e018e0eee1c05ae262a7d72ea39
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: complete
+  cpee:lifecycle:transition: activity/done
+  time:timestamp: '2022-07-30T15:46:50.441+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: 19d276ea4c5149587f70853199afbc92
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: start
+  cpee:lifecycle:transition: activity/calling
+  time:timestamp: '2022-07-30T15:46:50.526+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: 19d276ea4c5149587f70853199afbc92
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: activity/receiving
+  data:
+    data_receiver:
+    - name: result
+      mimetype: text/html
+      data: 'Timeout: '
+  time:timestamp: '2022-07-30T15:46:50.577+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: 19d276ea4c5149587f70853199afbc92
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: complete
+  cpee:lifecycle:transition: activity/done
+  time:timestamp: '2022-07-30T15:46:50.593+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: stopping
+  time:timestamp: '2022-07-30T15:46:50.666+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: stopped
+  time:timestamp: '2022-07-30T15:46:50.727+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: running
+  time:timestamp: '2022-07-30T16:43:21.081+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: data.refineTimes += 1
+  id:id: s1
+  cpee:activity: s1
+  cpee:activity_uuid: bae24aa68fc32f1d20e400024c891ca0
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: dataelements/change
+  data:
+    data_changer:
+    - refineTimes
+    data_values:
+      refineTimes: 1
+  time:timestamp: '2022-07-30T16:43:21.286+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: data.refineTimes += 1
+  id:id: s1
+  cpee:activity: s1
+  cpee:activity_uuid: bae24aa68fc32f1d20e400024c891ca0
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: complete
+  cpee:lifecycle:transition: activity/done
+  time:timestamp: '2022-07-30T16:43:21.301+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: a892b2a9f3e4ecada12fa9b448daa87b
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: start
+  cpee:lifecycle:transition: activity/calling
+  time:timestamp: '2022-07-30T16:43:21.373+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: a892b2a9f3e4ecada12fa9b448daa87b
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: activity/receiving
+  data:
+    data_receiver:
+    - name: result
+      mimetype: text/html
+      data: 'Timeout: '
+  time:timestamp: '2022-07-30T16:43:21.484+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: a892b2a9f3e4ecada12fa9b448daa87b
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: complete
+  cpee:lifecycle:transition: activity/done
+  time:timestamp: '2022-07-30T16:43:21.492+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: stopping
+  time:timestamp: '2022-07-30T16:43:21.549+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: stopped
+  time:timestamp: '2022-07-30T16:43:21.599+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: running
+  time:timestamp: '2022-07-30T17:26:57.614+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: data.refineTimes += 1
+  id:id: s1
+  cpee:activity: s1
+  cpee:activity_uuid: 21b2bbf5aab2e60b79c72557d19952b4
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: dataelements/change
+  data:
+    data_changer:
+    - refineTimes
+    data_values:
+      refineTimes: 2
+  time:timestamp: '2022-07-30T17:26:57.754+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: data.refineTimes += 1
+  id:id: s1
+  cpee:activity: s1
+  cpee:activity_uuid: 21b2bbf5aab2e60b79c72557d19952b4
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: complete
+  cpee:lifecycle:transition: activity/done
+  time:timestamp: '2022-07-30T17:26:57.769+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: 4d5b41af0909ff9e291855db65d14596
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: start
+  cpee:lifecycle:transition: activity/calling
+  time:timestamp: '2022-07-30T17:26:57.838+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: 4d5b41af0909ff9e291855db65d14596
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: activity/receiving
+  data:
+    data_receiver:
+    - name: result
+      mimetype: text/html
+      data: 'Timeout: '
+  time:timestamp: '2022-07-30T17:26:57.883+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: 4d5b41af0909ff9e291855db65d14596
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: complete
+  cpee:lifecycle:transition: activity/done
+  time:timestamp: '2022-07-30T17:26:57.896+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: stopping
+  time:timestamp: '2022-07-30T17:26:57.952+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: stopped
+  time:timestamp: '2022-07-30T17:26:58.010+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: running
+  time:timestamp: '2022-07-30T17:58:53.618+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: data.refineTimes += 1
+  id:id: s1
+  cpee:activity: s1
+  cpee:activity_uuid: 775f0daa19be2c82e6266c99f9303a20
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: dataelements/change
+  data:
+    data_changer:
+    - refineTimes
+    data_values:
+      refineTimes: 3
+  time:timestamp: '2022-07-30T17:58:53.833+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: data.refineTimes += 1
+  id:id: s1
+  cpee:activity: s1
+  cpee:activity_uuid: 775f0daa19be2c82e6266c99f9303a20
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: complete
+  cpee:lifecycle:transition: activity/done
+  time:timestamp: '2022-07-30T17:58:53.862+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: 148d125f7e148e00e11285d4f829bef1
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: start
+  cpee:lifecycle:transition: activity/calling
+  time:timestamp: '2022-07-30T17:58:53.936+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: 148d125f7e148e00e11285d4f829bef1
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: activity/receiving
+  data:
+    data_receiver:
+    - name: result
+      mimetype: text/html
+      data: 'Timeout: '
+  time:timestamp: '2022-07-30T17:58:53.991+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: 148d125f7e148e00e11285d4f829bef1
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: complete
+  cpee:lifecycle:transition: activity/done
+  time:timestamp: '2022-07-30T17:58:54.009+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: stopping
+  time:timestamp: '2022-07-30T17:58:54.080+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: stopped
+  time:timestamp: '2022-07-30T17:58:54.142+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: running
+  time:timestamp: '2022-07-30T18:05:05.204+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: data.refineTimes += 1
+  id:id: s1
+  cpee:activity: s1
+  cpee:activity_uuid: 39c44099f1c27ff982f0090eac9f6980
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: dataelements/change
+  data:
+    data_changer:
+    - refineTimes
+    data_values:
+      refineTimes: 4
+  time:timestamp: '2022-07-30T18:05:05.486+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: data.refineTimes += 1
+  id:id: s1
+  cpee:activity: s1
+  cpee:activity_uuid: 39c44099f1c27ff982f0090eac9f6980
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: complete
+  cpee:lifecycle:transition: activity/done
+  time:timestamp: '2022-07-30T18:05:05.506+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: 4d34f88768dda706b75e954f7db92d0e
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: start
+  cpee:lifecycle:transition: activity/calling
+  time:timestamp: '2022-07-30T18:05:05.576+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: 4d34f88768dda706b75e954f7db92d0e
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: activity/receiving
+  data:
+    data_receiver:
+    - name: result
+      mimetype: text/html
+      data: 'Timeout: '
+  time:timestamp: '2022-07-30T18:05:05.621+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: 4d34f88768dda706b75e954f7db92d0e
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: complete
+  cpee:lifecycle:transition: activity/done
+  time:timestamp: '2022-07-30T18:05:05.633+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: stopping
+  time:timestamp: '2022-07-30T18:05:05.686+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: stopped
+  time:timestamp: '2022-07-30T18:05:05.738+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: running
+  time:timestamp: '2022-07-30T18:18:13.809+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: data.refineTimes += 1
+  id:id: s1
+  cpee:activity: s1
+  cpee:activity_uuid: 6280690c1e303bcbfa43d0633a302614
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: dataelements/change
+  data:
+    data_changer:
+    - refineTimes
+    data_values:
+      refineTimes: 5
+  time:timestamp: '2022-07-30T18:18:13.949+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: data.refineTimes += 1
+  id:id: s1
+  cpee:activity: s1
+  cpee:activity_uuid: 6280690c1e303bcbfa43d0633a302614
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: complete
+  cpee:lifecycle:transition: activity/done
+  time:timestamp: '2022-07-30T18:18:13.976+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: 0ff347bc430fb18d636f7ced679b224e
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: start
+  cpee:lifecycle:transition: activity/calling
+  time:timestamp: '2022-07-30T18:18:14.040+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: 0ff347bc430fb18d636f7ced679b224e
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: activity/receiving
+  data:
+    data_receiver:
+    - name: result
+      mimetype: text/html
+      data: 'Timeout: '
+  time:timestamp: '2022-07-30T18:18:14.101+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: 0ff347bc430fb18d636f7ced679b224e
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: complete
+  cpee:lifecycle:transition: activity/done
+  time:timestamp: '2022-07-30T18:18:14.120+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: stopping
+  time:timestamp: '2022-07-30T18:18:14.186+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: stopped
+  time:timestamp: '2022-07-30T18:18:14.251+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: running
+  time:timestamp: '2022-08-05T22:06:13.979+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: data.refineTimes += 1
+  id:id: s1
+  cpee:activity: s1
+  cpee:activity_uuid: facf0c7491c48402372c299c1bc6f441
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: dataelements/change
+  data:
+    data_changer:
+    - refineTimes
+    data_values:
+      refineTimes: 6
+  time:timestamp: '2022-08-05T22:06:14.139+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: data.refineTimes += 1
+  id:id: s1
+  cpee:activity: s1
+  cpee:activity_uuid: facf0c7491c48402372c299c1bc6f441
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: complete
+  cpee:lifecycle:transition: activity/done
+  time:timestamp: '2022-08-05T22:06:14.162+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: 909bfa52f60dd89fac8471a82d60503a
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: start
+  cpee:lifecycle:transition: activity/calling
+  time:timestamp: '2022-08-05T22:06:14.248+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: 909bfa52f60dd89fac8471a82d60503a
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: activity/receiving
+  data:
+    data_receiver:
+    - name: result
+      mimetype: text/html
+      data: 'Timeout: '
+  time:timestamp: '2022-08-05T22:06:14.310+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: 909bfa52f60dd89fac8471a82d60503a
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: complete
+  cpee:lifecycle:transition: activity/done
+  time:timestamp: '2022-08-05T22:06:14.318+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: stopping
+  time:timestamp: '2022-08-05T22:06:14.400+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: stopped
+  time:timestamp: '2022-08-05T22:06:14.470+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: running
+  time:timestamp: '2022-08-05T22:10:23.618+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: data.refineTimes += 1
+  id:id: s1
+  cpee:activity: s1
+  cpee:activity_uuid: b15f36c01277ded898de0b1aed02b094
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: dataelements/change
+  data:
+    data_changer:
+    - refineTimes
+    data_values:
+      refineTimes: 7
+  time:timestamp: '2022-08-05T22:10:23.915+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: data.refineTimes += 1
+  id:id: s1
+  cpee:activity: s1
+  cpee:activity_uuid: b15f36c01277ded898de0b1aed02b094
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: complete
+  cpee:lifecycle:transition: activity/done
+  time:timestamp: '2022-08-05T22:10:23.930+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: 32b02e7cf6c188e21c0984f84baf652a
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: start
+  cpee:lifecycle:transition: activity/calling
+  time:timestamp: '2022-08-05T22:10:24.027+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: 32b02e7cf6c188e21c0984f84baf652a
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: activity/receiving
+  data:
+    data_receiver:
+    - name: result
+      mimetype: text/html
+      data: 'Timeout: '
+  time:timestamp: '2022-08-05T22:10:24.075+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: 32b02e7cf6c188e21c0984f84baf652a
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: complete
+  cpee:lifecycle:transition: activity/done
+  time:timestamp: '2022-08-05T22:10:24.083+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: stopping
+  time:timestamp: '2022-08-05T22:10:24.187+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: stopped
+  time:timestamp: '2022-08-05T22:10:24.267+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: running
+  time:timestamp: '2022-08-05T22:13:52.937+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: data.refineTimes += 1
+  id:id: s1
+  cpee:activity: s1
+  cpee:activity_uuid: d44765709a309a6a17d38306d8a4da6b
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: dataelements/change
+  data:
+    data_changer:
+    - refineTimes
+    data_values:
+      refineTimes: 8
+  time:timestamp: '2022-08-05T22:13:53.071+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: data.refineTimes += 1
+  id:id: s1
+  cpee:activity: s1
+  cpee:activity_uuid: d44765709a309a6a17d38306d8a4da6b
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: complete
+  cpee:lifecycle:transition: activity/done
+  time:timestamp: '2022-08-05T22:13:53.088+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: 197e153745d180faac908fe4b0d32404
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: start
+  cpee:lifecycle:transition: activity/calling
+  time:timestamp: '2022-08-05T22:13:53.174+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: 197e153745d180faac908fe4b0d32404
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: activity/receiving
+  data:
+    data_receiver:
+    - name: result
+      mimetype: text/html
+      data: 'Timeout: '
+  time:timestamp: '2022-08-05T22:13:53.247+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: 197e153745d180faac908fe4b0d32404
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: complete
+  cpee:lifecycle:transition: activity/done
+  time:timestamp: '2022-08-05T22:13:53.257+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: stopping
+  time:timestamp: '2022-08-05T22:13:53.344+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: stopped
+  time:timestamp: '2022-08-05T22:13:53.419+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: running
+  time:timestamp: '2022-08-05T22:16:48.735+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: data.refineTimes += 1
+  id:id: s1
+  cpee:activity: s1
+  cpee:activity_uuid: 2b394d3527630e568c217754aa445094
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: dataelements/change
+  data:
+    data_changer:
+    - refineTimes
+    data_values:
+      refineTimes: 9
+  time:timestamp: '2022-08-05T22:16:48.836+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: data.refineTimes += 1
+  id:id: s1
+  cpee:activity: s1
+  cpee:activity_uuid: 2b394d3527630e568c217754aa445094
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: complete
+  cpee:lifecycle:transition: activity/done
+  time:timestamp: '2022-08-05T22:16:48.851+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: 4016091be85382b77b4bd53d028ab105
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: start
+  cpee:lifecycle:transition: activity/calling
+  time:timestamp: '2022-08-05T22:16:48.933+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: 4016091be85382b77b4bd53d028ab105
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: activity/receiving
+  data:
+    data_receiver:
+    - name: result
+      mimetype: text/html
+      data: 'Timeout: '
+  time:timestamp: '2022-08-05T22:16:48.991+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: 4016091be85382b77b4bd53d028ab105
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: complete
+  cpee:lifecycle:transition: activity/done
+  time:timestamp: '2022-08-05T22:16:48.999+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: stopping
+  time:timestamp: '2022-08-05T22:16:49.057+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: stopped
+  time:timestamp: '2022-08-05T22:16:49.157+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: running
+  time:timestamp: '2022-08-05T22:42:46.322+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: data.refineTimes += 1
+  id:id: s1
+  cpee:activity: s1
+  cpee:activity_uuid: 53c9a2ac734b3de20f0f566398038875
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: dataelements/change
+  data:
+    data_changer:
+    - refineTimes
+    data_values:
+      refineTimes: 10
+  time:timestamp: '2022-08-05T22:42:46.615+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: data.refineTimes += 1
+  id:id: s1
+  cpee:activity: s1
+  cpee:activity_uuid: 53c9a2ac734b3de20f0f566398038875
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: complete
+  cpee:lifecycle:transition: activity/done
+  time:timestamp: '2022-08-05T22:42:46.640+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: 5f7be5497e29f1a1184244caafa52e85
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: start
+  cpee:lifecycle:transition: activity/calling
+  time:timestamp: '2022-08-05T22:42:46.757+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: 5f7be5497e29f1a1184244caafa52e85
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: activity/receiving
+  data:
+    data_receiver:
+    - name: result
+      mimetype: text/html
+      data: 'Timeout: '
+  time:timestamp: '2022-08-05T22:42:46.824+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: 5f7be5497e29f1a1184244caafa52e85
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: complete
+  cpee:lifecycle:transition: activity/done
+  time:timestamp: '2022-08-05T22:42:46.844+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: stopping
+  time:timestamp: '2022-08-05T22:42:46.943+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: stopped
+  time:timestamp: '2022-08-05T22:42:47.034+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: description/change
+  cpee:description: |
+    <?xml version="1.0"?>
+    <description xmlns="http://cpee.org/ns/description/1.0">
+      <loop mode="post_test" condition="!data.satisfied">
+        <manipulate id="s1" label="data.refineTimes += 1">data.refineTimes += 1</manipulate>
+        <call id="u1" endpoint="user">
+          <parameters>
+            <label>Collect requirements</label>
+          </parameters>
+        </call>
+        <call id="u2" endpoint="user">
+          <parameters>
+            <label>Draw the draft</label>
+          </parameters>
+        </call>
+        <call id="u3" endpoint="user">
+          <parameters>
+            <label>Review the draft</label>
+          </parameters>
+          <code>
+            <finalize output="result">data.satisfied = [true, false].sample
+    data.buildMethod = ["company", "client"].sample
+                </finalize>
+          </code>
+        </call>
+      </loop>
+      <call id="a1" endpoint="auto">
+        <parameters>
+          <label>Generate material list</label>
+        </parameters>
+      </call>
+      <call id="a2" endpoint="auto">
+        <parameters>
+          <label>Generate bill</label>
+        </parameters>
+      </call>
+      <parallel wait="-1" cancel="last">
+        <parallel_branch>
+          <call id="u4" endpoint="user">
+            <parameters>
+              <label>Pay the bill</label>
+            </parameters>
+          </call>
+        </parallel_branch>
+        <parallel_branch>
+          <choose mode="exclusive">
+            <alternative condition="data.buildMethod == &quot;client&quot;">
+              <loop mode="post_test" condition="!data.boughtAll">
+                <call id="u5" endpoint="user">
+                  <parameters>
+                    <label>Buy materials</label>
+                  </parameters>
+                  <code>
+                    <finalize output="result">data.boughtAll = [true, false].sample</finalize>
+                  </code>
+                </call>
+              </loop>
+            </alternative>
+            <otherwise/>
+          </choose>
+          <call id="u6" endpoint="user">
+            <parameters>
+              <label>Build the house</label>
+            </parameters>
+          </call>
+        </parallel_branch>
+      </parallel>
+    </description>
+  time:timestamp: '2022-08-05T23:27:56.056+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: description/change
+  cpee:description: |
+    <?xml version="1.0"?>
+    <description xmlns="http://cpee.org/ns/description/1.0">
+      <loop mode="post_test" condition="!data.satisfied">
+        <manipulate id="s1" label="data.refineTimes += 1">data.refineTimes += 1</manipulate>
+        <call id="u1" endpoint="user">
+          <parameters>
+            <label>Collect requirements</label>
+          </parameters>
+        </call>
+        <call id="u2" endpoint="user">
+          <parameters>
+            <label>Draw the draft</label>
+          </parameters>
+        </call>
+        <stop id="a3"/>
+        <call id="u3" endpoint="user">
+          <parameters>
+            <label>Review the draft</label>
+          </parameters>
+          <code>
+            <finalize output="result">data.satisfied = [true, false].sample
+    data.buildMethod = ["company", "client"].sample
+                </finalize>
+          </code>
+        </call>
+      </loop>
+      <call id="a1" endpoint="auto">
+        <parameters>
+          <label>Generate material list</label>
+        </parameters>
+      </call>
+      <call id="a2" endpoint="auto">
+        <parameters>
+          <label>Generate bill</label>
+        </parameters>
+      </call>
+      <parallel wait="-1" cancel="last">
+        <parallel_branch>
+          <call id="u4" endpoint="user">
+            <parameters>
+              <label>Pay the bill</label>
+            </parameters>
+          </call>
+        </parallel_branch>
+        <parallel_branch>
+          <choose mode="exclusive">
+            <alternative condition="data.buildMethod == &quot;client&quot;">
+              <loop mode="post_test" condition="!data.boughtAll">
+                <call id="u5" endpoint="user">
+                  <parameters>
+                    <label>Buy materials</label>
+                  </parameters>
+                  <code>
+                    <finalize output="result">data.boughtAll = [true, false].sample</finalize>
+                  </code>
+                </call>
+              </loop>
+            </alternative>
+            <otherwise/>
+          </choose>
+          <call id="u6" endpoint="user">
+            <parameters>
+              <label>Build the house</label>
+            </parameters>
+          </call>
+        </parallel_branch>
+      </parallel>
+    </description>
+  time:timestamp: '2022-08-05T23:28:00.179+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: running
+  time:timestamp: '2022-08-05T23:28:58.796+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: data.refineTimes += 1
+  id:id: s1
+  cpee:activity: s1
+  cpee:activity_uuid: fb8a099b8d8ed750faa327420ca91b41
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: dataelements/change
+  data:
+    data_changer:
+    - refineTimes
+    data_values:
+      refineTimes: 11
+  time:timestamp: '2022-08-05T23:28:58.956+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: data.refineTimes += 1
+  id:id: s1
+  cpee:activity: s1
+  cpee:activity_uuid: fb8a099b8d8ed750faa327420ca91b41
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: complete
+  cpee:lifecycle:transition: activity/done
+  time:timestamp: '2022-08-05T23:28:58.976+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: c06cffde966c7ec9a92c3028d33124bd
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: start
+  cpee:lifecycle:transition: activity/calling
+  time:timestamp: '2022-08-05T23:28:59.065+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: c06cffde966c7ec9a92c3028d33124bd
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: activity/receiving
+  data:
+    data_receiver:
+    - name: result
+      mimetype: text/html
+      data: 'Timeout: '
+  time:timestamp: '2022-08-05T23:28:59.125+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: c06cffde966c7ec9a92c3028d33124bd
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: complete
+  cpee:lifecycle:transition: activity/done
+  time:timestamp: '2022-08-05T23:28:59.133+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Draw the draft
+  id:id: u2
+  cpee:activity: u2
+  cpee:activity_uuid: d598bbde2897a5af9ddea325a5173793
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: start
+  cpee:lifecycle:transition: activity/calling
+  time:timestamp: '2022-08-05T23:28:59.212+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Draw the draft
+  id:id: u2
+  cpee:activity: u2
+  cpee:activity_uuid: d598bbde2897a5af9ddea325a5173793
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: activity/receiving
+  data:
+    data_receiver:
+    - name: result
+      mimetype: text/html
+      data: 'Timeout: '
+  time:timestamp: '2022-08-05T23:28:59.264+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Draw the draft
+  id:id: u2
+  cpee:activity: u2
+  cpee:activity_uuid: d598bbde2897a5af9ddea325a5173793
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: complete
+  cpee:lifecycle:transition: activity/done
+  time:timestamp: '2022-08-05T23:28:59.272+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: stopping
+  time:timestamp: '2022-08-05T23:28:59.335+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: stopped
+  time:timestamp: '2022-08-05T23:28:59.425+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: running
+  time:timestamp: '2022-08-16T06:22:57.761+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: data.refineTimes += 1
+  id:id: s1
+  cpee:activity: s1
+  cpee:activity_uuid: e1881d7808b1e250f7a9ebf8fcfe3c4a
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: dataelements/change
+  data:
+    data_changer:
+    - refineTimes
+    data_values:
+      refineTimes: 12
+  time:timestamp: '2022-08-16T06:22:58.080+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: data.refineTimes += 1
+  id:id: s1
+  cpee:activity: s1
+  cpee:activity_uuid: e1881d7808b1e250f7a9ebf8fcfe3c4a
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: complete
+  cpee:lifecycle:transition: activity/done
+  time:timestamp: '2022-08-16T06:22:58.105+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: 7ca3828176e246b9f53f57e5ac48b8c1
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: start
+  cpee:lifecycle:transition: activity/calling
+  time:timestamp: '2022-08-16T06:22:58.370+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: 7ca3828176e246b9f53f57e5ac48b8c1
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: activity/receiving
+  data:
+    data_receiver:
+    - name: result
+      mimetype: text/html
+      data: 'Timeout: '
+  time:timestamp: '2022-08-16T06:22:58.419+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: 7ca3828176e246b9f53f57e5ac48b8c1
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: complete
+  cpee:lifecycle:transition: activity/done
+  time:timestamp: '2022-08-16T06:22:58.429+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Draw the draft
+  id:id: u2
+  cpee:activity: u2
+  cpee:activity_uuid: 35ca5e533c704f81715e56990034ca4a
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: start
+  cpee:lifecycle:transition: activity/calling
+  time:timestamp: '2022-08-16T06:22:58.500+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Draw the draft
+  id:id: u2
+  cpee:activity: u2
+  cpee:activity_uuid: 35ca5e533c704f81715e56990034ca4a
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: activity/receiving
+  data:
+    data_receiver:
+    - name: result
+      mimetype: text/html
+      data: 'Timeout: '
+  time:timestamp: '2022-08-16T06:22:58.545+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Draw the draft
+  id:id: u2
+  cpee:activity: u2
+  cpee:activity_uuid: 35ca5e533c704f81715e56990034ca4a
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: complete
+  cpee:lifecycle:transition: activity/done
+  time:timestamp: '2022-08-16T06:22:58.555+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: stopping
+  time:timestamp: '2022-08-16T06:22:58.617+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: stopped
+  time:timestamp: '2022-08-16T06:22:58.675+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: running
+  time:timestamp: '2022-08-17T16:27:34.824+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: data.refineTimes += 1
+  id:id: s1
+  cpee:activity: s1
+  cpee:activity_uuid: c7c5155e021d8d4552e74d5d494546f1
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: dataelements/change
+  data:
+    data_changer:
+    - refineTimes
+    data_values:
+      refineTimes: 13
+  time:timestamp: '2022-08-17T16:27:34.926+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: data.refineTimes += 1
+  id:id: s1
+  cpee:activity: s1
+  cpee:activity_uuid: c7c5155e021d8d4552e74d5d494546f1
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: complete
+  cpee:lifecycle:transition: activity/done
+  time:timestamp: '2022-08-17T16:27:34.941+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: 80fbb9859068b32a71eda8c2d1cb1d95
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: start
+  cpee:lifecycle:transition: activity/calling
+  time:timestamp: '2022-08-17T16:27:35.020+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: 80fbb9859068b32a71eda8c2d1cb1d95
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: activity/receiving
+  data:
+    data_receiver:
+    - name: result
+      mimetype: text/html
+      data: 'Timeout: '
+  time:timestamp: '2022-08-17T16:27:35.091+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Collect requirements
+  id:id: u1
+  cpee:activity: u1
+  cpee:activity_uuid: 80fbb9859068b32a71eda8c2d1cb1d95
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: complete
+  cpee:lifecycle:transition: activity/done
+  time:timestamp: '2022-08-17T16:27:35.104+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Draw the draft
+  id:id: u2
+  cpee:activity: u2
+  cpee:activity_uuid: 537705efb5c0877bab2195e4dcf13567
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: start
+  cpee:lifecycle:transition: activity/calling
+  time:timestamp: '2022-08-17T16:27:35.214+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Draw the draft
+  id:id: u2
+  cpee:activity: u2
+  cpee:activity_uuid: 537705efb5c0877bab2195e4dcf13567
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: activity/receiving
+  data:
+    data_receiver:
+    - name: result
+      mimetype: text/html
+      data: 'Timeout: '
+  time:timestamp: '2022-08-17T16:27:35.269+02:00'
+---
+event:
+  concept:instance: 64413
+  concept:name: Draw the draft
+  id:id: u2
+  cpee:activity: u2
+  cpee:activity_uuid: 537705efb5c0877bab2195e4dcf13567
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: complete
+  cpee:lifecycle:transition: activity/done
+  time:timestamp: '2022-08-17T16:27:35.278+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: stopping
+  time:timestamp: '2022-08-17T16:27:35.357+02:00'
+---
+event:
+  concept:instance: 64413
+  id:id: external
+  cpee:activity: external
+  cpee:instance: 422aedc8-fea3-4f3a-887e-6947fd55125b
+  lifecycle:transition: unknown
+  cpee:lifecycle:transition: state/change
+  cpee:state: stopped
+  time:timestamp: '2022-08-17T16:27:35.436+02:00'

@@ -1,0 +1,22 @@
+{
+  "components": [
+    {
+      "label": "Requirements",
+      "type": "textfield",
+      "id": "Field_0mhh7yr",
+      "key": "requirements",
+      "validate": {
+        "required": true
+      }
+    }
+  ],
+  "type": "default",
+  "id": "form1",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.0.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.17.0",
+  "schemaVersion": 4
+}

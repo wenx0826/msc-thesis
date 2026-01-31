@@ -1,0 +1,45 @@
+log-properties:
+  xmlns: http://www.xes-standard.org
+  xes.version: 1
+  xes.creator: cpee.org
+  xes.features: nested-attributes
+extensions:
+  - name: Concept
+    prefix: concept
+    uri: http://www.xes-standard.org/concept.xesext
+  - name: Lifecycle
+    prefix: lifecycle
+    uri: http://www.xes-standard.org/lifecycle.xesext
+  - name: Identity
+    prefix: id
+    uri: http://www.xes-standard.org/identity.xesext
+  - name: Time
+    prefix: time
+    uri: http://www.xes-standard.org/time.xesext
+  - name: cpee.org
+    prefix: cpee
+    uri: http://cpee.org/
+global:
+  - scope: trace
+    string:
+      key: concept:instance
+      value: name
+  - scope: event
+    string:
+      - key: concept:name
+        value: name
+      - key: lifecycle:transition
+        value: start
+    date:
+      key: time:timestamp
+      value: 1970-01-01T00:00:00.000+00:00
+string:
+  - key: lifecycle:model
+    value: standard
+  - key: creator
+    value: cpee.org
+  - key: library
+    value: cpee.org
+traces:
+  - events:
+      - {}

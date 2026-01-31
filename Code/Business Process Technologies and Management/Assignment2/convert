@@ -1,0 +1,114 @@
+#!/usr/bin/env node
+
+const fileName = process.argv[2]
+
+const fs = require('fs');
+const bpmn = fs.readFileSync(`${fileName}`, {
+  encoding: 'utf8',
+})
+
+let processes
+
+const parseString = require('xml2js').parseString
+
+parseString(bpmn, (err, result) => {
+  if (err) console.log(err)
+  processes = result.definitions.process
+})
+
+let totalPlaces = []
+let totalTrans = []
+
+function readProcess(process) {
+  let places = []
+  let transitions = []
+
+  function concatTrans(arr) {
+    arr.forEach(({ $ }) => transitions.push(Object.assign({ in: [], out: [] }, $)))
+  }
+
+  function concatPlaces(arr, opt) {
+    arr.forEach(({ $ }) => places.push(Object.assign({ ...opt }, $)))
+  }
+
+  for (const [key, value] of Object.entries(process)) {
+    switch (key) {
+      case 'task':
+      case 'parallelGateway':
+      case 'intermediateCatchEvent':
+        concatTrans(value)
+        break
+      case 'startEvent':
+        concatPlaces(value, { init: true })
+        break
+      case 'endEvent':
+      case 'exclusiveGateway':
+        concatPlaces(value)
+        break
+      default:
+        if (key.search('Task') !== -1) concatTrans(value)
+        break
+    }
+  }
+
+  function findElement(id) {
+    for (const place of places) {
+      if (id === place.id) return { type: 'place', element: place }
+    }
+    for (const trans of transitions) {
+      if (id === trans.id) return { type: 'trans', element: trans }
+    }
+    return undefined
+  }
+
+  for (const { $: flow } of process.sequenceFlow) {
+    const source = findElement(flow.sourceRef)
+    const target = findElement(flow.targetRef)
+    if (!source || !target) continue
+    const { type: sourceType, element: sourceEle } = source
+    const { type: targetType, element: targetEle } = target
+    if (sourceType !== targetType) {
+      if (sourceType === 'place') {
+        targetEle.in.push(sourceEle)
+      } else {
+        sourceEle.out.push(targetEle)
+      }
+    } else {
+      if (sourceType === 'place') {
+        const trans = { id: flow.id, in: [sourceEle], out: [targetEle] }
+        transitions.push(trans)
+      } else {
+        const place = { id: flow.id }
+        places.push(place)
+        sourceEle.out.push(place)
+        targetEle.in.push(place)
+      }
+    }
+  }
+  totalPlaces.push(...places)
+  totalTrans.push(...transitions)
+}
+
+processes.forEach(process => readProcess(process))
+
+let tpn = ''
+let pNr = 1
+let tNr = 1
+for (place of totalPlaces) {
+  place.name = `P${pNr++}`
+  tpn += `place ${place.name}${place.init ? ' init 1' : ''};\n`
+}
+tpn += '\n'
+for (trans of totalTrans) {
+  let label
+  if (trans.name) {
+    const pattern = /[`~!@#$^&*()=|{}':;',\\\[\]\.<>\/?]/g
+    label = trans.name.trim().replace(/\s+/g, '_').replace(/\n/g, ' ').replace(pattern, '')
+  }
+  tpn += `trans T${tNr++}${label ? '~' + label : ''}\n`
+  tpn += ' in '
+  trans.in.forEach((p, i) => tpn += `${p.name}${i < trans.in.length - 1 ? ', ' : '\n'}`)
+  tpn += ' out '
+  trans.out.forEach((p, i) => tpn += `${p.name}${i < trans.out.length - 1 ? ', ' : ';\n\n'}`)
+}
+console.log(tpn)

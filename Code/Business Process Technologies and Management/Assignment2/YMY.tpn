@@ -1,0 +1,160 @@
+place P1 init 1;
+place P2;
+place P3;
+place P4;
+place P5;
+place P6;
+place P7;
+place P8;
+place P9;
+place P10;
+place P11;
+place P12;
+place P13;
+place P14;
+place P15;
+place P16;
+place P17;
+place P18;
+place P19;
+place P20;
+place P21;
+place P22;
+place P23;
+place P24;
+place P25;
+place P26;
+place P27;
+place P28;
+place P29;
+place P30;
+
+trans T1~Report_regularly_the_data_of_the_applications
+ in P2
+ out P26;
+
+trans T2~Send_application_materials_to_the_chosen_companies
+ in P12
+ out P28;
+
+trans T3~apply_jobs_based_on_the_recommended_jobs
+ in P11
+ out P12;
+
+trans T4~Rate_the_company
+ in P20
+ out P16;
+
+trans T5~Start_the_Probation_phase
+ in P19
+ out P21;
+
+trans T6~Rate_the_job_applications
+ in P13
+ out P5;
+
+trans T7~Conduct_the_job_interview
+ in P5
+ out P6;
+
+trans T8~Rate_the_Applicant
+ in P18
+ out P15;
+
+trans T9~Receive_the_potential_job_offers
+ in P27
+ out P11;
+
+trans T10~Receive_the_rejection_letter
+ in P29
+ out P3;
+
+trans T11~Receive_the_offer
+ in P30
+ out P19;
+
+trans T12~send_the_rate_to_job_center
+ in P17
+ out P25;
+
+trans T13~Confirm_the_receiving_of_the_job_applications
+ in P14
+ out P13;
+
+trans T14~Send_offer_to_the_applicant
+ in P6
+ out P30;
+
+trans T15~Send_rejection_letter_to_the_applicant
+ in P7
+ out P29;
+
+trans T16~Receive_the_job_applications
+ in P28
+ out P14;
+
+trans T17~Receive_the_report
+ in P26
+ out P23;
+
+trans T18~Summaries_the_potential_jobs
+ in P24
+ out P9;
+
+trans T19~Send_potential_job_to_the_applicant
+ in P9
+ out P27;
+
+trans T20~receive_the_rate_for_company
+ in P25
+ out P8;
+
+trans T21
+ in P21
+ out P22;
+
+trans T22
+ in P22
+ out P18, P20;
+
+trans T23
+ in P15, P16
+ out P17;
+
+trans T24~Analyse_the_job_application_report_of_the_applicant
+ in P23
+ out P24;
+
+trans T25
+ in P1
+ out P2;
+
+trans T26
+ in P5
+ out P7;
+
+trans T27
+ in P6
+ out P7;
+
+trans T28
+ in P8
+ out P4;
+
+trans T29
+ in P8
+ out P9;
+
+trans T30
+ in P3
+ out P4;
+
+trans T31
+ in P4
+ out P10;
+
+trans T32
+ in P3
+ out P2;
+
+

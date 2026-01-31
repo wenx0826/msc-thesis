@@ -1,0 +1,37 @@
+<form role="form" name="form">
+  <script cam-script type="text/form-script">
+    const variableManager = camForm.variableManager;
+    camForm.on('form-loaded', function() {
+      variableManager.fetchVariable('satisfied');
+      variableManager.fetchVariable('buildMethod');
+    });
+    camForm.on('variables-fetched', function() {
+      $scope.satisfied = variableManager.variableValue('satisfied').toString();
+      $scope.buildMethod = variableManager.variableValue('buildMethod');
+    });
+    camForm.on('submit', function() {
+      if ($scope.satisfied === 'true') {
+        variableManager.variableValue('satisfied', true);
+        variableManager.variableValue('buildMethod', $scope.buildMethod);
+      }
+    });
+  </script>
+  <div>
+    <b>Review the draft </b>
+    <a cam-file-download="draft"></a>
+  </div><br>
+  <div>
+    <b>Are you satisfied with the draft?</b><br>
+    <input type="radio" id="satisfied" ng-model="satisfied" value="true">
+    <label for="satisfied">Yes</label><br>
+    <input type="radio" id="notSatisfied" ng-model="satisfied" value="false">
+    <label for="notSatisfied">No, I want to continue to refine the draft.</label><br>
+  </div><br>
+  <div ng-show="satisfied==='true'">
+    <b>How would you like to build the house?</b><br>
+    <input type="radio" id="buildByCompany" ng-model="buildMethod" value="company">
+    <label for="buildByCompany">Entrust it to the company</label><br>
+    <input type="radio" id="buildByClient" ng-model="buildMethod" value="client">
+    <label for="buildByClient">Build it yourself.</label><br>
+  </div>
+</form>

@@ -1,0 +1,17 @@
+<organisation xmlns="http://cpee.org/ns/organisation/1.0">
+  <roles>
+    <role id="Designer" />
+    <role id="Client" />
+  </roles>
+  <subjects>
+    <subject uid="designer1" name="Alice">
+      <relation role="Designer"/>
+    </subject>
+    <subject uid="designer2" name="Anna">
+      <relation role="Designer"/>
+    </subject>
+    <subject uid="client1" name="Jessica">
+      <relation role="Client"/>
+    </subject>
+  </subjects>
+</organisation>
