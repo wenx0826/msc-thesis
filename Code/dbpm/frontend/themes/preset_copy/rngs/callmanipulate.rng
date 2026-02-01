@@ -2,6 +2,11 @@
   <attribute name="id" rngui:label="ID" rngui:default="javascript:get_free_id()">
     <data type="string" rngui:readonly="true"/>
   </attribute>
+  <attribute name="endpoint" rngui:label="Endpoint">
+    <data type="string">
+      <param name="pattern">^[a-z_][a-zA-Z0-9_]*$</param>
+    </data>
+  </attribute>
   <element name="parameters" rngui:header="Properties">
     <element name="label" rngui:label="Label">
       <data type="string" rngui:label="Short description of the task"/>
@@ -18,15 +23,17 @@
         <value>#deddda</value>
       </choice>
     </element>
-    <element name="type" rngui:label="Type">
+    <element name="dbpm_type" rngui:label="Type">
       <choice>
         <value>task</value>
         <value>subprocess</value>
       </choice>
     </element>
-    <element name="model" rngui:label="Subprocess Model">
+    <element name="dbpm_subprocess_model" rngui:label="Subprocess Model">
       <choice>
       </choice>
+    </element>
+    <element name="arguments" rngui:header="Arguments">
     </element>
   </element>
 </element>

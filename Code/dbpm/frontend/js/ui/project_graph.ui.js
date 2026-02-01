@@ -1,132 +1,152 @@
-let cy;
+// let cy;
+
 const cyLayoutOptions = {
   name: "cose",
   animate: true,
 };
-$(document).ready(() => {
-  cy = cytoscape({
-    container: document.getElementById("cy"),
-    minZoom: 0.3,
-    maxZoom: 3,
-    elements: [],
-    style: [
-      // ---------- Base node ----------
-      {
-        selector: "node",
-        style: {
-          label: "data(label)",
-          "text-valign": "center",
-          "text-halign": "center",
-          "font-size": 8,
-          color: "#000000",
-          "text-events": "yes",
-          "min-zoomed-font-size": 6,
-          // width: "mapData(degree, 1, 5, 30, 60)",
-          // height: "mapData(degree, 1, 5, 30, 60)",
-        },
-      },
-      {
-        selector: "node:hover",
-        style: {},
-      },
-      // ---------- Node types ----------
-      {
-        selector: 'node[type="document"]',
-        style: {
-          width: 18,
-          height: 18,
-          // "background-color": "#43a047",
-          "text-valign": "bottom",
-          "text-halign": "center",
-          "text-wrap": "wrap",
-          "text-max-width": 40,
 
-          // "border-color": "#000",
-          // "border-width": 1,
-          // "border-opacity": 1,
-        },
+function getThemeVars() {
+  const s = getComputedStyle(document.documentElement);
+  return {
+    activeColor: s.getPropertyValue("--wfadaptor-highlight").trim(),
+    // nodeText: s.getPropertyValue("--node-text").trim(),
+    // activeBg: s.getPropertyValue("--node-active").trim(),
+  };
+}
+
+const theme = getThemeVars();
+
+// const cy = cytoscape({
+//   style: [
+//     {
+//       selector: "node",
+//       style: { backgroundColor: theme.nodeBg, color: theme.nodeText },
+//     },
+//     { selector: "node.active", style: { backgroundColor: theme.activeBg } },
+//   ],
+// });
+
+// $(document).ready(() => {
+const cy = cytoscape({
+  container: document.getElementById("cy"),
+  minZoom: 0.3,
+  maxZoom: 3,
+  elements: [],
+  style: [
+    // ---------- Base node ----------
+    {
+      selector: "node",
+      style: {
+        label: "data(label)",
+        "text-valign": "center",
+        "text-halign": "center",
+        "font-size": 8,
+        color: "#000000",
+        "text-events": "yes",
+        "min-zoomed-font-size": 6,
+        // width: "mapData(degree, 1, 5, 30, 60)",
+        // height: "mapData(degree, 1, 5, 30, 60)",
       },
-      {
-        selector: 'node[type="model"]',
-        style: {
-          width: 10,
-          height: 10,
-          "text-valign": "bottom",
-          "text-halign": "center",
-          "text-margin-y": 2,
-          // "background-color": "#8e24aa",
-          "text-background-opacity": 1,
-          "text-background-color": "lightGrey",
-          "text-background-shape": "roundrectangle",
-
-          // "text-border-color": "#000",
-          // "text-border-width": 1,
-          // "text-border-opacity": 1,
-        },
+    },
+    {
+      selector: "node.active",
+      style: {
+        "background-color": theme.activeColor,
       },
-      {
-        selector: "node.active",
-        style: {
-          "background-color": "blue",
-        },
+    },
+    // ---------- Node types ----------
+    {
+      selector: 'node[type="document"]',
+      style: {
+        width: 18,
+        height: 18,
+        // "background-color": "#43a047",
+        "text-valign": "bottom",
+        "text-halign": "center",
+        "text-wrap": "wrap",
+        "text-max-width": 40,
+
+        // "border-color": "#000",
+        // "border-width": 1,
+        // "border-opacity": 1,
       },
-      // ---------- Edges ----------
-      {
-        selector: "edge",
-        style: {
-          width: 1,
-          "line-color": "#bbb",
-          "target-arrow-color": "#bbb",
-          // "target-arrow-shape": "triangle",
-          "curve-style": "bezier",
-          // label: "data(relation)",
-          "font-size": 9,
-          "text-rotation": "autorotate",
-        },
+    },
+    {
+      selector: 'node[type="model"]',
+      style: {
+        width: 10,
+        height: 10,
+        "text-valign": "bottom",
+        "text-halign": "center",
+        "text-margin-y": 2,
+        // "background-color": "#8e24aa",
+        "text-background-opacity": 1,
+        "text-background-color": "lightGrey",
+        "text-background-shape": "roundrectangle",
+
+        // "text-border-color": "#000",
+        // "text-border-width": 1,
+        // "text-border-opacity": 1,
       },
+    },
 
-      // {
-      //   selector: 'edge[relation="derived"]',
-      //   style: {
-      //     "line-style": "dashed",
-      //     "line-color": "#666",
-      //     "target-arrow-color": "#666",
-      //   },
-      // },
-    ],
+    // ---------- Edges ----------
+    {
+      selector: "edge",
+      style: {
+        width: 1,
+        "line-color": "#bbb",
+        "target-arrow-color": "#bbb",
+        // "target-arrow-shape": "triangle",
+        "curve-style": "bezier",
+        // label: "data(relation)",
+        "font-size": 9,
+        "text-rotation": "autorotate",
+      },
+    },
 
-    layout: cyLayoutOptions,
-  });
+    // {
+    //   selector: 'edge[relation="derived"]',
+    //   style: {
+    //     "line-style": "dashed",
+    //     "line-color": "#666",
+    //     "target-arrow-color": "#666",
+    //   },
+    // },
+  ],
 
-  // ---------- Interaction ----------
-  cy.on("tap", "node", (evt) => {
-    const node = evt.target;
-    // node.unselectify();
-    console.log("Clicked:", node.id(), node.data());
-    const nodeId = node.id().replace("cy-", "");
-    switch (node.data().type) {
-      case "document":
-        workspaceService.activateDocumentById(nodeId);
-        break;
-      case "model":
-        workspaceService.toggleModelSelection(nodeId);
-        break;
-      default:
-        break;
-    }
-  });
-  cy.on("mouseover", "node", () => {
-    cy.container().style.cursor = "pointer";
-  });
-
-  cy.on("mouseout", "node", () => {
-    cy.container().style.cursor = "default";
-  });
-  // cy.on("grab", "node", (e) => console.log("grab", e.target.id()));
-  // cy.on("drag", "node", (e) => console.log("drag", e.target.id()));
-  // cy.on("free", "node", (e) => console.log("free", e.target.id()));
-  // cy.on("mouseover", "node", (e) => console.log("hover", e.target.id()));
+  layout: cyLayoutOptions,
 });
+
+// ---------- Interaction ----------
+cy.on("tap", "node", (evt) => {
+  const node = evt.target;
+  // node.unselectify();
+  console.log("Clicked:", node.id(), node.data());
+  const nodeId = node.id().replace("cy-", "");
+  switch (node.data().type) {
+    case "document":
+      workspaceService.activateDocumentById(nodeId);
+      break;
+    case "model":
+      workspaceService.toggleModelSelection(nodeId);
+      break;
+    default:
+      break;
+  }
+});
+cy.on("mouseover", "node", () => {
+  cy.container().style.cursor = "pointer";
+});
+
+cy.on("mouseout", "node", () => {
+  cy.container().style.cursor = "default";
+});
+// cy.on("grab", "node", (e) => console.log("grab", e.target.id()));
+// cy.on("drag", "node", (e) => console.log("drag", e.target.id()));
+// cy.on("free", "node", (e) => console.log("free", e.target.id()));
+// cy.on("mouseover", "node", (e) => console.log("hover", e.target.id()));
+// });
 
 Store.projectGraph.subscribe((state, { key, operation, ...payload }) => {
   if (operation) {

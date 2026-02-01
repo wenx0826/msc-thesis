@@ -60,6 +60,7 @@ function getModelSvg(input) {
     );
   });
 }
+
 async function renderModelInList(model) {
   const modelId = model?.meta?.id;
   var gridId = `modelGrid_${modelId}`;
@@ -79,13 +80,18 @@ async function renderModelInList(model) {
     workspaceService.toggleModelSelection(modelId);
   });
   $modelContainer.append($gridDiv);
-  const outputFrame = await getModelSvg({ id: modelId });
-  model.svg = new DOMParser().parseFromString(
-    outputFrame,
-    "image/svg+xml",
-  ).documentElement;
+  try {
+    const outputFrame = await getModelSvg({ id: modelId });
+    model.svg = new DOMParser().parseFromString(
+      outputFrame,
+      "image/svg+xml",
+    ).documentElement;
 
-  $gridDiv.append(model.svg);
+    $gridDiv.append(model.svg);
+  } catch (err) {
+    console.error("Error getting model SVG for model ID", modelId, ":", err);
+    return;
+  }
 }
 
 function updateModelInList(model) {

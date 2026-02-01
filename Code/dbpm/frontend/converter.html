@@ -57,57 +57,67 @@
   </style> -->
 
 <!-- my libs-->
-
-
-
 <!-- my ui-->
-
 <body>
     <div id='modelGridSmall'>
         <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink"
             id='modelCanvasSmall' width='1' height='1'></svg>
     </div>
     <script type="module">
-
         window.addEventListener("message", async (e) => {
-            // const { id, input, args } = e.data || {};
-            // console.log("Received message:", e.data);
             const { id, input, args, source } = e.data;
             if (source !== "getModelSvg") {
-                // console.log("Message from unknown source:", e.data);
                 return;
             }
             try {
-                // console.log("Converting model data to SVG:", input, args);
-
+                // console.log("!!!!Converter received message for model id:", input.id);
                 const modelId = input.id;
                 const model = await API.model.getModelDataById(modelId);
-                // console.log("Model data retrieved:", model);
                 var parser = new DOMParser();
                 let data = parser.parseFromString(model, "application/xml");
 
                 if (data.documentElement.nodeName != "description") {
                     data = $("description", data)[0];
                 } else {
-
                     data = data.documentElement;
                 }
+                // console.log("!!!!Converter received message for model id:", data);
 
-                const adaptor = WfAdaptor("themes/preset_copy/theme.js", function (
+                // Initialize endpoint API before rendering
+                API.endpoint.init();
+
+                new WfAdaptor("themes/preset_copy/theme.js", function (
                     graphrealization,
                 ) {
-                    graphrealization.set_svg_container($("#modelCanvasSmall"));
-                    graphrealization.set_label_container($("#modelGridSmall"));
-                    graphrealization.set_description($(data), true);
-                    const svgData = $("#modelCanvasSmall").clone().removeAttr("id");
-                    // console.log("SVG data for model:", svgData);
-                    const svgString = svgData.prop('outerHTML');
-                    //ToAsk why???
-                    // const svgString = svgData.serializedPrettyXML()
-                    e.source.postMessage({ id, ok: true, result: svgString }, e.origin);
+                    try {
+                        graphrealization.illustrator.get_symbol = API.endpoint.getSymbol.bind(API.endpoint);
+                        graphrealization.illustrator.get_properties = API.endpoint.getProperties.bind(API.endpoint);
+                        // console.log("000Adaptor initialized in converter.");
+                        graphrealization.set_svg_container($("#modelCanvasSmall"));
+                        // console.log("111Adaptor initialized in converter.");
+
+                        graphrealization.set_label_container($("#modelGridSmall"));
+                        graphrealization.set_description($(data), true);
+
+                        const svgData = $("#modelCanvasSmall").clone().removeAttr("id");
+                        // console.log("SVG string length:", svgData);
+                        // console.log("SVG data for model:", svgData);
+                        const svgString = svgData.prop('outerHTML');
+                        // console.log("SVG string length:", svgString);
+                        // const svgString = svgData.serializedPrettyXML()
+                        e.source.postMessage({ id, ok: true, result: svgString }, e.origin);
+                    } catch (err) {
+                        console.log("!!!!!!!!!!!!!Error in adaptor init:", err);
+                        e.source.postMessage(
+                            { id, ok: false, error: String(err?.stack || err) },
+                            e.origin
+                        );
+                    }
+
+
                 });
-                // console.log("Adaptor created for model rendering in list:", adaptor);
             } catch (err) {
+                console.log("!!!!!!!!!!!!!Error in converter:", err);
                 e.source.postMessage(
                     { id, ok: false, error: String(err?.stack || err) },
                     e.origin

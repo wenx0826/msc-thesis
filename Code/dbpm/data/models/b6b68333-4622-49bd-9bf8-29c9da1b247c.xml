@@ -1,13 +1,13 @@
 <description>
   <dbpm:info xmlns:dbpm="https://example.com/dbpm">
     <dbpm:document_info>
-      <dbpm:document_id>dbd90827-7297-48de-85dc-999382902f81</dbpm:document_id>
-      <dbpm:text_selections>User switches between models and views previews.
-- Models can be updated or reused.
+      <dbpm:document_id>a854acf8-1a8f-4083-9a41-d8bb356de32e</dbpm:document_id>
+      <dbpm:text_selections>isions, flows, and subprocesses.
+- Each model element is linked to its source document text.
 
-8. Output
-- Finalized process models are exported.
-- Traceability between documents and processes is retaine</dbpm:text_selections>
+5. Model Refinement
+- User reviews and edits the generated process model.
+-</dbpm:text_selections>
     </dbpm:document_info>
   </dbpm:info>
   <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
@@ -20,11 +20,7 @@
             <_probability_avg/>
           </_probability>
           <parallel_branch svg-id="parallel_branch_0" svg-type="parallel_branch" svg-subtype="parallel_branch_event">
-            <call id="a1" endpoint="start_url" svg-id="a1" svg-label="Start" svg-type="call" svg-subtype="call">
-              <parameters>
-                <label>Start</label>
-                <method>:post</method>
-                <arguments>
+            <call id="a1" endpoint="subprocess" svg-id="a1" svg-label="Start" svg-type="call" svg-subtype="call"><parameters><label>Start</label><color>#f8a8c6</color><method>:post</method><arguments>
                   <behavior>wait_running</behavior>
                   <url>https://cpee.org/flow/templates/instantiate/Take_Sub.xml</url>
                   <init>
@@ -32,9 +28,7 @@
                   </init>
                   <endpoints/>
                   <customization/>
-                </arguments>
-              </parameters>
-              <annotations>
+                </arguments></parameters><annotations>
                 <_timing>
                   <_timing_weight/>
                   <_timing_avg/>
@@ -50,15 +44,13 @@
                 <_notes>
                   <_notes_general/>
                 </_notes>
-              </annotations>
-              <documentation>
+              </annotations><documentation>
                 <input/>
                 <output/>
                 <implementation>
                   <description/>
                 </implementation>
-              </documentation>
-            </call>
+              </documentation></call>
           </parallel_branch>
           <manipulate id="a4" label="" svg-id="a4" svg-type="manipulate" svg-subtype="manipulate">data.i += 1</manipulate>
         </loop>

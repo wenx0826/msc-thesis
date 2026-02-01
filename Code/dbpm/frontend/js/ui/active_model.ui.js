@@ -36,7 +36,7 @@ $(document).ready(function () {
 
     const text =
       '<?xml version="1.0"?>\n<testset xmlns="http://cpee.org/ns/properties/2.0">\n<executionhandler>ruby</executionhandler>\n<dataelements/>\n<endpoints/>\n<attributes>\n<guarded>none</guarded>\n<modeltype>CPEE</modeltype>\n<theme>preset</theme>\n<guarded_id/>\n<info>Subprocess</info>\n<creator>Christine Ashcreek</creator>\n<author>Christine Ashcreek</author>\n<model_uuid>1fc43528-3e4a-40ee-8503-c0ed7e5d883c</model_uuid>\n<model_version/>\n<design_stage>development</design_stage>\n<design_dir>Templates.dir</design_dir>\n</attributes>\n<description>' +
-      Store.activeModel.getSerializedData() +
+      Store.activeModel.getSerializedRpstData() +
       "\n</description>\n</testset>";
     const mime = "application/xml;charset=utf-8";
 
@@ -113,17 +113,17 @@ activeModelStore.subscribe((state, { key, oldValue, newValue }) => {
       // const newSerializedData =
       // const newSerializedData = newValue ? newValue.data : null;
       const serializer = new XMLSerializer();
-      console.log("???Active model store changed:", oldValue, newValue);
-      if (oldValue)
-        console.log(
-          "???Active model dat: Oldvalue",
-          serializer.serializeToString(oldValue.data),
-        );
-      if (newValue)
-        console.log(
-          "???Active model store Newvalue:",
-          serializer.serializeToString(newValue.data),
-        );
+      // console.log("???Active model store changed:", oldValue, newValue);
+      // if (oldValue)
+      //   console.log(
+      //     "???Active model dat: Oldvalue",
+      //     serializer.serializeToString(oldValue.data),
+      //   );
+      // if (newValue)
+      //   console.log(
+      //     "???Active model store Newvalue:",
+      //     serializer.serializeToString(newValue.data),
+      //   );
 
       if (newValue) {
         $("#activeModelName").text(newValue.name ? newValue.name : "");
@@ -256,21 +256,30 @@ function clearModelViewer() {
   $promptContainer.hide();
 }
 
-const showActiveModel = (model) => {
-  // save["state"] = model.id ? "ready" : undefined;
+const showActiveModel = async (model) => {
   save["state"] = "ready";
   save["graph_theme"] = "preset_copy";
+
+  // Initialize endpoints and map to save cache for details.js compatibility
+  API.endpoint.init();
+  save["endpoints_cache"] = API.endpoint._cache;
+
   save["graph_adaptor"] = new WfAdaptor(
     "themes/preset_copy/theme.js",
     function (graphrealization) {
-      // graphrealization.draw_labels = (max, labels, dimensions, striped) => {
-      //   draw_extended_columns(graphrealization, max, labels, dimensions, striped)
-      // };
+      graphrealization.illustrator.get_symbol = API.endpoint.getSymbol.bind(
+        API.endpoint,
+      );
+      graphrealization.illustrator.get_properties =
+        API.endpoint.getProperties.bind(API.endpoint);
       graphrealization.set_svg_container($("#graphcanvas"));
       graphrealization.set_label_container($("#graphgrid"));
       graphrealization.set_description($(model.data), true);
       graphrealization.notify = function (svgid) {
-        // console.log("!!!!!!Graph realization notify for svgid:", svgid);
+        console.log(
+          "???????????????????????????????Graph realization notify for svgid:",
+          svgid,
+        );
         var g = graphrealization.get_description();
         console.log("Bug! Cannot get description g=", g);
         /*save["graph"] = $X(g);

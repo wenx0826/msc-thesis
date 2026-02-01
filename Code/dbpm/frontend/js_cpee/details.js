@@ -45,9 +45,7 @@ function do_main_save() {
 
 function do_main_work(svgid) {
   //{{{
-  console.log("??? Details Save: svgid=", svgid);
   var desc = save["details_target"].model;
-  console.log("Details Save: desc=", desc);
   var node = desc.get_node_by_svg_id(svgid);
   var orignode = save["graph_adaptor"].illustrator
     .get_node_by_svg_id(svgid)
@@ -88,6 +86,31 @@ function do_main_work(svgid) {
   }
   nnew.attr("svg-id", svgid);
 
+  const endpoint = nnew.attr("endpoint");
+  const nnewArguments = nnew.children("parameters").children("arguments");
+  const nnewArgBehavior = nnewArguments.children("behavior");
+  const nnewArgUrl = nnewArguments.children("url");
+  const nnDbpmSubprocessModel = nnew
+    .children("parameters")
+    .children("dbpm_subprocess_model");
+  if (endpoint === "subprocess") {
+    var subprocessModelId = nnew
+      .children("parameters")
+      .children("dbpm_subprocess_model")
+      .text();
+    if (subprocessModelId) {
+      nnewArgBehavior.text("wait_for_running");
+      nnewArgUrl.text(
+        window.location.origin + "/data/models/" + subprocessModelId + ".xml",
+      );
+    } else {
+      nnewArguments.remove();
+    }
+  } else {
+    nnDbpmSubprocessModel.remove();
+    nnewArguments.remove();
+  }
+
   if ($("*[svg-id]", node).length > 0) {
     nnew.append(
       node.children().filter(function () {
@@ -120,14 +143,6 @@ function do_main_work(svgid) {
     tnewnode.attr("element-type") + "_" + tnewnode.attr("element-endpoint");
 
   desc.refresh(function (graphrealization) {
-    console.log(
-      "Error001 Graph realization after details save: graphrealization=",
-      graphrealization,
-    );
-    console.log(
-      "Error002 Graph realization after details save: g=",
-      graphrealization.get_description(),
-    );
     var vtarget = manifestation.adaptor.illustrator.get_node_by_svg_id(svgid);
     if (vtarget.length > 0) {
       vtarget.parents("g.element[element-id]").addClass("selected");
@@ -141,16 +156,64 @@ function do_main_work(svgid) {
     var newtype =
       newnode.attr("element-type") + "_" + newnode.attr("element-endpoint");
     var g = graphrealization.get_description();
+    console.log("????? g=", g);
 
-    //TODO !!!! Important ToFix!!!!
-    /*
-    save["graph"] = $X(g);
-    save["graph"].removeAttr("svg-id");
-    save["graph"].removeAttr("svg-type");
-    save["graph"].removeAttr("svg-subtype");
-    save["graph"].removeAttr("svg-label");
-*/
+    // WORKAROUND: get_description() fails due to nodeType issue in wfadaptor
+    // Use direct serialization instead
+    // if (!g) {
+    //   console.warn(
+    //     "get_description() returned null, using direct serialization workaround",
+    //   );
+    //   try {
+    //     var descRoot = desc.get_node_by_svg_id("description");
+    //     if (descRoot && descRoot.length > 0) {
+    //       // Clone and remove svg attributes
+    //       var serxml = descRoot.clone(true);
+    //       serxml.removeAttr("svg-id");
+    //       serxml.removeAttr("svg-type");
+    //       serxml.removeAttr("svg-subtype");
+    //       serxml.removeAttr("svg-label");
+    //       $("*[svg-id]", serxml).each(function () {
+    //         $(this).removeAttr("svg-id");
+    //         $(this).removeAttr("svg-type");
+    //         $(this).removeAttr("svg-subtype");
+    //         $(this).removeAttr("svg-label");
+    //       });
+    //       g = serxml.serializeXML();
+    //       console.log(
+    //         "Direct serialization workaround SUCCEEDED, g=",
+    //         g ? g.substring(0, 200) + "..." : "NULL",
+    //       );
+    //     }
+    //   } catch (e) {
+    //     console.error("Direct serialization workaround FAILED:", e);
+    //   }
+    // }
+
+    if (g) {
+      save["graph"] = $X(g);
+      save["graph"].removeAttr("svg-id");
+      save["graph"].removeAttr("svg-type");
+      save["graph"].removeAttr("svg-subtype");
+      save["graph"].removeAttr("svg-label");
+
+      console.log(
+        "save['graph'] after cleaning:",
+        save["graph"].serializePrettyXML
+          ? save["graph"].serializePrettyXML().substring(0, 500)
+          : new XMLSerializer()
+              .serializeToString(save["graph"][0])
+              .substring(0, 500),
+      );
+    } else {
+      console.error(
+        "get_description() returned null - description may be invalid",
+      );
+    }
+
+    console.log("herer???", newtype, origtype);
     if (newtype != origtype) {
+      // console.log("herer???", newtype, origtype);
       manifestation.update_details(svgid);
       do_main_work(svgid);
     } else {
@@ -174,12 +237,35 @@ function do_main_work(svgid) {
       // saved in mousedown because blur/focusout is between mousedown and click.
       ////////////////////////////
       if (save["details_target"].svgid != save["details_target"].tsvgid) {
+        console.log(">>>???????????? here triggered?");
         manifestation.adaptor.illustrator
           .get_label_by_svg_id(save["details_target"].tsvgid)
           .trigger("click");
       }
 
-      console.log("herer???");
+      console.log(
+        "333333333_ Details Save: node=",
+        node,
+        "endpoint=",
+        node.attr("endpoint"),
+        node.children("parameters").children("dbpm_type").text(),
+      );
+
+      // Update the active model store with the cleaned graph
+      if (save["graph"]) {
+        console.log("Updating activeModel store with cleaned graph");
+        Store.activeModel.state.model.data = save["graph"][0];
+        console.log("Store updated. Verifying...");
+        const storeData = Store.activeModel.getSerializedData();
+        console.log(
+          "Store serialized data (first 500 chars):",
+          storeData.substring(0, 500),
+        );
+      }
+
+      // manifestation.adaptor.illustrator
+      //   .get_label_by_svg_id(save["details_target"].tsvgid)
+      //   .trigger("click");
       saveActiveModel(
         window.Constants.MODEL_UPDATE_TYPE.MANUAL_UPDATE_GRAPH_PROPERTIES_ONLY,
       );

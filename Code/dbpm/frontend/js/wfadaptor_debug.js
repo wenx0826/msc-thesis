@@ -1364,15 +1364,49 @@ function WfDescription(wf_adaptor, wf_illustrator) {
     // console.warn(
     //   "GetDescriptionBug001-get_description deprecated, use get_serialized_description",
     // );
+    var doc = description.get(0);
     console.info(
       "GetDescriptionBug001.1-get_description deprecated, use get_serialized_description",
+      "description:",
+      description,
+      "description.toString():",
       description.toString(),
-      description.get(0),
-      description.get(0).documentElement,
+      "doc:",
+      doc,
+      "doc?.documentElement:",
+      doc?.documentElement,
+      "doc.nodeType:",
+      doc?.nodeType,
       // description.get(0).documentElement.toString(),
     );
+
+    // Check if doc is a Document (nodeType 9) or an Element (nodeType 1)
+    var rootElement;
+    if (!doc) {
+      console.error("CRITICAL: description.get(0) is null!");
+      return null;
+    } else if (doc.nodeType === 9) {
+      // It's a Document node
+      rootElement = doc.documentElement;
+    } else if (doc.nodeType === 1) {
+      // It's an Element node (the root element itself)
+      rootElement = doc;
+    } else {
+      console.error("CRITICAL: Unexpected node type:", doc.nodeType, doc);
+      return null;
+    }
+
+    if (!rootElement) {
+      console.error("CRITICAL: Could not get root element!", {
+        description: description,
+        doc: doc,
+        type: typeof doc,
+      });
+      return null;
+    }
+
     //  public {{{
-    var serxml = $(description.get(0).documentElement).clone(true);
+    var serxml = $(rootElement).clone(true);
 
     console.info("GetDescriptionBug002-serxml", serxml);
 
