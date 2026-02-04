@@ -2,13 +2,7 @@
   <dbpm:info xmlns:dbpm="https://example.com/dbpm">
     <dbpm:document_info>
       <dbpm:document_id>a854acf8-1a8f-4083-9a41-d8bb356de32e</dbpm:document_id>
-      <dbpm:text_selections>1. Document Ingestion
-- User uploads one or more documents (text, PDF, or Word).
-- System stores documents and extracts textual content.
-
-2. Document Selection
-- User selects a document for analysis.
-- System displays document content and previously identified text segments. 4. Process Model Generation
+      <dbpm:text_selections>4. Process Model Generation
 - System creates a visual process model from extracted information.
 - Process includes tasks, decisions, flows, and subprocesses.
 - Each model element is linked to its source document text.
@@ -59,14 +53,7 @@
           <arguments/>
         </parameters>
       </call>
-      <call id="a7" endpoint="" a:alt_id="4" svg-id="a7" svg-label="Model Refinement" svg-type="call" svg-subtype="call">
-        <parameters>
-          <label>Model Refinement</label>
-          <method/>
-          <type>:task</type>
-          <arguments/>
-        </parameters>
-      </call>
+      <call id="a7" endpoint="subprocess" svg-id="a7" a:alt_id="4" svg-label="Model Refinement" svg-type="call" svg-subtype="call"><parameters><label>Model Refinement</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>bc452701-0f45-40c2-8d6d-97bc8e113f3c</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:3000/data/models/bc452701-0f45-40c2-8d6d-97bc8e113f3c.xml</url></arguments></parameters></call>
       <choose mode="exclusive" a:alt_id="5" svg-id="choose_0" svg-type="choose" svg-subtype="choose_exclusive">
         <alternative condition="Yes" language="text/javascript" svg-id="alternative_0" svg-label="Yes" svg-type="alternative" svg-subtype="alternative">
           <call id="a11" endpoint="" a:alt_id="6" svg-id="a11" svg-label="Subprocess Linking" svg-type="call" svg-subtype="call">
@@ -99,14 +86,7 @@
                 <arguments/>
               </parameters>
             </call>
-            <call id="a7" endpoint="" a:alt_id="4" svg-id="a7" svg-label="Model Refinement" svg-type="call" svg-subtype="call">
-              <parameters>
-                <label>Model Refinement</label>
-                <method/>
-                <type>:task</type>
-                <arguments/>
-              </parameters>
-            </call>
+            <call id="a7" endpoint="subprocess" svg-id="a7" a:alt_id="4" svg-label="Model Refinement" svg-type="call" svg-subtype="call"><parameters><label>Model Refinement</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>bc452701-0f45-40c2-8d6d-97bc8e113f3c</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:3000/data/models/bc452701-0f45-40c2-8d6d-97bc8e113f3c.xml</url></arguments></parameters></call>
             <choose mode="exclusive" a:alt_id="5" svg-id="choose_1" svg-type="choose" svg-subtype="choose_exclusive">
               <alternative condition="Yes" language="text/javascript" svg-id="alternative_2" svg-label="Yes" svg-type="alternative" svg-subtype="alternative">
                 <call id="a11" endpoint="" a:alt_id="6" svg-id="a11" svg-label="Subprocess Linking" svg-type="call" svg-subtype="call">
@@ -130,14 +110,7 @@
             </call>
           </alternative>
           <alternative condition="" svg-id="alternative_7" svg-type="alternative" svg-subtype="alternative">
-            <call id="a7" endpoint="" a:alt_id="4" svg-id="a7" svg-label="Model Refinement" svg-type="call" svg-subtype="call">
-              <parameters>
-                <label>Model Refinement</label>
-                <method/>
-                <type>:task</type>
-                <arguments/>
-              </parameters>
-            </call>
+            <call id="a7" endpoint="subprocess" svg-id="a7" a:alt_id="4" svg-label="Model Refinement" svg-type="call" svg-subtype="call"><parameters><label>Model Refinement</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>bc452701-0f45-40c2-8d6d-97bc8e113f3c</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:3000/data/models/bc452701-0f45-40c2-8d6d-97bc8e113f3c.xml</url></arguments></parameters></call>
             <choose mode="exclusive" a:alt_id="5" svg-id="choose_2" svg-type="choose" svg-subtype="choose_exclusive">
               <alternative condition="Yes" language="text/javascript" svg-id="alternative_5" svg-label="Yes" svg-type="alternative" svg-subtype="alternative">
                 <call id="a11" endpoint="" a:alt_id="6" svg-id="a11" svg-label="Subprocess Linking" svg-type="call" svg-subtype="call">

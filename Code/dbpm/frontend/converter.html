@@ -34,15 +34,15 @@
 <!-- modelling ui -->
 <script type="text/javascript" src="js_cpee/wfadaptor.js"></script>
 <link rel="stylesheet" href="js_cpee/wfadaptor.css" type="text/css" />
-<script type="text/javascript" src="themes/base_new.js"></script>
+<script type="text/javascript" src="wf_graph_themes/base_new.js"></script>
 
-<script type="text/javascript" src="js_cpee/extended_columns.js"></script>
+<!-- <script type="text/javascript" src="js_cpee/extended_columns.js"></script> -->
 <link rel="stylesheet" href="css/extended_columns-label.css" type="text/css" />
 <link rel="stylesheet" href="css/extended_columns-svg.css" type="text/css" />
 
 <script type="text/javascript" src="js_cpee/instance.js"></script>
 <script type="text/javascript" src="js_cpee/details.js"></script>
-<script src="js/api.js"></script>
+<script src="api/index.js" type="module"></script>
 <!-- <script type="text/javascript" src="js/parameters.js"></script>
     <script type="text/javascript" src="js/modifiers.js"></script> -->
 
@@ -64,6 +64,7 @@
             id='modelCanvasSmall' width='1' height='1'></svg>
     </div>
     <script type="module">
+        import { endpointAPI, modelsAPI } from "./api/index.js";
         window.addEventListener("message", async (e) => {
             const { id, input, args, source } = e.data;
             if (source !== "getModelSvg") {
@@ -72,7 +73,7 @@
             try {
                 // console.log("!!!!Converter received message for model id:", input.id);
                 const modelId = input.id;
-                const model = await API.model.getModelDataById(modelId);
+                const model = await modelsAPI.getModelDataById(modelId);
                 var parser = new DOMParser();
                 let data = parser.parseFromString(model, "application/xml");
 
@@ -84,14 +85,14 @@
                 // console.log("!!!!Converter received message for model id:", data);
 
                 // Initialize endpoint API before rendering
-                API.endpoint.init();
+                endpointAPI.init();
 
-                new WfAdaptor("themes/preset_copy/theme.js", function (
+                new WfAdaptor("wf_graph_themes/preset_copy/theme.js", function (
                     graphrealization,
                 ) {
                     try {
-                        graphrealization.illustrator.get_symbol = API.endpoint.getSymbol.bind(API.endpoint);
-                        graphrealization.illustrator.get_properties = API.endpoint.getProperties.bind(API.endpoint);
+                        graphrealization.illustrator.get_symbol = endpointAPI.getSymbol.bind(endpointAPI);
+                        graphrealization.illustrator.get_properties = endpointAPI.getProperties.bind(endpointAPI);
                         // console.log("000Adaptor initialized in converter.");
                         graphrealization.set_svg_container($("#modelCanvasSmall"));
                         // console.log("111Adaptor initialized in converter.");

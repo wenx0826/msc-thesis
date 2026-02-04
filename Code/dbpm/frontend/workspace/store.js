@@ -1,0 +1,807 @@
+window.Store = {
+  async init(projectId) {
+    // this.activeDocument.init();
+  },
+};
+
+function createDomainStore(initialState, options = {}) {
+  const subs = new Set();
+  return {
+    state: { ...initialState },
+    subscribe(fn) {
+      subs.add(fn);
+      // return unsubscribe
+      return () => subs.delete(fn);
+    },
+
+    notify(patch) {
+      subs.forEach((fn) => fn(this.state, patch));
+    },
+  };
+}
+Store.workspace = Object.assign(
+  createDomainStore({
+    status: null, // 'loading', 'ready', 'error'
+    projectId: null,
+    activeDocumentId: null,
+    activeModelId: null,
+    llmModel: "gemini-2.0-flash",
+    theme: null,
+    // documentIdMap: {},
+    // modelIdMap: {},
+    project: {},
+  }),
+  {
+    async init(projectId) {
+      this.state.projectId = projectId;
+      const project = await API.projects.getProjectById(projectId);
+    },
+    getProjectId() {
+      return this.state.projectId;
+    },
+    getActiveDocumentId() {
+      return this.state.activeDocumentId;
+    },
+    getActiveModelId() {
+      return this.state.activeModelId;
+    },
+    hasActiveModel() {
+      return this.state.activeModelId != null;
+    },
+    getLlmModel() {
+      return this.state.llmModel;
+    },
+    setStatus(status) {
+      this.state.status = status;
+      this.notify({ key: "status", newValue: status });
+    },
+    setActiveModelId(newValue) {
+      const oldValue = this.getActiveModelId();
+      this.state.activeModelId = newValue;
+      this.notify({ key: "activeModelId", oldValue, newValue });
+    },
+    setActiveDocumentId(newValue) {
+      const oldValue = this.getActiveDocumentId();
+      this.state.activeDocumentId = newValue;
+      this.notify({ key: "activeDocumentId", oldValue, newValue });
+    },
+    setLlmModel(llmModel) {
+      this.state.llmModel = llmModel;
+    },
+    setTheme(theme) {
+      this.state.theme = theme;
+    },
+    setWorkspace({ projectId, activeDocumentId, activeModelId }) {
+      this.state.projectId = projectId;
+      this.setActiveDocumentId(activeDocumentId);
+      this.setActiveModelId(activeModelId);
+    },
+  },
+);
+
+Store.project = Object.assign(
+  createDomainStore({
+    name: null,
+    generatedModelNumber: 0,
+  }),
+  {
+    async init(projectId) {
+      const { name, generatedModelNumber } =
+        await API.projects.getProjectById(projectId);
+      this.setProject({ name, generatedModelNumber });
+    },
+    getProjectName() {
+      return this.state.name;
+    },
+
+    getModelNumber() {
+      return this.state.generatedModelNumber;
+    },
+    setName(val) {
+      if (this.state.name !== val) {
+        this.state.name = val;
+        this.notify({ key: "name", newValue: val });
+      }
+    },
+    setProject({ name, generatedModelNumber }) {
+      this.setName(name);
+      this.setGeneratedModelNumber(generatedModelNumber);
+    },
+    setGeneratedModelNumber(generatedModelNumber) {
+      this.state.generatedModelNumber = generatedModelNumber;
+    },
+  },
+);
+
+Store.documents = Object.assign(
+  createDomainStore({
+    documents: [],
+  }),
+  {
+    async init(projectId) {
+      const documents = await API.documents.getByProjectId(projectId);
+      this.state.documents = documents;
+      this.notify({ operation: "init" });
+    },
+    getDocuments() {
+      return this.state.documents;
+    },
+    addDocument(document) {
+      this.state.documents.push(document);
+      this.notify({ operation: "add", id: document.id });
+    },
+    getDocumentNameById(docId) {
+      const doc = this.state.documents.find((d) => d.id == docId);
+      return doc ? doc.name : null;
+    },
+    async createDocument(doc) {
+      const projectId = workspaceStore.getProjectId();
+      const newDoc = await API.documents.createDocument({ ...doc, projectId });
+      this.state.documents.push(newDoc);
+      this.notify({ operation: "add", id: newDoc.id });
+      return newDoc.id;
+    },
+    async deleteDocumentById(docId) {
+      this.notify({ key: "documents", operation: "delete", id: docId });
+      this.state.documents = this.state.documents.filter(
+        (doc) => doc.id != docId,
+      );
+      API.documents.deleteDocumentById(docId);
+      const activeDocumentId = window.Store.activeDocument.getId();
+      if (activeDocumentId == docId) {
+        // todo
+        window.Store.activeDocument.setDocumentById(null);
+      }
+      const docModelIds = window.Store.traces.getDocumentModelIds(docId);
+      docModelIds.forEach((modelId) => {
+        window.Store.models.deleteModelById(modelId);
+      });
+    },
+  },
+);
+
+Store.activeDocument = Object.assign(
+  createDomainStore({
+    status: null,
+    htmlContent: null,
+    traces: [],
+    hasSelectionChanged: false,
+    activeModelTrace: null,
+    originalActiveModelSerializedSelections: null,
+    temporarySelections: [],
+  }),
+  {
+    init() {
+      const documents = documentsStore.getDocuments();
+      if (documents.length) {
+        this.setDocumentById(documents[documents.length - 1]?.id);
+      }
+    },
+    getStatus() {
+      return this.state.status;
+    },
+    getHtmlContent() {
+      return this.state.htmlContent;
+    },
+    getId() {
+      return this.state.id;
+    },
+
+    setStatus(newValue) {
+      this.state.status = newValue;
+      this.notify({ key: "status", newValue });
+    },
+    setHtmlContent(content) {
+      const newValue = new DOMParser().parseFromString(content, "text/html")
+        .body.innerHTML;
+      this.state.htmlContent = newValue;
+      this.notify({ key: "htmlContent", newValue });
+    },
+
+    async setDocumentById(id) {
+      const currentId = this.getId();
+      // ??
+      if (id === currentId) return Promise.resolve();
+      this.setStatus("loading");
+      this.setTraces([]);
+      this.setActiveModelTrace(null);
+      this.setTemporarySelections([]);
+      this.setHasSelectionChanged(false);
+      const contentPromise = API.documents.getDocumentContentById(id);
+      const tracesPromise = API.trace.getTracesByDocumentId(id); // Start fetching traces early
+      return new Promise((resolve, reject) => {
+        contentPromise.then(
+          (content) => {
+            this.setHtmlContent(content);
+            this.setStatus(null);
+            tracesPromise
+              .then((traces) => {
+                console.log("11. Loaded traces for document:", traces);
+                this.setTraces(traces);
+                resolve();
+              })
+              .catch((error) => {
+                console.log("Error loading traces:", error);
+                // Optionally set empty traces: this._setTraces([]);
+                resolve(); // Resolve even on traces error to not block
+              });
+          },
+          (error) => {
+            this.setHtmlContent(null);
+            this.setStatus("error");
+            reject(error);
+          },
+        );
+      });
+    },
+    setStatus(newValue) {
+      this.state.status = newValue;
+      this.notify({ key: "status", newValue });
+    },
+    getHasSelectionChanged() {
+      return this.state.hasSelectionChanged;
+    },
+    hasActiveTraceSelectionChanged() {},
+    computeSelectionChanged() {
+      let hasSelectionChanged = false;
+      if (this.getTemporarySelections().length > 0) {
+        hasSelectionChanged = true;
+      } else if (this.getActiveModelTrace()) {
+        // const originalText = this.state.originalActiveModelSerializedSelections
+        //   .map((sel) => sel.text)
+        //   .join(" ");
+        // const currentText = this.getSelectionsText(
+        //   this.getActiveModelTrace().selections,
+        // );
+        // if (originalText !== currentText) {
+        //   hasSelectionChanged = true;
+        // }
+      }
+      this.setHasSelectionChanged(hasSelectionChanged);
+    },
+    setHasSelectionChanged(newValue) {
+      const oldValue = this.state.hasSelectionChanged;
+      if (oldValue === newValue) return;
+      this.state.hasSelectionChanged = newValue;
+      this.notify({ key: "hasSelectionChanged", oldValue, newValue });
+    },
+    // #region traces && active trace
+    addTrace(trace) {
+      trace.selections.forEach((selection) => {
+        selection.range = deserializeRange(selection.range);
+      });
+      this.state.traces.push(trace);
+      this.setActiveModelTrace(trace);
+      // this.notify({ key: "traces", operation: "add", value: trace });
+    },
+    setTraces(traces) {
+      if (traces.length) {
+        traces.forEach((trace) => {
+          trace.selections.forEach((selection) => {
+            selection.range = deserializeRange(selection.range);
+          });
+        });
+      }
+      this.state.traces = traces;
+      this.notify({ key: "traces", operation: "init" });
+    },
+    updateTrace(serializedTrace) {
+      const index = this.state.traces.findIndex(
+        (trace) => trace.id === serializedTrace.id,
+      );
+      if (index !== -1) {
+        const trace = this.state.traces[index];
+        trace.selections = serializedTrace.selections.map((selection) => ({
+          ...selection,
+          range: deserializeRange(selection.range),
+        }));
+        this.setActiveModelTrace(trace);
+      }
+    },
+
+    getTraces() {
+      return this.state.traces;
+    },
+    getTraceById(traceId) {
+      return this.state.traces.find((trace) => trace.id == traceId);
+    },
+    getActiveModelTrace() {
+      return this.state.activeModelTrace;
+    },
+    getSerializedActiveModelTrace() {
+      const activeModelTrace = this.getActiveModelTrace();
+      if (activeModelTrace) {
+        return {
+          ...activeModelTrace,
+          selections: activeModelTrace.selections.map(({ range, ...rest }) => ({
+            ...rest,
+            range: serializeRange(range),
+            text: range.toString(),
+          })),
+        };
+      }
+    },
+    // setOriginalActiveModelSerializedTrace(deSerializedSelections) {
+    //   this.state.originalActiveModelSerializedSelections =
+    //     deSerializedSelections.map(({ range, ...rest }) => ({
+    //       ...rest,
+    //       range: serializeRange(range),
+    //       text: range.toString(),
+    //     }));
+    // },
+    setActiveModelTrace(newValue) {
+      const oldValue = this.getActiveModelTrace();
+      this.state.activeModelTrace = newValue;
+      this.notify({ key: "activeModelTrace", oldValue, newValue });
+    },
+    setActiveModelTraceBySerializedTrace(trace) {
+      trace.selections = trace.selections.map((selection) => ({
+        ...selection,
+        range: deserializeRange(selection.range),
+      }));
+      this.setActiveModelTrace(trace);
+    },
+    setActiveModelTraceByModelId(modelId) {
+      const trace = this.state.traces.find((trace) => trace.modelId == modelId);
+      this.setActiveModelTrace(trace);
+    },
+    removeActiveModelTraceSelectionById(selectionId) {
+      let value;
+      const activeModelTrace = this.getActiveModelTrace();
+      if (activeModelTrace) {
+        const index = activeModelTrace.selections.findIndex(
+          (sel) => sel.id === selectionId,
+        );
+        if (index !== -1) {
+          value = activeModelTrace.selections[index];
+          activeModelTrace.selections.splice(index, 1);
+        }
+      }
+      this.notify({
+        key: "activeModelTrace.selections",
+        operation: "remove",
+        value,
+      });
+      // this.computeSelectionChanged();
+    },
+    updateActiveModelTraceSelectionColor(selectionId, color) {
+      const activeModelTrace = this.getActiveModelTrace();
+      if (activeModelTrace) {
+        const selection = activeModelTrace.selections.find(
+          (sel) => sel.id === selectionId,
+        );
+        if (selection && selection.color !== color) {
+          selection.color = color;
+          this.notify({
+            key: "activeModelTrace.selections",
+            operation: "update",
+            value: selection,
+          });
+        }
+      }
+    },
+    setActiveModelTraceById(traceId) {
+      const trace = this.getTraceById(traceId);
+      this.setActiveModelTrace(trace);
+      // this.notify({ key: "activeModelTrace", newValue: trace });
+    },
+    // #endregion
+    // #region temporary selections
+    getTemporarySelections() {
+      return this.state.temporarySelections;
+    },
+    getSerializedTemporarySelections() {
+      const selections = this.state.temporarySelections.selections;
+      this.state.temporarySelections.selections = getSortedSelectionsByRange(
+        this.getTemporarySelections(),
+      );
+      return this.state.temporarySelections.map(({ range, ...rest }) => ({
+        ...rest,
+        range: serializeRange(range),
+        text: range.toString(),
+      }));
+    },
+    addTemporarySelection(selection) {
+      this.state.temporarySelections.push(selection);
+      this.notify({
+        key: "temporarySelections",
+        operation: "add",
+        value: selection,
+      });
+      this.computeSelectionChanged();
+    },
+    removeTemporarySelection(selectionId) {
+      let value;
+      const index = this.state.temporarySelections.findIndex(
+        (sel) => sel.id === selectionId,
+      );
+      if (index !== -1) {
+        value = this.state.temporarySelections[index];
+        this.state.temporarySelections.splice(index, 1);
+      }
+      this.notify({ key: "temporarySelections", operation: "remove", value });
+      this.computeSelectionChanged();
+    },
+    updateTemporarySelectionColor(selectionId, color) {
+      const selection = this.state.temporarySelections.find(
+        (sel) => sel.id === selectionId,
+      );
+      if (selection && selection.color !== color) {
+        selection.color = color;
+        this.notify({
+          key: "temporarySelections",
+          operation: "update",
+          value: selection,
+        });
+      }
+    },
+
+    setTemporarySelections(newValue) {
+      const oldValue = this.state.temporarySelections;
+      this.state.temporarySelections = newValue;
+      this.notify({
+        key: "temporarySelections",
+        oldValue,
+        newValue,
+      });
+    },
+    // #endregion
+    getSelectionsText(selections) {
+      let selectedText = "";
+      selections.forEach((selection) => {
+        selectedText += selection.range.toString() + " ";
+      });
+      return selectedText.trim();
+    },
+    getSortedNewSelections() {
+      let selections = [...this.getTemporarySelections()];
+      const activeModelTrace = this.getActiveModelTrace();
+      console.log("Active trace:", activeModelTrace);
+      if (activeModelTrace)
+        selections = [...activeModelTrace.selections, ...selections];
+      return getSortedSelectionsByRange(selections);
+    },
+    getSelectedText() {
+      const sortedSeleltions = this.getSortedNewSelections();
+      return this.getSelectionsText(sortedSeleltions);
+    },
+    getSerializedSelections(selections) {
+      return selections.map(({ range, ...rest }) => ({
+        ...rest,
+        range: serializeRange(range),
+        text: range.toString(),
+      }));
+    },
+    getSerializedNewActiveModelTrace() {
+      const selections = this.getSortedNewSelections();
+      const serializedSelections = this.getSerializedSelections(selections);
+      const activeModelTrace = this.getActiveModelTrace();
+      // console.log("!!Active trace:", activeModelTrace);
+      return Object.assign(
+        { ...activeModelTrace },
+        {
+          selections: serializedSelections,
+        },
+      );
+    },
+  },
+);
+
+Store.models = Object.assign(
+  createDomainStore({
+    modelsById: {},
+  }),
+  {
+    async init() {
+      const documents = documentsStore.getDocuments();
+      let modelsById = {};
+      for (const { id: docId } of documents) {
+        const docModels = await API.documents.getDocumentModelsById(docId);
+        docModels.forEach((model) => (model.documentId = docId));
+        modelsById = {
+          ...modelsById,
+          ...docModels.reduce((acc, model) => {
+            acc[model.id] = { meta: model, documentId: docId };
+            return acc;
+          }, {}),
+        };
+      }
+      this.state.modelsById = modelsById;
+      this.notify({ operation: "init" });
+    },
+    addModel(value) {
+      this.state.modelsById[value?.meta?.id] = value;
+      this.notify({ operation: "add", value });
+    },
+    updateModelById(modelId, updates) {
+      const value = this.state.modelsById[modelId];
+      console.log("Updating model in store:", value, updates);
+      if (value) {
+        Object.assign(value, updates);
+        this.notify({ key: "models", operation: "update", value });
+      }
+    },
+    getModels() {
+      return Object.values(this.state.modelsById);
+    },
+    getModelById(modelId) {
+      return this.state.models.find((model) => model.id == modelId) || null;
+    },
+    getModelNameById(modelId) {
+      return this.state.modelsById[modelId]?.meta?.name;
+    },
+    getModelDocumentIdById(modelId) {
+      return this.state.modelsById[modelId]?.documentId;
+    },
+    /*async updateActiceModel(modelId, updatedFields) {
+      // const updatedModel = await API.Model.updateModel(modelId, updatedFields);
+      // const idx = this.state.models.findIndex((m) => m.id === updatedModel.id);
+      // this.notify({ key: "models", newValue: this.state.models });
+    },*/
+    async deleteModelById(modelId) {
+      this.notify({ key: "models", operation: "delete", id: modelId });
+      this.state.models = this.state.models.filter(
+        (model) => model.id != modelId,
+      );
+      if (window.Store.activeModel.getModelId() == modelId) {
+        window.Store.activeModel.setModel(null);
+      }
+      window.Store.traces.deleteModelTrace(modelId);
+      API.Model.deleteModelById(modelId);
+    },
+  },
+);
+
+Store.activeModel = Object.assign(
+  createDomainStore({
+    status: null, // 'loading', 'ready', 'error','generating'
+    error: null,
+    model: null,
+  }),
+  {
+    getModel() {
+      return this.state.model;
+    },
+    getModelId() {
+      return this.state.model ? this.state.model.id : null;
+    },
+    getDocumentId() {
+      const modelId = this.getModelId();
+      // console.log("Getting document ID for active model ID:", modelId);
+      return modelsStore.getModelDocumentIdById(modelId);
+    },
+    getSerializedRpstData() {
+      const model = this.getModel();
+      if (model) {
+        // console.log("!!Extracted rpst:rpst element:", rpstElement);
+        const rpstElement = $("description", model.data)[0];
+        // console.log("!!Extracted rpst:rpst element:", rpstElement);
+        if (rpstElement) {
+          return new XMLSerializer().serializeToString(rpstElement);
+        } else {
+          console.warn("No rpst:rpst element found in model data.");
+          return null;
+        }
+      } else {
+        console.warn("No active model available.");
+        return null;
+      }
+    },
+    getSerializedData() {
+      return new XMLSerializer().serializeToString(this.state.model.data);
+    },
+    setStatus(status) {
+      this.state.status = status;
+      this.notify({ key: "status", newValue: status });
+    },
+    setError(error) {
+      this.state.error = error;
+      this.notify({ key: "error", newValue: error });
+    },
+    setModel(newValue) {
+      const currentModel = this.getModel();
+      let oldValue = null;
+      var parser = new DOMParser();
+      if (currentModel) {
+        oldValue = { ...currentModel };
+        oldValue.data = new DOMParser().parseFromString(
+          $(currentModel.data).serializePrettyXML(),
+          "application/xml",
+        ).documentElement;
+      }
+      this.state.model = newValue;
+      if (newValue) {
+        let data = new DOMParser().parseFromString(
+          newValue.data,
+          "application/xml",
+        );
+        if (data.documentElement.nodeName != "description") {
+          data = $("description", data)[0];
+        } else {
+          data = data.documentElement;
+        }
+        newValue.data = data;
+      }
+      this.notify({ key: "model", oldValue, newValue });
+    },
+    // updateModelData(newData) {
+    //   if (this.state.model) {
+    //     const oldData = this.state.model.data;
+    //     this.state.model.data = newData;
+    //     this.notify({
+    //       key: "model.data",
+    //       // oldValue: oldData,
+    //       // newValue: newData,
+    //     });
+    //   }
+    // },
+    async setModelById(modelId) {
+      if (modelId) {
+        API.model.getModelById(modelId).then((model) => {
+          this.setModel(model);
+        });
+      } else {
+        this.setModel(null);
+      }
+    },
+    updateModelDbpmTextSelections(selectedText) {
+      let model = this.getModel();
+      if (model) {
+        let data = model.data;
+
+        const dbpmInfo = $("dbpm\\:info", data)[0];
+        if (!dbpmInfo) {
+          console.warn("No dbpm:info found in model data.");
+          // return modelData;
+        }
+        const documentInfo = $("dbpm\\:document_info", dbpmInfo)[0];
+        if (!documentInfo) {
+          console.warn("No dbpm:document_info found in model data.");
+          // return modelData;
+        }
+        let textSelections = $("dbpm\\:text_selections", documentInfo)[0];
+        if (!textSelections) {
+          textSelections = data.createElementNS(
+            "https://example.com/dbpm",
+            "dbpm:text_selections",
+          );
+          documentInfo.appendChild(textSelections);
+        }
+        textSelections.textContent = selectedText;
+      }
+    },
+
+    /*async updateActiceModel() {
+      const modelId = this.getModelId();
+      if (modelId) {
+        const updatedModel = await API.Model.getModelById(modelId);
+        this.setModel(updatedModel);
+      }
+    },*/
+    /*updateActiveModel(model) {
+      const modelId = this.getModelId();
+      if (modelId) {
+        API.Model.updateModelById(modelId, model).then((updatedModel) => {
+          this.setModel(updatedModel);
+        });
+      }
+    },*/
+    // deleteModel() {
+    //   modelsStore.deleteModelById(this.getModelId());
+    //   this.setModel(null);
+    // },
+  },
+);
+
+Store.projectGraph = Object.assign(
+  createDomainStore({
+    elements: [],
+  }),
+  {
+    init() {
+      const docs = documentsStore.getDocuments();
+      const nodes = docs.map((doc) => ({
+        group: "nodes",
+        data: {
+          id: `cy-${doc.id}`,
+          type: "document",
+          label: doc.name,
+          degree: 1,
+        },
+      }));
+      let edges = [];
+      const models = modelsStore.getModels();
+      models.forEach((model) => {
+        nodes.push({
+          group: "nodes",
+          data: {
+            id: `cy-${model.meta.id}`,
+            type: "model",
+            label: model.meta.name,
+            degree: 1,
+          },
+        });
+        // Edge from document to model
+        edges.push({
+          group: "edges",
+          data: {
+            source: `cy-${model.documentId}`,
+            target: `cy-${model.meta.id}`,
+            relation: "generated",
+          },
+        });
+        // Derived edges between models (if any)
+        // if (model.meta.derivedFrom && model.meta.derivedFrom.length > 0) {
+        //   model.meta.derivedFrom.forEach((sourceModelId) => {
+        //     edges.push({
+        //       data: {
+        //         source: `model-${sourceModelId}`,
+        //         target: `model-${model.meta.id}`,
+        //         relation: "derived",
+        //       },
+        //     });
+        //   });
+        // }
+      });
+      this.state.elements = [...nodes, ...edges];
+      console.log("Initialized project graph elements:", this.state.elements);
+      this.notify({ key: "elements", newValue: this.state.elements });
+    },
+    addDocumentNode(document) {
+      const node = {
+        data: {
+          id: `cy-${document.id}`,
+          type: "document",
+          label: document.name,
+          degree: 1,
+        },
+      };
+      this.state.elements.push(node);
+      this.notify({
+        key: "elements.documentNode",
+        operation: "add",
+        value: node,
+      });
+    },
+    addModelNodeAndEdge(modelMeta, documentId) {
+      const modelNode = {
+        data: {
+          group: "nodes",
+          id: `model-${modelMeta.id}`,
+          type: "model",
+          label: modelMeta.name,
+          degree: 1,
+        },
+      };
+      const edge = {
+        group: "edges",
+        data: {
+          source: `cy-${documentId}`,
+          target: `cy-${modelMeta.id}`,
+          relation: "generated",
+        },
+      };
+      this.state.elements.push(modelNode, edge);
+      // this.notify({ key: "elements", operation: "add", value: modelNode });
+      this.notify({
+        key: "elements.modelNodeAndEdge",
+        operation: "add",
+        value: { modelNode, edge },
+      });
+    },
+    getElements() {
+      return this.state.elements;
+    },
+    setGraph({ nodes, edges }) {
+      this.state.nodes = nodes;
+      this.state.edges = edges;
+      this.notify({ key: "graph", newValue: { nodes, edges } });
+    },
+    getNodes() {
+      return this.state.nodes;
+    },
+    getEdges() {
+      return this.state.edges;
+    },
+  },
+);

@@ -1,0 +1,34 @@
+---
+timestamp: '2026-02-03T23:28:52.399Z'
+event: project_created
+data:
+  id: 6a51455a-a082-4cca-8989-8521bc5f6a59
+  name: b
+---
+timestamp: '2026-02-03T23:28:58.445Z'
+event: document_uploaded
+data:
+  id: dc4087d7-9453-4110-96fc-9383f441fa15
+  name: demo_document_based_process.txt
+  words: 204
+---
+timestamp: '2026-02-03T23:28:58.447Z'
+event: document_uploaded
+data:
+  id: 19c4b99e-0051-460a-8432-cd6fca90b6a6
+  name: demo_document_based_process.txt
+  words: 204
+---
+timestamp: '2026-02-03T23:29:48.013Z'
+event: document_uploaded
+data:
+  id: 2991184d-c81f-4b72-af16-4f36e4f4be78
+  name: sample_model_with_subprocess.xml
+  words: 154
+---
+timestamp: '2026-02-03T23:29:48.017Z'
+event: document_uploaded
+data:
+  id: 50a19fb0-94a1-4943-b78c-3fc7ec46cbdf
+  name: sample_model_with_subprocess.xml
+  words: 154

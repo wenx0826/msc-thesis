@@ -1,0 +1,20 @@
+---
+timestamp: '2026-02-03T22:29:41.336Z'
+event: project_created
+data:
+  id: b74d9ce5-cdf3-479d-b8cf-0f505aab3de1
+  name: ok>
+---
+timestamp: '2026-02-03T23:28:35.319Z'
+event: document_uploaded
+data:
+  id: eadaac32-cc08-4dff-a9ba-cc1c10154ada
+  name: testset_c709de0a-e940-4c98-a59d-bf5754f0889f.xml
+  words: 571
+---
+timestamp: '2026-02-03T23:28:35.323Z'
+event: document_uploaded
+data:
+  id: 40b35023-2c4b-46e8-af5a-ff6d6d2e4e8d
+  name: testset_c709de0a-e940-4c98-a59d-bf5754f0889f.xml
+  words: 571

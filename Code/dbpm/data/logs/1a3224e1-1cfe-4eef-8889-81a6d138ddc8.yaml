@@ -1,0 +1,13 @@
+---
+timestamp: '2026-02-04T00:03:51.998Z'
+event: project_created
+data:
+  id: 1a3224e1-1cfe-4eef-8889-81a6d138ddc8
+  name: bbb
+---
+timestamp: '2026-02-04T00:03:56.609Z'
+event: document_uploaded
+data:
+  id: 93a95d86-2e13-4ae5-85b8-28b1d85ed8c1
+  name: Untitled.md
+  words: 59

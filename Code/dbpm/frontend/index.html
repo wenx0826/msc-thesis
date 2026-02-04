@@ -34,7 +34,6 @@
     <link rel="stylesheet" href="css/globalui_cpee.css" type="text/css">
 
     <!-- modelling ui -->
-    <link rel="stylesheet" href="js_cpee/wfadaptor.css" type="text/css" />
 
 
     <!-- <script type="text/javascript" src="js/parameters.js"></script>
@@ -49,12 +48,8 @@
   </style> -->
 
     <!-- my scripts -->
-    <script src="js/constants.js"></script>
-    <script src="js/api.js"></script>
-    <script src="js/store.js"></script>
-    <script src="js/service/project.service.js"></script>
-
-
+    <script src="constants.js"></script>
+    <script type="module" src="home/init.js"></script>
     <!-- my ui-->
     <link rel="stylesheet" href="css/myui.css" type="text/css" />
 
@@ -106,9 +101,7 @@
             <th>Model Count</th>
         </tr>
         <th>
-
             <template id="rowtemplate">
-
                 <tr class="">
                     <td> <a href=""><em>no name</em></a></td>
                     <td class="doc-count">0</td>
@@ -119,7 +112,6 @@
                 </tr>
             </template>
     </table>
-
     <dialog id="dlg">
         <form id="form" method="dialog">
             <h3 style="margin:0 0 10px 0;">New Project</h3>
@@ -131,97 +123,5 @@
             </div>
         </form>
     </dialog>
-
-    <script>
-        function esc(s) { return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])) }
-        // const projects = [
-        //     {
-        //         "id": "proj-001",
-        //         "name": "Project Alpha",
-
-        //     },
-        //     {
-        //         "id": "proj-002",
-        //         "name": "Project Beta",
-        //     },
-        //     {
-        //         "id": "proj-003",
-        //         "name": "Project Gamma",
-        //     },
-        // ];
-
-        function renderProject(project) {
-            const $table = $("#projectTable");
-
-            const $row = $($("#rowtemplate").html());
-            $row.find("a")
-                .attr("href", "workspace.html?project_id=" + encodeURIComponent(project.id))
-                .text(esc(project.name));
-            $row.find(".doc-count").text(project.documentCount || 0);
-            $row.find(".model-count").text(project.modelCount || 0);
-            $table.append($row);
-        }
-
-        function loadProjects() {
-            API.project.getProjectList().then(async (projects) => {
-                console.log("Loaded projects:", projects);
-                // projects.forEach(async p => {
-                //     // const projectDocumentCount =
-                //     p.documentCount = await projectService.getDocumentCount(p.id);
-                //     p.modelCount = await projectService.getModelCount(p.id);
-                //     renderProject(p);
-                // });
-                for (const p of projects) {
-                    p.documentCount = await projectService.getDocumentCount(p.id);
-                    p.modelCount = await projectService.getModelCount(p.id);
-                    renderProject(p);
-                }
-            }).catch(err => {
-                console.log("Failed to load projects:", err);
-            });
-        }
-
-        $(function () {
-            console.log(
-                "index.html Starting initialization...",
-                new Date().toISOString(),
-            );
-            loadProjects();
-            const dlg = document.getElementById("dlg");
-            $("#btnCreate").on("click", function () {
-                $("#err").text("");
-                $("#name").val("");
-                dlg.showModal();
-                $("#name").trigger("focus");
-            });
-
-            $("#cancel").on("click", function () { dlg.close(); });
-
-            $("#form").on("submit", function (e) {
-                e.preventDefault();
-                const name = $("#name").val().trim();
-                $("#err").text("");
-                if (!name) { $("#err").text("Name is required."); return; }
-                $("#save").prop("disabled", true);
-                projectService.createProject({ name }).then(project => {
-                    window.location.assign("workspace.html?project_id=" + encodeURIComponent(project.id));
-                }).catch(err => {
-                    $("#err").text(err.message);
-                    $("#save").prop("disabled", false);
-                });
-                // API.project.createProject(name).then(resp => {
-                //     console.log("Project created:", resp);
-                //     // dlg.close();
-                //     window.location.assign("main.html?project_id=" + encodeURIComponent(resp.id));
-                // }).catch(err => {
-                //     $("#err").text(err.message);
-                //     $("#save").prop("disabled", false);
-                // });
-
-            });
-
-        });
-    </script>
-
 </body>
 </html>

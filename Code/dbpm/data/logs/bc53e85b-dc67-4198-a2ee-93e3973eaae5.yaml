@@ -1,0 +1,13 @@
+---
+timestamp: '2026-02-03T23:37:06.324Z'
+event: project_created
+data:
+  id: bc53e85b-dc67-4198-a2ee-93e3973eaae5
+  name: new
+---
+timestamp: '2026-02-03T23:37:10.573Z'
+event: document_uploaded
+data:
+  id: 62ca37aa-7b73-4183-9ceb-a31f4a6b8190
+  name: Plain Instance.xml
+  words: 45
