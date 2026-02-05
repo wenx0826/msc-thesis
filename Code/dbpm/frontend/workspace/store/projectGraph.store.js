@@ -37,8 +37,9 @@ export const projectGraphStore = Object.assign(
         });
       });
       this.state.elements = [...nodes, ...edges];
-      console.log("Initialized project graph elements:", this.state.elements);
-      this.notify({ key: "elements", newValue: this.state.elements });
+    },
+    getElements() {
+      return this.state.elements;
     },
     addDocumentNode(document) {
       const node = {
@@ -80,20 +81,6 @@ export const projectGraphStore = Object.assign(
         operation: "add",
         value: { modelNode, edge },
       });
-    },
-    getElements() {
-      return this.state.elements;
-    },
-    setGraph({ nodes, edges }) {
-      this.state.nodes = nodes;
-      this.state.edges = edges;
-      this.notify({ key: "graph", newValue: { nodes, edges } });
-    },
-    getNodes() {
-      return this.state.nodes;
-    },
-    getEdges() {
-      return this.state.edges;
     },
   },
 );

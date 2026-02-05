@@ -2,7 +2,7 @@
 import { workspaceStore, documentsStore } from "../store/index.js";
 import { workspaceService, documentService } from "../services/index.js";
 
-let $documentList;
+const $documentList = $("#documentList");
 
 const getFileContentInHTML = async (file) => {
   let fileContent = "";
@@ -45,23 +45,23 @@ const removeDocumentItem = (documentId) => {
 };
 
 const renderDocumentItem = async ({ id: documentId, name: documentName }) => {
-  const $li = $("<li>");
-  $li.attr("data-docid", String(documentId));
-  $li.on("click", onDocumentItemSelect);
+  // Clone the template
+  const template = document.getElementById("documentItemTemplate");
+  const $li = $(template.content.cloneNode(true).querySelector("li"));
 
-  const $span = $("<span>").text(documentName);
-  const deleteDocButton = $("<button>")
-    .text("Delete")
-    .prop("disabled", true)
-    .on("click", async (event) => {
-      event.stopPropagation();
-      documentsStore.deleteDocumentById(documentId).then(() => {
-        // removeDocumentItem(documentId);
-      });
-    });
-  $li.append($span);
-  $li.append(deleteDocButton);
+  // Set data and content
   $li.attr("data-docid", String(documentId));
+  $li.find(".document-name").text(documentName);
+
+  // Set up event handlers
+  $li.on("click", onDocumentItemSelect);
+  $li.find(".delete-document-btn").on("click", async (event) => {
+    event.stopPropagation();
+    documentsStore.deleteDocumentById(documentId).then(() => {
+      // removeDocumentItem(documentId);
+    });
+  });
+
   $documentList.append($li);
 };
 
@@ -77,7 +77,9 @@ const highlightActiveDocumentItem = (activeDocumentId) => {
 };
 
 export function initDocumentsUI() {
-  $documentList = $("#documentList");
+  documentsStore.getDocuments().forEach((doc) => {
+    renderDocumentItem(doc);
+  });
 
   // Set up file input handler
   $("#documentsInput").on("change", async (event) => {
@@ -107,11 +109,6 @@ export function initDocumentsUI() {
 
   documentsStore.subscribe((state, { key, operation, id }) => {
     switch (operation) {
-      case "init":
-        state.documents.forEach((doc) => {
-          renderDocumentItem(doc);
-        });
-        break;
       case "add":
         renderDocumentItem(state.documents.find((doc) => doc.id === id));
         break;

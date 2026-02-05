@@ -34,16 +34,21 @@ export const workspaceService = {
 
   async loadWorkspace(projectId) {
     // Phase 1: Init independent stores (parallel)
-    console.log("Loading workspace for project ID:", projectId);
-    projectStore.init(projectId);
-    await documentsStore.init(projectId);
-    // Phase 2: Init dependent stores (pass data explicitly)
-    const documents = documentsStore.getDocuments();
-    await modelsStore.init(documents);
+    // console.log("Loading workspace for project ID:", projectId);
+    // projectStore.init(projectId);
+    // await documentsStore.init(projectId);
+    // // Phase 2: Init dependent stores (pass data explicitly)
+    // const documents = documentsStore.getDocuments();
+    // await modelsStore.init(documents);
+    // // Phase 3: Init aggregate stores
+    // const models = modelsStore.getModels();
+    // projectGraphStore.init(documents, models);
+    // // Phase 4: Restore workspace state
+    // this.restoreWorkspaceState(projectId);
+  },
 
-    // Phase 3: Init aggregate stores
-    const models = modelsStore.getModels();
-    projectGraphStore.init(documents, models);
+  restoreWorkspaceState(projectId) {
+    const documents = documentsStore.getDocuments();
 
     // Try to restore from localStorage
     const cached = this._loadFromStorage(projectId);

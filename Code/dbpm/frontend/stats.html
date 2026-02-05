@@ -36,7 +36,6 @@
   <!-- modelling ui -->
   <link rel="stylesheet" href="js_cpee/wfadaptor.css" type="text/css" />
 
-
   <!-- <script type="text/javascript" src="js/parameters.js"></script>
     <script type="text/javascript" src="js/modifiers.js"></script> -->
   <!-- Flos Stuff -->
@@ -49,7 +48,7 @@
   </style> -->
 
   <!-- Shared scripts (used by all pages) -->
-  <script src="js/api.js"></script>
+  <script src="stats/init.js" type="module"></script>
 
   <!-- my ui-->
   <link rel="stylesheet" href="css/myui.css" type="text/css" />
@@ -58,7 +57,21 @@
 
   </style>
 </head>
-<body>
+<body is="x-ui-">
+  <ui-bar>
+    <div>
+      <span style="font-size: 1.2em;"><a href="stats.html">Statistics</a></span> >
+      <span id="projectName" style="font-size: 1.2em; font-weight: bold;"></span>
+    </div>
+  </ui-bar>
   <!-- <a href="index.html" class="back-link">← Back to Projects</a> -->
+  <ul id="documentList">
+    <!-- Template for document list items -->
+    <template id="documentItemTemplate">
+      <li data-docid="">
+        <span class="document-name"></span>
+      </li>
+    </template>
+  </ul>
 </body>
 </html>

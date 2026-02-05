@@ -90,28 +90,34 @@
         } */
     </style>
 </head>
-<body>
-    <h1>Document-Based Process Modeller</h1>
-    <button id="btnCreate">Create a new project</button>
-    <h3>All projects</h3>
-    <table id="projectTable">
-        <tr>
-            <th>Project Name</th>
-            <th>Document Count</th>
-            <th>Model Count</th>
-        </tr>
-        <th>
-            <template id="rowtemplate">
-                <tr class="">
-                    <td> <a href=""><em>no name</em></a></td>
-                    <td class="doc-count">0</td>
-                    <td class="model-count">0</td>
-                    <!-- <td>This is a prototype for managing multiple projects. In a real application, projects would be stored
-                    on a
-                    server and retrieved via API calls.</td> -->
-                </tr>
-            </template>
-    </table>
+<body is="x-ui-">
+    <ui-bar>
+        <div class="right"><a>Tutorial</a></div>
+    </ui-bar>
+    <main>
+        <h1>Document-Based Process Modeller</h1>
+        <button id="btnCreate">Create Project</button>
+        <h3>All projects</h3>
+        <table id="projectTable">
+            <tr>
+                <th>Project</th>
+                <th>Documents</th>
+                <th>Models</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+            <th>
+                <template id="rowtemplate">
+                    <tr class="">
+                        <td> <a href=""><em>no name</em></a></td>
+                        <td class="doc-count"></td>
+                        <td class="model-count"></td>
+                        <td class="created"></td>
+                        <td class="actions">...</td>
+                    </tr>
+                </template>
+        </table>
+    </main>
     <dialog id="dlg">
         <form id="form" method="dialog">
             <h3 style="margin:0 0 10px 0;">New Project</h3>

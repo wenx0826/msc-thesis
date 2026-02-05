@@ -90,7 +90,7 @@ export const modelsAPI = {
     const response = await fetch(`${baseURL}/${this.path}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ projectId, model, trace }),
+      body: JSON.stringify({ model, trace }),
     });
     return handleResponse(response, "Failed to create model");
   },
@@ -109,7 +109,7 @@ export const modelsAPI = {
     const response = await fetch(`${baseURL}/${this.path}/${id}/data`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ projectId, modelData }),
+      body: JSON.stringify({ modelData }),
     });
     return handleResponse(response, "Failed to update model data");
   },
@@ -118,13 +118,16 @@ export const modelsAPI = {
     const response = await fetch(`${baseURL}/${this.path}/${modelId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ projectId, ...params }),
+      body: JSON.stringify(params),
     });
     return handleResponse(response, "Failed to update model and trace");
   },
 
   async deleteModelById(id) {
-    // TODO: implement
+    const response = await fetch(`${baseURL}/${this.path}/${id}`, {
+      method: "DELETE",
+    });
+    return handleResponse(response, "Failed to delete model");
   },
 
   // Sub-API for accessing all records (including soft-deleted)

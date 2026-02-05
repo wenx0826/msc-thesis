@@ -11,7 +11,7 @@ export const documentsAPI = {
     return await response.json();
   },
 
-  async getAllDocumentsByProjectId(projectId) {
+  async getAllByProjectId(projectId) {
     const response = await fetch(
       `${baseURL}/projects/${projectId}/documents/all`,
     );

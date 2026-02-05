@@ -21,7 +21,6 @@ export const modelsStore = Object.assign(
         };
       }
       this.state.modelsById = modelsById;
-      this.notify({ operation: "init" });
     },
     addModel(value) {
       this.state.modelsById[value?.meta?.id] = value;

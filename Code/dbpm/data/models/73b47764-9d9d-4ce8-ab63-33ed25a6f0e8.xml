@@ -1,8 +1,8 @@
 <description>
   <dbpm:info xmlns:dbpm="https://example.com/dbpm">
     <dbpm:document_info>
-      <dbpm:document_id>2d423f5d-3162-4508-958d-1bf0fc12b324</dbpm:document_id>
-      <dbpm:text_selections>n. The process end</dbpm:text_selections>
+      <dbpm:document_id>f6d5b4ec-79fc-4e61-866a-e26faefe3bb4</dbpm:document_id>
+      <dbpm:text_selections/>
     </dbpm:document_info>
   </dbpm:info>
   <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
@@ -53,7 +53,7 @@
                   <description/>
                 </implementation>
               </documentation>
-            </call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" endpoint="" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call>
+            </call>
           </parallel_branch>
           <manipulate id="a4" label="" svg-id="a4" svg-type="manipulate" svg-subtype="manipulate">data.i += 1</manipulate>
         </loop>

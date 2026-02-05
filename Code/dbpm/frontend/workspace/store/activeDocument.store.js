@@ -19,6 +19,12 @@ export const activeDocumentStore = Object.assign(
     temporarySelections: [],
   }),
   {
+    init(documentId) {
+      if (documentId) {
+        return this.setDocumentById(documentId);
+      }
+      return Promise.resolve();
+    },
     getStatus() {
       return this.state.status;
     },

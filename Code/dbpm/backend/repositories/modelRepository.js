@@ -1,6 +1,25 @@
 const db = require("../database");
 
 class ModelRepository {
+  getProjectIdByModelId(modelId) {
+    const stmt = db.prepare(`
+      SELECT d.projectId
+      FROM models m
+      JOIN documents d ON m.documentId = d.id
+      WHERE m.id = ?
+    `);
+    const result = stmt.get(modelId);
+    return result?.projectId ?? null;
+  }
+
+  getProjectIdByDocumentId(documentId) {
+    const stmt = db.prepare(`
+      SELECT projectId FROM documents WHERE id = ?
+    `);
+    const result = stmt.get(documentId);
+    return result?.projectId ?? null;
+  }
+
   create(id, name, timestamp, documentId, words) {
     const stmt = db.prepare(
       "INSERT INTO models (id, name, timestamp, documentId, status, regeneratedByPromptTimes, regeneratedBySelectionsTimes, words) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",

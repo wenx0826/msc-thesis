@@ -12,8 +12,9 @@ const {
 
 // POST /models - Create a new model
 router.post("/", (req, res) => {
-  const { projectId, model, trace } = req.body;
+  const { model, trace } = req.body;
   const { data: modelData, meta } = model;
+  const projectId = modelRepo.getProjectIdByDocumentId(trace.documentId);
   const id = crypto.randomUUID();
   const timestamp = new Date().toISOString();
 
@@ -99,7 +100,8 @@ router.get("/all", (req, res) => {
 // PUT /models/:id - Update model
 router.put("/:id", (req, res) => {
   const modelId = req.params.id;
-  const { projectId, modelData, trace, type } = req.body;
+  const { modelData, trace, type } = req.body;
+  const projectId = modelRepo.getProjectIdByModelId(modelId);
   console.log("Updating model for ID:", modelId);
 
   try {
@@ -131,7 +133,8 @@ router.put("/:id", (req, res) => {
 // PUT /models/:id/data - Update model data only
 router.put("/:id/data", (req, res) => {
   const modelId = req.params.id;
-  const { projectId, modelData } = req.body;
+  const { modelData } = req.body;
+  const projectId = modelRepo.getProjectIdByModelId(modelId);
   console.log("Updating model content for ID:", modelId);
 
   try {
@@ -153,6 +156,7 @@ router.put("/:id/data", (req, res) => {
 // DELETE /models/:id - Soft delete a model
 router.delete("/:id", (req, res) => {
   const modelId = req.params.id;
+  const projectId = modelRepo.getProjectIdByModelId(modelId);
   try {
     const model = modelRepo.findById(modelId);
     if (!model) {
@@ -161,6 +165,7 @@ router.delete("/:id", (req, res) => {
 
     modelRepo.softDelete(modelId);
     res.json({ message: "Model deleted" });
+    logEvent(projectId, "model_deleted", { id: modelId, name: model.name });
   } catch (err) {
     console.error("Failed to delete model:", err);
     res.status(500).json({ error: "Failed to delete model" });

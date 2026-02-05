@@ -6,32 +6,31 @@ function changeProjectName(name) {
   $("#projectName").text(name || "Unnamed Project");
 }
 
+function updateLogLink(projectId) {
+  const logLink = document.getElementById("logLink");
+  if (logLink && projectId) {
+    logLink.href = "/data/logs/" + projectId + ".yaml";
+  }
+}
+
 export function initHeaderUI() {
-  projectStore.subscribe((state, { key, oldValue, newValue }) => {
+  const projectId = workspaceStore.getProjectId();
+  updateLogLink(projectId);
+  changeProjectName(projectStore.state.name);
+  // Subscribe for runtime changes (e.g., user renames project)
+  projectStore.subscribe((state, { key, newValue }) => {
     if (key === "name") {
       changeProjectName(newValue);
     }
   });
 
-  // Initialize with current project name if available
-  $(function () {
-    const statsLink = document.getElementById("statsLink");
-    if (statsLink) {
-      statsLink.href = "stats.html" + window.location.search;
-    }
+  // Initialize with current values from stores (data already loaded)
 
-    const logLink = document.getElementById("logLink");
-    if (logLink) {
-      logLink.href = "/data/logs/" + workspaceStore.getProjectId() + ".yaml";
-    }
+  // Set up static links
+  const statsLink = document.getElementById("statsLink");
+  if (statsLink) {
+    statsLink.href = "stats.html" + window.location.search;
+  }
 
-    // Set up iframe
-    const iframe = document.getElementById("converter-frame");
-    if (iframe) {
-      iframe.addEventListener("load", () => {
-        iframeLoaded = true;
-      });
-    }
-  });
   console.log("Header UI initialized");
 }

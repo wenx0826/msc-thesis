@@ -1,48 +1,29 @@
 // Active Model UI Module
 import {
-  workspaceStore,
   activeModelStore,
   modelsStore,
+  workspaceStore,
 } from "../store/index.js";
 import { modelService } from "../services/index.js";
 import { endpointAPI } from "../../api/index.js";
 
 const MODEL_UPDATE_TYPE = window.Constants?.MODEL_UPDATE_TYPE;
 
-let iframeLoaded = false;
-function waitForIframe() {
-  return new Promise((resolve) => {
-    const iframe = document.getElementById("converter-frame");
-    if (
-      iframe.contentDocument &&
-      iframe.contentDocument.readyState === "complete"
-    ) {
-      iframeLoaded = true;
-      resolve();
-    } else {
-      iframe.addEventListener("load", () => {
-        iframeLoaded = true;
-        resolve();
-      });
-    }
-  });
-}
-
-let $modelActionBar;
-let $exportTestsetButton;
-let $deleteModelButton;
-let $datDetails;
-let $regeneratedModelActionBar;
-let $viewPrevModelButton;
-let $viewNewModelButton;
-let $revertPrevModelButton;
-let $keepNewModelButton;
-let $promptInput;
-let $promptContainer;
-let $promptActionBar;
-let $sendPromptButton;
-let $clearPromptButton;
-let $viewModelDataLink;
+const $modelActionBar = $("#modelActionBar");
+const $exportTestsetButton = $("#exportTestsetButton");
+const $deleteModelButton = $("#deleteModelButton");
+const $datDetails = $("#dat_details");
+const $regeneratedModelActionBar = $("#regeneratedModelActionBar");
+const $viewPrevModelButton = $("#viewPrevModelButton");
+const $viewNewModelButton = $("#viewNewModelButton");
+const $revertPrevModelButton = $("#revertPrevModelButton");
+const $keepNewModelButton = $("#keepNewModelButton");
+const $promptInput = $("#promptInput");
+const $promptContainer = $("#promptContainer");
+const $promptActionBar = $("#promptActionBar");
+const $sendPromptButton = $("#sendPromptButton");
+const $clearPromptButton = $("#clearPromptButton");
+const $viewModelDataLink = $("#viewModelDataLink");
 
 function syncActiveModelGraphInList() {
   var gc = $("#graphcanvas").clone();
@@ -148,21 +129,6 @@ const showActiveModel = async (model) => {
 
 export function initActiveModelUI() {
   // Initialize DOM references
-  $modelActionBar = $("#modelActionBar");
-  $exportTestsetButton = $("#exportTestsetButton");
-  $deleteModelButton = $("#deleteModelButton");
-  $datDetails = $("#dat_details");
-  $regeneratedModelActionBar = $("#regeneratedModelActionBar");
-  $viewPrevModelButton = $("#viewPrevModelButton");
-  $viewNewModelButton = $("#viewNewModelButton");
-  $revertPrevModelButton = $("#revertPrevModelButton");
-  $keepNewModelButton = $("#keepNewModelButton");
-  $promptInput = $("#promptInput");
-  $promptContainer = $("#promptContainer");
-  $promptActionBar = $("#promptActionBar");
-  $sendPromptButton = $("#sendPromptButton");
-  $clearPromptButton = $("#clearPromptButton");
-  $viewModelDataLink = $("#viewModelDataLink");
 
   // Set up event handlers
   $viewModelDataLink.on("click", (e) => {
@@ -309,6 +275,3 @@ export function initActiveModelUI() {
 
   console.log("Active Model UI initialized");
 }
-
-// Export for legacy code
-window.saveActiveModel = saveActiveModel;

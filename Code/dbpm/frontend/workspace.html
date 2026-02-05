@@ -68,12 +68,17 @@
 
   <!-- my ui-->
   <link rel="stylesheet" href="css/myui.css" type="text/css" />
+  <link rel="stylesheet" href="css/workspace.css" type="text/css" />
 
 </head>
 <body is="x-ui-">
   <ui-bar>
     <div>
-      <span style="font-size: 1.2em;"><a href="index.html">Projects</a></span> >
+      <span style="font-size: 1.2em;"><a href="index.html" title="Home"><svg width="16" height="16" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9,22 9,12 15,12 15,22"></polyline>
+          </svg></a></span> >
       <span id="projectName" style="font-size: 1.2em; font-weight: bold;"></span>
     </div>
     <div class="right action-group">
@@ -96,11 +101,20 @@
           <ui-content>
             <ui-area data-belongs-to-tab="documents" id="areadocuments">
               <ul id="documentList">
+                <!-- Template for document list items -->
+                <template id="documentItemTemplate">
+                  <li data-docid="">
+                    <span class="document-name"></span>
+                    <button class="delete-document-btn" disabled>Delete</button>
+                  </li>
+                </template>
               </ul>
               <!-- <form onsubmit="return false;"> -->
               <label for="documentsInput" style="cursor:pointer;">Upload Documents</label>
               <input type="file" id="documentsInput" multiple />
               <!-- </form> -->
+
+
             </ui-area>
           </ui-content>
         </ui-tabbed>

@@ -14,8 +14,13 @@ export const workspaceStore = Object.assign(
   }),
   {
     async init(projectId) {
-      this.state.projectId = projectId;
+      this.setProjectId(projectId);
       const project = await projectsAPI.getProjectById(projectId);
+    },
+    setProjectId(projectId) {
+      const oldValue = this.state.projectId;
+      this.state.projectId = projectId;
+      this.notify({ key: "projectId", oldValue, newValue: projectId });
     },
     getProjectId() {
       return this.state.projectId;
@@ -53,7 +58,7 @@ export const workspaceStore = Object.assign(
       this.state.theme = theme;
     },
     setWorkspace({ projectId, activeDocumentId, activeModelId }) {
-      this.state.projectId = projectId;
+      this.setProjectId(projectId);
       this.setActiveDocumentId(activeDocumentId);
       this.setActiveModelId(activeModelId);
     },

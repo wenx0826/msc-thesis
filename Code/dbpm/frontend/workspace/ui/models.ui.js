@@ -2,12 +2,27 @@
 import { workspaceStore, modelsStore } from "../store/index.js";
 import { workspaceService } from "../services/index.js";
 
-let $modelsArea;
+const $modelsArea = $("#models");
 let seq = 0;
 const pending = new Map();
 
+function waitForIframe() {
+  return new Promise((resolve) => {
+    const iframe = document.getElementById("converter-frame");
+    if (
+      iframe.contentDocument &&
+      iframe.contentDocument.readyState === "complete"
+    ) {
+      resolve();
+    } else {
+      iframe.addEventListener("load", () => {
+        resolve();
+      });
+    }
+  });
+}
+
 function getModelSvg(input) {
-  console.log("getModelSvg called from:", new Error().stack);
   return new Promise(async (resolve, reject) => {
     const id = ++seq;
     pending.set(id, { resolve, reject });
@@ -37,8 +52,11 @@ async function renderModelInList(model) {
     workspaceService.toggleModelSelection(modelId);
   });
   $modelContainer.append($gridDiv);
+  console.log("Received SVG for model ID", modelId);
   try {
+    console.log("Received SVG for model ID", modelId);
     const outputFrame = await getModelSvg({ id: modelId });
+
     model.svg = new DOMParser().parseFromString(
       outputFrame,
       "image/svg+xml",
@@ -71,19 +89,21 @@ const removeModelFromList = (modelId) => {
   $(`.model-container[data-modelid="${modelId}"]`).remove();
 };
 
-export function initModelsUI() {
-  $modelsArea = $("#models");
-
-  // Listen for messages from iframe
+export async function initModelsUI() {
   window.addEventListener("message", (e) => {
     const { id, ok, result, error } = e.data || {};
     if (!pending.has(id)) return;
-
     const { resolve, reject } = pending.get(id);
     pending.delete(id);
-
     ok ? resolve(result) : reject(new Error(error));
   });
+
+  await waitForIframe();
+  console.log("Converter iframe is ready");
+  const models = modelsStore.getModels();
+  for (const model of models) {
+    await renderModelInList(model);
+  }
 
   // Subscribe to store changes
   workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
@@ -103,12 +123,6 @@ export function initModelsUI() {
 
   modelsStore.subscribe(async (state, { key, operation, value }) => {
     switch (operation) {
-      case "init":
-        const models = modelsStore.getModels();
-        for (const model of models) {
-          await renderModelInList(model);
-        }
-        break;
       case "add":
         await renderModelInList(value);
         break;
