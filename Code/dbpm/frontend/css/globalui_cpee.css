@@ -11,20 +11,34 @@
   --x-outside-behind-text-active-color: #333;
 }
 
-*[is=x-ui-] ui-tabbar > ui-tab.inactive, ui-tabbed > ui-tabbar > ui-tab.switch {
+*[is="x-ui-"] ui-tabbar > ui-tab.inactive,
+ui-tabbed > ui-tabbar > ui-tab.switch {
   background-color: var(--x-tab-inactive-color);
 }
 
-[is=x-ui-] #model ui-tabbar, [is=x-ui-] #instance ui-tabbar {
+[is="x-ui-"] #model ui-tabbar,
+[is="x-ui-"] #instance ui-tabbar {
   /* background if necessary */
 }
 
-*[is=x-ui-] #model ui-tabbar > ui-behind a:link   , *[is=x-ui-] #instance ui-tabbar > ui-behind a:link    { color:var(--x-outside-behind-text-color); }
-*[is=x-ui-] #model ui-tabbar > ui-behind a:visited, *[is=x-ui-] #instance ui-tabbar > ui-behind a:visited { color:var(--x-outside-behind-text-color); }
-*[is=x-ui-] #model ui-tabbar > ui-behind a:hover  , *[is=x-ui-] #instance ui-tabbar > ui-behind a:hover   { color:var(--x-outside-behind-text-active-color); }
-*[is=x-ui-] #model ui-tabbar > ui-behind a:active , *[is=x-ui-] #instance ui-tabbar > ui-behind a:active  { color:var(--x-outside-behind-text-active-color);  }
+*[is="x-ui-"] #model ui-tabbar > ui-behind a:link,
+*[is="x-ui-"] #instance ui-tabbar > ui-behind a:link {
+  color: var(--x-outside-behind-text-color);
+}
+*[is="x-ui-"] #model ui-tabbar > ui-behind a:visited,
+*[is="x-ui-"] #instance ui-tabbar > ui-behind a:visited {
+  color: var(--x-outside-behind-text-color);
+}
+*[is="x-ui-"] #model ui-tabbar > ui-behind a:hover,
+*[is="x-ui-"] #instance ui-tabbar > ui-behind a:hover {
+  color: var(--x-outside-behind-text-active-color);
+}
+*[is="x-ui-"] #model ui-tabbar > ui-behind a:active,
+*[is="x-ui-"] #instance ui-tabbar > ui-behind a:active {
+  color: var(--x-outside-behind-text-active-color);
+}
 
-[is=x-ui-] ui-tabbar .logo {
+[is="x-ui-"] ui-tabbar .logo {
   display: inline-block;
   content: url(/global_ui/logo.svg);
   background-size: contain;

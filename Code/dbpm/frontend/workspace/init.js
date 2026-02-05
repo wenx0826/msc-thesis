@@ -38,31 +38,31 @@ const projectStoreReady = projectStore.init(projectId);
 const documentsReady = documentsStore.init(projectId);
 
 // Initialize UI progressively as stores become ready
-$(document).ready(async () => {
-  console.log("workspace/init.js - DOM ready", new Date().toISOString());
+// $(document).ready(async () => {
+console.log("workspace/init.js - DOM ready", new Date().toISOString());
 
-  // Header UI - needs projectStore
-  projectStoreReady.then(() => {
-    initHeaderUI();
-  });
-
-  await documentsReady;
-  const documents = documentsStore.getDocuments();
-  initDocumentsUI();
-  await modelsStore.init(documents);
-  initModelsUI();
-
-  const models = modelsStore.getModels();
-  projectGraphStore.init(documents, models);
-  initProjectGraphUI();
-
-  const activeDocumentId =
-    documents.length > 0 ? documents[documents.length - 1].id : null;
-  activeDocumentStore.init(activeDocumentId);
-  initActiveDocumentUI();
-  initActiveModelUI();
-  initActiveModelDetailsUI();
-  workspaceStore.setActiveDocumentId(activeDocumentId);
-
-  console.log("Workspace init complete", new Date().toISOString());
+// Header UI - needs projectStore
+projectStoreReady.then(() => {
+  initHeaderUI();
 });
+
+await documentsReady;
+const documents = documentsStore.getDocuments();
+initDocumentsUI();
+await modelsStore.init(documents);
+initModelsUI();
+
+const models = modelsStore.getModels();
+projectGraphStore.init(documents, models);
+initProjectGraphUI();
+
+const activeDocumentId =
+  documents.length > 0 ? documents[documents.length - 1].id : null;
+activeDocumentStore.init(activeDocumentId);
+initActiveDocumentUI();
+initActiveModelUI();
+initActiveModelDetailsUI();
+workspaceStore.setActiveDocumentId(activeDocumentId);
+
+console.log("Workspace init complete", new Date().toISOString());
+// });

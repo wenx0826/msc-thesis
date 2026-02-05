@@ -1,4 +1,4 @@
-window.Constants = {
+export const Constants = {
   MODE: "dev",
   EMPTY_MODEL: `<description xmlns="http://cpee.org/ns/description/1.0"/>`,
   MODEL_UPDATE_TYPE: {
@@ -9,3 +9,6 @@ window.Constants = {
     MANUAL_UPDATE_GRAPH_CHANGED: "manual_update_graph_changed",
   },
 };
+
+// For backward compatibility with non-module scripts
+window.Constants = Constants;

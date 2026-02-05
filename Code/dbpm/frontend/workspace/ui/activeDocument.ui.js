@@ -5,8 +5,9 @@ import {
   modelsStore,
 } from "../store/index.js";
 import { workspaceService, modelService } from "../services/index.js";
+import { Constants } from "../../constants.js";
 
-const MODEL_UPDATE_TYPE = window.Constants?.MODEL_UPDATE_TYPE;
+const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
 
 let $selectionColorForm;
 let $deleteSelectionButton;

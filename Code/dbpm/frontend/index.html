@@ -6,40 +6,19 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Doc-Based Process Modeller</title>
     <script type="text/javascript" src="https://cpee.org/js_libs/jquery.min.js"></script>
-
-
     <script type="text/javascript" src="https://cpee.org/js_libs/jquery.browser.js"></script>
-    <script type="text/javascript" src="https://cpee.org/js_libs/jquery.caret.min.js"></script>
-    <script type="text/javascript" src="https://cpee.org/js_libs/jquery.cookie.js"></script>
-    <script type="text/javascript" src="https://cpee.org/js_libs/jquery.svg.min.js"></script>
-    <script type="text/javascript" src="https://cpee.org/js_libs/jquery.svgdom.min.js"></script>
-
-    <!-- <script type="text/javascript" src="/js_libs/build-bpmn.js"></script> -->
-    <script type="text/javascript" src="js_libs/custommenu.js"></script>
-    <script type="text/javascript" src="js_libs/marked.min.js"></script>
-    <script type="text/javascript" src="js_libs/parsequery.js"></script>
-    <script type="text/javascript" src="js_libs/printf.js"></script>
-    <script type="text/javascript" src="js_libs/relaxngui.js"></script>
-    <script type="text/javascript" src="js_libs/strftime.min.js"></script>
-    <script type="text/javascript" src="js_libs/uidash.js"></script>
-    <script type="text/javascript" src="js_libs/underscore.min.js"></script>
-    <script type="text/javascript" src="js_libs/vkbeautify.js"></script>
-
-    <link rel="stylesheet" href="js_libs/custommenu.css" type="text/css" />
-    <link rel="stylesheet" href="js_libs/relaxngui.css" type="text/css">
-    <link rel="stylesheet" href="js_libs/uidash.css" type="text/css">
-    <link rel="stylesheet" href="js_libs/uidash-icons.css" type="text/css">
-
-    <link rel="stylesheet" href="css/ui.css" type="text/css">
-    <link rel="stylesheet" href="css/globalui_cpee.css" type="text/css">
-
-    <!-- modelling ui -->
+    <script type="module" src="home/init.js"></script>
+    <script type="text/javascript" src="https://cpee.org/js_libs/uidash.js" defer></script>
+    <link rel="stylesheet" href="https://cpee.org/js_libs/uidash.css" type="text/css">
+    <script type="text/javascript" src="https://cpee.org/js_libs/custommenu.js" defer></script>
+    <link rel="stylesheet" href="https://cpee.org/js_libs/custommenu.css" type="text/css" />
 
 
-    <!-- <script type="text/javascript" src="js/parameters.js"></script>
-    <script type="text/javascript" src="js/modifiers.js"></script> -->
-    <!-- Flos Stuff -->
-    <!-- <script type="text/javascript" src="js/structured.js"></script> -->
+    <!-- <link rel="stylesheet" href="css/ui.css" type="text/css">
+    <link rel="stylesheet" href="css/globalui_cpee.css" type="text/css"> -->
+
+
+    <link rel="stylesheet" href="css/myui.css" type="text/css" />
     <!-- <style type="text/css">
     @font-face {
       font-family: TencentSans;
@@ -47,11 +26,7 @@
     }
   </style> -->
 
-    <!-- my scripts -->
-    <script src="constants.js"></script>
-    <script type="module" src="home/init.js"></script>
-    <!-- my ui-->
-    <link rel="stylesheet" href="css/myui.css" type="text/css" />
+
 
     <style>
         /* body {
@@ -94,30 +69,44 @@
     <ui-bar>
         <div class="right"><a>Tutorial</a></div>
     </ui-bar>
-    <main>
+    <ui-rest>
         <h1>Document-Based Process Modeller</h1>
         <button id="btnCreate">Create Project</button>
-        <h3>All projects</h3>
-        <table id="projectTable">
-            <tr>
-                <th>Project</th>
-                <th>Documents</th>
-                <th>Models</th>
-                <th>Created</th>
-                <th>Actions</th>
-            </tr>
-            <th>
-                <template id="rowtemplate">
-                    <tr class="">
-                        <td> <a href=""><em>no name</em></a></td>
-                        <td class="doc-count"></td>
-                        <td class="model-count"></td>
-                        <td class="created"></td>
-                        <td class="actions">...</td>
+        <ui-tabbar>
+            <ui-before></ui-before>
+            <ui-tab data-tab="projects" class>Projects</ui-tab>
+            <ui-tab data-tab="dashboard" class="inactive">Dashboard</ui-tab>
+            <ui-behind></ui-behind>
+        </ui-tabbar>
+        <ui-content class="noselect">
+            <ui-area data-belongs-to-tab="projects">
+                <table id="projectTable">
+                    <tr>
+                        <th>Name</th>
+                        <th>Documents</th>
+                        <th>Models</th>
+                        <th>Created</th>
+                        <th>Actions</th>
                     </tr>
-                </template>
-        </table>
-    </main>
+                    <th>
+                        <template id="rowtemplate">
+                            <tr class="" data-project-id="">
+                                <td> <a href=""><em>no name</em></a></td>
+                                <td class="doc-count"></td>
+                                <td class="model-count"></td>
+                                <td class="created"></td>
+                                <td class="actions">...</td>
+                            </tr>
+                        </template>
+                </table>
+            </ui-area>
+            <ui-area data-belongs-to-tab="dashboard" class="inactive"></ui-area>
+        </ui-content>
+    </ui-rest>
+    <ui-divider></ui-divider>
+    <ui-bar>
+        Contact me
+    </ui-bar>
     <dialog id="dlg">
         <form id="form" method="dialog">
             <h3 style="margin:0 0 10px 0;">New Project</h3>

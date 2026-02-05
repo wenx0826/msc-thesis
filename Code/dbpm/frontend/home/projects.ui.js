@@ -93,6 +93,57 @@ function setupCreateProjectDialog() {
 export function initProjectsUI() {
   loadProjects();
   setupCreateProjectDialog();
-
+  [];
+  console.log("Projects UI loaded", $("#projectTable")[0]);
+  $("#projectTable").on("click", (e) => {
+    console.log("Project row clicked", e.target);
+    var menu = {};
+    // var name = $(e.currentTarget)
+    //   .parents("tr")
+    //   .find("td[data-class=name]")
+    //   .attr("data-full-name");
+    // var is_model =
+    //   $(e.currentTarget).parents("tr").find("td[data-class=model]").length > 0
+    //     ? true
+    //     : false;
+    // menu["Operations"] = [
+    //   {
+    //     label: "Delete",
+    //     function_call: delete_it,
+    //     text_icon: "❌",
+    //     type: undefined,
+    //     params: [name],
+    //   },
+    //   {
+    //     label: "Rename",
+    //     function_call: rename_it,
+    //     type: undefined,
+    //     text_icon: "📛",
+    //     params: [name],
+    //   },
+    // ];
+    // if (name.match(/\.xml$/)) {
+    //   menu["Operations"].unshift({
+    //     label: "Duplicate",
+    //     function_call: duplicate_it,
+    //     text_icon: "➕",
+    //     type: undefined,
+    //     params: [name],
+    //   });
+    // }
+    // if (shifts.length > 0 && is_model) {
+    //   menu["Shifting"] = [];
+    //   shifts.forEach((ele) => {
+    //     menu["Shifting"].push({
+    //       label: "Shift to " + ele,
+    //       function_call: shift_it,
+    //       text_icon: "➔",
+    //       type: undefined,
+    //       params: [name, ele],
+    //     });
+    //   });
+    // }
+    new CustomMenu(e).contextmenu(menu);
+  });
   console.log("Projects UI initialized");
 }

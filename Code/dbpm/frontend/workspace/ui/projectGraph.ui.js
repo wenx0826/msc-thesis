@@ -3,7 +3,7 @@ import { workspaceService } from "../services/index.js";
 
 const cyLayoutOptions = {
   name: "cose",
-  animate: true,
+  animate: false,
 };
 
 function getThemeVars() {
@@ -19,8 +19,9 @@ export function initProjectGraphUI() {
     container: document.getElementById("cy"),
     elements: projectGraphStore.getElements(),
     layout: cyLayoutOptions,
+    zoom: 1,
     minZoom: 0.3,
-    maxZoom: 3,
+    maxZoom: 10,
     style: [
       // ---------- Base node ----------
       {
@@ -81,6 +82,10 @@ export function initProjectGraphUI() {
     ],
   });
   cy.elements().unselectify();
+  cy.once("layoutstop", () => {
+    cy.fit();
+    cy.zoom(1);
+  });
   // ---------- Interaction ----------
   cy.on("tap", "node", (evt) => {
     const node = evt.target;

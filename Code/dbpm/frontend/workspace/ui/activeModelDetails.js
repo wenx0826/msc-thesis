@@ -39,7 +39,6 @@ export function initActiveModelDetailsUI() {
     console.log(`Event Listener 'wf:call-clicked' listened`);
     const nn = e.detail.nn;
     const svgid = save["details_target"].svgid;
-
     const model = save["details_target"].model;
     const tagName = nn.prop("tagName");
     const endpoint = nn.attr("endpoint");
@@ -47,40 +46,31 @@ export function initActiveModelDetailsUI() {
       `#dat_details div[data-relaxngui-path=" > call > parameters > arguments[data-main]"]`,
     );
     $argumentsDiv.css({ visibility: "hidden", height: "0px" });
-
     const typeValue = nn.children("parameters").children("dbpm_type").text();
     const modelValue = nn
       .children("parameters")
       .children("dbpm_subprocess_model")
       .text();
-
     const $idInput = $(`#dat_details input[data-relaxngui-path=" > call[id]"`);
     if ($idInput.length > 0) {
       $idInput.parent().css({ visibility: "hidden", height: "0px" });
     }
-
     const $endpointInput = $(
       `#dat_details input[data-relaxngui-path=" > call[endpoint]"]`,
     );
     if ($endpointInput.length > 0) {
       $endpointInput.parent().css({ visibility: "hidden", height: "0px" });
     }
-
     const isSubprocess = endpoint === "subprocess" ? true : false;
-
     const $typeSeclect = $(
       `#dat_details select[data-relaxngui-path=" > call > parameters > dbpm_type"]`,
     );
-
     $typeSeclect.val(isSubprocess ? "subprocess" : "task");
-
     const $modelSelect = $(
       `#dat_details select[data-relaxngui-path=" > call > parameters > dbpm_subprocess_model"]`,
     );
-
     $typeSeclect.on("change", function (e) {
       const typeValue = $(this).val();
-
       if (typeValue == "subprocess") {
         if ($endpointInput.length > 0) {
           $endpointInput.val("subprocess");
@@ -94,13 +84,10 @@ export function initActiveModelDetailsUI() {
         $modelSelect.parent().parent().hide();
       }
     });
-
     if (isSubprocess) {
       renderModelSelect(modelValue);
     } else {
       $modelSelect.parent().parent().hide();
     }
   });
-
-  console.log("Active Model Details UI initialized");
 }

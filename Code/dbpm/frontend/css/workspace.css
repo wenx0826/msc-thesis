@@ -1,3 +1,35 @@
+#main {
+  padding: 0.6em;
+}
+tr:nth-child(odd) {
+  background-color: #e8e8e8;
+  color: #333;
+}
+
+.panel {
+  background-color: var(--x-ui-background-color);
+  padding: 1em;
+  margin: 0;
+  border: 2px solid var(--x-ui-border-color);
+  border-radius: 1em;
+  overflow: hidden;
+  min-width: 180px;
+}
+
+.disabled {
+  pointer-events: none;
+}
+
+*[is="x-ui-"] ui-tabbed ui-content {
+  margin: 0;
+  border-width: 2px;
+}
+*[is="x-ui-"] ui-tabbed ui-tab {
+  border-width: 2px;
+}
+*[is="x-ui-"] ui-tabbed ui-tabbar {
+  padding: 0;
+}
 /* button {
     padding: 1em;
     border: 1pt solid var(--x-ui-border-color);

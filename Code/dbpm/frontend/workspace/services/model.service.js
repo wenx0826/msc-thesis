@@ -11,10 +11,11 @@ import {
 } from "../store/index.js";
 import { workspaceService } from "./workspace.service.js";
 import { projectService } from "./project.service.js";
+import { Constants } from "../../constants.js";
 
-// Import constants from window (loaded before modules)
-const MODEL_UPDATE_TYPE = window.Constants?.MODEL_UPDATE_TYPE || {};
-const EMPTY_MODEL = window.Constants?.EMPTY_MODEL || "";
+// Import constants
+const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
+const EMPTY_MODEL = Constants.EMPTY_MODEL;
 
 export const modelService = {
   async generateModel(userInput, rpstXml) {

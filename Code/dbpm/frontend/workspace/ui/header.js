@@ -1,7 +1,7 @@
 // Project UI Module
 import { workspaceStore, projectStore } from "../store/index.js";
 
-function changeProjectName(name) {
+function updateProjectName(name) {
   console.log("Changing project name display to:", name);
   $("#projectName").text(name || "Unnamed Project");
 }
@@ -16,11 +16,11 @@ function updateLogLink(projectId) {
 export function initHeaderUI() {
   const projectId = workspaceStore.getProjectId();
   updateLogLink(projectId);
-  changeProjectName(projectStore.state.name);
+  updateProjectName(projectStore.state.name);
   // Subscribe for runtime changes (e.g., user renames project)
   projectStore.subscribe((state, { key, newValue }) => {
     if (key === "name") {
-      changeProjectName(newValue);
+      updateProjectName(newValue);
     }
   });
 

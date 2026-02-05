@@ -6,8 +6,9 @@ import {
 } from "../store/index.js";
 import { modelService } from "../services/index.js";
 import { endpointAPI } from "../../api/index.js";
+import { Constants } from "../../constants.js";
 
-const MODEL_UPDATE_TYPE = window.Constants?.MODEL_UPDATE_TYPE;
+const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
 
 const $modelActionBar = $("#modelActionBar");
 const $exportTestsetButton = $("#exportTestsetButton");
