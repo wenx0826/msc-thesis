@@ -43,6 +43,9 @@ export const modelsStore = Object.assign(
     getModelNameById(modelId) {
       return this.state.modelsById[modelId]?.meta?.name;
     },
+    getModelGraphById(modelId) {
+      return this.state.modelsById[modelId]?.svg || null;
+    },
     getModelDocumentIdById(modelId) {
       return this.state.modelsById[modelId]?.documentId;
     },

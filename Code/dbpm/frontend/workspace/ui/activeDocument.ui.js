@@ -9,17 +9,18 @@ import { Constants } from "../../constants.js";
 
 const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
 
-let $selectionColorForm;
-let $deleteSelectionButton;
-let $documentContent;
-let $viewerWrap;
-let $selectionsLayer;
+const $selectionColorForm = $("#selectionColorForm");
+const $deleteSelectionButton = $("#deleteSelectionButton");
+const $documentContent = $("#documentContent");
+const $viewerWrap = $("#viewerWrap");
+const $selectionsLayer = $("#selectionsLayer");
+const $temporarySelectionsLayer = $("#temporarySelectionsLayer");
+const $interactionLayer = $("#interactionLayer");
+const $modelTags = $("#modelTags");
+const $addSelectionsButton = $("#addSelectionsButton");
+const $generateButton = $("#generateButton");
+
 let selectedSelection = null;
-let $temporarySelectionsLayer;
-let $interactionLayer;
-let $modelTags;
-let $addSelectionsButton;
-let $generateButton;
 
 function scrollToSelection(selectionId) {
   const $selection = $selectionsLayer.find(
@@ -351,16 +352,6 @@ const handleTextSelection = () => {
 
 export function initActiveDocumentUI() {
   // Initialize DOM references
-  $selectionColorForm = $("#selectionColorForm");
-  $deleteSelectionButton = $("#deleteSelectionButton");
-  $documentContent = $("#documentContent");
-  $viewerWrap = $("#viewerWrap");
-  $selectionsLayer = $("#selectionsLayer");
-  $temporarySelectionsLayer = $("#temporarySelectionsLayer");
-  $interactionLayer = $("#interactionLayer");
-  $modelTags = $("#modelTags");
-  $addSelectionsButton = $("#addSelectionsButton");
-  $generateButton = $("#generateButton");
 
   // Set up event handlers
   $selectionColorForm.on("input", (e) => {
@@ -536,4 +527,20 @@ export function initActiveDocumentUI() {
   });
 
   console.log("Active Document UI initialized");
+
+  $modelTags.on("mouseenter", ".tag-span", (event) => {
+    const $target = $(event.currentTarget);
+    const modelId = $target.attr("data-modelid");
+    console.log("Hovering over model tag:", modelId);
+    // const selectionId = $target.attr("data-selectionid");
+    // console.log("Hovering over model tag:", modelId);
+    workspaceStore.setHoveredModelId(modelId);
+    // workspaceService.toggleModelSelection(modelId);
+  });
+  $modelTags.on("mouseleave", ".tag-span", (event) => {
+    const $target = $(event.currentTarget);
+    const modelId = $target.attr("data-modelid");
+    console.log("Mouse leaving model tag:", modelId);
+    workspaceStore.setHoveredModelId(null);
+  });
 }

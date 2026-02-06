@@ -49,6 +49,8 @@
   <!-- DBPM libs -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
   <script src="https://unpkg.com/mammoth/mammoth.browser.min.js" defer></script>
+  <script src="https://unpkg.com/@popperjs/core@2"></script>
+  <script src="https://unpkg.com/tippy.js@6"></script>
   <!-- DBPM ui-->
   <link rel="stylesheet" href="css/ui.css" type="text/css">
   <link rel="stylesheet" href="css/globalui_cpee.css" type="text/css">
@@ -65,6 +67,9 @@
   </style> -->
 </head>
 <body is="x-ui-">
+  <div id="modelPopover" class="hidden">
+    <div id="modelPopoverContainer"></div>
+  </div>
   <ui-bar>
     <div>
       <span style="font-size: 1.2em;"><a href="index.html" title="Home"><svg width="16" height="16" viewBox="0 0 24 24"
@@ -263,6 +268,7 @@
     </ui-content>
   </ui-rest>
   <iframe id="converter-frame" src="converter.html" style="position: absolute; left: -9999px; top: -9999px;"></iframe>
+
   <script>
   </script>
 </body>

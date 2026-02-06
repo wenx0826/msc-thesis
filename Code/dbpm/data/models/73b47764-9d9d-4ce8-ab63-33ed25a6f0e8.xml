@@ -15,45 +15,7 @@
             <_probability_avg/>
           </_probability>
           <parallel_branch svg-id="parallel_branch_0" svg-type="parallel_branch" svg-subtype="parallel_branch_event">
-            <call id="a1" endpoint="start_url" svg-id="a1" svg-label="Start" svg-type="call" svg-subtype="call">
-              <parameters>
-                <label>Start</label>
-                <method>:post</method>
-                <arguments>
-                  <behavior>wait_running</behavior>
-                  <url>https://cpee.org/flow/templates/instantiate/Take_Sub.xml</url>
-                  <init>
-                    <time>5</time>
-                  </init>
-                  <endpoints/>
-                  <customization/>
-                </arguments>
-              </parameters>
-              <annotations>
-                <_timing>
-                  <_timing_weight/>
-                  <_timing_avg/>
-                  <_context_data_analysis>
-                    <probes/>
-                    <ips/>
-                  </_context_data_analysis>
-                  <report>
-                    <url/>
-                  </report>
-                  <explanations/>
-                </_timing>
-                <_notes>
-                  <_notes_general/>
-                </_notes>
-              </annotations>
-              <documentation>
-                <input/>
-                <output/>
-                <implementation>
-                  <description/>
-                </implementation>
-              </documentation>
-            </call>
+            <call id="a1" endpoint="subprocess" svg-id="a1" svg-label="Start" svg-type="call" svg-subtype="call"><parameters><label>Start</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>e251a78a-eed2-4b79-b715-1ff2ba0e4a22</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:3000/data/models/e251a78a-eed2-4b79-b715-1ff2ba0e4a22.xml</url></arguments></parameters></call>
           </parallel_branch>
           <manipulate id="a4" label="" svg-id="a4" svg-type="manipulate" svg-subtype="manipulate">data.i += 1</manipulate>
         </loop>

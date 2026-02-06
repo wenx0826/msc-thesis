@@ -12,15 +12,15 @@ function getThemeVars() {
     activeColor: s.getPropertyValue("--wfadaptor-highlight").trim(),
   };
 }
+const theme = getThemeVars();
 
 export function initProjectGraphUI() {
-  const theme = getThemeVars();
   const cy = cytoscape({
     container: document.getElementById("cy"),
     elements: projectGraphStore.getElements(),
     layout: cyLayoutOptions,
     zoom: 1,
-    minZoom: 0.3,
+    minZoom: 1,
     maxZoom: 10,
     style: [
       // ---------- Base node ----------
@@ -82,10 +82,10 @@ export function initProjectGraphUI() {
     ],
   });
   cy.elements().unselectify();
-  cy.once("layoutstop", () => {
-    cy.fit();
-    cy.zoom(1);
-  });
+  // cy.once("layoutstop", () => {
+  //   cy.fit();
+  //   cy.zoom(1);
+  // });
   // ---------- Interaction ----------
   cy.on("tap", "node", (evt) => {
     const node = evt.target;

@@ -8,6 +8,7 @@ export const workspaceStore = Object.assign(
     projectId: null,
     activeDocumentId: null,
     activeModelId: null,
+    hoveredModelId: null,
     llmModel: "gemini-2.0-flash",
     theme: null,
     project: {},
@@ -45,6 +46,11 @@ export const workspaceStore = Object.assign(
       const oldValue = this.getActiveModelId();
       this.state.activeModelId = newValue;
       this.notify({ key: "activeModelId", oldValue, newValue });
+    },
+    setHoveredModelId(newValue) {
+      const oldValue = this.state.hoveredModelId;
+      this.state.hoveredModelId = newValue;
+      this.notify({ key: "hoveredModelId", oldValue, newValue });
     },
     setActiveDocumentId(newValue) {
       const oldValue = this.getActiveDocumentId();

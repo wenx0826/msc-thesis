@@ -43,6 +43,24 @@ tr:nth-child(odd) {
   color: lightgray;
 } */
 
+#modelPopoverContainer {
+  width: 300px;
+  height: 500px;
+  max-height: 240px;
+  overflow: auto; /* ✅ popover 内滚动 */
+  padding: 12px;
+}
+
+/* ===== Tippy 外壳样式：阴影/圆角等 ===== */
+#modelPopover {
+  background: #fff;
+  color: #111;
+  border-radius: 12px;
+  /* box-shadow: 0 18px 45px rgba(0, 0, 0, 0.2); */
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  z-index: 9999;
+}
+
 /*--- document list pane ---*/
 #documentList li {
   display: flex;

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <title>Popper Popover Demo</title>
+
+    <style>
+        body {
+            padding: 100px;
+            font-family: system-ui, sans-serif;
+        }
+
+        button {
+            padding: 8px 16px;
+        }
+
+        .popover {
+            position: absolute;
+            z-index: 9999;
+            width: 280px;
+            max-height: 220px;
+            overflow: auto;
+            /* ✅ 内部滚动 */
+
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .15);
+            border: 1px solid rgba(0, 0, 0, .1);
+            display: none;
+        }
+
+        .svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .svg circle,
+        .svg path {
+            fill: none;
+            stroke: #333;
+            stroke-width: 6;
+        }
+
+        .text {
+            margin-top: 12px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+    <button id="ref">Hover me</button>
+
+    <div id="popover" class="popover">
+        <svg viewBox="0 0 100 100" class="svg">
+            <circle cx="50" cy="50" r="40"></circle>
+            <path d="M30 50 L50 70 L70 30"></path>
+        </svg>
+
+        <div class="text">
+            很长的内容……很长的内容……很长的内容……<br>
+            很长的内容……很长的内容……很长的内容……<br>
+            很长的内容……很长的内容……很长的内容……<br>
+            很长的内容……很长的内容……很长的内容……
+        </div>
+    </div>
+
+    <!-- Popper -->
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+
+    <script>
+        const ref = document.querySelector('#ref');
+        const pop = document.querySelector('#popover');
+
+        const popper = Popper.createPopper(ref, pop, {
+            placement: 'bottom-start',
+            modifiers: [
+                { name: 'offset', options: { offset: [0, 8] } },
+                { name: 'preventOverflow', options: { padding: 8 } },
+                { name: 'flip' }
+            ]
+        });
+
+        let overRef = false;
+        let overPop = false;
+        let hideTimer = null;
+
+        function show() {
+            pop.style.display = 'block';
+            popper.update();
+        }
+
+        function scheduleHide() {
+            clearTimeout(hideTimer);
+            hideTimer = setTimeout(() => {
+                if (!overRef && !overPop) {
+                    pop.style.display = 'none';
+                }
+            }, 120);
+        }
+
+        ref.addEventListener('mouseenter', () => {
+            overRef = true;
+            show();
+        });
+        ref.addEventListener('mouseleave', () => {
+            overRef = false;
+            scheduleHide();
+        });
+
+        pop.addEventListener('mouseenter', () => {
+            overPop = true;
+        });
+        pop.addEventListener('mouseleave', () => {
+            overPop = false;
+            scheduleHide();
+        });
+    </script>
+
+</body>
+</html>

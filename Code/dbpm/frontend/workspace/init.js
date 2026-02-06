@@ -24,10 +24,10 @@ import {
   initHeaderUI,
   initDocumentsUI,
   initActiveDocumentUI,
-  initModelsUI,
   initActiveModelUI,
-  initActiveModelDetailsUI,
+  initModelsUI,
   initProjectGraphUI,
+  initModelPopoverUI,
 } from "./ui/index.js";
 
 // Get project ID from URL (works before DOM ready)
@@ -61,8 +61,9 @@ const activeDocumentId =
 activeDocumentStore.init(activeDocumentId);
 initActiveDocumentUI();
 initActiveModelUI();
-initActiveModelDetailsUI();
 workspaceStore.setActiveDocumentId(activeDocumentId);
 
 console.log("Workspace init complete", new Date().toISOString());
 // });
+
+initModelPopoverUI();

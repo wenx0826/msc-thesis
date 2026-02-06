@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <title>Tippy Popover Demo</title>
+
+    <!-- Tippy 样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css" />
+
+    <style>
+        body {
+            padding: 100px;
+            font-family: system-ui, sans-serif;
+        }
+
+        button {
+            padding: 8px 16px;
+        }
+
+        .pop {
+            width: 280px;
+            max-height: 220px;
+            overflow: auto;
+            /* ✅ popover 内部滚动 */
+            padding: 12px;
+        }
+
+        .svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .svg circle,
+        .svg path {
+            fill: none;
+            stroke: #333;
+            stroke-width: 6;
+        }
+
+        .text {
+            margin-top: 12px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+    <button id="ref">Hover me</button>
+
+    <!-- popover 内容模板 -->
+    <template id="popTpl">
+        <div class="pop">
+            <svg viewBox="0 0 100 100" class="svg">
+                <circle cx="50" cy="50" r="40"></circle>
+                <path d="M30 50 L50 70 L70 30"></path>
+            </svg>
+
+            <div class="text">
+                很长的内容……很长的内容……很长的内容……<br>
+                很长的内容……很长的内容……很长的内容……<br>
+                很长的内容……很长的内容……很长的内容……<br>
+                很长的内容……很长的内容……很长的内容……
+            </div>
+        </div>
+    </template>
+
+    <!-- Popper + Tippy -->
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+
+    <script>
+        const contentNode =
+            document.querySelector('#popTpl').content.firstElementChild.cloneNode(true);
+
+        tippy('#ref', {
+            content: contentNode,
+            allowHTML: true,
+            interactive: true,        // ⭐ 关键：hover 到 popover 不消失
+            trigger: 'mouseenter focus',
+            placement: 'bottom-start',
+            appendTo: () => document.body,
+            delay: [80, 120],
+            interactiveBorder: 12,    // 防止移动过程中闪烁
+            hideOnClick: false
+        });
+    </script>
+
+</body>
+</html>
