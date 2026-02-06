@@ -1,142 +1,266 @@
-const express = require("express");
-const crypto = require("crypto");
-const router = express.Router();
-const documentRepo = require("../repositories/documentRepository");
-const { logEvent } = require("../utils/logger");
-const {
-  readDocumentContent,
-  writeDocumentContent,
-  deleteDocumentFile,
-  countWords,
-} = require("../utils/fileHelper");
+import crypto from "crypto";
+import documentService from "../services/documentService.js";
 
-// POST /documents - Create a new document
-router.post("/", (req, res) => {
-  const { name, content, projectId } = req.body;
-  if (!name || !content || !projectId) {
-    return res
-      .status(400)
-      .json({ error: "Missing name, content, or projectId" });
-  }
+const createDocumentSchema = {
+  body: {
+    type: "object",
+    required: ["name", "content", "projectId"],
+    properties: {
+      name: { type: "string" },
+      content: { type: "string" },
+      projectId: { type: "string" },
+    },
+  },
+  response: {
+    200: {
+      type: "object",
+      properties: {
+        id: { type: "string" },
+        name: { type: "string" },
+        uploadedAt: { type: "string" },
+        projectId: { type: "string" },
+      },
+    },
+  },
+};
 
-  const id = crypto.randomUUID();
-  const uploadedAt = new Date().toISOString();
+const getDocumentsSchema = {
+  response: {
+    200: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          id: { type: "string" },
+          name: { type: "string" },
+          uploadedAt: { type: "string" },
+          projectId: { type: "string" },
+          words: { type: "number" },
+        },
+      },
+    },
+  },
+};
 
-  try {
-    writeDocumentContent(id, content);
-    const words = countWords(content);
-    documentRepo.create(id, name, uploadedAt, projectId, words);
+const getDocumentContentSchema = {
+  params: {
+    type: "object",
+    required: ["id"],
+    properties: {
+      id: { type: "string" },
+    },
+  },
+  response: {
+    200: {
+      type: "object",
+      properties: {
+        content: { type: "string" },
+      },
+    },
+  },
+};
 
-    res.json({ id, name, uploadedAt, projectId });
-    logEvent(projectId, "document_uploaded", { id, name, words });
-  } catch (err) {
-    console.error("Failed to create document:", err);
-    deleteDocumentFile(id); // Cleanup
-    res
-      .status(500)
-      .json({ error: "Failed to create document", details: err.message });
-  }
-});
+const getTracesSchema = {
+  params: {
+    type: "object",
+    required: ["id"],
+    properties: {
+      id: { type: "string" },
+    },
+  },
+  response: {
+    200: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          id: { type: "string" },
+          documentId: { type: "string" },
+          modelId: { type: "string" },
+          selections: { type: "array" },
+          timestamp: { type: "string" },
+        },
+      },
+    },
+  },
+};
 
-// GET /documents - Get all documents
-router.get("/", (req, res) => {
-  console.log("Fetching documents list...");
-  try {
-    const documents = documentRepo.findAll();
-    res.json(documents);
-  } catch (err) {
-    console.error("Failed to fetch documents:", err);
-    res.status(500).json({ error: "Failed to fetch documents" });
-  }
-});
+const getModelsSchema = {
+  params: {
+    type: "object",
+    required: ["id"],
+    properties: {
+      id: { type: "string" },
+    },
+  },
+  response: {
+    200: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          id: { type: "string" },
+          name: { type: "string" },
+          createdAt: { type: "string" },
+          documentId: { type: "string" },
+          words: { type: "number" },
+        },
+      },
+    },
+  },
+};
 
-// GET /documents/all - Get all documents including soft-deleted ones (for stats)
-router.get("/all", (req, res) => {
-  console.log("Fetching all documents including soft-deleted...");
-  try {
-    const documents = documentRepo.findAll(); // Documents don't have soft delete yet, so this is the same
-    res.json(documents);
-  } catch (err) {
-    console.error("Failed to fetch all documents:", err);
-    res.status(500).json({ error: "Failed to fetch all documents" });
-  }
-});
+async function documentsRoutes(fastify, options) {
+  // POST /documents - Create a new document
+  fastify.post(
+    "/",
+    { schema: createDocumentSchema },
+    async (request, reply) => {
+      const { name, content, projectId } = request.body;
 
-// GET /documents/:id/content - Get document content
-router.get("/:id/content", (req, res) => {
-  const docId = req.params.id;
-  console.log("Fetching document content for ID:", docId);
-  try {
-    const doc = documentRepo.findById(docId);
-    if (!doc) {
-      return res.status(404).json({ error: "Document not found" });
+      try {
+        const result = await documentService.createDocument(
+          name,
+          content,
+          projectId,
+        );
+        reply.send(result);
+      } catch (err) {
+        console.error("Failed to create document:", err);
+        reply
+          .code(500)
+          .send({ error: "Failed to create document", details: err.message });
+      }
+    },
+  );
+
+  // GET /documents - Get all documents
+  fastify.get("/", { schema: getDocumentsSchema }, async (request, reply) => {
+    console.log("Fetching documents list...");
+    try {
+      const documents = await documentService.getDocuments();
+      reply.send(documents);
+    } catch (err) {
+      console.error("Failed to fetch documents:", err);
+      reply.code(500).send({ error: "Failed to fetch documents" });
     }
-    const content = readDocumentContent(docId);
-    res.json({ content });
-  } catch (err) {
-    console.error("Failed to read document content:", err);
-    res.status(500).json({ error: "Failed to read document content" });
-  }
-});
+  });
 
-// GET /documents/:id/traces - Get traces for a document
-router.get("/:id/traces", (req, res) => {
-  const { id } = req.params;
-  console.log("Fetching traces for document ID:", id);
-  try {
-    const traces = documentRepo.getTraces(id);
-    const parsedTraces = traces.map((trace) => ({
-      ...trace,
-      selections: JSON.parse(trace.selections),
-    }));
-    res.json(parsedTraces);
-  } catch (err) {
-    console.error("Failed to fetch traces:", err);
-    res.status(500).json({ error: "Failed to fetch traces" });
-  }
-});
+  // GET /documents/all - Get all documents including soft-deleted ones (for stats)
+  fastify.get(
+    "/all",
+    { schema: getDocumentsSchema },
+    async (request, reply) => {
+      console.log("Fetching all documents including soft-deleted...");
+      try {
+        const documents = await documentService.getAllDocuments();
+        reply.send(documents);
+      } catch (err) {
+        console.error("Failed to fetch all documents:", err);
+        reply.code(500).send({ error: "Failed to fetch all documents" });
+      }
+    },
+  );
 
-// GET /documents/:id/models - Get models for a document
-router.get("/:id/models", (req, res) => {
-  const docId = req.params.id;
-  try {
-    const models = documentRepo.getModels(docId);
-    res.json(models);
-  } catch (err) {
-    console.error("Failed to fetch models for document:", err);
-    res.status(500).json({ error: "Failed to fetch models" });
-  }
-});
+  // GET /documents/:id/content - Get document content
+  fastify.get(
+    "/:id/content",
+    { schema: getDocumentContentSchema },
+    async (request, reply) => {
+      const docId = request.params.id;
+      console.log("Fetching document content for ID:", docId);
+      try {
+        const result = await documentService.getDocumentContent(docId);
+        reply.send(result);
+      } catch (err) {
+        console.error("Failed to read document content:", err);
+        if (err.message === "Document not found") {
+          reply.code(404).send({ error: "Document not found" });
+        } else {
+          reply.code(500).send({ error: "Failed to read document content" });
+        }
+      }
+    },
+  );
 
-// GET /documents/:id/models/all - Get all models for a document including soft-deleted ones
-router.get("/:id/models/all", (req, res) => {
-  const docId = req.params.id;
-  try {
-    const models = documentRepo.getAllModels(docId);
-    res.json(models);
-  } catch (err) {
-    console.error("Failed to fetch all models for document:", err);
-    res.status(500).json({ error: "Failed to fetch all models" });
-  }
-});
+  // GET /documents/:id/traces - Get traces for a document
+  fastify.get(
+    "/:id/traces",
+    { schema: getTracesSchema },
+    async (request, reply) => {
+      const { id } = request.params;
+      console.log("Fetching traces for document ID:", id);
+      try {
+        const traces = await documentService.getTraces(id);
+        reply.send(traces);
+      } catch (err) {
+        console.error("Failed to fetch traces:", err);
+        reply.code(500).send({ error: "Failed to fetch traces" });
+      }
+    },
+  );
 
-// DELETE /documents/:id - Delete a document
-router.delete("/:id", (req, res) => {
-  const docId = req.params.id;
-  try {
-    const doc = documentRepo.findById(docId);
-    if (!doc) {
-      return res.status(404).json({ error: "Document not found" });
-    }
+  // GET /documents/:id/models - Get models for a document
+  fastify.get(
+    "/:id/models",
+    { schema: getModelsSchema },
+    async (request, reply) => {
+      const docId = request.params.id;
+      try {
+        const models = await documentService.getModels(docId);
+        reply.send(models);
+      } catch (err) {
+        console.error("Failed to fetch models for document:", err);
+        reply.code(500).send({ error: "Failed to fetch models" });
+      }
+    },
+  );
 
-    documentRepo.delete(docId);
-    deleteDocumentFile(docId);
+  // GET /documents/:id/models/all - Get all models for a document including soft-deleted ones
+  fastify.get(
+    "/:id/models/all",
+    { schema: getModelsSchema },
+    async (request, reply) => {
+      const docId = request.params.id;
+      try {
+        const models = await documentService.getAllModels(docId);
+        reply.send(models);
+      } catch (err) {
+        console.error("Failed to fetch all models for document:", err);
+        reply.code(500).send({ error: "Failed to fetch all models" });
+      }
+    },
+  );
 
-    res.json({ message: "Document deleted" });
-  } catch (err) {
-    console.error("Failed to delete document:", err);
-    res.status(500).json({ error: "Failed to delete document" });
-  }
-});
+  // DELETE /documents/:id - Delete a document
+  fastify.delete(
+    "/:id",
+    {
+      schema: {
+        params: {
+          type: "object",
+          required: ["id"],
+          properties: {
+            id: { type: "string" },
+          },
+        },
+      },
+    },
+    async (request, reply) => {
+      const docId = request.params.id;
+      try {
+        const result = await documentService.deleteDocument(docId);
+        reply.send(result);
+      } catch (err) {
+        console.error("Failed to delete document:", err);
+        if (err.message === "Document not found") {
+          reply.code(404).send({ error: "Document not found" });
+        } else {
+          reply.code(500).send({ error: "Failed to delete document" });
+        }
+      }
+    },
+  );
+}
 
-module.exports = router;
+export default documentsRoutes;

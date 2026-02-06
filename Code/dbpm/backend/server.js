@@ -1,56 +1,63 @@
-const express = require("express");
-const path = require("path");
+import fastify from "fastify";
+import path from "path";
+import { fileURLToPath } from "url";
 
 // Import routes
-const logsRoutes = require("./routes/logs");
-const projectsRoutes = require("./routes/projects");
-const documentsRoutes = require("./routes/documents");
-const modelsRoutes = require("./routes/models");
-const tracesRoutes = require("./routes/traces");
-const statsRoutes = require("./routes/stats");
+import logsRoutes from "./routes/logs.js";
+import projectsRoutes from "./routes/projects.js";
+import documentsRoutes from "./routes/documents.js";
+import modelsRoutes from "./routes/models.js";
+import tracesRoutes from "./routes/traces.js";
+import statsRoutes from "./routes/stats.js";
 
-const app = express();
-const PORT = process.env.PORT || 3000;
-const HOST = process.env.HOST || "localhost";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-// Middleware
-app.use(express.json());
+const app = fastify({ logger: true });
 
-// CORS middleware
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  if (req.method === "OPTIONS") {
-    res.sendStatus(200);
-  } else {
-    next();
-  }
+// Register plugins
+await app.register(import("@fastify/cors"), {
+  origin: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 });
 
-// Serve static files
-app.use(express.static(path.join(__dirname, "..", "frontend")));
-app.use("/data", express.static(path.join(__dirname, "..", "data")));
+await app.register(import("@fastify/static"), {
+  root: path.join(__dirname, "..", "frontend"),
+  prefix: "/",
+});
+
+await app.register(import("@fastify/static"), {
+  root: path.join(__dirname, "..", "data"),
+  prefix: "/data",
+  decorateReply: false,
+});
 
 // Register routes
-app.use("/logs", logsRoutes);
-app.use("/projects", projectsRoutes);
-app.use("/documents", documentsRoutes);
-app.use("/models", modelsRoutes);
-app.use("/traces", tracesRoutes);
-app.use("/stats", statsRoutes);
+app.register(logsRoutes, { prefix: "/logs" });
+app.register(projectsRoutes, { prefix: "/projects" });
+app.register(documentsRoutes, { prefix: "/documents" });
+app.register(modelsRoutes, { prefix: "/models" });
+app.register(tracesRoutes, { prefix: "/traces" });
+app.register(statsRoutes, { prefix: "/stats" });
 
 // Start server
-const server = app.listen(PORT, HOST, () => {
-  console.log(`Server running on http://${HOST}:${PORT}`);
-  console.log("Database initialized successfully");
-});
-
-server.on("error", (err) => {
-  console.error("Failed to start server:", err.message);
-  if (err.code === "EADDRINUSE") {
-    console.error(`Port ${PORT} is already in use.`);
-  } else if (err.code === "EACCES") {
-    console.error(`Permission denied for port ${PORT}.`);
+const start = async () => {
+  const PORT = process.env.PORT || 3000;
+  const HOST = process.env.HOST || "localhost";
+  try {
+    await app.listen({ port: PORT, host: HOST });
+    console.log(`Server running on http://${HOST}:${PORT}`);
+    console.log("Database initialized successfully");
+  } catch (err) {
+    app.log.error(err);
+    if (err.code === "EADDRINUSE") {
+      console.error(`Port ${PORT} is already in use.`);
+    } else if (err.code === "EACCES") {
+      console.error(`Permission denied for port ${PORT}.`);
+    }
+    process.exit(1);
   }
-});
+};
+
+start();

@@ -1,53 +1,92 @@
-const express = require("express");
-const crypto = require("crypto");
-const router = express.Router();
-const traceRepo = require("../repositories/traceRepository");
+import crypto from "crypto";
+import traceRepo from "../repositories/traceRepository.js";
 
-// POST /traces - Create a new trace
-router.post("/", (req, res) => {
-  const trace = req.body;
-  const id = crypto.randomUUID();
-  const timestamp = new Date().toISOString();
+const createTraceSchema = {
+  body: {
+    type: "object",
+    properties: {
+      documentId: { type: "string" },
+      modelId: { type: "string" },
+      selections: { type: "array" },
+    },
+  },
+  response: {
+    200: {
+      type: "object",
+      properties: {
+        id: { type: "string" },
+        documentId: { type: "string" },
+        modelId: { type: "string" },
+        selections: { type: "string" },
+        timestamp: { type: "string" },
+      },
+    },
+  },
+};
 
-  try {
-    const created = traceRepo.create(
-      id,
-      trace.documentId,
-      trace.modelId,
-      trace.prompt,
-      trace.selections,
-      timestamp,
-    );
-    res.json({ ...created, id, timestamp });
-  } catch (err) {
-    console.error("Failed to create trace:", err);
-    res.status(500).json({ error: "Failed to create trace" });
-  }
-});
+const updateTraceSchema = {
+  params: {
+    type: "object",
+    required: ["id"],
+    properties: {
+      id: { type: "string" },
+    },
+  },
+  body: {
+    type: "object",
+    properties: {
+      documentId: { type: "string" },
+      modelId: { type: "string" },
+      selections: { type: "array" },
+    },
+  },
+};
 
-// PUT /traces/:id - Update a trace
-router.put("/:id", (req, res) => {
-  const traceId = req.params.id;
-  const updatedTrace = req.body;
+async function tracesRoutes(fastify, options) {
+  // POST /traces - Create a new trace
+  fastify.post("/", { schema: createTraceSchema }, async (request, reply) => {
+    const trace = request.body;
+    const id = crypto.randomUUID();
+    const timestamp = new Date().toISOString();
 
-  try {
-    const success = traceRepo.update(
-      traceId,
-      updatedTrace.documentId,
-      updatedTrace.modelId,
-      updatedTrace.prompt,
-      updatedTrace.selections,
-    );
-
-    if (!success) {
-      return res.status(404).json({ error: "Trace not found" });
+    try {
+      const created = traceRepo.create(
+        id,
+        trace.documentId,
+        trace.modelId,
+        trace.selections,
+        timestamp,
+      );
+      reply.send({ ...created, id, timestamp });
+    } catch (err) {
+      console.error("Failed to create trace:", err);
+      reply.code(500).send({ error: "Failed to create trace" });
     }
+  });
 
-    res.json(updatedTrace);
-  } catch (err) {
-    console.error("Failed to update trace:", err);
-    res.status(500).json({ error: "Failed to update trace" });
-  }
-});
+  // PUT /traces/:id - Update a trace
+  fastify.put("/:id", { schema: updateTraceSchema }, async (request, reply) => {
+    const traceId = request.params.id;
+    const updatedTrace = request.body;
 
-module.exports = router;
+    try {
+      const success = traceRepo.update(
+        traceId,
+        updatedTrace.documentId,
+        updatedTrace.modelId,
+        updatedTrace.selections,
+      );
+
+      if (!success) {
+        return reply.code(404).send({ error: "Trace not found" });
+      }
+
+      reply.send(updatedTrace);
+    } catch (err) {
+      console.error("Failed to update trace:", err);
+      reply.code(500).send({ error: "Failed to update trace" });
+    }
+  });
+}
+
+export default tracesRoutes;

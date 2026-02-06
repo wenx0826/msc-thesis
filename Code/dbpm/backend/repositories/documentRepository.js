@@ -1,9 +1,10 @@
-const db = require("../database");
+import db from "../database.js";
+import { convertKeysToCamelCase } from "../utils/caseConverter.js";
 
 class DocumentRepository {
   create(id, name, uploadedAt, projectId, words) {
     const stmt = db.prepare(
-      "INSERT INTO documents (id, name, uploadedAt, projectId, words) VALUES (?, ?, ?, ?, ?)",
+      "INSERT INTO documents (id, name, created_at, project_id, words) VALUES (?, ?, ?, ?, ?)",
     );
     stmt.run(id, name, uploadedAt, projectId, words);
     return { id, name, uploadedAt, projectId, words };
@@ -11,21 +12,24 @@ class DocumentRepository {
 
   findAll() {
     const stmt = db.prepare(
-      "SELECT id, name, uploadedAt, projectId FROM documents",
+      "SELECT id, name, created_at, project_id FROM documents",
     );
-    return stmt.all();
+    const results = stmt.all();
+    return convertKeysToCamelCase(results);
   }
 
   findById(docId) {
     const stmt = db.prepare("SELECT id FROM documents WHERE id = ?");
-    return stmt.get(docId);
+    const result = stmt.get(docId);
+    return result ? convertKeysToCamelCase(result) : null;
   }
 
   findByProjectId(projectId) {
     const stmt = db.prepare(
-      "SELECT id, name, uploadedAt, projectId FROM documents WHERE projectId = ?",
+      "SELECT id, name, created_at, project_id FROM documents WHERE project_id = ?",
     );
-    return stmt.all(projectId);
+    const results = stmt.all(projectId);
+    return convertKeysToCamelCase(results);
   }
 
   delete(docId) {
@@ -34,27 +38,30 @@ class DocumentRepository {
   }
 
   getTraces(docId) {
-    const stmt = db.prepare("SELECT * FROM traces WHERE documentId = ?");
-    return stmt.all(docId);
+    const stmt = db.prepare("SELECT * FROM traces WHERE document_id = ?");
+    const results = stmt.all(docId);
+    return convertKeysToCamelCase(results);
   }
 
   getModels(docId) {
     const stmt = db.prepare(`
       SELECT DISTINCT m.* FROM models m
-      INNER JOIN traces t ON t.modelId = m.id
-      WHERE t.documentId = ? AND m.deleted_at IS NULL
+      INNER JOIN traces t ON t.model_id = m.id
+      WHERE t.document_id = ? AND m.deleted_at IS NULL
     `);
-    return stmt.all(docId);
+    const results = stmt.all(docId);
+    return convertKeysToCamelCase(results);
   }
 
   getAllModels(docId) {
     const stmt = db.prepare(`
       SELECT DISTINCT m.* FROM models m
-      INNER JOIN traces t ON t.modelId = m.id
-      WHERE t.documentId = ?
+      INNER JOIN traces t ON t.model_id = m.id
+      WHERE t.document_id = ?
     `);
-    return stmt.all(docId);
+    const results = stmt.all(docId);
+    return convertKeysToCamelCase(results);
   }
 }
 
-module.exports = new DocumentRepository();
+export default new DocumentRepository();

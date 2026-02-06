@@ -1,51 +1,96 @@
-const express = require("express");
-const router = express.Router();
-const projectRepo = require("../repositories/projectRepository");
-const modelRepo = require("../repositories/modelRepository");
-const documentRepo = require("../repositories/documentRepository");
+import projectRepo from "../repositories/projectRepository.js";
+import modelRepo from "../repositories/modelRepository.js";
+import documentRepo from "../repositories/documentRepository.js";
 
-// GET /stats - Get statistics
-router.get("/", (req, res) => {
-  const { projectId } = req.query;
+const getStatsSchema = {
+  querystring: {
+    type: "object",
+    properties: {
+      projectId: { type: "string" },
+    },
+  },
+  response: {
+    200: {
+      oneOf: [
+        {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              id: { type: "string" },
+              name: { type: "string" },
+              createdAt: { type: "string" },
+              documentCount: { type: "number" },
+              modelCount: { type: "number" },
+              totalModelCount: { type: "number" },
+            },
+          },
+        },
+        {
+          type: "object",
+          properties: {
+            project: {
+              type: "object",
+              properties: {
+                id: { type: "string" },
+                name: { type: "string" },
+                createdAt: { type: "string" },
+              },
+            },
+            documents: { type: "array" },
+            models: { type: "array" },
+            updates: { type: "array" },
+          },
+        },
+      ],
+    },
+  },
+};
 
-  try {
-    if (projectId) {
-      // Get comprehensive stats for a specific project (including soft-deleted)
-      const project = projectRepo.findById(projectId);
+async function statsRoutes(fastify, options) {
+  // GET /stats - Get statistics
+  fastify.get("/", { schema: getStatsSchema }, async (request, reply) => {
+    const { projectId } = request.query;
 
-      if (!project) {
-        return res.status(404).json({ error: "Project not found" });
+    try {
+      if (projectId) {
+        // Get comprehensive stats for a specific project (including soft-deleted)
+        const project = projectRepo.findById(projectId);
+
+        if (!project) {
+          return reply.code(404).send({ error: "Project not found" });
+        }
+
+        // For stats, we want to see all data including soft-deleted models
+        const documents = documentRepo.findByProjectId(projectId);
+        const models = projectRepo.getAllModelsByProjectId(projectId); // Include soft-deleted models
+        const updates = modelRepo.getStatUpdates(projectId);
+
+        reply.send({
+          project,
+          documents,
+          models,
+          updates,
+        });
+      } else {
+        // Get stats for all projects
+        const projects = projectRepo.findAll();
+
+        const stats = projects.map((project) => {
+          const projectStats = projectRepo.getStats(project.id);
+          return {
+            ...project,
+            ...projectStats,
+          };
+        });
+
+        reply.send(stats);
       }
-
-      // For stats, we want to see all data including soft-deleted models
-      const documents = documentRepo.findByProjectId(projectId);
-      const models = projectRepo.getAllModelsByProjectId(projectId); // Include soft-deleted models
-      const updates = modelRepo.getStatUpdates(projectId);
-
-      res.json({
-        project,
-        documents,
-        models,
-        updates,
-      });
-    } else {
-      // Get stats for all projects
-      const projects = projectRepo.findAll();
-
-      const stats = projects.map((project) => {
-        const projectStats = projectRepo.getStats(project.id);
-        return {
-          ...project,
-          ...projectStats,
-        };
-      });
-
-      res.json(stats);
+    } catch (err) {
+      console.error("Failed to fetch stats:", err);
+      reply.code(500).send({ error: "Failed to fetch stats" });
     }
-  } catch (err) {
-    console.error("Failed to fetch stats:", err);
-    res.status(500).json({ error: "Failed to fetch stats" });
-  }
-});
+  });
+}
 
-module.exports = router;
+export default statsRoutes;

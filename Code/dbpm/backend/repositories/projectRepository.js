@@ -1,9 +1,13 @@
-const db = require("../database");
+import db from "../database.js";
+import {
+  convertKeysToCamelCase,
+  convertKeysToSnakeCase,
+} from "../utils/caseConverter.js";
 
 class ProjectRepository {
-  create(projectId, name, createdAt) {
+  create({ projectId, name, createdAt }) {
     const stmt = db.prepare(
-      "INSERT INTO projects (id, name, createdAt, generatedModelNumber) VALUES (?, ?, ?, ?)",
+      "INSERT INTO projects (id, name, created_at, generated_model_number) VALUES (?, ?, ?, ?)",
     );
     stmt.run(projectId, name, createdAt, 0);
     return { id: projectId, name, createdAt, generatedModelNumber: 0 };
@@ -11,12 +15,14 @@ class ProjectRepository {
 
   findAll() {
     const stmt = db.prepare("SELECT * FROM projects");
-    return stmt.all();
+    const results = stmt.all();
+    return convertKeysToCamelCase(results);
   }
 
   findById(projectId) {
     const stmt = db.prepare("SELECT * FROM projects WHERE id = ?");
-    return stmt.get(projectId);
+    const result = stmt.get(projectId);
+    return result ? convertKeysToCamelCase(result) : null;
   }
 
   update(projectId, updates) {
@@ -28,7 +34,7 @@ class ProjectRepository {
       values.push(updates.name);
     }
     if (updates.generatedModelNumber !== undefined) {
-      fields.push("generatedModelNumber = ?");
+      fields.push("generated_model_number = ?");
       values.push(updates.generatedModelNumber);
     }
 
@@ -51,7 +57,7 @@ class ProjectRepository {
 
   getDocumentCount(projectId) {
     const stmt = db.prepare(
-      "SELECT COUNT(*) as count FROM documents WHERE projectId = ?",
+      "SELECT COUNT(*) as count FROM documents WHERE project_id = ?",
     );
     return stmt.get(projectId);
   }
@@ -60,8 +66,8 @@ class ProjectRepository {
     const stmt = db.prepare(`
       SELECT COUNT(DISTINCT m.id) as count 
       FROM models m
-      JOIN documents d ON m.documentId = d.id
-      WHERE d.projectId = ? AND m.deleted_at IS NULL
+      JOIN documents d ON m.document_id = d.id
+      WHERE d.project_id = ? AND m.deleted_at IS NULL
     `);
     return stmt.get(projectId);
   }
@@ -70,8 +76,8 @@ class ProjectRepository {
     const stmt = db.prepare(`
       SELECT COUNT(DISTINCT m.id) as count 
       FROM models m
-      JOIN documents d ON m.documentId = d.id
-      WHERE d.projectId = ?
+      JOIN documents d ON m.document_id = d.id
+      WHERE d.project_id = ?
     `);
     return stmt.get(projectId);
   }
@@ -79,24 +85,25 @@ class ProjectRepository {
   getAllModelsByProjectId(projectId) {
     const stmt = db.prepare(`
       SELECT DISTINCT m.* FROM models m
-      INNER JOIN documents d ON m.documentId = d.id
-      WHERE d.projectId = ?
+      INNER JOIN documents d ON m.document_id = d.id
+      WHERE d.project_id = ?
       ORDER BY m.timestamp DESC
     `);
-    return stmt.all(projectId);
+    const results = stmt.all(projectId);
+    return convertKeysToCamelCase(results);
   }
 
   getStats(projectId) {
     const docsStmt = db.prepare(
-      "SELECT COUNT(*) as count, SUM(words) as totalWords FROM documents WHERE projectId = ?",
+      "SELECT COUNT(*) as count, SUM(words) as totalWords FROM documents WHERE project_id = ?",
     );
     const docStats = docsStmt.get(projectId);
 
     const modelsStmt = db.prepare(`
       SELECT COUNT(*) as count, SUM(m.words) as totalWords
       FROM models m
-      JOIN documents d ON m.documentId = d.id
-      WHERE d.projectId = ? AND m.deleted_at IS NULL
+      JOIN documents d ON m.document_id = d.id
+      WHERE d.project_id = ? AND m.deleted_at IS NULL
     `);
     const modelStats = modelsStmt.get(projectId);
 
@@ -109,4 +116,4 @@ class ProjectRepository {
   }
 }
 
-module.exports = new ProjectRepository();
+export default new ProjectRepository();

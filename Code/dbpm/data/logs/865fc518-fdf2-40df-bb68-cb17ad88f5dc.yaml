@@ -1,0 +1,151 @@
+---
+timestamp: '2026-02-06T15:56:35.647Z'
+event: project_created
+data:
+  id: 865fc518-fdf2-40df-bb68-cb17ad88f5dc
+  name: '1'
+---
+timestamp: '2026-02-06T15:58:00.696Z'
+event: document_uploaded
+data:
+  id: eb0dd83c-88a5-477f-a662-f69278afb1df
+  name: Applied Strategy and Organization _ Endterm_ME.pdf
+  words: 515
+---
+timestamp: '2026-02-06T15:58:02.718Z'
+event: model_generated
+data:
+  id: 86394fa3-1444-4e5b-a4fd-e69f2c5d00c5
+  name: Model_NaN
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>eb0dd83c-88a5-477f-a662-f69278afb1df</dbpm:document_id>
+          <dbpm:text_selections>ctronic copy of this exam may be used for personal review only. Any kind of publication is prohibited by la</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <loop mode="pre_test" condition="true">
+          <_probability>
+            <_probability_min/>
+            <_probability_max/>
+            <_probability_avg/>
+          </_probability>
+          <call id="a1" endpoint="overview">
+            <parameters>
+              <label>Move to overview position</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <call id="a3" endpoint="get_items_base">
+            <parameters>
+              <label>Get item positions</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <code>
+              <prepare/>
+              <finalize output="result">data.items = result
+    data.item = result[0]</finalize>
+              <update output="result"/>
+              <rescue output="result"/>
+            </code>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <call id="a5" endpoint="move_camera">
+            <parameters>
+              <label>Inspect first item</label>
+              <arguments>
+                <x>!data.item['x']</x>
+                <y>!data.item['y']</y>
+              </arguments>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <call id="a6" endpoint="get_offset_base">
+            <parameters>
+              <label>Get item offset</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <code>
+              <prepare/>
+              <finalize output="result">data.adjusted = result</finalize>
+              <update output="result"/>
+              <rescue output="result"/>
+            </code>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <stop id="a2"/>
+        </loop>
+      </description>
+    </description>

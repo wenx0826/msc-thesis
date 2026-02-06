@@ -1,6 +1,10 @@
-const fs = require("fs");
-const path = require("path");
-const yaml = require("js-yaml");
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+import yaml from "js-yaml";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const logsPath = path.join(__dirname, "..", "..", "data", "logs");
 
@@ -34,8 +38,4 @@ const createEmptyLogFile = (projectId) => {
   });
 };
 
-module.exports = {
-  logEvent,
-  createEmptyLogFile,
-  getISODate,
-};
+export { logEvent, createEmptyLogFile, getISODate };

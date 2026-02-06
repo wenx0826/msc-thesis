@@ -1,37 +1,54 @@
-const express = require("express");
-const router = express.Router();
-const modelRepo = require("../repositories/modelRepository");
-const { logEvent } = require("../utils/logger");
+import modelRepo from "../repositories/modelRepository.js";
+import { logEvent } from "../utils/logger.js";
 
-// POST /logs - Log an event
-router.post("/", (req, res) => {
-  const { projectId, event, data } = req.body;
-  if (!projectId || !event) {
-    return res.status(400).json({ error: "Missing projectId or event" });
-  }
+const logEventSchema = {
+  body: {
+    type: "object",
+    required: ["projectId", "event"],
+    properties: {
+      projectId: { type: "string" },
+      event: { type: "string" },
+      data: { type: "object" },
+    },
+  },
+  response: {
+    200: {
+      type: "object",
+      properties: {
+        message: { type: "string" },
+      },
+    },
+  },
+};
 
-  logEvent(projectId, event, data);
+async function logsRoutes(fastify, options) {
+  // POST /logs - Log an event
+  fastify.post("/", { schema: logEventSchema }, async (request, reply) => {
+    const { projectId, event, data } = request.body;
 
-  switch (event) {
-    case "model_regenerated_by_prompt":
-      try {
-        modelRepo.incrementRegeneratedByPrompt(data.modelId);
-      } catch (err) {
-        console.error("Failed to update regeneratedByPromptTimes:", err);
-      }
-      break;
-    case "model_regenerated_by_selections":
-      try {
-        modelRepo.incrementRegeneratedBySelections(data.modelId);
-      } catch (err) {
-        console.error("Failed to update regeneratedBySelectionsTimes:", err);
-      }
-      break;
-    default:
-      break;
-  }
+    logEvent(projectId, event, data);
 
-  res.json({ message: "Log entry added" });
-});
+    switch (event) {
+      case "model_regenerated_by_prompt":
+        try {
+          modelRepo.incrementRegeneratedByPrompt(data.modelId);
+        } catch (err) {
+          console.error("Failed to update regeneratedByPromptTimes:", err);
+        }
+        break;
+      case "model_regenerated_by_selections":
+        try {
+          modelRepo.incrementRegeneratedBySelections(data.modelId);
+        } catch (err) {
+          console.error("Failed to update regeneratedBySelectionsTimes:", err);
+        }
+        break;
+      default:
+        break;
+    }
 
-module.exports = router;
+    reply.send({ message: "Log entry added" });
+  });
+}
+
+export default logsRoutes;

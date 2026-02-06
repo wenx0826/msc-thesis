@@ -1,160 +1,346 @@
-const express = require("express");
-const crypto = require("crypto");
-const router = express.Router();
-const projectRepo = require("../repositories/projectRepository");
-const documentRepo = require("../repositories/documentRepository");
-const { logEvent, createEmptyLogFile } = require("../utils/logger");
+import crypto from "crypto";
+import projectRepo from "../repositories/projectRepository.js";
+import documentRepo from "../repositories/documentRepository.js";
+import { logEvent, createEmptyLogFile } from "../utils/logger.js";
 
-// POST /projects - Create a new project
-router.post("/", (req, res) => {
-  const { name } = req.body;
-  if (!name) {
-    return res.status(400).json({ error: "Missing name" });
-  }
+const createProjectSchema = {
+  body: {
+    type: "object",
+    required: ["name"],
+    properties: {
+      name: { type: "string" },
+    },
+  },
+  response: {
+    200: {
+      type: "object",
+      properties: {
+        id: { type: "string" },
+      },
+    },
+  },
+};
 
-  const projectId = crypto.randomUUID();
-  const createdAt = new Date().toISOString();
+const getProjectsSchema = {
+  response: {
+    200: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          id: { type: "string" },
+          name: { type: "string" },
+          createdAt: { type: "string" },
+        },
+      },
+    },
+  },
+};
 
-  try {
-    projectRepo.create(projectId, name, createdAt);
-    res.json({ id: projectId });
+const getProjectSchema = {
+  params: {
+    type: "object",
+    required: ["id"],
+    properties: {
+      id: { type: "string" },
+    },
+  },
+  response: {
+    200: {
+      type: "object",
+      properties: {
+        id: { type: "string" },
+        name: { type: "string" },
+        createdAt: { type: "string" },
+        generatedModelCount: { type: "number" },
+      },
+    },
+  },
+};
 
-    createEmptyLogFile(projectId);
-    logEvent(projectId, "project_created", { id: projectId, name });
-  } catch (err) {
-    console.error("Failed to create project:", err);
-    res.status(500).json({ error: "Failed to create project" });
-  }
-});
+const getDocumentsSchema = {
+  params: {
+    type: "object",
+    required: ["projectId"],
+    properties: {
+      projectId: { type: "string" },
+    },
+  },
+  response: {
+    200: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          id: { type: "string" },
+          name: { type: "string" },
+          uploadedAt: { type: "string" },
+          projectId: { type: "string" },
+          words: { type: "number" },
+        },
+      },
+    },
+  },
+};
 
-// GET /projects - Get all projects
-router.get("/", (req, res) => {
-  console.log("Fetching project list...");
-  try {
-    const projects = projectRepo.findAll();
-    res.json(projects);
-  } catch (err) {
-    console.error("Failed to fetch projects:", err);
-    res.status(500).json({ error: "Failed to fetch projects" });
-  }
-});
+const getModelsSchema = {
+  params: {
+    type: "object",
+    required: ["projectId"],
+    properties: {
+      projectId: { type: "string" },
+    },
+  },
+  response: {
+    200: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          id: { type: "string" },
+          name: { type: "string" },
+          timestamp: { type: "string" },
+          documentId: { type: "string" },
+          words: { type: "number" },
+        },
+      },
+    },
+  },
+};
 
-// GET /projects/:id - Get project by ID
-router.get("/:id", (req, res) => {
-  const projectId = req.params.id;
-  try {
-    const project = projectRepo.findById(projectId);
-    if (!project) {
-      return res.status(404).json({ error: "Project not found" });
+const getDocumentCountSchema = {
+  params: {
+    type: "object",
+    required: ["projectId"],
+    properties: {
+      projectId: { type: "string" },
+    },
+  },
+  response: {
+    200: { type: "string" },
+  },
+};
+
+const getModelCountSchema = {
+  params: {
+    type: "object",
+    required: ["projectId"],
+    properties: {
+      projectId: { type: "string" },
+    },
+  },
+  response: {
+    200: {
+      type: "object",
+      properties: {
+        count: { type: "number" },
+      },
+    },
+  },
+};
+
+const updateProjectSchema = {
+  params: {
+    type: "object",
+    required: ["id"],
+    properties: {
+      id: { type: "string" },
+    },
+  },
+  body: {
+    type: "object",
+    properties: {
+      name: { type: "string" },
+    },
+  },
+  response: {
+    200: {
+      type: "object",
+      properties: {
+        id: { type: "string" },
+        name: { type: "string" },
+        createdAt: { type: "string" },
+      },
+    },
+  },
+};
+
+async function projectsRoutes(fastify, options) {
+  // POST /projects - Create a new project
+  fastify.post("/", { schema: createProjectSchema }, async (request, reply) => {
+    const { name } = request.body;
+    const projectId = crypto.randomUUID();
+    const createdAt = new Date().toISOString();
+
+    try {
+      projectRepo.create({ projectId, name, createdAt });
+      reply.send({ id: projectId });
+
+      createEmptyLogFile(projectId);
+      logEvent(projectId, "project_created", { id: projectId, name });
+    } catch (err) {
+      console.error("Failed to create project:", err);
+      reply.code(500).send({ error: "Failed to create project" });
     }
-    res.json(project);
-  } catch (err) {
-    console.error("Failed to fetch project:", err);
-    res.status(500).json({ error: "Failed to fetch project" });
-  }
-});
+  });
 
-// GET /projects/:projectId/documents - Get documents for a project
-router.get("/:projectId/documents", (req, res) => {
-  const { projectId } = req.params;
-  console.log("Fetching documents for project:", projectId);
-  try {
-    const documents = documentRepo.findByProjectId(projectId);
-    res.json(documents);
-  } catch (err) {
-    console.error("Failed to fetch documents:", err);
-    res.status(500).json({ error: "Failed to fetch documents" });
-  }
-});
-
-// GET /projects/:projectId/documents/all - Get all documents for project including soft-deleted ones
-router.get("/:projectId/documents/all", (req, res) => {
-  const { projectId } = req.params;
-  console.log(
-    "Fetching all documents for project (including soft-deleted):",
-    projectId,
-  );
-  try {
-    const documents = documentRepo.findByProjectId(projectId); // Documents don't have soft delete yet
-    res.json(documents);
-  } catch (err) {
-    console.error("Failed to fetch all documents:", err);
-    res.status(500).json({ error: "Failed to fetch all documents" });
-  }
-});
-
-// GET /projects/:projectId/models/all - Get all models for project including soft-deleted ones
-router.get("/:projectId/models/all", (req, res) => {
-  const { projectId } = req.params;
-  console.log(
-    "Fetching all models for project (including soft-deleted):",
-    projectId,
-  );
-  try {
-    const models = projectRepo.getAllModelsByProjectId(projectId);
-    res.json(models);
-  } catch (err) {
-    console.error("Failed to fetch all models for project:", err);
-    res.status(500).json({ error: "Failed to fetch all models" });
-  }
-});
-
-// GET /projects/:projectId/documents/count - Get document count
-router.get("/:projectId/documents/count", (req, res) => {
-  const { projectId } = req.params;
-  console.log("Fetching document count for project:", projectId);
-  try {
-    const result = projectRepo.getDocumentCount(projectId);
-    res.send(result.count.toString());
-  } catch (err) {
-    console.error("Failed to count documents:", err);
-    res.send("error");
-  }
-});
-
-// GET /projects/:projectId/models/count - Get model count (non-deleted only)
-router.get("/:projectId/models/count", (req, res) => {
-  const { projectId } = req.params;
-  console.log("Fetching model count for project:", projectId);
-  try {
-    const result = projectRepo.getModelCount(projectId);
-    res.json({ count: result.count });
-  } catch (err) {
-    console.error("Failed to count models:", err);
-    res.status(500).json({ error: "Failed to count models" });
-  }
-});
-
-// GET /projects/:projectId/models/count/total - Get total model count (including deleted)
-router.get("/:projectId/models/count/total", (req, res) => {
-  const { projectId } = req.params;
-  console.log("Fetching total model count for project:", projectId);
-  try {
-    const result = projectRepo.getTotalModelCount(projectId);
-    res.json({ count: result.count });
-  } catch (err) {
-    console.error("Failed to count total models:", err);
-    res.status(500).json({ error: "Failed to count total models" });
-  }
-});
-
-// PUT /projects/:id - Update project
-router.put("/:id", (req, res) => {
-  const projectId = req.params.id;
-  const updates = req.body;
-
-  try {
-    const project = projectRepo.update(projectId, updates);
-    if (!project) {
-      return res
-        .status(404)
-        .json({ error: "Project not found or no valid fields to update" });
+  // GET /projects - Get all projects
+  fastify.get("/", { schema: getProjectsSchema }, async (request, reply) => {
+    console.log("Fetching project list...");
+    try {
+      const projects = projectRepo.findAll();
+      reply.send(projects);
+    } catch (err) {
+      console.error("Failed to fetch projects:", err);
+      reply.code(500).send({ error: "Failed to fetch projects" });
     }
-    res.json(project);
-  } catch (err) {
-    console.error("Failed to update project:", err);
-    res.status(500).json({ error: "Failed to update project" });
-  }
-});
+  });
 
-module.exports = router;
+  // GET /projects/:id - Get project by ID
+  fastify.get("/:id", { schema: getProjectSchema }, async (request, reply) => {
+    const projectId = request.params.id;
+    try {
+      const project = projectRepo.findById(projectId);
+      if (!project) {
+        return reply.code(404).send({ error: "Project not found" });
+      }
+      reply.send(project);
+    } catch (err) {
+      console.error("Failed to fetch project:", err);
+      reply.code(500).send({ error: "Failed to fetch project" });
+    }
+  });
+
+  // GET /projects/:projectId/documents - Get documents for a project
+  fastify.get(
+    "/:projectId/documents",
+    { schema: getDocumentsSchema },
+    async (request, reply) => {
+      const projectId = request.params.projectId;
+      console.log("Fetching documents for project:", projectId);
+      try {
+        const documents = documentRepo.findByProjectId(projectId);
+        reply.send(documents);
+      } catch (err) {
+        console.error("Failed to fetch documents:", err);
+        reply.code(500).send({ error: "Failed to fetch documents" });
+      }
+    },
+  );
+
+  // GET /projects/:projectId/documents/all - Get all documents for project including soft-deleted ones
+  fastify.get(
+    "/:projectId/documents/all",
+    { schema: getDocumentsSchema },
+    async (request, reply) => {
+      const { projectId } = request.params;
+      console.log(
+        "Fetching all documents for project (including soft-deleted):",
+        projectId,
+      );
+      try {
+        const documents = documentRepo.findByProjectId(projectId); // Documents don't have soft delete yet, so this is the same
+        reply.send(documents);
+      } catch (err) {
+        console.error("Failed to fetch all documents:", err);
+        reply.code(500).send({ error: "Failed to fetch all documents" });
+      }
+    },
+  );
+
+  // GET /projects/:projectId/models/all - Get all models for project including soft-deleted ones
+  fastify.get(
+    "/:projectId/models/all",
+    { schema: getModelsSchema },
+    async (request, reply) => {
+      const { projectId } = request.params;
+      console.log(
+        "Fetching all models for project (including soft-deleted):",
+        projectId,
+      );
+      try {
+        const models = projectRepo.getAllModelsByProjectId(projectId);
+        reply.send(models);
+      } catch (err) {
+        console.error("Failed to fetch all models for project:", err);
+        reply.code(500).send({ error: "Failed to fetch all models" });
+      }
+    },
+  );
+
+  // GET /projects/:projectId/documents/count - Get document count
+  fastify.get(
+    "/:projectId/documents/count",
+    { schema: getDocumentCountSchema },
+    async (request, reply) => {
+      const { projectId } = request.params;
+      console.log("Fetching document count for project:", projectId);
+      try {
+        const result = projectRepo.getDocumentCount(projectId);
+        reply.send(result.count.toString());
+      } catch (err) {
+        console.error("Failed to count documents:", err);
+        reply.send("error");
+      }
+    },
+  );
+
+  // GET /projects/:projectId/models/count - Get model count (non-deleted only)
+  fastify.get(
+    "/:projectId/models/count",
+    { schema: getModelCountSchema },
+    async (request, reply) => {
+      const { projectId } = request.params;
+      console.log("Fetching model count for project:", projectId);
+      try {
+        const result = projectRepo.getModelCount(projectId);
+        reply.send({ count: result.count });
+      } catch (err) {
+        console.error("Failed to count models:", err);
+        reply.code(500).send({ error: "Failed to count models" });
+      }
+    },
+  );
+
+  // GET /projects/:projectId/models/count/total - Get total model count (including deleted)
+  fastify.get(
+    "/:projectId/models/count/total",
+    { schema: getModelCountSchema },
+    async (request, reply) => {
+      const { projectId } = request.params;
+      console.log("Fetching total model count for project:", projectId);
+      try {
+        const result = projectRepo.getTotalModelCount(projectId);
+        reply.send({ count: result.count });
+      } catch (err) {
+        console.error("Failed to count total models:", err);
+        reply.code(500).send({ error: "Failed to count total models" });
+      }
+    },
+  );
+
+  // PUT /projects/:id - Update project
+  fastify.put(
+    "/:id",
+    { schema: updateProjectSchema },
+    async (request, reply) => {
+      const projectId = request.params.id;
+      const updates = request.body;
+
+      try {
+        const project = projectRepo.update(projectId, updates);
+        if (!project) {
+          return reply
+            .code(404)
+            .send({ error: "Project not found or no valid fields to update" });
+        }
+        reply.send(project);
+      } catch (err) {
+        console.error("Failed to update project:", err);
+        reply.code(500).send({ error: "Failed to update project" });
+      }
+    },
+  );
+}
+
+export default projectsRoutes;
