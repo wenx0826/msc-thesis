@@ -20,9 +20,9 @@ function initializeSchema() {
     CREATE TABLE IF NOT EXISTS projects (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
-      created_at TEXT NOT NULL,
-      deleted_at TEXT,
-      generated_model_number INTEGER DEFAULT 0
+      model_generation_counter INTEGER NOT NULL DEFAULT 0,
+      created_at TEXT NOT NULL DEFAULT current_timestamp,
+      deleted_at TEXT
     )
   `);
   // Documents table
@@ -31,7 +31,7 @@ function initializeSchema() {
       id TEXT PRIMARY KEY,
       project_id TEXT NOT NULL,
       name TEXT NOT NULL,
-      created_at TEXT NOT NULL,
+      created_at TEXT NOT NULL DEFAULT current_timestamp,
       deleted_at TEXT,
       words INTEGER DEFAULT 0,
       FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
@@ -44,12 +44,11 @@ function initializeSchema() {
       id TEXT PRIMARY KEY,
       document_id TEXT NOT NULL,
       name TEXT NOT NULL,
-      created_at TEXT NOT NULL,
-      deleted_at TEXT,
-      status TEXT DEFAULT 'generated',
       regenerated_by_prompt_times INTEGER DEFAULT 0,
       regenerated_by_selections_times INTEGER DEFAULT 0,
-      words INTEGER DEFAULT 0,
+      selected_text_words INTEGER DEFAULT 0,
+      created_at TEXT NOT NULL DEFAULT current_timestamp,
+      deleted_at TEXT,
       FOREIGN KEY (document_id) REFERENCES documents(id) ON DELETE CASCADE
     )
   `);
@@ -60,7 +59,7 @@ function initializeSchema() {
       id TEXT PRIMARY KEY,
       document_id TEXT NOT NULL,
       model_id TEXT NOT NULL,
-      created_at TEXT NOT NULL,
+      created_at TEXT NOT NULL DEFAULT current_timestamp,
       deleted_at TEXT,
       selections TEXT NOT NULL,
       FOREIGN KEY (document_id) REFERENCES documents(id) ON DELETE CASCADE,
@@ -74,7 +73,8 @@ function initializeSchema() {
       model_id TEXT NOT NULL,
       type TEXT NOT NULL,
       words INTEGER,
-      created_at TEXT NOT NULL,
+      created_at TEXT NOT NULL DEFAULT current_timestamp,
+      deleted_at TEXT,
       FOREIGN KEY (model_id) REFERENCES models(id) ON DELETE CASCADE
     )
   `);

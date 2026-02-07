@@ -6,7 +6,7 @@ export const projectService = {
   updateGeneratedModelNumber(number) {
     projectsAPI
       .updateProjectById(workspaceStore.getProjectId(), {
-        generatedModelNumber: number,
+        modelGenerationCounter: number,
       })
       .then(() => {
         projectStore.setGeneratedModelNumber(number);

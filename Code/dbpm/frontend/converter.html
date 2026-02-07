@@ -76,9 +76,10 @@
                 return;
             }
             try {
-                // console.log("!!!!Converter received message for model id:", input.id);
+                console.log("!!!!Converter received message for model id:", input.id);
                 const modelId = input.id;
                 const model = await modelsAPI.getModelDataById(modelId);
+                console.log("!!!!Model data received in converter:", model);
                 var parser = new DOMParser();
                 let data = parser.parseFromString(model, "application/xml");
 

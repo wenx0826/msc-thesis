@@ -15,17 +15,17 @@ function escapeHtml(s) {
   );
 }
 
-function renderProject(project) {
+function renderProjectRow(project) {
   const $table = $("#projectTable");
   const $row = $($("#rowtemplate").html());
-
+  $row.attr("data-project-id", project.id);
   $row
     .find("a")
-    .attr("href", "workspace.html?project_id=" + encodeURIComponent(project.id))
+    .attr("href", "workspace.html?project_id=" + project.id)
     .text(escapeHtml(project.name));
   $row.find(".doc-count").text(project.documentCount || 0);
   $row.find(".model-count").text(project.modelCount || 0);
-
+  $row.find(".created").text(new Date(project.createdAt).toLocaleString());
   $table.append($row);
 }
 
@@ -37,7 +37,8 @@ async function loadProjects() {
     for (const project of projects) {
       project.documentCount = await projectsAPI.getDocumentCount(project.id);
       project.modelCount = await projectsAPI.getModelCount(project.id);
-      renderProject(project);
+
+      renderProjectRow(project);
     }
   } catch (err) {
     console.error("Failed to load projects:", err);
@@ -48,6 +49,8 @@ async function createProject(name) {
   const project = await projectsAPI.createProject({ name });
   return project;
 }
+
+function deleteProject(projectId) {}
 
 function setupCreateProjectDialog() {
   const dlg = document.getElementById("dlg");
@@ -89,60 +92,47 @@ function setupCreateProjectDialog() {
     }
   });
 }
+function viewProjectStats(projectId) {
+  window.location.assign(
+    "stats.html?project_id=" + encodeURIComponent(projectId),
+  );
+}
 
-export function initProjectsUI() {
+export default function init() {
   loadProjects();
   setupCreateProjectDialog();
-  [];
   console.log("Projects UI loaded", $("#projectTable")[0]);
-  $("#projectTable").on("click", (e) => {
-    console.log("Project row clicked", e.target);
+  $("#projectTable").on("click", "td.actions", (e) => {
+    console.log("Project row clicked", e.target, e.currentTarget);
+    var projectId = $(e.currentTarget).closest("tr").attr("data-project-id");
     var menu = {};
-    // var name = $(e.currentTarget)
-    //   .parents("tr")
-    //   .find("td[data-class=name]")
-    //   .attr("data-full-name");
-    // var is_model =
-    //   $(e.currentTarget).parents("tr").find("td[data-class=model]").length > 0
-    //     ? true
-    //     : false;
-    // menu["Operations"] = [
-    //   {
-    //     label: "Delete",
-    //     function_call: delete_it,
-    //     text_icon: "❌",
-    //     type: undefined,
-    //     params: [name],
-    //   },
-    //   {
-    //     label: "Rename",
-    //     function_call: rename_it,
-    //     type: undefined,
-    //     text_icon: "📛",
-    //     params: [name],
-    //   },
-    // ];
-    // if (name.match(/\.xml$/)) {
-    //   menu["Operations"].unshift({
-    //     label: "Duplicate",
-    //     function_call: duplicate_it,
-    //     text_icon: "➕",
-    //     type: undefined,
-    //     params: [name],
-    //   });
-    // }
-    // if (shifts.length > 0 && is_model) {
-    //   menu["Shifting"] = [];
-    //   shifts.forEach((ele) => {
-    //     menu["Shifting"].push({
-    //       label: "Shift to " + ele,
-    //       function_call: shift_it,
-    //       text_icon: "➔",
-    //       type: undefined,
-    //       params: [name, ele],
-    //     });
-    //   });
-    // }
+    menu[""] = [
+      {
+        label: "View Statistics",
+        function_call: viewProjectStats,
+        text_icon: "",
+        type: undefined,
+        params: [projectId],
+      },
+      {
+        label: "View Log",
+        function_call: deleteProject,
+        text_icon: "",
+        type: undefined,
+        params: [projectId],
+      },
+      {
+        label: "Download Log",
+      },
+      {
+        label: "Delete",
+        function_call: deleteProject,
+        text_icon: "",
+        type: undefined,
+        params: [projectId],
+      },
+    ];
+
     new CustomMenu(e).contextmenu(menu);
   });
   console.log("Projects UI initialized");

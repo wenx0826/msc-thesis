@@ -5,19 +5,19 @@ import { projectsAPI } from "../../api/index.js";
 export const projectStore = Object.assign(
   createDomainStore({
     name: null,
-    generatedModelNumber: 0,
+    modelGenerationCounter: 0,
   }),
   {
     async init(projectId) {
-      const { name, generatedModelNumber } =
+      const { name, modelGenerationCounter } =
         await projectsAPI.getProjectById(projectId);
-      this.setProject({ name, generatedModelNumber });
+      this.setProject({ name, modelGenerationCounter });
     },
     getProjectName() {
       return this.state.name;
     },
     getModelNumber() {
-      return this.state.generatedModelNumber;
+      return this.state.modelGenerationCounter;
     },
     setName(val) {
       if (this.state.name !== val) {
@@ -25,12 +25,12 @@ export const projectStore = Object.assign(
         this.notify({ key: "name", newValue: val });
       }
     },
-    setProject({ name, generatedModelNumber }) {
+    setProject({ name, modelGenerationCounter }) {
       this.setName(name);
-      this.setGeneratedModelNumber(generatedModelNumber);
+      this.setGeneratedModelNumber(modelGenerationCounter);
     },
-    setGeneratedModelNumber(generatedModelNumber) {
-      this.state.generatedModelNumber = generatedModelNumber;
+    setGeneratedModelNumber(modelGenerationCounter) {
+      this.state.modelGenerationCounter = modelGenerationCounter;
     },
   },
 );

@@ -10,7 +10,6 @@ import {
   projectGraphStore,
 } from "../store/index.js";
 import { workspaceService } from "./workspace.service.js";
-import { projectService } from "./project.service.js";
 import { Constants } from "../../constants.js";
 
 // Import constants
@@ -184,33 +183,26 @@ export const modelService = {
   },
 
   async createModelAndTrace(modelData) {
-    let model = {};
-    const generatedModelNumber = projectStore.getModelNumber() + 1;
-    projectService.updateGeneratedModelNumber(generatedModelNumber);
-    const name = `Model_${generatedModelNumber}`;
-    model.meta = { name };
-
-    model.data = modelData;
     const documentId = workspaceStore.getActiveDocumentId();
     const trace = {
       documentId,
       selections: activeDocumentStore.getSerializedTemporarySelections(),
     };
-    const { modelMeta, trace: createdTrace } =
+    const { model: createdModel, trace: createdTrace } =
       await modelsAPI.createModelAndTrace({
-        model,
+        modelData,
         trace,
       });
 
     modelsStore.addModel({
-      meta: modelMeta,
+      meta: createdModel.meta,
       documentId,
     });
-    activeModelStore.setModelById(modelMeta.id);
-    workspaceStore.setActiveModelId(modelMeta.id);
+    activeModelStore.setModelById(createdModel.meta.id);
+    workspaceStore.setActiveModelId(createdModel.meta.id);
     activeDocumentStore.setTemporarySelections([]);
     activeDocumentStore.addTrace(createdTrace);
-    projectGraphStore.addModelNodeAndEdge(modelMeta, documentId);
+    projectGraphStore.addModelNodeAndEdge(createdModel.meta, documentId);
   },
 
   async updateActiveModel(type) {

@@ -1,0 +1,69 @@
+<description>
+  <dbpm:info
+    xmlns:dbpm="https://example.com/dbpm">
+    <dbpm:document_info>
+      <dbpm:document_id>0569d25b-0629-481e-975f-1c763359d110</dbpm:document_id>
+      <dbpm:text_selections>0
+For personal review only  For personal review only  For personal review only  1.0  1.0  1.0  1.0
+For personal review only  For personal review only  For personal review only  1.0  1.0  0.0  1.0  1.0
+For personal review only  For personal review only  For personal review only  0.0  1.0  1.0  0.0  1.0
+For personal review only  For personal review only  For personal r</dbpm:text_selections>
+    </dbpm:document_info>
+  </dbpm:info>
+  <description xmlns="http://cpee.org/ns/description/1.0">
+    <call id="a1" endpoint="worklist">
+      <parameters>
+        <label>OK OR NOT OK</label>
+        <arguments>
+          <orgmodel>https://cpee.org/~demo/orgviz/organisation_informatik.xml</orgmodel>
+          <form>https://cpee.org/~demo/form/form-f.html</form>
+          <role>Assistant</role>
+          <priority>42</priority>
+          <handling>single</handling>
+          <restrictions/>
+          <data>
+            <schaden>10000</schaden>
+            <text>destroyed</text>
+          </data>
+        </arguments>
+      </parameters>
+      <code>
+        <prepare/>
+        <finalize output="result">data.bla = result</finalize>
+        <update output="result"/>
+        <rescue output="result"/>
+      </code>
+      <annotations>
+        <_generic/>
+        <_timing>
+          <_timing_weight/>
+          <_timing_avg/>
+          <explanations/>
+        </_timing>
+        <_shifting>
+          <_shifting_type>Duration</_shifting_type>
+        </_shifting>
+        <_context_data_analysis>
+          <probes/>
+          <ips/>
+        </_context_data_analysis>
+        <report>
+          <url/>
+        </report>
+        <_notes>
+          <_notes_general/>
+        </_notes>
+      </annotations>
+      <documentation>
+        <input/>
+        <output/>
+        <implementation>
+          <description/>
+        </implementation>
+        <code>
+          <description/>
+        </code>
+      </documentation>
+    </call>
+  </description>
+</description>

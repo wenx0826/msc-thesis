@@ -1,4 +1,4 @@
-import { baseURL, handleResponse } from "./base.js";
+import { baseURL, handleResponse, handleTextResponse } from "./base.js";
 
 export const modelsAPI = {
   LLMDisabled: true,
@@ -86,11 +86,11 @@ export const modelsAPI = {
     return generatedModel;
   },
 
-  async createModelAndTrace({ model, trace }) {
+  async createModelAndTrace({ modelData, trace }) {
     const response = await fetch(`${baseURL}/${this.path}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ model, trace }),
+      body: JSON.stringify({ modelData, trace }),
     });
     return handleResponse(response, "Failed to create model");
   },
@@ -102,7 +102,7 @@ export const modelsAPI = {
 
   async getModelDataById(id) {
     const response = await fetch(`${baseURL}/${this.path}/${id}/data`);
-    return handleResponse(response, "Failed to fetch model");
+    return handleTextResponse(response, "Failed to fetch model");
   },
 
   async updateModelDataById(id, modelData) {

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh">
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -12,12 +12,6 @@
     <link rel="stylesheet" href="https://cpee.org/js_libs/uidash.css" type="text/css">
     <script type="text/javascript" src="https://cpee.org/js_libs/custommenu.js" defer></script>
     <link rel="stylesheet" href="https://cpee.org/js_libs/custommenu.css" type="text/css" />
-
-
-    <!-- <link rel="stylesheet" href="css/ui.css" type="text/css">
-    <link rel="stylesheet" href="css/globalui_cpee.css" type="text/css"> -->
-
-
     <link rel="stylesheet" href="css/myui.css" type="text/css" />
     <!-- <style type="text/css">
     @font-face {
@@ -25,8 +19,6 @@
       src: url("chrome-extension://lkjkfecdnfjopaeaibboihfkmhdjmanm/static/fonts/TencentSans.woff2");
     }
   </style> -->
-
-
 
     <style>
         /* body {
@@ -71,7 +63,7 @@
     </ui-bar>
     <ui-rest>
         <h1>Document-Based Process Modeller</h1>
-        <button id="btnCreate">Create Project</button>
+        <button id="btnCreate">Create New Project</button>
         <ui-tabbar>
             <ui-before></ui-before>
             <ui-tab data-tab="projects" class>Projects</ui-tab>
@@ -81,23 +73,26 @@
         <ui-content class="noselect">
             <ui-area data-belongs-to-tab="projects">
                 <table id="projectTable">
-                    <tr>
-                        <th>Name</th>
-                        <th>Documents</th>
-                        <th>Models</th>
-                        <th>Created</th>
-                        <th>Actions</th>
-                    </tr>
-                    <th>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Documents</th>
+                            <th>Models</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                         <template id="rowtemplate">
                             <tr class="" data-project-id="">
-                                <td> <a href=""><em>no name</em></a></td>
+                                <td><a href=""><em>no name</em></a></td>
                                 <td class="doc-count"></td>
                                 <td class="model-count"></td>
                                 <td class="created"></td>
-                                <td class="actions">...</td>
+                                <td class="actions" title="Click for actions">...</td>
                             </tr>
                         </template>
+                    </tbody>
                 </table>
             </ui-area>
             <ui-area data-belongs-to-tab="dashboard" class="inactive"></ui-area>
@@ -105,17 +100,20 @@
     </ui-rest>
     <ui-divider></ui-divider>
     <ui-bar>
-        Contact me <a href="mailto:xin.wen@tum.de">xin.wen@tum.de</a>
+        <span>Contact me </span><a href="mailto:xin.wen@tum.de">xin.wen@tum.de</a>
     </ui-bar>
     <dialog id="dlg">
         <form id="form" method="dialog">
-            <h3 style="margin:0 0 10px 0;">New Project</h3>
+            <h3>New Project</h3>
+            <label for="name">Project name</label>
             <input id="name" type="text" autocomplete="off" />
             <div class="error" id="err"></div>
-            <div class="actions">
-                <button type="button" id="cancel">Cancel</button>
-                <button type="submit" id="save">Create</button>
-            </div>
+            <ui-bar class="actions">
+                <div class="right">
+                    <button type="button" id="cancel">Cancel</button>
+                    <button type="submit" id="save">Create</button>
+                </div>
+            </ui-bar>
         </form>
     </dialog>
 </body>

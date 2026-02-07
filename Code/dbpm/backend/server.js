@@ -3,12 +3,10 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 // Import routes
-import logsRoutes from "./routes/logs.js";
-import projectsRoutes from "./routes/projects.js";
-import documentsRoutes from "./routes/documents.js";
-import modelsRoutes from "./routes/models.js";
-import tracesRoutes from "./routes/traces.js";
-import statsRoutes from "./routes/stats.js";
+import projectsRoutes from "./modules/projects/projects.routes.js";
+import documentsRoutes from "./modules/documents/documents.routes.js";
+import modelsRoutes from "./modules/models/models.routes.js";
+import tracesRoutes from "./modules/traces/traces.routes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -34,12 +32,10 @@ await app.register(import("@fastify/static"), {
 });
 
 // Register routes
-app.register(logsRoutes, { prefix: "/logs" });
 app.register(projectsRoutes, { prefix: "/projects" });
 app.register(documentsRoutes, { prefix: "/documents" });
 app.register(modelsRoutes, { prefix: "/models" });
 app.register(tracesRoutes, { prefix: "/traces" });
-app.register(statsRoutes, { prefix: "/stats" });
 
 // Start server
 const start = async () => {
