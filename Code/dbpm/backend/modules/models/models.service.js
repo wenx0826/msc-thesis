@@ -7,7 +7,7 @@ import {
   writeModelData,
   countWords,
 } from "../../utils/fileHelper.js";
-import documentsService from "../documents/documents.service.js";
+import documentsService from "../documents/document.service.js";
 import projectsService from "../projects/projects.service.js";
 
 class ModelService {
@@ -133,7 +133,8 @@ class ModelService {
 
   async updateModelData(modelId, modelData) {
     const projectId = modelRepo.getProjectIdByModelId(modelId);
-    writeModelData(modelId, modelData);1234
+    writeModelData(modelId, modelData);
+    1234;
 
     // Add stat update
     modelRepo.addStatUpdate(modelId, getISODate(), "manual_update", null);

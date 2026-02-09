@@ -11,12 +11,14 @@
             "id": "279053b3089b8b05",
             "type": "leaf",
             "state": {
-              "type": "image",
+              "type": "markdown",
               "state": {
-                "file": "Mock-up/mock-up1.jpg"
+                "file": "01.1 Motivation.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "lucide-image",
-              "title": "mock-up1"
+              "icon": "lucide-file",
+              "title": "01.1 Motivation"
             }
           }
         ]
@@ -139,13 +141,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Mock-up/mock-up1.jpg",
+                "file": "01.1 Motivation.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of mock-up1"
+              "title": "Outline of 01.1 Motivation"
             }
           },
           {
@@ -182,6 +184,18 @@
   },
   "active": "279053b3089b8b05",
   "lastOpenFiles": [
+    "01.5 Evaluation.md",
+    "2 Related Work - Prelexity.md",
+    "02 Related Work.md",
+    "01.6 Structure.md",
+    "01.3 Contribution.md",
+    "01.2 Research Questions.md",
+    "01.1 Motivation.md",
+    "3 - 7.md",
+    "Mock-up/mock-up1.jpg",
+    "Code/dbpm/backend/modules/documents/document.service.js",
+    "Code/dbpm/backend/modules/logs/log.service.js",
+    "Code/dbpm/backend/modules/logs",
     "Code/dbpm/frontend/util/dom.js",
     "Code/Tests/home.html",
     "Code/dbpm/data/logs/1498b3a7-f654-4899-9a24-40810b3a68de.yaml",
@@ -189,10 +203,6 @@
     "Code/dbpm/data/logs/0aef2872-d0b7-4361-9f32-3c0c100a665c.yaml",
     "Code/dbpm/frontend/css/global.css",
     "Code/dbpm/data/logs/94213f76-007d-481b-a139-91967b192172.yaml",
-    "Code/dbpm/frontend/css/AdwaitaSans-Regular.ttf",
-    "Code/UI test/home.html",
-    "Code/dbpm/data/models/d8fcc525-f862-4b2b-bd5a-caecb472929c.xml",
-    "Code/dbpm/data/models/f7e05e98-192a-4386-94b0-effa42221b49.xml",
     "Code/dbpm/frontend/wf_graph_themes/preset_customized/symbols/wait_for_signal.svg",
     "Code/dbpm/frontend/wf_graph_themes/preset_customized/symbols/terminate.svg",
     "Code/dbpm/frontend/wf_graph_themes/preset_customized/symbols/stop.svg",
@@ -202,7 +212,6 @@
     "Code/dbpm/frontend/wf_graph_themes/preset_customized/symbols/parallel_eventbased_parallel.svg",
     "Code/dbpm/frontend/wf_graph_themes/preset_customized/symbols/parallel_eventbased_exclusive.svg",
     "Code/dbpm/frontend/wf_graph_themes/preset_customized/symbols/parallel_branch_normal.svg",
-    "Code/dbpm/frontend/wf_graph_themes/preset_customized/symbols/parallel_branch_event.svg",
     "Code/dbpm/backend/node_modules/snake-camel/README.md",
     "Code/dbpm/backend/node_modules/camelcase/readme.md",
     "Code/dbpm/backend/node_modules/snakecase-keys/node_modules/type-fest/readme.md",
@@ -221,13 +230,6 @@
     "Code/dbpm/backend/node_modules/fastq/README.md",
     "Code/dbpm/backend/node_modules/find-my-way/README.md",
     "Code/dbpm/backend/node_modules/fastify-plugin/README.md",
-    "Code/dbpm/backend/node_modules/avvio/README.md",
-    "Code/dbpm/backend/node_modules/fast-decode-uri-component/README.md",
-    "Code/dbpm/backend/node_modules/abstract-logging/Readme.md",
-    "Code/dbpm/backend/node_modules/light-my-request/README.md",
-    "Code/dbpm/backend/node_modules/process-warning/README.md",
-    "Code/dbpm/backend/node_modules/fast-uri/README.md",
-    "Code/dbpm/backend/node_modules/fast-content-type-parse/README.md",
     "Untitled.canvas"
   ]
 }

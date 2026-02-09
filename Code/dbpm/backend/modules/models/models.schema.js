@@ -109,6 +109,7 @@ export const updateModelSchema = {
   },
   body: {
     type: "object",
+    required: ["modelData"],
     properties: {
       modelData: { type: "string" },
       trace: {

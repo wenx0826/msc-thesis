@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import documentService from "./documents.service.js";
+import documentService from "./document.service.js";
 import {
   createDocumentSchema,
   getDocumentsSchema,
