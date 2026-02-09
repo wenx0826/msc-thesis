@@ -11,6 +11,14 @@ export function getProjectWorkspaceURL(projectId) {
   return `workspace.html?project_id=${projectId}`;
 }
 
-export function getProjectLogURL(documentId) {
-  return `log.html?document_id=${documentId}`;
+export function getProjectLogURL(projectId) {
+  return `data/logs/${projectId}.yaml`;
 }
+
+export function getDocumentURL(documentId) {
+  return `data/documents/${documentId}.html`;
+}
+
+// export function getModelURL(modelId) {
+//   return `data/models/${modelId}.html`;
+// }

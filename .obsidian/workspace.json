@@ -184,6 +184,7 @@
   },
   "active": "279053b3089b8b05",
   "lastOpenFiles": [
+    "Code/Tests/JqueryDataTable.html",
     "01.5 Evaluation.md",
     "2 Related Work - Prelexity.md",
     "02 Related Work.md",
@@ -229,7 +230,6 @@
     "Code/dbpm/backend/node_modules/fastq/SECURITY.md",
     "Code/dbpm/backend/node_modules/fastq/README.md",
     "Code/dbpm/backend/node_modules/find-my-way/README.md",
-    "Code/dbpm/backend/node_modules/fastify-plugin/README.md",
     "Untitled.canvas"
   ]
 }

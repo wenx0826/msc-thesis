@@ -1,5 +1,6 @@
 // Project UI Module
 import { workspaceStore, projectStore } from "../store/index.js";
+import { getProjectLogURL } from "../../util/url.js";
 
 function updateProjectName(name) {
   console.log("Changing project name display to:", name);
@@ -9,7 +10,7 @@ function updateProjectName(name) {
 function updateLogLink(projectId) {
   const logLink = document.getElementById("logLink");
   if (logLink && projectId) {
-    logLink.href = "/data/logs/" + projectId + ".yaml";
+    logLink.href = getProjectLogURL(projectId);
   }
 }
 

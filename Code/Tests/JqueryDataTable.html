@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>jQuery DataTable Example</title>
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css" />
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+</head>
+<body>
+
+    <h2>Projects</h2>
+
+    <table id="projectsTable" class="display" style="width:100%">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Owner</th>
+                <th>Created At</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>Alpha</td>
+                <td>Alice</td>
+                <td>2026-02-01</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Beta</td>
+                <td>Bob</td>
+                <td>2026-02-03</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Gamma</td>
+                <td>Charlie</td>
+                <td>2026-02-05</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <script>
+        $(document).ready(function () {
+            $('#projectsTable').DataTable({
+                paging: true,
+                searching: true,
+                ordering: true,
+                pageLength: 5
+            });
+        });
+    </script>
+
+</body>
+</html>

@@ -1,6 +1,6 @@
 // import { initProjectsUI } from "./projects.ui.js";
 import { documentsAPI, projectsAPI } from "../api/index.js";
-import { getProjectIdFromURL } from "../util/url.js";
+import { getProjectIdFromURL, getDocumentURL } from "../util/url.js";
 import { cloneTemplate } from "../util/dom.js";
 const projectId = getProjectIdFromURL();
 
@@ -39,6 +39,9 @@ async function renderDocumentsList() {
       $documentItem
         .find("[data-ref='documentName']")
         .text(doc.name || "Unnamed Document");
+      $documentItem
+        .find("[data-ref='documentLink']")
+        .attr("href", getDocumentURL(doc.id));
       $documentsList.append($documentItem);
       renderDocumentModels(doc.id);
     }

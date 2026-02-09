@@ -18,15 +18,20 @@ class DocumentService {
       writeDocumentContent(id, content);
 
       // Count words
-      const words = countWords(content);
+      const wordsCount = countWords(content);
 
       // Create database record
-      documentRepo.create(id, name, uploadedAt, projectId, words);
+      const createdDocument = documentRepo.create({
+        id,
+        name,
+        projectId,
+        wordsCount,
+      });
 
       // Log the event
-      logEvent(projectId, "document_uploaded", { id, name, words });
+      logEvent(projectId, "document_uploaded", createdDocument);
 
-      return { id, name, uploadedAt, projectId };
+      return createdDocument;
     } catch (err) {
       // Cleanup on failure
       deleteDocumentFile(id);

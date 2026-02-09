@@ -2,14 +2,15 @@ import db from "../../database.js";
 import { toCamel, toSnake } from "snake-camel";
 
 class DocumentRepository {
-  create(id, name, uploadedAt, projectId, words) {
-    const stmt = db.prepare(
-      "INSERT INTO documents (id, name, created_at, project_id, words) VALUES (?, ?, ?, ?, ?)",
-    );
-    stmt.run(id, name, uploadedAt, projectId, words);
-    return { id, name, uploadedAt, projectId, words };
+  create({ id, name, projectId, wordsCount }) {
+    const stmt = db.prepare(`
+    INSERT INTO documents (id, name, project_id, words_count)
+    VALUES (@id, @name, @projectId, @wordsCount)
+    RETURNING *
+  `);
+    const row = stmt.get({ id, name, projectId, wordsCount });
+    return toCamel(row);
   }
-
   findAll() {
     const stmt = db.prepare(
       "SELECT id, name, created_at, project_id FROM documents",
