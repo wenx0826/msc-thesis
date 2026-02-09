@@ -97,6 +97,7 @@ export const activeDocumentStore = Object.assign(
     },
     // #region traces && active trace
     addTrace(trace) {
+      console.log("Adding trace:???", trace);
       trace.selections.forEach((selection) => {
         selection.range = deserializeRange(selection.range);
       });

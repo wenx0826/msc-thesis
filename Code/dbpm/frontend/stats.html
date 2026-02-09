@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -7,40 +7,14 @@
   <title>Doc-Based Process Modeller</title>
   <script type="text/javascript" src="https://cpee.org/js_libs/jquery.min.js"></script>
   <script type="text/javascript" src="https://cpee.org/js_libs/jquery.browser.js"></script>
-  <script type="module" src="home/init.js"></script>
   <script type="text/javascript" src="https://cpee.org/js_libs/uidash.js" defer></script>
   <link rel="stylesheet" href="https://cpee.org/js_libs/uidash.css" type="text/css">
-  <script type="text/javascript" src="https://cpee.org/js_libs/custommenu.js" defer></script>
-  <link rel="stylesheet" href="https://cpee.org/js_libs/custommenu.css" type="text/css" />
 
-  <link rel="stylesheet" href="css/ui.css" type="text/css">
-  <link rel="stylesheet" href="css/globalui_cpee.css" type="text/css">
-  <!-- modelling ui -->
-  <link rel="stylesheet" href="js_cpee/wfadaptor.css" type="text/css" />
-
-  <!-- <script type="text/javascript" src="js/parameters.js"></script>
-    <script type="text/javascript" src="js/modifiers.js"></script> -->
-  <!-- Flos Stuff -->
-  <!-- <script type="text/javascript" src="js/structured.js"></script> -->
-  <!-- <style type="text/css">
-    @font-face {
-      font-family: TencentSans;
-      src: url("chrome-extension://lkjkfecdnfjopaeaibboihfkmhdjmanm/static/fonts/TencentSans.woff2");
-    }
-  </style> -->
-
-  <!-- Shared scripts (used by all pages) -->
   <script src="stats/init.js" type="module"></script>
-
-  <!-- my ui-->
-  <link rel="stylesheet" href="css/myui.css" type="text/css" />
-
-  <style>
-
-  </style>
+  <link rel="stylesheet" href="css/global.css " type="text/css" />
+  <link rel="stylesheet" href="css/stats.css" type="text/css" />
 </head>
 <body is="x-ui-">
-
   <ui-bar>
     <div>
       <span style="font-size: 1.2em;"><a href="index.html" title="Home"><svg width="16" height="16" viewBox="0 0 24 24"
@@ -49,9 +23,9 @@
             <polyline points="9,22 9,12 15,12 15,22"></polyline>
           </svg></a></span>
       <span class="separator added">/</span>
-      <span style="font-size: 1.2em; font-weight: bold;"><a id="projectLink" href="workspace.html"></a></span>
+      <span><a id="projectLink"></a></span>
       <span class="separator added">/</span>
-      <span style="font-size: 1.2em; font-weight: bold;">Statistics</span>
+      <span>Statistics</span>
     </div>
     <div class="right action-group">
       <!-- <span>Theme: Preset</span>
@@ -61,14 +35,30 @@
     </div>
   </ui-bar>
   <!-- <a href="index.html" class="back-link">← Back to Projects</a> -->
-  <ul id="documentList">
-    <!-- Template for document list items -->
-    <template id="documentItemTemplate">
-      <li data-docid="">
-        <span class="document-name"></span>
-      </li>
-    </template>
+  <ul id="documentsList">
   </ul>
+  <template id="documentItemTemplate">
+    <li data-doc-id="">
+      <h3><span data-ref="documentName"></span></h3>
+      <div>
+        words: <span data-ref="wordsCount"></span>
+        |
+        models: <span data-ref="numModels"></span>
+      </div>
+      <ul data-ref="modelsList">
+      </ul>
+    </li>
+  </template>
+  <template id="modelItemTemplate">
+    <li data-model-id="">
+      <h4><span data-ref="modelName"></span></h4>
+      <div>
+        words: <span data-ref="wordsCount"></span>
+        |
+        models: <span data-ref="numModels"></span>
+      </div>
+    </li>
+  </template>
 </body>
 
 </html>

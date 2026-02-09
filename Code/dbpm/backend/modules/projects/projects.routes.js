@@ -1,4 +1,3 @@
-import crypto from "crypto";
 import projectService from "./projects.service.js";
 import {
   createProjectSchema,
@@ -6,8 +5,6 @@ import {
   getProjectSchema,
   getDocumentsSchema,
   getModelsSchema,
-  getDocumentCountSchema,
-  getModelCountSchema,
   updateProjectSchema,
 } from "./projects.schema.js";
 
@@ -106,57 +103,6 @@ async function projectsRoutes(fastify, options) {
       } catch (err) {
         console.error("Failed to fetch all models for project:", err);
         reply.code(500).send({ error: "Failed to fetch all models" });
-      }
-    },
-  );
-
-  // GET /projects/:projectId/documents/count - Get document count
-  fastify.get(
-    "/:projectId/documents/count",
-    { schema: getDocumentCountSchema },
-    async (request, reply) => {
-      const { projectId } = request.params;
-      console.log("Fetching document count for project:", projectId);
-      try {
-        const result = await projectService.getDocumentCount(projectId);
-        reply.send(result);
-      } catch (err) {
-        console.error("Failed to count documents:", err);
-        reply.send("error");
-      }
-    },
-  );
-
-  // GET /projects/:projectId/models/count - Get model count (non-deleted only)
-  fastify.get(
-    "/:projectId/models/count",
-    { schema: getModelCountSchema },
-    async (request, reply) => {
-      const { projectId } = request.params;
-      console.log("Fetching model count for project:", projectId);
-      try {
-        const result = await projectService.getModelCount(projectId);
-        reply.send(result);
-      } catch (err) {
-        console.error("Failed to count models:", err);
-        reply.code(500).send({ error: "Failed to count models" });
-      }
-    },
-  );
-
-  // GET /projects/:projectId/models/count/total - Get total model count (including deleted)
-  fastify.get(
-    "/:projectId/models/count/total",
-    { schema: getModelCountSchema },
-    async (request, reply) => {
-      const { projectId } = request.params;
-      console.log("Fetching total model count for project:", projectId);
-      try {
-        const result = await projectService.getTotalModelCount(projectId);
-        reply.send(result);
-      } catch (err) {
-        console.error("Failed to count total models:", err);
-        reply.code(500).send({ error: "Failed to count total models" });
       }
     },
   );

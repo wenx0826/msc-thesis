@@ -1,3 +1,4 @@
+<!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -24,12 +25,11 @@
   <script type="text/javascript" src="https://cpee.org/js_libs/vkbeautify.js"></script>
   <link rel="stylesheet" href="https://cpee.org/js_libs/relaxngui.css" type="text/css">
 
-
   <!-- modelling ui -->
   <script type="text/javascript" src="https://cpee.org/flow/js/wfadaptor.js"></script>
   <link rel="stylesheet" href="https://cpee.org/flow/css/wfadaptor.css" type="text/css" />
   <script type="text/javascript" src="https://cpee.org/flow/themes/base.js"></script>
-  <script type="text/javascript" src="wf_graph_themes/base_override.js"></script>
+  <script type="text/javascript" src="wf_graph_themes/base_customized.js"></script>
 
   <!-- <script type="text/javascript" src="js_cpee/extended_columns.js"></script> -->
   <!-- <link rel="stylesheet" href="css/extended_columns-label.css" type="text/css" />
@@ -44,17 +44,16 @@
   <script src="https://unpkg.com/cytoscape@3.26.0/dist/cytoscape.min.js" defer></script>
   <!-- dbpm scripts -->
   <script type="module" src="workspace/init.js"></script>
-  <!-- DBPM libs override-->
-  <script src="js_libs_override/uidash_override.js" defer></script>
+  <!-- DBPM libs overridden-->
+  <script src="js_libs_overridden/uidash_overridden.js" defer></script>
   <!-- DBPM libs -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
   <script src="https://unpkg.com/mammoth/mammoth.browser.min.js" defer></script>
   <script src="https://unpkg.com/@popperjs/core@2"></script>
   <script src="https://unpkg.com/tippy.js@6"></script>
   <!-- DBPM ui-->
-  <link rel="stylesheet" href="css/ui.css" type="text/css">
-  <link rel="stylesheet" href="css/globalui_cpee.css" type="text/css">
-  <link rel="stylesheet" href="css/myui.css" type="text/css" />
+  <!-- <link rel="stylesheet" href="css/ui.css" type="text/css"> -->
+  <link rel="stylesheet" href="css/global.css" type="text/css">
   <link rel="stylesheet" href="css/workspace.css" type="text/css" />
 
   <!-- Flos Stuff -->
@@ -80,7 +79,6 @@
       <span id="projectName" style="font-size: 1.2em; font-weight: bold;"></span>
     </div>
     <div class="right action-group">
-      <span>Theme: Preset</span>
       <span>LLM: gemini 2 Flash</span>
       <a id="logLink" href="" target="_blank">Log</a>
       <a id="statsLink" href="stats.html">Statistics</a>
@@ -94,7 +92,7 @@
         <ui-tabbed style="z-index: 2;">
           <ui-tabbar>
             <ui-tab class="switch"></ui-tab>
-            <ui-tab class="" data-tab="documents" id="tabdocuments" style="flex: 1;">Documents</ui-tab>
+            <ui-tab class="" data-tab="documents" style="flex: 1;">Documents</ui-tab>
           </ui-tabbar>
           <ui-content>
             <ui-area data-belongs-to-tab="documents" id="areadocuments">
@@ -102,6 +100,7 @@
                 <!-- Template for document list items -->
                 <template id="documentItemTemplate">
                   <li data-docid="">
+                    <input class="doc-check" type="checkbox" />
                     <span class="document-name"></span>
                     <button class="delete-document-btn" disabled>Delete</button>
                   </li>
@@ -111,8 +110,6 @@
               <label for="documentsInput" style="cursor:pointer;">Upload Documents</label>
               <input type="file" id="documentsInput" multiple />
               <!-- </form> -->
-
-
             </ui-area>
           </ui-content>
         </ui-tabbed>
@@ -138,12 +135,14 @@
                   <span class="round">
                     <input type="radio" name="color" value="#e4c3e4" id="selectionColor4">
                     <label for="selectionColor4" style="background-color: #e4c3e4;"></label></span>
-                  <span class="round"><input type="radio" name="color" value="#f8a8c6" id="selectionColor5">
+                  <span class="round">
+                    <input type="radio" name="color" value="#f8a8c6" id="selectionColor5">
                     <label for="selectionColor5" style="background-color: #f8a8c6;"></label></span>
                   <span class="round">
                     <input type="radio" name="color" value="#ded0c5" id="selectionColor6">
                     <label for="selectionColor6" style="background-color: #ded0c5;"></label></span>
-                  <span class="round"><input type="radio" name="color" value="#deddda" id="selectionColor7">
+                  <span class="round">
+                    <input type="radio" name="color" value="#deddda" id="selectionColor7">
                     <label for="selectionColor7" style="background-color: #deddda;"></label>
                   </span>
                 </div>
@@ -188,8 +187,8 @@
                 View XML Data
               </a>
               <button id="exportTestsetButton">Export Testset</button>
-              <button name="deselsetModelButton" onclick="workspaceService.clearModelSelection()">Deselect
-                Model</button>
+              <!-- <button name="deselsetModelButton" onclick="workspaceService.clearModelSelection()">Deselect
+                Model</button> -->
               <button id="deleteModelButton">Delete Model</button>
             </fieldset>
           </ui-bar>
@@ -235,7 +234,7 @@
       <!-- Right: Models Panel-->
       <ui-rest style="flex:0.2; min-width:180px;">
         <ui-rest class="panel" style="flex:0.68 1 0;min-height: 100px">
-          <ui-bar><span style="font-size: 1.4em; font-weight: bold;">Models</span></ui-bar>
+          <ui-bar><span style="font-size: 1.2em; font-weight: bold;">Models</span></ui-bar>
           <ui-divider></ui-divider>
           <ui-bar><label for="cars">Documents:</label>
             <select name="cars" id="cars">
@@ -257,6 +256,7 @@
             </ui-content>
           </ui-rest>
         </ui-rest>
+        <ui-resizehandle data-direction="horizontal"></ui-resizehandle>
         <ui-rest class="panel" style="margin-top: 0.5em;flex:0.32 1 0;min-height: 100px">
           <ui-content>
             <ui-area id="cy">

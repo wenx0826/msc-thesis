@@ -1,8 +1,5 @@
 import db from "../../database.js";
-import {
-  convertKeysToCamelCase,
-  convertKeysToSnakeCase,
-} from "../../utils/caseConverter.js";
+import { toCamel } from "snake-camel";
 
 class ProjectRepository {
   create({ id, name }) {
@@ -12,19 +9,36 @@ class ProjectRepository {
     RETURNING *
   `);
     const row = stmt.get({ id, name });
-    return convertKeysToCamelCase(row);
+    return toCamel(row);
   }
 
   findAll() {
-    const stmt = db.prepare("SELECT * FROM projects ORDER BY created_at DESC");
+    const stmt = db.prepare(`
+      SELECT
+        p.*,
+        COUNT(DISTINCT d.id) AS documents_count,
+        COALESCE(SUM(md.models_count), 0) AS models_count
+      FROM projects p
+      LEFT JOIN documents d
+        ON d.project_id = p.id AND d.deleted_at IS NULL
+      LEFT JOIN (
+        SELECT t.document_id,
+               COUNT(DISTINCT t.model_id) AS models_count
+        FROM traces t
+        WHERE t.model_id IS NOT NULL
+        GROUP BY t.document_id
+      ) md ON md.document_id = d.id
+      GROUP BY p.id
+      ORDER BY p.created_at DESC
+    `);
     const results = stmt.all();
-    return convertKeysToCamelCase(results);
+    return results.map(toCamel);
   }
 
   findById(projectId) {
     const stmt = db.prepare("SELECT * FROM projects WHERE id = ?");
     const result = stmt.get(projectId);
-    return result ? convertKeysToCamelCase(result) : null;
+    return result ? toCamel(result) : null;
   }
 
   update(projectId, updates) {
@@ -60,7 +74,7 @@ class ProjectRepository {
     const stmt = db.prepare(
       "SELECT model_generation_counter FROM projects WHERE id = ?",
     );
-    return convertKeysToCamelCase(stmt.get(projectId));
+    return toCamel(stmt.get(projectId));
   }
   getDocumentCount(projectId) {
     const stmt = db.prepare(
@@ -97,7 +111,7 @@ class ProjectRepository {
       ORDER BY m.timestamp DESC
     `);
     const results = stmt.all(projectId);
-    return convertKeysToCamelCase(results);
+    return results.map(toCamel);
   }
 
   getStats(projectId) {

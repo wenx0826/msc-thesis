@@ -1,0 +1,59 @@
+<description>
+  <dbpm:info
+    xmlns:dbpm="https://example.com/dbpm">
+    <dbpm:document_info>
+      <dbpm:document_id>62b2cada-c0de-4ec1-8809-04cd51ee466c</dbpm:document_id>
+      <dbpm:text_selections>An industry is a group of firms producing products and services that are essentially the same. Examples are the automobile industry and the airline industry. Industries are also often described as 'sectors', especially in public services (e.g. the health sector or the education sector). Industries and sectors are often made up of several specific markets. A market is a group of customers for specific products or services that are essentially the same (e.g. a particular geographical market). Thus the automobile industry has markets in North America. Europe and Asia. for example.</dbpm:text_selections>
+    </dbpm:document_info>
+  </dbpm:info>
+  <description xmlns="http://cpee.org/ns/description/1.0">
+    <call id="a1" endpoint="timeout">
+      <parameters>
+        <!--{{{-->
+        <label>Task 1</label>
+        <method>:post</method>
+        <arguments>
+          <timeout>2</timeout>
+        </arguments>
+      </parameters>
+      <!--}}}-->
+      <code>
+        <finalize output="result">data.x += "a1,"</finalize>
+      </code>
+      <annotations/>
+      <documentation/>
+    </call>
+    <call id="a2" endpoint="timeouts">
+      <parameters>
+        <!--{{{-->
+        <label>Resource Synchronisation</label>
+        <method>:post</method>
+        <arguments>
+          <timeout>4</timeout>
+        </arguments>
+      </parameters>
+      <!--}}}-->
+      <code>
+        <finalize output="result">data.x += "a2,"</finalize>
+      </code>
+      <annotations/>
+      <documentation/>
+    </call>
+    <call id="a3" endpoint="timeout">
+      <parameters>
+        <!--{{{-->
+        <label>Task 3</label>
+        <method>:post</method>
+        <arguments>
+          <timeout>4</timeout>
+        </arguments>
+      </parameters>
+      <!--}}}-->
+      <code>
+        <finalize output="result">data.x += "a3,"</finalize>
+      </code>
+      <annotations/>
+      <documentation/>
+    </call>
+  </description>
+</description>

@@ -1,0 +1,59 @@
+<description>
+  <dbpm:info
+    xmlns:dbpm="https://example.com/dbpm">
+    <dbpm:document_info>
+      <dbpm:document_id>be0c4340-99fa-43e2-a1c2-164a094bc115</dbpm:document_id>
+      <dbpm:text_selections>e:   WI001111   Date:   Thursday 23 rd   February, 2023  Examiner:   Prof. Dr. Isabell M. Welpe   Exam:   Endterm  First name:   Xin   Registration number, UIDs:   03687993, E0073 / S0234  Last name:   Wen   Last update:   Monday 6 th   March, 2023  Σ   (Endterm)  49.0  Grade (Endterm) 3.3 Grade intervall  [49.0; 54.0)  Notes:  •   Please make sure that the total amount of credits stated above</dbpm:text_selections>
+    </dbpm:document_info>
+  </dbpm:info>
+  <description xmlns="http://cpee.org/ns/description/1.0">
+    <call id="a1" endpoint="timeout">
+      <parameters>
+        <!--{{{-->
+        <label>Task 1</label>
+        <method>:post</method>
+        <arguments>
+          <timeout>2</timeout>
+        </arguments>
+      </parameters>
+      <!--}}}-->
+      <code>
+        <finalize output="result">data.x += "a1,"</finalize>
+      </code>
+      <annotations/>
+      <documentation/>
+    </call>
+    <call id="a2" endpoint="timeouts">
+      <parameters>
+        <!--{{{-->
+        <label>Resource Synchronisation</label>
+        <method>:post</method>
+        <arguments>
+          <timeout>10</timeout>
+        </arguments>
+      </parameters>
+      <!--}}}-->
+      <code>
+        <finalize output="result">data.x += "a2,"</finalize>
+      </code>
+      <annotations/>
+      <documentation/>
+    </call>
+    <call id="a3" endpoint="timeout">
+      <parameters>
+        <!--{{{-->
+        <label>Task 3</label>
+        <method>:post</method>
+        <arguments>
+          <timeout>4</timeout>
+        </arguments>
+      </parameters>
+      <!--}}}-->
+      <code>
+        <finalize output="result">data.x += "a3,"</finalize>
+      </code>
+      <annotations/>
+      <documentation/>
+    </call>
+  </description>
+</description>

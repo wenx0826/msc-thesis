@@ -2,7 +2,6 @@
 import { workspaceStore, modelsStore } from "../store/index.js";
 import { workspaceService } from "../services/index.js";
 
-const $modelsArea = $("#models");
 let seq = 0;
 const pending = new Map();
 

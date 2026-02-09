@@ -1,22 +1,31 @@
 import { workspaceStore, projectGraphStore } from "../store/index.js";
 import { workspaceService } from "../services/index.js";
 
-const cyLayoutOptions = {
-  name: "cose",
-  animate: false,
-};
-
+const theme = getThemeVars();
 function getThemeVars() {
   const s = getComputedStyle(document.documentElement);
   return {
     activeColor: s.getPropertyValue("--wfadaptor-highlight").trim(),
   };
 }
-const theme = getThemeVars();
+
+const cyLayoutOptions = {
+  name: "cose",
+  animate: false,
+};
+
+function getEntityId(node) {
+  return node.id()?.replace("cy-", "") ?? null;
+}
+
+function getEntityType(node) {
+  return node.data().type ?? null;
+}
 
 export function initProjectGraphUI() {
   const cy = cytoscape({
     container: document.getElementById("cy"),
+    pixelRatio: window.devicePixelRatio || 1,
     elements: projectGraphStore.getElements(),
     layout: cyLayoutOptions,
     zoom: 1,
@@ -30,7 +39,7 @@ export function initProjectGraphUI() {
           label: "data(label)",
           "text-valign": "center",
           "text-halign": "center",
-          "font-size": 8,
+          "font-size": 12,
           color: "#000000",
           "text-events": "yes",
           "min-zoomed-font-size": 6,
@@ -46,19 +55,19 @@ export function initProjectGraphUI() {
       {
         selector: 'node[type="document"]',
         style: {
-          width: 18,
-          height: 18,
+          width: 20,
+          height: 20,
           "text-valign": "bottom",
           "text-halign": "center",
           "text-wrap": "wrap",
-          "text-max-width": 40,
+          "text-max-width": 80,
         },
       },
       {
         selector: 'node[type="model"]',
         style: {
-          width: 10,
-          height: 10,
+          width: 12,
+          height: 12,
           "text-valign": "bottom",
           "text-halign": "center",
           "text-margin-y": 2,
@@ -89,26 +98,51 @@ export function initProjectGraphUI() {
   // ---------- Interaction ----------
   cy.on("tap", "node", (evt) => {
     const node = evt.target;
-    console.log("Clicked:", node.id(), node.data());
-    const nodeId = node.id().replace("cy-", "");
-    switch (node.data().type) {
+    const entityId = getEntityId(node);
+    const entityType = getEntityType(node);
+    switch (entityType) {
       case "document":
-        workspaceService.activateDocumentById(nodeId);
+        workspaceService.activateDocumentById(entityId);
         break;
       case "model":
-        workspaceService.toggleModelSelection(nodeId);
+        workspaceService.toggleModelSelection(entityId);
         break;
       default:
         break;
     }
   });
 
-  cy.on("mouseover", "node", () => {
+  cy.on("mouseover", "node", (evt) => {
     cy.container().style.cursor = "pointer";
+    const node = evt.target;
+    const entityId = getEntityId(node);
+    const entityType = getEntityType(node);
+    switch (entityType) {
+      case "document":
+        // workspaceService.activateDocumentById(entityId);
+        break;
+      case "model":
+        workspaceStore.setHoveredModelId(entityId);
+        break;
+      default:
+        break;
+    }
   });
 
-  cy.on("mouseout", "node", () => {
+  cy.on("mouseout", "node", (evt) => {
     cy.container().style.cursor = "default";
+    const node = evt.target;
+    const entityType = getEntityType(node);
+    switch (entityType) {
+      case "document":
+        // workspaceService.activateDocumentById(entityId);
+        break;
+      case "model":
+        workspaceStore.setHoveredModelId(null);
+        break;
+      default:
+        break;
+    }
   });
 
   // Subscribe to store changes

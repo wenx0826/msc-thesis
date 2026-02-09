@@ -13,8 +13,8 @@ export const documentService = {
     const newDoc = await documentsAPI.createDocument({ ...doc, projectId });
     documentsStore.addDocument(newDoc);
     const docId = newDoc.id;
-    workspaceService.activateDocumentById(docId);
     projectGraphStore.addDocumentNode(newDoc);
+    workspaceService.activateDocumentById(docId);
     return newDoc;
   },
 };

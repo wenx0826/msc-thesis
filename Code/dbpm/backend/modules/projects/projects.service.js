@@ -42,20 +42,6 @@ class ProjectService {
     return projectRepo.getAllModelsByProjectId(projectId);
   }
 
-  async getDocumentCount(projectId) {
-    const result = projectRepo.getDocumentCount(projectId);
-    return result.count.toString();
-  }
-
-  async getModelCount(projectId) {
-    const result = projectRepo.getModelCount(projectId);
-    return { count: result.count };
-  }
-
-  async getTotalModelCount(projectId) {
-    const result = projectRepo.getTotalModelCount(projectId);
-    return { count: result.count };
-  }
   async getModelGenerationCounter(projectId) {
     return projectRepo.getModelGenerationCounter(projectId);
   }

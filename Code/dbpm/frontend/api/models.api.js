@@ -131,13 +131,4 @@ export const modelsAPI = {
   },
 
   // Sub-API for accessing all records (including soft-deleted)
-  all: {
-    async getAll() {
-      const response = await fetch(`${baseURL}/models/all`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return await response.json();
-    },
-  },
 };

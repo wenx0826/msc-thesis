@@ -1,5 +1,9 @@
 // Projects UI Module - Handles project list and create dialog
 import { projectsAPI } from "../api/index.js";
+import { getProjectWorkspaceURL, getProjectStatsURL } from "../util/url.js";
+import { cloneTemplate } from "../util/dom.js";
+
+let projects = [];
 
 function escapeHtml(s) {
   return String(s).replace(
@@ -15,33 +19,24 @@ function escapeHtml(s) {
   );
 }
 
-function renderProjectRow(project) {
-  const $table = $("#projectTable");
-  const $row = $($("#rowtemplate").html());
-  $row.attr("data-project-id", project.id);
-  $row
-    .find("a")
-    .attr("href", "workspace.html?project_id=" + project.id)
-    .text(escapeHtml(project.name));
-  $row.find(".doc-count").text(project.documentCount || 0);
-  $row.find(".model-count").text(project.modelCount || 0);
-  $row.find(".created").text(new Date(project.createdAt).toLocaleString());
-  $table.append($row);
-}
-
-async function loadProjects() {
+async function renderProjectsTable() {
   try {
-    const projects = await projectsAPI.getProjectList();
-    console.log("Loaded projects:", projects);
-
+    projects = await projectsAPI.list();
     for (const project of projects) {
-      project.documentCount = await projectsAPI.getDocumentCount(project.id);
-      project.modelCount = await projectsAPI.getModelCount(project.id);
-
-      renderProjectRow(project);
+      const $tableBody = $("#projectsTable tbody");
+      const $row = cloneTemplate("projectRowTemplate").children().first();
+      console.log("Rendering project:", $row);
+      $row.attr("data-project-id", project.id);
+      $row.find("[data-ref='projectName']").text(project.name || "no name");
+      $row
+        .find("[data-ref='documentsCount']")
+        .text(project.documentsCount || 0);
+      $row.find("[data-ref='modelsCount']").text(project.modelsCount || 0);
+      $row.find("[data-ref='createdAt']").text(project.createdAt);
+      $tableBody.append($row);
     }
   } catch (err) {
-    console.error("Failed to load projects:", err);
+    console.error("Failed to initialize Projects UI:", err);
   }
 }
 
@@ -52,8 +47,8 @@ async function createProject(name) {
 
 function deleteProject(projectId) {}
 
-function setupCreateProjectDialog() {
-  const dlg = document.getElementById("dlg");
+function setupProjectCreationDialog() {
+  const dlg = document.getElementById("projectCreationDialog");
   const $err = $("#err");
   const $name = $("#name");
   const $save = $("#save");
@@ -92,24 +87,22 @@ function setupCreateProjectDialog() {
     }
   });
 }
-function viewProjectStats(projectId) {
-  window.location.assign(
-    "stats.html?project_id=" + encodeURIComponent(projectId),
-  );
-}
 
-export default function init() {
-  loadProjects();
-  setupCreateProjectDialog();
-  console.log("Projects UI loaded", $("#projectTable")[0]);
-  $("#projectTable").on("click", "td.actions", (e) => {
-    console.log("Project row clicked", e.target, e.currentTarget);
+export default async function init() {
+  renderProjectsTable();
+  setupProjectCreationDialog();
+  $("#projectsTable tbody").on("click", "td:first-child", (e) => {
+    var projectId = $(e.currentTarget).closest("tr").attr("data-project-id");
+    window.location.href = getProjectWorkspaceURL(projectId);
+  });
+  $("#projectsTable tbody").on("click", "td:last-child", (e) => {
     var projectId = $(e.currentTarget).closest("tr").attr("data-project-id");
     var menu = {};
     menu[""] = [
       {
         label: "View Statistics",
-        function_call: viewProjectStats,
+        function_call: (projectId) =>
+          (window.location.href = getProjectStatsURL(projectId)),
         text_icon: "",
         type: undefined,
         params: [projectId],
@@ -135,5 +128,4 @@ export default function init() {
 
     new CustomMenu(e).contextmenu(menu);
   });
-  console.log("Projects UI initialized");
 }

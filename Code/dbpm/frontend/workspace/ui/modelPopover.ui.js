@@ -54,10 +54,35 @@ export function initModelPopoverUI() {
 
   // Listen for changes to active model and hovered model in workspace store
   workspaceStore.subscribe((state, { key, newValue }) => {
+    if (key === "popoverModel") {
+      if (newValue) {
+        const modelName = modelsStore.getModelNameById(newValue);
+        const modelGraph = $(modelsStore.getModelGraphById(newValue)).clone();
+        console.log(
+          "!!!!Updating model popover for hovered model:",
+          newValue,
+          modelName,
+        );
+        tip.setProps({
+          getReferenceClientRect: () => ({
+            top: 200,
+            left: 200,
+            right: 200,
+            bottom: 200,
+            width: 0,
+            height: 0,
+          }),
+        });
+        tip.show();
+        tip.setContent(modelGraph);
+      } else {
+        tip.hide();
+      }
+    }
     if (key === "hoveredModelId") {
       if (newValue) {
         const modelName = modelsStore.getModelNameById(newValue);
-        const modelGraph = modelsStore.getModelGraphById(newValue);
+        const modelGraph = $(modelsStore.getModelGraphById(newValue)).clone();
         console.log(
           "!!!!Updating model popover for hovered model:",
           newValue,

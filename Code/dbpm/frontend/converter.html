@@ -76,10 +76,10 @@
                 return;
             }
             try {
-                console.log("!!!!Converter received message for model id:", input.id);
+                // console.log("!!!!Converter received message for model id:", input.id);
                 const modelId = input.id;
                 const model = await modelsAPI.getModelDataById(modelId);
-                console.log("!!!!Model data received in converter:", model);
+                // console.log("!!!!Model data received in converter:", model);
                 var parser = new DOMParser();
                 let data = parser.parseFromString(model, "application/xml");
 
@@ -93,7 +93,7 @@
                 // Initialize endpoint API before rendering
                 endpointAPI.init();
 
-                new WfAdaptor("wf_graph_themes/preset_copy/theme.js", function (
+                new WfAdaptor("wf_graph_themes/preset_customized/theme.js", function (
                     graphrealization,
                 ) {
                     try {
@@ -114,7 +114,7 @@
                         // const svgString = svgData.serializedPrettyXML()
                         e.source.postMessage({ id, ok: true, result: svgString }, e.origin);
                     } catch (err) {
-                        console.log("!!!!!!!!!!!!!Error in adaptor init:", err);
+                        // console.log("!!!!!!!!!!!!!Error in adaptor init:", err);
                         e.source.postMessage(
                             { id, ok: false, error: String(err?.stack || err) },
                             e.origin
@@ -124,7 +124,7 @@
 
                 });
             } catch (err) {
-                console.log("!!!!!!!!!!!!!Error in converter:", err);
+                // console.log("!!!!!!!!!!!!!Error in converter:", err);
                 e.source.postMessage(
                     { id, ok: false, error: String(err?.stack || err) },
                     e.origin

@@ -99,14 +99,14 @@ function clearModelViewer() {
 
 const showActiveModel = async (model) => {
   save["state"] = "ready";
-  save["graph_theme"] = "preset_copy";
+  save["graph_theme"] = "preset_customized";
 
   // Initialize endpoints and map to save cache for details.js compatibility
   endpointAPI.init();
   save["endpoints_cache"] = endpointAPI._cache;
 
   save["graph_adaptor"] = new WfAdaptor(
-    "./wf_graph_themes/preset_copy/theme.js",
+    "./wf_graph_themes/preset_customized/theme.js",
     function (graphrealization) {
       graphrealization.illustrator.get_symbol =
         endpointAPI.getSymbol.bind(endpointAPI);

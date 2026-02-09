@@ -16,7 +16,6 @@ class TraceService {
 
   async updateTrace(traceId, documentId, modelId, selections) {
     const success = traceRepo.update(traceId, documentId, modelId, selections);
-
     if (!success) {
       throw new Error("Trace not found");
     }

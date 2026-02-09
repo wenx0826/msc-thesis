@@ -616,3 +616,457 @@ data:
         </loop>
       </description>
     </description>
+---
+timestamp: '2026-02-07T07:32:34.629Z'
+event: document_uploaded
+data:
+  id: be0c4340-99fa-43e2-a1c2-164a094bc115
+  name: Applied Strategy and Organization _ Endterm_ME.pdf
+  words: 515
+---
+timestamp: '2026-02-07T07:32:37.895Z'
+event: model_generated
+data:
+  id: b91d2def-24fc-4d5c-8529-c7ccbd1c50b9
+  name: Model_6
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>be0c4340-99fa-43e2-a1c2-164a094bc115</dbpm:document_id>
+          <dbpm:text_selections>e:   WI001111   Date:   Thursday 23 rd   February, 2023  Examiner:   Prof. Dr. Isabell M. Welpe   Exam:   Endterm  First name:   Xin   Registration number, UIDs:   03687993, E0073 / S0234  Last name:   Wen   Last update:   Monday 6 th   March, 2023  Σ   (Endterm)  49.0  Grade (Endterm) 3.3 Grade intervall  [49.0; 54.0)  Notes:  •   Please make sure that the total amount of credits stated above</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <call id="a1" endpoint="timeout">
+          <parameters>
+            <!--{{{-->
+            <label>Task 1</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>2</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a1,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a2" endpoint="timeouts">
+          <parameters>
+            <!--{{{-->
+            <label>Resource Synchronisation</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>10</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a2,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a3" endpoint="timeout">
+          <parameters>
+            <!--{{{-->
+            <label>Task 3</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>4</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a3,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-07T07:37:34.869Z'
+event: model_generated
+data:
+  id: 9bc9a21d-45dc-4ca6-b147-6da870a701ed
+  name: Model_7
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>be0c4340-99fa-43e2-a1c2-164a094bc115</dbpm:document_id>
+          <dbpm:text_selections>0.0  1.0  1.0
+    For personal review only  For personal review only  For personal review only  0.0  1.0  1.0  0.0  1.0
+    For personal review only  For personal review only  For personal review only  0.0  1.0  1.0  1.0  1.0
+    For personal review only  For personal review only  For personal review only  0.0  0.0  0.0  1.0  1.0  1.0
+    For personal review only  For personal review only  For personal review only  only  For personal review only  For personal review only  0.0  1.0  1.0  1.0
+    For personal review only  For personal review only  For personal review only  0.0  1.0  0.0  1.0
+    For personal review only  For person</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <loop mode="pre_test" condition="true">
+          <_probability>
+            <_probability_min/>
+            <_probability_max/>
+            <_probability_avg/>
+          </_probability>
+          <call id="a1" endpoint="overview">
+            <parameters>
+              <label>Move to overview position</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <call id="a3" endpoint="get_items_base">
+            <parameters>
+              <label>Get item positions</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <code>
+              <prepare/>
+              <finalize output="result">data.items = result
+    data.item = result[0]</finalize>
+              <update output="result"/>
+              <rescue output="result"/>
+            </code>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <call id="a5" endpoint="move_camera">
+            <parameters>
+              <label>Inspect first item</label>
+              <arguments>
+                <x>!data.item['x']</x>
+                <y>!data.item['y']</y>
+              </arguments>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <call id="a6" endpoint="get_offset_base">
+            <parameters>
+              <label>Get item offset</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <code>
+              <prepare/>
+              <finalize output="result">data.adjusted = result</finalize>
+              <update output="result"/>
+              <rescue output="result"/>
+            </code>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <stop id="a2"/>
+        </loop>
+      </description>
+    </description>
+---
+timestamp: '2026-02-07T20:32:52.015Z'
+event: document_uploaded
+data:
+  id: 556da83b-6695-4866-b28c-29835f1c36fd
+  name: assignment_aso_endterm.pdf
+  words: 5228
+---
+timestamp: '2026-02-07T20:33:19.529Z'
+event: document_uploaded
+data:
+  id: d339192c-665c-4175-95a8-cfd489293b74
+  name: Strategy in the Global Market Place.pdf
+  words: 7551
+---
+timestamp: '2026-02-07T23:44:21.583Z'
+event: document_uploaded
+data:
+  id: aaaea9fa-9af7-475a-9d93-225cd8d70918
+  name: Strategy in the Global Market Place.pdf
+  words: 7551
+---
+timestamp: '2026-02-07T23:45:53.090Z'
+event: document_uploaded
+data:
+  id: 62b2cada-c0de-4ec1-8809-04cd51ee466c
+  name: 2.3.docx
+  words: 4903
+---
+timestamp: '2026-02-08T09:16:11.904Z'
+event: model_generated
+data:
+  id: 4789e4b6-ea31-4d35-a4e2-4ddc042b435d
+  name: Model_8
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>aaaea9fa-9af7-475a-9d93-225cd8d70918</dbpm:document_id>
+          <dbpm:text_selections>ate of  Urbanization  Raw Material  Availability   Legislative  Regulation  Interest Rates  Demographics  Innovation  Human  Capital  Availability  Digital  Transformation  Macro  Environment  Industry   Competition  Organization  Etex  The environment is what gives organizations their means of survival  Applied Strategy &amp; Organization | Prof. Manfred Grundke | 22 November 2022 4
+    Knauf   –   A family company with long - term perspective and strong  values  1932   -   1968   1969   -   2008   today  The   family   company   was   established   in   1932 ,  when   brothers   Alfons   and   Karl   Knauf   secured   the  min</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <loop mode="pre_test" condition="true">
+          <parallel wait="-1">
+            <loop mode="pre_test" condition="data.i &lt; 4">
+              <_probability>
+                <_probability_min/>
+                <_probability_max/>
+                <_probability_avg/>
+              </_probability>
+              <parallel_branch>
+                <call id="a1" endpoint="start_url">
+                  <parameters>
+                    <label>Start</label>
+                    <method>:post</method>
+                    <arguments>
+                      <behavior>wait_running</behavior>
+                      <url>http://localhost/flow/templates/instantiate.local/Take_Sub.xml</url>
+                      <init>
+                        <time>4</time>
+                      </init>
+                      <endpoints/>
+                      <stream/>
+                    </arguments>
+                    <stream>
+                      <sensors/>
+                      <aggregators/>
+                      <costs/>
+                    </stream>
+                    <report>
+                      <url/>
+                    </report>
+                  </parameters>
+                  <annotations>
+                    <_timing>
+                      <_timing_wait/>
+                      <_timing_threshold/>
+                      <_timing_min/>
+                      <_timing_max/>
+                      <_timing_avg/>
+                    </_timing>
+                    <_notes>
+                      <_notes_general/>
+                    </_notes>
+                  </annotations>
+                  <documentation/>
+                </call>
+              </parallel_branch>
+              <manipulate id="a4" label="">data.i += 1</manipulate>
+            </loop>
+          </parallel>
+          <manipulate id="a3" label="">data.i = 0</manipulate>
+          <_probability>
+            <_probability_min/>
+            <_probability_max/>
+            <_probability_avg/>
+          </_probability>
+          <stop id="a2"/>
+        </loop>
+      </description>
+    </description>
+---
+timestamp: '2026-02-08T09:16:12.945Z'
+event: model_generated
+data:
+  id: 9f288d37-ae5b-4b87-bc9d-9159abea64aa
+  name: Model_9
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>aaaea9fa-9af7-475a-9d93-225cd8d70918</dbpm:document_id>
+          <dbpm:text_selections>ate of  Urbanization  Raw Material  Availability   Legislative  Regulation  Interest Rates  Demographics  Innovation  Human  Capital  Availability  Digital  Transformation  Macro  Environment  Industry   Competition  Organization  Etex  The environment is what gives organizations their means of survival  Applied Strategy &amp; Organization | Prof. Manfred Grundke | 22 November 2022 4
+    Knauf   –   A family company with long - term perspective and strong  values  1932   -   1968   1969   -   2008   today  The   family   company   was   established   in   1932 ,  when   brothers   Alfons   and   Karl   Knauf   secured   the  min</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <call id="a1" endpoint="timeout">
+          <parameters>
+            <!--{{{-->
+            <label>Task 1</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>2</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a1,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a2" endpoint="timeouts">
+          <parameters>
+            <!--{{{-->
+            <label>Resource Synchronisation</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>10</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a2,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a3" endpoint="timeout">
+          <parameters>
+            <!--{{{-->
+            <label>Task 3</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>4</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a3,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-08T15:37:01.697Z'
+event: model_generated
+data:
+  id: 973017fa-8bba-480f-885f-43980492f1aa
+  name: Model_10
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>62b2cada-c0de-4ec1-8809-04cd51ee466c</dbpm:document_id>
+          <dbpm:text_selections>An industry is a group of firms producing products and services that are essentially the same. Examples are the automobile industry and the airline industry. Industries are also often described as 'sectors', especially in public services (e.g. the health sector or the education sector). Industries and sectors are often made up of several specific markets. A market is a group of customers for specific products or services that are essentially the same (e.g. a particular geographical market). Thus the automobile industry has markets in North America. Europe and Asia. for example.</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <call id="a1" endpoint="timeout">
+          <parameters>
+            <!--{{{-->
+            <label>Task 1</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>2</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a1,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a2" endpoint="timeouts">
+          <parameters>
+            <!--{{{-->
+            <label>Resource Synchronisation</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>4</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a2,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a3" endpoint="timeout">
+          <parameters>
+            <!--{{{-->
+            <label>Task 3</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>4</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a3,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+      </description>
+    </description>

@@ -1,5 +1,5 @@
 import db from "../../database.js";
-import { convertKeysToCamelCase } from "../../utils/caseConverter.js";
+import { toCamel, toSnake } from "snake-camel";
 
 class DocumentRepository {
   create(id, name, uploadedAt, projectId, words) {
@@ -15,13 +15,13 @@ class DocumentRepository {
       "SELECT id, name, created_at, project_id FROM documents",
     );
     const results = stmt.all();
-    return convertKeysToCamelCase(results);
+    return results.map(toCamel);
   }
 
   findById(docId) {
     const stmt = db.prepare("SELECT id FROM documents WHERE id = ?");
     const result = stmt.get(docId);
-    return result ? convertKeysToCamelCase(result) : null;
+    return toCamel(result);
   }
 
   findByProjectId(projectId) {
@@ -29,22 +29,23 @@ class DocumentRepository {
       "SELECT id, name, created_at, project_id FROM documents WHERE project_id = ?",
     );
     const results = stmt.all(projectId);
-    return convertKeysToCamelCase(results);
+    return results.map(toCamel);
   }
 
-  delete(docId) {
-    const deleteStmt = db.prepare("DELETE FROM documents WHERE id = ?");
-    return deleteStmt.run(docId);
-  }
   getProjectId(docId) {
     const stmt = db.prepare("SELECT project_id FROM documents WHERE id = ?");
     const result = stmt.get(docId);
-    return result?.project_id ?? null;
+    return result?.project_id;
   }
+  // todo
   getTraces(docId) {
     const stmt = db.prepare("SELECT * FROM traces WHERE document_id = ?");
     const results = stmt.all(docId);
-    return convertKeysToCamelCase(results);
+    const parsedTraces = results.map((trace) => ({
+      ...trace,
+      selections: trace.selections ? JSON.parse(trace.selections) : null,
+    }));
+    return parsedTraces.map(toCamel);
   }
 
   getModels(docId) {
@@ -54,7 +55,7 @@ class DocumentRepository {
       WHERE t.document_id = ? AND m.deleted_at IS NULL
     `);
     const results = stmt.all(docId);
-    return convertKeysToCamelCase(results);
+    return results.map(toCamel);
   }
 
   getAllModels(docId) {
@@ -64,7 +65,11 @@ class DocumentRepository {
       WHERE t.document_id = ?
     `);
     const results = stmt.all(docId);
-    return convertKeysToCamelCase(results);
+    return results.map(toCamel);
+  }
+  softDelete(docId) {
+    const stmt = db.prepare("UPDATE documents SET deleted_at = ? WHERE id = ?");
+    return stmt.run(new Date().toISOString(), docId);
   }
 }
 

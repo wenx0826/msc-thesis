@@ -12,11 +12,12 @@ export const workspaceStore = Object.assign(
     llmModel: "gemini-2.0-flash",
     theme: null,
     project: {},
+    modelPopover: null,
   }),
   {
     async init(projectId) {
       this.setProjectId(projectId);
-      const project = await projectsAPI.getProjectById(projectId);
+      const project = await projectsAPI.get(projectId);
     },
     setProjectId(projectId) {
       const oldValue = this.state.projectId;
@@ -49,8 +50,17 @@ export const workspaceStore = Object.assign(
     },
     setHoveredModelId(newValue) {
       const oldValue = this.state.hoveredModelId;
+      if (oldValue === newValue) return; // No change
       this.state.hoveredModelId = newValue;
       this.notify({ key: "hoveredModelId", oldValue, newValue });
+    },
+    setModelPopover(newValue) {
+      const oldValue = this.state.modelPopover;
+      const oldHoveredModelId = oldValue ? oldValue.modelId : null;
+      const newHoveredModelId = newValue ? newValue.modelId : null;
+      if (oldHoveredModelId === newHoveredModelId) return; // No change
+      this.state.modelPopover = newValue;
+      this.notify({ key: "modelPopover", oldValue, newValue });
     },
     setActiveDocumentId(newValue) {
       const oldValue = this.getActiveDocumentId();

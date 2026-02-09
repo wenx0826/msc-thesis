@@ -1,0 +1,2020 @@
+---
+timestamp: '2026-02-07T09:30:14.090Z'
+event: project_created
+data:
+  id: 1bd3253e-08aa-4e00-88dc-5a28139b0d8d
+  name: we
+---
+timestamp: '2026-02-07T11:59:15.967Z'
+event: document_uploaded
+data:
+  id: 07693ab0-433c-49df-85cb-2bb0c127c32e
+  name: Applied Strategy and Organization _ Endterm_ME.pdf
+  words: 515
+---
+timestamp: '2026-02-07T11:59:18.472Z'
+event: model_generated
+data:
+  id: a60e9dbe-f6e0-45e4-a3bb-04ae5755e467
+  name: Model_1
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>07693ab0-433c-49df-85cb-2bb0c127c32e</dbpm:document_id>
+          <dbpm:text_selections>ns done by instructors or assistants are copyright protected. The electronic copy of this exam may be used for personal review only. Any kind of publication is prohibited by law and will be prosecuted. The legitimate interest in the proceedings remains unaffected,</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <call id="a1" endpoint="timeout">
+          <parameters>
+            <!--{{{-->
+            <label>Task 1</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>2</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a1,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a2" endpoint="timeouts">
+          <parameters>
+            <!--{{{-->
+            <label>Resource Synchronisation</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>4</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a2,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a3" endpoint="timeout">
+          <parameters>
+            <!--{{{-->
+            <label>Task 3</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>4</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a3,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-07T12:18:49.889Z'
+event: model_generated
+data:
+  id: f8e6031c-6e2c-4e8f-8546-ad8f0ca5af14
+  name: Model_2
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>07693ab0-433c-49df-85cb-2bb0c127c32e</dbpm:document_id>
+          <dbpm:text_selections>ell M. Welpe   Exam:   Endterm  First name:   Xin   Registration nu</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <call id="a1" endpoint="bookAir">
+          <parameters>
+            <label>Book Airline 1</label>
+            <method>:post</method>
+            <arguments>
+              <from>!data.from</from>
+              <to>!data.to</to>
+              <persons>!data.persons</persons>
+            </arguments>
+          </parameters>
+          <code>
+            <prepare/>
+            <finalize output="result">data.airline = result.value('id')
+    data.costs += result.value('costs').to_f
+    status.update 1, 'Hotel'</finalize>
+            <update output="result"/>
+            <rescue output="result"/>
+          </code>
+          <annotations>
+            <_timing>
+              <_timing_weight/>
+              <_timing_avg/>
+              <explanations/>
+            </_timing>
+            <_shifting>
+              <_shifting_type>Duration</_shifting_type>
+            </_shifting>
+            <_context_data_analysis>
+              <probes/>
+              <ips/>
+            </_context_data_analysis>
+            <report>
+              <url/>
+            </report>
+            <_notes>
+              <_notes_general/>
+            </_notes>
+          </annotations>
+          <documentation>
+            <input/>
+            <output/>
+            <implementation>
+              <description/>
+            </implementation>
+            <code>
+              <description/>
+            </code>
+          </documentation>
+        </call>
+        <parallel wait="-1" cancel="last">
+          <loop mode="pre_test" condition="data.persons &gt; 0">
+            <parallel_branch>
+              <call id="a2" endpoint="bookHotel">
+                <parameters>
+                  <label>Book Hotel</label>
+                  <method>:post</method>
+                  <arguments>
+                    <to>!data.to</to>
+                  </arguments>
+                </parameters>
+                <code>
+                  <prepare/>
+                  <finalize output="result">data.hotels &lt;&lt; result.value('id')
+    data.costs += result.value('costs').to_f</finalize>
+                  <update output="result"/>
+                  <rescue output="result"/>
+                </code>
+                <annotations>
+                  <_timing>
+                    <_timing_weight/>
+                    <_timing_avg/>
+                    <explanations/>
+                  </_timing>
+                  <_shifting>
+                    <_shifting_type>Duration</_shifting_type>
+                  </_shifting>
+                  <_context_data_analysis>
+                    <probes/>
+                    <ips/>
+                  </_context_data_analysis>
+                  <report>
+                    <url/>
+                  </report>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation>
+                  <input/>
+                  <output/>
+                  <implementation>
+                    <description/>
+                  </implementation>
+                  <code>
+                    <description/>
+                  </code>
+                </documentation>
+              </call>
+            </parallel_branch>
+            <manipulate id="a3">data.persons -= 1</manipulate>
+          </loop>
+        </parallel>
+        <choose mode="exclusive">
+          <alternative condition="data.costs &gt; 700">
+            <_probability>
+              <_probability_min/>
+              <_probability_max/>
+              <_probability_avg/>
+            </_probability>
+            <call id="a4" endpoint="approve">
+              <parameters>
+                <label>Approve Hotel</label>
+                <method>:post</method>
+                <arguments>
+                  <costs>!data.costs</costs>
+                </arguments>
+              </parameters>
+              <annotations>
+                <_timing>
+                  <_timing_weight/>
+                  <_timing_avg/>
+                  <explanations/>
+                </_timing>
+                <_shifting>
+                  <_shifting_type>Duration</_shifting_type>
+                </_shifting>
+                <_context_data_analysis>
+                  <probes/>
+                  <ips/>
+                </_context_data_analysis>
+                <report>
+                  <url/>
+                </report>
+                <_notes>
+                  <_notes_general/>
+                </_notes>
+              </annotations>
+              <documentation>
+                <input/>
+                <output/>
+                <implementation>
+                  <description/>
+                </implementation>
+              </documentation>
+            </call>
+          </alternative>
+          <otherwise/>
+        </choose>
+      </description>
+    </description>
+---
+timestamp: '2026-02-07T12:24:33.031Z'
+event: model_generated
+data:
+  id: 6108107c-8ffc-4952-88ec-3572b739cb95
+  name: Model_3
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>07693ab0-433c-49df-85cb-2bb0c127c32e</dbpm:document_id>
+          <dbpm:text_selections>ersonal review only  For personal review only  For personal review only  0.0  1.0  0.0  1.0  0.0
+    For personal review only  For personal review only  For personal review only  1.0  1.0  0.0  0.0  0.0
+    For personal review only  For personal review only  For personal review only  1.0  0.0  0.0  1.0  0.0
+    For personal review only  For personal review only  For personal review only  1.0  1.0  1.0  1.0
+    For personal review only  For perso</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <loop mode="pre_test" condition="true">
+          <parallel wait="-1">
+            <loop mode="pre_test" condition="data.i &lt; 4">
+              <_probability>
+                <_probability_min/>
+                <_probability_max/>
+                <_probability_avg/>
+              </_probability>
+              <parallel_branch>
+                <call id="a1" endpoint="start_url">
+                  <parameters>
+                    <label>Start</label>
+                    <method>:post</method>
+                    <arguments>
+                      <behavior>wait_running</behavior>
+                      <url>http://localhost/flow/templates/instantiate.local/Take_Sub.xml</url>
+                      <init>
+                        <time>4</time>
+                      </init>
+                      <endpoints/>
+                      <stream/>
+                    </arguments>
+                    <stream>
+                      <sensors/>
+                      <aggregators/>
+                      <costs/>
+                    </stream>
+                    <report>
+                      <url/>
+                    </report>
+                  </parameters>
+                  <annotations>
+                    <_timing>
+                      <_timing_wait/>
+                      <_timing_threshold/>
+                      <_timing_min/>
+                      <_timing_max/>
+                      <_timing_avg/>
+                    </_timing>
+                    <_notes>
+                      <_notes_general/>
+                    </_notes>
+                  </annotations>
+                  <documentation/>
+                </call>
+              </parallel_branch>
+              <manipulate id="a4" label="">data.i += 1</manipulate>
+            </loop>
+          </parallel>
+          <manipulate id="a3" label="">data.i = 0</manipulate>
+          <_probability>
+            <_probability_min/>
+            <_probability_max/>
+            <_probability_avg/>
+          </_probability>
+          <stop id="a2"/>
+        </loop>
+      </description>
+    </description>
+---
+timestamp: '2026-02-07T12:27:24.673Z'
+event: model_generated
+data:
+  id: 8f4e003e-f184-4c8a-bc6b-757e6a53c0a4
+  name: Model_4
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>07693ab0-433c-49df-85cb-2bb0c127c32e</dbpm:document_id>
+          <dbpm:text_selections>0  0.0  1.0  1.0  1.0
+    For personal review only  For personal review only  For personal review only  0.0  0.0  0.0  0.0  1.0
+    For personal review only  For personal review only  For personal review only  0.0  0.0  1.0  0.0  1.0
+    For personal review only  For personal review only  For personal review only  0.0  0.0  0.0  1.0  1.0
+    For personal review only  For personal review only  For personal review</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <loop mode="pre_test" condition="true">
+          <parallel wait="-1">
+            <loop mode="pre_test" condition="data.i &lt; 4">
+              <_probability>
+                <_probability_min/>
+                <_probability_max/>
+                <_probability_avg/>
+              </_probability>
+              <parallel_branch>
+                <call id="a1" endpoint="start_url">
+                  <parameters>
+                    <label>Start</label>
+                    <method>:post</method>
+                    <arguments>
+                      <behavior>wait_running</behavior>
+                      <url>http://localhost/flow/templates/instantiate.local/Take_Sub.xml</url>
+                      <init>
+                        <time>4</time>
+                      </init>
+                      <endpoints/>
+                      <stream/>
+                    </arguments>
+                    <stream>
+                      <sensors/>
+                      <aggregators/>
+                      <costs/>
+                    </stream>
+                    <report>
+                      <url/>
+                    </report>
+                  </parameters>
+                  <annotations>
+                    <_timing>
+                      <_timing_wait/>
+                      <_timing_threshold/>
+                      <_timing_min/>
+                      <_timing_max/>
+                      <_timing_avg/>
+                    </_timing>
+                    <_notes>
+                      <_notes_general/>
+                    </_notes>
+                  </annotations>
+                  <documentation/>
+                </call>
+              </parallel_branch>
+              <manipulate id="a4" label="">data.i += 1</manipulate>
+            </loop>
+          </parallel>
+          <manipulate id="a3" label="">data.i = 0</manipulate>
+          <_probability>
+            <_probability_min/>
+            <_probability_max/>
+            <_probability_avg/>
+          </_probability>
+          <stop id="a2"/>
+        </loop>
+      </description>
+    </description>
+---
+timestamp: '2026-02-07T12:32:19.864Z'
+event: model_generated
+data:
+  id: f5bb4730-5b01-4d6a-8be0-e0b082fa63d5
+  name: Model_5
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>07693ab0-433c-49df-85cb-2bb0c127c32e</dbpm:document_id>
+          <dbpm:text_selections>personal review only  0.0  1.0  1.0  1.0
+    For personal review only  For personal review only  For personal review only  0.0  1.0  0.0  1.0
+    For personal review only  For personal review only  For personal review only  1.0  1.0  1.0  0.0
+    For personal review only  For personal review only  For personal review</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <call id="a1" endpoint="bookAir">
+          <parameters>
+            <label>Book Airline 1</label>
+            <method>:post</method>
+            <arguments>
+              <from>!data.from</from>
+              <to>!data.to</to>
+              <persons>!data.persons</persons>
+            </arguments>
+          </parameters>
+          <code>
+            <prepare/>
+            <finalize output="result">data.airline = result.value('id')
+    data.costs += result.value('costs').to_f
+    status.update 1, 'Hotel'</finalize>
+            <update output="result"/>
+            <rescue output="result"/>
+          </code>
+          <annotations>
+            <_timing>
+              <_timing_weight/>
+              <_timing_avg/>
+              <explanations/>
+            </_timing>
+            <_shifting>
+              <_shifting_type>Duration</_shifting_type>
+            </_shifting>
+            <_context_data_analysis>
+              <probes/>
+              <ips/>
+            </_context_data_analysis>
+            <report>
+              <url/>
+            </report>
+            <_notes>
+              <_notes_general/>
+            </_notes>
+          </annotations>
+          <documentation>
+            <input/>
+            <output/>
+            <implementation>
+              <description/>
+            </implementation>
+            <code>
+              <description/>
+            </code>
+          </documentation>
+        </call>
+        <parallel wait="-1" cancel="last">
+          <loop mode="pre_test" condition="data.persons &gt; 0">
+            <parallel_branch>
+              <call id="a2" endpoint="bookHotel">
+                <parameters>
+                  <label>Book Hotel</label>
+                  <method>:post</method>
+                  <arguments>
+                    <to>!data.to</to>
+                  </arguments>
+                </parameters>
+                <code>
+                  <prepare/>
+                  <finalize output="result">data.hotels &lt;&lt; result.value('id')
+    data.costs += result.value('costs').to_f</finalize>
+                  <update output="result"/>
+                  <rescue output="result"/>
+                </code>
+                <annotations>
+                  <_timing>
+                    <_timing_weight/>
+                    <_timing_avg/>
+                    <explanations/>
+                  </_timing>
+                  <_shifting>
+                    <_shifting_type>Duration</_shifting_type>
+                  </_shifting>
+                  <_context_data_analysis>
+                    <probes/>
+                    <ips/>
+                  </_context_data_analysis>
+                  <report>
+                    <url/>
+                  </report>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation>
+                  <input/>
+                  <output/>
+                  <implementation>
+                    <description/>
+                  </implementation>
+                  <code>
+                    <description/>
+                  </code>
+                </documentation>
+              </call>
+            </parallel_branch>
+            <manipulate id="a3">data.persons -= 1</manipulate>
+          </loop>
+        </parallel>
+        <choose mode="exclusive">
+          <alternative condition="data.costs &gt; 700">
+            <_probability>
+              <_probability_min/>
+              <_probability_max/>
+              <_probability_avg/>
+            </_probability>
+            <call id="a4" endpoint="approve">
+              <parameters>
+                <label>Approve Hotel</label>
+                <method>:post</method>
+                <arguments>
+                  <costs>!data.costs</costs>
+                </arguments>
+              </parameters>
+              <annotations>
+                <_timing>
+                  <_timing_weight/>
+                  <_timing_avg/>
+                  <explanations/>
+                </_timing>
+                <_shifting>
+                  <_shifting_type>Duration</_shifting_type>
+                </_shifting>
+                <_context_data_analysis>
+                  <probes/>
+                  <ips/>
+                </_context_data_analysis>
+                <report>
+                  <url/>
+                </report>
+                <_notes>
+                  <_notes_general/>
+                </_notes>
+              </annotations>
+              <documentation>
+                <input/>
+                <output/>
+                <implementation>
+                  <description/>
+                </implementation>
+              </documentation>
+            </call>
+          </alternative>
+          <otherwise/>
+        </choose>
+      </description>
+    </description>
+---
+timestamp: '2026-02-07T12:33:53.761Z'
+event: model_generated
+data:
+  id: e0001461-32e0-4e8c-96d9-8569ac15d00b
+  name: Model_6
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>07693ab0-433c-49df-85cb-2bb0c127c32e</dbpm:document_id>
+          <dbpm:text_selections>personal review only  For personal review only  1.0  1.0  1.0  0.0
+    For personal review only  For personal</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <call id="a1" endpoint="timeout">
+          <parameters>
+            <!--{{{-->
+            <label>Task 1</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>2</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a1,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a2" endpoint="timeouts">
+          <parameters>
+            <!--{{{-->
+            <label>Resource Synchronisation</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>10</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a2,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a3" endpoint="timeout">
+          <parameters>
+            <!--{{{-->
+            <label>Task 3</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>4</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a3,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-07T12:34:29.995Z'
+event: model_generated
+data:
+  id: df80560f-3a97-43a9-84cd-0faddbda3b17
+  name: Model_7
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>07693ab0-433c-49df-85cb-2bb0c127c32e</dbpm:document_id>
+          <dbpm:text_selections>complaints during review) that are already considered in the calculation of your grade. If a problem</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <loop mode="pre_test" condition="true">
+          <parallel wait="-1" cancel="last">
+            <loop mode="pre_test" condition="data.i &lt; 4">
+              <_probability>
+                <_probability_min/>
+                <_probability_max/>
+                <_probability_avg/>
+              </_probability>
+              <parallel_branch>
+                <call id="a1" endpoint="start_url">
+                  <parameters>
+                    <label>Start</label>
+                    <method>:post</method>
+                    <arguments>
+                      <behavior>wait_running</behavior>
+                      <url>https://cpee.org/flow/templates/instantiate/Take_Sub.xml</url>
+                      <init>
+                        <time>5</time>
+                      </init>
+                      <endpoints/>
+                      <customization/>
+                    </arguments>
+                  </parameters>
+                  <annotations>
+                    <_timing>
+                      <_timing_weight/>
+                      <_timing_avg/>
+                      <_context_data_analysis>
+                        <probes/>
+                        <ips/>
+                      </_context_data_analysis>
+                      <report>
+                        <url/>
+                      </report>
+                      <explanations/>
+                    </_timing>
+                    <_notes>
+                      <_notes_general/>
+                    </_notes>
+                  </annotations>
+                  <documentation>
+                    <input/>
+                    <output/>
+                    <implementation>
+                      <description/>
+                    </implementation>
+                  </documentation>
+                </call>
+              </parallel_branch>
+              <manipulate id="a4" label="">data.i += 1</manipulate>
+            </loop>
+          </parallel>
+          <manipulate id="a3" label="">data.i = 0</manipulate>
+          <_probability>
+            <_probability_min/>
+            <_probability_max/>
+            <_probability_avg/>
+          </_probability>
+          <stop id="a2"/>
+        </loop>
+      </description>
+    </description>
+---
+timestamp: '2026-02-07T12:39:00.770Z'
+event: model_generated
+data:
+  id: 0902cb5f-eaba-4ec2-befb-2eb7616dbf19
+  name: Model_8
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>07693ab0-433c-49df-85cb-2bb0c127c32e</dbpm:document_id>
+          <dbpm:text_selections>0
+    For personal review only  For personal review only  For personal review only  0.0  1.0  1.0  1.0  1.0
+    For per</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <loop mode="pre_test" condition="true">
+          <_probability>
+            <_probability_min/>
+            <_probability_max/>
+            <_probability_avg/>
+          </_probability>
+          <call id="a1" endpoint="overview">
+            <parameters>
+              <label>Move to overview position</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <call id="a3" endpoint="get_items_base">
+            <parameters>
+              <label>Get item positions</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <code>
+              <prepare/>
+              <finalize output="result">data.items = result
+    data.item = result[0]</finalize>
+              <update output="result"/>
+              <rescue output="result"/>
+            </code>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <call id="a5" endpoint="move_camera">
+            <parameters>
+              <label>Inspect first item</label>
+              <arguments>
+                <x>!data.item['x']</x>
+                <y>!data.item['y']</y>
+              </arguments>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <call id="a6" endpoint="get_offset_base">
+            <parameters>
+              <label>Get item offset</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <code>
+              <prepare/>
+              <finalize output="result">data.adjusted = result</finalize>
+              <update output="result"/>
+              <rescue output="result"/>
+            </code>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <stop id="a2"/>
+        </loop>
+      </description>
+    </description>
+---
+timestamp: '2026-02-07T12:39:15.090Z'
+event: model_generated
+data:
+  id: 0d5fd7e9-b0c9-49b3-bcf6-ab85fa89b2bd
+  name: Model_9
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>07693ab0-433c-49df-85cb-2bb0c127c32e</dbpm:document_id>
+          <dbpm:text_selections>4  Last name:   Wen   Last update:   Monday 6 th   March, 2023  Σ   (Endterm)  49.0  Grade (Endterm) 3.3 Grade intervall  [49.0; 54.0)  Notes:  •   Please make sure that the total amount of credits stated</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <loop mode="pre_test" condition="true">
+          <parallel wait="-1" cancel="last">
+            <loop mode="pre_test" condition="data.i &lt; 4">
+              <_probability>
+                <_probability_min/>
+                <_probability_max/>
+                <_probability_avg/>
+              </_probability>
+              <parallel_branch>
+                <call id="a1" endpoint="start_url">
+                  <parameters>
+                    <label>Start</label>
+                    <method>:post</method>
+                    <arguments>
+                      <behavior>wait_running</behavior>
+                      <url>https://cpee.org/flow/templates/instantiate/Take_Sub.xml</url>
+                      <init>
+                        <time>5</time>
+                      </init>
+                      <endpoints/>
+                      <customization/>
+                    </arguments>
+                  </parameters>
+                  <annotations>
+                    <_timing>
+                      <_timing_weight/>
+                      <_timing_avg/>
+                      <_context_data_analysis>
+                        <probes/>
+                        <ips/>
+                      </_context_data_analysis>
+                      <report>
+                        <url/>
+                      </report>
+                      <explanations/>
+                    </_timing>
+                    <_notes>
+                      <_notes_general/>
+                    </_notes>
+                  </annotations>
+                  <documentation>
+                    <input/>
+                    <output/>
+                    <implementation>
+                      <description/>
+                    </implementation>
+                  </documentation>
+                </call>
+              </parallel_branch>
+              <manipulate id="a4" label="">data.i += 1</manipulate>
+            </loop>
+          </parallel>
+          <manipulate id="a3" label="">data.i = 0</manipulate>
+          <_probability>
+            <_probability_min/>
+            <_probability_max/>
+            <_probability_avg/>
+          </_probability>
+          <stop id="a2"/>
+        </loop>
+      </description>
+    </description>
+---
+timestamp: '2026-02-08T12:33:31.073Z'
+event: document_uploaded
+data:
+  id: 946496ee-bf06-447e-bfb5-76fd83a3546c
+  name: Applied Strategy and Organization _ Endterm.pdf
+  words: 7551
+---
+timestamp: '2026-02-08T12:33:36.072Z'
+event: model_generated
+data:
+  id: ca2aa0fe-9ce6-4df2-8034-b64a64fcfd55
+  name: Model_10
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>946496ee-bf06-447e-bfb5-76fd83a3546c</dbpm:document_id>
+          <dbpm:text_selections>rganization TUM School of Management Technical University of Munich  Esolution  Place student sticker here  Note:  •   During the attendance check a sticker containing a unique code will be put on this exam. •   This code contains a unique number that associates this exam with your registration number. •   This number is printed both next to the code and to the signature field in the attendance check list.  Applied Strategy and Organization  Exam:   WI001111 / Endterm   Date:   Thursday 23 rd   February, 2023  Examiner:   Prof. Dr. Isabell M. Welpe   Time:   14:15 – 15:45 I P 1   P 2   P 3   P 4   P 5   P 6   P 7   P 8   P 9   P 10   P 11   P 12  Working instructions  • This</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <loop mode="pre_test" condition="data.places.length &gt; 0">
+          <_probability>
+            <_probability_min/>
+            <_probability_max/>
+            <_probability_avg/>
+          </_probability>
+          <call id="a1" endpoint="overview">
+            <parameters>
+              <label>Move to overview position</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <call id="a3" endpoint="get_items_base">
+            <parameters>
+              <label>Get item positions</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <code>
+              <prepare/>
+              <finalize output="result">data.items = result</finalize>
+              <update output="result"/>
+              <rescue output="result"/>
+            </code>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <choose mode="exclusive">
+            <alternative condition="data.items.length &gt; 0">
+              <call id="a5" endpoint="move_camera">
+                <parameters>
+                  <label>Inspect first item</label>
+                  <arguments>
+                    <x>!data.items.first['x']</x>
+                    <y>!data.items.first['y']</y>
+                  </arguments>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <call id="a2" endpoint="subprocess">
+                <parameters>
+                  <label>Adjust</label>
+                  <method>:post</method>
+                  <arguments>
+                    <behavior>wait_running</behavior>
+                    <url>https://cpee.org/flow/templates/UR-VUE%202020%20Manual%20Adjust.xml</url>
+                    <init/>
+                    <endpoints/>
+                    <stream/>
+                  </arguments>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <code>
+                  <prepare/>
+                  <finalize output="result">data.place = data.places.shift
+    data.item = result['item']
+    data.item['x'] = data.items.first['x'] + data.item['adjust_x']
+    data.item['y'] = data.items.first['y'] + data.item['adjust_y']</finalize>
+                  <update output="result"/>
+                  <rescue output="result"/>
+                </code>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <call id="a8" endpoint="grip_and_place">
+                <parameters>
+                  <label>Grip and Place</label>
+                  <arguments>
+                    <x>!data.item['x']</x>
+                    <y>!data.item['y']</y>
+                    <place_x>!data.place[0]</place_x>
+                    <place_y>!data.place[1]</place_y>
+                  </arguments>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <_probability>
+                <_probability_min/>
+                <_probability_max/>
+                <_probability_avg/>
+              </_probability>
+            </alternative>
+            <otherwise>
+              <terminate/>
+            </otherwise>
+          </choose>
+        </loop>
+      </description>
+    </description>
+---
+timestamp: '2026-02-08T12:33:37.840Z'
+event: model_generated
+data:
+  id: 140d108c-7a84-432b-8298-842c856b42d7
+  name: Model_11
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>946496ee-bf06-447e-bfb5-76fd83a3546c</dbpm:document_id>
+          <dbpm:text_selections>rganization TUM School of Management Technical University of Munich  Esolution  Place student sticker here  Note:  •   During the attendance check a sticker containing a unique code will be put on this exam. •   This code contains a unique number that associates this exam with your registration number. •   This number is printed both next to the code and to the signature field in the attendance check list.  Applied Strategy and Organization  Exam:   WI001111 / Endterm   Date:   Thursday 23 rd   February, 2023  Examiner:   Prof. Dr. Isabell M. Welpe   Time:   14:15 – 15:45 I P 1   P 2   P 3   P 4   P 5   P 6   P 7   P 8   P 9   P 10   P 11   P 12  Working instructions  • This</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <loop mode="pre_test" condition="data.places.length &gt; 0">
+          <_probability>
+            <_probability_min/>
+            <_probability_max/>
+            <_probability_avg/>
+          </_probability>
+          <manipulate id="a2" label="Next Place">data.place = data.places.shift</manipulate>
+          <call id="a1" endpoint="overview">
+            <parameters>
+              <label>Move to overview position</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <call id="a3" endpoint="get_items_neural">
+            <parameters>
+              <label>Get item positions</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <code>
+              <prepare/>
+              <finalize output="result">data.items = result
+    data.item = result[0]</finalize>
+              <update output="result"/>
+              <rescue output="result"/>
+            </code>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <choose mode="exclusive">
+            <alternative condition="data.items.length &gt; 0">
+              <call id="a5" endpoint="move_camera">
+                <parameters>
+                  <label>Inspect first item</label>
+                  <arguments>
+                    <x>!data.item['x']</x>
+                    <y>!data.item['y']</y>
+                  </arguments>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <call id="a6" endpoint="get_offset_neural">
+                <parameters>
+                  <label>Get item offset</label>
+                  <arguments/>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <code>
+                  <prepare/>
+                  <finalize output="result">data.adjusted = {
+      'x' =&gt; data.item['x'] + result['dir_x'],
+      'y' =&gt; data.item['y'] + result['dir_y']
+    }</finalize>
+                  <update output="result"/>
+                  <rescue output="result"/>
+                </code>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <call id="a8" endpoint="grip_and_place">
+                <parameters>
+                  <label>Grip and Place</label>
+                  <arguments>
+                    <x>!data.adjusted['x'].round(0)</x>
+                    <y>!data.adjusted['y'].round(0)</y>
+                    <place_x>!data.place[0]</place_x>
+                    <place_y>!data.place[1]</place_y>
+                  </arguments>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <_probability>
+                <_probability_min/>
+                <_probability_max/>
+                <_probability_avg/>
+              </_probability>
+            </alternative>
+            <otherwise>
+              <terminate/>
+            </otherwise>
+          </choose>
+        </loop>
+      </description>
+    </description>
+---
+timestamp: '2026-02-08T14:38:21.094Z'
+event: model_generated
+data:
+  id: 2e158175-72e0-4fbc-a93c-3e92614642a4
+  name: Model_12
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>946496ee-bf06-447e-bfb5-76fd83a3546c</dbpm:document_id>
+          <dbpm:text_selections>e checkboxes. • DO NOT circle around checkboxes. • If you want to correct a solution do so as described. Left room from   to   /   Early submission at – Page 1 / 28 –
+    Sample Solution  Mark correct answers with a</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <loop mode="pre_test" condition="true">
+          <parallel wait="-1">
+            <loop mode="pre_test" condition="data.i &lt; 4">
+              <_probability>
+                <_probability_min/>
+                <_probability_max/>
+                <_probability_avg/>
+              </_probability>
+              <parallel_branch>
+                <call id="a1" endpoint="start_url">
+                  <parameters>
+                    <label>Start</label>
+                    <method>:post</method>
+                    <arguments>
+                      <behavior>wait_running</behavior>
+                      <url>http://localhost/flow/templates/instantiate.local/Take_Sub.xml</url>
+                      <init>
+                        <time>4</time>
+                      </init>
+                      <endpoints/>
+                      <stream/>
+                    </arguments>
+                    <stream>
+                      <sensors/>
+                      <aggregators/>
+                      <costs/>
+                    </stream>
+                    <report>
+                      <url/>
+                    </report>
+                  </parameters>
+                  <annotations>
+                    <_timing>
+                      <_timing_wait/>
+                      <_timing_threshold/>
+                      <_timing_min/>
+                      <_timing_max/>
+                      <_timing_avg/>
+                    </_timing>
+                    <_notes>
+                      <_notes_general/>
+                    </_notes>
+                  </annotations>
+                  <documentation/>
+                </call>
+              </parallel_branch>
+              <manipulate id="a4" label="">data.i += 1</manipulate>
+            </loop>
+          </parallel>
+          <manipulate id="a3" label="">data.i = 0</manipulate>
+          <_probability>
+            <_probability_min/>
+            <_probability_max/>
+            <_probability_avg/>
+          </_probability>
+          <stop id="a2"/>
+        </loop>
+      </description>
+    </description>
+---
+timestamp: '2026-02-08T14:38:22.163Z'
+event: model_generated
+data:
+  id: d3dfce8b-ccd4-40e3-b4a9-bf0fceb428b9
+  name: Model_13
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>946496ee-bf06-447e-bfb5-76fd83a3546c</dbpm:document_id>
+          <dbpm:text_selections>e checkboxes. • DO NOT circle around checkboxes. • If you want to correct a solution do so as described. Left room from   to   /   Early submission at – Page 1 / 28 –
+    Sample Solution  Mark correct answers with a</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <loop mode="pre_test" condition="true">
+          <_probability>
+            <_probability_min/>
+            <_probability_max/>
+            <_probability_avg/>
+          </_probability>
+          <call id="a1" endpoint="overview">
+            <parameters>
+              <label>Move to overview position</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <call id="a3" endpoint="get_items_base">
+            <parameters>
+              <label>Get item positions</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <code>
+              <prepare/>
+              <finalize output="result">data.items = result
+    data.item = result[0]</finalize>
+              <update output="result"/>
+              <rescue output="result"/>
+            </code>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <call id="a5" endpoint="move_camera">
+            <parameters>
+              <label>Inspect first item</label>
+              <arguments>
+                <x>!data.item['x']</x>
+                <y>!data.item['y']</y>
+              </arguments>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <call id="a6" endpoint="get_offset_base">
+            <parameters>
+              <label>Get item offset</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <code>
+              <prepare/>
+              <finalize output="result">data.adjusted = result</finalize>
+              <update output="result"/>
+              <rescue output="result"/>
+            </code>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <stop id="a2"/>
+        </loop>
+      </description>
+    </description>
+---
+timestamp: '2026-02-08T14:38:35.433Z'
+event: model_generated
+data:
+  id: 5f376f84-d04b-4252-8059-638f4dfd36e0
+  name: Model_14
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>946496ee-bf06-447e-bfb5-76fd83a3546c</dbpm:document_id>
+          <dbpm:text_selections>nt of achievable credits in this exam is 90 credits. • Detaching pages from the exam is prohibited. • Allowed resources:  –   one   analog dictionary   English   ↔   native language • Do not write</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <loop mode="pre_test" condition="true">
+          <parallel wait="-1">
+            <loop mode="pre_test" condition="data.i &lt; 4">
+              <_probability>
+                <_probability_min/>
+                <_probability_max/>
+                <_probability_avg/>
+              </_probability>
+              <parallel_branch>
+                <call id="a1" endpoint="start_url">
+                  <parameters>
+                    <label>Start</label>
+                    <method>:post</method>
+                    <arguments>
+                      <behavior>wait_running</behavior>
+                      <url>http://localhost/flow/templates/instantiate.local/Take_Sub.xml</url>
+                      <init>
+                        <time>4</time>
+                      </init>
+                      <endpoints/>
+                      <stream/>
+                    </arguments>
+                    <stream>
+                      <sensors/>
+                      <aggregators/>
+                      <costs/>
+                    </stream>
+                    <report>
+                      <url/>
+                    </report>
+                  </parameters>
+                  <annotations>
+                    <_timing>
+                      <_timing_wait/>
+                      <_timing_threshold/>
+                      <_timing_min/>
+                      <_timing_max/>
+                      <_timing_avg/>
+                    </_timing>
+                    <_notes>
+                      <_notes_general/>
+                    </_notes>
+                  </annotations>
+                  <documentation/>
+                </call>
+              </parallel_branch>
+              <manipulate id="a4" label="">data.i += 1</manipulate>
+            </loop>
+          </parallel>
+          <manipulate id="a3" label="">data.i = 0</manipulate>
+          <_probability>
+            <_probability_min/>
+            <_probability_max/>
+            <_probability_avg/>
+          </_probability>
+          <stop id="a2"/>
+        </loop>
+      </description>
+    </description>
+---
+timestamp: '2026-02-08T14:45:45.351Z'
+event: model_generated
+data:
+  id: 10410200-7177-405d-819f-a7876096d0fe
+  name: Model_15
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>07693ab0-433c-49df-85cb-2bb0c127c32e</dbpm:document_id>
+          <dbpm:text_selections>yer.  Applied Strategy and Organization  Module:   WI001111   Date:   Thursday 23 rd   February, 2023  Examiner:</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <call id="a1" endpoint="bookAir">
+          <parameters>
+            <label>Book Airline 1</label>
+            <method>:post</method>
+            <arguments>
+              <from>!data.from</from>
+              <to>!data.to</to>
+              <persons>!data.persons</persons>
+            </arguments>
+          </parameters>
+          <code>
+            <prepare/>
+            <finalize output="result">data.airline = result.value('id')
+    data.costs += result.value('costs').to_f
+    status.update 1, 'Hotel'</finalize>
+            <update output="result"/>
+            <rescue output="result"/>
+          </code>
+          <annotations>
+            <_timing>
+              <_timing_weight/>
+              <_timing_avg/>
+              <explanations/>
+            </_timing>
+            <_shifting>
+              <_shifting_type>Duration</_shifting_type>
+            </_shifting>
+            <_context_data_analysis>
+              <probes/>
+              <ips/>
+            </_context_data_analysis>
+            <report>
+              <url/>
+            </report>
+            <_notes>
+              <_notes_general/>
+            </_notes>
+          </annotations>
+          <documentation>
+            <input/>
+            <output/>
+            <implementation>
+              <description/>
+            </implementation>
+            <code>
+              <description/>
+            </code>
+          </documentation>
+        </call>
+        <parallel wait="-1" cancel="last">
+          <loop mode="pre_test" condition="data.persons &gt; 0">
+            <parallel_branch>
+              <call id="a2" endpoint="bookHotel">
+                <parameters>
+                  <label>Book Hotel</label>
+                  <method>:post</method>
+                  <arguments>
+                    <to>!data.to</to>
+                  </arguments>
+                </parameters>
+                <code>
+                  <prepare/>
+                  <finalize output="result">data.hotels &lt;&lt; result.value('id')
+    data.costs += result.value('costs').to_f</finalize>
+                  <update output="result"/>
+                  <rescue output="result"/>
+                </code>
+                <annotations>
+                  <_timing>
+                    <_timing_weight/>
+                    <_timing_avg/>
+                    <explanations/>
+                  </_timing>
+                  <_shifting>
+                    <_shifting_type>Duration</_shifting_type>
+                  </_shifting>
+                  <_context_data_analysis>
+                    <probes/>
+                    <ips/>
+                  </_context_data_analysis>
+                  <report>
+                    <url/>
+                  </report>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation>
+                  <input/>
+                  <output/>
+                  <implementation>
+                    <description/>
+                  </implementation>
+                  <code>
+                    <description/>
+                  </code>
+                </documentation>
+              </call>
+            </parallel_branch>
+            <manipulate id="a3">data.persons -= 1</manipulate>
+          </loop>
+        </parallel>
+        <choose mode="exclusive">
+          <alternative condition="data.costs &gt; 700">
+            <_probability>
+              <_probability_min/>
+              <_probability_max/>
+              <_probability_avg/>
+            </_probability>
+            <call id="a4" endpoint="approve">
+              <parameters>
+                <label>Approve Hotel</label>
+                <method>:post</method>
+                <arguments>
+                  <costs>!data.costs</costs>
+                </arguments>
+              </parameters>
+              <annotations>
+                <_timing>
+                  <_timing_weight/>
+                  <_timing_avg/>
+                  <explanations/>
+                </_timing>
+                <_shifting>
+                  <_shifting_type>Duration</_shifting_type>
+                </_shifting>
+                <_context_data_analysis>
+                  <probes/>
+                  <ips/>
+                </_context_data_analysis>
+                <report>
+                  <url/>
+                </report>
+                <_notes>
+                  <_notes_general/>
+                </_notes>
+              </annotations>
+              <documentation>
+                <input/>
+                <output/>
+                <implementation>
+                  <description/>
+                </implementation>
+              </documentation>
+            </call>
+          </alternative>
+          <otherwise/>
+        </choose>
+      </description>
+    </description>
+---
+timestamp: '2026-02-08T18:30:55.260Z'
+event: model_generated
+data:
+  id: f7e05e98-192a-4386-94b0-effa42221b49
+  name: Model_16
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>946496ee-bf06-447e-bfb5-76fd83a3546c</dbpm:document_id>
+          <dbpm:text_selections>air of Strateg</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <loop mode="pre_test" condition="data.places.length &gt; 0">
+          <_probability>
+            <_probability_min/>
+            <_probability_max/>
+            <_probability_avg/>
+          </_probability>
+          <call id="a1" endpoint="overview">
+            <parameters>
+              <label>Move to overview position</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <call id="a3" endpoint="get_items_base">
+            <parameters>
+              <label>Get item positions</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <code>
+              <prepare/>
+              <finalize output="result">data.items = result</finalize>
+              <update output="result"/>
+              <rescue output="result"/>
+            </code>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <choose mode="exclusive">
+            <alternative condition="data.items.length &gt; 0">
+              <call id="a5" endpoint="move_camera">
+                <parameters>
+                  <label>Inspect first item</label>
+                  <arguments>
+                    <x>!data.items.first['x']</x>
+                    <y>!data.items.first['y']</y>
+                  </arguments>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <call id="a2" endpoint="subprocess">
+                <parameters>
+                  <label>Adjust</label>
+                  <method>:post</method>
+                  <arguments>
+                    <behavior>wait_running</behavior>
+                    <url>https://cpee.org/flow/templates/UR-VUE%202020%20Manual%20Adjust.xml</url>
+                    <init/>
+                    <endpoints/>
+                    <stream/>
+                  </arguments>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <code>
+                  <prepare/>
+                  <finalize output="result">data.place = data.places.shift
+    data.item = result['item']
+    data.item['x'] = data.items.first['x'] + data.item['adjust_x']
+    data.item['y'] = data.items.first['y'] + data.item['adjust_y']</finalize>
+                  <update output="result"/>
+                  <rescue output="result"/>
+                </code>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <call id="a8" endpoint="grip_and_place">
+                <parameters>
+                  <label>Grip and Place</label>
+                  <arguments>
+                    <x>!data.item['x']</x>
+                    <y>!data.item['y']</y>
+                    <place_x>!data.place[0]</place_x>
+                    <place_y>!data.place[1]</place_y>
+                  </arguments>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <_probability>
+                <_probability_min/>
+                <_probability_max/>
+                <_probability_avg/>
+              </_probability>
+            </alternative>
+            <otherwise>
+              <terminate/>
+            </otherwise>
+          </choose>
+        </loop>
+      </description>
+    </description>
+---
+timestamp: '2026-02-08T18:39:55.379Z'
+event: model_generated
+data:
+  id: d8fcc525-f862-4b2b-bd5a-caecb472929c
+  name: Model_17
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>07693ab0-433c-49df-85cb-2bb0c127c32e</dbpm:document_id>
+          <dbpm:text_selections>nd Organization TUM School of Management</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <call id="a1" endpoint="timeout">
+          <parameters>
+            <!--{{{-->
+            <label>Task 1</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>2</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a1,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a2" endpoint="timeouts">
+          <parameters>
+            <!--{{{-->
+            <label>Resource Synchronisation</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>10</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a2,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a3" endpoint="timeout">
+          <parameters>
+            <!--{{{-->
+            <label>Task 3</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>4</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a3,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+      </description>
+    </description>

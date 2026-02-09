@@ -1,40 +1,54 @@
 // import { initProjectsUI } from "./projects.ui.js";
-
-// console.log(
-//   "home/init.js - Starting initialization...",
-//   new Date().toISOString(),
-// );
-
-// $(function () {
-//   initProjectsUI();
-// });
 import { documentsAPI, projectsAPI } from "../api/index.js";
 import { getProjectIdFromURL } from "../util/url.js";
-
+import { cloneTemplate } from "../util/dom.js";
 const projectId = getProjectIdFromURL();
-const documentsPromise = documentsAPI.getAllByProjectId(projectId);
 
-$(document).ready(() => {
-  documentsPromise.then((docs) => {
-    console.log("Fetched documents for stats:", docs);
-    const documentList = document.getElementById("documentList");
-    const template = document.getElementById("documentItemTemplate");
-
-    docs.forEach((doc) => {
-      const clone = template.content.cloneNode(true);
-      const li = clone.querySelector("li");
-      li.setAttribute("data-docid", doc.id);
-      const nameSpan = clone.querySelector(".document-name");
-      nameSpan.textContent = doc.name || "Unnamed Document";
-      documentList.appendChild(clone);
-    });
-  });
+function renderProjectLink() {
   const $projectLink = $("#projectLink");
-  const projectLink = $projectLink[0];
-  if (projectLink) {
-    projectLink.href = "workspace.html" + window.location.search;
+  $projectLink[0].href = "workspace.html" + window.location.search;
+  projectsAPI.get(projectId).then((project) => {
+    $projectLink.text(project?.name || "Unnamed Project");
+  });
+}
+
+async function renderDocumentModels(documentId) {
+  const $documentItem = $(`li[data-doc-id='${documentId}']`);
+  const $modelsList = $documentItem.find("[data-ref='modelsList']");
+  const models = await documentsAPI.getActiveModelsById(documentId);
+
+  for (const model of models) {
+    const $modelItem = cloneTemplate("modelItemTemplate").children().first();
+    $modelItem.attr("data-model-id", model.id);
+    $modelItem
+      .find("[data-ref='modelName']")
+      .text(model.name || "Unnamed Model");
+    $modelsList.append($modelItem);
   }
-  projectsAPI
-    .getProjectById(projectId)
-    .then((project) => $projectLink.text(project?.name || "Unnamed Project"));
-});
+  console.log("Fetched models for document:", documentId, models);
+}
+
+async function renderDocumentsList() {
+  try {
+    const docs = await documentsAPI.getAllByProjectId(projectId);
+    const $documentsList = $("#documentsList");
+
+    for (const doc of docs) {
+      const $documentItem = cloneTemplate("documentItemTemplate");
+      $documentItem.find("li").attr("data-doc-id", doc.id);
+      $documentItem
+        .find("[data-ref='documentName']")
+        .text(doc.name || "Unnamed Document");
+      $documentsList.append($documentItem);
+      renderDocumentModels(doc.id);
+    }
+  } catch (error) {
+    console.error("Error initializing stats:", error);
+  }
+}
+
+function init() {
+  renderProjectLink();
+  renderDocumentsList();
+}
+init();

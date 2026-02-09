@@ -1,0 +1,92 @@
+[is="x-ui-"] {
+  /* font-family: adawaita-sans; */
+  font-size: 1em;
+}
+.home-intro {
+  margin-top: 36px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+.home-footer {
+  font-size: 0.85em;
+}
+/* h1 {
+  font-size: 2.5em;
+  font-weight: 600;
+  color: #111;
+} */
+
+#btnCreate {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  /* height: 40px; */
+  padding: 0.5em 1.5em;
+  margin-top: 12px;
+
+  background: #111;
+  color: #fff;
+
+  border-radius: 10px;
+  font-size: 1.25em;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1em;
+}
+
+.clickable {
+  cursor: pointer;
+}
+*[is="x-ui-"] ui-tabbar {
+  padding-left: 0;
+  padding-right: 0;
+  padding-bottom: 0;
+}
+[is="x-ui-"] ui-tabbar > ui-before {
+  border-bottom: 1pt solid var(--x-ui-border-color);
+  padding-left: 0.5em;
+}
+/* *[is="x-ui-"] ui-content {
+  border-top-right-radius: 1em;
+  border-top: 1pt solid var(--x-ui-border-color);
+} */
+table thead th {
+  font-weight: bold;
+  text-align: left;
+  /* padding: 0.3em 0.5em; */
+}
+
+td,
+th {
+  padding: 0.5em 1em;
+}
+
+.col-num {
+  text-align: right;
+  width: 90px;
+}
+
+.col-date {
+  padding-left: 2em;
+  width: 100px;
+  white-space: nowrap;
+}
+
+#projectsTable th:last-child {
+  width: 80px;
+  text-align: center;
+}
+#projectsTable td:last-child {
+  width: 80px;
+  text-align: center;
+}
+
+#projectsTable tbody tr td:first-child:hover {
+  text-decoration: underline;
+}

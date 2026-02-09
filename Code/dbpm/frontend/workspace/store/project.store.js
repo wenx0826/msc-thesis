@@ -9,8 +9,7 @@ export const projectStore = Object.assign(
   }),
   {
     async init(projectId) {
-      const { name, modelGenerationCounter } =
-        await projectsAPI.getProjectById(projectId);
+      const { name, modelGenerationCounter } = await projectsAPI.get(projectId);
       this.setProject({ name, modelGenerationCounter });
     },
     getProjectName() {

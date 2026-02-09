@@ -11,7 +11,7 @@ import documentsService from "../documents/documents.service.js";
 import projectsService from "../projects/projects.service.js";
 
 class ModelService {
-  async createModel({ modelData, trace }) {
+  async createModelAndTrace({ modelData, trace }) {
     const projectId = await documentsService.getProjectId(trace.documentId);
     if (!projectId) {
       throw new Error("Document not found or invalid");
@@ -54,7 +54,7 @@ class ModelService {
       await projectsService.update(projectId, {
         modelGenerationCounter: newCounter,
       });
-      traceRepo.create({ ...trace });
+      const createdTrace = traceRepo.create({ ...trace });
 
       // Add stat update
       modelRepo.addStatUpdate(
@@ -76,7 +76,7 @@ class ModelService {
           meta: createdModelMeta,
           data: modelData,
         },
-        trace,
+        trace: createdTrace,
       };
     } catch (err) {
       throw err;
@@ -88,10 +88,8 @@ class ModelService {
     if (!model) {
       throw new Error("Model not found");
     }
-
     const data = readModelData(modelId);
     model.data = data;
-
     return model;
   }
 
@@ -135,12 +133,7 @@ class ModelService {
 
   async updateModelData(modelId, modelData) {
     const projectId = modelRepo.getProjectIdByModelId(modelId);
-
-    // Write model data to file
-    writeModelData(modelId, modelData);
-
-    // Update model status
-    modelRepo.updateStatus(modelId, "updated_manual");
+    writeModelData(modelId, modelData);1234
 
     // Add stat update
     modelRepo.addStatUpdate(modelId, getISODate(), "manual_update", null);

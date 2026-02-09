@@ -14,7 +14,7 @@ async function modelsRoutes(fastify, options) {
   // POST /models - Create a new model
   fastify.post("/", { schema: createModelSchema }, async (request, reply) => {
     try {
-      const result = await modelService.createModel(request.body);
+      const result = await modelService.createModelAndTrace(request.body);
       reply.send(result);
     } catch (err) {
       console.error("Failed to create model:", err);
@@ -73,37 +73,40 @@ async function modelsRoutes(fastify, options) {
   );
 
   // PUT /models/:id - Update model
-  fastify.put("/:id", { schema: updateModelSchema }, async (request, reply) => {
-    const modelId = request.params.id;
-    const { modelData, trace, type } = request.body;
-    const projectId = modelRepo.getProjectIdByModelId(modelId);
-    console.log("Updating model for ID:", modelId);
+  fastify.put(
+    "/:id",
+    // { schema: updateModelSchema },
+    async (request, reply) => {
+      const modelId = request.params.id;
+      const { modelData, trace, type } = request.body;
+      const projectId = modelRepo.getProjectIdByModelId(modelId);
+      console.log("Updating model for ID:", modelId);
 
-    try {
-      writeModelData(modelId, modelData);
-      modelRepo.updateStatus(modelId, "updated");
+      try {
+        writeModelData(modelId, modelData);
 
-      let words = null;
-      if (trace) {
-        words = trace.selections.reduce(
-          (acc, sel) => acc + countWords(sel.text),
-          0,
-        );
-        traceRepo.updateByModelId(modelId, trace.prompt, trace.selections);
+        let words = null;
+        if (trace) {
+          words = trace.selections.reduce(
+            (acc, sel) => acc + countWords(sel.text),
+            0,
+          );
+          traceRepo.updateByModelId(modelId, trace.prompt, trace.selections);
+        }
+
+        modelRepo.addStatUpdate(modelId, getISODate(), type, words);
+
+        reply.send({ message: "Model content updated" });
+        logEvent(projectId, `model_updated_${type}`, {
+          id: modelId,
+          data: modelData,
+        });
+      } catch (err) {
+        console.error("Failed to update model:", err);
+        reply.code(500).send({ error: "Failed to update model" });
       }
-
-      modelRepo.addStatUpdate(modelId, getISODate(), type, words);
-
-      reply.send({ message: "Model content updated" });
-      logEvent(projectId, `model_updated_${type}`, {
-        id: modelId,
-        data: modelData,
-      });
-    } catch (err) {
-      console.error("Failed to update model:", err);
-      reply.code(500).send({ error: "Failed to update model" });
-    }
-  });
+    },
+  );
 
   // PUT /models/:id/data - Update model data only
   fastify.put(

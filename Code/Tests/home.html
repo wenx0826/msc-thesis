@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>DBPM — Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+                Roboto, Helvetica, Arial, sans-serif;
+            color: #111;
+            background: #fff;
+        }
+
+        /* Page rail (Home pages are constrained) */
+        .page {
+            max-width: 1050px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Header block */
+        .home-hero {
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        .home-hero__title {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            height: 40px;
+            padding: 0 14px;
+            margin-top: 12px;
+
+            border: 1px solid #111;
+            background: #111;
+            color: #fff;
+
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            filter: brightness(1.08);
+        }
+
+        .btn-primary:active {
+            transform: translateY(1px);
+        }
+
+        .btn-primary:focus-visible {
+            outline: 2px solid #111;
+            outline-offset: 2px;
+        }
+
+        .btn-primary__icon {
+            font-size: 16px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        /* Tutorial link under Create (Home-only onboarding) */
+        .home-hero__tutorial {
+            margin-top: 8px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .tutorial-link {
+            color: inherit;
+            text-decoration: underline;
+            white-space: nowrap;
+        }
+
+        .tutorial-link:hover {
+            color: #111;
+        }
+
+        /* Tabs */
+        .page-tabs {
+            display: flex;
+            gap: 24px;
+            margin-top: 24px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .page-tabs__item {
+            padding: 10px 2px;
+            font-size: 14px;
+            text-decoration: none;
+            color: inherit;
+            border-bottom: 2px solid transparent;
+        }
+
+        .page-tabs__item[aria-current="page"] {
+            font-weight: 600;
+            border-bottom-color: #111;
+        }
+
+        /* Table */
+        .table-card {
+            margin-top: 18px;
+            border: 1px solid #e6e6e6;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead th {
+            text-align: left;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 12px 14px;
+            background: #fafafa;
+            border-bottom: 1px solid #e6e6e6;
+        }
+
+        tbody td {
+            font-size: 14px;
+            padding: 12px 14px;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: middle;
+        }
+
+        tbody tr:hover {
+            background: #f7f7f7;
+        }
+
+        .col-name {
+            max-width: 420px;
+        }
+
+        .project-link {
+            display: inline-block;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: inherit;
+            text-decoration: underline;
+        }
+
+        .col-num {
+            text-align: right;
+            width: 90px;
+        }
+
+        .col-date {
+            width: 190px;
+            white-space: nowrap;
+        }
+
+        .col-actions {
+            width: 80px;
+            text-align: right;
+        }
+
+        .icon-btn {
+            border: 1px solid #ddd;
+            background: #fff;
+            border-radius: 8px;
+            padding: 6px 10px;
+            cursor: pointer;
+        }
+
+        .icon-btn:hover {
+            background: #f0f0f0;
+        }
+
+        /* Footer contact (Home-only; minimal) */
+        .home-footer {
+            margin-top: 26px;
+            padding-top: 16px;
+            border-top: 1px solid #eee;
+            font-size: 13px;
+            color: #666;
+            text-align: center;
+        }
+
+        .home-footer a {
+            color: inherit;
+            text-decoration: underline;
+        }
+
+        .home-footer a:hover {
+            color: #111;
+        }
+
+        .app-header {
+            height: 48px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .app-header__inner {
+            height: 100%;
+            padding: 0 16px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .app-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .app-header__link {
+            font-size: 13px;
+            color: #555;
+            text-decoration: underline;
+        }
+
+        .app-header__link:hover {
+            color: #111;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="app-header">
+        <div class="app-header__inner">
+            <div class="app-header__left">
+                <span class="app-title">Document-Based Process Modeller</span>
+            </div>
+
+            <div class="app-header__right">
+                <a href="#" class="app-header__link">Tutorial</a>
+            </div>
+        </div>
+    </header>
+    <main class="page">
+        <section class="home-hero">
+            <h1 class="home-hero__title">Document-Based Process Modeller</h1>
+
+            <button class="btn-primary" type="button">
+                <span class="btn-primary__icon" aria-hidden="true">+</span>
+                <span>Create New Project</span>
+            </button>
+
+            <div class="home-hero__tutorial">
+                <a class="tutorial-link" href="#" target="_blank" rel="noreferrer">
+                    ▶ Watch tutorial (screen recording)
+                </a>
+            </div>
+        </section>
+
+        <nav class="page-tabs" aria-label="Home sections">
+            <a class="page-tabs__item" aria-current="page" href="#">Projects</a>
+            <a class="page-tabs__item" href="#">Dashboard</a>
+        </nav>
+
+        <div class="table-card">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="col-name">Name</th>
+                        <th class="col-num">Documents</th>
+                        <th class="col-num">Models</th>
+                        <th class="col-date">Created</th>
+                        <th class="col-actions">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="col-name">
+                            <a class="project-link" href="#"
+                                title="Very long project name to show ellipsis behavior in the Name column">
+                                Very long project name to show ellipsis behavior in the Name column
+                            </a>
+                        </td>
+                        <td class="col-num">12</td>
+                        <td class="col-num">4</td>
+                        <td class="col-date">2026-02-07 09:30</td>
+                        <td class="col-actions"><button class="icon-btn" aria-label="Project actions">⋯</button></td>
+                    </tr>
+
+                    <tr>
+                        <td class="col-name">
+                            <a class="project-link" href="#" title="Invoice Parsing MVP">
+                                Invoice Parsing MVP
+                            </a>
+                        </td>
+                        <td class="col-num">3</td>
+                        <td class="col-num">1</td>
+                        <td class="col-date">2026-02-05 16:12</td>
+                        <td class="col-actions"><button class="icon-btn" aria-label="Project actions">⋯</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <footer class="home-footer">
+            This is a pilot version. If the app crashes or you encounter any problems, please contact me:
+            <a href="mailto:xin.wen@tum.de">xin.wen@tum.de</a>
+        </footer>
+    </main>
+</body>
+</html>

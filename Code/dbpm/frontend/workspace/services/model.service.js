@@ -198,6 +198,8 @@ export const modelService = {
       meta: createdModel.meta,
       documentId,
     });
+    console.log("Created model:", createdModel);
+    console.log("Created trace:", createdTrace);
     activeModelStore.setModelById(createdModel.meta.id);
     workspaceStore.setActiveModelId(createdModel.meta.id);
     activeDocumentStore.setTemporarySelections([]);

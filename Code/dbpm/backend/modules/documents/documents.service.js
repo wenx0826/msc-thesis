@@ -53,13 +53,7 @@ class DocumentService {
   }
 
   async getTraces(docId) {
-    const traces = documentRepo.getTraces(docId);
-    // Parse JSON selections
-    const parsedTraces = traces.map((trace) => ({
-      ...trace,
-      selections: JSON.parse(trace.selections),
-    }));
-    return parsedTraces;
+    return documentRepo.getTraces(docId);
   }
 
   async getModels(docId) {

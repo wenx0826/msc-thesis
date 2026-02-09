@@ -1,15 +1,34 @@
 import db from "../../database.js";
 
+import { toCamel, toSnake } from "snake-camel";
+
+function parseTraceSelections(trace) {
+  if (!trace.selections) {
+    return trace;
+  }
+  return {
+    ...trace,
+    selections: JSON.parse(trace.selections),
+  };
+}
+
 class TraceRepository {
   create({ id, documentId, modelId, selections }) {
     const stmt = db.prepare(
-      "INSERT INTO traces (id, document_id, model_id, selections) VALUES (?, ?, ?, ?)",
+      `INSERT INTO traces (id, document_id, model_id, selections)
+       VALUES (@id, @documentId, @modelId, @selections)
+        RETURNING *`,
     );
-    stmt.run(id, documentId, modelId, JSON.stringify(selections));
-    return { id, documentId, modelId, selections };
+    const row = stmt.get({
+      id,
+      documentId,
+      modelId,
+      selections: JSON.stringify(selections),
+    });
+    return toCamel(parseTraceSelections(row));
   }
 
-  update(traceId, documentId, modelId, prompt, selections) {
+  update(traceId, documentId, modelId, selections) {
     const stmt = db.prepare(
       "UPDATE traces SET document_id = ?, model_id = ?, selections = ? WHERE id = ?",
     );

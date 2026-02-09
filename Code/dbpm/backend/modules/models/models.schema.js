@@ -35,7 +35,15 @@ export const createModelSchema = {
             data: { type: "string" },
           },
         },
-        trace: { type: "object" },
+        trace: {
+          type: "object",
+          properties: {
+            id: { type: "string" },
+            documentId: { type: "string" },
+            modelId: { type: "string" },
+            selections: { type: "array" },
+          },
+        },
       },
     },
   },
@@ -55,10 +63,7 @@ export const getModelSchema = {
       properties: {
         id: { type: "string" },
         name: { type: "string" },
-        timestamp: { type: "string" },
-        documentId: { type: "string" },
-        words: { type: "number" },
-        data: { type: "object" },
+        data: { type: "string" },
       },
     },
   },
@@ -73,7 +78,7 @@ export const getModelDataSchema = {
     },
   },
   response: {
-    200: { type: "object" },
+    200: { type: "string" },
   },
 };
 
@@ -86,7 +91,6 @@ export const getAllModelsSchema = {
         properties: {
           id: { type: "string" },
           name: { type: "string" },
-          timestamp: { type: "string" },
           documentId: { type: "string" },
           words: { type: "number" },
         },
@@ -110,7 +114,6 @@ export const updateModelSchema = {
       trace: {
         type: "object",
         properties: {
-          prompt: { type: "string" },
           selections: { type: "array" },
         },
       },

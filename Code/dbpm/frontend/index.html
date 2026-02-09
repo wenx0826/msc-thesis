@@ -9,17 +9,18 @@
     <script type="text/javascript" src="https://cpee.org/js_libs/jquery.browser.js"></script>
     <script type="module" src="home/init.js"></script>
     <script type="text/javascript" src="https://cpee.org/js_libs/uidash.js" defer></script>
-    <link rel="stylesheet" href="https://cpee.org/js_libs/uidash.css" type="text/css">
+    <link rel="stylesheet" href="js_libs_backup/uidash.css" type="text/css">
     <script type="text/javascript" src="https://cpee.org/js_libs/custommenu.js" defer></script>
     <link rel="stylesheet" href="https://cpee.org/js_libs/custommenu.css" type="text/css" />
-    <link rel="stylesheet" href="css/myui.css" type="text/css" />
-    <!-- <style type="text/css">
-    @font-face {
-      font-family: TencentSans;
-      src: url("chrome-extension://lkjkfecdnfjopaeaibboihfkmhdjmanm/static/fonts/TencentSans.woff2");
-    }
-  </style> -->
+    <link rel="stylesheet" href="css/global.css" type="text/css" />
+    <link rel="stylesheet" href="css/home.css" type="text/css" />
 
+    <!-- <style type="text/css">
+        @font-face {
+            font-family: TencentSans;
+            src: url("chrome-extension://lkjkfecdnfjopaeaibboihfkmhdjmanm/static/fonts/TencentSans.woff2");
+        }
+    </style> -->
     <style>
         /* body {
             font-family: sans-serif;
@@ -58,57 +59,63 @@
     </style>
 </head>
 <body is="x-ui-">
-    <ui-bar>
-        <div class="right"><a>Tutorial</a></div>
-    </ui-bar>
-    <ui-rest>
+    <div class="home-intro">
         <h1>Document-Based Process Modeller</h1>
-        <button id="btnCreate">Create New Project</button>
-        <ui-tabbar>
-            <ui-before></ui-before>
-            <ui-tab data-tab="projects" class>Projects</ui-tab>
-            <ui-tab data-tab="dashboard" class="inactive">Dashboard</ui-tab>
-            <ui-behind></ui-behind>
-        </ui-tabbar>
-        <ui-content class="noselect">
-            <ui-area data-belongs-to-tab="projects">
-                <table id="projectTable">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Documents</th>
-                            <th>Models</th>
-                            <th>Created</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <template id="rowtemplate">
-                            <tr class="" data-project-id="">
-                                <td><a href=""><em>no name</em></a></td>
-                                <td class="doc-count"></td>
-                                <td class="model-count"></td>
-                                <td class="created"></td>
-                                <td class="actions" title="Click for actions">...</td>
+        <button id="btnCreate"> <span class="btn-primary__icon" aria-hidden="true">+</span><span>Create New
+                Project</span></button>
+    </div>
+    <ui-rest>
+        <div class="page-rail">
+            <!-- <ui-rest> -->
+            <ui-tabbar>
+                <ui-before></ui-before>
+                <ui-tab data-tab="projects" class>Projects</ui-tab>
+                <ui-tab data-tab="dashboard" class="inactive">Dashboard</ui-tab>
+                <ui-behind></ui-behind>
+            </ui-tabbar>
+            <ui-content>
+                <ui-area data-belongs-to-tab="projects">
+                    <table id="projectsTable">
+                        <thead>
+                            <tr>
+                                <th class>Name</th>
+                                <th class="col-num">Documents</th>
+                                <th class="col-num">Models</th>
+                                <th class="col-date">Created</th>
+                                <th>Actions</th>
                             </tr>
-                        </template>
-                    </tbody>
-                </table>
-            </ui-area>
-            <ui-area data-belongs-to-tab="dashboard" class="inactive"></ui-area>
-        </ui-content>
+                        </thead>
+                        <tbody>
+                            <template id="projectRowTemplate">
+                                <tr data-project-id="">
+                                    <td class="clickable" data-ref="projectName"></td>
+                                    <td class="col-num" data-ref="documentsCount"></td>
+                                    <td class="col-num" data-ref="modelsCount"></td>
+                                    <td class="col-date" data-ref="createdAt"></td>
+                                    <td class="clickable" data-ref="actions" title="Click for actions" class="center">
+                                        ...</td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </ui-area>
+                <ui-area data-belongs-to-tab="dashboard" class="inactive"></ui-area>
+            </ui-content>
+            <!-- </ui-rest> -->
+        </div>
     </ui-rest>
     <ui-divider></ui-divider>
-    <ui-bar>
-        <span>Contact me </span><a href="mailto:xin.wen@tum.de">xin.wen@tum.de</a>
+    <ui-bar class="home-footer">
+        <div class="middle">If you encounter any issues or the system behaves unexpectedly, please contact:&nbsp;<a
+                href="mailto:xin.wen@tum.de">xin.wen@tum.de</a></div>
     </ui-bar>
-    <dialog id="dlg">
+    <dialog id="projectCreationDialog">
         <form id="form" method="dialog">
             <h3>New Project</h3>
-            <label for="name">Project name</label>
+            <label for="name">Name</label>
             <input id="name" type="text" autocomplete="off" />
             <div class="error" id="err"></div>
-            <ui-bar class="actions">
+            <ui-bar>
                 <div class="right">
                     <button type="button" id="cancel">Cancel</button>
                     <button type="submit" id="save">Create</button>
@@ -116,5 +123,6 @@
             </ui-bar>
         </form>
     </dialog>
+
 </body>
 </html>

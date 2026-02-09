@@ -1,5 +1,5 @@
+import { toCamel } from "snake-camel";
 import db from "../../database.js";
-import { convertKeysToCamelCase } from "../../utils/caseConverter.js";
 
 class ModelRepository {
   getProjectIdByModelId(modelId) {
@@ -13,14 +13,6 @@ class ModelRepository {
     return result?.project_id ?? null;
   }
 
-  getProjectIdByDocumentId(documentId) {
-    const stmt = db.prepare(`
-      SELECT project_id FROM documents WHERE id = ?
-    `);
-    const result = stmt.get(documentId);
-    return result?.project_id ?? null;
-  }
-
   create({ id, name, documentId, selectedTextWords }) {
     const stmt = db.prepare(`
     INSERT INTO models (id, name, document_id, selected_text_words)
@@ -28,7 +20,7 @@ class ModelRepository {
     RETURNING *
   `);
     const row = stmt.get({ id, name, documentId, selectedTextWords });
-    return convertKeysToCamelCase(row);
+    return toCamel(row);
   }
 
   findById(modelId) {
@@ -36,18 +28,13 @@ class ModelRepository {
       "SELECT * FROM models WHERE id = ? AND deleted_at IS NULL",
     );
     const result = stmt.get(modelId);
-    return result ? convertKeysToCamelCase(result) : null;
+    return result ? toCamel(result) : null;
   }
 
   findAll() {
     const stmt = db.prepare("SELECT * FROM models ORDER BY created_at DESC");
     const results = stmt.all();
-    return convertKeysToCamelCase(results);
-  }
-
-  updateStatus(modelId, status) {
-    const stmt = db.prepare("UPDATE models SET status = ? WHERE id = ?");
-    return stmt.run(status, modelId);
+    return results.map(toCamel);
   }
 
   incrementRegeneratedByPrompt(modelId) {
@@ -87,21 +74,7 @@ class ModelRepository {
       ORDER BY msu.created_at DESC
     `);
     const results = stmt.all(projectId);
-    return convertKeysToCamelCase(results);
-  }
-
-  getModelsByProjectId(projectId) {
-    const stmt = db.prepare(`
-      SELECT m.id, m.name, m.created_at, m.status, 
-             m.regenerated_by_prompt_times, m.regenerated_by_selections_times, 
-             m.words, d.name as document_name
-      FROM models m
-      JOIN documents d ON m.document_id = d.id
-      WHERE d.project_id = ? AND m.deleted_at IS NULL
-      ORDER BY m.created_at DESC
-    `);
-    const results = stmt.all(projectId);
-    return convertKeysToCamelCase(results);
+    return results.map(toCamel);
   }
 }
 

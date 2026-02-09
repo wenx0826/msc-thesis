@@ -10,7 +10,7 @@ export const modelsStore = Object.assign(
     async init(documents) {
       let modelsById = {};
       for (const { id: docId } of documents) {
-        const docModels = await documentsAPI.getDocumentModelsById(docId);
+        const docModels = await documentsAPI.getActiveModelsById(docId);
         docModels.forEach((model) => (model.documentId = docId));
         modelsById = {
           ...modelsById,

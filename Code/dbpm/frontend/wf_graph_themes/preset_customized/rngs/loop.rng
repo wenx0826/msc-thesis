@@ -8,7 +8,7 @@
   <attribute name="condition" rngui:label="Condition">
     <data type="string" rngui:label="Condition"/>
   </attribute>
-  <element name="_probability" rngui:mark="true" rngui:header="Execution Probability">
+  <!-- <element name="_probability" rngui:mark="true" rngui:header="Execution Probability">
     <element name="_probability_min" rngui:label="Min times">
       <data type="nonNegativeInteger" rngui:label="Times"/>
     </element>
@@ -25,5 +25,5 @@
         <data type="boolean" rngui:label="Log per iteration"/>
       </element>
     </element>
-  </element>
+  </element> -->
 </element>

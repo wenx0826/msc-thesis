@@ -25,6 +25,8 @@ export const getProjectsSchema = {
         properties: {
           id: { type: "string" },
           name: { type: "string" },
+          documentsCount: { type: "number" },
+          modelsCount: { type: "number" },
           createdAt: { type: "string" },
         },
       },

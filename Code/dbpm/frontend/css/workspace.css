@@ -1,9 +1,102 @@
 #main {
   padding: 0.6em;
 }
-tr:nth-child(odd) {
-  background-color: #e8e8e8;
-  color: #333;
+/* -- x-ui overrides --*/
+
+ui-resizehandle[data-direction="vertical"] {
+  flex: 0 0 1em;
+  cursor: col-resize;
+  user-select: none;
+  position: relative;
+  padding: 0;
+  margin-left: -0.175em;
+  margin-right: -0.175em;
+}
+
+ui-resizehandle[data-direction="vertical"]::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--x-ui-border-color);
+  -webkit-transform: translate(-50%, -50%) rotate(0deg);
+  -moz-transform: translate(-50%, -50%) rotate(0deg);
+  transform: translate(-50%, -50%) rotate(0deg);
+  transform-origin: center center;
+  box-shadow:
+    0 -6px 0 var(--x-ui-border-color),
+    0 6px 0 var(--x-ui-border-color);
+}
+
+ui-resizehandle[data-direction="vertical"]:hover::before {
+  background: #666;
+  box-shadow:
+    0 -6px 0 #666,
+    0 6px 0 #666;
+}
+
+/* ui-resizehandle[data-direction="horizontal"] { */
+/* flex: 0 0 0.65em;
+  display: block;
+  cursor: row-resize;
+  user-select: none;
+  position: relative;
+  padding: 0;
+  margin-top: 0.2em;
+  margin-bottom: -0.5em;
+  background-color: #666;
+  /* border: 1px solid var(--x-ui-border-color); */
+/* } */
+/* ui-resizehandle[data-direction="horizontal"]:hover + ui-divider {
+  border-width: 2pt; */
+/* border-color: #666; */
+/* } */
+ui-resizehandle[data-direction="horizontal"] {
+  flex: 0 0 1em; /* 命中宽度 10px */
+  display: block;
+  position: relative;
+  cursor: row-resize;
+  user-select: none;
+  background: transparent; /* 本体透明 */
+  margin-top: -0.5em;
+  margin-bottom: -0.5em;
+}
+
+/* 中间细线 */
+ui-resizehandle[data-direction="horizontal"]::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1pt;
+  background: var(--x-ui-border-color);
+  transform: translateY(-50%);
+}
+
+/* hover/drag 时稍微明显一点（可选） */
+ui-resizehandle:hover::before {
+  background: rgba(0, 0, 0, 0.45);
+}
+
+body.drag-in-progress ui-resizehandle::before {
+  background: rgba(59, 130, 246, 0.9);
+}
+
+/* Strong override: ensure vertical handles are not rotated by other libs */
+*[is="x-ui-"] ui-resizehandle[data-direction="vertical"]::before,
+ui-resizehandle[data-direction="vertical"]::before {
+  -webkit-transform: translate(-50%, -50%) rotate(0deg) !important;
+  -moz-transform: translate(-50%, -50%) rotate(0deg) !important;
+  transform: translate(-50%, -50%) rotate(0deg) !important;
+  transform-origin: center center !important;
+  top: 50% !important;
+  left: 50% !important;
+  margin-left: 0 !important;
+  margin-top: 0 !important;
 }
 
 .panel {
@@ -16,18 +109,22 @@ tr:nth-child(odd) {
   min-width: 180px;
 }
 
-.disabled {
-  pointer-events: none;
-}
-
 *[is="x-ui-"] ui-tabbed ui-content {
   margin: 0;
   border-width: 2px;
 }
 *[is="x-ui-"] ui-tabbed ui-tab {
   border-width: 2px;
+  font-size: 1.2em;
 }
+
 *[is="x-ui-"] ui-tabbed ui-tabbar {
+  padding: 0;
+}
+*[is="x-ui-"] ui-tabbed ui-tab[data-tab="documents"] {
+  cursor: default;
+}
+ui-area {
   padding: 0;
 }
 /* button {
@@ -79,7 +176,7 @@ tr:nth-child(odd) {
 
 li.active {
   font-weight: bold;
-  background-color: var(--x-ui-content-light-background);
+  background-color: var(--x-ui-content-highlight-background);
 }
 
 /* li:hover {
@@ -98,7 +195,7 @@ li.active {
             pointer-events: none; 
         }*/
 
-/* ---------------- viewer pane ----------------*/
+/* ---------------- document viewer pane ----------------*/
 
 #viewerWrap {
   position: relative;
@@ -200,6 +297,24 @@ li.active {
 } */
 /* ---------------- middle pane ----------------*/
 
+#dat_details {
+  border: 0 none;
+  border-top: 1px solid var(--x-ui-border-color);
+  /* border-top: 1em solid white;
+  border-bottom: 1em solid white;
+  width: inherit;
+  border-right: 1em solid white; */
+}
+
+#dat_details .relaxngui_header {
+  visibility: hidden;
+  height: 0;
+  padding: 0;
+}
+
+#dat_details .relaxngui_row {
+  /* padding: 0.5em; */
+}
 #promptContainer {
   /* display: flex;
   flex-direction: column; */

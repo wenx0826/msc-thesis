@@ -34,7 +34,7 @@ export const documentsAPI = {
     return await response.json();
   },
 
-  async getDocumentModelsById(id) {
+  async getActiveModelsById(id) {
     const response = await fetch(`${baseURL}/documents/${id}/models`);
     if (!response.ok) throw new Error("Failed to fetch document models");
     return await response.json();

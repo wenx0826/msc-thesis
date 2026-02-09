@@ -12,13 +12,13 @@ export const projectsAPI = {
     return handleResponse(response, "Failed to create project");
   },
 
-  async getProjectList() {
+  async list() {
     const response = await fetch(`${baseURL}/${this.path}`);
     if (!response.ok) throw new Error("Failed to fetch projects");
     return await response.json();
   },
 
-  async getProjectById(id) {
+  async get(id) {
     const response = await fetch(`${baseURL}/${this.path}/${id}`);
     return handleResponse(response, "Failed to fetch project");
   },
@@ -64,18 +64,5 @@ export const projectsAPI = {
     );
     if (!response.ok) throw new Error("Failed to fetch document count");
     return await response.text();
-  },
-
-  // Sub-API for accessing all records (including soft-deleted)
-  all: {
-    async getModelsByProjectId(projectId) {
-      const response = await fetch(
-        `${baseURL}/projects/${projectId}/models/all`,
-      );
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return await response.json();
-    },
   },
 };

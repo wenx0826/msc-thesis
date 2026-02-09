@@ -4,4 +4,4 @@ WFAdaptorManifestation = class extends WFAdaptorManifestationBase {
     this.compact = true;
     this.rotated_labels = false;
   }
-}
+};

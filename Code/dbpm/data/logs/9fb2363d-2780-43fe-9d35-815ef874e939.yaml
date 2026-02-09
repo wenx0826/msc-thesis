@@ -1,0 +1,340 @@
+---
+timestamp: '2026-02-08T12:50:28.660Z'
+event: project_created
+data:
+  id: 9fb2363d-2780-43fe-9d35-815ef874e939
+  name: err
+---
+timestamp: '2026-02-08T15:39:20.174Z'
+event: document_uploaded
+data:
+  id: e35f6076-7546-401b-a6b4-93e4202a1f16
+  name: Applied Strategy and Organization _ Endterm.pdf
+  words: 7551
+---
+timestamp: '2026-02-08T15:39:28.464Z'
+event: model_generated
+data:
+  id: 5aadbc7e-12df-4e98-a269-378fc0ba6c23
+  name: Model_1
+  data: "<description>\n  <dbpm:info\n    xmlns:dbpm=\"https://example.com/dbpm\">\n    <dbpm:document_info>\n      <dbpm:document_id>e35f6076-7546-401b-a6b4-93e4202a1f16</dbpm:document_id>\n      <dbpm:text_selections>anguage • Do not write with red or green colors nor use pencils. • Physically turn off all electronic devices, put them into your bag and close the bag. •   Follow the instructions on how to mark a solution. We will not accept ANYTHING ELSE but crossed IN THE BOX or FILLED Boxes. • The Scanner does not accept ANY solution markings outside of the checkboxes. •   If you fail to follow the instruction on how to mark a box you will be awarded 0 points for the given question. • DO NOT mark the exam outside of the checkboxes. • DO NOT circle around checkboxes. • If you want to correct a solution do so as described. Left room from   to   /   Early submission at – Page 1 / 28 –\nSample Solution  Mark correct answers with a cross   ×  To undo a cross, completely fill out the answer option   \x04  To re-mark an option, use a human-readable marking   × \x04  Problem 1   THE ENVIRONMENT: BOOK – EXPLORING STRATEGY (11 credits)  a) Which of the following sentences about market segments is correct? Market segments are groups of customers with different needs that are different from customer needs in other parts of the market.  ×   Where these customer groups are relatively small, such market segments are often called “niches”. Market segments are groups of customers with similar needs that are similar from customer needs in other parts of the market. Where these customer groups are relatively big, such market segments are often called “niches”. Source: SS20 | Lecturer: | Version: 0 | Block: THE ENVIRONMENT | Chapter: Book – Exploring Strategy | | Us: 0.70 | h: 2140b838 b) Five forces analysis helps to identify four main types of industry structure. Which of the following industries is   not   mentioned as one of the four types of industry structures?  ×   Polypolistic industries. Monopolistic industries. Perfectly competitive industries. Hypercompetitive industries. Source: SS20 | Lecturer: | Version: 0 | Block: THE ENVIRONMENT | Chapter: Book – Exploring Strategy | | Us: 0.38 | h: e516b688 c) What does the Porter’s Five Forces Framework try to identify in terms of competitive forces? The profitability of an industry  ×   The attractiveness of an industry The competition of an industry The threat of an industry Source: SS19 | Lecturer: grundke | Version: 1 | Block: THE ENVIRONMENT | C</dbpm:text_selections>\n    </dbpm:document_info>\n  </dbpm:info>\n  <description xmlns=\"http://cpee.org/ns/description/1.0\">\n    <call id=\"a1\" endpoint=\"bookAir\">\n      <parameters>\n        <label>Book Airline 1</label>\n        <method>:post</method>\n        <arguments>\n          <from>!data.from</from>\n          <to>!data.to</to>\n          <persons>!data.persons</persons>\n        </arguments>\n      </parameters>\n      <code>\n        <prepare/>\n        <finalize output=\"result\">data.airline = result.value('id')\ndata.costs += result.value('costs').to_f\nstatus.update 1, 'Hotel'</finalize>\n        <update output=\"result\"/>\n        <rescue output=\"result\"/>\n      </code>\n      <annotations>\n        <_timing>\n          <_timing_weight/>\n          <_timing_avg/>\n          <explanations/>\n        </_timing>\n        <_shifting>\n          <_shifting_type>Duration</_shifting_type>\n        </_shifting>\n        <_context_data_analysis>\n          <probes/>\n          <ips/>\n        </_context_data_analysis>\n        <report>\n          <url/>\n        </report>\n        <_notes>\n          <_notes_general/>\n        </_notes>\n      </annotations>\n      <documentation>\n        <input/>\n        <output/>\n        <implementation>\n          <description/>\n        </implementation>\n        <code>\n          <description/>\n        </code>\n      </documentation>\n    </call>\n    <parallel wait=\"-1\" cancel=\"last\">\n      <loop mode=\"pre_test\" condition=\"data.persons &gt; 0\">\n        <parallel_branch>\n          <call id=\"a2\" endpoint=\"bookHotel\">\n            <parameters>\n              <label>Book Hotel</label>\n              <method>:post</method>\n              <arguments>\n                <to>!data.to</to>\n              </arguments>\n            </parameters>\n            <code>\n              <prepare/>\n              <finalize output=\"result\">data.hotels &lt;&lt; result.value('id')\ndata.costs += result.value('costs').to_f</finalize>\n              <update output=\"result\"/>\n              <rescue output=\"result\"/>\n            </code>\n            <annotations>\n              <_timing>\n                <_timing_weight/>\n                <_timing_avg/>\n                <explanations/>\n              </_timing>\n              <_shifting>\n                <_shifting_type>Duration</_shifting_type>\n              </_shifting>\n              <_context_data_analysis>\n                <probes/>\n                <ips/>\n              </_context_data_analysis>\n              <report>\n                <url/>\n              </report>\n              <_notes>\n                <_notes_general/>\n              </_notes>\n            </annotations>\n            <documentation>\n              <input/>\n              <output/>\n              <implementation>\n                <description/>\n              </implementation>\n              <code>\n                <description/>\n              </code>\n            </documentation>\n          </call>\n        </parallel_branch>\n        <manipulate id=\"a3\">data.persons -= 1</manipulate>\n      </loop>\n    </parallel>\n    <choose mode=\"exclusive\">\n      <alternative condition=\"data.costs &gt; 700\">\n        <_probability>\n          <_probability_min/>\n          <_probability_max/>\n          <_probability_avg/>\n        </_probability>\n        <call id=\"a4\" endpoint=\"approve\">\n          <parameters>\n            <label>Approve Hotel</label>\n            <method>:post</method>\n            <arguments>\n              <costs>!data.costs</costs>\n            </arguments>\n          </parameters>\n          <annotations>\n            <_timing>\n              <_timing_weight/>\n              <_timing_avg/>\n              <explanations/>\n            </_timing>\n            <_shifting>\n              <_shifting_type>Duration</_shifting_type>\n            </_shifting>\n            <_context_data_analysis>\n              <probes/>\n              <ips/>\n            </_context_data_analysis>\n            <report>\n              <url/>\n            </report>\n            <_notes>\n              <_notes_general/>\n            </_notes>\n          </annotations>\n          <documentation>\n            <input/>\n            <output/>\n            <implementation>\n              <description/>\n            </implementation>\n          </documentation>\n        </call>\n      </alternative>\n      <otherwise/>\n    </choose>\n  </description>\n</description>"
+---
+timestamp: '2026-02-08T15:40:14.979Z'
+event: model_generated
+data:
+  id: f35ee126-bfb4-46c6-b18f-7244f113509b
+  name: Model_2
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>e35f6076-7546-401b-a6b4-93e4202a1f16</dbpm:document_id>
+          <dbpm:text_selections>M. Welpe   Time:   14:15 – 15:45 I P 1   P 2   P 3   P 4   P 5   P 6   P 7   P 8   P 9   P 10   P 11   P 12  Working instructions  • This exam consists of   28 pages   with a total of   12 problems . Please make sure now that you received a complete copy of the exam. • The total amount of achievable credits in this exam is 90 credits. • Detaching pages from the exam is prohibited. • Al</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <loop mode="pre_test" condition="data.places.length &gt; 0">
+          <_probability>
+            <_probability_min/>
+            <_probability_max/>
+            <_probability_avg/>
+          </_probability>
+          <manipulate id="a2" label="Next Place">data.place = data.places.shift</manipulate>
+          <call id="a1" endpoint="overview">
+            <parameters>
+              <label>Move to overview position</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <call id="a3" endpoint="get_items_neural">
+            <parameters>
+              <label>Get item positions</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <code>
+              <prepare/>
+              <finalize output="result">data.items = result
+    data.item = result[0]</finalize>
+              <update output="result"/>
+              <rescue output="result"/>
+            </code>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <choose mode="exclusive">
+            <alternative condition="data.items.length &gt; 0">
+              <call id="a5" endpoint="move_camera">
+                <parameters>
+                  <label>Inspect first item</label>
+                  <arguments>
+                    <x>!data.item['x']</x>
+                    <y>!data.item['y']</y>
+                  </arguments>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <call id="a6" endpoint="get_offset_neural">
+                <parameters>
+                  <label>Get item offset</label>
+                  <arguments/>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <code>
+                  <prepare/>
+                  <finalize output="result">data.adjusted = {
+      'x' =&gt; data.item['x'] + result['dir_x'],
+      'y' =&gt; data.item['y'] + result['dir_y']
+    }</finalize>
+                  <update output="result"/>
+                  <rescue output="result"/>
+                </code>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <call id="a8" endpoint="grip_and_place">
+                <parameters>
+                  <label>Grip and Place</label>
+                  <arguments>
+                    <x>!data.adjusted['x'].round(0)</x>
+                    <y>!data.adjusted['y'].round(0)</y>
+                    <place_x>!data.place[0]</place_x>
+                    <place_y>!data.place[1]</place_y>
+                  </arguments>
+                  <stream>
+                    <sensors/>
+                    <aggregators/>
+                    <costs/>
+                  </stream>
+                </parameters>
+                <annotations>
+                  <_timing>
+                    <_timing_wait/>
+                    <_timing_threshold/>
+                    <_timing_min/>
+                    <_timing_max/>
+                    <_timing_avg/>
+                  </_timing>
+                  <_notes>
+                    <_notes_general/>
+                  </_notes>
+                </annotations>
+                <documentation/>
+              </call>
+              <_probability>
+                <_probability_min/>
+                <_probability_max/>
+                <_probability_avg/>
+              </_probability>
+            </alternative>
+            <otherwise>
+              <terminate/>
+            </otherwise>
+          </choose>
+        </loop>
+      </description>
+    </description>
+---
+timestamp: '2026-02-08T16:19:04.325Z'
+event: model_generated
+data:
+  id: 65852fd4-ffba-41eb-9a55-6020ed87e627
+  name: Model_3
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>e35f6076-7546-401b-a6b4-93e4202a1f16</dbpm:document_id>
+          <dbpm:text_selections>hypercompetitive industries competitor interactions create a condition of constant disequilib- rium and change. 2 – Perfect competition exists where entry barriers are high. 3 – Some industries are monopolistic because of economy of scales. 4 – In polypolistic industries a few firms dominate an industry. 5 – Hypercompetition often breaks out in otherwise monopolistic industries. Only 3, 4 and 5 are correct. Only 3 and 4 a</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <loop mode="pre_test" condition="true">
+          <_probability>
+            <_probability_min/>
+            <_probability_max/>
+            <_probability_avg/>
+          </_probability>
+          <call id="a1" endpoint="overview">
+            <parameters>
+              <label>Move to overview position</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <call id="a3" endpoint="get_items_base">
+            <parameters>
+              <label>Get item positions</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <code>
+              <prepare/>
+              <finalize output="result">data.items = result
+    data.item = result[0]</finalize>
+              <update output="result"/>
+              <rescue output="result"/>
+            </code>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <call id="a5" endpoint="move_camera">
+            <parameters>
+              <label>Inspect first item</label>
+              <arguments>
+                <x>!data.item['x']</x>
+                <y>!data.item['y']</y>
+              </arguments>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <call id="a6" endpoint="get_offset_base">
+            <parameters>
+              <label>Get item offset</label>
+              <arguments/>
+              <stream>
+                <sensors/>
+                <aggregators/>
+                <costs/>
+              </stream>
+            </parameters>
+            <code>
+              <prepare/>
+              <finalize output="result">data.adjusted = result</finalize>
+              <update output="result"/>
+              <rescue output="result"/>
+            </code>
+            <annotations>
+              <_timing>
+                <_timing_wait/>
+                <_timing_threshold/>
+                <_timing_min/>
+                <_timing_max/>
+                <_timing_avg/>
+              </_timing>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation/>
+          </call>
+          <stop id="a2"/>
+        </loop>
+      </description>
+    </description>
