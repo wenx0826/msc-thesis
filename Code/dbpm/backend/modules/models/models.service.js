@@ -134,7 +134,6 @@ class ModelService {
   async updateModelData(modelId, modelData) {
     const projectId = modelRepo.getProjectIdByModelId(modelId);
     writeModelData(modelId, modelData);
-    1234;
 
     // Add stat update
     modelRepo.addStatUpdate(modelId, getISODate(), "manual_update", null);

@@ -1,0 +1,642 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Project Statistics (Demo)</title>
+    <style>
+        :root {
+            --text: #111;
+            --muted: #666;
+            --faint: #999;
+            --line: #e9e9e9;
+            --line2: #f2f2f2;
+            --bg: #fff;
+            --chip: #f6f6f6;
+            --danger: #b00020;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text);
+            background: var(--bg);
+        }
+
+        /* Header (white, narrow, no shadow) */
+        header {
+            padding: 12px 16px 8px;
+        }
+
+        .breadcrumb {
+            font-size: 12px;
+            color: var(--muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Page container */
+        .container {
+            padding: 8px 16px 28px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* Toolbar */
+        .toolbar {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin: 8px 0 14px;
+        }
+
+        .leftTools {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search {
+            width: min(420px, 80vw);
+            padding: 8px 10px;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .segmented {
+            display: inline-flex;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .segmented button {
+            border: 0;
+            background: #fff;
+            padding: 7px 10px;
+            font-size: 13px;
+            color: var(--muted);
+            cursor: pointer;
+        }
+
+        .segmented button[aria-pressed="true"] {
+            color: var(--text);
+            background: var(--chip);
+        }
+
+        /* KPI row */
+        .kpis {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            margin: 6px 0 18px;
+        }
+
+        .kpi {
+            min-width: 220px;
+            padding: 0;
+            /* keep super minimal */
+        }
+
+        .kpiTitle {
+            font-size: 12px;
+            color: var(--muted);
+            letter-spacing: 0.02em;
+            margin-bottom: 4px;
+        }
+
+        .kpiValue {
+            font-size: 28px;
+            line-height: 1.1;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .kpiMeta {
+            font-size: 12px;
+            color: var(--muted);
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid var(--line);
+            background: #fff;
+            border-radius: 999px;
+            padding: 3px 8px;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .pill b {
+            color: var(--text);
+            font-weight: 600
+        }
+
+        .pill.deleted {
+            color: var(--danger);
+            border-color: #f0d5da
+        }
+
+        /* Section label */
+        .sectionLabel {
+            font-size: 12px;
+            color: var(--muted);
+            margin: 20px 0 8px;
+        }
+
+        /* Documents list (semantic UL/LI, reset default styles) */
+        .documentsList {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        /* Document block */
+        details.document {
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 10px 10px 6px;
+        }
+
+        /* Keep it minimal: no shadows, no colored backgrounds */
+        details.document[open] {
+            padding-bottom: 10px;
+        }
+
+        summary.documentSummary {
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 14px;
+        }
+
+        summary::-webkit-details-marker {
+            display: none
+        }
+
+        .docMain {
+            min-width: 0;
+        }
+
+        .docName {
+            font-size: 14px;
+            font-weight: 600;
+            margin: 0 0 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: min(720px, 70vw);
+        }
+
+        .docMeta {
+            font-size: 12px;
+            color: var(--muted);
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .docRight {
+            flex: 0 0 auto;
+            font-size: 12px;
+            color: var(--faint);
+            margin-top: 2px;
+        }
+
+        /* Models table */
+        .modelsTable {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .modelsTable thead th {
+            text-align: left;
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 600;
+            padding: 8px 10px;
+            border-bottom: 1px solid var(--line);
+            white-space: nowrap;
+        }
+
+        .modelsTable tbody td {
+            padding: 9px 10px;
+            border-bottom: 1px solid var(--line2);
+            font-size: 13px;
+            vertical-align: top;
+        }
+
+        .modelsTable tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .num {
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
+        }
+
+        .statusBadge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            font-size: 12px;
+            color: var(--muted);
+            background: #fff;
+        }
+
+        .statusBadge.deleted {
+            color: var(--danger);
+            border-color: #f0d5da;
+        }
+
+        /* Small helper text */
+        .empty {
+            margin-top: 10px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        /* Tiny footer hint */
+        .hint {
+            margin-top: 14px;
+            font-size: 12px;
+            color: var(--faint);
+        }
+
+        a {
+            color: inherit;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="breadcrumb">Home / Project Alpha / Statistics</div>
+    </header>
+
+    <main class="container">
+        <div class="toolbar">
+            <div class="leftTools">
+                <input id="search" class="search" placeholder="Search documents or models…" />
+                <div class="segmented" role="group" aria-label="Scope">
+                    <button id="scopeAll" aria-pressed="true" type="button">All</button>
+                    <button id="scopeActive" aria-pressed="false" type="button">Active</button>
+                </div>
+            </div>
+            <div class="hint">Tip: click a document to expand/collapse.</div>
+        </div>
+
+        <section class="kpis" aria-label="Key statistics">
+            <div class="kpi">
+                <div class="kpiTitle">All Documents</div>
+                <div class="kpiValue" id="kpiDocs">—</div>
+                <div class="kpiMeta" id="kpiDocsMeta"></div>
+            </div>
+
+            <div class="kpi">
+                <div class="kpiTitle">All Models</div>
+                <div class="kpiValue" id="kpiModels">—</div>
+                <div class="kpiMeta" id="kpiModelsMeta"></div>
+            </div>
+        </section>
+
+        <div class="sectionLabel">Documents</div>
+        <ul id="documentsList" class="documentsList"></ul>
+    </main>
+
+    <script>
+        // ---------- Dummy data (edit freely) ----------
+        const data = {
+            documents: [
+                { id: "aa21ec19-d805-4b19-b22e-4feb4212e962", name: "demo_document_based_process.txt", words: 204, status: "active" },
+                { id: "be9a2c91-15e5-4475-b799-cba78f5d863d", name: "sample_model_with_subprocess.xml", words: 154, status: "active" },
+                { id: "d16d7cfc-6543-4185-9a62-5ee69530df53", name: "demo_uc_document_upload.txt", words: 35, status: "deleted" }, // dummy deleted doc
+                { id: "496b0ccd-4a2c-4038-b9fd-179029c2c059", name: "demo_document_based_process.txt", words: 204, status: "active" }
+            ],
+            models: [
+                {
+                    id: "410da7a7-617b-425c-9690-048399c61920",
+                    documentId: "aa21ec19-d805-4b19-b22e-4feb4212e962",
+                    name: "Model_1",
+                    status: "updated",
+                    selectedWords: 69,
+                    updates: [
+                        { type: "generation" },
+                        { type: "regeneration_by_selections" },
+                        { type: "manual_update_selections" },
+                        { type: "manual_update_graph_properties_only" },
+                        { type: "manual_update_graph_properties_only" },
+                        { type: "manual_update_graph_properties_only" },
+                        { type: "regeneration_by_prompt" },
+                        { type: "manual_update_selections" },
+                        { type: "manual_update_graph_changed" },
+                        { type: "manual_update_graph_changed" },
+                        { type: "manual_update_graph_properties_only" },
+                        { type: "manual_update_graph_properties_only" },
+                        { type: "manual_update_graph_properties_only" },
+                        { type: "manual_update_graph_properties_only" }
+                    ]
+                },
+                {
+                    id: "2ee68549-f07e-4e78-bc96-1668467c91ef",
+                    documentId: "aa21ec19-d805-4b19-b22e-4feb4212e962",
+                    name: "Model_2",
+                    status: "updated",
+                    selectedWords: 41,
+                    updates: [
+                        { type: "generation" },
+                        { type: "manual_update_graph_properties_only" },
+                        { type: "manual_update_graph_properties_only" },
+                        { type: "manual_update_graph_properties_only" },
+                        { type: "manual_update_graph_properties_only" },
+                        { type: "manual_update_graph_properties_only" },
+                        { type: "manual_update_graph_properties_only" },
+                        { type: "manual_update_graph_properties_only" },
+                        { type: "manual_update_selections" },
+                        { type: "manual_update_graph_properties_only" },
+                        { type: "manual_update_graph_properties_only" }
+                    ]
+                },
+                {
+                    id: "f7d1d331-3619-498b-b2be-84ae9f1ff664",
+                    documentId: "aa21ec19-d805-4b19-b22e-4feb4212e962",
+                    name: "Model_3",
+                    status: "updated",
+                    selectedWords: 76,
+                    updates: [
+                        { type: "generation" },
+                        { type: "manual_update_selections" },
+                        { type: "manual_update_selections" }
+                    ]
+                },
+                {
+                    id: "de7ede16-8ff0-42a0-a6a1-248fe2841232",
+                    documentId: "be9a2c91-15e5-4475-b799-cba78f5d863d",
+                    name: "Model_4",
+                    status: "generated",
+                    selectedWords: 5,
+                    updates: [{ type: "generation" }]
+                },
+                {
+                    id: "12db61b6-6577-43bb-9a72-e0c58538e697",
+                    documentId: "496b0ccd-4a2c-4038-b9fd-179029c2c059",
+                    name: "Model_5",
+                    status: "deleted", // dummy deleted model
+                    selectedWords: 22,
+                    updates: [{ type: "generation" }]
+                }
+            ]
+        };
+
+        // ---------- Helpers ----------
+        const AUTO_TYPES = new Set(["generation"]);
+        function isAutoType(t) {
+            return AUTO_TYPES.has(t) || String(t).startsWith("regeneration_");
+        }
+        function isManualType(t) {
+            return String(t).startsWith("manual_update_");
+        }
+        function shortId(id) { return (id || "").slice(0, 4) + "…"; }
+
+        function aggregateModel(m) {
+            const total = (m.updates || []).length;
+            let auto = 0, manual = 0;
+            for (const u of (m.updates || [])) {
+                if (isAutoType(u.type)) auto++;
+                else if (isManualType(u.type)) manual++;
+            }
+            return { total, auto, manual };
+        }
+
+        // ---------- State ----------
+        let scope = "all"; // "all" | "active"
+        let query = "";
+
+        // ---------- Rendering ----------
+        const elDocsList = document.getElementById("documentsList");
+        const elSearch = document.getElementById("search");
+        const btnAll = document.getElementById("scopeAll");
+        const btnActive = document.getElementById("scopeActive");
+
+        function passesScope(entity) {
+            if (scope === "all") return true;
+            return entity.status !== "deleted";
+        }
+
+        function computeKpis(visibleDocs, visibleModels) {
+            const docsTotal = visibleDocs.length;
+            const docsDeleted = visibleDocs.filter(d => d.status === "deleted").length;
+            const docsActive = docsTotal - docsDeleted;
+
+            const modelsTotal = visibleModels.length;
+            const modelsDeleted = visibleModels.filter(m => m.status === "deleted").length;
+            const modelsActive = modelsTotal - modelsDeleted;
+
+            document.getElementById("kpiDocs").textContent = docsTotal;
+            document.getElementById("kpiModels").textContent = modelsTotal;
+
+            const docsMeta = document.getElementById("kpiDocsMeta");
+            docsMeta.innerHTML = "";
+            docsMeta.appendChild(pill(`active`, docsActive));
+            docsMeta.appendChild(pill(`deleted`, docsDeleted, true));
+
+            const modelsMeta = document.getElementById("kpiModelsMeta");
+            modelsMeta.innerHTML = "";
+            modelsMeta.appendChild(pill(`active`, modelsActive));
+            modelsMeta.appendChild(pill(`deleted`, modelsDeleted, true));
+        }
+
+        function pill(label, value, isDeleted = false) {
+            const span = document.createElement("span");
+            span.className = "pill" + (isDeleted ? " deleted" : "");
+            span.innerHTML = `${label} <b>${value}</b>`;
+            return span;
+        }
+
+        function matchesQuery(text) {
+            if (!query) return true;
+            return String(text).toLowerCase().includes(query.toLowerCase());
+        }
+
+        function render() {
+            // Apply scope
+            const scopedDocs = data.documents.filter(passesScope);
+            const scopedModels = data.models.filter(passesScope);
+
+            // Apply search: keep documents that match by doc name OR any of its models
+            const modelsByDoc = new Map();
+            for (const m of scopedModels) {
+                if (!modelsByDoc.has(m.documentId)) modelsByDoc.set(m.documentId, []);
+                modelsByDoc.get(m.documentId).push(m);
+            }
+
+            const visibleDocs = scopedDocs.filter(d => {
+                const docMatch = matchesQuery(d.name) || matchesQuery(d.id);
+                const ms = modelsByDoc.get(d.id) || [];
+                const modelMatch = ms.some(m => matchesQuery(m.name));
+                return docMatch || modelMatch;
+            });
+
+            // Visible models should follow visible docs
+            const visibleModels = [];
+            for (const d of visibleDocs) {
+                (modelsByDoc.get(d.id) || []).forEach(m => visibleModels.push(m));
+            }
+
+            computeKpis(visibleDocs, visibleModels);
+
+            elDocsList.innerHTML = "";
+
+            for (const d of visibleDocs) {
+                const ms = (modelsByDoc.get(d.id) || []).slice();
+
+                // Sort models by total updates desc (simple, useful, but not loud)
+                ms.sort((a, b) => aggregateModel(b).total - aggregateModel(a).total);
+
+                const li = document.createElement("li");
+
+                const details = document.createElement("details");
+                details.className = "document";
+                details.open = true; // default expanded; change to false if you prefer
+
+                const summary = document.createElement("summary");
+                summary.className = "documentSummary";
+
+                const left = document.createElement("div");
+                left.className = "docMain";
+                const name = document.createElement("div");
+                name.className = "docName";
+                name.textContent = `${d.name} · ${shortId(d.id)}`;
+                const meta = document.createElement("div");
+                meta.className = "docMeta";
+                meta.textContent = `${d.words}w · ${ms.length} models`;
+                left.appendChild(name);
+                left.appendChild(meta);
+
+                const right = document.createElement("div");
+                right.className = "docRight";
+                right.textContent = d.status === "deleted" ? "deleted" : "";
+
+                summary.appendChild(left);
+                summary.appendChild(right);
+
+                details.appendChild(summary);
+
+                if (ms.length === 0) {
+                    const empty = document.createElement("div");
+                    empty.className = "empty";
+                    empty.textContent = "No models yet.";
+                    details.appendChild(empty);
+                } else {
+                    const table = document.createElement("table");
+                    table.className = "modelsTable";
+                    table.innerHTML = `
+            <thead>
+              <tr>
+                <th style="width:40%">Model</th>
+                <th>Status</th>
+                <th class="num">Selected</th>
+                <th class="num">Updates</th>
+                <th class="num">Auto</th>
+                <th class="num">Manual</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          `;
+                    const tbody = table.querySelector("tbody");
+
+                    for (const m of ms) {
+                        const agg = aggregateModel(m);
+                        const tr = document.createElement("tr");
+
+                        const tdName = document.createElement("td");
+                        tdName.textContent = m.name;
+
+                        const tdStatus = document.createElement("td");
+                        const badge = document.createElement("span");
+                        badge.className = "statusBadge" + (m.status === "deleted" ? " deleted" : "");
+                        badge.textContent = m.status;
+                        tdStatus.appendChild(badge);
+
+                        const tdSel = document.createElement("td");
+                        tdSel.className = "num";
+                        tdSel.textContent = (m.selectedWords ?? 0);
+
+                        const tdTotal = document.createElement("td");
+                        tdTotal.className = "num";
+                        tdTotal.textContent = agg.total;
+
+                        const tdAuto = document.createElement("td");
+                        tdAuto.className = "num";
+                        tdAuto.textContent = agg.auto;
+
+                        const tdManual = document.createElement("td");
+                        tdManual.className = "num";
+                        tdManual.textContent = agg.manual;
+
+                        tr.appendChild(tdName);
+                        tr.appendChild(tdStatus);
+                        tr.appendChild(tdSel);
+                        tr.appendChild(tdTotal);
+                        tr.appendChild(tdAuto);
+                        tr.appendChild(tdManual);
+
+                        tbody.appendChild(tr);
+                    }
+
+                    details.appendChild(table);
+                }
+
+                li.appendChild(details);
+                elDocsList.appendChild(li);
+            }
+        }
+
+        // ---------- Events ----------
+        elSearch.addEventListener("input", (e) => {
+            query = e.target.value || "";
+            render();
+        });
+
+        btnAll.addEventListener("click", () => {
+            scope = "all";
+            btnAll.setAttribute("aria-pressed", "true");
+            btnActive.setAttribute("aria-pressed", "false");
+            render();
+        });
+        btnActive.addEventListener("click", () => {
+            scope = "active";
+            btnAll.setAttribute("aria-pressed", "false");
+            btnActive.setAttribute("aria-pressed", "true");
+            render();
+        });
+
+        // ---------- Initial render ----------
+        render();
+    </script>
+</body>
+</html>

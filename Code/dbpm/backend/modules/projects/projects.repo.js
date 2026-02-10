@@ -29,7 +29,7 @@ class ProjectRepository {
         GROUP BY t.document_id
       ) md ON md.document_id = d.id
       GROUP BY p.id
-      ORDER BY p.created_at DESC
+      ORDER BY p.created_at ASC
     `);
     const results = stmt.all();
     return results.map(toCamel);

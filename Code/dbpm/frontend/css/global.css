@@ -2,9 +2,20 @@
   font-family: adawaita-sans;
   src: url(AdwaitaSans-Regular.ttf);
 }
-:root {
-  --x-ui-outside-color: #ffffff;
+/* :root {
   --x-ui-border-color: #a1a1a1;
+  --x-ui-outside-color: #ffffff;
+  --x-ui-background-color: #ffffff;
+  --x-ui-light-text-color: #333;
+  --x-ui-light-back-color: #e8e8e8;
+  --x-ui-link-color: #425d73;
+  --x-ui-content-border-color: #ffed00;
+  --x-ui-content-light-background: #f0f0f0;
+  --x-ui-content-hover-background: #99cce660;
+} */
+:root {
+  /* --x-ui-outside-color: #ffffff;
+  --x-ui-border-color: #a1a1a1; */
   --x-ui-content-border-color: #ffed00;
   --x-ui-content-light-background: #f0f0f0;
   --x-ui-content-hover-background: #99cce660;
@@ -12,6 +23,8 @@
   --x-tab-inactive-color: #f0f0f0;
   --x-outside-behind-text-color: #333;
   --x-outside-behind-text-active-color: #333;
+  --x-ui-text-color: #2b2b2b;
+  --x-ui-light-text-color: #585858;
 }
 
 body {
@@ -20,7 +33,9 @@ body {
   -ms-user-select: none;
   user-select: none;
 }
-
+*[is="x-ui-"] {
+  color: var(--x-ui-text-color);
+}
 .page-rail {
   max-width: 1050px;
   margin: 0 auto;

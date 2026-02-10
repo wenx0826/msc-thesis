@@ -1,7 +1,6 @@
 // Projects UI Module - Handles project list and create dialog
 import { projectsAPI } from "../api/index.js";
 import { getProjectWorkspaceURL, getProjectStatsURL } from "../util/url.js";
-import { cloneTemplate } from "../util/dom.js";
 
 let projects = [];
 
@@ -22,19 +21,38 @@ function escapeHtml(s) {
 async function renderProjectsTable() {
   try {
     projects = await projectsAPI.list();
-    for (const project of projects) {
-      const $tableBody = $("#projectsTable tbody");
-      const $row = cloneTemplate("projectRowTemplate").children().first();
-      console.log("Rendering project:", $row);
-      $row.attr("data-project-id", project.id);
-      $row.find("[data-ref='projectName']").text(project.name || "no name");
-      $row
-        .find("[data-ref='documentsCount']")
-        .text(project.documentsCount || 0);
-      $row.find("[data-ref='modelsCount']").text(project.modelsCount || 0);
-      $row.find("[data-ref='createdAt']").text(project.createdAt);
-      $tableBody.append($row);
-    }
+    const data = projects.map((project) => [
+      project.name || "no name",
+      project.documentsCount || 0,
+      project.modelsCount || 0,
+      project.createdAt,
+      "...",
+    ]);
+    $("#projectsTable").DataTable({
+      data: data,
+      order: [[3, "asc"]],
+      columnDefs: [
+        {
+          orderable: false,
+          targets: -1,
+        },
+      ],
+      columns: [
+        { title: "Name", className: "clickable" },
+        { title: "Documents", className: "col-num" },
+        { title: "Models", className: "col-num" },
+        { title: "Created", className: "col-date" },
+        { title: "Actions", className: "col-button" },
+      ],
+
+      createdRow: function (row, data, dataIndex) {
+        $(row).attr("data-project-id", projects[dataIndex].id);
+      },
+      destroy: true,
+      paging: true,
+      searching: true,
+      info: true,
+    });
   } catch (err) {
     console.error("Failed to initialize Projects UI:", err);
   }
