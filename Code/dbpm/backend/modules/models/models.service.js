@@ -101,14 +101,14 @@ class ModelService {
     return modelRepo.findAll();
   }
 
-  async updateModel(modelId, modelData, trace, type) {
+  async updateModel({ modelId, modelData, trace, type }) {
     const projectId = modelRepo.getProjectIdByModelId(modelId);
 
     // Write model data to file
     writeModelData(modelId, modelData);
 
     // Update model status
-    modelRepo.updateStatus(modelId, "updated");
+    // modelRepo.updateStatus(modelId, "updated");
 
     let words = null;
     if (trace) {

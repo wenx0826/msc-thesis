@@ -9,6 +9,7 @@ import {
   updateModelDataSchema,
 } from "./models.schema.js";
 import { readModelData } from "../../utils/fileHelper.js";
+import modelsService from "./models.service.js";
 
 async function modelsRoutes(fastify, options) {
   // POST /models - Create a new model
@@ -79,28 +80,29 @@ async function modelsRoutes(fastify, options) {
     async (request, reply) => {
       const modelId = request.params.id;
       const { modelData, trace, type } = request.body;
-      const projectId = modelRepo.getProjectIdByModelId(modelId);
+      // const projectId = modelRepo.getProjectIdByModelId(modelId);
       console.log("Updating model for ID:", modelId);
-
+      console.log("Update payload:", { modelData, trace, type });
       try {
-        writeModelData(modelId, modelData);
+        modelsService.updateModel({ modelId, modelData, trace, type });
+        // writeModelData(modelId, modelData);
 
-        let words = null;
-        if (trace) {
-          words = trace.selections.reduce(
-            (acc, sel) => acc + countWords(sel.text),
-            0,
-          );
-          traceRepo.updateByModelId(modelId, trace.prompt, trace.selections);
-        }
+        // let words = null;
+        // if (trace) {
+        //   words = trace.selections.reduce(
+        //     (acc, sel) => acc + countWords(sel.text),
+        //     0,
+        //   );
+        //   traceRepo.updateByModelId(modelId, trace.prompt, trace.selections);
+        // }
 
-        modelRepo.addStatUpdate(modelId, getISODate(), type, words);
+        // modelRepo.addStatUpdate(modelId, getISODate(), type, words);
 
-        reply.send({ message: "Model content updated" });
-        logEvent(projectId, `model_updated_${type}`, {
-          id: modelId,
-          data: modelData,
-        });
+        // reply.send({ message: "Model content updated" });
+        // logEvent(projectId, `model_updated_${type}`, {
+        //   id: modelId,
+        //   data: modelData,
+        // });
       } catch (err) {
         console.error("Failed to update model:", err);
         reply.code(500).send({ error: "Failed to update model" });
@@ -115,19 +117,20 @@ async function modelsRoutes(fastify, options) {
     async (request, reply) => {
       const modelId = request.params.id;
       const { modelData } = request.body;
-      const projectId = modelRepo.getProjectIdByModelId(modelId);
-      console.log("Updating model content for ID:", modelId);
+      // const projectId = modelRepo.getProjectIdByModelId(modelId);
+      // console.log("Updating model content for ID:", modelId);
 
       try {
-        writeModelData(modelId, modelData);
-        modelRepo.updateStatus(modelId, "updated_manual");
-        modelRepo.addStatUpdate(modelId, getISODate(), "manual_update", null);
+        modelService.updateModelData(modelId, modelData);
+        // writeModelData(modelId, modelData);
+        // modelRepo.updateStatus(modelId, "updated_manual");
+        // modelRepo.addStatUpdate(modelId, getISODate(), "manual_update", null);
 
-        reply.send({ message: "Model content updated" });
-        logEvent(projectId, "model_updated_manual", {
-          id: modelId,
-          data: modelData,
-        });
+        // reply.send({ message: "Model content updated" });
+        // logEvent(projectId, "model_updated_manual", {
+        //   id: modelId,
+        //   data: modelData,
+        // });
       } catch (err) {
         console.error("Failed to update model data:", err);
         reply.code(500).send({ error: "Failed to update model data" });

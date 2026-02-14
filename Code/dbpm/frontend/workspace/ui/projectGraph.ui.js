@@ -106,6 +106,7 @@ export function initProjectGraphUI() {
         break;
       case "model":
         workspaceService.toggleModelSelection(entityId);
+
         break;
       default:
         break;
@@ -122,7 +123,16 @@ export function initProjectGraphUI() {
         // workspaceService.activateDocumentById(entityId);
         break;
       case "model":
-        workspaceStore.setHoveredModelId(entityId);
+        workspaceStore.setModelPopoverParams({
+          modelId: entityId,
+          anchor: {
+            type: "point",
+            point: {
+              x: evt.originalEvent.clientX,
+              y: evt.originalEvent.clientY,
+            },
+          },
+        });
         break;
       default:
         break;
@@ -139,6 +149,7 @@ export function initProjectGraphUI() {
         break;
       case "model":
         workspaceStore.setHoveredModelId(null);
+        workspaceStore.requestCloseModelPopover();
         break;
       default:
         break;

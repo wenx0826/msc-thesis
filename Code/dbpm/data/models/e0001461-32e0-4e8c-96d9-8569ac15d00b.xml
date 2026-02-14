@@ -1,14 +1,13 @@
 <description>
-  <dbpm:info
-    xmlns:dbpm="https://example.com/dbpm">
+  <dbpm:info xmlns:dbpm="https://example.com/dbpm">
     <dbpm:document_info>
       <dbpm:document_id>07693ab0-433c-49df-85cb-2bb0c127c32e</dbpm:document_id>
       <dbpm:text_selections>personal review only  For personal review only  1.0  1.0  1.0  0.0
 For personal review only  For personal</dbpm:text_selections>
     </dbpm:document_info>
   </dbpm:info>
-  <description xmlns="http://cpee.org/ns/description/1.0">
-    <call id="a1" endpoint="timeout">
+  <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+    <call id="a1" endpoint="timeout" svg-id="a1" svg-label="Task 1" svg-type="call" svg-subtype="callmanipulate">
       <parameters>
         <!--{{{-->
         <label>Task 1</label>
@@ -24,23 +23,8 @@ For personal review only  For personal</dbpm:text_selections>
       <annotations/>
       <documentation/>
     </call>
-    <call id="a2" endpoint="timeouts">
-      <parameters>
-        <!--{{{-->
-        <label>Resource Synchronisation</label>
-        <method>:post</method>
-        <arguments>
-          <timeout>10</timeout>
-        </arguments>
-      </parameters>
-      <!--}}}-->
-      <code>
-        <finalize output="result">data.x += "a2,"</finalize>
-      </code>
-      <annotations/>
-      <documentation/>
-    </call>
-    <call id="a3" endpoint="timeout">
+    <call id="a2" endpoint="timeouts" svg-id="a2" svg-label="Resource Synchronisation" svg-type="call" svg-subtype="call"><parameters><label>Resource Synchronisation</label><color/><dbpm_type>task</dbpm_type></parameters></call>
+    <call id="a3" endpoint="timeout" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="callmanipulate">
       <parameters>
         <!--{{{-->
         <label>Task 3</label>

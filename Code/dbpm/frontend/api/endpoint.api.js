@@ -4,7 +4,7 @@ export const endpointAPI = {
   init() {
     if (this._cache) return;
 
-    const basePath = "wf_graph_themes/endpoints/subprocess/";
+    const basePath = "wf_themes/endpoints/subprocess/";
 
     // Inline symbol for immediate availability (no async delay)
     const svgString = `<g xmlns="http://www.w3.org/2000/svg">

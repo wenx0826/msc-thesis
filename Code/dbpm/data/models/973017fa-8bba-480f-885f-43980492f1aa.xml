@@ -1,13 +1,12 @@
 <description>
-  <dbpm:info
-    xmlns:dbpm="https://example.com/dbpm">
+  <dbpm:info xmlns:dbpm="https://example.com/dbpm">
     <dbpm:document_info>
       <dbpm:document_id>62b2cada-c0de-4ec1-8809-04cd51ee466c</dbpm:document_id>
       <dbpm:text_selections>An industry is a group of firms producing products and services that are essentially the same. Examples are the automobile industry and the airline industry. Industries are also often described as 'sectors', especially in public services (e.g. the health sector or the education sector). Industries and sectors are often made up of several specific markets. A market is a group of customers for specific products or services that are essentially the same (e.g. a particular geographical market). Thus the automobile industry has markets in North America. Europe and Asia. for example.</dbpm:text_selections>
     </dbpm:document_info>
   </dbpm:info>
-  <description xmlns="http://cpee.org/ns/description/1.0">
-    <call id="a1" endpoint="timeout">
+  <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+    <call id="a1" endpoint="timeout" svg-id="a1" svg-label="Task 1" svg-type="call" svg-subtype="callmanipulate">
       <parameters>
         <!--{{{-->
         <label>Task 1</label>
@@ -23,37 +22,7 @@
       <annotations/>
       <documentation/>
     </call>
-    <call id="a2" endpoint="timeouts">
-      <parameters>
-        <!--{{{-->
-        <label>Resource Synchronisation</label>
-        <method>:post</method>
-        <arguments>
-          <timeout>4</timeout>
-        </arguments>
-      </parameters>
-      <!--}}}-->
-      <code>
-        <finalize output="result">data.x += "a2,"</finalize>
-      </code>
-      <annotations/>
-      <documentation/>
-    </call>
-    <call id="a3" endpoint="timeout">
-      <parameters>
-        <!--{{{-->
-        <label>Task 3</label>
-        <method>:post</method>
-        <arguments>
-          <timeout>4</timeout>
-        </arguments>
-      </parameters>
-      <!--}}}-->
-      <code>
-        <finalize output="result">data.x += "a3,"</finalize>
-      </code>
-      <annotations/>
-      <documentation/>
-    </call>
+    <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="Resource Synchronisation gger dftet" svg-type="call" svg-subtype="call"><parameters><label>Resource Synchronisation gger dftet</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>9f288d37-ae5b-4b87-bc9d-9159abea64aa</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:3000/data/models/9f288d37-ae5b-4b87-bc9d-9159abea64aa.xml</url></arguments></parameters></call>
+    <call id="a3" endpoint="subprocess" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>9bc9a21d-45dc-4ca6-b147-6da870a701ed</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:3000/data/models/9bc9a21d-45dc-4ca6-b147-6da870a701ed.xml</url></arguments></parameters></call>
   </description>
 </description>

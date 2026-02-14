@@ -103,19 +103,19 @@ const clearDocumentViewer = () => {
 //   }
 // };
 function removeRenderedTrace({ modelId }) {
-  $selectionsLayer.find(`[data-modelid="${modelId}"]`).remove();
-  $interactionLayer.find(`[data-modelid="${modelId}"]`).remove();
+  $selectionsLayer.find(`[data-model-id="${modelId}"]`).remove();
+  $interactionLayer.find(`[data-model-id="${modelId}"]`).remove();
 }
 function removeRenderedSelection({ id: selectionId }) {
   $selectionsLayer
     .find(`.selection-wrap[data-selectionid="${selectionId}"]`)
     .each((index, element) => {
       const $element = $(element);
-      const elementModelId = $element.attr("data-modelid");
+      const elementModelId = $element.attr("data-model-id");
       if (elementModelId) {
         $modelTags
           .find(
-            `.tag-span[data-modelid="${elementModelId}"][data-selectionid="${selectionId}"]`,
+            `.tag-span[data-model-id="${elementModelId}"][data-selectionid="${selectionId}"]`,
           )
           .remove();
       }
@@ -155,7 +155,7 @@ const onSelectionSelect = (event) => {
   // $target.addClass("selected");
 
   const selectionId = $target.attr("data-selectionid");
-  const modelId = $target.attr("data-modelid");
+  const modelId = $target.attr("data-model-id");
   const traceId = $target.attr("data-traceid");
   setSelectedSelection({ selectionId, modelId, traceId });
 
@@ -237,24 +237,20 @@ const renderSelection = ({ range, color, id: selectionId }, modelId) => {
   $selectionsLayer.append($selectionDiv);
 
   if (modelId) {
-    $selectionDiv.attr("data-modelid", modelId);
+    $selectionDiv.attr("data-model-id", modelId);
     const lastIndex = rects.length - 1;
     const lastRect = rects[lastIndex];
 
     const modelName = modelsStore.getModelNameById(modelId);
 
     const tagSpan = $("<span>")
-      .attr("data-modelid", modelId)
+      .attr("data-model-id", modelId)
       .attr("data-selectionid", selectionId)
       .addClass("tag-span")
       .text(`${modelName}`)
       .css({
         top: `${lastRect.top - eleViewerWrapRect.top + eleViewerWrap.scrollTop - 10}px`,
         left: `${lastRect.right - eleViewerWrapRect.left + eleViewerWrap.scrollLeft - 10}px`,
-      })
-      .on("click", (event) => {
-        event.stopPropagation();
-        workspaceService.toggleModelSelection(modelId);
       });
     if (modelId == workspaceStore.getActiveModelId()) {
       tagSpan.addClass("active");
@@ -275,10 +271,10 @@ const renderSelection = ({ range, color, id: selectionId }, modelId) => {
 
 const highlightActiveModelSelections = (activeModelId) => {
   $modelTags
-    .find(`.tag-span[data-modelid="${activeModelId}"]`)
+    .find(`.tag-span[data-model-id="${activeModelId}"]`)
     .addClass("active");
   $selectionsLayer
-    .find(`.selection-wrap[data-modelid="${activeModelId}"]`)
+    .find(`.selection-wrap[data-model-id="${activeModelId}"]`)
     .each((index, element) => {
       const $box = $(element).clone(false).empty();
       console.log("Cloned box for active model selection:", $box);
@@ -290,11 +286,15 @@ const highlightActiveModelSelections = (activeModelId) => {
 
 function unhighlightModelSelections(modelId) {
   $selectionsLayer
-    .find(`.selection-wrap[data-modelid="${modelId}"]`)
+    .find(`.selection-wrap[data-model-id="${modelId}"]`)
     .removeClass("active");
-  $modelTags.find(`.tag-span[data-modelid="${modelId}"]`).removeClass("active");
+  $modelTags
+    .find(`.tag-span[data-model-id="${modelId}"]`)
+    .removeClass("active");
 
-  $interactionLayer.find(`.selection-wrap[data-modelid="${modelId}"]`).remove();
+  $interactionLayer
+    .find(`.selection-wrap[data-model-id="${modelId}"]`)
+    .remove();
 }
 
 const rerenderTemporarySelectionsLayer = () => {
@@ -351,8 +351,6 @@ const handleTextSelection = () => {
 };
 
 export function initActiveDocumentUI() {
-  // Initialize DOM references
-
   // Set up event handlers
   $selectionColorForm.on("input", (e) => {
     console.log("Selection color input.");
@@ -406,7 +404,6 @@ export function initActiveDocumentUI() {
   });
   $(window).on("resize", rerenderOverlayLayers);
 
-  // Subscribe to store changes
   activeDocumentStore.subscribe((state, { key, operation, ...payload }) => {
     if (operation) {
       const { value } = payload;
@@ -525,22 +522,33 @@ export function initActiveDocumentUI() {
         break;
     }
   });
-
-  console.log("Active Document UI initialized");
-
+  $modelTags.on("click", ".tag-span", (event) => {
+    // const $target = $(event.currentTarget);
+    event.stopPropagation();
+    const modelId = event.currentTarget.dataset.modelId;
+    workspaceService.toggleModelSelection(modelId);
+  });
   $modelTags.on("mouseenter", ".tag-span", (event) => {
-    const $target = $(event.currentTarget);
-    const modelId = $target.attr("data-modelid");
+    event.stopPropagation();
+    // const $target = $(event.currentTarget);
+    const element = event.currentTarget;
+    const modelId = element.dataset.modelId;
     console.log("Hovering over model tag:", modelId);
-    // const selectionId = $target.attr("data-selectionid");
-    // console.log("Hovering over model tag:", modelId);
-    workspaceStore.setHoveredModelId(modelId);
-    // workspaceService.toggleModelSelection(modelId);
+
+    workspaceStore.setModelPopoverParams({
+      modelId,
+      anchor: {
+        type: "element",
+        element,
+      },
+    });
   });
   $modelTags.on("mouseleave", ".tag-span", (event) => {
-    const $target = $(event.currentTarget);
-    const modelId = $target.attr("data-modelid");
-    console.log("Mouse leaving model tag:", modelId);
-    workspaceStore.setHoveredModelId(null);
+    event.stopPropagation();
+    console.log(
+      "Mouse leaving model tag:",
+      event.currentTarget.dataset.modelId,
+    );
+    workspaceStore.requestCloseModelPopover();
   });
 }

@@ -1,11 +1,10 @@
-// Active Model UI Module
 import {
   activeModelStore,
   documentsStore,
   modelsStore,
   workspaceStore,
 } from "../store/index.js";
-import { modelService } from "../services/index.js";
+import { modelService, workspaceService } from "../services/index.js";
 import { endpointAPI } from "../../api/index.js";
 import { Constants } from "../../constants.js";
 
@@ -106,7 +105,7 @@ const showActiveModel = async (model) => {
   save["endpoints_cache"] = endpointAPI._cache;
 
   save["graph_adaptor"] = new WfAdaptor(
-    "./wf_graph_themes/preset_customized/theme.js",
+    "./wf_themes/preset_customized/theme.js",
     function (graphrealization) {
       graphrealization.illustrator.get_symbol =
         endpointAPI.getSymbol.bind(endpointAPI);
@@ -531,33 +530,25 @@ export function initActiveModelUI() {
     }
   });
 
-  console.log("Active Model UI initialized");
   $(document).on("wf:call-clicked", function (e) {
     console.log(`Event Listener 'wf:call-clicked' listened`);
-    const nn = e.detail.nn;
-    const svgid = save["details_target"].svgid;
-    const model = save["details_target"].model;
-    const tagName = nn.prop("tagName");
-    const endpoint = nn.attr("endpoint");
+    const $node = $(e.detail.node);
+    const endpoint = $node.attr("endpoint");
     const $argumentsDiv = $(
       `#dat_details div[data-relaxngui-path=" > call > parameters > arguments[data-main]"]`,
     );
     $argumentsDiv.css({ visibility: "hidden", height: "0px" });
-    const typeValue = nn.children("parameters").children("dbpm_type").text();
-    const modelValue = nn
+    const modelValue = $node
       .children("parameters")
       .children("dbpm_subprocess_model")
       .text();
-    const $idInput = $(`#dat_details input[data-relaxngui-path=" > call[id]"`);
-    if ($idInput.length > 0) {
-      $idInput.parent().css({ visibility: "hidden", height: "0px" });
-    }
+
     const $endpointInput = $(
       `#dat_details input[data-relaxngui-path=" > call[endpoint]"]`,
     );
-    if ($endpointInput.length > 0) {
-      $endpointInput.parent().css({ visibility: "hidden", height: "0px" });
-    }
+    // if ($endpointInput.length > 0) {
+    //   $endpointInput.parent().css({ visibility: "hidden", height: "0px" });
+    // }
     const isSubprocess = endpoint === "subprocess" ? true : false;
     const $typeSeclect = $(
       `#dat_details select[data-relaxngui-path=" > call > parameters > dbpm_type"]`,
@@ -587,6 +578,44 @@ export function initActiveModelUI() {
       $modelSelect.parent().parent().hide();
     }
   });
-
+  $(document).on("wf:subprocess-dblclicked", function (e) {
+    console.log(`Event Listener 'wf:subprocess-dblclicked' listened`);
+    const $node = $(e.detail.node);
+    const modelId = $node
+      .children("parameters")
+      .children("dbpm_subprocess_model")
+      .text();
+    if (modelId) {
+      workspaceService.toggleModelSelection(modelId);
+    }
+  });
+  $(document).on("wf:subprocess-hovered", function (e) {
+    console.log(`Event Listener 'wf:subprocess-hovered' listened`);
+    const $node = $(e.detail.node);
+    const modelId = $node
+      .children("parameters")
+      .children("dbpm_subprocess_model")
+      .text();
+    const svgId = $node.attr("id");
+    const $element = $(`#graphcanvas [element-id="${svgId}"]`);
+    console.log("Hovered subprocess svgId:", svgId, "modelId:", modelId);
+    workspaceStore.setModelPopoverParams({
+      modelId,
+      anchor: { type: "element", element: $element[0] },
+    });
+    console.log("Subprocess modelId:", modelId);
+    // const modelName = modelsStore.getModelNameById(modelId);
+    // const modelGraph = $(modelsStore.getModelGraphById(modelId)).clone();
+    // const modelId = $node
+    //   .children("parameters")
+    //   .children("dbpm_subprocess_model")
+    //   .text();
+    // const modelName = modelsStore.getModelNameById(modelId);
+    // const modelGraph = $(modelsStore.getModelGraphById(modelId)).clone();
+  });
+  $(document).on("wf:subprocess-unhovered", function (e) {
+    console.log(`Event Listener 'wf:subprocess-unhovered' listened`);
+    workspaceStore.requestCloseModelPopover();
+  });
   window.do_main_work = do_main_work;
 }

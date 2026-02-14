@@ -130,6 +130,7 @@ export const workspaceService = {
       } else {
         activeDocumentStore.setActiveModelTraceByModelId(modelId);
       }
+      workspaceStore.setModelPopoverParams(null);
     }
     this._saveToStorage();
   },

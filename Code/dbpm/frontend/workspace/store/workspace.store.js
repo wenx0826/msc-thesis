@@ -12,7 +12,8 @@ export const workspaceStore = Object.assign(
     llmModel: "gemini-2.0-flash",
     theme: null,
     project: {},
-    modelPopover: null,
+    modelPopoverState: null,
+    modelPopoverCloseTimer: null,
   }),
   {
     async init(projectId) {
@@ -54,13 +55,36 @@ export const workspaceStore = Object.assign(
       this.state.hoveredModelId = newValue;
       this.notify({ key: "hoveredModelId", oldValue, newValue });
     },
-    setModelPopover(newValue) {
-      const oldValue = this.state.modelPopover;
+    setModelPopoverParams(newValue) {
+      const oldValue = this.state.modelPopoverState;
       const oldHoveredModelId = oldValue ? oldValue.modelId : null;
       const newHoveredModelId = newValue ? newValue.modelId : null;
-      if (oldHoveredModelId === newHoveredModelId) return; // No change
-      this.state.modelPopover = newValue;
-      this.notify({ key: "modelPopover", oldValue, newValue });
+
+      const activeModelId = this.getActiveModelId();
+      if (
+        oldHoveredModelId === newHoveredModelId &&
+        newHoveredModelId !== activeModelId
+      )
+        return; // No change
+      if (newHoveredModelId === activeModelId) {
+        newValue = null; // Don't show popover for active model
+      }
+
+      this.state.modelPopoverState = newValue;
+      this.notify({ key: "modelPopoverState", oldValue, newValue });
+    },
+    cancelCloseModelPopover() {
+      if (this.state.modelPopoverCloseTimer) {
+        clearTimeout(this.state.modelPopoverCloseTimer);
+        this.state.modelPopoverCloseTimer = null;
+      }
+    },
+    requestCloseModelPopover() {
+      this.cancelCloseModelPopover();
+      this.state.modelPopoverCloseTimer = setTimeout(() => {
+        this.setModelPopoverParams(null);
+        this.state.modelPopoverCloseTimer = null;
+      }, 150);
     },
     setActiveDocumentId(newValue) {
       const oldValue = this.getActiveDocumentId();

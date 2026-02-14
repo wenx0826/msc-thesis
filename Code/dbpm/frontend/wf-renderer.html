@@ -6,63 +6,12 @@
 <!-- libs, do not modify. When local than load local libs. -->
 <script type="text/javascript" src="https://cpee.org/js_libs/jquery.min.js"></script>
 <script type="text/javascript" src="https://cpee.org/js_libs/util.js"></script>
-
 <script type="text/javascript" src="https://cpee.org/flow/js/wfadaptor.js"></script>
 <link rel="stylesheet" href="https://cpee.org/flow/css/wfadaptor.css" type="text/css" />
 <script type="text/javascript" src="https://cpee.org/flow/themes/base.js"></script>
-<!-- <script type="text/javascript" src="https://cpee.org/js_libs/jquery.browser.js"></script>
-<script type="text/javascript" src="https://cpee.org/js_libs/jquery.caret.min.js"></script>
-<script type="text/javascript" src="https://cpee.org/js_libs/jquery.cookie.js"></script>
-<script type="text/javascript" src="https://cpee.org/js_libs/jquery.svg.min.js"></script>
-<script type="text/javascript" src="https://cpee.org/js_libs/jquery.svgdom.min.js"></script> -->
 
-<!-- <script type="text/javascript" src="/js_libs/build-bpmn.js"></script> -->
-<!-- <script type="text/javascript" src="js_libs/custommenu.js"></script>
-<script type="text/javascript" src="js_libs/marked.min.js"></script>
-<script type="text/javascript" src="js_libs/parsequery.js"></script>
-<script type="text/javascript" src="js_libs/printf.js"></script>
-<script type="text/javascript" src="js_libs/relaxngui.js"></script>
-<script type="text/javascript" src="js_libs/strftime.min.js"></script>
-<script type="text/javascript" src="js_libs/uidash.js"></script>
-<script type="text/javascript" src="js_libs/underscore.min.js"></script>
-
-<script type="text/javascript" src="js_libs/vkbeautify.js"></script> -->
-
-<!-- <link rel="stylesheet" href="js_libs/custommenu.css" type="text/css" />
-<link rel="stylesheet" href="js_libs/relaxngui.css" type="text/css">
-<link rel="stylesheet" href="js_libs/uidash.css" type="text/css">
-<link rel="stylesheet" href="js_libs/uidash-icons.css" type="text/css">
-
-<link rel="stylesheet" href="css/ui.css" type="text/css">
-<link rel="stylesheet" href="css/globalui_cpee.css" type="text/css"> -->
-
-<!-- modelling ui -->
-<!-- <script type="text/javascript" src="js_cpee/wfadaptor.js"></script>
-<link rel="stylesheet" href="js_cpee/wfadaptor.css" type="text/css" />
-<script type="text/javascript" src="wf_graph_themes/base_new.js"></script> -->
-
-<!-- <script type="text/javascript" src="js_cpee/extended_columns.js"></script> -->
-<!-- <link rel="stylesheet" href="css/extended_columns-label.css" type="text/css" />
-<link rel="stylesheet" href="css/extended_columns-svg.css" type="text/css" /> -->
-
-<!-- <script type="text/javascript" src="js_cpee/instance.js"></script> -->
-<!-- <script type="text/javascript" src="js_cpee/details.js"></script> -->
 <script src="api/index.js" type="module"></script>
-<!-- <script type="text/javascript" src="js/parameters.js"></script>
-    <script type="text/javascript" src="js/modifiers.js"></script> -->
-
-
-<!-- Flos Stuff -->
-<!-- <script type="text/javascript" src="js/structured.js"></script> -->
-<!-- <style type="text/css">
-    @font-face {
-      font-family: TencentSans;
-      src: url("chrome-extension://lkjkfecdnfjopaeaibboihfkmhdjmanm/static/fonts/TencentSans.woff2");
-    }
-  </style> -->
-
-<!-- my libs-->
-<!-- my ui-->
+<link rel="stylesheet" href="css/global.css " type="text/css" />
 <body>
     <div id='modelGridSmall'>
         <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink"
@@ -76,7 +25,6 @@
                 return;
             }
             try {
-                // console.log("!!!!Converter received message for model id:", input.id);
                 const modelId = input.id;
                 const model = await modelsAPI.getModelDataById(modelId);
                 // console.log("!!!!Model data received in converter:", model);
@@ -93,7 +41,7 @@
                 // Initialize endpoint API before rendering
                 endpointAPI.init();
 
-                new WfAdaptor("wf_graph_themes/preset_customized/theme.js", function (
+                new WfAdaptor("wf_themes/preset_customized/theme.js", function (
                     graphrealization,
                 ) {
                     try {

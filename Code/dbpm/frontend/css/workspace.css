@@ -1,6 +1,13 @@
 #main {
   padding: 0.6em;
 }
+
+.relaxngui_color_container .round label {
+  box-sizing: content-box;
+}
+/* .relaxngui_color_container .round label:after {
+  box-sizing: content-box;
+} */
 /* -- x-ui overrides --*/
 
 ui-resizehandle[data-direction="vertical"] {
@@ -216,6 +223,11 @@ li.active {
   background: transparent;
   text-align: justify;
   line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+#documentContent * {
+  /* user-select: text; */
+  max-width: 100%;
 }
 #selectionsLayer {
   position: absolute;
@@ -262,7 +274,7 @@ li.active {
   outline-color: var(--wfadaptor-selected);
   /* background-color: yellow; */
 }
-#interactionLayer .selection-wrap:not([data-modelid]) {
+#interactionLayer .selection-wrap:not([data-model-id]) {
   outline-style: dashed;
   /* background-color: yellow; */
 }
@@ -296,7 +308,9 @@ li.active {
   background: transparent;
 } */
 /* ---------------- middle pane ----------------*/
-
+text.duration {
+  visibility: hidden;
+}
 #dat_details {
   border: 0 none;
   border-top: 1px solid var(--x-ui-border-color);
@@ -306,15 +320,24 @@ li.active {
   border-right: 1em solid white; */
 }
 
-#dat_details .relaxngui_header {
+#dat_details .relaxngui_row {
+  padding: 0.2em 0.5em;
+  min-width: 0;
+}
+
+#dat_details .relaxngui_table > .relaxngui_table > .relaxngui_table {
+  padding: 0;
+  margin-left: 0;
+}
+#dat_details .relaxngui_header,
+#dat_details .relaxngui_row:has(input[data-relaxngui-path*="[id]"]),
+#dat_details
+  .relaxngui_row:has(input[data-relaxngui-path=" > call[endpoint]"]) {
   visibility: hidden;
   height: 0;
   padding: 0;
 }
 
-#dat_details .relaxngui_row {
-  /* padding: 0.5em; */
-}
 #promptContainer {
   /* display: flex;
   flex-direction: column; */
@@ -347,7 +370,14 @@ li.active {
   padding: 0.5em;
   margin: 0.5em;
   cursor: pointer;
-  overflow-x: hidden;
+  overflow: hidden;
+}
+
+.model-container svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
 }
 
 .model-container:hover {

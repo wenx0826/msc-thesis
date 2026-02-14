@@ -1,14 +1,13 @@
 <description>
-  <dbpm:info
-    xmlns:dbpm="https://example.com/dbpm">
+  <dbpm:info xmlns:dbpm="https://example.com/dbpm">
     <dbpm:document_info>
       <dbpm:document_id>aaaea9fa-9af7-475a-9d93-225cd8d70918</dbpm:document_id>
       <dbpm:text_selections>ate of  Urbanization  Raw Material  Availability   Legislative  Regulation  Interest Rates  Demographics  Innovation  Human  Capital  Availability  Digital  Transformation  Macro  Environment  Industry   Competition  Organization  Etex  The environment is what gives organizations their means of survival  Applied Strategy &amp; Organization | Prof. Manfred Grundke | 22 November 2022 4
 Knauf   –   A family company with long - term perspective and strong  values  1932   -   1968   1969   -   2008   today  The   family   company   was   established   in   1932 ,  when   brothers   Alfons   and   Karl   Knauf   secured   the  min</dbpm:text_selections>
     </dbpm:document_info>
   </dbpm:info>
-  <description xmlns="http://cpee.org/ns/description/1.0">
-    <call id="a1" endpoint="timeout">
+  <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+    <call id="a1" endpoint="timeout" svg-id="a1" svg-label="Task 1" svg-type="call" svg-subtype="callmanipulate">
       <parameters>
         <!--{{{-->
         <label>Task 1</label>
@@ -24,7 +23,7 @@ Knauf   –   A family company with long - term perspective and strong  values  
       <annotations/>
       <documentation/>
     </call>
-    <call id="a2" endpoint="timeouts">
+    <call id="a2" endpoint="timeouts" svg-id="a2" svg-label="Resource Synchronisation" svg-type="call" svg-subtype="callmanipulate">
       <parameters>
         <!--{{{-->
         <label>Resource Synchronisation</label>
@@ -40,21 +39,6 @@ Knauf   –   A family company with long - term perspective and strong  values  
       <annotations/>
       <documentation/>
     </call>
-    <call id="a3" endpoint="timeout">
-      <parameters>
-        <!--{{{-->
-        <label>Task 3</label>
-        <method>:post</method>
-        <arguments>
-          <timeout>4</timeout>
-        </arguments>
-      </parameters>
-      <!--}}}-->
-      <code>
-        <finalize output="result">data.x += "a3,"</finalize>
-      </code>
-      <annotations/>
-      <documentation/>
-    </call>
+    <call id="a3" endpoint="subprocess" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>b91d2def-24fc-4d5c-8529-c7ccbd1c50b9</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:3000/data/models/b91d2def-24fc-4d5c-8529-c7ccbd1c50b9.xml</url></arguments></parameters></call>
   </description>
 </description>
