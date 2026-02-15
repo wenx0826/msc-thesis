@@ -39,7 +39,7 @@ app.register(tracesRoutes, { prefix: "/traces" });
 
 // Start server
 const start = async () => {
-  const PORT = process.env.PORT || 3000;
+  const PORT = process.env.PORT || 6688;
   const HOST = process.env.HOST || "localhost";
   try {
     await app.listen({ port: PORT, host: HOST });

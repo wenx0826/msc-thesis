@@ -26,7 +26,7 @@
   --x-ui-border-color: #a1a1a1;
   --x-ui-outside-color: #ffffff;
   --x-ui-background-color: #ffffff;
-  --x-ui-text-light-color: #333;
+  --x-ui-text-secondary-color: #333;
   --x-ui-light-back-color: #e8e8e8;
   --x-ui-link-color: #425d73;
   --x-ui-content-border-color: #ffed00;
@@ -48,7 +48,7 @@ body {
   background-color: var(--x-ui-outside-color);
   padding: 0;
   margin: 0;
-  color: var(--x-ui-text-light-color);
+  color: var(--x-ui-text-secondary-color);
   overflow: hidden;
 }
 
@@ -111,11 +111,11 @@ body {
   text-decoration: none;
 }
 *[is="x-ui-"] a:hover {
-  color: var(--x-ui-text-light-color);
+  color: var(--x-ui-text-secondary-color);
   text-decoration: underline;
 }
 *[is="x-ui-"] a:active {
-  color: var(--x-ui-text-light-color);
+  color: var(--x-ui-text-secondary-color);
   text-decoration: underline;
 }
 
@@ -182,12 +182,12 @@ body {
   content: "▽";
   font-weight: bold;
   vertical-align: top;
-  color: var(--x-ui-text-light-color);
+  color: var(--x-ui-text-secondary-color);
 }
 *[is="x-ui-"] ui-tabbed.off > ui-tabbar > ui-tab.switch:after {
   content: "▶";
   font-weight: bold;
-  color: var(--x-ui-text-light-color);
+  color: var(--x-ui-text-secondary-color);
   vertical-align: top;
 }
 

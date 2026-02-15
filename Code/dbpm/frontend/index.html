@@ -7,16 +7,16 @@
     <title>Doc-Based Process Modeller</title>
     <script type="text/javascript" src="https://cpee.org/js_libs/jquery.min.js"></script>
     <script type="text/javascript" src="https://cpee.org/js_libs/jquery.browser.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css">
     <script type="text/javascript" charset="utf8"
         src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
-    <script type="module" src="home/init.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css">
+    <script type="module" src="pages/home/init.js"></script>
     <script type="text/javascript" src="https://cpee.org/js_libs/uidash.js" defer></script>
     <link rel="stylesheet" href="js_libs_backup/uidash.css" type="text/css">
     <script type="text/javascript" src="https://cpee.org/js_libs/custommenu.js" defer></script>
     <link rel="stylesheet" href="https://cpee.org/js_libs/custommenu.css" type="text/css" />
-    <link rel="stylesheet" href="css/global.css" type="text/css" />
-    <link rel="stylesheet" href="css/home.css" type="text/css" />
+    <link rel="stylesheet" href="assets/global.css" type="text/css" />
+    <link rel="stylesheet" href="pages/home/home.css" type="text/css" />
 
     <!-- <style type="text/css">
         @font-face {
@@ -68,10 +68,7 @@
             --bg: #fff;
             --maxw: 1100px;
             --bar: #d8d8d8;
-
             --barFill: #8f8f8f;
-
-
         }
 
 
@@ -240,12 +237,10 @@
     </div>
     <ui-rest>
         <div class="page-rail">
-            <!-- <ui-rest> -->
             <ui-tabbar>
                 <ui-before></ui-before>
                 <ui-tab data-tab="projects" class>Projects</ui-tab>
                 <ui-tab data-tab="dashboard" class="inactive">Dashboard</ui-tab>
-                <!-- <ui-behind></ui-behind> -->
             </ui-tabbar>
             <ui-content>
                 <ui-area data-belongs-to-tab="projects">
@@ -264,27 +259,23 @@
                     </table>
                 </ui-area>
                 <ui-area data-belongs-to-tab="dashboard" class="inactive">
-                    <section class="metrics" aria-label="Overview metrics">
+                    <section class="metrics">
                         <div class="metric">
                             <div class="metricTitle">Projects</div>
                             <div class="metricValue" id="projectsCount">—</div>
                             <div class="metricSub" id="projectsSub"></div>
                         </div>
-
                         <div class="metric">
                             <div class="metricTitle">Documents</div>
                             <div class="metricValue" id="documentsCount">—</div>
                             <div class="metricSub" id="documentsSub"></div>
                         </div>
-
                         <div class="metric">
                             <div class="metricTitle">Models</div>
                             <div class="metricValue" id="modelsCount">—</div>
                             <div class="metricSub" id="modelsSub"></div>
                         </div>
                     </section>
-
-                    <!-- Bottom: 2 distribution "charts" (bar list) -->
                     <section class="charts" aria-label="Distributions">
                         <div class="chart">
                             <ui-divider class="light"></ui-divider>
@@ -296,7 +287,6 @@
                                 aria-label="Documents per Project distribution"></div>
                             <div class="hint">Buckets are grouped to keep the view compact.</div>
                         </div>
-
                         <div class="chart">
                             <ui-divider class="light"></ui-divider>
                             <div class="chartTitle">
@@ -308,13 +298,10 @@
                             <div class="hint">Use the same bucket strategy across the app for consistency.</div>
                         </div>
                     </section>
-
                 </ui-area>
             </ui-content>
-            <!-- </ui-rest> -->
         </div>
     </ui-rest>
-
     <div class="home-footer">
         <div class="page-rail">
             <ui-divider class="light"></ui-divider>
@@ -339,9 +326,8 @@
             </ui-bar>
         </form>
     </dialog>
-
 </body>
-<script> // ---------- Dummy data ----------
+<script>
     // In real usage: compute these from API.
     const demo = {
         totals: {

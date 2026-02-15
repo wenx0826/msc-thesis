@@ -1,0 +1,84 @@
+<!-- converter.html -->
+<!doctype html>
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Doc-Based Process Modeller</title>
+<!-- libs, do not modify. When local than load local libs. -->
+<script type="text/javascript" src="https://cpee.org/js_libs/jquery.min.js"></script>
+<script type="text/javascript" src="https://cpee.org/js_libs/util.js"></script>
+<script type="text/javascript" src="https://cpee.org/flow/js/wfadaptor.js"></script>
+<link rel="stylesheet" href="https://cpee.org/flow/css/wfadaptor.css" type="text/css" />
+<script type="text/javascript" src="https://cpee.org/flow/themes/base.js"></script>
+
+<script src="api/index.js" type="module"></script>
+<link rel="stylesheet" href="assets/global.css" type="text/css" />
+<body>
+    <div id='modelGridSmall'>
+        <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink"
+            id='modelCanvasSmall' width='1' height='1'></svg>
+    </div>
+    <script type="module">
+        import { endpointAPI, modelsAPI } from "./api/index.js";
+        window.addEventListener("message", async (e) => {
+            const { id, input, args, source } = e.data;
+            if (source !== "getModelSvg") {
+                return;
+            }
+            try {
+                const modelId = input.id;
+                const model = await modelsAPI.getModelDataById(modelId);
+                // console.log("!!!!Model data received in converter:", model);
+                var parser = new DOMParser();
+                let data = parser.parseFromString(model, "application/xml");
+
+                if (data.documentElement.nodeName != "description") {
+                    data = $("description", data)[0];
+                } else {
+                    data = data.documentElement;
+                }
+                // console.log("!!!!Converter received message for model id:", data);
+
+                // Initialize endpoint API before rendering
+                endpointAPI.init();
+
+                new WfAdaptor("wf_themes/preset_customized/theme.js", function (
+                    graphrealization,
+                ) {
+                    try {
+                        graphrealization.illustrator.get_symbol = endpointAPI.getSymbol.bind(endpointAPI);
+                        graphrealization.illustrator.get_properties = endpointAPI.getProperties.bind(endpointAPI);
+                        // console.log("000Adaptor initialized in converter.");
+                        graphrealization.set_svg_container($("#modelCanvasSmall"));
+                        // console.log("111Adaptor initialized in converter.");
+
+                        graphrealization.set_label_container($("#modelGridSmall"));
+                        graphrealization.set_description($(data), true);
+
+                        const svgData = $("#modelCanvasSmall").clone().removeAttr("id");
+                        // console.log("SVG string length:", svgData);
+                        // console.log("SVG data for model:", svgData);
+                        const svgString = svgData.prop('outerHTML');
+                        // console.log("SVG string length:", svgString);
+                        // const svgString = svgData.serializedPrettyXML()
+                        e.source.postMessage({ id, ok: true, result: svgString }, e.origin);
+                    } catch (err) {
+                        // console.log("!!!!!!!!!!!!!Error in adaptor init:", err);
+                        e.source.postMessage(
+                            { id, ok: false, error: String(err?.stack || err) },
+                            e.origin
+                        );
+                    }
+
+
+                });
+            } catch (err) {
+                // console.log("!!!!!!!!!!!!!Error in converter:", err);
+                e.source.postMessage(
+                    { id, ok: false, error: String(err?.stack || err) },
+                    e.origin
+                );
+            }
+        });
+    </script>
+</body>
+</html>

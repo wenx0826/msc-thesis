@@ -43,10 +43,8 @@
   <!-- DBPM lib project graph-->
   <script src="https://unpkg.com/cytoscape@3.26.0/dist/cytoscape.min.js" defer></script>
   <!-- dbpm scripts -->
-  <script type="module" src="workspace/init.js"></script>
-  <script type="module" src="workspace/init.js"></script>
-  <!-- <script type="module" src="workspace/init.js"></script> -->
-  <!-- <script type="module" src="workspace/init.js"></script> -->
+  <script type="module" src="pages/workspace/init.js"></script>
+
   <!-- DBPM libs overridden-->
   <script src="js_libs_overridden/uidash_overridden.js" defer></script>
   <!-- DBPM libs -->
@@ -56,17 +54,10 @@
   <script src="https://unpkg.com/tippy.js@6"></script>
   <!-- DBPM ui-->
   <!-- <link rel="stylesheet" href="css/ui.css" type="text/css"> -->
-  <link rel="stylesheet" href="css/global.css" type="text/css">
-  <link rel="stylesheet" href="css/workspace.css" type="text/css" />
-
-  <!-- Flos Stuff -->
+  <link rel="stylesheet" href="assets/global.css" type="text/css">
+  <link rel="stylesheet" href="pages/workspace/workspace.css" type="text/css" />
   <!-- <script type="text/javascript" src="js/structured.js"></script> -->
-  <!-- <style type="text/css">
-    @font-face {
-      font-family: TencentSans;
-      src: url("chrome-extension://lkjkfecdnfjopaeaibboihfkmhdjmanm/static/fonts/TencentSans.woff2");
-    }
-  </style> -->
+
 </head>
 <body is="x-ui-">
   <ui-bar>
@@ -76,7 +67,16 @@
             <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
             <polyline points="9,22 9,12 15,12 15,22"></polyline>
           </svg></a></span> <span class="separator added">/</span>
-      <input id="projectName"></input>
+      <!-- <input id="projectName"></input> -->
+      <div class="inline-edit" id="projectName" data-id="1" data-value="Alpha Project">
+        <span class="inline-edit__view"></span>
+        <input class="inline-edit__input" type="text" />
+      </div>
+
+      <div class="inline-edit" data-id="2" data-value="Another Very Very Long Project Name">
+        <span class="inline-edit__view"></span>
+        <input class="inline-edit__input" type="text" />
+      </div>
     </div>
     <div class="right action-group">
       <span>LLM: gemini 2 Flash</span>
@@ -102,7 +102,7 @@
                   <li data-docid="">
                     <input class="doc-check" type="checkbox" />
                     <span class="document-name"></span>
-                    <button class="delete-document-btn" disabled>Delete</button>
+                    <span class="col-button">...</span>
                   </li>
                 </template>
               </ul>
