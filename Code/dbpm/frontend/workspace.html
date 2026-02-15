@@ -53,30 +53,23 @@
   <script src="https://unpkg.com/@popperjs/core@2"></script>
   <script src="https://unpkg.com/tippy.js@6"></script>
   <!-- DBPM ui-->
-  <!-- <link rel="stylesheet" href="css/ui.css" type="text/css"> -->
   <link rel="stylesheet" href="assets/global.css" type="text/css">
   <link rel="stylesheet" href="pages/workspace/workspace.css" type="text/css" />
-  <!-- <script type="text/javascript" src="js/structured.js"></script> -->
-
 </head>
 <body is="x-ui-">
   <ui-bar>
     <div>
-      <span><a href="index.html" title="Home"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+      <span>
+        <a href="index.html" title="Home"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
             <polyline points="9,22 9,12 15,12 15,22"></polyline>
           </svg></a></span> <span class="separator added">/</span>
-      <!-- <input id="projectName"></input> -->
-      <div class="inline-edit" id="projectName" data-id="1" data-value="Alpha Project">
-        <span class="inline-edit__view"></span>
-        <input class="inline-edit__input" type="text" />
-      </div>
 
-      <div class="inline-edit" data-id="2" data-value="Another Very Very Long Project Name">
-        <span class="inline-edit__view"></span>
-        <input class="inline-edit__input" type="text" />
-      </div>
+      <!-- <div id="projectNameEditor" class="inline-editor"> -->
+      <span id="projectName" class="inline-editor__view" data-editable="1"></span>
+      <!-- <input class="inline-editor__input" type="text" /> -->
+      <!-- </div> -->
     </div>
     <div class="right action-group">
       <span>LLM: gemini 2 Flash</span>
@@ -181,8 +174,11 @@
       <ui-rest class="panel" style="flex:0.4;">
         <ui-rest style="flex:1 1 0;min-height: 100px">
           <ui-bar>
-            <div id="activeModelName"></div>
-            <fieldset class="right action-group" id="modelActionBar" disabled>
+            <div id="activeModelNameEditor" class="inline-editor">
+              <span class="inline-editor__view"></span>
+              <input class="inline-editor__input" type="text" />
+            </div>
+            <fieldset id="modelActionBar" class="right action-group" disabled>
               <a id="viewModelDataLink">
                 View XML Data
               </a>

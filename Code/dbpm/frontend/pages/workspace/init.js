@@ -4,7 +4,6 @@
 // Import stores
 import {
   workspaceStore,
-  projectStore,
   documentsStore,
   modelsStore,
   activeDocumentStore,
@@ -34,17 +33,14 @@ import {
 const projectId = getProjectIdFromURL();
 // console.log("Workspace init - Project ID:", projectId);
 workspaceStore.setProjectId(projectId);
-const projectStoreReady = projectStore.init(projectId);
+
 const documentsReady = documentsStore.init(projectId);
 
 // Initialize UI progressively as stores become ready
 // $(document).ready(async () => {
 console.log("workspace/init.js - DOM ready", new Date().toISOString());
 
-// Header UI - needs projectStore
-projectStoreReady.then(() => {
-  initHeaderUI();
-});
+initHeaderUI();
 
 await documentsReady;
 const documents = documentsStore.getDocuments();

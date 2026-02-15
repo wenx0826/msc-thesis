@@ -1,7 +1,6 @@
 // Workspace Service - Orchestrates workspace operations
 import {
   workspaceStore,
-  projectStore,
   documentsStore,
   modelsStore,
   activeDocumentStore,

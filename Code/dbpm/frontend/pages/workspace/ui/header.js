@@ -1,11 +1,19 @@
 // Project UI Module
-import { workspaceStore, projectStore } from "../store/index.js";
-import { getProjectLogURL } from "../../../shared/util/url.js";
-import { createInlineEdit } from "./inline-edit.ui.js";
+import { projectsAPI } from "../../../api/index.js";
+import {
+  getProjectIdFromURL,
+  getProjectLogURL,
+} from "../../../shared/util/url.js";
+import initInlineEditor from "../../../shared/ui/inlineEditor.js";
+
+const projectId = getProjectIdFromURL();
+
+const $projectName = $("#projectName");
 
 function updateProjectName(name) {
-  console.log("Changing project name display to:", name);
-  $("#projectName").text(name || "Unnamed Project");
+  // console.log("Changing project name display to:", name);
+
+  $projectName.text(name || "Unnamed Project");
 }
 
 function updateLogLink(projectId) {
@@ -16,33 +24,19 @@ function updateLogLink(projectId) {
 }
 
 export function initHeaderUI() {
-  const projectId = workspaceStore.getProjectId();
-  updateLogLink(projectId);
-  updateProjectName(projectStore.state.name);
-  // Subscribe for runtime changes (e.g., user renames project)
-  projectStore.subscribe((state, { key, newValue }) => {
-    if (key === "name") {
-      updateProjectName(newValue);
-    }
+  projectsAPI.get(projectId).then((project) => {
+    // updateProjectName(project?.name || "Unnamed Project");
+    $projectName.text(project?.name || "Unnamed Project");
   });
-
-  // Initialize with current values from stores (data already loaded)
-
-  // Set up static links
-  const statsLink = document.getElementById("statsLink");
-  if (statsLink) {
-    statsLink.href = "stats.html" + window.location.search;
-  }
-
-  console.log("Header UI initialized");
-  const inlineEdit = createInlineEdit({
+  // updateLogLink(projectId);
+  // updateProjectName(projectStore.state.name);
+  const projectNameEditor = initInlineEditor({
+    $scope: $projectName.parent(),
+    trigger: "click",
     onSave: (root, value) => {
       console.log("Saved:", root.dataset.id, value);
     },
   });
-
-  // Example: dynamically update value
-  setTimeout(() => {
-    inlineEdit.setById(1, "Updated From Outside");
-  }, 2000);
+  $("#logLink").attr("href", getProjectLogURL(projectId));
+  $("#statsLink").attr("href", "stats.html" + window.location.search);
 }

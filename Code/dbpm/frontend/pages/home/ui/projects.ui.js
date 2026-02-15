@@ -1,13 +1,20 @@
 // Projects UI Module - Handles project list and create dialog
-import { projectsAPI } from "../../api/index.js";
+import { projectsAPI } from "../../../api/index.js";
 import {
   getProjectWorkspaceURL,
   getProjectStatsURL,
   getProjectLogURL,
-} from "../../shared/util/url.js";
-
+} from "../../../shared/util/url.js";
+import initInlineEditor from "../../../shared/ui/inlineEditor.js";
 let projects = [];
-
+const $projectsTable = $("#projectsTable");
+const projectNameEditor = initInlineEditor({
+  $scope: $projectsTable,
+  onSave: (id, value) => {
+    console.log("Project name edited:", id, value);
+    // Implement inline editing save logic here if needed
+  },
+});
 function escapeHtml(s) {
   return String(s).replace(
     /[&<>"']/g,
@@ -42,7 +49,13 @@ async function renderProjectsTable() {
         },
       ],
       columns: [
-        { title: "Name", className: "clickable" },
+        {
+          title: "Name",
+          className: "clickable",
+          render: function (data, type, row) {
+            return `<span class="inline-editor__view">${data}</span>`; // Wrap name in a span for inline editing
+          },
+        },
         { title: "Documents", className: "col-num" },
         { title: "Models", className: "col-num" },
         { title: "Created", className: "col-date" },
@@ -56,6 +69,7 @@ async function renderProjectsTable() {
       paging: true,
       searching: true,
       info: true,
+      autoWidth: false,
     });
   } catch (err) {
     console.error("Failed to initialize Projects UI:", err);
@@ -139,11 +153,12 @@ function deleteProject(projectId) {}
 export default async function init() {
   renderProjectsTable();
   setupProjectCreationDialog();
-  $("#projectsTable tbody").on("click", "td:first-child", (e) => {
+
+  $projectsTable.on("click", "td:first-child", (e) => {
     var projectId = $(e.currentTarget).closest("tr").attr("data-project-id");
     window.location.href = getProjectWorkspaceURL(projectId);
   });
-  $("#projectsTable tbody").on("click", "td:last-child", (e) => {
+  $projectsTable.on("click", "td:last-child", (e) => {
     const $tr = $(e.currentTarget).closest("tr");
 
     const projectId = $tr.attr("data-project-id");

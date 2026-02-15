@@ -66,6 +66,49 @@ ui-tabbed > ui-tabbar > ui-tab.switch {
   pointer-events: none;
 }
 
+.inline-editor {
+  display: inline-block;
+}
+
+.inline-editor__view {
+  /* width: 100%; */
+  display: inline-block;
+  /* max-width: 240px; */
+  /* padding: 2px 6px; */
+  /* border-radius: 6px; */
+
+  /* overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis; */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.inline-editor__view[data-editable="1"] {
+  cursor: text;
+}
+/* .inline-editor__view:hover {
+  background: rgba(0, 0, 0, 0.06);
+} */
+
+.inline-editor__input {
+  /* display: none; */
+  /* font: inherit;
+  padding: 2px 6px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  min-width: 1ch;
+  width: auto; */
+}
+
+.inline-edit.is-editing .inline-edit__view {
+  display: none;
+}
+.inline-edit.is-editing .inline-edit__input {
+  display: inline-block;
+}
+
 /* -- my x-ui styles -- */
 
 ui-bar {

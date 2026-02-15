@@ -96,9 +96,16 @@ body[is="x-ui-"] > ui-rest {
   ui-content:has(> ui-area[data-belongs-to-tab="projects"]:not(.inactive)) {
   padding-bottom: 0.25em;
 }
+
+#projectsTable,
+#projectsTable th,
+#projectsTable td {
+  box-sizing: border-box;
+}
 #projectsTable {
   table-layout: fixed;
   width: 100%;
+  max-width: 100%;
   border-collapse: collapse;
   font-size: 1em;
 }
@@ -116,11 +123,11 @@ body[is="x-ui-"] > ui-rest {
 
 .col-num {
   text-align: right;
-  width: 90px;
+  width: 120px;
 }
 .col-date {
   padding-left: 2em;
-  width: 100px;
+  width: 180px;
   white-space: nowrap;
 }
 
@@ -135,9 +142,16 @@ td.col-date {
 }
 
 #projectsTable td:first-child {
+  overflow: hidden;
   white-space: nowrap;
+}
+#projectsTable td:first-child .inline-editor__view {
+  display: block;
+  width: 100%;
+  max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 #projectsTable td:first-child:hover {
@@ -152,3 +166,9 @@ td.col-date {
   width: 80px;
   text-align: center;
 }
+/* #projectsTable td:first-child {
+  outline: 2px solid red;
+}
+#projectsTable td:last-child {
+  outline: 2px solid blue;
+} */

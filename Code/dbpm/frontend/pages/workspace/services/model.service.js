@@ -2,7 +2,6 @@
 import { modelsAPI } from "../../../api/index.js";
 import {
   workspaceStore,
-  projectStore,
   documentsStore,
   modelsStore,
   activeDocumentStore,

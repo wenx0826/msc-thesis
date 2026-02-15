@@ -1,7 +1,10 @@
 // import { initProjectsUI } from "./projects.ui.js";
-import { documentsAPI, projectsAPI } from "../../api/index.js";
-import { getProjectIdFromURL, getDocumentURL } from "../../shared/util/url.js";
-import { cloneTemplate } from "../../shared/util/dom.js";
+import { documentsAPI, projectsAPI } from "../../../api/index.js";
+import {
+  getProjectIdFromURL,
+  getDocumentURL,
+} from "../../../shared/util/url.js";
+import { cloneTemplate } from "../../../shared/util/dom.js";
 const projectId = getProjectIdFromURL();
 
 function renderProjectLink() {
