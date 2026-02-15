@@ -29,17 +29,17 @@ export function initProjectGraphUI() {
     elements: projectGraphStore.getElements(),
     layout: cyLayoutOptions,
     zoom: 1,
-    minZoom: 1,
+    minZoom: 0.3,
     maxZoom: 10,
     style: [
       // ---------- Base node ----------
       {
         selector: "node",
         style: {
-          label: "data(label)",
-          "text-valign": "center",
-          "text-halign": "center",
-          "font-size": 12,
+          // label: "data(label)",
+          // "text-valign": "center",
+          // "text-halign": "center",
+          // "font-size": 12,
           color: "#000000",
           "text-events": "yes",
           "min-zoomed-font-size": 6,
@@ -61,6 +61,20 @@ export function initProjectGraphUI() {
           "text-halign": "center",
           "text-wrap": "wrap",
           "text-max-width": 80,
+        },
+      },
+      // hover：显示 tag
+      {
+        selector: 'node[type="document"].hovered',
+        style: {
+          label: "data(label)",
+          "text-opacity": 1,
+          "text-background-opacity": 1,
+          "text-background-color": "lightGrey",
+          "text-background-shape": "roundrectangle",
+          "text-background-padding": 3,
+          "font-size": 12,
+          "min-zoomed-font-size": 12,
         },
       },
       {
@@ -120,19 +134,20 @@ export function initProjectGraphUI() {
     const entityType = getEntityType(node);
     switch (entityType) {
       case "document":
+        node.addClass("hovered");
         // workspaceService.activateDocumentById(entityId);
         break;
       case "model":
-        workspaceStore.setModelPopoverParams({
-          modelId: entityId,
-          anchor: {
-            type: "point",
-            point: {
-              x: evt.originalEvent.clientX,
-              y: evt.originalEvent.clientY,
-            },
-          },
-        });
+        // workspaceStore.setModelPopoverParams({
+        //   modelId: entityId,
+        //   anchor: {
+        //     type: "point",
+        //     point: {
+        //       x: evt.originalEvent.clientX,
+        //       y: evt.originalEvent.clientY,
+        //     },
+        //   },
+        // });
         break;
       default:
         break;
@@ -149,7 +164,7 @@ export function initProjectGraphUI() {
         break;
       case "model":
         workspaceStore.setHoveredModelId(null);
-        workspaceStore.requestCloseModelPopover();
+        // workspaceStore.requestCloseModelPopover();
         break;
       default:
         break;

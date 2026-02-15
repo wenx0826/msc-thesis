@@ -1,24 +1,22 @@
 [is="x-ui-"] {
-  /* font-family: adawaita-sans; */
-  /* font-size: 1em; */
   overflow-y: auto;
 }
 body {
-  /* height: auto; */
   min-height: 100vh;
   /* overflow-y: auto; */
 }
 body[is="x-ui-"] > ui-rest {
-  padding-bottom: 24px;
+  padding-bottom: 36px;
 }
 .home-intro {
-  margin-top: 36px;
+  margin-top: 32px;
   margin-bottom: 24px;
   text-align: center;
 }
 .home-footer {
   font-size: 0.85em;
-  color: var(--x-ui-light-text-color);
+  text-align: center;
+  color: var(--x-ui-text-light-color);
 }
 /* h1 {
   font-size: 2.5em;
@@ -43,15 +41,6 @@ body[is="x-ui-"] > ui-rest {
   cursor: pointer;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 1em;
-}
-
-.clickable {
-  cursor: pointer;
-}
 *[is="x-ui-"] ui-tabbar {
   padding-left: 1em;
   padding-right: 1em;
@@ -92,14 +81,31 @@ table {
   border-top-right-radius: 1em;
 }
 
-table thead th {
+/* *[is="x-ui-"]ui-content > ui-area[data-belongs-to-tab="projects"] {
+  padding-bottom: 0.25em;
+} */
+/* *[is="x-ui-"] ui-content {
+  padding-bottom: 0.25em;
+} */
+*[is="x-ui-"]
+  ui-content:has(> ui-area[data-belongs-to-tab="projects"]:not(.inactive)) {
+  padding-bottom: 0.25em;
+}
+#projectsTable {
+  table-layout: fixed;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1em;
+}
+
+#projectsTable th {
   font-weight: bold;
   text-align: left;
   /* padding: 0.3em 0.5em; */
 }
 
-td,
-th {
+#projectsTable td,
+#projectsTable th {
   padding: 0.5em 1em;
 }
 
@@ -107,16 +113,30 @@ th {
   text-align: right;
   width: 90px;
 }
-
 .col-date {
   padding-left: 2em;
   width: 100px;
   white-space: nowrap;
 }
+
+td.col-num,
+td.col-date {
+  color: var(--x-ui-text-light-color);
+}
 .col-button {
   width: 100px;
   text-align: center;
   cursor: pointer;
+}
+
+#projectsTable td:first-child {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#projectsTable td:first-child:hover {
+  text-decoration: underline;
 }
 
 #projectsTable th:last-child {
@@ -126,8 +146,4 @@ th {
 #projectsTable td:last-child {
   width: 80px;
   text-align: center;
-}
-
-#projectsTable tbody tr td:first-child:hover {
-  text-decoration: underline;
 }

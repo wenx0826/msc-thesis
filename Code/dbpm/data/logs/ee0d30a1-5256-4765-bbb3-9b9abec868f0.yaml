@@ -3777,3 +3777,98 @@ data:
         </loop>
       </description>
     </description>
+---
+timestamp: '2026-02-14T21:33:52.469Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: 035bde3e-8950-4705-865d-a67ed4ef35e3
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>ure field in the attendance check list.  Applied Strategy and Organization  Exam:   WI001111 / Endterm   Date:   Thursday 23 rd   February, 2023  Examiner:   Prof. Dr. Isabell M. Welpe   Time:   14:15 – 15:45 I P 1   P 2   P 3   P 4   P 5   P 6   P 7   P 8   P 9   P 10   P 11   P 12  Working instructions  • This exam consists of   28 pages   with a total of   12 problems . Please make sure now that you received a complete copy of the exam. • The total amount of achievable credits in this exam is 90 credits. • Detaching pages from the exam is prohibited. • Allowed resources:  –   one   analog dictionary   English   ↔   native language • Do not write with red or green colors nor use pencils. • Physically turn o</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="subprocess" svg-id="a1" svg-label="Task 1werreret45454545454545454545454545" svg-type="call" svg-subtype="call"><parameters><label>Task 1werreret45454545454545454545454545</label><color>#deddda</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>131ae0ef-34e1-4bbd-868a-e139317012fb</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:3000/data/models/131ae0ef-34e1-4bbd-868a-e139317012fb.xml</url></arguments></parameters></call>
+        <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="fff" svg-type="call" svg-subtype="call"><parameters><label>fff</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:3000/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a4" endpoint="subprocess" svg-id="a4" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call>
+        <call id="a3" endpoint="subprocess" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:3000/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-14T21:34:00.296Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: 035bde3e-8950-4705-865d-a67ed4ef35e3
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>ure field in the attendance check list.  Applied Strategy and Organization  Exam:   WI001111 / Endterm   Date:   Thursday 23 rd   February, 2023  Examiner:   Prof. Dr. Isabell M. Welpe   Time:   14:15 – 15:45 I P 1   P 2   P 3   P 4   P 5   P 6   P 7   P 8   P 9   P 10   P 11   P 12  Working instructions  • This exam consists of   28 pages   with a total of   12 problems . Please make sure now that you received a complete copy of the exam. • The total amount of achievable credits in this exam is 90 credits. • Detaching pages from the exam is prohibited. • Allowed resources:  –   one   analog dictionary   English   ↔   native language • Do not write with red or green colors nor use pencils. • Physically turn o</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="subprocess" svg-id="a1" svg-label="Task 1werreret45454545454545454545454545fgfgfg" svg-type="call" svg-subtype="call"><parameters><label>Task 1werreret45454545454545454545454545fgfgfg</label><color>#deddda</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>131ae0ef-34e1-4bbd-868a-e139317012fb</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:3000/data/models/131ae0ef-34e1-4bbd-868a-e139317012fb.xml</url></arguments></parameters></call>
+        <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="fff" svg-type="call" svg-subtype="call"><parameters><label>fff</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:3000/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a4" endpoint="subprocess" svg-id="a4" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call>
+        <call id="a3" endpoint="subprocess" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:3000/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-14T21:34:03.827Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: 035bde3e-8950-4705-865d-a67ed4ef35e3
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>ure field in the attendance check list.  Applied Strategy and Organization  Exam:   WI001111 / Endterm   Date:   Thursday 23 rd   February, 2023  Examiner:   Prof. Dr. Isabell M. Welpe   Time:   14:15 – 15:45 I P 1   P 2   P 3   P 4   P 5   P 6   P 7   P 8   P 9   P 10   P 11   P 12  Working instructions  • This exam consists of   28 pages   with a total of   12 problems . Please make sure now that you received a complete copy of the exam. • The total amount of achievable credits in this exam is 90 credits. • Detaching pages from the exam is prohibited. • Allowed resources:  –   one   analog dictionary   English   ↔   native language • Do not write with red or green colors nor use pencils. • Physically turn o</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="subprocess" svg-id="a1" svg-label="Task 1werreret45454545454545454545454545fgfgfg" svg-type="call" svg-subtype="call"><parameters><label>Task 1werreret45454545454545454545454545fgfgfg</label><color>#deddda</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>131ae0ef-34e1-4bbd-868a-e139317012fb</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:3000/data/models/131ae0ef-34e1-4bbd-868a-e139317012fb.xml</url></arguments></parameters></call>
+        <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="fff" svg-type="call" svg-subtype="call"><parameters><label>fff</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:3000/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a4" endpoint="subprocess" svg-id="a4" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call>
+        <call id="a3" endpoint="subprocess" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:3000/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-14T22:10:54.655Z'
+event: model_updated_manual_update_graph_changed
+data:
+  id: 035bde3e-8950-4705-865d-a67ed4ef35e3
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>ure field in the attendance check list.  Applied Strategy and Organization  Exam:   WI001111 / Endterm   Date:   Thursday 23 rd   February, 2023  Examiner:   Prof. Dr. Isabell M. Welpe   Time:   14:15 – 15:45 I P 1   P 2   P 3   P 4   P 5   P 6   P 7   P 8   P 9   P 10   P 11   P 12  Working instructions  • This exam consists of   28 pages   with a total of   12 problems . Please make sure now that you received a complete copy of the exam. • The total amount of achievable credits in this exam is 90 credits. • Detaching pages from the exam is prohibited. • Allowed resources:  –   one   analog dictionary   English   ↔   native language • Do not write with red or green colors nor use pencils. • Physically turn o</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="subprocess" svg-id="a1" svg-label="Task 1werreret45454545454545454545454545fgfgfg" svg-type="call" svg-subtype="call"><parameters><label>Task 1werreret45454545454545454545454545fgfgfg</label><color>#deddda</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>131ae0ef-34e1-4bbd-868a-e139317012fb</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:3000/data/models/131ae0ef-34e1-4bbd-868a-e139317012fb.xml</url></arguments></parameters></call><stop xmlns="http://cpee.org/ns/description/1.0" svg-id="stop_0" svg-type="stop" svg-subtype="stop"/>
+        <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="fff" svg-type="call" svg-subtype="call"><parameters><label>fff</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:3000/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a4" endpoint="subprocess" svg-id="a4" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call>
+        <call id="a3" endpoint="subprocess" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:3000/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-15T01:12:24.604Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: 035bde3e-8950-4705-865d-a67ed4ef35e3
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>ure field in the attendance check list.  Applied Strategy and Organization  Exam:   WI001111 / Endterm   Date:   Thursday 23 rd   February, 2023  Examiner:   Prof. Dr. Isabell M. Welpe   Time:   14:15 – 15:45 I P 1   P 2   P 3   P 4   P 5   P 6   P 7   P 8   P 9   P 10   P 11   P 12  Working instructions  • This exam consists of   28 pages   with a total of   12 problems . Please make sure now that you received a complete copy of the exam. • The total amount of achievable credits in this exam is 90 credits. • Detaching pages from the exam is prohibited. • Allowed resources:  –   one   analog dictionary   English   ↔   native language • Do not write with red or green colors nor use pencils. • Physically turn o</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="subprocess" svg-id="a1" svg-label="Task 1werreret45454545454545454545454545fgfgfg" svg-type="call" svg-subtype="call"><parameters><label>Task 1werreret45454545454545454545454545fgfgfg</label><color>#deddda</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>131ae0ef-34e1-4bbd-868a-e139317012fb</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:3000/data/models/131ae0ef-34e1-4bbd-868a-e139317012fb.xml</url></arguments></parameters></call><stop xmlns="http://cpee.org/ns/description/1.0" svg-id="stop_0" svg-type="stop" svg-subtype="stop"/>
+        <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="fff" svg-type="call" svg-subtype="call"><parameters><label>fff</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:3000/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a4" endpoint="subprocess" svg-id="a4" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call>
+        <call id="a3" endpoint="subprocess" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:3000/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call>
+      </description>
+    </description>

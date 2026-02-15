@@ -81,7 +81,6 @@ export function initDocumentsUI() {
     renderDocumentItem(doc);
   });
 
-  // Set up file input handler
   $("#documentsInput").on("change", async (event) => {
     event.preventDefault();
     event.stopPropagation();
@@ -96,7 +95,6 @@ export function initDocumentsUI() {
     }
   });
 
-  // Subscribe to store changes
   workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
     switch (key) {
       case "activeDocumentId":

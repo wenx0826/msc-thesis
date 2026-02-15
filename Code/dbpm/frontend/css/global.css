@@ -2,11 +2,12 @@
   font-family: adawaita-sans;
   src: url(AdwaitaSans-Regular.ttf);
 }
+
 /* :root {
   --x-ui-border-color: #a1a1a1;
   --x-ui-outside-color: #ffffff;
   --x-ui-background-color: #ffffff;
-  --x-ui-light-text-color: #333;
+  --x-ui-text-light-color: #333;
   --x-ui-light-back-color: #e8e8e8;
   --x-ui-link-color: #425d73;
   --x-ui-content-border-color: #ffed00;
@@ -14,17 +15,20 @@
   --x-ui-content-hover-background: #99cce660;
 } */
 :root {
+  --x-tab-inactive-color: #f0f0f0;
+  --x-ui-border-color: #a1a1a1;
+  --x-ui-border-light-color: #d0d0d0;
   /* --x-ui-outside-color: #ffffff;
-  --x-ui-border-color: #a1a1a1; */
+ */
   --x-ui-content-border-color: #ffed00;
   --x-ui-content-light-background: #f0f0f0;
   --x-ui-content-hover-background: #99cce660;
   --x-ui-content-highlight-background: #99cee6b0;
-  --x-tab-inactive-color: #f0f0f0;
+
   --x-outside-behind-text-color: #333;
   --x-outside-behind-text-active-color: #333;
   --x-ui-text-color: #2b2b2b;
-  --x-ui-light-text-color: #585858;
+  --x-ui-text-light-color: #585858;
 }
 html {
   box-sizing: border-box;
@@ -54,6 +58,9 @@ ui-tabbed > ui-tabbar > ui-tab.switch {
   background-color: var(--x-tab-inactive-color);
 }
 
+.clickable {
+  cursor: pointer;
+}
 .disabled {
   pointer-events: none;
 }
@@ -69,6 +76,10 @@ ui-divider {
   display: block;
   width: 100%;
   border-top: 1px solid var(--x-ui-border-color);
+}
+
+ui-divider.light {
+  border-color: var(--x-ui-border-light-color);
 }
 
 /* -- global styles -- */
@@ -228,7 +239,7 @@ div.breadcrumb span.crumb:not(:last-child) {
   cursor: pointer;
 }
 div.breadcrumb span.crumb:not(:last-child):hover {
-  color: var(--x-ui-light-text-color);
+  color: var(--x-ui-text-light-color);
   text-decoration: underline;
 }
 

@@ -1,6 +1,10 @@
 // Projects UI Module - Handles project list and create dialog
 import { projectsAPI } from "../api/index.js";
-import { getProjectWorkspaceURL, getProjectStatsURL } from "../util/url.js";
+import {
+  getProjectWorkspaceURL,
+  getProjectStatsURL,
+  getProjectLogURL,
+} from "../util/url.js";
 
 let projects = [];
 
@@ -59,11 +63,9 @@ async function renderProjectsTable() {
 }
 
 async function createProject(name) {
-  const project = await projectsAPI.createProject({ name });
+  const project = await projectsAPI.create({ name });
   return project;
 }
-
-function deleteProject(projectId) {}
 
 function setupProjectCreationDialog() {
   const dlg = document.getElementById("projectCreationDialog");
@@ -106,6 +108,34 @@ function setupProjectCreationDialog() {
   });
 }
 
+function downloadProjectLog(projectId, projectName) {
+  const url = getProjectLogURL(projectId);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `${projectName}.yaml`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+function renameProject(projectId, $projectNameCell) {
+  const currentName = $projectNameCell.text();
+  const newName = prompt("Enter new project name:", currentName);
+  if (newName && newName.trim() !== "" && newName !== currentName) {
+    projectsAPI
+      .update(projectId, { name: newName })
+      .then((updatedProject) => {
+        $projectNameCell.text(updatedProject.name);
+      })
+      .catch((err) => {
+        console.error("Failed to rename project:", err);
+        alert("Failed to rename project: " + err.message);
+      });
+  } else {
+    alert("Project name cannot be empty.");
+  }
+}
+function deleteProject(projectId) {}
+
 export default async function init() {
   renderProjectsTable();
   setupProjectCreationDialog();
@@ -114,31 +144,48 @@ export default async function init() {
     window.location.href = getProjectWorkspaceURL(projectId);
   });
   $("#projectsTable tbody").on("click", "td:last-child", (e) => {
-    var projectId = $(e.currentTarget).closest("tr").attr("data-project-id");
-    var menu = {};
+    const $tr = $(e.currentTarget).closest("tr");
+
+    const projectId = $tr.attr("data-project-id");
+    const projectName = $tr.children("td:first-child").text();
+    const $projectNameCell = $tr.children("td:first-child");
+    const menu = {};
     menu[""] = [
       {
         label: "View Statistics",
         function_call: (projectId) =>
           (window.location.href = getProjectStatsURL(projectId)),
-        text_icon: "",
+        text_icon: undefined,
         type: undefined,
         params: [projectId],
       },
       {
         label: "View Log",
-        function_call: deleteProject,
-        text_icon: "",
+        function_call: (projectId) => {
+          window.open(getProjectLogURL(projectId), "_blank");
+        },
+        text_icon: undefined,
         type: undefined,
         params: [projectId],
       },
       {
         label: "Download Log",
+        function_call: downloadProjectLog,
+        text_icon: undefined,
+        type: undefined,
+        params: [projectId, projectName],
       },
       {
-        label: "Delete",
+        label: "Rename Project",
+        function_call: renameProject,
+        text_icon: undefined,
+        type: undefined,
+        params: [projectId, $projectNameCell],
+      },
+      {
+        label: "Delete Project",
         function_call: deleteProject,
-        text_icon: "",
+        text_icon: undefined,
         type: undefined,
         params: [projectId],
       },

@@ -116,7 +116,7 @@ async function projectsRoutes(fastify, options) {
       const updates = request.body;
 
       try {
-        const project = await projectService.updateProject(projectId, updates);
+        const project = await projectService.update(projectId, updates);
         reply.send(project);
       } catch (err) {
         console.error("Failed to update project:", err);

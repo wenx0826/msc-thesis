@@ -59,7 +59,7 @@
             min-height: 18px;
             margin-top: 8px
         } */
-        /* :root {
+        :root {
             --text: #111;
             --muted: #666;
             --faint: #999;
@@ -68,12 +68,11 @@
             --bg: #fff;
             --maxw: 1100px;
             --bar: #d8d8d8;
-   
-            --barFill: #8f8f8f;
-       
-            
-        } */
 
+            --barFill: #8f8f8f;
+
+
+        }
 
 
 
@@ -154,7 +153,7 @@
         /* Chart block: keep minimal; optional subtle separator only */
         .chart {
             padding-top: 10px;
-            border-top: 1px solid var(--line);
+            /* border-top: 1px solid var(--line); */
         }
 
         .chartTitle {
@@ -288,6 +287,7 @@
                     <!-- Bottom: 2 distribution "charts" (bar list) -->
                     <section class="charts" aria-label="Distributions">
                         <div class="chart">
+                            <ui-divider class="light"></ui-divider>
                             <div class="chartTitle">
                                 <span>Documents per Project</span>
                                 <small>Distribution (%)</small>
@@ -298,6 +298,7 @@
                         </div>
 
                         <div class="chart">
+                            <ui-divider class="light"></ui-divider>
                             <div class="chartTitle">
                                 <span>Models per Document</span>
                                 <small>Distribution (%)</small>
@@ -313,11 +314,17 @@
             <!-- </ui-rest> -->
         </div>
     </ui-rest>
-    <ui-divider></ui-divider>
-    <ui-bar class="home-footer">
-        <div class="middle">If you encounter any issues or the system behaves unexpectedly, please contact:&nbsp;<a
-                href="mailto:xin.wen@tum.de">xin.wen@tum.de</a></div>
-    </ui-bar>
+
+    <div class="home-footer">
+        <div class="page-rail">
+            <ui-divider class="light"></ui-divider>
+            <ui-bar>
+                <div class="middle">If you encounter any issues or the system behaves unexpectedly, please
+                    contact:&nbsp;<a href="mailto:xin.wen@tum.de">xin.wen@tum.de</a>
+                </div>
+            </ui-bar>
+        </div>
+    </div>
     <dialog id="projectCreationDialog">
         <form id="form" method="dialog">
             <h3>New Project</h3>

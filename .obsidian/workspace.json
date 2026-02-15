@@ -184,6 +184,7 @@
   },
   "active": "279053b3089b8b05",
   "lastOpenFiles": [
+    "Code/dbpm/data/logs/1d45200d-cb85-476d-9c56-3e6257a68346.yaml",
     "Code/dbpm/frontend/wf-renderer.html",
     "Code/dbpm/frontend/wf_themes/preset/symbols/wait_for_signal.svg",
     "Code/dbpm/frontend/wf_themes/preset/symbols/terminate.svg",
@@ -204,7 +205,6 @@
     "Code/dbpm/frontend/wf_themes/preset/rngs/scripts.rng",
     "Code/dbpm/frontend/wf_themes/preset/rngs/parallel_branch.rng",
     "Code/dbpm/frontend/wf_themes/preset/rngs/parallel.rng",
-    "Code/dbpm/frontend/wf_themes/preset/rngs/otherwise.rng",
     "01.5 Evaluation.md",
     "2 Related Work - Prelexity.md",
     "02 Related Work.md",
