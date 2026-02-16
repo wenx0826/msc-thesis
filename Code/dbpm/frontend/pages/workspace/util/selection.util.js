@@ -1,7 +1,8 @@
 // Selection utilities for document text ranges
+const root = document.getElementById("documentContent");
 export function getXPath(
   node,
-  root = document.getElementById("documentContent"),
+  // root = document.getElementById("documentContent"),
 ) {
   if (node === root) return "/";
   const path = [];
@@ -16,7 +17,7 @@ export function getXPath(
 
 export function getNodeByXPath(
   path,
-  root = document.getElementById("documentContent"),
+  // root = document.getElementById("documentContent"),
 ) {
   const parts = path.split("/").filter(Boolean);
   let node = root;

@@ -1,4 +1,3 @@
-// Models UI Module
 import { workspaceStore, modelsStore } from "../store/index.js";
 import { workspaceService } from "../services/index.js";
 
@@ -175,58 +174,57 @@ const removeModelFromList = (modelId) => {
   $(`.model-container[data-model-id="${modelId}"]`).remove();
 };
 
-window.addEventListener("message", (e) => {
-  const { id, ok, result, error } = e.data || {};
-  if (!pending.has(id)) return;
-  const { resolve, reject } = pending.get(id);
-  pending.delete(id);
-  ok ? resolve(result) : reject(new Error(error));
-});
-
-// #region Store subscriptions
-workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
-  switch (key) {
-    case "activeModelId":
-      if (newValue) {
-        highlightActiveModelContainer(newValue);
-      }
-      if (oldValue) {
-        unhighlightActiveModelContainer(oldValue);
-      }
-      break;
-    default:
-      break;
-  }
-});
-
-modelsStore.subscribe(async (state, { key, operation, value }) => {
-  switch (operation) {
-    case "init":
-      await waitForIframe();
-      for (const model of value) {
-        await renderModelInList(model);
-      }
-      // value.forEach((model) => renderModelInList(model));
-      break;
-    case "add":
-      await renderModelInList(value);
-      break;
-    case "update":
-      updateModelInList(value);
-      break;
-    case "delete":
-      console.log("Model deleted with ID:", value.id);
-      removeModelFromList(value.id);
-      break;
-  }
-});
-// #endregion Store subscriptions
-export default async function init() {
-  // await waitForIframe();
-  // console.log("Converter iframe is ready");
-  // const models = modelsStore.getModels();
-  // for (const model of models) {
-  //   await renderModelInList(model);
-  // }
-  // console.log("Models UI initialized");
+function bindListeners() {
+  window.addEventListener("message", (e) => {
+    const { id, ok, result, error } = e.data || {};
+    if (!pending.has(id)) return;
+    const { resolve, reject } = pending.get(id);
+    pending.delete(id);
+    ok ? resolve(result) : reject(new Error(error));
+  });
 }
+
+function subscribeStores() {
+  workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
+    switch (key) {
+      case "activeModelId":
+        if (newValue) {
+          highlightActiveModelContainer(newValue);
+        }
+        if (oldValue) {
+          unhighlightActiveModelContainer(oldValue);
+        }
+        break;
+      default:
+        break;
+    }
+  });
+
+  modelsStore.subscribe(async (state, { key, operation, value }) => {
+    switch (operation) {
+      case "init":
+        await waitForIframe();
+        for (const model of value) {
+          await renderModelInList(model);
+        }
+        // value.forEach((model) => renderModelInList(model));
+        break;
+      case "add":
+        await renderModelInList(value);
+        break;
+      case "update":
+        updateModelInList(value);
+        break;
+      case "delete":
+        console.log("Model deleted with ID:", value.id);
+        removeModelFromList(value.id);
+        break;
+    }
+  });
+}
+
+function init() {
+  subscribeStores();
+  bindListeners();
+}
+init();

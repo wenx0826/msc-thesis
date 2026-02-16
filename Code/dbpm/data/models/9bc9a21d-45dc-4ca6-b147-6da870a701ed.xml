@@ -1,6 +1,5 @@
 <description>
-  <dbpm:info
-    xmlns:dbpm="https://example.com/dbpm">
+  <dbpm:info xmlns:dbpm="https://example.com/dbpm">
     <dbpm:document_info>
       <dbpm:document_id>be0c4340-99fa-43e2-a1c2-164a094bc115</dbpm:document_id>
       <dbpm:text_selections>0.0  1.0  1.0
@@ -12,14 +11,14 @@ For personal review only  For personal review only  For personal review only  0.
 For personal review only  For person</dbpm:text_selections>
     </dbpm:document_info>
   </dbpm:info>
-  <description xmlns="http://cpee.org/ns/description/1.0">
-    <loop mode="pre_test" condition="true">
+  <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+    <loop mode="pre_test" condition="true" svg-id="loop_0" svg-label="true" svg-type="loop" svg-subtype="loop_head">
       <_probability>
         <_probability_min/>
         <_probability_max/>
         <_probability_avg/>
       </_probability>
-      <call id="a1" endpoint="overview">
+      <call id="a1" endpoint="overview" svg-id="a1" svg-label="Move to overview position" svg-type="call" svg-subtype="call">
         <parameters>
           <label>Move to overview position</label>
           <arguments/>
@@ -43,7 +42,7 @@ For personal review only  For person</dbpm:text_selections>
         </annotations>
         <documentation/>
       </call>
-      <call id="a3" endpoint="get_items_base">
+      <call id="a3" endpoint="get_items_base" svg-id="a3" svg-label="Get item positions" svg-type="call" svg-subtype="callmanipulate">
         <parameters>
           <label>Get item positions</label>
           <arguments/>
@@ -74,34 +73,8 @@ data.item = result[0]</finalize>
         </annotations>
         <documentation/>
       </call>
-      <call id="a5" endpoint="move_camera">
-        <parameters>
-          <label>Inspect first item</label>
-          <arguments>
-            <x>!data.item['x']</x>
-            <y>!data.item['y']</y>
-          </arguments>
-          <stream>
-            <sensors/>
-            <aggregators/>
-            <costs/>
-          </stream>
-        </parameters>
-        <annotations>
-          <_timing>
-            <_timing_wait/>
-            <_timing_threshold/>
-            <_timing_min/>
-            <_timing_max/>
-            <_timing_avg/>
-          </_timing>
-          <_notes>
-            <_notes_general/>
-          </_notes>
-        </annotations>
-        <documentation/>
-      </call>
-      <call id="a6" endpoint="get_offset_base">
+      <call id="a5" endpoint="subprocess" svg-id="a5" svg-label="Inspect first item" svg-type="call" svg-subtype="call"><parameters><label>Inspect first item</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call>
+      <call id="a6" endpoint="get_offset_base" svg-id="a6" svg-label="Get item offset" svg-type="call" svg-subtype="callmanipulate">
         <parameters>
           <label>Get item offset</label>
           <arguments/>
@@ -131,7 +104,7 @@ data.item = result[0]</finalize>
         </annotations>
         <documentation/>
       </call>
-      <stop id="a2"/>
+      <stop id="a2" svg-id="a2" svg-type="stop" svg-subtype="stop"/>
     </loop>
   </description>
 </description>

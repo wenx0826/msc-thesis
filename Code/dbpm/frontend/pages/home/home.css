@@ -9,14 +9,20 @@ body[is="x-ui-"] > ui-rest {
   padding-bottom: 36px;
 }
 .home-intro {
-  margin-top: 32px;
-  margin-bottom: 24px;
+  padding-top: 32px;
+  padding-bottom: 24px;
   text-align: center;
+  background-color: var(--x-ui-outside-color);
 }
 .home-footer {
   font-size: 0.85em;
   text-align: center;
   color: var(--x-ui-text-muted-color);
+  background-color: var(--x-ui-outside-color);
+}
+.home-footer ui-bar {
+  background-color: var(--x-ui-outside-color);
+  /* color: var(--x-ui-text-muted-color); */
 }
 #projectsTable_info {
   /* margin-top: 0.5em; */
@@ -71,9 +77,11 @@ body[is="x-ui-"] > ui-rest {
   z-index: 2;
   pointer-events: none;
 }
+
 *[is="x-ui-"] ui-tabbar > ui-tab.inactive {
   border-bottom: none;
 }
+
 [is="x-ui-"] ui-tabbar > ui-before {
   /* border-bottom: 1pt solid var(--x-ui-border-color); */
   padding-left: 1.5em;

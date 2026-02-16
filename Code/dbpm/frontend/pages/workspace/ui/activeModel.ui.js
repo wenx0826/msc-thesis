@@ -5,8 +5,9 @@ import {
   workspaceStore,
 } from "../store/index.js";
 import { modelService, workspaceService } from "../services/index.js";
-import { endpointAPI } from "../../../api/index.js";
+import { endpointLoader } from "../workflow/wf_endpoints/endpoint-loader.js";
 import { Constants } from "../../../constants.js";
+import { default as setActiveModuleNameEditor } from "../../../shared/ui/inlineEditor.js";
 
 const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
 
@@ -25,6 +26,18 @@ const $promptActionBar = $("#promptActionBar");
 const $sendPromptButton = $("#sendPromptButton");
 const $clearPromptButton = $("#clearPromptButton");
 const $viewModelDataLink = $("#viewModelDataLink");
+
+setActiveModuleNameEditor({
+  $scope: $("#activeModelName").parent(),
+  trigger: "click",
+  autoGrow: true,
+  onSave: (name) => {
+    const activeModelId = workspaceStore.getActiveModelId();
+    if (activeModelId) {
+      // modelService.updateModelById(activeModelId, { name });
+    }
+  },
+});
 
 function syncActiveModelGraphInList() {
   var gc = $("#graphcanvas").clone();
@@ -100,17 +113,16 @@ const showActiveModel = async (model) => {
   save["state"] = "ready";
   save["graph_theme"] = "preset_customized";
 
-  // Initialize endpoints and map to save cache for details.js compatibility
-  endpointAPI.init();
-  save["endpoints_cache"] = endpointAPI._cache;
+  // Initialize endpoints and map to save cache for details.js compatibility - WAIT for completion
+  await endpointLoader.init();
+  save["endpoints_cache"] = endpointLoader._cache;
 
   save["graph_adaptor"] = new WfAdaptor(
-    "./wf_themes/preset_customized/theme.js",
+    "pages/workspace/workflow/wf_themes/preset_customized/theme.js",
     function (graphrealization) {
-      graphrealization.illustrator.get_symbol =
-        endpointAPI.getSymbol.bind(endpointAPI);
+      graphrealization.illustrator.get_symbol = endpointLoader._boundGetSymbol;
       graphrealization.illustrator.get_properties =
-        endpointAPI.getProperties.bind(endpointAPI);
+        endpointLoader._boundGetProperties;
       graphrealization.set_svg_container($("#graphcanvas"));
       graphrealization.set_label_container($("#graphgrid"));
       graphrealization.set_description($(model.data), true);

@@ -1,7 +1,9 @@
 #main {
   padding: 0.6em;
 }
-
+ui-bar.header {
+  background-color: var(--x-ui-outside-color);
+}
 .relaxngui_color_container .round label {
   box-sizing: content-box;
 }
@@ -11,13 +13,16 @@
 /* -- x-ui overrides --*/
 
 ui-resizehandle[data-direction="vertical"] {
-  flex: 0 0 1em;
+  /* flex: 0 0 1em; */
+  flex: 0 0 0.75em;
   cursor: col-resize;
   user-select: none;
   position: relative;
   padding: 0;
-  margin-left: -0.175em;
-  margin-right: -0.175em;
+
+  /* margin-left: -0.175em;
+  margin-right: -0.175em; */
+  background-color: var(--x-ui-outside-color);
 }
 
 ui-resizehandle[data-direction="vertical"]::before {
@@ -107,10 +112,10 @@ ui-resizehandle[data-direction="vertical"]::before {
 }
 
 .panel {
-  background-color: var(--x-ui-background-color);
+  background-color: var(--background-color);
   padding: 1em;
   margin: 0;
-  border: 2px solid var(--x-ui-border-color);
+  border: 1px solid var(--x-ui-border-color);
   border-radius: 1em;
   overflow: hidden;
   min-width: 180px;
@@ -118,10 +123,10 @@ ui-resizehandle[data-direction="vertical"]::before {
 
 *[is="x-ui-"] ui-tabbed ui-content {
   margin: 0;
-  border-width: 2px;
+  /* border-width: 2px; */
 }
 *[is="x-ui-"] ui-tabbed ui-tab {
-  border-width: 2px;
+  /* border-width: 2px; */
   font-size: 1.2em;
 }
 
@@ -190,7 +195,8 @@ ui-area {
   flex: 1;
 }
 li.active {
-  font-weight: bold;
+  /* font-weight: bold; */
+  font-weight: 600;
   background-color: var(--x-ui-content-highlight-background);
 }
 li .col-button {
@@ -349,10 +355,11 @@ text.duration {
 #promptContainer {
   /* display: flex;
   flex-direction: column; */
-  margin: 0.5em;
+  padding: 0.5em;
   border: 0.5pt solid var(--x-ui-border-color);
   border-bottom-left-radius: 0.6em;
   border-bottom-right-radius: 0.6em;
+  background-color: var(--x-ui-background-color);
 }
 #promptContainer:focus-within {
   border-color: var(--wfadaptor-highlight);

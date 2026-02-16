@@ -1,10 +1,12 @@
 export const endpointAPI = {
   _cache: null,
+  _boundGetSymbol: null,
+  _boundGetProperties: null,
 
   init() {
     if (this._cache) return;
 
-    const basePath = "../pages/workspace/workflow/endpoint/";
+    const basePath = "/pages/workspace/workflow/wf_endpoints/subprocess/";
 
     // Inline symbol for immediate availability (no async delay)
     const svgString = `<g xmlns="http://www.w3.org/2000/svg">
@@ -41,6 +43,10 @@ export const endpointAPI = {
         schema: null,
       },
     };
+
+    // Bind methods once for reuse (avoids re-binding on every call)
+    this._boundGetSymbol = this.getSymbol.bind(this);
+    this._boundGetProperties = this.getProperties.bind(this);
 
     // Load properties and schema asynchronously (not needed for initial render)
     Promise.all([

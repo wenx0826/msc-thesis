@@ -18,7 +18,8 @@
             id='modelCanvasSmall' width='1' height='1'></svg>
     </div>
     <script type="module">
-        import { endpointAPI, modelsAPI } from "../../../api/index.js";
+        import { endpointLoader } from "./wf_endpoints/endpoint-loader.js";
+        import { modelsAPI } from "../../../api/index.js";
         window.addEventListener("message", async (e) => {
             const { id, input, args, source } = e.data;
             if (source !== "getModelSvg") {
@@ -38,15 +39,15 @@
                 }
                 // console.log("!!!!Converter received message for model id:", data);
 
-                // Initialize endpoint API before rendering
-                endpointAPI.init();
+                // Initialize endpoint loader before rendering - WAIT for completion
+                await endpointLoader.init();
 
                 new WfAdaptor("wf_themes/preset_customized/theme.js", function (
                     graphrealization,
                 ) {
                     try {
-                        graphrealization.illustrator.get_symbol = endpointAPI.getSymbol.bind(endpointAPI);
-                        graphrealization.illustrator.get_properties = endpointAPI.getProperties.bind(endpointAPI);
+                        graphrealization.illustrator.get_symbol = endpointLoader._boundGetSymbol;
+                        graphrealization.illustrator.get_properties = endpointLoader._boundGetProperties;
                         // console.log("000Adaptor initialized in converter.");
                         graphrealization.set_svg_container($("#modelCanvasSmall"));
                         // console.log("111Adaptor initialized in converter.");
@@ -54,12 +55,10 @@
                         graphrealization.set_label_container($("#modelGridSmall"));
                         graphrealization.set_description($(data), true);
 
-                        const svgData = $("#modelCanvasSmall").clone().removeAttr("id");
-                        // console.log("SVG string length:", svgData);
-                        // console.log("SVG data for model:", svgData);
-                        const svgString = svgData.prop('outerHTML');
-                        // console.log("SVG string length:", svgString);
-                        // const svgString = svgData.serializedPrettyXML()
+                        const svgElement = $("#modelCanvasSmall")[0];
+                        // Safari-compatible: use XMLSerializer instead of outerHTML
+                        const svgString = new XMLSerializer().serializeToString(svgElement);
+
                         e.source.postMessage({ id, ok: true, result: svgString }, e.origin);
                     } catch (err) {
                         // console.log("!!!!!!!!!!!!!Error in adaptor init:", err);
