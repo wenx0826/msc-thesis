@@ -608,12 +608,25 @@ export function initActiveModelUI() {
     const svgId = $node.attr("id");
     const $element = $(`#graphcanvas [element-id="${svgId}"]`);
     console.log("Hovered subprocess svgId:", svgId, "modelId:", modelId);
+
+    // ✨ NEW: Pass source identifier to prevent conflicts
+    workspaceStore.setModelPopoverParams(
+      {
+        modelId,
+        anchor: { type: "element", element: $element[0] },
+      },
+      "subprocess-node",
+    ); // ✨ NEW: Source tracking for conflict prevention
+
+    /* OLD CODE - No source tracking:
     workspaceStore.setModelPopoverParams({
       modelId,
       anchor: { type: "element", element: $element[0] },
     });
+    */
+
     console.log("Subprocess modelId:", modelId);
-    // const modelName = modelsStore.getModelNameById(modelId);
+    // const modelName = modelsStore.getModelNameById(modelId); // OLD: Commented out unused code
     // const modelGraph = $(modelsStore.getModelGraphById(modelId)).clone();
     // const modelId = $node
     //   .children("parameters")
@@ -624,7 +637,12 @@ export function initActiveModelUI() {
   });
   $(document).on("wf:subprocess-unhovered", function (e) {
     console.log(`Event Listener 'wf:subprocess-unhovered' listened`);
+    // ✨ NEW: Pass source identifier to ensure only the same source can close
+    workspaceStore.requestCloseModelPopover("subprocess-node");
+
+    /* OLD CODE - No source tracking:
     workspaceStore.requestCloseModelPopover();
+    */
   });
   window.do_main_work = do_main_work;
 }

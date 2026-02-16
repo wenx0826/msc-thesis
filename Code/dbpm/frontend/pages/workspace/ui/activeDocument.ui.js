@@ -530,11 +530,24 @@ export function initActiveDocumentUI() {
   });
   $modelTags.on("mouseenter", ".tag-span", (event) => {
     event.stopPropagation();
-    // const $target = $(event.currentTarget);
+    // const $target = $(event.currentTarget); // OLD: Unused
     const element = event.currentTarget;
     const modelId = element.dataset.modelId;
     console.log("Hovering over model tag:", modelId);
 
+    // ✨ NEW: Pass source identifier to prevent conflicts with other hover sources
+    workspaceStore.setModelPopoverParams(
+      {
+        modelId,
+        anchor: {
+          type: "element",
+          element,
+        },
+      },
+      "document-tag",
+    ); // ✨ NEW: Source tracking for conflict prevention
+
+    /* OLD CODE - No source tracking:
     workspaceStore.setModelPopoverParams({
       modelId,
       anchor: {
@@ -542,6 +555,7 @@ export function initActiveDocumentUI() {
         element,
       },
     });
+    */
   });
   $modelTags.on("mouseleave", ".tag-span", (event) => {
     event.stopPropagation();
@@ -549,6 +563,11 @@ export function initActiveDocumentUI() {
       "Mouse leaving model tag:",
       event.currentTarget.dataset.modelId,
     );
+    // ✨ NEW: Pass source identifier to ensure only the same source can close
+    workspaceStore.requestCloseModelPopover("document-tag");
+
+    /* OLD CODE - No source tracking:
     workspaceStore.requestCloseModelPopover();
+    */
   });
 }

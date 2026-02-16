@@ -126,8 +126,29 @@ cy.on("mouseover", "node", (evt) => {
   switch (entityType) {
     case "document":
       node.addClass("hovered");
-      // workspaceService.activateDocumentById(entityId);
       break;
+    case "model":
+      // ✨ ENABLED: Show model popover on hover with source tracking
+      workspaceStore.setModelPopoverParams(
+        {
+          modelId: entityId,
+          anchor: {
+            type: "point",
+            point: {
+              x: evt.originalEvent.clientX,
+              y: evt.originalEvent.clientY,
+            },
+          },
+        },
+        "graph-node",
+      ); // ✨ NEW: Pass source identifier to prevent conflicts
+      break;
+    default:
+      break;
+  }
+});
+
+/* OLD CODE - Popover was disabled:
     case "model":
       // workspaceStore.setModelPopoverParams({
       //   modelId: entityId,
@@ -140,10 +161,7 @@ cy.on("mouseover", "node", (evt) => {
       //   },
       // });
       break;
-    default:
-      break;
-  }
-});
+*/
 
 cy.on("mouseout", "node", (evt) => {
   cy.container().style.cursor = "default";
@@ -151,10 +169,12 @@ cy.on("mouseout", "node", (evt) => {
   const entityType = getEntityType(node);
   switch (entityType) {
     case "document":
-      // workspaceService.activateDocumentById(entityId);
+      node.removeClass("hovered"); // ✨ ADDED: Properly remove hover state
       break;
     case "model":
-      workspaceStore.setHoveredModelId(null);
+      // workspaceStore.setHoveredModelId(null); // OLD: Kept for compatibility
+      // ✨ NEW: Request close with source tracking
+      workspaceStore.requestCloseModelPopover("graph-node");
       // workspaceStore.requestCloseModelPopover();
       break;
     default:
