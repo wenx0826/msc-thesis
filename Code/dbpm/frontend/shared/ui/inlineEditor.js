@@ -1,19 +1,18 @@
-// inline-editor-jq.js（你也可以直接放页面里）
 const VIEW_SELECTOR = ".inline-editor__view";
 const INPUT_CLASS = "inline-editor__input";
-const EDITING_CLASS = "is-editing";
+const INPUT_SELECTOR = "." + INPUT_CLASS;
+
 export default function init({
   $scope = $(document),
-  trigger,
-  autoGrow = true,
-  saveOnBlur = true,
-  onSave = (id, value, $view) => {},
+  trigger = "manual", // "click" | "manual"
+  autoGrow = false,
+  saveOnBlur = false, // ✅ A方案：强制 false（或者外部传 false）
+  onSave = (newValue, $view) => {},
   normalize = (v) => String(v ?? "").trim() || "Untitled",
 } = {}) {
-  let active = null; // { $view, $input, oldVal, id }
+  let active = null; // { $view, $input, oldValue, id }
 
   function getId($view) {
-    // 优先 view 自己 data-id，其次找最近的 [data-id]
     return $view.data("id") ?? $view.closest("[data-id]").data("id") ?? null;
   }
 
@@ -33,34 +32,54 @@ export default function init({
     el.style.width = el.scrollWidth + "px";
   }
 
+  // ---------- outside commit ----------
+  let outsideHandler = null;
+
+  function bindOutsideCommit() {
+    if (outsideHandler) return;
+
+    outsideHandler = function (e) {
+      if (!active) return;
+
+      const $t = $(e.target);
+
+      // 点在 input 内：不算 outside
+      if ($t.closest(INPUT_SELECTOR).length) return;
+
+      // ✅ outside：吃掉这一下点击（避免 row click / 跳转）
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+
+      commit();
+    };
+
+    // capture = true：比 table 的 click 冒泡更早
+    document.addEventListener("mousedown", outsideHandler, true);
+  }
+
+  function unbindOutsideCommit() {
+    if (!outsideHandler) return;
+    document.removeEventListener("mousedown", outsideHandler, true);
+    outsideHandler = null;
+  }
+
   function cleanup() {
     if (!active) return;
-    active.$input.remove();
-    active.$view.show();
+    unbindOutsideCommit(); // ✅ 先解绑
+    active.$input.remove(); // ✅ 再移除 input
+    active.$view.show(); // ✅ show view
     active = null;
   }
 
   function startEdit($view) {
-    console.log(
-      "Entering edit mode for:",
-      $view,
-      active,
-      $view[0] === active?.$view[0],
-    );
-    // 如果正在编辑别的：先提交（你也可以改成 cancel）
-    // if (active && active.$view[0] !== $view[0]) {
-    //   commit();
-    // }
-    // if (active) return;
+    const oldValue = getText($view).trim();
+    const id = getId($view);
 
-    const oldVal = getText($view).trim();
-    // const id = getId($view);
-    // console.log("Starting edit:", { id, oldVal });
     const $input = $(`<input type="text" class="${INPUT_CLASS}">`);
-    $input.val(oldVal);
-    $input.data("oldVal", oldVal);
+    $input.val(oldValue);
+    $input.data("oldValue", oldValue);
 
-    // 让 input 继承 view 的字体/内边距，让视觉一致
     if (autoGrow) {
       const cs = window.getComputedStyle($view[0]);
       $input.css({
@@ -73,9 +92,16 @@ export default function init({
     $view.hide();
     $view.after($input);
 
-    active = { $view, $input, oldVal, id };
+    active = { $view, $input, oldValue, id };
 
     resize($input);
+
+    // ✅ 只挡 pointerdown，避免 row 的 mousedown 逻辑先跑（可选，但建议）
+    $input.on("mousedown.inlineEditor", (e) => e.stopPropagation());
+
+    // ✅ A方案核心：进入编辑立刻开启 outside 捕获
+    bindOutsideCommit();
+
     $input.trigger("focus");
     $input[0].select();
   }
@@ -83,47 +109,44 @@ export default function init({
   async function commit() {
     if (!active) return;
 
-    const { $view, $input, oldVal, id } = active;
-    const next = normalize($input.val());
+    const { $view, $input, oldValue } = active;
+    const newValue = normalize($input.val());
 
-    // 乐观更新 UI
-    setText($view, next);
-
-    // 先清理，避免 blur/keydown 重入
+    setText($view, newValue);
     cleanup();
 
     try {
-      const ret = onSave(id, next, $view);
+      const ret = onSave(newValue, $view);
       if (ret && typeof ret.then === "function") await ret;
     } catch (e) {
-      // 保存失败回滚
-      setText($view, oldVal);
+      setText($view, oldValue);
       console.error("InlineEditor save failed (rolled back):", e);
     }
   }
 
   function cancel() {
     if (!active) return;
-    setText(active.$view, active.oldVal);
+    setText(active.$view, active.oldValue);
     cleanup();
   }
+
   if (trigger === "click") {
-    $scope.on("click.inlineEditor", VIEW_SELECTOR, function () {
+    $scope.on("click.inlineEditor", VIEW_SELECTOR, function (e) {
+      // 如果你担心这一点会立刻触发 outside（一般不会，因为 outside 只认 input 外）
+      // e.stopPropagation();
       startEdit($(this));
     });
   }
 
-  // input 输入自动拉长
-  $scope.on("input.inlineEditor", "." + INPUT_CLASS, function () {
+  $scope.on("input.inlineEditor", INPUT_SELECTOR, function () {
     if (!active || active.$input[0] !== this) return;
     resize(active.$input);
   });
 
-  // 键盘：Enter 保存 / Esc 取消
-  $scope.on("keydown.inlineEditor", "." + INPUT_CLASS, function (e) {
+  $scope.on("keydown.inlineEditor", INPUT_SELECTOR, function (e) {
     if (!active || active.$input[0] !== this) return;
 
-    if (e.key === "startEdit") {
+    if (e.key === "Enter") {
       e.preventDefault();
       commit();
     } else if (e.key === "Escape") {
@@ -132,41 +155,15 @@ export default function init({
     }
   });
 
-  // blur 保存
-  if (saveOnBlur) {
-    $scope.on("focusout.inlineEditor", "." + INPUT_CLASS, function () {
-      if (!active || active.$input[0] !== this) return;
-      commit();
-    });
-  }
+  // ✅ A方案：不绑定 focusout 保存
+  // if (saveOnBlur) { ... }  // 删掉或永远不进
 
-  // -------- 对外 API --------
   return {
     isEditing() {
       return !!active;
     },
     commit,
     cancel,
-    setById(id, value) {
-      // 兼容 data-id 在 view 或父级的两种写法
-      const safe = CSS.escape(String(id));
-      let $view = $scope.find(`${VIEW_SELECTOR}[data-id="${safe}"]`);
-      if ($view.length === 0) {
-        $view = $scope.find(`[data-id="${safe}"] ${VIEW_SELECTOR}`);
-      }
-      if ($view.length) setText($view.eq(0), String(value ?? ""));
-    },
-    getById(id) {
-      const safe = CSS.escape(String(id));
-      let $view = $scope.find(`${VIEW_SELECTOR}[data-id="${safe}"]`);
-      if ($view.length === 0) {
-        $view = $scope.find(`[data-id="${safe}"] ${VIEW_SELECTOR}`);
-      }
-      return $view.length ? getText($view.eq(0)).trim() : null;
-    },
-    // destroy() {
-    //   cancel();
-    //   $scope.off(".inlineEditor");
-    // },
+    startEdit,
   };
 }

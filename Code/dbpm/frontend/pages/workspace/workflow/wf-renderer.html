@@ -10,15 +10,15 @@
 <link rel="stylesheet" href="https://cpee.org/flow/css/wfadaptor.css" type="text/css" />
 <script type="text/javascript" src="https://cpee.org/flow/themes/base.js"></script>
 
-<script src="api/index.js" type="module"></script>
-<link rel="stylesheet" href="assets/global.css" type="text/css" />
+<!-- <script src="../../../api/index.js" type="module"></script> -->
+<link rel="stylesheet" href="../../../assets/global.css" type="text/css" />
 <body>
     <div id='modelGridSmall'>
         <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink"
             id='modelCanvasSmall' width='1' height='1'></svg>
     </div>
     <script type="module">
-        import { endpointAPI, modelsAPI } from "./api/index.js";
+        import { endpointAPI, modelsAPI } from "../../../api/index.js";
         window.addEventListener("message", async (e) => {
             const { id, input, args, source } = e.data;
             if (source !== "getModelSvg") {

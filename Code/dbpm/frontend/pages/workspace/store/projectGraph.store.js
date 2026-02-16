@@ -37,6 +37,12 @@ export const projectGraphStore = Object.assign(
         });
       });
       this.state.elements = [...nodes, ...edges];
+      this.notify({
+        key: "elements",
+        operation: "init",
+        // operation: "add",
+        value: this.state.elements,
+      });
     },
     getElements() {
       return this.state.elements;

@@ -11,7 +11,7 @@ export const documentsStore = Object.assign(
     async init(projectId) {
       const documents = await documentsAPI.getByProjectId(projectId);
       this.state.documents = documents;
-      this.notify({ operation: "init" });
+      this.notify({ operation: "init", value: documents });
     },
     getDocuments() {
       return this.state.documents;

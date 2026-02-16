@@ -175,52 +175,58 @@ const removeModelFromList = (modelId) => {
   $(`.model-container[data-model-id="${modelId}"]`).remove();
 };
 
-export async function initModelsUI() {
-  window.addEventListener("message", (e) => {
-    const { id, ok, result, error } = e.data || {};
-    if (!pending.has(id)) return;
-    const { resolve, reject } = pending.get(id);
-    pending.delete(id);
-    ok ? resolve(result) : reject(new Error(error));
-  });
+window.addEventListener("message", (e) => {
+  const { id, ok, result, error } = e.data || {};
+  if (!pending.has(id)) return;
+  const { resolve, reject } = pending.get(id);
+  pending.delete(id);
+  ok ? resolve(result) : reject(new Error(error));
+});
 
-  await waitForIframe();
-  console.log("Converter iframe is ready");
-  const models = modelsStore.getModels();
-  for (const model of models) {
-    await renderModelInList(model);
+// #region Store subscriptions
+workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
+  switch (key) {
+    case "activeModelId":
+      if (newValue) {
+        highlightActiveModelContainer(newValue);
+      }
+      if (oldValue) {
+        unhighlightActiveModelContainer(oldValue);
+      }
+      break;
+    default:
+      break;
   }
+});
 
-  // Subscribe to store changes
-  workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
-    switch (key) {
-      case "activeModelId":
-        if (newValue) {
-          highlightActiveModelContainer(newValue);
-        }
-        if (oldValue) {
-          unhighlightActiveModelContainer(oldValue);
-        }
-        break;
-      default:
-        break;
-    }
-  });
-
-  modelsStore.subscribe(async (state, { key, operation, value }) => {
-    switch (operation) {
-      case "add":
-        await renderModelInList(value);
-        break;
-      case "update":
-        updateModelInList(value);
-        break;
-      case "delete":
-        console.log("Model deleted with ID:", value.id);
-        removeModelFromList(value.id);
-        break;
-    }
-  });
-
-  console.log("Models UI initialized");
+modelsStore.subscribe(async (state, { key, operation, value }) => {
+  switch (operation) {
+    case "init":
+      await waitForIframe();
+      for (const model of value) {
+        await renderModelInList(model);
+      }
+      // value.forEach((model) => renderModelInList(model));
+      break;
+    case "add":
+      await renderModelInList(value);
+      break;
+    case "update":
+      updateModelInList(value);
+      break;
+    case "delete":
+      console.log("Model deleted with ID:", value.id);
+      removeModelFromList(value.id);
+      break;
+  }
+});
+// #endregion Store subscriptions
+export default async function init() {
+  // await waitForIframe();
+  // console.log("Converter iframe is ready");
+  // const models = modelsStore.getModels();
+  // for (const model of models) {
+  //   await renderModelInList(model);
+  // }
+  // console.log("Models UI initialized");
 }

@@ -29,7 +29,7 @@
   <script type="text/javascript" src="https://cpee.org/flow/js/wfadaptor.js"></script>
   <link rel="stylesheet" href="https://cpee.org/flow/css/wfadaptor.css" type="text/css" />
   <script type="text/javascript" src="https://cpee.org/flow/themes/base.js"></script>
-  <script type="text/javascript" src="wf_themes/base_customized.js" type="module"></script>
+  <script type="text/javascript" src="pages/workspace/workflow/wf_themes/base_customized.js" type="module"></script>
 
   <!-- <script type="text/javascript" src="js_cpee/extended_columns.js"></script> -->
   <!-- <link rel="stylesheet" href="css/extended_columns-label.css" type="text/css" />
@@ -66,10 +66,10 @@
             <polyline points="9,22 9,12 15,12 15,22"></polyline>
           </svg></a></span> <span class="separator added">/</span>
 
-      <!-- <div id="projectNameEditor" class="inline-editor"> -->
-      <span id="projectName" class="inline-editor__view" data-editable="1"></span>
-      <!-- <input class="inline-editor__input" type="text" /> -->
-      <!-- </div> -->
+      <div id="projectNameEditor" class="inline-editor">
+        <span id="projectName" class="inline-editor__view" data-editable="1"></span>
+        <!-- <input class="inline-editor__input" type="text" /> -->
+      </div>
     </div>
     <div class="right action-group">
       <span>LLM: gemini 2 Flash</span>
@@ -89,13 +89,15 @@
           </ui-tabbar>
           <ui-content>
             <ui-area data-belongs-to-tab="documents" id="areadocuments">
-              <ul id="documentList">
+              <ul id="documentsList">
                 <!-- Template for document list items -->
                 <template id="documentItemTemplate">
-                  <li data-docid="">
+                  <li data-doc-id="">
                     <input class="doc-check" type="checkbox" />
-                    <span class="document-name"></span>
-                    <span class="col-button">...</span>
+                    <div class="inline-editor">
+                      <span class="document-name inline-editor__view" data-ref="documentName"></span>
+                    </div>
+                    <span class="action-cell"><button class="right col-button action-btn">...</button></span>
                   </li>
                 </template>
               </ul>
@@ -174,10 +176,10 @@
       <ui-rest class="panel" style="flex:0.4;">
         <ui-rest style="flex:1 1 0;min-height: 100px">
           <ui-bar>
-            <div id="activeModelNameEditor" class="inline-editor">
-              <span class="inline-editor__view"></span>
-              <input class="inline-editor__input" type="text" />
-            </div>
+            <!-- <div id="activeModelNameEditor" class="inline-editor"> -->
+            <span id="activeModelName" class="inline-editor__view"></span>
+            <!-- <input class="inline-editor__input" type="text" /> -->
+            <!-- </div> -->
             <fieldset id="modelActionBar" class="right action-group" disabled>
               <a id="viewModelDataLink">
                 View XML Data
@@ -263,7 +265,8 @@
       </ui-rest>
     </ui-content>
   </ui-rest>
-  <iframe id="wfRendererFrame" src="wf-renderer.html" style="position: absolute; left: -9999px; top: -9999px;"></iframe>
+  <iframe id="wfRendererFrame" src="../pages/workspace/workflow/wf-renderer.html"
+    style="position: absolute; left: -9999px; top: -9999px;"></iframe>
   <div id="modelPopover" class="hidden">
     <div id="modelPopoverContainer"></div>
   </div>

@@ -6,13 +6,17 @@ import {
   getProjectLogURL,
 } from "../../../shared/util/url.js";
 import initInlineEditor from "../../../shared/ui/inlineEditor.js";
+
 let projects = [];
+
 const $projectsTable = $("#projectsTable");
+
 const projectNameEditor = initInlineEditor({
   $scope: $projectsTable,
-  onSave: (id, value) => {
-    console.log("Project name edited:", id, value);
-    // Implement inline editing save logic here if needed
+  onSave: (name, $view) => {
+    console.log("Saving project name:", name);
+    const projectId = $view.closest("tr").attr("data-project-id");
+    projectsAPI.update(projectId, { name });
   },
 });
 function escapeHtml(s) {
@@ -59,11 +63,18 @@ async function renderProjectsTable() {
         { title: "Documents", className: "col-num" },
         { title: "Models", className: "col-num" },
         { title: "Created", className: "col-date" },
-        { title: "Actions", className: "col-button" },
+        {
+          title: "Actions",
+          render: function () {
+            return `<button class="action-btn">...</button>`; // Action button for context menu
+          },
+        },
       ],
 
       createdRow: function (row, data, dataIndex) {
-        $(row).attr("data-project-id", projects[dataIndex].id);
+        const projectId = projects[dataIndex].id;
+        $(row).attr("data-project-id", projectId);
+        // $(row).find(".inline-editor__view").attr("data-id", projectId);
       },
       destroy: true,
       paging: true,
@@ -131,39 +142,51 @@ function downloadProjectLog(projectId, projectName) {
   link.click();
   document.body.removeChild(link);
 }
-function renameProject(projectId, $projectNameCell) {
-  const currentName = $projectNameCell.text();
-  const newName = prompt("Enter new project name:", currentName);
-  if (newName && newName.trim() !== "" && newName !== currentName) {
-    projectsAPI
-      .update(projectId, { name: newName })
-      .then((updatedProject) => {
-        $projectNameCell.text(updatedProject.name);
-      })
-      .catch((err) => {
-        console.error("Failed to rename project:", err);
-        alert("Failed to rename project: " + err.message);
-      });
-  } else {
-    alert("Project name cannot be empty.");
-  }
-}
+// function renameProject(projectId, $projectNameCell) {
+//   const currentName = $projectNameCell.text();
+//   const newName = prompt("Enter new project name:", currentName);
+//   if (newName && newName.trim() !== "" && newName !== currentName) {
+//     projectsAPI
+//       .update(projectId, { name: newName })
+//       .then((updatedProject) => {
+//         $projectNameCell.text(updatedProject.name);
+//       })
+//       .catch((err) => {
+//         console.error("Failed to rename project:", err);
+//         alert("Failed to rename project: " + err.message);
+//       });
+//   } else {
+//     alert("Project name cannot be empty.");
+//   }
+// }
+
 function deleteProject(projectId) {}
 
 export default async function init() {
   renderProjectsTable();
   setupProjectCreationDialog();
 
-  $projectsTable.on("click", "td:first-child", (e) => {
-    var projectId = $(e.currentTarget).closest("tr").attr("data-project-id");
+  // $projectsTable.on("click", "td:first-child", (e) => {
+  //   const $td = $(e.currentTarget);
+  //   const projectId = $td.closest("tr").attr("data-project-id");
+  //   console.log("Project name cell clicked for projectId:", projectId);
+  //   console.log("Project name :", $td.find(".inline-editor__input").length > 0);
+
+  //   window.location.href = getProjectWorkspaceURL(projectId);
+  // });
+  $projectsTable.on("mousedown", "td:first-child", (e) => {
+    const $td = $(e.currentTarget);
+    const projectId = $td.closest("tr").attr("data-project-id");
     window.location.href = getProjectWorkspaceURL(projectId);
   });
-  $projectsTable.on("click", "td:last-child", (e) => {
-    const $tr = $(e.currentTarget).closest("tr");
 
-    const projectId = $tr.attr("data-project-id");
-    const projectName = $tr.children("td:first-child").text();
-    const $projectNameCell = $tr.children("td:first-child");
+  $projectsTable.on("click", "td:last-child", (e) => {
+    // const $td = ;
+    const $tr = $(e.currentTarget).parent();
+    const projectId = $tr.data("projectId");
+    console.log("Actions clicked for projectId:", projectId);
+    const $projectNameView = $tr.find(".inline-editor__view");
+    const projectName = $projectNameView.text();
     const menu = {};
     menu[""] = [
       {
@@ -192,11 +215,13 @@ export default async function init() {
       },
       {
         label: "Rename Project",
-        function_call: renameProject,
+        function_call: ($view) =>
+          setTimeout(() => projectNameEditor.startEdit($view), 0),
         text_icon: undefined,
         type: undefined,
-        params: [projectId, $projectNameCell],
+        params: [$projectNameView],
       },
+
       {
         label: "Delete Project",
         function_call: deleteProject,

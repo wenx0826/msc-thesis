@@ -135,11 +135,6 @@ td.col-num,
 td.col-date {
   color: var(--x-ui-text-secondary-color);
 }
-.col-button {
-  width: 100px;
-  text-align: center;
-  cursor: pointer;
-}
 
 #projectsTable td:first-child {
   overflow: hidden;
@@ -164,7 +159,16 @@ td.col-date {
 }
 #projectsTable td:last-child {
   width: 80px;
-  text-align: center;
+  position: relative;
+  /* padding: 0.1em 1em; */
+}
+#projectsTable td:last-child button {
+  position: absolute;
+  inset: 0.2em 1.5em; /* 你要留边距就用 4px；要贴边就 0 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* inset: 0.1em 1.5em; */
 }
 /* #projectsTable td:first-child {
   outline: 2px solid red;

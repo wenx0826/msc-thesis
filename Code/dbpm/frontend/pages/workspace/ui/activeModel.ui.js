@@ -385,9 +385,6 @@ function do_main_work(svgid) {
   });
 }
 export function initActiveModelUI() {
-  // Initialize DOM references
-
-  // Set up event handlers
   $viewModelDataLink.on("click", (e) => {
     e.preventDefault();
     window.open(

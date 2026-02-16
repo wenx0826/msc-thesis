@@ -4,7 +4,7 @@ import {
   getProjectIdFromURL,
   getDocumentURL,
 } from "../../../shared/util/url.js";
-import { cloneTemplate } from "../../../shared/util/dom.js";
+import { $cloneTemplate } from "../../../shared/util/dom.js";
 const projectId = getProjectIdFromURL();
 
 function renderProjectLink() {
@@ -21,7 +21,7 @@ async function renderDocumentModels(documentId) {
   const models = await documentsAPI.getActiveModelsById(documentId);
 
   for (const model of models) {
-    const $modelItem = cloneTemplate("modelItemTemplate").children().first();
+    const $modelItem = $cloneTemplate("modelItemTemplate").children().first();
     $modelItem.attr("data-model-id", model.id);
     $modelItem
       .find("[data-ref='modelName']")
@@ -37,7 +37,7 @@ async function renderDocumentsList() {
     const $documentsList = $("#documentsList");
 
     for (const doc of docs) {
-      const $documentItem = cloneTemplate("documentItemTemplate");
+      const $documentItem = $cloneTemplate("documentItemTemplate");
       $documentItem.find("li").attr("data-doc-id", doc.id);
       $documentItem
         .find("[data-ref='documentName']")

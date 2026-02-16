@@ -166,10 +166,16 @@ ui-area {
 }
 
 /*--- document list pane ---*/
-#documentList li {
+#documentsList {
+  max-width: 100%;
+  /* list-style: none;
+  padding: 0;
+  margin: 0; */
+}
+#documentsList li {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  /* justify-content: space-between; */
+  /* align-items: center; */
   /* width: 20%;
   height: 80vh;
   overflow-y: auto;
@@ -180,12 +186,15 @@ ui-area {
 #documentContent {
   user-select: text;
 }
-
+#documentsList li .inline-editor {
+  flex: 1;
+}
 li.active {
   font-weight: bold;
   background-color: var(--x-ui-content-highlight-background);
 }
-
+li .col-button {
+}
 /* li:hover {
     cursor: pointer;
     background-color: var(--x-ui-hover-background-color);
@@ -264,7 +273,6 @@ li.active {
   /* z-index: 2; */
   /* background-color: yellow; */
   outline: 2px solid var(--wfadaptor-highlight);
-
   /* outline: 2px solid var(--wfadaptor-highlight); */
   outline-offset: 2px;
   /* transition: outline-offset 0.2s; */
