@@ -6,25 +6,36 @@ body {
   /* overflow-y: auto; */
 }
 .main {
-  padding-bottom: 36px;
+  padding-bottom: 36px !important;
 }
-.intro {
+
+.hero {
   padding-top: 32px;
   padding-bottom: 24px;
   text-align: center;
   background-color: var(--x-ui-outside-color);
 }
+
+.hero a:link, .hero a:visited {
+  color: var(--x-ui-text-secondary-color);
+}
+
 .footer {
   font-size: 0.85em;
   text-align: center;
   color: var(--x-ui-text-muted-color);
   background-color: var(--x-ui-outside-color);
 }
-.footer ui-bar {
-  background-color: var(--x-ui-outside-color);
-  /* color: var(--x-ui-text-muted-color); */
+
+.footer > div{
+  display: inline-block;
+  padding: 0.5em 8em 0.6em 8em;
+  border-top: 1px solid var(--x-ui-border-light-color);
 }
 
+.footer a:link, .footer a:visited {
+  color: var(--x-ui-text-muted-color);
+}
 /* h1 {
   font-size: 2.5em;
   font-weight: 600;

@@ -9,6 +9,6 @@ Sample Solution  Mark corre</dbpm:text_selections>
   <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
     <call id="a1" endpoint="subprocess" svg-id="a1" svg-label="Task 1" svg-type="call" svg-subtype="call"><parameters><label>Task 1</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call>
     <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="Resource Synchronisation" svg-type="call" svg-subtype="call"><parameters><label>Resource Synchronisation</label><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>035bde3e-8950-4705-865d-a67ed4ef35e3</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:3000/data/models/035bde3e-8950-4705-865d-a67ed4ef35e3.xml</url></arguments></parameters></call>
-    <call id="a3" endpoint="subprocess" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call>
+    <call id="a3" endpoint="" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color>#d8f0dd</color><dbpm_type>task</dbpm_type></parameters></call>
   </description>
 </description>
