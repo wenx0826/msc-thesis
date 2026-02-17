@@ -244,6 +244,12 @@
           <ui-rest>
             <ui-content>
               <ui-area id="models">
+                <template id="modelItemTemplate">
+                  <div class="model-container" data-model-id="" data-documentid="">
+                    <span data-ref="modelName"></span>
+                    <div data-ref="modelGrid"></div>
+                  </div>
+                </template>
                 <div id='modelCanvasSmallContainer'>
                   <div id='modelGridSmall' style="position: absolute; left: -9999px; top: -9999px;">
                     <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink"

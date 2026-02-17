@@ -188,26 +188,27 @@ function toSvgElement(svgValue) {
 
 async function renderModelInList(model) {
   const modelId = model?.meta?.id;
-  var gridId = `modelGrid_${modelId}`;
+  const gridId = `modelGrid_${modelId}`;
   const $modelsArea = $("#models");
-  const $modelContainer = $("<div>")
-    .addClass("model-container")
+  const $modelContainer = $cloneTemplate("modelItemTemplate")
+    .children()
+    .first()
     .attr("data-model-id", modelId)
     .attr("data-documentid", model.documentId);
+  const $gridDiv = $modelContainer.find("[data-ref='modelGrid']").first();
+  $gridDiv.attr("id", gridId);
+  $modelContainer.find("[data-ref='modelName']").first().text(model.meta.name);
   if (modelId == workspaceStore.getActiveModelId()) {
     $modelContainer.addClass("active");
   }
-  $modelContainer.text(`${model.meta.name}`);
-  $modelsArea.append($modelContainer);
-  const $gridDiv = $("<div>").attr("id", gridId);
   $modelContainer.on("click", (event) => {
     event.stopPropagation();
     workspaceService.toggleModelSelection(modelId);
   });
-  $modelContainer.append($gridDiv);
+  $modelsArea.append($modelContainer);
+
   console.log("Received SVG for model ID", modelId);
   try {
-    console.log("Received SVG for model ID", modelId);
     const outputFrame = await getModelSvg(modelId);
 
     model.svg = new DOMParser().parseFromString(
