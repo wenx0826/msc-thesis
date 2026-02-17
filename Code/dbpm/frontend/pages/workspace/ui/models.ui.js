@@ -1,9 +1,15 @@
 import { createUI } from "../../../shared/util/ui.js";
 import { workspaceStore, modelsStore } from "../store/index.js";
 import { workspaceService } from "../services/index.js";
+import { modelsAPI } from "../../../api/index.js";
+import { endpointLoader } from "../workflow/wf_endpoints/endpoint-loader.js";
+import { $cloneTemplate } from "../../../shared/util/dom.js";
 
-let seq = 0;
-const pending = new Map();
+const PREVIEW_THEME_PATH =
+  "pages/workspace/workflow/wf_themes/preset_customized/theme.js";
+const PREVIEW_LABEL_SELECTOR = "#modelGridSmall";
+const PREVIEW_CANVAS_SELECTOR = "#modelCanvasSmall";
+let previewRenderQueue = Promise.resolve();
 
 /**
  * Make all internal SVG id/url(#...) references unique by prefixing them
@@ -85,31 +91,99 @@ function prepareSvgForList(svgEl, modelId) {
   scopeSvgIds(svgEl, `m${modelId}`);
 }
 
-function waitForIframe() {
-  return new Promise((resolve) => {
-    const iframe = document.getElementById("wfRendererFrame");
-    if (
-      iframe.contentDocument &&
-      iframe.contentDocument.readyState === "complete"
-    ) {
-      resolve();
-    } else {
-      iframe.addEventListener("load", () => {
-        resolve();
-      });
-    }
-  });
+function queuePreviewRender(task) {
+  const run = previewRenderQueue.then(task);
+  previewRenderQueue = run.catch(() => {});
+  return run;
 }
 
-function getModelSvg(input) {
-  return new Promise(async (resolve, reject) => {
-    const id = ++seq;
-    pending.set(id, { resolve, reject });
-    $("#wfRendererFrame")[0].contentWindow.postMessage(
-      { id, input, source: "getModelSvg" },
-      window.origin,
-    );
-  });
+function clearPreviewRenderContainers() {
+  const $svg = $(PREVIEW_CANVAS_SELECTOR);
+  const $label = $(PREVIEW_LABEL_SELECTOR);
+  if ($svg.length === 0 || $label.length === 0) return;
+  $svg.empty().attr("width", "1").attr("height", "1");
+  $label.children().not($svg).remove();
+}
+
+function getDescriptionElement(modelData) {
+  const parsed = new DOMParser().parseFromString(modelData, "application/xml");
+  const parseError = parsed.getElementsByTagName("parsererror")[0];
+  if (parseError) {
+    throw new Error(parseError.textContent || "Invalid model XML");
+  }
+  if (parsed.documentElement?.nodeName === "description") {
+    return parsed.documentElement;
+  }
+  const description = $("description", parsed)[0];
+  if (!description) {
+    throw new Error("Model XML does not contain a description element");
+  }
+  return description;
+}
+
+function renderDescriptionToSvg(descriptionElement) {
+  return queuePreviewRender(
+    () =>
+      new Promise((resolve, reject) => {
+        const $svg = $(PREVIEW_CANVAS_SELECTOR);
+        const $label = $(PREVIEW_LABEL_SELECTOR);
+        if ($svg.length === 0 || $label.length === 0) {
+          reject(new Error("Preview render container not found"));
+          return;
+        }
+
+        const previousManifestation = window.manifestation;
+        const restoreState = () => {
+          window.manifestation = previousManifestation;
+          clearPreviewRenderContainers();
+        };
+
+        clearPreviewRenderContainers();
+
+        try {
+          new WfAdaptor(PREVIEW_THEME_PATH, function (graphrealization) {
+            try {
+              graphrealization.illustrator.get_symbol =
+                endpointLoader._boundGetSymbol;
+              graphrealization.illustrator.get_properties =
+                endpointLoader._boundGetProperties;
+              graphrealization.set_svg_container($svg);
+              graphrealization.set_label_container($label);
+              graphrealization.set_description($(descriptionElement), true);
+
+              const svgString = new XMLSerializer().serializeToString($svg[0]);
+              resolve(svgString);
+            } catch (err) {
+              reject(err);
+            } finally {
+              restoreState();
+            }
+          });
+        } catch (err) {
+          restoreState();
+          reject(err);
+        }
+      }),
+  );
+}
+
+async function getModelSvg(modelId) {
+  await endpointLoader.init();
+  const modelData = await modelsAPI.getModelDataById(modelId);
+  const descriptionElement = getDescriptionElement(modelData);
+  return renderDescriptionToSvg(descriptionElement);
+}
+
+function toSvgElement(svgValue) {
+  if (!svgValue) return null;
+  if (typeof svgValue === "string") {
+    return new DOMParser().parseFromString(svgValue, "image/svg+xml")
+      .documentElement;
+  }
+  if (svgValue instanceof Element) {
+    return svgValue;
+  }
+  return null;
 }
 
 async function renderModelInList(model) {
@@ -134,7 +208,7 @@ async function renderModelInList(model) {
   console.log("Received SVG for model ID", modelId);
   try {
     console.log("Received SVG for model ID", modelId);
-    const outputFrame = await getModelSvg({ id: modelId });
+    const outputFrame = await getModelSvg(modelId);
 
     model.svg = new DOMParser().parseFromString(
       outputFrame,
@@ -156,11 +230,12 @@ function updateModelInList(model) {
   const $gridDiv = $(`#${gridId}`);
   $gridDiv.empty();
 
-  if (model.svg) {
-    prepareSvgForList(model.svg, modelId);
-  }
+  const svgEl = toSvgElement(model.svg);
+  if (!svgEl) return;
+  prepareSvgForList(svgEl, modelId);
+  model.svg = svgEl;
 
-  $gridDiv.append(model.svg);
+  $gridDiv.append(svgEl);
 }
 
 const highlightActiveModelContainer = (modelId) => {
@@ -174,58 +249,44 @@ const unhighlightActiveModelContainer = (modelId) => {
 const removeModelFromList = (modelId) => {
   $(`.model-container[data-model-id="${modelId}"]`).remove();
 };
+createUI({
+  setup: () => {},
+  bindListeners: () => {},
+  subscribeStores: () => {
+    workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
+      switch (key) {
+        case "activeModelId":
+          if (newValue) {
+            highlightActiveModelContainer(newValue);
+          }
+          if (oldValue) {
+            unhighlightActiveModelContainer(oldValue);
+          }
+          break;
+        default:
+          break;
+      }
+    });
 
-function bindListeners() {
-  window.addEventListener("message", (e) => {
-    const { id, ok, result, error } = e.data || {};
-    if (!pending.has(id)) return;
-    const { resolve, reject } = pending.get(id);
-    pending.delete(id);
-    ok ? resolve(result) : reject(new Error(error));
-  });
-}
-
-function subscribeStores() {
-  workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
-    switch (key) {
-      case "activeModelId":
-        if (newValue) {
-          highlightActiveModelContainer(newValue);
-        }
-        if (oldValue) {
-          unhighlightActiveModelContainer(oldValue);
-        }
-        break;
-      default:
-        break;
-    }
-  });
-
-  modelsStore.subscribe(async (state, { key, operation, value }) => {
-    switch (operation) {
-      case "init":
-        await waitForIframe();
-        for (const model of value) {
-          await renderModelInList(model);
-        }
-        // value.forEach((model) => renderModelInList(model));
-        break;
-      case "add":
-        await renderModelInList(value);
-        break;
-      case "update":
-        updateModelInList(value);
-        break;
-      case "delete":
-        console.log("Model deleted with ID:", value.id);
-        removeModelFromList(value.id);
-        break;
-    }
-  });
-}
-
-function init() {
-  subscribeStores();
-  bindListeners();
-}
-init();
+    modelsStore.subscribe(async (state, { key, operation, value }) => {
+      switch (operation) {
+        case "init":
+          for (const model of value) {
+            await renderModelInList(model);
+          }
+          // value.forEach((model) => renderModelInList(model));
+          break;
+        case "add":
+          await renderModelInList(value);
+          break;
+        case "update":
+          updateModelInList(value);
+          break;
+        case "delete":
+          console.log("Model deleted with ID:", value.id);
+          removeModelFromList(value.id);
+          break;
+      }
+    });
+  },
+});

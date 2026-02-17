@@ -4104,3 +4104,662 @@ data:
         <call id="a3" endpoint="" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color>#d8f0dd</color><dbpm_type>task</dbpm_type></parameters></call>
       </description>
     </description>
+---
+timestamp: '2026-02-17T02:26:40.109Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: 035bde3e-8950-4705-865d-a67ed4ef35e3
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>ure field in the attendance check list.  Applied Strategy and Organization  Exam:   WI001111 / Endterm   Date:   Thursday 23 rd   February, 2023  Examiner:   Prof. Dr. Isabell M. Welpe   Time:   14:15 – 15:45 I P 1   P 2   P 3   P 4   P 5   P 6   P 7   P 8   P 9   P 10   P 11   P 12  Working instructions  • This exam consists of   28 pages   with a total of   12 problems . Please make sure now that you received a complete copy of the exam. • The total amount of achievable credits in this exam is 90 credits. • Detaching pages from the exam is prohibited. • Allowed resources:  –   one   analog dictionary   English   ↔   native language • Do not write with red or green colors nor use pencils. • Physically turn o</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="subprocess" svg-id="a1" svg-label="Task 1werreret45454545454545454545454545fgfgfg" svg-type="call" svg-subtype="call"><parameters><label>Task 1werreret45454545454545454545454545fgfgfg</label><color>#deddda</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><stop xmlns="http://cpee.org/ns/description/1.0" svg-id="stop_0" svg-type="stop" svg-subtype="stop"/>
+        <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="fff" svg-type="call" svg-subtype="call"><parameters><label>fff</label><color>#e4c3e4</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:6688/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a4" endpoint="subprocess" svg-id="a4" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call>
+        <call id="a3" endpoint="subprocess" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:3000/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-17T02:26:53.014Z'
+event: model_updated_manual_update_graph_changed
+data:
+  id: 42d76137-7e23-4240-9c83-063937f4f326
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>ut market segments is correct? Market segments are groups of customers with different needs th</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="bookAir" svg-id="a1" svg-label="Book Airline 1" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <label>Book Airline 1</label>
+            <method>:post</method>
+            <arguments>
+              <from>!data.from</from>
+              <to>!data.to</to>
+              <persons>!data.persons</persons>
+            </arguments>
+          </parameters>
+          <code>
+            <prepare/>
+            <finalize output="result">data.airline = result.value('id')
+    data.costs += result.value('costs').to_f
+    status.update 1, 'Hotel'</finalize>
+            <update output="result"/>
+            <rescue output="result"/>
+          </code>
+          <annotations>
+            <_timing>
+              <_timing_weight/>
+              <_timing_avg/>
+              <explanations/>
+            </_timing>
+            <_shifting>
+              <_shifting_type>Duration</_shifting_type>
+            </_shifting>
+            <_context_data_analysis>
+              <probes/>
+              <ips/>
+            </_context_data_analysis>
+            <report>
+              <url/>
+            </report>
+            <_notes>
+              <_notes_general/>
+            </_notes>
+          </annotations>
+          <documentation>
+            <input/>
+            <output/>
+            <implementation>
+              <description/>
+            </implementation>
+            <code>
+              <description/>
+            </code>
+          </documentation>
+        </call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" endpoint="" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call>
+        <parallel wait="-1" cancel="last" svg-id="parallel_0" svg-type="parallel" svg-subtype="parallel_start">
+          <loop mode="pre_test" condition="data.persons &gt; 0" svg-id="loop_0" svg-label="data.persons &gt; 0" svg-type="loop" svg-subtype="loop_head">
+            <parallel_branch svg-id="parallel_branch_0" svg-type="parallel_branch" svg-subtype="parallel_branch_event">
+              <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="Book Hotel" svg-type="call" svg-subtype="call"><parameters><label>Book Hotel</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>b91d2def-24fc-4d5c-8529-c7ccbd1c50b9</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:3000/data/models/b91d2def-24fc-4d5c-8529-c7ccbd1c50b9.xml</url></arguments></parameters></call>
+            </parallel_branch>
+            <manipulate id="a3" svg-id="a3" svg-type="manipulate" svg-subtype="manipulate">data.persons -= 1</manipulate>
+          </loop>
+        </parallel>
+        <choose mode="exclusive" svg-id="choose_0" svg-type="choose" svg-subtype="choose_exclusive">
+          <alternative condition="data.costs &gt; 700" svg-id="alternative_0" svg-label="data.costs &gt; 700" svg-type="alternative" svg-subtype="alternative">
+            <_probability>
+              <_probability_min/>
+              <_probability_max/>
+              <_probability_avg/>
+            </_probability>
+            <call id="a4" endpoint="subprocess" svg-id="a4" svg-label="Approve Hotel" svg-type="call" svg-subtype="call"><parameters><label>Approve Hotel</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call>
+          </alternative>
+          <otherwise svg-id="otherwise_0" svg-type="otherwise" svg-subtype="otherwise"/>
+        </choose>
+      </description>
+    </description>
+---
+timestamp: '2026-02-17T02:26:58.213Z'
+event: model_updated_manual_update_graph_changed
+data:
+  id: 035bde3e-8950-4705-865d-a67ed4ef35e3
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>ure field in the attendance check list.  Applied Strategy and Organization  Exam:   WI001111 / Endterm   Date:   Thursday 23 rd   February, 2023  Examiner:   Prof. Dr. Isabell M. Welpe   Time:   14:15 – 15:45 I P 1   P 2   P 3   P 4   P 5   P 6   P 7   P 8   P 9   P 10   P 11   P 12  Working instructions  • This exam consists of   28 pages   with a total of   12 problems . Please make sure now that you received a complete copy of the exam. • The total amount of achievable credits in this exam is 90 credits. • Detaching pages from the exam is prohibited. • Allowed resources:  –   one   analog dictionary   English   ↔   native language • Do not write with red or green colors nor use pencils. • Physically turn o</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="subprocess" svg-id="a1" svg-label="Task 1werreret45454545454545454545454545fgfgfg" svg-type="call" svg-subtype="call"><parameters><label>Task 1werreret45454545454545454545454545fgfgfg</label><color>#deddda</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" endpoint="" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><stop xmlns="http://cpee.org/ns/description/1.0" svg-id="stop_0" svg-type="stop" svg-subtype="stop"/>
+        <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="fff" svg-type="call" svg-subtype="call"><parameters><label>fff</label><color>#e4c3e4</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:6688/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a4" endpoint="subprocess" svg-id="a4" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call>
+        <call id="a3" endpoint="subprocess" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:3000/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-17T02:27:12.285Z'
+event: model_updated_manual_update_graph_changed
+data:
+  id: 035bde3e-8950-4705-865d-a67ed4ef35e3
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>ure field in the attendance check list.  Applied Strategy and Organization  Exam:   WI001111 / Endterm   Date:   Thursday 23 rd   February, 2023  Examiner:   Prof. Dr. Isabell M. Welpe   Time:   14:15 – 15:45 I P 1   P 2   P 3   P 4   P 5   P 6   P 7   P 8   P 9   P 10   P 11   P 12  Working instructions  • This exam consists of   28 pages   with a total of   12 problems . Please make sure now that you received a complete copy of the exam. • The total amount of achievable credits in this exam is 90 credits. • Detaching pages from the exam is prohibited. • Allowed resources:  –   one   analog dictionary   English   ↔   native language • Do not write with red or green colors nor use pencils. • Physically turn o</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="subprocess" svg-id="a1" svg-label="Task 1werreret45454545454545454545454545fgfgfg" svg-type="call" svg-subtype="call"><parameters><label>Task 1werreret45454545454545454545454545fgfgfg</label><color>#deddda</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a6" endpoint="" svg-id="a6" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" endpoint="" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><stop xmlns="http://cpee.org/ns/description/1.0" svg-id="stop_0" svg-type="stop" svg-subtype="stop"/>
+        <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="fff" svg-type="call" svg-subtype="call"><parameters><label>fff</label><color>#e4c3e4</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:6688/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a4" endpoint="subprocess" svg-id="a4" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call>
+        <call id="a3" endpoint="subprocess" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:3000/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-17T02:27:14.680Z'
+event: model_updated_manual_update_graph_changed
+data:
+  id: 035bde3e-8950-4705-865d-a67ed4ef35e3
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>ure field in the attendance check list.  Applied Strategy and Organization  Exam:   WI001111 / Endterm   Date:   Thursday 23 rd   February, 2023  Examiner:   Prof. Dr. Isabell M. Welpe   Time:   14:15 – 15:45 I P 1   P 2   P 3   P 4   P 5   P 6   P 7   P 8   P 9   P 10   P 11   P 12  Working instructions  • This exam consists of   28 pages   with a total of   12 problems . Please make sure now that you received a complete copy of the exam. • The total amount of achievable credits in this exam is 90 credits. • Detaching pages from the exam is prohibited. • Allowed resources:  –   one   analog dictionary   English   ↔   native language • Do not write with red or green colors nor use pencils. • Physically turn o</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="subprocess" svg-id="a1" svg-label="Task 1werreret45454545454545454545454545fgfgfg" svg-type="call" svg-subtype="call"><parameters><label>Task 1werreret45454545454545454545454545fgfgfg</label><color>#deddda</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a7" endpoint="" svg-id="a7" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a6" endpoint="" svg-id="a6" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" endpoint="" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><stop xmlns="http://cpee.org/ns/description/1.0" svg-id="stop_0" svg-type="stop" svg-subtype="stop"/>
+        <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="fff" svg-type="call" svg-subtype="call"><parameters><label>fff</label><color>#e4c3e4</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:6688/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a4" endpoint="subprocess" svg-id="a4" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call>
+        <call id="a3" endpoint="subprocess" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:3000/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-17T02:27:35.893Z'
+event: model_updated_manual_update_graph_changed
+data:
+  id: 035bde3e-8950-4705-865d-a67ed4ef35e3
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>ure field in the attendance check list.  Applied Strategy and Organization  Exam:   WI001111 / Endterm   Date:   Thursday 23 rd   February, 2023  Examiner:   Prof. Dr. Isabell M. Welpe   Time:   14:15 – 15:45 I P 1   P 2   P 3   P 4   P 5   P 6   P 7   P 8   P 9   P 10   P 11   P 12  Working instructions  • This exam consists of   28 pages   with a total of   12 problems . Please make sure now that you received a complete copy of the exam. • The total amount of achievable credits in this exam is 90 credits. • Detaching pages from the exam is prohibited. • Allowed resources:  –   one   analog dictionary   English   ↔   native language • Do not write with red or green colors nor use pencils. • Physically turn o</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="subprocess" svg-id="a1" svg-label="Task 1werreret45454545454545454545454545fgfgfg" svg-type="call" svg-subtype="call"><parameters><label>Task 1werreret45454545454545454545454545fgfgfg</label><color>#deddda</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a8" endpoint="" svg-id="a8" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a7" endpoint="" svg-id="a7" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a6" endpoint="" svg-id="a6" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" endpoint="" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><stop xmlns="http://cpee.org/ns/description/1.0" svg-id="stop_0" svg-type="stop" svg-subtype="stop"/>
+        <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="fff" svg-type="call" svg-subtype="call"><parameters><label>fff</label><color>#e4c3e4</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:6688/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a4" endpoint="subprocess" svg-id="a4" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call>
+        <call id="a3" endpoint="subprocess" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:3000/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-17T02:33:26.034Z'
+event: model_updated_manual_update_graph_changed
+data:
+  id: 035bde3e-8950-4705-865d-a67ed4ef35e3
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>ure field in the attendance check list.  Applied Strategy and Organization  Exam:   WI001111 / Endterm   Date:   Thursday 23 rd   February, 2023  Examiner:   Prof. Dr. Isabell M. Welpe   Time:   14:15 – 15:45 I P 1   P 2   P 3   P 4   P 5   P 6   P 7   P 8   P 9   P 10   P 11   P 12  Working instructions  • This exam consists of   28 pages   with a total of   12 problems . Please make sure now that you received a complete copy of the exam. • The total amount of achievable credits in this exam is 90 credits. • Detaching pages from the exam is prohibited. • Allowed resources:  –   one   analog dictionary   English   ↔   native language • Do not write with red or green colors nor use pencils. • Physically turn o</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="subprocess" svg-id="a1" svg-label="Task 1werreret45454545454545454545454545fgfgfg" svg-type="call" svg-subtype="call"><parameters><label>Task 1werreret45454545454545454545454545fgfgfg</label><color>#deddda</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a9" endpoint="" svg-id="a9" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a8" endpoint="" svg-id="a8" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a7" endpoint="" svg-id="a7" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a6" endpoint="" svg-id="a6" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" endpoint="" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><stop xmlns="http://cpee.org/ns/description/1.0" svg-id="stop_0" svg-type="stop" svg-subtype="stop"/>
+        <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="fff" svg-type="call" svg-subtype="call"><parameters><label>fff</label><color>#e4c3e4</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:6688/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a4" endpoint="subprocess" svg-id="a4" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call>
+        <call id="a3" endpoint="subprocess" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:3000/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-17T02:33:37.859Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: d8b5976a-6b14-4a62-a563-a20c312c5fc6
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>k – Exploring Strategy | | Us: 0.38 | h: e516b688 c) What does the Porter’s Five Forces Framework try to identify in terms of competitive forces? The profitability of an industry  ×   The</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="timeout" svg-id="a1" svg-label="Task 1" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Task 1</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>2</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a1,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a2" endpoint="timeouts" svg-id="a2" svg-label="Resource Synchronisation" svg-type="call" svg-subtype="call"><parameters><label>Resource Synchronisation</label><color>#ffffcc</color><dbpm_type>task</dbpm_type></parameters></call>
+        <call id="a3" endpoint="timeout" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Task 3</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>4</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a3,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-17T02:33:56.948Z'
+event: model_updated_manual_update_graph_changed
+data:
+  id: 26b6393d-7701-4dfa-b5d5-d12da5aeb356
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>ure field in the attendance check list.  Applied Strategy and Organization  Exam:   WI001111 / Endterm   Date:   Thursday 23 rd   February, 2023  Examiner:   Prof. Dr. Isabell M. Welpe   Time:   14:15 – 15:45 I P 1   P 2   P 3   P 4   P 5   P 6   P 7   P 8   P 9   P 10   P 11   P 12  Working instructions  • This exam consists of   28 pages   with a total of   12 problems . Please make sure now that you received a complete copy of the exam. • The total amount of achievable credits in this exam is 90 credits. • Detaching pages from the exam is prohibited. • Allowed resources:  –   one   analog dictionary   English   ↔   native language • Do not write with red or green colors nor use pencils. • Physically turn o s outside of the checkboxes. •   If you fail to follow the instruction on how to mark a box you will be awarded 0 points for the given question. • DO NOT mark the exam outside of the checkboxes. • DO NOT circle around checkboxes. • If you want to correct a solution do so as described. Left room from   to   /   Early submission at – Page 1 / 28 –
+    Sample Solution  Mark corre</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="subprocess" svg-id="a1" svg-label="Task 1" svg-type="call" svg-subtype="call"><parameters><label>Task 1</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a4" endpoint="" svg-id="a4" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call>
+        <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="Resource Synchronisation" svg-type="call" svg-subtype="call"><parameters><label>Resource Synchronisation</label><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>035bde3e-8950-4705-865d-a67ed4ef35e3</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:3000/data/models/035bde3e-8950-4705-865d-a67ed4ef35e3.xml</url></arguments></parameters></call>
+        <call id="a3" endpoint="" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color>#d8f0dd</color><dbpm_type>task</dbpm_type></parameters></call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-17T02:34:08.421Z'
+event: model_updated_manual_update_graph_changed
+data:
+  id: 42d76137-7e23-4240-9c83-063937f4f326
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>ut market segments is correct? Market segments are groups of customers with different needs th</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="bookAir" svg-id="a1" svg-label="Book Airline 1" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <label>Book Airline 1</label>
+            <method>:post</method>
+            <arguments>
+              <from>!data.from</from>
+              <to>!data.to</to>
+              <persons>!data.persons</persons>
+            </arguments>
+          </parameters>
+          <code>
+            <prepare/>
+            <finalize output="result">data.airline = result.value('id')
+    data.costs += result.value('costs').to_f
+    status.update 1, 'Hotel'</finalize>
+            <update output="result"/>
+            <rescue output="result"/>
+          </code>
+          <annotations>
+            <_timing>
+              <_timing_weight/>
+              <_timing_avg/>
+              <explanations/>
+            </_timing>
+            <_shifting>
+              <_shifting_type>Duration</_shifting_type>
+            </_shifting>
+            <_context_data_analysis>
+              <probes/>
+              <ips/>
+            </_context_data_analysis>
+            <report>
+              <url/>
+            </report>
+            <_notes>
+              <_notes_general/>
+            </_notes>
+          </annotations>
+          <documentation>
+            <input/>
+            <output/>
+            <implementation>
+              <description/>
+            </implementation>
+            <code>
+              <description/>
+            </code>
+          </documentation>
+        </call><call xmlns="http://cpee.org/ns/description/1.0" id="a6" endpoint="" svg-id="a6" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" endpoint="" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call>
+        <parallel wait="-1" cancel="last" svg-id="parallel_0" svg-type="parallel" svg-subtype="parallel_start">
+          <loop mode="pre_test" condition="data.persons &gt; 0" svg-id="loop_0" svg-label="data.persons &gt; 0" svg-type="loop" svg-subtype="loop_head">
+            <parallel_branch svg-id="parallel_branch_0" svg-type="parallel_branch" svg-subtype="parallel_branch_event">
+              <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="Book Hotel" svg-type="call" svg-subtype="call"><parameters><label>Book Hotel</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>b91d2def-24fc-4d5c-8529-c7ccbd1c50b9</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:3000/data/models/b91d2def-24fc-4d5c-8529-c7ccbd1c50b9.xml</url></arguments></parameters></call>
+            </parallel_branch>
+            <manipulate id="a3" svg-id="a3" svg-type="manipulate" svg-subtype="manipulate">data.persons -= 1</manipulate>
+          </loop>
+        </parallel>
+        <choose mode="exclusive" svg-id="choose_0" svg-type="choose" svg-subtype="choose_exclusive">
+          <alternative condition="data.costs &gt; 700" svg-id="alternative_0" svg-label="data.costs &gt; 700" svg-type="alternative" svg-subtype="alternative">
+            <_probability>
+              <_probability_min/>
+              <_probability_max/>
+              <_probability_avg/>
+            </_probability>
+            <call id="a4" endpoint="subprocess" svg-id="a4" svg-label="Approve Hotel" svg-type="call" svg-subtype="call"><parameters><label>Approve Hotel</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call>
+          </alternative>
+          <otherwise svg-id="otherwise_0" svg-type="otherwise" svg-subtype="otherwise"/>
+        </choose>
+      </description>
+    </description>
+---
+timestamp: '2026-02-17T02:34:09.954Z'
+event: model_updated_manual_update_graph_changed
+data:
+  id: 42d76137-7e23-4240-9c83-063937f4f326
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>ut market segments is correct? Market segments are groups of customers with different needs th</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="bookAir" svg-id="a1" svg-label="Book Airline 1" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <label>Book Airline 1</label>
+            <method>:post</method>
+            <arguments>
+              <from>!data.from</from>
+              <to>!data.to</to>
+              <persons>!data.persons</persons>
+            </arguments>
+          </parameters>
+          <code>
+            <prepare/>
+            <finalize output="result">data.airline = result.value('id')
+    data.costs += result.value('costs').to_f
+    status.update 1, 'Hotel'</finalize>
+            <update output="result"/>
+            <rescue output="result"/>
+          </code>
+          <annotations>
+            <_timing>
+              <_timing_weight/>
+              <_timing_avg/>
+              <explanations/>
+            </_timing>
+            <_shifting>
+              <_shifting_type>Duration</_shifting_type>
+            </_shifting>
+            <_context_data_analysis>
+              <probes/>
+              <ips/>
+            </_context_data_analysis>
+            <report>
+              <url/>
+            </report>
+            <_notes>
+              <_notes_general/>
+            </_notes>
+          </annotations>
+          <documentation>
+            <input/>
+            <output/>
+            <implementation>
+              <description/>
+            </implementation>
+            <code>
+              <description/>
+            </code>
+          </documentation>
+        </call><call xmlns="http://cpee.org/ns/description/1.0" id="a7" endpoint="" svg-id="a7" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a6" endpoint="" svg-id="a6" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" endpoint="" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call>
+        <parallel wait="-1" cancel="last" svg-id="parallel_0" svg-type="parallel" svg-subtype="parallel_start">
+          <loop mode="pre_test" condition="data.persons &gt; 0" svg-id="loop_0" svg-label="data.persons &gt; 0" svg-type="loop" svg-subtype="loop_head">
+            <parallel_branch svg-id="parallel_branch_0" svg-type="parallel_branch" svg-subtype="parallel_branch_event">
+              <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="Book Hotel" svg-type="call" svg-subtype="call"><parameters><label>Book Hotel</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>b91d2def-24fc-4d5c-8529-c7ccbd1c50b9</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:3000/data/models/b91d2def-24fc-4d5c-8529-c7ccbd1c50b9.xml</url></arguments></parameters></call>
+            </parallel_branch>
+            <manipulate id="a3" svg-id="a3" svg-type="manipulate" svg-subtype="manipulate">data.persons -= 1</manipulate>
+          </loop>
+        </parallel>
+        <choose mode="exclusive" svg-id="choose_0" svg-type="choose" svg-subtype="choose_exclusive">
+          <alternative condition="data.costs &gt; 700" svg-id="alternative_0" svg-label="data.costs &gt; 700" svg-type="alternative" svg-subtype="alternative">
+            <_probability>
+              <_probability_min/>
+              <_probability_max/>
+              <_probability_avg/>
+            </_probability>
+            <call id="a4" endpoint="subprocess" svg-id="a4" svg-label="Approve Hotel" svg-type="call" svg-subtype="call"><parameters><label>Approve Hotel</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call>
+          </alternative>
+          <otherwise svg-id="otherwise_0" svg-type="otherwise" svg-subtype="otherwise"/>
+        </choose>
+      </description>
+    </description>
+---
+timestamp: '2026-02-17T02:34:11.718Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: 42d76137-7e23-4240-9c83-063937f4f326
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>ut market segments is correct? Market segments are groups of customers with different needs th</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="bookAir" svg-id="a1" svg-label="Book Airline 1" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <label>Book Airline 1</label>
+            <method>:post</method>
+            <arguments>
+              <from>!data.from</from>
+              <to>!data.to</to>
+              <persons>!data.persons</persons>
+            </arguments>
+          </parameters>
+          <code>
+            <prepare/>
+            <finalize output="result">data.airline = result.value('id')
+    data.costs += result.value('costs').to_f
+    status.update 1, 'Hotel'</finalize>
+            <update output="result"/>
+            <rescue output="result"/>
+          </code>
+          <annotations>
+            <_timing>
+              <_timing_weight/>
+              <_timing_avg/>
+              <explanations/>
+            </_timing>
+            <_shifting>
+              <_shifting_type>Duration</_shifting_type>
+            </_shifting>
+            <_context_data_analysis>
+              <probes/>
+              <ips/>
+            </_context_data_analysis>
+            <report>
+              <url/>
+            </report>
+            <_notes>
+              <_notes_general/>
+            </_notes>
+          </annotations>
+          <documentation>
+            <input/>
+            <output/>
+            <implementation>
+              <description/>
+            </implementation>
+            <code>
+              <description/>
+            </code>
+          </documentation>
+        </call><call id="a7" endpoint="" svg-id="a7" xmlns="http://cpee.org/ns/description/1.0" svg-type="call" svg-subtype="call"><parameters><label/><color>#e4c3e4</color><dbpm_type>task</dbpm_type></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a6" endpoint="" svg-id="a6" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" endpoint="" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call>
+        <parallel wait="-1" cancel="last" svg-id="parallel_0" svg-type="parallel" svg-subtype="parallel_start">
+          <loop mode="pre_test" condition="data.persons &gt; 0" svg-id="loop_0" svg-label="data.persons &gt; 0" svg-type="loop" svg-subtype="loop_head">
+            <parallel_branch svg-id="parallel_branch_0" svg-type="parallel_branch" svg-subtype="parallel_branch_event">
+              <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="Book Hotel" svg-type="call" svg-subtype="call"><parameters><label>Book Hotel</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>b91d2def-24fc-4d5c-8529-c7ccbd1c50b9</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:3000/data/models/b91d2def-24fc-4d5c-8529-c7ccbd1c50b9.xml</url></arguments></parameters></call>
+            </parallel_branch>
+            <manipulate id="a3" svg-id="a3" svg-type="manipulate" svg-subtype="manipulate">data.persons -= 1</manipulate>
+          </loop>
+        </parallel>
+        <choose mode="exclusive" svg-id="choose_0" svg-type="choose" svg-subtype="choose_exclusive">
+          <alternative condition="data.costs &gt; 700" svg-id="alternative_0" svg-label="data.costs &gt; 700" svg-type="alternative" svg-subtype="alternative">
+            <_probability>
+              <_probability_min/>
+              <_probability_max/>
+              <_probability_avg/>
+            </_probability>
+            <call id="a4" endpoint="subprocess" svg-id="a4" svg-label="Approve Hotel" svg-type="call" svg-subtype="call"><parameters><label>Approve Hotel</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call>
+          </alternative>
+          <otherwise svg-id="otherwise_0" svg-type="otherwise" svg-subtype="otherwise"/>
+        </choose>
+      </description>
+    </description>
+---
+timestamp: '2026-02-17T02:35:10.555Z'
+event: model_updated_manual_update_graph_changed
+data:
+  id: fe55fb30-a850-47f6-9891-287670487fb4
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>xploring Strategy | | Us: 0.20 | h: ba44a567 d) According to Levi Strauss Scenarios for the global f</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="worklist" svg-id="a1" svg-label="OK OR NOT OK" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <label>OK OR NOT OK</label>
+            <arguments>
+              <orgmodel>https://cpee.org/~demo/orgviz/organisation_informatik.xml</orgmodel>
+              <form>https://cpee.org/~demo/form/form-f.html</form>
+              <role>Assistant</role>
+              <priority>42</priority>
+              <handling>single</handling>
+              <restrictions/>
+              <data>
+                <schaden>10000</schaden>
+                <text>destroyed</text>
+              </data>
+            </arguments>
+          </parameters>
+          <code>
+            <prepare/>
+            <finalize output="result">data.bla = result</finalize>
+            <update output="result"/>
+            <rescue output="result"/>
+          </code>
+          <annotations>
+            <_generic/>
+            <_timing>
+              <_timing_weight/>
+              <_timing_avg/>
+              <explanations/>
+            </_timing>
+            <_shifting>
+              <_shifting_type>Duration</_shifting_type>
+            </_shifting>
+            <_context_data_analysis>
+              <probes/>
+              <ips/>
+            </_context_data_analysis>
+            <report>
+              <url/>
+            </report>
+            <_notes>
+              <_notes_general/>
+            </_notes>
+          </annotations>
+          <documentation>
+            <input/>
+            <output/>
+            <implementation>
+              <description/>
+            </implementation>
+            <code>
+              <description/>
+            </code>
+          </documentation>
+        </call><call xmlns="http://cpee.org/ns/description/1.0" id="a2" endpoint="" svg-id="a2" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-17T02:35:14.507Z'
+event: model_updated_manual_update_graph_changed
+data:
+  id: fe55fb30-a850-47f6-9891-287670487fb4
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>xploring Strategy | | Us: 0.20 | h: ba44a567 d) According to Levi Strauss Scenarios for the global f</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="worklist" svg-id="a1" svg-label="OK OR NOT OK" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <label>OK OR NOT OK</label>
+            <arguments>
+              <orgmodel>https://cpee.org/~demo/orgviz/organisation_informatik.xml</orgmodel>
+              <form>https://cpee.org/~demo/form/form-f.html</form>
+              <role>Assistant</role>
+              <priority>42</priority>
+              <handling>single</handling>
+              <restrictions/>
+              <data>
+                <schaden>10000</schaden>
+                <text>destroyed</text>
+              </data>
+            </arguments>
+          </parameters>
+          <code>
+            <prepare/>
+            <finalize output="result">data.bla = result</finalize>
+            <update output="result"/>
+            <rescue output="result"/>
+          </code>
+          <annotations>
+            <_generic/>
+            <_timing>
+              <_timing_weight/>
+              <_timing_avg/>
+              <explanations/>
+            </_timing>
+            <_shifting>
+              <_shifting_type>Duration</_shifting_type>
+            </_shifting>
+            <_context_data_analysis>
+              <probes/>
+              <ips/>
+            </_context_data_analysis>
+            <report>
+              <url/>
+            </report>
+            <_notes>
+              <_notes_general/>
+            </_notes>
+          </annotations>
+          <documentation>
+            <input/>
+            <output/>
+            <implementation>
+              <description/>
+            </implementation>
+            <code>
+              <description/>
+            </code>
+          </documentation>
+        </call><call xmlns="http://cpee.org/ns/description/1.0" id="a3" endpoint="" svg-id="a3" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a2" endpoint="" svg-id="a2" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call>
+      </description>
+    </description>
