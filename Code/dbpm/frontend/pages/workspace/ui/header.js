@@ -1,13 +1,15 @@
-// Project UI Module
+import { createUI } from "../../../shared/util/ui.js";
 import { projectsAPI } from "../../../api/index.js";
 import {
   getProjectIdFromURL,
   getProjectLogURL,
 } from "../../../shared/util/url.js";
-import { default as setProjectNameEditor } from "../../../shared/ui/inlineEditor.js";
+import { default as setProjectNameEditor } from "../../../shared/widgets/inlineEditor.js";
 
 const projectId = getProjectIdFromURL();
 const $projectName = $("#projectName");
+const $projectLogLink = $("#logLink");
+const $projectStatsLink = $("#statsLink");
 
 function setProjectName() {
   projectsAPI.get(projectId).then((project) => {
@@ -15,17 +17,19 @@ function setProjectName() {
   });
 }
 
-(() => {
-  setProjectName();
-  setProjectNameEditor({
-    $scope: $projectName.parent(),
-    trigger: "click",
-    autoGrow: true,
-    onSave: (name) => {
-      console.log("Saved:", name);
-      projectsAPI.update(projectId, { name });
-    },
-  });
-  $("#logLink").attr("href", getProjectLogURL(projectId));
-  $("#statsLink").attr("href", "stats.html" + window.location.search);
-})();
+createUI({
+  setup: () => {
+    setProjectName();
+    setProjectNameEditor({
+      $scope: $projectName.parent(),
+      trigger: "click",
+      autoGrow: true,
+      onSave: (name) => {
+        console.log("Saved:", name);
+        projectsAPI.update(projectId, { name });
+      },
+    });
+    $projectLogLink.attr("href", getProjectLogURL(projectId));
+    $projectStatsLink.attr("href", "stats.html" + window.location.search);
+  },
+});

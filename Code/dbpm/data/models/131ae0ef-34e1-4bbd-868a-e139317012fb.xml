@@ -15,7 +15,7 @@
             <_probability_avg/>
           </_probability>
           <parallel_branch svg-id="parallel_branch_0" svg-type="parallel_branch" svg-subtype="parallel_branch_event">
-            <call id="a1" endpoint="subprocess" svg-id="a1" svg-label="Start" svg-type="call" svg-subtype="call"><parameters><label>Start</label><color>#ded0c5</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>9f288d37-ae5b-4b87-bc9d-9159abea64aa</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:3000/data/models/9f288d37-ae5b-4b87-bc9d-9159abea64aa.xml</url></arguments></parameters></call>
+            <call id="a1" endpoint="subprocess" svg-id="a1" svg-label="Start" svg-type="call" svg-subtype="call"><parameters><label>Start</label><color>#ded0c5</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:6688/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call>
           </parallel_branch>
           <manipulate id="a4" label="" svg-id="a4" svg-type="manipulate" svg-subtype="manipulate">data.i += 1</manipulate>
         </loop>

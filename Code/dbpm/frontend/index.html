@@ -225,7 +225,7 @@
 
 </head>
 <body is="x-ui-">
-    <div class="home-intro">
+    <div class="intro">
         <h1>Document-Based Process Modeller</h1>
         <button id="btnCreate">
             <span class="btn-primary__icon" aria-hidden="true">+</span>
@@ -235,7 +235,7 @@
             <a class="tutorial-link" href="#" target="_blank" rel="noreferrer">Quick Introduction Video</a>
         </div>
     </div>
-    <ui-rest>
+    <ui-rest class="main">
         <div class="page-rail">
             <ui-tabbar>
                 <ui-before></ui-before>
@@ -302,7 +302,7 @@
             </ui-content>
         </div>
     </ui-rest>
-    <div class="home-footer">
+    <div class="footer">
         <div class="page-rail">
             <ui-divider class="light"></ui-divider>
             <ui-bar>
@@ -313,13 +313,13 @@
         </div>
     </div>
     <dialog id="projectCreationDialog">
-        <form id="form" method="dialog">
-            <h3>New Project</h3>
+         <h3>New Project</h3>
+        <form method="dialog">
             <label for="name">Name</label>
             <input id="name" type="text" autocomplete="off" />
             <div class="error" id="err"></div>
             <ui-bar>
-                <div class="right">
+                <div class="right action-group">
                     <button type="button" id="cancel">Cancel</button>
                     <button type="submit" id="save">Create</button>
                 </div>
@@ -340,7 +340,7 @@
         subs: {
             projects: [], // e.g. ["active 10 · deleted 2"]
             documents: ["avg words: 131"], // optional; remove if you don't want averages
-            models: ["avg selected words: 43", "prompt time: 2.1s"], // placeholder; you said you'll decide wording later
+            models: ["avg selected words: 43", "prompt used times: 2s"], // placeholder; you said you'll decide wording later
         },
         // Distribution as percentages; should sum to ~100.
         // You can provide either {label, pct} or raw counts and normalize yourself later.

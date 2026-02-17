@@ -39,12 +39,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Untitled 1.md",
+                "file": "01.1 Motivation.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Untitled 1"
+              "title": "01.1 Motivation"
             }
           }
         ],
@@ -168,13 +168,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Untitled 1.md",
+                "file": "01.1 Motivation.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of Untitled 1"
+              "title": "Outline of 01.1 Motivation"
             }
           },
           {
@@ -209,8 +209,13 @@
       "card-board:CardBoard": false
     }
   },
-  "active": "2e8da463091eb94c",
+  "active": "9b56cfd6d5839b01",
   "lastOpenFiles": [
+    "Code/dbpm/frontend/shared/widgets/inlineEditor.js",
+    "Code/dbpm/frontend/shared/widgets",
+    "Code/dbpm/frontend/shared/util/ui.js",
+    "Code/dbpm/data/logs/08e6422c-56fd-49b3-9fc8-1254602495d9.yaml",
+    "Untitled 1.md",
     "Code/dbpm/frontend/pages/workspace/workflow/wf_endpoints/endpoint-loader.js",
     "Code/dbpm/frontend/pages/workspace/workflow/endpoint-loader.js",
     "Code/UI test/copytest.html",
@@ -218,11 +223,6 @@
     "Code/dbpm/data/logs/0f2d6b4c-aa4a-4e53-a8b4-3de8a744337d.yaml",
     "Code/dbpm/data/logs/8e6b7393-3090-441e-88d9-e769c51dbdfc.yaml",
     "Code/dbpm/data/logs/0cdd356d-fa85-48ee-b982-7ac5d13c6519.yaml",
-    "Code/dbpm/frontend/pages/home/ui/projectCreation.ui.js",
-    "Code/dbpm/frontend/pages/home/ui/projectCreationDialog.ui.js",
-    "Code/dbpm/frontend/pages/home/ui/index.js",
-    "Untitled 1.md",
-    "Code/dbpm/frontend/shared/ui/inlineEditor.js",
     "Code/dbpm/frontend/pages/workspace/workflow/wf_endpoints/subprocess/symbol.svg",
     "Code/dbpm/frontend/pages/workspace/workflow/endpoints/subprocess/symbol.svg",
     "Code/dbpm/frontend/pages/workspace/workflow/subprocess/symbol.svg",

@@ -34,7 +34,6 @@
 }
 html {
   box-sizing: border-box;
-  /* -webkit-font-smoothing: antialiased; */
 }
 *,
 *::before,
@@ -67,13 +66,10 @@ body {
   /* background-color: #f4f5f7; */
 }
 
-*[is="x-ui-"] ui-tabbar > ui-tab.inactive,
-ui-tabbed > ui-tabbar > ui-tab.switch {
-  background-color: var(--x-tab-inactive-color);
-}
 
 input {
   border-color: var(--x-ui-border-color);
+  /* width: 100%; */
 }
 
 .clickable {
@@ -165,6 +161,7 @@ ui-bar > .right {
 ui-bar > .middle {
   margin: 0 auto;
 }
+
 .action-group {
   display: flex;
   gap: 1em;
@@ -183,9 +180,7 @@ button.action-btn {
   background: transparent;
   border-radius: 6px;
   cursor: pointer;
-
   /* transition: background 0.15s ease; */
-
   /* cursor: pointer; */
 }
 
@@ -329,10 +324,10 @@ div.breadcrumb span.crumb:not(:last-child):hover {
   color: var(--x-ui-text-secondary-color);
   text-decoration: underline;
 }
-
+/* 
 form input {
   width: 45em !important;
-}
+} */
 
 ui-behind {
   text-transform: capitalize;

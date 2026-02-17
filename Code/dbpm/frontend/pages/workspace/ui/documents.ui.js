@@ -1,16 +1,11 @@
+import { createUI } from "../../../shared/util/ui.js";
 import { workspaceStore, documentsStore } from "../store/index.js";
 import { workspaceService, documentService } from "../services/index.js";
 import { $cloneTemplate } from "../../../shared/util/dom.js";
-import initInlineEditor from "../../../shared/ui/inlineEditor.js";
+import initInlineEditor from "../../../shared/widgets/inlineEditor.js";
+
 const $documentsList = $("#documentsList");
-const documentNameEditor = initInlineEditor({
-  $scope: $documentsList,
-  onSave: (name, $view) => {
-    const documentId = $view.closest("li").data("docId");
-    console.log("Saving document name:", name, "for documentId:", documentId);
-    // documentService.updateDocument(documentId, { name });
-  },
-});
+
 const getFileContentInHTML = async (file) => {
   let fileContent = "";
   if (file.type === "application/pdf") {
@@ -64,76 +59,102 @@ const highlightActiveDocumentItem = (activeDocumentId) => {
     }
   });
 };
-$("#documentsInput").on("change", async (event) => {
-  event.preventDefault();
-  event.stopPropagation();
-  for (const file of event.target.files) {
-    try {
-      const content = await getFileContentInHTML(file);
-      const name = file.name;
-      documentService.uploadDocument({ name, content });
-    } catch (error) {
-      console.error("Error processing file:", error);
-    }
-  }
-});
-$documentsList.on("mousedown", "li", (e) => {
-  // const $li = $(e.currentTarget);
-  // const docId = $li.data("docId");
-  const docId = e.currentTarget.dataset.docId;
-  workspaceService.activateDocumentById(docId);
-});
-$documentsList.on("mousedown", "li > :last-child", (e) => {
-  e.stopPropagation();
-  // const $td = ;
-  const $documentItem = $(e.currentTarget).parent();
-  const documentId = $documentItem.data("docId");
-  const $documentNameView = $documentItem.find(".inline-editor__view");
 
-  console.log("Actions clicked for documentId:", documentId);
-  const menu = {};
-  menu[""] = [
-    {
-      label: "Rename Document",
-      function_call: ($documentNameView) => {
-        setTimeout(() => documentNameEditor.startEdit($documentNameView), 0);
+createUI({
+  setup: () => {
+    const documentNameEditor = initInlineEditor({
+      $scope: $documentsList,
+      onSave: (name, $view) => {
+        const documentId = $view.closest("li").data("docId");
+        console.log(
+          "Saving document name:",
+          name,
+          "for documentId:",
+          documentId,
+        );
+        // documentService.updateDocument(documentId, { name });
       },
-      text_icon: undefined,
-      type: undefined,
-      params: [$documentNameView],
-    },
+    });
+    return { documentNameEditor };
+  },
+  bindListeners: ({ documentNameEditor }) => {
+    $("#documentsInput").on("change", async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      for (const file of event.target.files) {
+        try {
+          const content = await getFileContentInHTML(file);
+          const name = file.name;
+          documentService.uploadDocument({ name, content });
+        } catch (error) {
+          console.error("Error processing file:", error);
+        }
+      }
+    });
+    $documentsList.on("mousedown", "li", (e) => {
+      // const $li = $(e.currentTarget);
+      // const docId = $li.data("docId");
+      const docId = e.currentTarget.dataset.docId;
+      workspaceService.activateDocumentById(docId);
+    });
+    $documentsList.on("mousedown", "li > :last-child", (e) => {
+      e.stopPropagation();
+      // const $td = ;
+      const $documentItem = $(e.currentTarget).parent();
+      const documentId = $documentItem.data("docId");
+      const $documentNameView = $documentItem.find(".inline-editor__view");
 
-    {
-      label: "Delete Document",
-      function_call: () => {},
-      text_icon: undefined,
-      type: undefined,
-      params: [documentId],
-    },
-  ];
+      console.log("Actions clicked for documentId:", documentId);
+      const menu = {};
+      menu[""] = [
+        {
+          label: "Rename Document",
+          function_call: ($documentNameView) => {
+            setTimeout(
+              () => documentNameEditor.startEdit($documentNameView),
+              0,
+            );
+          },
+          text_icon: undefined,
+          type: undefined,
+          params: [$documentNameView],
+        },
 
-  new CustomMenu(e).contextmenu(menu);
-});
-workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
-  switch (key) {
-    case "activeDocumentId":
-      highlightActiveDocumentItem(newValue);
-      break;
-    default:
-      break;
-  }
-});
+        {
+          label: "Delete Document",
+          function_call: () => {},
+          text_icon: undefined,
+          type: undefined,
+          params: [documentId],
+        },
+      ];
 
-documentsStore.subscribe((state, { key, operation, id, value }) => {
-  switch (operation) {
-    case "init":
-      value.forEach((doc) => renderDocumentItem(doc));
-      break;
-    case "add":
-      renderDocumentItem(state.documents.find((doc) => doc.id === id));
-      break;
-    case "delete":
-      removeDocumentItem(id);
-      break;
-  }
+      new CustomMenu(e).contextmenu(menu);
+    });
+  },
+  subscribeStores: () => {
+    workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
+      switch (key) {
+        case "activeDocumentId":
+          highlightActiveDocumentItem(newValue);
+          break;
+        default:
+          break;
+      }
+    });
+
+    documentsStore.subscribe((state, { key, operation, id, value }) => {
+      switch (operation) {
+        case "init":
+          value.forEach((doc) => renderDocumentItem(doc));
+          break;
+        case "add":
+          renderDocumentItem(state.documents.find((doc) => doc.id === id));
+          break;
+        case "delete":
+          removeDocumentItem(id);
+          break;
+      }
+    });
+  },
 });

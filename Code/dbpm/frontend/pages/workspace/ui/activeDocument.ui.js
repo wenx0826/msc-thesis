@@ -1,4 +1,4 @@
-// Active Document UI Module
+import { createUI } from "../../../shared/util/ui.js";
 import {
   workspaceStore,
   activeDocumentStore,
@@ -350,204 +350,91 @@ const handleTextSelection = () => {
   selection.removeAllRanges();
 };
 
-export function initActiveDocumentUI() {
-  // Set up event handlers
-  $selectionColorForm.on("input", (e) => {
-    console.log("Selection color input.");
-    console.log(e.target.value);
-    const newColor = e.target.value;
-    if (selectedSelection) {
-      if (!selectedSelection.modelId) {
-        activeDocumentStore.updateTemporarySelectionColor(
-          selectedSelection.selectionId,
-          newColor,
-        );
-      } else {
-        activeDocumentStore.updateActiveModelTraceSelectionColor(
-          selectedSelection.selectionId,
-          newColor,
-        );
-        modelService.updateActiveModelTrace();
-      }
-    }
-  });
-  $deleteSelectionButton.on("click", () => {
-    if (selectedSelection) {
-      const { selectionId, modelId } = selectedSelection;
-      if (!modelId) {
-        activeDocumentStore.removeTemporarySelection(selectionId);
-      } else {
-        // todo change it to rerender after trace update
-        activeDocumentStore.removeActiveModelTraceSelectionById(selectionId);
-        modelService.updateActiveModel(
-          MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
-        );
-      }
-      setSelectedSelection(null);
-    }
-  });
-
-  $documentContent.on("mouseup", handleTextSelection);
-
-  $addSelectionsButton.on("click", () => {
-    modelService.updateActiveModel(MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS);
-  });
-
-  $generateButton.on("click", async () => {
-    modelService.generateModelBySelections();
-  });
-
-  $viewerWrap.on("scroll", rerenderOverlayLayers);
-  $("#columnResizehandle1").on("dragcolumnmove", (e) => {
-    // e.stopPropagation();
-    rerenderOverlayLayers();
-  });
-  $(window).on("resize", rerenderOverlayLayers);
-
-  activeDocumentStore.subscribe((state, { key, operation, ...payload }) => {
-    if (operation) {
-      const { value } = payload;
-      switch (key) {
-        case "traces":
-          switch (operation) {
-            case "init":
-              rerenderOverlayLayers();
-              break;
-            case "add":
-              renderTrace(value);
-              break;
-            default:
-              break;
-          }
-          break;
-        case "activeModelTrace.selections":
-          switch (operation) {
-            case "update":
-              removeRenderedSelection(value);
-              renderSelection(value, workspaceStore.getActiveModelId());
-              break;
-            case "remove":
-              removeRenderedSelection(value);
-              break;
-            default:
-              break;
-          }
-          break;
-        case "temporarySelections":
-          switch (operation) {
-            case "add":
-              renderSelection(value);
-              break;
-            case "update":
-              removeRenderedSelection(value);
-              renderSelection(value);
-              break;
-            case "remove":
-              removeRenderedSelection(value);
-              break;
-            default:
-              break;
-          }
-          break;
-        default:
-          break;
-      }
-    } else {
-      const { oldValue, newValue } = payload;
-      switch (key) {
-        case "status":
-          if (newValue === "loading") {
-            $documentContent.text("Loading document...");
-          }
-          break;
-        case "htmlContent":
-          if (newValue) {
-            $documentContent.html(newValue || "");
-          } else {
-            clearDocumentViewer();
-          }
-          break;
-        case "activeModelTrace":
-          if (newValue) {
-            removeRenderedTrace(newValue);
-            renderTrace(newValue);
-            const firstSelection = newValue.selections[0];
-            if (firstSelection) {
-              scrollToRange(newValue.selections[0].range);
-            }
-          }
-          if (oldValue && oldValue.modelId !== newValue?.modelId) {
-            unhighlightModelSelections(oldValue.modelId);
-          }
-          break;
-        case "temporarySelections":
-          oldValue.forEach((selection) => {
-            removeRenderedSelection(selection);
-          });
-          break;
-        case "hasSelectionChanged":
-          if (newValue) {
-            $generateButton.prop("disabled", false);
-            $addSelectionsButton.prop("disabled", false);
-          } else {
-            $generateButton.prop("disabled", true);
-          }
-          break;
-        default:
-          break;
-      }
-    }
-  });
-
-  workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
-    switch (key) {
-      case "activeModelId":
-        if (newValue) {
-          $generateButton.text("Regenerate Model");
-          $generateButton.prop(
-            "disabled",
-            !activeDocumentStore.getHasSelectionChanged(),
-          );
-          $addSelectionsButton.show();
-          $addSelectionsButton.prop(
-            "disabled",
-            !activeDocumentStore.getHasSelectionChanged(),
+createUI({
+  setup: () => {
+    // Initial UI setup if needed
+  },
+  bindListeners: () => {
+    $selectionColorForm.on("input", (e) => {
+      console.log("Selection color input.");
+      console.log(e.target.value);
+      const newColor = e.target.value;
+      if (selectedSelection) {
+        if (!selectedSelection.modelId) {
+          activeDocumentStore.updateTemporarySelectionColor(
+            selectedSelection.selectionId,
+            newColor,
           );
         } else {
-          $generateButton.text("Generate Model");
-          $addSelectionsButton.hide();
+          activeDocumentStore.updateActiveModelTraceSelectionColor(
+            selectedSelection.selectionId,
+            newColor,
+          );
+          modelService.updateActiveModelTrace();
         }
-        break;
-      default:
-        break;
-    }
-  });
-  $modelTags.on("click", ".tag-span", (event) => {
-    // const $target = $(event.currentTarget);
-    event.stopPropagation();
-    const modelId = event.currentTarget.dataset.modelId;
-    workspaceService.toggleModelSelection(modelId);
-  });
-  $modelTags.on("mouseenter", ".tag-span", (event) => {
-    event.stopPropagation();
-    // const $target = $(event.currentTarget); // OLD: Unused
-    const element = event.currentTarget;
-    const modelId = element.dataset.modelId;
-    console.log("Hovering over model tag:", modelId);
+      }
+    });
+    $deleteSelectionButton.on("click", () => {
+      if (selectedSelection) {
+        const { selectionId, modelId } = selectedSelection;
+        if (!modelId) {
+          activeDocumentStore.removeTemporarySelection(selectionId);
+        } else {
+          // todo change it to rerender after trace update
+          activeDocumentStore.removeActiveModelTraceSelectionById(selectionId);
+          modelService.updateActiveModel(
+            MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
+          );
+        }
+        setSelectedSelection(null);
+      }
+    });
 
-    // ✨ NEW: Pass source identifier to prevent conflicts with other hover sources
-    workspaceStore.setModelPopoverParams(
-      {
-        modelId,
-        anchor: {
-          type: "element",
-          element,
+    $documentContent.on("mouseup", handleTextSelection);
+
+    $addSelectionsButton.on("click", () => {
+      modelService.updateActiveModel(
+        MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
+      );
+    });
+
+    $generateButton.on("click", async () => {
+      modelService.generateModelBySelections();
+    });
+
+    $viewerWrap.on("scroll", rerenderOverlayLayers);
+    $("#columnResizehandle1").on("dragcolumnmove", (e) => {
+      // e.stopPropagation();
+      rerenderOverlayLayers();
+    });
+    $(window).on("resize", rerenderOverlayLayers);
+    // Event listeners are set up in the initActiveDocumentUI function
+    $modelTags.on("click", ".tag-span", (event) => {
+      // const $target = $(event.currentTarget);
+      event.stopPropagation();
+      const modelId = event.currentTarget.dataset.modelId;
+      workspaceService.toggleModelSelection(modelId);
+    });
+    $modelTags.on("mouseenter", ".tag-span", (event) => {
+      event.stopPropagation();
+      // const $target = $(event.currentTarget); // OLD: Unused
+      const element = event.currentTarget;
+      const modelId = element.dataset.modelId;
+      console.log("Hovering over model tag:", modelId);
+
+      // ✨ NEW: Pass source identifier to prevent conflicts with other hover sources
+      workspaceStore.setModelPopoverParams(
+        {
+          modelId,
+          anchor: {
+            type: "element",
+            element,
+          },
         },
-      },
-      "document-tag",
-    ); // ✨ NEW: Source tracking for conflict prevention
+        "document-tag",
+      ); // ✨ NEW: Source tracking for conflict prevention
 
-    /* OLD CODE - No source tracking:
+      /* OLD CODE - No source tracking:
     workspaceStore.setModelPopoverParams({
       modelId,
       anchor: {
@@ -556,18 +443,139 @@ export function initActiveDocumentUI() {
       },
     });
     */
-  });
-  $modelTags.on("mouseleave", ".tag-span", (event) => {
-    event.stopPropagation();
-    console.log(
-      "Mouse leaving model tag:",
-      event.currentTarget.dataset.modelId,
-    );
-    // ✨ NEW: Pass source identifier to ensure only the same source can close
-    workspaceStore.requestCloseModelPopover("document-tag");
+    });
+    $modelTags.on("mouseleave", ".tag-span", (event) => {
+      event.stopPropagation();
+      console.log(
+        "Mouse leaving model tag:",
+        event.currentTarget.dataset.modelId,
+      );
+      // ✨ NEW: Pass source identifier to ensure only the same source can close
+      workspaceStore.requestCloseModelPopover("document-tag");
 
-    /* OLD CODE - No source tracking:
+      /* OLD CODE - No source tracking:
     workspaceStore.requestCloseModelPopover();
     */
-  });
-}
+    });
+  },
+  subscribeStores: () => {
+    activeDocumentStore.subscribe((state, { key, operation, ...payload }) => {
+      if (operation) {
+        const { value } = payload;
+        switch (key) {
+          case "traces":
+            switch (operation) {
+              case "init":
+                rerenderOverlayLayers();
+                break;
+              case "add":
+                renderTrace(value);
+                break;
+              default:
+                break;
+            }
+            break;
+          case "activeModelTrace.selections":
+            switch (operation) {
+              case "update":
+                removeRenderedSelection(value);
+                renderSelection(value, workspaceStore.getActiveModelId());
+                break;
+              case "remove":
+                removeRenderedSelection(value);
+                break;
+              default:
+                break;
+            }
+            break;
+          case "temporarySelections":
+            switch (operation) {
+              case "add":
+                renderSelection(value);
+                break;
+              case "update":
+                removeRenderedSelection(value);
+                renderSelection(value);
+                break;
+              case "remove":
+                removeRenderedSelection(value);
+                break;
+              default:
+                break;
+            }
+            break;
+          default:
+            break;
+        }
+      } else {
+        const { oldValue, newValue } = payload;
+        switch (key) {
+          case "status":
+            if (newValue === "loading") {
+              $documentContent.text("Loading document...");
+            }
+            break;
+          case "htmlContent":
+            if (newValue) {
+              $documentContent.html(newValue || "");
+            } else {
+              clearDocumentViewer();
+            }
+            break;
+          case "activeModelTrace":
+            if (newValue) {
+              removeRenderedTrace(newValue);
+              renderTrace(newValue);
+              const firstSelection = newValue.selections[0];
+              if (firstSelection) {
+                scrollToRange(newValue.selections[0].range);
+              }
+            }
+            if (oldValue && oldValue.modelId !== newValue?.modelId) {
+              unhighlightModelSelections(oldValue.modelId);
+            }
+            break;
+          case "temporarySelections":
+            oldValue.forEach((selection) => {
+              removeRenderedSelection(selection);
+            });
+            break;
+          case "hasSelectionChanged":
+            if (newValue) {
+              $generateButton.prop("disabled", false);
+              $addSelectionsButton.prop("disabled", false);
+            } else {
+              $generateButton.prop("disabled", true);
+            }
+            break;
+          default:
+            break;
+        }
+      }
+    });
+
+    workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
+      switch (key) {
+        case "activeModelId":
+          if (newValue) {
+            $generateButton.text("Regenerate Model");
+            $generateButton.prop(
+              "disabled",
+              !activeDocumentStore.getHasSelectionChanged(),
+            );
+            $addSelectionsButton.show();
+            $addSelectionsButton.prop(
+              "disabled",
+              !activeDocumentStore.getHasSelectionChanged(),
+            );
+          } else {
+            $generateButton.text("Generate Model");
+            $addSelectionsButton.hide();
+          }
+          break;
+        default:
+          break;
+      }
+    });
+  },
+});

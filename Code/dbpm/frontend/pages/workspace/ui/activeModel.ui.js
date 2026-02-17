@@ -1,3 +1,4 @@
+import { createUI } from "../../../shared/util/ui.js";
 import {
   activeModelStore,
   documentsStore,
@@ -7,7 +8,7 @@ import {
 import { modelService, workspaceService } from "../services/index.js";
 import { endpointLoader } from "../workflow/wf_endpoints/endpoint-loader.js";
 import { Constants } from "../../../constants.js";
-import { default as setActiveModuleNameEditor } from "../../../shared/ui/inlineEditor.js";
+import { default as setActiveModuleNameEditor } from "../../../shared/widgets/inlineEditor.js";
 
 const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
 

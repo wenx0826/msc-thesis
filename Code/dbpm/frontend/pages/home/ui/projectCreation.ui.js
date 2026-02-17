@@ -1,44 +1,50 @@
 import { projectsAPI } from "../../../api/index.js";
+import { createUI } from "../../../shared/util/ui.js";
 import { getProjectWorkspaceURL } from "../../../shared/util/url.js";
 
-const dlg = document.getElementById("projectCreationDialog");
-const $err = $("#err");
+const $dialog = $("#projectCreationDialog");
+const $form = $dialog.find("form");
 const $name = $("#name");
-const $save = $("#save");
+const $submitBtn = $form.find("button[type='submit']");
+const $err = $("#err");
 
 async function createProject(name) {
   const project = await projectsAPI.create({ name });
   return project;
 }
 
-$("#btnCreate").on("click", () => {
-  $err.text("");
-  $name.val("");
-  dlg.showModal();
-  $name.trigger("focus");
-});
+createUI({
+  bindListeners: () => {
+    $("#btnCreate").on("click", () => {
+      $err.text("");
+      $name.val("");
+      $dialog[0].showModal();
+      $name.trigger("focus");
+    });
 
-$("#cancel").on("click", () => {
-  dlg.close();
-});
+    $("#cancel").on("click", () => {
+      $dialog[0].close();
+    });
 
-$("#form").on("submit", async (e) => {
-  e.preventDefault();
-  const name = $name.val().trim();
-  $err.text("");
+    $form.on("submit", async (e) => {
+      e.preventDefault();
+      const name = $name.val().trim();
+      $err.text("");
 
-  if (!name) {
-    $err.text("Name is required.");
-    return;
-  }
+      if (!name) {
+        $err.text("Name is required.");
+        return;
+      }
 
-  $save.prop("disabled", true);
+      $submitBtn.prop("disabled", true);
 
-  try {
-    const project = await createProject(name);
-    window.location.href = getProjectWorkspaceURL(project.id);
-  } catch (err) {
-    $err.text(err.message);
-    $save.prop("disabled", false);
-  }
+      try {
+        const project = await createProject(name);
+        window.location.href = getProjectWorkspaceURL(project.id);
+      } catch (err) {
+        $err.text(err.message);
+        $submitBtn.prop("disabled", false);
+      }
+    });
+  },
 });

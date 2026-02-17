@@ -1,12 +1,33 @@
-import { projectsAPI } from "../../../api/index.js";
+import { createUI } from "../../../shared/util/ui.js";
 import {
   getProjectWorkspaceURL,
   getProjectStatsURL,
   getProjectLogURL,
 } from "../../../shared/util/url.js";
-import initInlineEditor from "../../../shared/ui/inlineEditor.js";
+import initInlineEditor from "../../../shared/widgets/inlineEditor.js";
+import { projectsAPI } from "../../../api/index.js";
 
 const $projectsTable = $("#projectsTable");
+
+function viewProjectStats(projectId) {
+  window.location.href = getProjectStatsURL(projectId);
+}
+function viewProjectLog(projectId) {
+  window.open(getProjectLogURL(projectId), "_blank");
+}
+function downloadProjectLog(projectId, projectName) {
+  const url = getProjectLogURL(projectId);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `${projectName}.yaml`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+function renameProject(projectNameEditor, $view) {
+  setTimeout(() => projectNameEditor.startEdit($view), 0);
+}
+function deleteProject(projectId) {}
 
 async function renderProjectsTable() {
   try {
@@ -61,90 +82,73 @@ async function renderProjectsTable() {
     console.error("Failed to initialize Projects UI:", err);
   }
 }
-function viewProjectStats(projectId) {
-  window.location.href = getProjectStatsURL(projectId);
-}
-function viewProjectLog(projectId) {
-  window.open(getProjectLogURL(projectId), "_blank");
-}
-function downloadProjectLog(projectId, projectName) {
-  const url = getProjectLogURL(projectId);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = `${projectName}.yaml`;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-}
 
-const projectNameEditor = initInlineEditor({
-  $scope: $projectsTable,
-  onSave: (name, $view) => {
-    console.log("Saving project name:", name);
-    const projectId = $view.closest("tr").attr("data-project-id");
-    projectsAPI.update(projectId, { name });
+createUI({
+  setup: () => {
+    const projectNameEditor = initInlineEditor({
+      $scope: $projectsTable,
+      onSave: (name, $view) => {
+        console.log("Saving project name:", name);
+        const projectId = $view.closest("tr").data("projectId");
+        projectsAPI.update(projectId, { name });
+      },
+    });
+    renderProjectsTable();
+    return { projectNameEditor };
+  },
+  bindListeners: ({ projectNameEditor }) => {
+    $projectsTable.on("mousedown", "td:first-child", (e) => {
+      const $td = $(e.currentTarget);
+      const projectId = $td.closest("tr").data("projectId");
+      window.location.href = getProjectWorkspaceURL(projectId);
+    });
+
+    $projectsTable.on("click", "td:last-child", (e) => {
+      // const $td = ;
+      const $tr = $(e.currentTarget).parent();
+      const projectId = $tr.data("projectId");
+      const $projectNameView = $tr.find(".inline-editor__view");
+      const projectName = $projectNameView.text();
+      const menu = {};
+      menu[""] = [
+        {
+          label: "View Statistics",
+          function_call: viewProjectStats,
+          text_icon: undefined,
+          type: undefined,
+          params: [projectId],
+        },
+        {
+          label: "View Log",
+          function_call: viewProjectLog,
+          text_icon: undefined,
+          type: undefined,
+          params: [projectId],
+        },
+        {
+          label: "Download Log",
+          function_call: downloadProjectLog,
+          text_icon: undefined,
+          type: undefined,
+          params: [projectId, projectName],
+        },
+        {
+          label: "Rename Project",
+          function_call: renameProject,
+          text_icon: undefined,
+          type: undefined,
+          params: [projectNameEditor, $projectNameView],
+        },
+
+        {
+          label: "Delete Project",
+          function_call: deleteProject,
+          text_icon: undefined,
+          type: undefined,
+          params: [projectId],
+        },
+      ];
+      new CustomMenu(e).contextmenu(menu);
+    });
   },
 });
-function renameProject($view) {
-  setTimeout(() => projectNameEditor.startEdit($view), 0);
-}
-function deleteProject(projectId) {}
-
-$projectsTable.on("mousedown", "td:first-child", (e) => {
-  const $td = $(e.currentTarget);
-  const projectId = $td.closest("tr").attr("data-project-id");
-  window.location.href = getProjectWorkspaceURL(projectId);
-});
-
-$projectsTable.on("click", "td:last-child", (e) => {
-  // const $td = ;
-  const $tr = $(e.currentTarget).parent();
-  const projectId = $tr.data("projectId");
-  const $projectNameView = $tr.find(".inline-editor__view");
-  const projectName = $projectNameView.text();
-  const menu = {};
-  menu[""] = [
-    {
-      label: "View Statistics",
-      function_call: viewProjectStats,
-      text_icon: undefined,
-      type: undefined,
-      params: [projectId],
-    },
-    {
-      label: "View Log",
-      function_call: viewProjectLog,
-      text_icon: undefined,
-      type: undefined,
-      params: [projectId],
-    },
-    {
-      label: "Download Log",
-      function_call: downloadProjectLog,
-      text_icon: undefined,
-      type: undefined,
-      params: [projectId, projectName],
-    },
-    {
-      label: "Rename Project",
-      function_call: renameProject,
-      text_icon: undefined,
-      type: undefined,
-      params: [$projectNameView],
-    },
-
-    {
-      label: "Delete Project",
-      function_call: deleteProject,
-      text_icon: undefined,
-      type: undefined,
-      params: [projectId],
-    },
-  ];
-
-  new CustomMenu(e).contextmenu(menu);
-});
-
-(() => {
-  renderProjectsTable();
-})();
