@@ -348,9 +348,18 @@ dialog {
   border-color: #000;
 }
 
+    /* Metrics (borderless, typography blocks) */
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 22px;
+      align-items: start;
+       text-align: center;
+      margin-bottom: 18px;
+    }
 
 
-        .kpi-row {
+            .kpi-row {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 20px;
@@ -358,25 +367,54 @@ dialog {
             /* 关键：整体居中 */
         }
 
+    .metric-card {
+      text-align: center;
+      padding: 2px 0;
+       text-align: center;
+    }
+
+    .metric-title {
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+      margin-bottom: 6px;
+    }
+
         .kpi-title {
             font-size: 13px;
             color: #666;
             margin-bottom: 8px;
         }
 
+    .metric-value {
+      font-size: 32px;
+      line-height: 1.05;
+      font-weight: 650;
+      margin: 0 0 10px;
+      font-variant-numeric: tabular-nums;
+    }
         .kpi-value {
             font-size: 42px;
             font-weight: 600;
             line-height: 1;
         }
-
+    .metric-subtitle {
+      font-size: 12px;
+      color: var(--faint);
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-height: 34px;
+      /* keeps blocks aligned when some have fewer lines */
+    }
         .kpi-sub {
             margin-top: 10px;
             font-size: 13px;
             color: #666;
         }
 
-        /* ===== Distribution FULL WIDTH ===== */
+
 
         .distribution-row {
             display: grid;

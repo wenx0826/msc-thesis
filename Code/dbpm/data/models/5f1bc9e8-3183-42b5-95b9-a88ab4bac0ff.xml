@@ -1,0 +1,11 @@
+<description>
+  <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+    <dbpm:document_info>
+      <dbpm:document_id>946496ee-bf06-447e-bfb5-76fd83a3546c</dbpm:document_id>
+      <dbpm:text_selections>sure now that you received a complete copy of the exam. • The t</dbpm:text_selections>
+    </dbpm:document_info>
+  </dbpm:info>
+  <description svg-id="description" svg-type="description" svg-subtype="description">
+    <call id="a1" endpoint="subprocess" svg-id="a1" xmlns="http://cpee.org/ns/description/1.0" svg-type="call" svg-subtype="call"><parameters><label/><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call>
+  </description>
+</description>

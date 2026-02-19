@@ -96,9 +96,7 @@ async function modelsRoutes(fastify, options) {
         //   traceRepo.updateByModelId(modelId, trace.prompt, trace.selections);
         // }
 
-        // modelRepo.addStatUpdate(modelId, getISODate(), type, words);
-
-        // reply.send({ message: "Model content updated" });
+        reply.send({ message: "Model content updated" });
         // logEvent(projectId, `model_updated_${type}`, {
         //   id: modelId,
         //   data: modelData,

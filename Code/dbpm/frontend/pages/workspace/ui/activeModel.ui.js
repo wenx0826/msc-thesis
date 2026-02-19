@@ -79,7 +79,7 @@ function syncActiveModelGraphInList() {
   gc.attr("width", start + 1);
   gc.find(".duration");
   gc.removeAttr("id");
-
+  console.log("???????????????????", gc[0].outerHTML);
   modelsStore.updateModelById(workspaceStore.getActiveModelId(), {
     svg: gc[0].outerHTML,
   });
@@ -101,7 +101,7 @@ function clearModelViewer() {
 const showActiveModel = async (model) => {
   save["state"] = "ready";
   save["graph_theme"] = "preset_customized";
-
+  console.log("!!!!!!!!!!! Showing active model:", model);
   // Initialize endpoints and map to save cache for details.js compatibility - WAIT for completion
   await endpointLoader.init();
   save["endpoints_cache"] = endpointLoader._cache;

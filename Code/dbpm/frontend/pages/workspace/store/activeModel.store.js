@@ -74,6 +74,7 @@ export const activeModelStore = Object.assign(
     async setModelById(modelId) {
       if (modelId) {
         modelsAPI.getModelById(modelId).then((model) => {
+          console.log("Fetched model by ID:", model);
           this.setModel(model);
         });
       } else {

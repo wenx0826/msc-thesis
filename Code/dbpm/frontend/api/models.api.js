@@ -1,11 +1,12 @@
 import { baseURL, handleResponse, handleTextResponse } from "./base.js";
+import { Constants } from "../constants.js";
 
 export const modelsAPI = {
   LLMDisabled: true,
   path: "models",
 
   async generateSampleModel() {
-    const templatesFolder = "templates/";
+    const templatesFolder = "/pages/workspace/sample_models/";
 
     async function fetchTemplatesList() {
       try {
@@ -20,7 +21,8 @@ export const modelsAPI = {
     }
 
     try {
-      const list = await fetchTemplatesList();
+      // const list = await fetchTemplatesList();
+      const list = [];
       if (!list || !list.length) {
         throw new Error("No templates found in templates.json");
       }
@@ -37,9 +39,14 @@ export const modelsAPI = {
       return new XMLSerializer().serializeToString(data);
     } catch (err) {
       console.error("generateSampleModel error:", err);
-      const resp = await fetch("./sample_model_with_subprocess.xml");
+      const resp = await fetch("/Subprocess.xml");
+      console.log("==========Fetched Subprocess.xml with status========", resp);
+      // console.log(
+      //   "==========Fetched Subprocess.xml with text========",
+      //   await resp.text(),
+      // );
       if (!resp.ok) throw err;
-      return await resp.text();
+      return '<description><call id="a1" endpoint="subprocess"/></description>';
     }
   },
 

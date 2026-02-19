@@ -389,19 +389,15 @@ createUI({
         setSelectedSelection(null);
       }
     });
-
     $documentContent.on("mouseup", handleTextSelection);
-
     $addSelectionsButton.on("click", () => {
       modelService.updateActiveModel(
         MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
       );
     });
-
     $generateButton.on("click", async () => {
       modelService.generateModelBySelections();
     });
-
     $viewerWrap.on("scroll", rerenderOverlayLayers);
     $("#columnResizehandle1").on("dragcolumnmove", (e) => {
       // e.stopPropagation();

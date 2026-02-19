@@ -5382,3 +5382,1172 @@ data:
         <call id="a3" endpoint="subprocess" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color>#e4c3e4</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:6688/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call>
       </description>
     </description>
+---
+timestamp: '2026-02-19T12:54:26.950Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: 035bde3e-8950-4705-865d-a67ed4ef35e3
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>ure field in the attendance check list.  Applied Strategy and Organization  Exam:   WI001111 / Endterm   Date:   Thursday 23 rd   February, 2023  Examiner:   Prof. Dr. Isabell M. Welpe   Time:   14:15 – 15:45 I P 1   P 2   P 3   P 4   P 5   P 6   P 7   P 8   P 9   P 10   P 11   P 12  Working instructions  • This exam consists of   28 pages   with a total of   12 problems . Please make sure now that you received a complete copy of the exam. • The total amount of achievable credits in this exam is 90 credits. • Detaching pages from the exam is prohibited. • Allowed resources:  –   one   analog dictionary   English   ↔   native language • Do not write with red or green colors nor use pencils. • Physically turn o</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="subprocess" svg-id="a1" svg-label="Task 1werreret45454545454545454545454545fgfgfg" svg-type="call" svg-subtype="call"><parameters><label>Task 1werreret45454545454545454545454545fgfgfg</label><color>#deddda</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a9" endpoint="subprocess" svg-id="a9" svg-type="call" svg-subtype="call"><parameters><label/><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a6" endpoint="" svg-id="a6" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" endpoint="" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><stop xmlns="http://cpee.org/ns/description/1.0" svg-id="stop_0" svg-type="stop" svg-subtype="stop"/>
+        <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="fff" svg-type="call" svg-subtype="call"><parameters><label>fff</label><color>#e4c3e4</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:6688/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call><call id="a4" endpoint="subprocess" svg-id="a4" xmlns="http://cpee.org/ns/description/1.0" svg-label="sdff fgfg" svg-type="call" svg-subtype="call"><parameters><label>sdff fgfg</label><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>b91d2def-24fc-4d5c-8529-c7ccbd1c50b9</dbpm_subprocess_model></parameters></call>
+        <call id="a3" endpoint="subprocess" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color>#e4c3e4</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:6688/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-19T13:00:38.148Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: 035bde3e-8950-4705-865d-a67ed4ef35e3
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>ure field in the attendance check list.  Applied Strategy and Organization  Exam:   WI001111 / Endterm   Date:   Thursday 23 rd   February, 2023  Examiner:   Prof. Dr. Isabell M. Welpe   Time:   14:15 – 15:45 I P 1   P 2   P 3   P 4   P 5   P 6   P 7   P 8   P 9   P 10   P 11   P 12  Working instructions  • This exam consists of   28 pages   with a total of   12 problems . Please make sure now that you received a complete copy of the exam. • The total amount of achievable credits in this exam is 90 credits. • Detaching pages from the exam is prohibited. • Allowed resources:  –   one   analog dictionary   English   ↔   native language • Do not write with red or green colors nor use pencils. • Physically turn o</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="subprocess" svg-id="a1" svg-label="Task 1werreret45454545454545454545454545fgfgfg" svg-type="call" svg-subtype="call"><parameters><label>Task 1werreret45454545454545454545454545fgfgfg</label><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a9" endpoint="subprocess" svg-id="a9" svg-type="call" svg-subtype="call"><parameters><label/><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a6" endpoint="" svg-id="a6" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" endpoint="" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><stop xmlns="http://cpee.org/ns/description/1.0" svg-id="stop_0" svg-type="stop" svg-subtype="stop"/>
+        <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="fff" svg-type="call" svg-subtype="call"><parameters><label>fff</label><color>#e4c3e4</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:6688/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a4" endpoint="subprocess" svg-id="a4" svg-label="sdff fgfg" svg-type="call" svg-subtype="call"><parameters><label>sdff fgfg</label><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>b91d2def-24fc-4d5c-8529-c7ccbd1c50b9</dbpm_subprocess_model></parameters></call>
+        <call id="a3" endpoint="subprocess" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color>#e4c3e4</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:6688/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-19T13:59:54.924Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: 035bde3e-8950-4705-865d-a67ed4ef35e3
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>ure field in the attendance check list.  Applied Strategy and Organization  Exam:   WI001111 / Endterm   Date:   Thursday 23 rd   February, 2023  Examiner:   Prof. Dr. Isabell M. Welpe   Time:   14:15 – 15:45 I P 1   P 2   P 3   P 4   P 5   P 6   P 7   P 8   P 9   P 10   P 11   P 12  Working instructions  • This exam consists of   28 pages   with a total of   12 problems . Please make sure now that you received a complete copy of the exam. • The total amount of achievable credits in this exam is 90 credits. • Detaching pages from the exam is prohibited. • Allowed resources:  –   one   analog dictionary   English   ↔   native language • Do not write with red or green colors nor use pencils. • Physically turn o</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="subprocess" svg-id="a1" svg-label="Task 1werreret45454545454545454545454545fgfgfg" svg-type="call" svg-subtype="call"><parameters><label>Task 1werreret45454545454545454545454545fgfgfg</label><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a9" endpoint="subprocess" svg-id="a9" svg-type="call" svg-subtype="call"><parameters><label/><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a6" endpoint="" svg-id="a6" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" endpoint="" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><stop xmlns="http://cpee.org/ns/description/1.0" svg-id="stop_0" svg-type="stop" svg-subtype="stop"/>
+        <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="fff" svg-type="call" svg-subtype="call"><parameters><label>fff</label><color>#e4c3e4</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:6688/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a4" endpoint="subprocess" svg-id="a4" svg-label="sdff fgfg" svg-type="call" svg-subtype="call"><parameters><label>sdff fgfg</label><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>b91d2def-24fc-4d5c-8529-c7ccbd1c50b9</dbpm_subprocess_model></parameters></call>
+        <call id="a3" endpoint="subprocess" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color>#ffffff</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model></parameters></call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-19T14:00:04.843Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: 035bde3e-8950-4705-865d-a67ed4ef35e3
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>ure field in the attendance check list.  Applied Strategy and Organization  Exam:   WI001111 / Endterm   Date:   Thursday 23 rd   February, 2023  Examiner:   Prof. Dr. Isabell M. Welpe   Time:   14:15 – 15:45 I P 1   P 2   P 3   P 4   P 5   P 6   P 7   P 8   P 9   P 10   P 11   P 12  Working instructions  • This exam consists of   28 pages   with a total of   12 problems . Please make sure now that you received a complete copy of the exam. • The total amount of achievable credits in this exam is 90 credits. • Detaching pages from the exam is prohibited. • Allowed resources:  –   one   analog dictionary   English   ↔   native language • Do not write with red or green colors nor use pencils. • Physically turn o</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="subprocess" svg-id="a1" svg-label="Task 1werreret45454545454545454545454545fgfgfg" svg-type="call" svg-subtype="call"><parameters><label>Task 1werreret45454545454545454545454545fgfgfg</label><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a9" endpoint="subprocess" svg-id="a9" svg-type="call" svg-subtype="call"><parameters><label/><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a6" endpoint="" svg-id="a6" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" endpoint="" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><stop xmlns="http://cpee.org/ns/description/1.0" svg-id="stop_0" svg-type="stop" svg-subtype="stop"/>
+        <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="fff" svg-type="call" svg-subtype="call"><parameters><label>fff</label><color>#e4c3e4</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:6688/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a4" endpoint="subprocess" svg-id="a4" svg-label="sdff fgfg" svg-type="call" svg-subtype="call"><parameters><label>sdff fgfg</label><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>b91d2def-24fc-4d5c-8529-c7ccbd1c50b9</dbpm_subprocess_model></parameters></call>
+        <call id="a3" endpoint="" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color>#ffffff</color><dbpm_type>task</dbpm_type></parameters></call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-19T14:00:16.937Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: 035bde3e-8950-4705-865d-a67ed4ef35e3
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>ure field in the attendance check list.  Applied Strategy and Organization  Exam:   WI001111 / Endterm   Date:   Thursday 23 rd   February, 2023  Examiner:   Prof. Dr. Isabell M. Welpe   Time:   14:15 – 15:45 I P 1   P 2   P 3   P 4   P 5   P 6   P 7   P 8   P 9   P 10   P 11   P 12  Working instructions  • This exam consists of   28 pages   with a total of   12 problems . Please make sure now that you received a complete copy of the exam. • The total amount of achievable credits in this exam is 90 credits. • Detaching pages from the exam is prohibited. • Allowed resources:  –   one   analog dictionary   English   ↔   native language • Do not write with red or green colors nor use pencils. • Physically turn o</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="subprocess" svg-id="a1" svg-label="Task 1werreret45454545454545454545454545fgfgfg" svg-type="call" svg-subtype="call"><parameters><label>Task 1werreret45454545454545454545454545fgfgfg</label><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a9" endpoint="subprocess" svg-id="a9" svg-type="call" svg-subtype="call"><parameters><label/><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a6" endpoint="" svg-id="a6" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" endpoint="" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><stop xmlns="http://cpee.org/ns/description/1.0" svg-id="stop_0" svg-type="stop" svg-subtype="stop"/>
+        <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="fff" svg-type="call" svg-subtype="call"><parameters><label>fff</label><color>#e4c3e4</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:6688/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a4" endpoint="subprocess" svg-id="a4" svg-label="sdff fgfg" svg-type="call" svg-subtype="call"><parameters><label>sdff fgfg</label><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>b91d2def-24fc-4d5c-8529-c7ccbd1c50b9</dbpm_subprocess_model></parameters></call>
+        <call id="a3" endpoint="subprocess" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color>#ffffff</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-19T14:00:30.517Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: 035bde3e-8950-4705-865d-a67ed4ef35e3
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>ure field in the attendance check list.  Applied Strategy and Organization  Exam:   WI001111 / Endterm   Date:   Thursday 23 rd   February, 2023  Examiner:   Prof. Dr. Isabell M. Welpe   Time:   14:15 – 15:45 I P 1   P 2   P 3   P 4   P 5   P 6   P 7   P 8   P 9   P 10   P 11   P 12  Working instructions  • This exam consists of   28 pages   with a total of   12 problems . Please make sure now that you received a complete copy of the exam. • The total amount of achievable credits in this exam is 90 credits. • Detaching pages from the exam is prohibited. • Allowed resources:  –   one   analog dictionary   English   ↔   native language • Do not write with red or green colors nor use pencils. • Physically turn o</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="subprocess" svg-id="a1" svg-label="Task 1werreret45454545454545454545454545fgfgfg" svg-type="call" svg-subtype="call"><parameters><label>Task 1werreret45454545454545454545454545fgfgfg</label><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a9" endpoint="subprocess" svg-id="a9" svg-type="call" svg-subtype="call"><parameters><label/><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a6" endpoint="" svg-id="a6" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" endpoint="" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><stop xmlns="http://cpee.org/ns/description/1.0" svg-id="stop_0" svg-type="stop" svg-subtype="stop"/>
+        <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="fff" svg-type="call" svg-subtype="call"><parameters><label>fff</label><color>#e4c3e4</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:6688/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a4" endpoint="subprocess" svg-id="a4" svg-label="sdff fgfg" svg-type="call" svg-subtype="call"><parameters><label>sdff fgfg</label><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>b91d2def-24fc-4d5c-8529-c7ccbd1c50b9</dbpm_subprocess_model></parameters></call>
+        <call id="a3" endpoint="subprocess" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color>#ffffff</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model></parameters></call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-19T14:00:41.120Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: 035bde3e-8950-4705-865d-a67ed4ef35e3
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>ure field in the attendance check list.  Applied Strategy and Organization  Exam:   WI001111 / Endterm   Date:   Thursday 23 rd   February, 2023  Examiner:   Prof. Dr. Isabell M. Welpe   Time:   14:15 – 15:45 I P 1   P 2   P 3   P 4   P 5   P 6   P 7   P 8   P 9   P 10   P 11   P 12  Working instructions  • This exam consists of   28 pages   with a total of   12 problems . Please make sure now that you received a complete copy of the exam. • The total amount of achievable credits in this exam is 90 credits. • Detaching pages from the exam is prohibited. • Allowed resources:  –   one   analog dictionary   English   ↔   native language • Do not write with red or green colors nor use pencils. • Physically turn o</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="subprocess" svg-id="a1" svg-label="Task 1werreret45454545454545454545454545fgfgfg" svg-type="call" svg-subtype="call"><parameters><label>Task 1werreret45454545454545454545454545fgfgfg</label><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a9" endpoint="subprocess" svg-id="a9" svg-type="call" svg-subtype="call"><parameters><label/><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a6" endpoint="" svg-id="a6" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" endpoint="" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><stop xmlns="http://cpee.org/ns/description/1.0" svg-id="stop_0" svg-type="stop" svg-subtype="stop"/>
+        <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="fff" svg-type="call" svg-subtype="call"><parameters><label>fff</label><color>#e4c3e4</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:6688/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a4" endpoint="subprocess" svg-id="a4" svg-label="sdff fgfg" svg-type="call" svg-subtype="call"><parameters><label>sdff fgfg</label><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>b91d2def-24fc-4d5c-8529-c7ccbd1c50b9</dbpm_subprocess_model></parameters></call>
+        <call id="a3" endpoint="subprocess" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color>#ffffff</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>973017fa-8bba-480f-885f-43980492f1aa</dbpm_subprocess_model></parameters></call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-19T14:01:02.194Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: 26b6393d-7701-4dfa-b5d5-d12da5aeb356
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>ure field in the attendance check list.  Applied Strategy and Organization  Exam:   WI001111 / Endterm   Date:   Thursday 23 rd   February, 2023  Examiner:   Prof. Dr. Isabell M. Welpe   Time:   14:15 – 15:45 I P 1   P 2   P 3   P 4   P 5   P 6   P 7   P 8   P 9   P 10   P 11   P 12  Working instructions  • This exam consists of   28 pages   with a total of   12 problems . Please make sure now that you received a complete copy of the exam. • The total amount of achievable credits in this exam is 90 credits. • Detaching pages from the exam is prohibited. • Allowed resources:  –   one   analog dictionary   English   ↔   native language • Do not write with red or green colors nor use pencils. • Physically turn o s outside of the checkboxes. •   If you fail to follow the instruction on how to mark a box you will be awarded 0 points for the given question. • DO NOT mark the exam outside of the checkboxes. • DO NOT circle around checkboxes. • If you want to correct a solution do so as described. Left room from   to   /   Early submission at – Page 1 / 28 –
+    Sample Solution  Mark corre</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="subprocess" svg-id="a1" svg-label="Task 1" svg-type="call" svg-subtype="call"><parameters><label>Task 1</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a4" endpoint="" svg-id="a4" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call>
+        <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="Resource Synchronisation" svg-type="call" svg-subtype="call"><parameters><label>Resource Synchronisation</label><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>035bde3e-8950-4705-865d-a67ed4ef35e3</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:3000/data/models/035bde3e-8950-4705-865d-a67ed4ef35e3.xml</url></arguments></parameters></call>
+        <call id="a3" endpoint="subprocess" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-19T14:01:34.502Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: 035bde3e-8950-4705-865d-a67ed4ef35e3
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>ure field in the attendance check list.  Applied Strategy and Organization  Exam:   WI001111 / Endterm   Date:   Thursday 23 rd   February, 2023  Examiner:   Prof. Dr. Isabell M. Welpe   Time:   14:15 – 15:45 I P 1   P 2   P 3   P 4   P 5   P 6   P 7   P 8   P 9   P 10   P 11   P 12  Working instructions  • This exam consists of   28 pages   with a total of   12 problems . Please make sure now that you received a complete copy of the exam. • The total amount of achievable credits in this exam is 90 credits. • Detaching pages from the exam is prohibited. • Allowed resources:  –   one   analog dictionary   English   ↔   native language • Do not write with red or green colors nor use pencils. • Physically turn o</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="subprocess" svg-id="a1" svg-label="Task 1werreret45454545454545454545454545fgfgfg" svg-type="call" svg-subtype="call"><parameters><label>Task 1werreret45454545454545454545454545fgfgfg</label><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a9" endpoint="subprocess" svg-id="a9" svg-type="call" svg-subtype="call"><parameters><label/><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a6" endpoint="" svg-id="a6" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" endpoint="" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><stop xmlns="http://cpee.org/ns/description/1.0" svg-id="stop_0" svg-type="stop" svg-subtype="stop"/>
+        <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="fff" svg-type="call" svg-subtype="call"><parameters><label>fff</label><color>#e4c3e4</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:6688/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call><call id="a4" endpoint="subprocess" svg-id="a4" xmlns="http://cpee.org/ns/description/1.0" svg-label="sdff fgfg" svg-type="call" svg-subtype="call"><parameters><label>sdff fgfg</label><color>#d4e1f1</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>b91d2def-24fc-4d5c-8529-c7ccbd1c50b9</dbpm_subprocess_model></parameters></call>
+        <call id="a3" endpoint="subprocess" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color>#ffffff</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>973017fa-8bba-480f-885f-43980492f1aa</dbpm_subprocess_model></parameters></call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-19T14:01:46.354Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: 035bde3e-8950-4705-865d-a67ed4ef35e3
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>ure field in the attendance check list.  Applied Strategy and Organization  Exam:   WI001111 / Endterm   Date:   Thursday 23 rd   February, 2023  Examiner:   Prof. Dr. Isabell M. Welpe   Time:   14:15 – 15:45 I P 1   P 2   P 3   P 4   P 5   P 6   P 7   P 8   P 9   P 10   P 11   P 12  Working instructions  • This exam consists of   28 pages   with a total of   12 problems . Please make sure now that you received a complete copy of the exam. • The total amount of achievable credits in this exam is 90 credits. • Detaching pages from the exam is prohibited. • Allowed resources:  –   one   analog dictionary   English   ↔   native language • Do not write with red or green colors nor use pencils. • Physically turn o</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="subprocess" svg-id="a1" svg-label="Task 1werreret45454545454545454545454545fgfgfg" svg-type="call" svg-subtype="call"><parameters><label>Task 1werreret45454545454545454545454545fgfgfg</label><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a9" endpoint="subprocess" svg-id="a9" svg-type="call" svg-subtype="call"><parameters><label/><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a6" endpoint="" svg-id="a6" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" endpoint="" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><stop xmlns="http://cpee.org/ns/description/1.0" svg-id="stop_0" svg-type="stop" svg-subtype="stop"/>
+        <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="fff" svg-type="call" svg-subtype="call"><parameters><label>fff</label><color>#e4c3e4</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:6688/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call><call id="a4" endpoint="subprocess" svg-id="a4" xmlns="http://cpee.org/ns/description/1.0" svg-label="sdff fgfg" svg-type="call" svg-subtype="call"><parameters><label>sdff fgfg</label><color>#d4e1f1</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>b91d2def-24fc-4d5c-8529-c7ccbd1c50b9</dbpm_subprocess_model></parameters></call>
+        <call id="a3" endpoint="subprocess" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color>#ffffcc</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>973017fa-8bba-480f-885f-43980492f1aa</dbpm_subprocess_model></parameters></call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-19T14:02:18.236Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: 42d76137-7e23-4240-9c83-063937f4f326
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>ut market segments is correct? Market segments are groups of customers with different needs th</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="bookAir" svg-id="a1" svg-label="Book Airline 1" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <label>Book Airline 1</label>
+            <method>:post</method>
+            <arguments>
+              <from>!data.from</from>
+              <to>!data.to</to>
+              <persons>!data.persons</persons>
+            </arguments>
+          </parameters>
+          <code>
+            <prepare/>
+            <finalize output="result">data.airline = result.value('id')
+    data.costs += result.value('costs').to_f
+    status.update 1, 'Hotel'</finalize>
+            <update output="result"/>
+            <rescue output="result"/>
+          </code>
+          <annotations>
+            <_timing>
+              <_timing_weight/>
+              <_timing_avg/>
+              <explanations/>
+            </_timing>
+            <_shifting>
+              <_shifting_type>Duration</_shifting_type>
+            </_shifting>
+            <_context_data_analysis>
+              <probes/>
+              <ips/>
+            </_context_data_analysis>
+            <report>
+              <url/>
+            </report>
+            <_notes>
+              <_notes_general/>
+            </_notes>
+          </annotations>
+          <documentation>
+            <input/>
+            <output/>
+            <implementation>
+              <description/>
+            </implementation>
+            <code>
+              <description/>
+            </code>
+          </documentation>
+        </call><call xmlns="http://cpee.org/ns/description/1.0" id="a7" endpoint="" svg-id="a7" svg-type="call" svg-subtype="call"><parameters><label/><color>#e4c3e4</color><dbpm_type>task</dbpm_type></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a6" endpoint="" svg-id="a6" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" endpoint="" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call>
+        <parallel wait="-1" cancel="last" svg-id="parallel_0" svg-type="parallel" svg-subtype="parallel_start">
+          <loop mode="pre_test" condition="data.persons &gt; 0" svg-id="loop_0" svg-label="data.persons &gt; 0" svg-type="loop" svg-subtype="loop_head">
+            <parallel_branch svg-id="parallel_branch_0" svg-type="parallel_branch" svg-subtype="parallel_branch_event">
+              <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="Book Hotel" svg-type="call" svg-subtype="call"><parameters><label>Book Hotel</label><color>#ffffcc</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model></parameters></call>
+            </parallel_branch>
+            <manipulate id="a3" svg-id="a3" svg-type="manipulate" svg-subtype="manipulate">data.persons -= 1</manipulate>
+          </loop>
+        </parallel>
+        <choose mode="exclusive" svg-id="choose_0" svg-type="choose" svg-subtype="choose_exclusive">
+          <alternative condition="data.costs &gt; 700" svg-id="alternative_0" svg-label="data.costs &gt; 700" svg-type="alternative" svg-subtype="alternative">
+            <_probability>
+              <_probability_min/>
+              <_probability_max/>
+              <_probability_avg/>
+            </_probability>
+            <call id="a4" endpoint="subprocess" svg-id="a4" svg-label="Approve Hotel" svg-type="call" svg-subtype="call"><parameters><label>Approve Hotel</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>035bde3e-8950-4705-865d-a67ed4ef35e3</dbpm_subprocess_model></parameters></call>
+          </alternative>
+          <otherwise svg-id="otherwise_0" svg-type="otherwise" svg-subtype="otherwise"/>
+        </choose>
+      </description>
+    </description>
+---
+timestamp: '2026-02-19T14:03:56.549Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: 035bde3e-8950-4705-865d-a67ed4ef35e3
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>ure field in the attendance check list.  Applied Strategy and Organization  Exam:   WI001111 / Endterm   Date:   Thursday 23 rd   February, 2023  Examiner:   Prof. Dr. Isabell M. Welpe   Time:   14:15 – 15:45 I P 1   P 2   P 3   P 4   P 5   P 6   P 7   P 8   P 9   P 10   P 11   P 12  Working instructions  • This exam consists of   28 pages   with a total of   12 problems . Please make sure now that you received a complete copy of the exam. • The total amount of achievable credits in this exam is 90 credits. • Detaching pages from the exam is prohibited. • Allowed resources:  –   one   analog dictionary   English   ↔   native language • Do not write with red or green colors nor use pencils. • Physically turn o</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="subprocess" svg-id="a1" svg-label="Task 1werreret45454545454545454545454545fgfgfg" svg-type="call" svg-subtype="call"><parameters><label>Task 1werreret45454545454545454545454545fgfgfg</label><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a9" endpoint="subprocess" svg-id="a9" svg-type="call" svg-subtype="call"><parameters><label/><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a6" endpoint="" svg-id="a6" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" endpoint="" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><stop xmlns="http://cpee.org/ns/description/1.0" svg-id="stop_0" svg-type="stop" svg-subtype="stop"/>
+        <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="fff" svg-type="call" svg-subtype="call"><parameters><label>fff</label><color>#e4c3e4</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:6688/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a4" endpoint="subprocess" svg-id="a4" svg-label="sdff fgfg" svg-type="call" svg-subtype="call"><parameters><label>sdff fgfg</label><color>#d4e1f1</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>b91d2def-24fc-4d5c-8529-c7ccbd1c50b9</dbpm_subprocess_model></parameters></call>
+        <call id="a3" endpoint="subprocess" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color>#ffffcc</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>9f288d37-ae5b-4b87-bc9d-9159abea64aa</dbpm_subprocess_model></parameters></call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-19T14:04:27.865Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: 035bde3e-8950-4705-865d-a67ed4ef35e3
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>ure field in the attendance check list.  Applied Strategy and Organization  Exam:   WI001111 / Endterm   Date:   Thursday 23 rd   February, 2023  Examiner:   Prof. Dr. Isabell M. Welpe   Time:   14:15 – 15:45 I P 1   P 2   P 3   P 4   P 5   P 6   P 7   P 8   P 9   P 10   P 11   P 12  Working instructions  • This exam consists of   28 pages   with a total of   12 problems . Please make sure now that you received a complete copy of the exam. • The total amount of achievable credits in this exam is 90 credits. • Detaching pages from the exam is prohibited. • Allowed resources:  –   one   analog dictionary   English   ↔   native language • Do not write with red or green colors nor use pencils. • Physically turn o</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="subprocess" svg-id="a1" svg-label="Task 1werreret45454545454545454545454545fgfgfg" svg-type="call" svg-subtype="call"><parameters><label>Task 1werreret45454545454545454545454545fgfgfg</label><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a9" endpoint="subprocess" svg-id="a9" svg-type="call" svg-subtype="call"><parameters><label/><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a6" endpoint="" svg-id="a6" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" endpoint="" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><stop xmlns="http://cpee.org/ns/description/1.0" svg-id="stop_0" svg-type="stop" svg-subtype="stop"/>
+        <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="fff" svg-type="call" svg-subtype="call"><parameters><label>fff</label><color>#e4c3e4</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:6688/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a4" endpoint="subprocess" svg-id="a4" svg-label="sdff fgfg" svg-type="call" svg-subtype="call"><parameters><label>sdff fgfg</label><color>#d4e1f1</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>b91d2def-24fc-4d5c-8529-c7ccbd1c50b9</dbpm_subprocess_model></parameters></call>
+        <call id="a3" endpoint="subprocess" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color>#ffffcc</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>75e6dc12-50d8-4512-ae80-9f1dfc08dfa0</dbpm_subprocess_model></parameters></call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-19T14:04:45.723Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: 035bde3e-8950-4705-865d-a67ed4ef35e3
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>ure field in the attendance check list.  Applied Strategy and Organization  Exam:   WI001111 / Endterm   Date:   Thursday 23 rd   February, 2023  Examiner:   Prof. Dr. Isabell M. Welpe   Time:   14:15 – 15:45 I P 1   P 2   P 3   P 4   P 5   P 6   P 7   P 8   P 9   P 10   P 11   P 12  Working instructions  • This exam consists of   28 pages   with a total of   12 problems . Please make sure now that you received a complete copy of the exam. • The total amount of achievable credits in this exam is 90 credits. • Detaching pages from the exam is prohibited. • Allowed resources:  –   one   analog dictionary   English   ↔   native language • Do not write with red or green colors nor use pencils. • Physically turn o</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="subprocess" svg-id="a1" svg-label="Task 1werreret45454545454545454545454545fgfgfg" svg-type="call" svg-subtype="call"><parameters><label>Task 1werreret45454545454545454545454545fgfgfg</label><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a9" endpoint="subprocess" svg-id="a9" svg-type="call" svg-subtype="call"><parameters><label/><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a6" endpoint="" svg-id="a6" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" endpoint="" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><stop xmlns="http://cpee.org/ns/description/1.0" svg-id="stop_0" svg-type="stop" svg-subtype="stop"/>
+        <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="fff" svg-type="call" svg-subtype="call"><parameters><label>fff</label><color>#e4c3e4</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:6688/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a4" endpoint="subprocess" svg-id="a4" svg-label="sdff fgfg" svg-type="call" svg-subtype="call"><parameters><label>sdff fgfg</label><color>#d4e1f1</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>b91d2def-24fc-4d5c-8529-c7ccbd1c50b9</dbpm_subprocess_model></parameters></call>
+        <call id="a3" endpoint="subprocess" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color>#ffffcc</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>9bc9a21d-45dc-4ca6-b147-6da870a701ed</dbpm_subprocess_model></parameters></call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-19T14:04:56.771Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: 035bde3e-8950-4705-865d-a67ed4ef35e3
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>ure field in the attendance check list.  Applied Strategy and Organization  Exam:   WI001111 / Endterm   Date:   Thursday 23 rd   February, 2023  Examiner:   Prof. Dr. Isabell M. Welpe   Time:   14:15 – 15:45 I P 1   P 2   P 3   P 4   P 5   P 6   P 7   P 8   P 9   P 10   P 11   P 12  Working instructions  • This exam consists of   28 pages   with a total of   12 problems . Please make sure now that you received a complete copy of the exam. • The total amount of achievable credits in this exam is 90 credits. • Detaching pages from the exam is prohibited. • Allowed resources:  –   one   analog dictionary   English   ↔   native language • Do not write with red or green colors nor use pencils. • Physically turn o</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="subprocess" svg-id="a1" svg-label="Task 1werreret45454545454545454545454545fgfgfg" svg-type="call" svg-subtype="call"><parameters><label>Task 1werreret45454545454545454545454545fgfgfg</label><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a9" endpoint="subprocess" svg-id="a9" svg-type="call" svg-subtype="call"><parameters><label/><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a6" endpoint="" svg-id="a6" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" endpoint="" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><stop xmlns="http://cpee.org/ns/description/1.0" svg-id="stop_0" svg-type="stop" svg-subtype="stop"/>
+        <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="fff" svg-type="call" svg-subtype="call"><parameters><label>fff</label><color>#e4c3e4</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:6688/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call><call id="a4" endpoint="subprocess" svg-id="a4" xmlns="http://cpee.org/ns/description/1.0" svg-label="sdff fgfg" svg-type="call" svg-subtype="call"><parameters><label>sdff fgfg</label><color>#d4e1f1</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>9bc9a21d-45dc-4ca6-b147-6da870a701ed</dbpm_subprocess_model></parameters></call>
+        <call id="a3" endpoint="subprocess" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color>#ffffcc</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>9bc9a21d-45dc-4ca6-b147-6da870a701ed</dbpm_subprocess_model></parameters></call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-19T14:05:20.104Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: 035bde3e-8950-4705-865d-a67ed4ef35e3
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>ure field in the attendance check list.  Applied Strategy and Organization  Exam:   WI001111 / Endterm   Date:   Thursday 23 rd   February, 2023  Examiner:   Prof. Dr. Isabell M. Welpe   Time:   14:15 – 15:45 I P 1   P 2   P 3   P 4   P 5   P 6   P 7   P 8   P 9   P 10   P 11   P 12  Working instructions  • This exam consists of   28 pages   with a total of   12 problems . Please make sure now that you received a complete copy of the exam. • The total amount of achievable credits in this exam is 90 credits. • Detaching pages from the exam is prohibited. • Allowed resources:  –   one   analog dictionary   English   ↔   native language • Do not write with red or green colors nor use pencils. • Physically turn o</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="subprocess" svg-id="a1" svg-label="Task 1werreret45454545454545454545454545fgfgfg" svg-type="call" svg-subtype="call"><parameters><label>Task 1werreret45454545454545454545454545fgfgfg</label><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a9" endpoint="subprocess" svg-id="a9" svg-type="call" svg-subtype="call"><parameters><label/><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a6" endpoint="" svg-id="a6" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" endpoint="" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><stop xmlns="http://cpee.org/ns/description/1.0" svg-id="stop_0" svg-type="stop" svg-subtype="stop"/>
+        <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="fff" svg-type="call" svg-subtype="call"><parameters><label>fff</label><color>#e4c3e4</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:6688/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a4" endpoint="subprocess" svg-id="a4" svg-label="sdff fgfg" svg-type="call" svg-subtype="call"><parameters><label>sdff fgfg</label><color>#d4e1f1</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>9bc9a21d-45dc-4ca6-b147-6da870a701ed</dbpm_subprocess_model></parameters></call>
+        <call id="a3" endpoint="subprocess" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color>#ffffcc</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>973017fa-8bba-480f-885f-43980492f1aa</dbpm_subprocess_model></parameters></call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-19T14:06:43.868Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: 035bde3e-8950-4705-865d-a67ed4ef35e3
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>ure field in the attendance check list.  Applied Strategy and Organization  Exam:   WI001111 / Endterm   Date:   Thursday 23 rd   February, 2023  Examiner:   Prof. Dr. Isabell M. Welpe   Time:   14:15 – 15:45 I P 1   P 2   P 3   P 4   P 5   P 6   P 7   P 8   P 9   P 10   P 11   P 12  Working instructions  • This exam consists of   28 pages   with a total of   12 problems . Please make sure now that you received a complete copy of the exam. • The total amount of achievable credits in this exam is 90 credits. • Detaching pages from the exam is prohibited. • Allowed resources:  –   one   analog dictionary   English   ↔   native language • Do not write with red or green colors nor use pencils. • Physically turn o</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="subprocess" svg-id="a1" svg-label="Task 1werreret45454545454545454545454545fgfgfg" svg-type="call" svg-subtype="call"><parameters><label>Task 1werreret45454545454545454545454545fgfgfg</label><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a9" endpoint="subprocess" svg-id="a9" svg-type="call" svg-subtype="call"><parameters><label/><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a6" endpoint="" svg-id="a6" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" endpoint="" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><stop xmlns="http://cpee.org/ns/description/1.0" svg-id="stop_0" svg-type="stop" svg-subtype="stop"/>
+        <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="fff" svg-type="call" svg-subtype="call"><parameters><label>fff</label><color>#e4c3e4</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:6688/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a4" endpoint="subprocess" svg-id="a4" svg-label="sdff fgfg" svg-type="call" svg-subtype="call"><parameters><label>sdff fgfg</label><color>#d4e1f1</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>9bc9a21d-45dc-4ca6-b147-6da870a701ed</dbpm_subprocess_model></parameters></call>
+        <call id="a3" endpoint="subprocess" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color>#d4e1f1</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>973017fa-8bba-480f-885f-43980492f1aa</dbpm_subprocess_model></parameters></call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-19T14:07:38.606Z'
+event: model_updated_manual_update_graph_changed
+data:
+  id: 26b6393d-7701-4dfa-b5d5-d12da5aeb356
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>ure field in the attendance check list.  Applied Strategy and Organization  Exam:   WI001111 / Endterm   Date:   Thursday 23 rd   February, 2023  Examiner:   Prof. Dr. Isabell M. Welpe   Time:   14:15 – 15:45 I P 1   P 2   P 3   P 4   P 5   P 6   P 7   P 8   P 9   P 10   P 11   P 12  Working instructions  • This exam consists of   28 pages   with a total of   12 problems . Please make sure now that you received a complete copy of the exam. • The total amount of achievable credits in this exam is 90 credits. • Detaching pages from the exam is prohibited. • Allowed resources:  –   one   analog dictionary   English   ↔   native language • Do not write with red or green colors nor use pencils. • Physically turn o s outside of the checkboxes. •   If you fail to follow the instruction on how to mark a box you will be awarded 0 points for the given question. • DO NOT mark the exam outside of the checkboxes. • DO NOT circle around checkboxes. • If you want to correct a solution do so as described. Left room from   to   /   Early submission at – Page 1 / 28 –
+    Sample Solution  Mark corre</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="subprocess" svg-id="a1" svg-label="Task 1" svg-type="call" svg-subtype="call"><parameters><label>Task 1</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a4" endpoint="" svg-id="a4" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call>
+        
+        <call id="a3" endpoint="subprocess" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-19T14:11:08.689Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: d8b5976a-6b14-4a62-a563-a20c312c5fc6
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>k – Exploring Strategy | | Us: 0.38 | h: e516b688 c) What does the Porter’s Five Forces Framework try to identify in terms of competitive forces? The profitability of an industry  ×   The</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="timeout" svg-id="a1" svg-label="Task 1" svg-type="call" svg-subtype="callmanipulate">
+          <parameters>
+            <!--{{{-->
+            <label>Task 1</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>2</timeout>
+            </arguments>
+          </parameters>
+          <!--}}}-->
+          <code>
+            <finalize output="result">data.x += "a1,"</finalize>
+          </code>
+          <annotations/>
+          <documentation/>
+        </call>
+        <call id="a2" endpoint="timeouts" svg-id="a2" svg-label="Resource Synchronisation" svg-type="call" svg-subtype="call"><parameters><label>Resource Synchronisation</label><color>#ffffcc</color><dbpm_type>task</dbpm_type></parameters></call>
+        <call id="a3" endpoint="timeout" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color>#d4e1f1</color><dbpm_type>task</dbpm_type></parameters></call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-19T14:13:45.143Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: 035bde3e-8950-4705-865d-a67ed4ef35e3
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>ure field in the attendance check list.  Applied Strategy and Organization  Exam:   WI001111 / Endterm   Date:   Thursday 23 rd   February, 2023  Examiner:   Prof. Dr. Isabell M. Welpe   Time:   14:15 – 15:45 I P 1   P 2   P 3   P 4   P 5   P 6   P 7   P 8   P 9   P 10   P 11   P 12  Working instructions  • This exam consists of   28 pages   with a total of   12 problems . Please make sure now that you received a complete copy of the exam. • The total amount of achievable credits in this exam is 90 credits. • Detaching pages from the exam is prohibited. • Allowed resources:  –   one   analog dictionary   English   ↔   native language • Do not write with red or green colors nor use pencils. • Physically turn o</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="subprocess" svg-id="a1" svg-label="Task 1werreret45454545454545454545454545fgfgfg" svg-type="call" svg-subtype="call"><parameters><label>Task 1werreret45454545454545454545454545fgfgfg</label><color>#e4c3e4</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a9" endpoint="subprocess" svg-id="a9" svg-type="call" svg-subtype="call"><parameters><label/><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a6" endpoint="" svg-id="a6" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" endpoint="" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><stop xmlns="http://cpee.org/ns/description/1.0" svg-id="stop_0" svg-type="stop" svg-subtype="stop"/>
+        <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="fff" svg-type="call" svg-subtype="call"><parameters><label>fff</label><color>#e4c3e4</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:6688/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a4" endpoint="subprocess" svg-id="a4" svg-label="sdff fgfg" svg-type="call" svg-subtype="call"><parameters><label>sdff fgfg</label><color>#d4e1f1</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>9bc9a21d-45dc-4ca6-b147-6da870a701ed</dbpm_subprocess_model></parameters></call>
+        <call id="a3" endpoint="subprocess" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color>#d4e1f1</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>973017fa-8bba-480f-885f-43980492f1aa</dbpm_subprocess_model></parameters></call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-19T14:14:56.684Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: 035bde3e-8950-4705-865d-a67ed4ef35e3
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>ure field in the attendance check list.  Applied Strategy and Organization  Exam:   WI001111 / Endterm   Date:   Thursday 23 rd   February, 2023  Examiner:   Prof. Dr. Isabell M. Welpe   Time:   14:15 – 15:45 I P 1   P 2   P 3   P 4   P 5   P 6   P 7   P 8   P 9   P 10   P 11   P 12  Working instructions  • This exam consists of   28 pages   with a total of   12 problems . Please make sure now that you received a complete copy of the exam. • The total amount of achievable credits in this exam is 90 credits. • Detaching pages from the exam is prohibited. • Allowed resources:  –   one   analog dictionary   English   ↔   native language • Do not write with red or green colors nor use pencils. • Physically turn o</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="subprocess" svg-id="a1" svg-label="Task 1werreret45454545454545454545454545fgfgfg" svg-type="call" svg-subtype="call"><parameters><label>Task 1werreret45454545454545454545454545fgfgfg</label><color>#e4c3e4</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a9" endpoint="subprocess" svg-id="a9" svg-type="call" svg-subtype="call"><parameters><label/><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call id="a6" endpoint="subprocess" svg-id="a6" xmlns="http://cpee.org/ns/description/1.0" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" endpoint="" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><stop xmlns="http://cpee.org/ns/description/1.0" svg-id="stop_0" svg-type="stop" svg-subtype="stop"/>
+        <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="fff" svg-type="call" svg-subtype="call"><parameters><label>fff</label><color>#e4c3e4</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:6688/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a4" endpoint="subprocess" svg-id="a4" svg-label="sdff fgfg" svg-type="call" svg-subtype="call"><parameters><label>sdff fgfg</label><color>#d4e1f1</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>9bc9a21d-45dc-4ca6-b147-6da870a701ed</dbpm_subprocess_model></parameters></call>
+        <call id="a3" endpoint="subprocess" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color>#d4e1f1</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>973017fa-8bba-480f-885f-43980492f1aa</dbpm_subprocess_model></parameters></call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-19T14:16:01.475Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: 035bde3e-8950-4705-865d-a67ed4ef35e3
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>ure field in the attendance check list.  Applied Strategy and Organization  Exam:   WI001111 / Endterm   Date:   Thursday 23 rd   February, 2023  Examiner:   Prof. Dr. Isabell M. Welpe   Time:   14:15 – 15:45 I P 1   P 2   P 3   P 4   P 5   P 6   P 7   P 8   P 9   P 10   P 11   P 12  Working instructions  • This exam consists of   28 pages   with a total of   12 problems . Please make sure now that you received a complete copy of the exam. • The total amount of achievable credits in this exam is 90 credits. • Detaching pages from the exam is prohibited. • Allowed resources:  –   one   analog dictionary   English   ↔   native language • Do not write with red or green colors nor use pencils. • Physically turn o</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="subprocess" svg-id="a1" svg-label="Task 1werreret45454545454545454545454545fgfgfg" svg-type="call" svg-subtype="call"><parameters><label>Task 1werreret45454545454545454545454545fgfgfg</label><color>#e4c3e4</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a9" endpoint="subprocess" svg-id="a9" svg-type="call" svg-subtype="call"><parameters><label/><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call id="a6" endpoint="subprocess" svg-id="a6" xmlns="http://cpee.org/ns/description/1.0" svg-type="call" svg-subtype="call"><parameters><label/><color>#ffffcc</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" endpoint="" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><stop xmlns="http://cpee.org/ns/description/1.0" svg-id="stop_0" svg-type="stop" svg-subtype="stop"/>
+        <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="fff" svg-type="call" svg-subtype="call"><parameters><label>fff</label><color>#e4c3e4</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:6688/data/models/4789e4b6-ea31-4d35-a4e2-4ddc042b435d.xml</url></arguments></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a4" endpoint="subprocess" svg-id="a4" svg-label="sdff fgfg" svg-type="call" svg-subtype="call"><parameters><label>sdff fgfg</label><color>#d4e1f1</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>9bc9a21d-45dc-4ca6-b147-6da870a701ed</dbpm_subprocess_model></parameters></call>
+        <call id="a3" endpoint="subprocess" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color>#d4e1f1</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>973017fa-8bba-480f-885f-43980492f1aa</dbpm_subprocess_model></parameters></call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-19T14:18:32.475Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: 26b6393d-7701-4dfa-b5d5-d12da5aeb356
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>d7591e5a-b611-4b54-b55c-b144fa3e4581</dbpm:document_id>
+          <dbpm:text_selections>ure field in the attendance check list.  Applied Strategy and Organization  Exam:   WI001111 / Endterm   Date:   Thursday 23 rd   February, 2023  Examiner:   Prof. Dr. Isabell M. Welpe   Time:   14:15 – 15:45 I P 1   P 2   P 3   P 4   P 5   P 6   P 7   P 8   P 9   P 10   P 11   P 12  Working instructions  • This exam consists of   28 pages   with a total of   12 problems . Please make sure now that you received a complete copy of the exam. • The total amount of achievable credits in this exam is 90 credits. • Detaching pages from the exam is prohibited. • Allowed resources:  –   one   analog dictionary   English   ↔   native language • Do not write with red or green colors nor use pencils. • Physically turn o s outside of the checkboxes. •   If you fail to follow the instruction on how to mark a box you will be awarded 0 points for the given question. • DO NOT mark the exam outside of the checkboxes. • DO NOT circle around checkboxes. • If you want to correct a solution do so as described. Left room from   to   /   Early submission at – Page 1 / 28 –
+    Sample Solution  Mark corre</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="subprocess" svg-id="a1" svg-label="Task 1" svg-type="call" svg-subtype="call"><parameters><label>Task 1</label><color>#ffffcc</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a4" endpoint="" svg-id="a4" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call>
+        
+        <call id="a3" endpoint="subprocess" svg-id="a3" svg-label="Task 3" svg-type="call" svg-subtype="call"><parameters><label>Task 3</label><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-19T16:18:56.592Z'
+event: model_generated
+data:
+  id: 3a8a3063-36b7-41c1-a8d3-c0330574a241
+  name: Model_11
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>62b2cada-c0de-4ec1-8809-04cd51ee466c</dbpm:document_id>
+          <dbpm:text_selections>ooked</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <testset xmlns="http://cpee.org/ns/properties/2.0">
+        <executionhandler>ruby</executionhandler>
+        <dataelements/>
+        <endpoints/>
+        <attributes>
+          <guarded>none</guarded>
+          <modeltype>CPEE</modeltype>
+          <theme>extended</theme>
+          <guarded_id/>
+          <info>Subprocess</info>
+          <creator>Christine Ashcreek</creator>
+          <author>Christine Ashcreek</author>
+          <model_uuid>1fc43528-3e4a-40ee-8503-c0ed7e5d883c</model_uuid>
+          <model_version/>
+          <design_stage>development</design_stage>
+          <design_dir>Templates.dir</design_dir>
+        </attributes>
+        <description>
+          <description xmlns="http://cpee.org/ns/description/1.0">
+            <manipulate id="a3" label="">data.start = Time.now.to_f</manipulate>
+            <call id="a1" endpoint="subprocess">
+              <parameters>
+                <label>Create Sub</label>
+                <arguments>
+                  <behavior>wait_running</behavior>
+                  <url>https://cpee.org/hub/server/Templates.dir/Wait.xml</url>
+                  <init>
+                    <b>!rand(1..17)</b>
+                  </init>
+                  <endpoints/>
+                  <attributes/>
+                  <customization/>
+                </arguments>
+              </parameters>
+              <code>
+                <prepare/>
+                <finalize output="result">data.res = result
+    data.substart = result['start'].to_f - data.start.to_f
+    data.subend = result['end'].to_f - data.start.to_f
+    data.duration = Time.now.to_f - data.start.to_f
+    data.teams = result</finalize>
+                <update output="result"/>
+                <rescue output="result"/>
+              </code>
+              <annotations>
+                <_generic/>
+                <_timing>
+                  <_timing_weight/>
+                  <_timing_avg/>
+                  <explanations/>
+                </_timing>
+                <_shifting>
+                  <_shifting_type>Duration</_shifting_type>
+                </_shifting>
+                <_context_data_analysis>
+                  <probes/>
+                  <ips/>
+                </_context_data_analysis>
+                <report>
+                  <url/>
+                </report>
+                <_notes>
+                  <_notes_general/>
+                </_notes>
+              </annotations>
+              <documentation>
+                <input/>
+                <output/>
+                <implementation>
+                  <description/>
+                </implementation>
+                <code>
+                  <description/>
+                </code>
+              </documentation>
+            </call>
+            <stop id="a2"/>
+          </description>
+        </description>
+        <transformation>
+          <description type="copy"/>
+          <dataelements type="none"/>
+          <endpoints type="none"/>
+        </transformation>
+        <subscriptions xmlns="http://riddl.org/ns/common-patterns/notifications-producer/2.0">
+          <subscription id="_karo" url="https://lehre.bpm.in.tum.de/ports/8000/">
+            <topic id="activity">
+              <event>calling</event>
+            </topic>
+          </subscription>
+        </subscriptions>
+      </testset>
+    </description>
+---
+timestamp: '2026-02-19T16:20:38.165Z'
+event: model_generated
+data:
+  id: a61058bb-d0bb-453f-bb2f-623f85c767a3
+  name: Model_12
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>62b2cada-c0de-4ec1-8809-04cd51ee466c</dbpm:document_id>
+          <dbpm:text_selections>uccess or fai ding organisations. An important aspect of this for most organisations will</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description>
+        <description xmlns="http://cpee.org/ns/description/1.0">
+          <manipulate id="a3" label="">data.start = Time.now.to_f</manipulate>
+          <call id="a1" endpoint="subprocess">
+            <parameters>
+              <label>Create Sub</label>
+              <arguments>
+                <behavior>wait_running</behavior>
+                <url>https://cpee.org/hub/server/Templates.dir/Wait.xml</url>
+                <init>
+                  <b>!rand(1..17)</b>
+                </init>
+                <endpoints/>
+                <attributes/>
+                <customization/>
+              </arguments>
+            </parameters>
+            <code>
+              <prepare/>
+              <finalize output="result">data.res = result
+    data.substart = result['start'].to_f - data.start.to_f
+    data.subend = result['end'].to_f - data.start.to_f
+    data.duration = Time.now.to_f - data.start.to_f
+    data.teams = result</finalize>
+              <update output="result"/>
+              <rescue output="result"/>
+            </code>
+            <annotations>
+              <_generic/>
+              <_timing>
+                <_timing_weight/>
+                <_timing_avg/>
+                <explanations/>
+              </_timing>
+              <_shifting>
+                <_shifting_type>Duration</_shifting_type>
+              </_shifting>
+              <_context_data_analysis>
+                <probes/>
+                <ips/>
+              </_context_data_analysis>
+              <report>
+                <url/>
+              </report>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation>
+              <input/>
+              <output/>
+              <implementation>
+                <description/>
+              </implementation>
+              <code>
+                <description/>
+              </code>
+            </documentation>
+          </call>
+          <stop id="a2"/>
+        </description>
+      </description>
+    </description>
+---
+timestamp: '2026-02-19T16:22:56.559Z'
+event: model_generated
+data:
+  id: 8f023742-7c53-40b7-89ee-ce79768ff0c5
+  name: Model_13
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>62b2cada-c0de-4ec1-8809-04cd51ee466c</dbpm:document_id>
+          <dbpm:text_selections>tegies.</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description>
+        <description xmlns="http://cpee.org/ns/description/1.0">
+          <manipulate id="a3" label="">data.start = Time.now.to_f</manipulate>
+          <call id="a1" endpoint="subprocess">
+            <parameters>
+              <label>Create Sub</label>
+              <arguments>
+                <behavior>wait_running</behavior>
+                <url>https://cpee.org/hub/server/Templates.dir/Wait.xml</url>
+                <init>
+                  <b>!rand(1..17)</b>
+                </init>
+                <endpoints/>
+                <attributes/>
+                <customization/>
+              </arguments>
+            </parameters>
+            <code>
+              <prepare/>
+              <finalize output="result">data.res = result
+    data.substart = result['start'].to_f - data.start.to_f
+    data.subend = result['end'].to_f - data.start.to_f
+    data.duration = Time.now.to_f - data.start.to_f
+    data.teams = result</finalize>
+              <update output="result"/>
+              <rescue output="result"/>
+            </code>
+            <annotations>
+              <_generic/>
+              <_timing>
+                <_timing_weight/>
+                <_timing_avg/>
+                <explanations/>
+              </_timing>
+              <_shifting>
+                <_shifting_type>Duration</_shifting_type>
+              </_shifting>
+              <_context_data_analysis>
+                <probes/>
+                <ips/>
+              </_context_data_analysis>
+              <report>
+                <url/>
+              </report>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation>
+              <input/>
+              <output/>
+              <implementation>
+                <description/>
+              </implementation>
+              <code>
+                <description/>
+              </code>
+            </documentation>
+          </call>
+          <stop id="a2"/>
+        </description>
+      </description>
+    </description>
+---
+timestamp: '2026-02-19T16:23:28.358Z'
+event: model_generated
+data:
+  id: 117c3e06-88c2-4141-bc8c-6b3f9bc186e8
+  name: Model_14
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>62b2cada-c0de-4ec1-8809-04cd51ee466c</dbpm:document_id>
+          <dbpm:text_selections>ironment through</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description>
+        <description xmlns="http://cpee.org/ns/description/1.0">
+          <manipulate id="a3" label="">data.start = Time.now.to_f</manipulate>
+          <call id="a1" endpoint="subprocess">
+            <parameters>
+              <label>Create Sub</label>
+              <arguments>
+                <behavior>wait_running</behavior>
+                <url>https://cpee.org/hub/server/Templates.dir/Wait.xml</url>
+                <init>
+                  <b>!rand(1..17)</b>
+                </init>
+                <endpoints/>
+                <attributes/>
+                <customization/>
+              </arguments>
+            </parameters>
+            <code>
+              <prepare/>
+              <finalize output="result">data.res = result
+    data.substart = result['start'].to_f - data.start.to_f
+    data.subend = result['end'].to_f - data.start.to_f
+    data.duration = Time.now.to_f - data.start.to_f
+    data.teams = result</finalize>
+              <update output="result"/>
+              <rescue output="result"/>
+            </code>
+            <annotations>
+              <_generic/>
+              <_timing>
+                <_timing_weight/>
+                <_timing_avg/>
+                <explanations/>
+              </_timing>
+              <_shifting>
+                <_shifting_type>Duration</_shifting_type>
+              </_shifting>
+              <_context_data_analysis>
+                <probes/>
+                <ips/>
+              </_context_data_analysis>
+              <report>
+                <url/>
+              </report>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation>
+              <input/>
+              <output/>
+              <implementation>
+                <description/>
+              </implementation>
+              <code>
+                <description/>
+              </code>
+            </documentation>
+          </call>
+          <stop id="a2"/>
+        </description>
+      </description>
+    </description>
+---
+timestamp: '2026-02-19T16:25:01.404Z'
+event: model_generated
+data:
+  id: 9fbcdaba-f3ca-4041-92b4-e13f666cd337
+  name: Model_15
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>62b2cada-c0de-4ec1-8809-04cd51ee466c</dbpm:document_id>
+          <dbpm:text_selections>pact of these general factors tends to surface in the more imm</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description>
+        <description xmlns="http://cpee.org/ns/description/1.0">
+          <manipulate id="a3" label="">data.start = Time.now.to_f</manipulate>
+          <call id="a1" endpoint="subprocess">
+            <parameters>
+              <label>Create Sub</label>
+              <arguments>
+                <behavior>wait_running</behavior>
+                <url>https://cpee.org/hub/server/Templates.dir/Wait.xml</url>
+                <init>
+                  <b>!rand(1..17)</b>
+                </init>
+                <endpoints/>
+                <attributes/>
+                <customization/>
+              </arguments>
+            </parameters>
+            <code>
+              <prepare/>
+              <finalize output="result">data.res = result
+    data.substart = result['start'].to_f - data.start.to_f
+    data.subend = result['end'].to_f - data.start.to_f
+    data.duration = Time.now.to_f - data.start.to_f
+    data.teams = result</finalize>
+              <update output="result"/>
+              <rescue output="result"/>
+            </code>
+            <annotations>
+              <_generic/>
+              <_timing>
+                <_timing_weight/>
+                <_timing_avg/>
+                <explanations/>
+              </_timing>
+              <_shifting>
+                <_shifting_type>Duration</_shifting_type>
+              </_shifting>
+              <_context_data_analysis>
+                <probes/>
+                <ips/>
+              </_context_data_analysis>
+              <report>
+                <url/>
+              </report>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation>
+              <input/>
+              <output/>
+              <implementation>
+                <description/>
+              </implementation>
+              <code>
+                <description/>
+              </code>
+            </documentation>
+          </call>
+          <stop id="a2"/>
+        </description>
+      </description>
+    </description>
+---
+timestamp: '2026-02-19T16:25:43.487Z'
+event: model_generated
+data:
+  id: 9f15c8fa-5671-4f6f-9c63-e39f515f4977
+  name: Model_16
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>62b2cada-c0de-4ec1-8809-04cd51ee466c</dbpm:document_id>
+          <dbpm:text_selections>previous section looked at how forces in the macro-environment m</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0">
+        <manipulate id="a3" label="">data.start = Time.now.to_f</manipulate>
+        <call id="a1" endpoint="subprocess">
+          <parameters>
+            <label>Create Sub</label>
+            <arguments>
+              <behavior>wait_running</behavior>
+              <url>https://cpee.org/hub/server/Templates.dir/Wait.xml</url>
+              <init>
+                <b>!rand(1..17)</b>
+              </init>
+              <endpoints/>
+              <attributes/>
+              <customization/>
+            </arguments>
+          </parameters>
+          <code>
+            <prepare/>
+            <finalize output="result">data.res = result
+    data.substart = result['start'].to_f - data.start.to_f
+    data.subend = result['end'].to_f - data.start.to_f
+    data.duration = Time.now.to_f - data.start.to_f
+    data.teams = result</finalize>
+            <update output="result"/>
+            <rescue output="result"/>
+          </code>
+          <annotations>
+            <_generic/>
+            <_timing>
+              <_timing_weight/>
+              <_timing_avg/>
+              <explanations/>
+            </_timing>
+            <_shifting>
+              <_shifting_type>Duration</_shifting_type>
+            </_shifting>
+            <_context_data_analysis>
+              <probes/>
+              <ips/>
+            </_context_data_analysis>
+            <report>
+              <url/>
+            </report>
+            <_notes>
+              <_notes_general/>
+            </_notes>
+          </annotations>
+          <documentation>
+            <input/>
+            <output/>
+            <implementation>
+              <description/>
+            </implementation>
+            <code>
+              <description/>
+            </code>
+          </documentation>
+        </call>
+        <stop id="a2"/>
+      </description>
+    </description>
+---
+timestamp: '2026-02-19T16:27:38.276Z'
+event: model_generated
+data:
+  id: 3aae6007-9696-4b2b-ad2d-9acf55b3d793
+  name: Model_17
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>62b2cada-c0de-4ec1-8809-04cd51ee466c</dbpm:document_id>
+          <dbpm:text_selections>isation'</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0"/></description>
+---
+timestamp: '2026-02-19T16:33:38.086Z'
+event: model_generated
+data:
+  id: fa69de89-621d-4136-a6c4-ddff324aafbd
+  name: Model_18
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>62b2cada-c0de-4ec1-8809-04cd51ee466c</dbpm:document_id>
+          <dbpm:text_selections>luence</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description xmlns="http://cpee.org/ns/description/1.0"/></description>
+---
+timestamp: '2026-02-19T16:37:04.075Z'
+event: model_generated
+data:
+  id: 277dcda2-b5d9-4496-8304-b67662168652
+  name: Model_19
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>62b2cada-c0de-4ec1-8809-04cd51ee466c</dbpm:document_id>
+          <dbpm:text_selections>ector or market.</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description>
+        <call id="a1" endpoint="subprocess"/>
+      </description>
+    </description>
+---
+timestamp: '2026-02-19T16:37:38.345Z'
+event: model_generated
+data:
+  id: d0c18dcf-8a37-4bf8-a2da-dca68046b53f
+  name: Model_20
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>62b2cada-c0de-4ec1-8809-04cd51ee466c</dbpm:document_id>
+          <dbpm:text_selections>forces surroundin</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description>
+        <call id="a1" endpoint="subprocess"/>
+      </description>
+    </description>
+---
+timestamp: '2026-02-19T16:38:21.559Z'
+event: model_generated
+data:
+  id: bcdcfd3f-c8a4-4500-80c1-7774b7d8d7c3
+  name: Model_21
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>62b2cada-c0de-4ec1-8809-04cd51ee466c</dbpm:document_id>
+          <dbpm:text_selections>ndustry analys</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description>
+        <call id="a1" endpoint="subprocess"/>
+      </description>
+    </description>
+---
+timestamp: '2026-02-19T16:41:00.022Z'
+event: model_generated
+data:
+  id: 890313c4-2534-4acc-960a-a35bf71e939e
+  name: Model_22
+  data: "<description>\n  <dbpm:info\n    xmlns:dbpm=\"https://example.com/dbpm\">\n    <dbpm:document_info>\n      <dbpm:document_id>62b2cada-c0de-4ec1-8809-04cd51ee466c</dbpm:document_id>\n      <dbpm:text_selections>es in the competitive forces surrounding organisations. An important aspect of this for most organisations will be competition within their industry, sector or market. An industry is a group of firms producing products and services that are essentially the same. Examples are the automobile industry and the airline industry. Industries are also often described as 'sectors', especially in public services (e.g. the health sector or the education sector). Industries and sectors are often made up of several specific markets. A market is a group of customers for specific products or services that are essentially the same (e.g. a particular geographical market). Thus the automobile industry has markets in North America. Europe and Asia. for example. This section concentrates on industry analysis, starting with Michael Porter's five forces framework and then introducing techniques for analysing the dynamics of industries. However, while the following section will address markets in more detail, this section will refer to markets and most of the concepts apply similarly to markets and industries.2.3.1 Competitive forces - the Five Forces FrameworkIndustries vary widely in terms of their attractiveness, as measured by how easy it is for participating firms to earn high profits. One key determinant of profitability is the extent of competition, actual or potential. Where competition is low, and there is little threat of new competitors, participating firms should normally expect good profits.Porter's Five Forces Framework helps identify the attractiveness of an industry in terms of five competitive forces: (i) threat of entry, (ii) threat of substitutes, (ii) power of buyers, (iv) power of suppliers and (v) extent of rivalry between competitors. These five forces together constitute an industry's 'structure', which is typically fairly stable. For Porter, an attractive industry structure is one that offers good profit potential. His essential message is that where the five forces are high, industries are not attractive to compete in. Excessive competitive rivalry, powerful buyers and suppliers and the threat of substitutes or new entrants will all combine to squeeze profitability.Although initially developed with businesses in mind, the five forces framework is relevant to most organisations. It can provide a useful starting point for strategic analysis even where profit criteria may not apply. In the public sector, it is important to understand how powerful suppliers can push up costs:among charities.it is important to avold excessive rivalry within the same market. Moreover, once the degreeof industry attractiveness has been understood. the five forces can help set an agenda for action on the various critical issues that they identify:for example，what can competitors do to control excessive rivalry in a particular industry？The rest of this section introduces cach of thefive forces in more detail. Illustration 2.3 on the evolving steel industry provides examples.Competitive rivalryAt the centre of five forces analysis is the rivalry between the existing players - 'incumbents' in an industry.The more competitive rivalry there is, the worse it is for incumbents. Competitive rivals are organisations with similar products and services aimed at the same customer group (i.e. not substitutes). In the European airline industry, Air France and British Airways are rivals; high-speed trains are a 'substitute'. Five factors tend to define the extent of rivalry in an industry or market:Competitor balanceWhere competitors are of roughly equal size there is the danger of intensely rivalrous behaviour as one competitor attempts to gain dominance over others, through aggressive price cuts for example. Conversely, less rivalrous industries tend to have one or two dominant organisations, with the smaller players reluctant to challenge the larger ones directly (e.g. by focusing on niches to avoid the 'attention' of the dominant companies).Industry growth rateIn situations of strong growth, an organisation can grow with the market, but in situations of low growthor decline, any growth is likely to be at the expense of a rival, and meet with fierce resistance. Low-growth markets are therefore oftenassociated with price competition and low profitability. The  industry life cycle influences growth rates,  and  hence competitive conditions; see  section  2.3.2.High fixed costsIndustries with high fixed costs, perhaps because they require high investments in capital equipment or initial research, tend to be highly rivalrous. Companies will seek to spread their costs (i.e. reduce unit costs) by increasing their volumes: to do so, they typically cut their prices,prompting competitors to do the same and thereby triggering price wars in which everyone in the industry suffers. Similarly, if extra capacity can only be added in large increments (as in many manufacturing sectors, for example a chemical or glass factory),the competitor making such an addition is likely to create short-term over-capacity in the industry,leading to increased competition to use capacity.High exit barriers.The existence of high barriers to exit-in other words, closure or disinvest-ment-tends to increase rivalry, especially in declining industries.Excess capacity persists and consequently incumbents fight to maintain market share. Exit barriers might be high for a variety of reasons: for example, high redundancy costs or high investment in specific assets such as plant and equipment which others would not buy.Low differentiationIn a commodity market, where products or services are poorly differentiated, rivalry is increased because there is little to stop customers switching between competitors and the only way to compete is on price.The threat of entryHow easy it is to enter the industry influences the degree of competition. The greater the threat of entry, the worse it is for incumbents in an industry. An attractive industry has high barriers to entry in order to reduce the threat of new competitors. Barriers to entry are the factors that need to be overcome by new entrants if they are to compete in an industry. Five important entry barriers are:Scale and experienceIn some industries, economies of scale are extremely important: e.g.in the production of automobiles or the advertising of fast-moving consumer goods. Once incumbents have reached large-scale production, it will be very expensive for new entrants to match them and until theyreach a similar volume they will have higher unit costs. This scale effect is increased where there are high investment requirements for entry, for example research costs in pharmaceuticals or capital equipment costs in automobiles. Barriers to entry also come from experience curve effects that give incumbents a cost advan-tage because they have learnt how to do things more efficiently than an inexperienced new entrant could possibly do (see section 6.3.1).Until the new entrant has built up equivalent experience over time, it will tend to produce at higher cost.Access to supply or distribution channels.In many industries manufacturers have had controlover supply and/or distribution channels. Sometimes this has been through direct ownership (vertical integration), sometimes just through customer or supplier loyalty. In some indus-tries this barrier has been overcome by newentrants who have bypassed retail distributors and sold directly to consumers through e-commerce (e.g. Dell Computers and Amazon). Expected retaliationIf an organisation considering entering an industry believes that theretaliation of an existing firm will be so great aas to prevent entry, or mean that entry would be too costly, this is also a barrier. Retaliatiorn could take the form of a price war or a market-ing blitz. Just the knowledge that incumbents are prepared to retaliate is often sufficiently discouraging to act as a barrier.Legislation or government actionLegal restraaints on new entry vary from patent protection (e.g. pharmaceuticals), to regulation of maarkets (e.g. pension selling), through to direct government action (e.g. tariffs). Of course,organisations are vulnerable to new entrants if governments remove such protection,asnas happened with deregulation of the airline industry.DifferentiationDifferentiation means proviling a product or service with higher perceived value than the competition; its importance will be discussed more fully in section 6.3.2. Cars are differentiated, for example, by quality and branding. Steel, by contrast, is by and large a commodity, undifferentiated and therefore sold by the tonne. Steel buyers will simply buy the cheapest. Differentiation reduces the threat of entry because of increasing customer loyalty.The threat of substitutesSubstitutes are products or services that offer a similar benefit to an industry's products or services, but have a different nature. For example, aluminium is a substitute for steel; a tablet computer is a substitute for a laptop; charities can be substitutes for public services. Managers often focus on their competitors in their own industry, and neglect the threat posed by substitutes. Substitutes can reduce demand for a particular type of product as customers switch to alternatives-even to the extent that this type of product or service becomes obsolete. However, there does not have to be much actual switching for the substitute threat to have an effect. The simple risk of substitution puts a cap on the prices that can be charged in an industry. Thus, although Eurostar has no direct competitors in terms of train services from Paris to London, the prices it can charge are ultimately limited by the cost of flights between the two cities.There are two important points to bear in mind about substitutes:The price/performance ratio The price/performance ratio is critical to substitution threats. A substitute is still an effectivethreat even if more expensive,so long as itoffers performance advantages that customers value. Thus aluminium is more expensive than steel, but its relative lightness and its resist-ance to corrosion give it an advantage in some automobile manufacturing applications. It is the ratio of price to performancethat matters, rather than simple price.Extra-industry effectsExtra-industry effects are the core of the substitution concept. Substitutes come from outsidethe incumbents'industry and should not beconfused with competitors'threats from within the industry. The value of the substitution concept is to force managers to look outside their own industry to consider more distant threats and constraints. The higher the threat of substitution, the less attractive the industry is likely to be.The power of  buyersBuyers  are  the  organisation's  immediate  customers, not  necessarlly  the  ultimate  consumers. If buyers are powerful,  then they can demand cheap prices or product or service improvements liable to reduce profitsBuyer power is likely to be high when some of the following three conditions prevail:Concentrated  buyers.Where  a  few  large  customers  account  for  the  majority  of  sales, buyer  power  is  increased.  This  is  the  case  on  items  such  as  milk  in  the  grocery  sector  in  many Buropean  countries,where  just  a  few  retallers  dominate  the  market.  Ifa  product  or  service accounts  for  a  high  percentage  of the  buyers  total  purchases  their  power  is  also  likely  toincrease as they are more likely to 'shop around' to get the best price and therefore 'squeeze' suppliers more than they would for more trivial purchases.Low switching costs. Where buyers can easily switch between one supplier and another, they have a strong negotiating position and can squeeze suppliers who are desperate for their business. Switching costs are typically low for weakly differentiated commodities such as steel. Buyer competition threat.If the buyer has the capability to supply itself, or if it has the possibility of acquiring such a capability,it tends to be powerful. In negotiation with its suppliers, it can raise the threat of doing the suppliers' job themselves. This is called backward vertical integration (see section 7.5), moving back to) sources of supply, and might occur if satisfactory prices or quality from suppliers cannot be obtained. For example, some steel companies have gained power over their iron ore suppliers as they have acquired iron ore sources for themselves.It is very important that buyers are distinguished from ultimate consumers. Thus for companies like Procter &amp; Gamble or Unilever (makers of shampoo, washing powders and so on), their buyers are retailers such as Carrefour or Tesco, not ordinary consumers. Carrefour and Tesco have much more negotiating power than an ordinary consumer would have. The high buying power of such supermarkets is a strategic issue for the companies supplying them. It is often useful therefore to distinguish‘strategic customers', powerful buyers (such as the retailers)towards whom the strategy should be primarily orientated. In the public sector, the strategic customer is typically the provider of funds, rather than the consumer of services: for a pharmaceutical company, the strategic customer is the hospital,not the patient.The power of suppliersSuppliers are those who supply the organisation with what it needs to produce the product or service. As well as fuel, raw materials and equipment, this can include labour and sources of finance. The factors increasing supplier power are the converse to those for buyer power. Thus supplier power is likely to be high where there are:Concentrated suppliers. Where just a few producers dominate supply, suppliers have morepower over buyers. The iron ore industry isnow concentrated in the hands of three main producers, leaving the steel companies, still relatively fragmented, in a weak negotiating position for this essential raw material.High switching costs. If it is expensive or disruptive to move from one supplier to another, then the buyer becomes relatively dependentand correspondingly weak. Microsoft is a pow-erful supplier because of the high switchingcosts of moving from one operating system to another. Buyers are prepared to pay a premium to avoid the trouble, and Microsoft knows it.Supplier competition threat. Suppliers have increased power where they are able to cut outbuyers who are acting as intermediaries. Thus airlines have been able to negotiate tough contracts with travel agencies as the rise of online booking has allowed them to create a direct route to customers. This is called forward vertical integration, moving up closer to the ultimate customer.Most organisations have many suppliers, so it is necessary to concentrate the analysis on the most important ones or types. If their power ishigh,suppliers can capture all their buyers' own potential profits simply by raising their prices. Star football players have succeeded in raising their  rewards to astronomical levels, while even the leading football clubs - their  'buyers' - struggle to make money.Types of industryFive forces analysis helps to identify four main types of industry structure. In practice, particular industries are typically not pure representatives of  these types, but none the less it is helpful to have these broad categories in mind in order to compare the attractiveness of industries and  likely broad patterns of competitive behaviour within them. These four types are:Monopolistic industriesA monopoly is formally an industry with just one firm and therefore no competitive rivalry. Because of the lack of choice between rivals, there is potentially very great power over buyers and suppliers. This can be very profitable. Firms can still have monopolistic power where they are simply the dominant competitor: for example, Google's 66 per cent share of the American search market gives it price-setting power in the internet advertising market. Some industries are monopolistic because of economies of scale: water utility companies are often monopolies in a particular area because it is uneconomic for smaller players to compete. Other industries are monopolistic because of  'network effects', where a product is more valuable because of the number of other people using it: Facebook and Microsoft Office are so powerful precisely because so many friends and colleagues are already users.Oligopolistic  industriesAn oligopoly is where just a few firms dominate an industry, with the potential for limited rivalry and great power over buyers and suppliers. The iron ore market is an oligopoly, dominated by Vale, Rio Tinto and BHP Billiton. Where there are just two oligopolistic rivals, as for Airbus and Boeing in the civil airline industry, the situation is a duopoly. In theory , oligopoly can be highly profitable, but much depends on the extent of rivalrous behaviour, the threat of entry and substitutes and the growth of final demand in key markets. Oligopolistic firms have a strong interest in minimising rivalry between each other so as to maintain a common front against buyers and suppliers.Hypercompetitive industriesHypercompetition occurs where the frequency, boldness and aggression of competitor interactions accelerate to create a condition of constant disequilibrium and change. Under hypercompetition, rivals tend to invest heavily in destabilising innovation, expensive marketing initiatives and aggressive price cuts, with negative impacts on profits. Hypercompetition often breaks out in otherwise oligopolistic industries. Thus the global mobile phone industry has some oligopolistic characteristics,with Nokia holding 27 per cent market share. Samsurng 23 per cent and Apple 9 per cent in 2012. However, the industry is very dynamic: Apple only entered the industry in 2007, and Nokia has lost around 8 per cent of the market sine then. Competitive moves under conditions of hypercompetition are discussed in section 6.4.2.Perfectly competitive industriesPerfect competition exists where barriers to entry are low, there are many equal rivals each with very similar products, and information about competitors is freely available. Few markets are absolutely perfectly competitive, but many are highly so. In these conditions, firms are unable to earn more profit than the bare minimum required to survive. Competition focuses heavily on price, because competitors typically cannot fund major innovations or marketing initiatives. Minicab services in large cities often come close to perfect competition. Entrepreneurs should beware entering industries with low barriers to entry, as these are liable to be perfectly or highly competitive and good profits will be very hard to earn.Implications of Five Forces analysisThe Five Forces Framework provides useful insights into the forces at work in the industry or market environment of an organisation. It is important, however, to use the framework for more than simply listing the forces. The bottom line is an assessment of the attractiveness of the industry. The analysis should conclude with a judgement about whether the industry is a good one to compete in or not. Here it is important to note that just one significantly adverse force can be enough to undermine the attractiveness of the industry as a whole. For example. powerful buyers can extract all the potential profits of an otherwise attractive industry structure by forcing down prices.The analysis should next prompt investigation of the implications of these forces, for example:Which industries to enter (or leave)? The fundamental purpose of the five forces model is to identify the relative attractiveness of different industries: industries are attractive when the forces are weak. Entrepreneurs and managers should invest in industries where the five forces work in their favour and avoid, or disinvest from, markets where they are strongly against. Entrepreneurs sometimes choose markets because entry barriers are low: unless barriers are likely to rise quickly,this is precisely the wrong reason to enter.What influence can be exerted? Industry structures are not necessarily fixed, but can be influenced by deliberate managerial strategies. For example. organisations can build barriers to entry by increasing advertising spend to improve customer loyalty. They can buy up competitors to reduce rivalry and to increase power over suppliers or buyers. Influencing industry structure involves many issues relating to competitive strategy and will be a major concern of Chapter 6.How are competitors differently affected? Not all competitors will be affected equally by changes in industry structure,deliberate or spontaneous. If barriers are rising because of increased R&amp;D or advertising spending,smaller players in the industry may not be able to keep up with the larger players, and be squeezed out. Similarly, growing buyer power is likely to hurt small competitors most. Strategic group analysis is helpful here (see section 2.4.1).Although originating in the private sector, five forces analysis can have important implications for organisations in the public sector too. For example, the forces can be used to adjust the service offer or focus on key issues. Thus it might be worth switching managerial initiative from an arena with many crowded and overlapping services (e.g. social work, probation services and education) to one that is less rivalrous and where the organisation can do something more distinctive. Similarly, strategies could be launched to reduce dependence on particularly powerful and expensive suppliers, for example energy sources or high-shortage skills.Key issues in using the five forces frameworkThe five forces framework has to be used carefully and is not necessarily complete, even at the industry level. When using this framework, it is important to bear the following three issues in mind:Defining the 'right' industryMost industries can be analysed at different levels, for example different markets and even different segments within  them (see section 2.4.2). For example, the airline industry has different geographical markets (Europe, China and so on) and it also has different segments within each market (e.g. leisure, business and freight). The competitive forces are likely to be different for each of these markets and segments and can be analysed separately. It is sometimes useful to  conduct industry analysls at a disaggregated level, for each distinct segment or market. The overall picture for the industry as a whole can then be assembled, while particular market or segment opportunities can be highlighted.Converging industriesIndustry definition is often difficult too because industry boundaries are continuously changing. For example, many industries, especially in high-tech arenas, are converging. Convergence is where previously separate industries begin to overlap or merge in terms of activities, technologies, products and customers.12 Technological change has brought convergence between the telephone and photographic industries, for example, as mobile phones have come to include camera and video functions. The camera company Kodak was driven into bankruptcy by mobile phone producers such as Apple and Samsung. Complementary organisationsSome analystsargue that industry analyses need to include a 'sixth force', the existence of organisations that are complementors rather than simple competitors. An organisation is your complementor if it enhances your business attractiveness to customers or suppliers.Thus McAfee computer security is a complement to Microsoft because its Windows software is more attractive to customers when protected. Even competing airline companies can be complementary to each other because for a supplier like Boeing it is more attractive to invest in particular improvements for two customers rather than one. Complementarity implies a significant shift in perspective. While Porter's Five Forces sees organisations as battling against each otherfor share of industry value, complementors may cooperate to increase the total value available.If Microsoft and McAfee keep each other in touch with their technological developments, they increase the value of both their products. Opportunities for cooperation can be seen through a value net: a map of organisations in a business environment demonstrating opportunities for value-creating cooperation as well as competition.In Figure 2.5,(p.51) Sony is a complementor, supplier and competitor to Apple's iPod. Sony and Apple have an interest in cooperating as well as competing.2.3.2 The dynamics of industry structureIndustry structure analysis can casily become too static: alter all, structure implies stability.'5 However, the previous sections have raised the issue of how competitive forces change over  time, The key drivers for change are likely to alter Industry structures and scenario analyses  can  be  used  to  understand  possible  impacts.  An  llustration  of changing  industry  structure,  and the competitive implications of this, is provided by llustration 2.4 on the UK charity sec- tor.  This  section  examines  two  additional  approaches  to  understanding  change  In  industrystructure: the industry lfe-cycle concept and comparativejfive forces analyses.The industry life cycleThe power ofthe live lorces typically varles with thestages ofthe industry lfe cycle.The indus- ty  lie-cycle  concept  proposes  that  industries  start  small  in  thelr  development  stage,then  go  through  a  period  of rapid  growth(the  equivalent  to  'adolescence'in  the  human  lfe  cycle). culmlnating in a period of'shake-out'.The final two stages are first a period of slow or even  zero  growth('maturity'),and then the  final  stage  ofdecline('old  age').Each  of these  stages has  Implications for the five forces.16The development stage is an experimental one,typlcally with few players, litle direct rtvalry and  highly  diferentiated  products.  The  five  forces  are  lkely  to  be  weak,  therelore,  thoughINDUSTRIES   AND   SECTORS51Figure   2.5   The   value   netCustomersCompanyProduct(e.g.Apple     iPod)Suppliers(e.g. Sony lithium polymer    battery)Competitors(Sony             WalkmanMP3    players)Complementors(eg.Sony      Music)'An organisation i  ;your complementor if:(i) customers value your product more when they have the other organisation's product than when they have the product alone (e.g. . sausage and mustard);(ii) it's more attractive for suppliers to provide resources to you when it's also supplying the other organisation than when it's supplying you alone (airlines and Boeing)Note: Organisations can play more than one role. Thus Sony Music((publisher of AC/DC, Sade etc)is a complementor to Apple's iPod; Sony i; ;also a supplier     batteries  to  theiPod; Sony also competes with its own MP3 players.Source:   Reprinted   by   per   issior               vardd  Business  Review. Fron  ‘The    Right    Game'Blrandenburgel                andB.Nalebuff,       Julv-       gust            1996.pp.57-64..Copyright       1996   by   the   Harvard   usinesoo            PublishingCorporation.All      rights      reserved.profits  may  actually  be  scarce  because  of  high  investment  requirements.  The  next  stage  is  one of  high  growth,  with  rivalry  low  as  there  is  plenty  of  market  opportunity  for  everybody.  Low  rivalry  and  keen  buyers  of  the  new  product  favour  prolits  at  this  stage,  but  these  are  not certain.Barriers  to  entry  may  still  be  low  in  the  growth  stage,  as  existing  competitors  have  not  built  up  much  scale,  experience  or  customer  loyalty.  Suppliers  can  be  powerful  too  if there  is  a   shortage   of  components   or   materials  that  fast-growing   businesses   need  for  expansion.  The shake-out  stage  begins  as  the  market  becomes  increasingly  saturated  and  cluttered  with  com- petitors.Prolits   are   variable,   as   increased   rivalry   forces   the  weakest   competitors   out   of  the business.  In  the  maturity  stage,  barriers  to  entry  tend  to  increase,  as  control  over  distribution  l   established  and  economies  of  scale  and  experience  curve  benefits  come  into  play.  Products  cFigure   2.6   The   industry   life   cycleDevelopment               Growth                  Shake-out                    Maturity                    DeclineMarketsizeTypicalfive  forcesLow rivalry;Highdifferentiation   Innovation keyLow rivalry:High growthand   weakbuyers,  but  lowentry    barriersGrowth  abilitykeyIncreasing   rivalry:   Stronger   buyers:Extreme rivalry: Typically  many  exits   and  pricecompetition  \tCost  and  commitmentkeySlower   growthand   some  exitsManagerial                andfinancial    strengthkeyLow  growth  and    standardproducts,    but higher   entrybarriersMarket   share and  cost  keyservices  tend  to  standardise,  with  relative  price  becoming  key.Buyers  may  become  more  pow- erful  as  they  become  less  avid  for  the  industry's  products  and  more  confident  in  switching between   suppliers.  Proftablity  at  the  maturity   stage  relies  on  high  market   share,  providing leverage  against  buyers  and  competitive  advantage  in  terms  of cost.  Finally,  the  decline  stage can  be  a  period  ofextreme  rivalry,especially  where  there  are  high  exit  barriers,  as  falling  sales force  remaining  competitors  into  dog-eat-dog  competition.  However,  survivors  in  the  decline stgemaystl       bepoltabteilcompellorextleaves       them       in       a       monopolsticpostlon.Pigure2.6 summarises  some  of the  conditions that  can be  expected  at  different  stages  in the  life  cycle.It  is  important  to  avoid  putting  too  much  faith  in  the  inevitablity  of  life-cycle  stages.One stage  does  not  follow  predictably  alter  another:  industries  vary  widely  in  the  length  of  their    growth   stages,and   others   can  rapidly   de-mature'  through  radical   innovation.   Thus  the  tele-    phony  industry,based   for  nearly   a   century   on   fixed-line  telephones.rejuvenated  rapidly  with    the   introduction   of  mobile   and   internet   telephony.   Anita   McGahan   of  Toronto   University    warns   of  the'maturity   mindset',which   can   leave   many   managers   complacent   and   slow   to    respond  to  new  competition.'7  Managing  in  mature  industries  is  not  necessarily  just  about    waiting  for  decline.  However,  even  if the  various  stages  are  not  inevitable,  the  life-cycle  con-    cept  does  remind  managers  that  conditions  are  likely  to  change  over  time.  Especially  in  fast-    moving  industries,  live  forces  analyses  need  to  be  reviewed  quite  regularly.Comparative industry structure analysesThe industry life cycle underlines the need to make industry structure analysis dynamic. One effective means of doing this is to compare the five forces over time in a simple 'radar plot'.Figure 2.7 provides a framework for summarising the power of each of the five forces on five axes. Power diminishes as the axes go outwards. Where the forces are low, the total area enclosed by the lines between the axes is large; where the forces are high, the total area enclosed by the lines is small. The larger the enclosed area, therefore, the greater is the profit potential. In Figure 2.7, the industry at Time0 (represented by the light blue lines) has relatively low rivalry (just a few competitors) and faces low substitution threats. The threat of entry is moderate, but both buyer power and supplier power are relatively high. Overall, this looks like only a moderately attractive industry to invest in.However, given the dynamic nature of industries, managers need to look forward, perhaps using scenario analysis. Figure 2.7 represents five years forward by the dark blue lines. Managers are predicting in this case some rise in the threat of substitutes (perhaps new technologies will be developed). On the other hand, they predict a falling entry threat, while both buyer power and supplier power will be easing. Rivalry will reduce still  further. This looks like a classic case of an industry in which a few players emerge with overall dominance. The area enclosed by the blue lines is large, suggesting a relatively attractive industry. For a firm confident of becoming one of the dominant players, this might be an industry well worth investing in.Comparing the five forces over time on a radar plot thus helps to give industry structure analysis a dynamic aspect. Similar plots can be made to aid diversification decisions (see Chapter 7), where possible new industries to enter can be compared in terms of attractiveness. The lines are only approximate, of course, because they aggregate the many individual elements that make up each of the forces into a simple composite measure. Notice too that if one of the forces is very adverse, then this might nullify positive assessments on the other four axes: for example, an  industry with  low rivalry, low  substitution,  low entry barriers and low supplier power might still be unattractive if powerful buyers were able to demand highly discounted prices. With these warnings in mind, such radar plots can none the less be both a useful device for initial analysis and an effective summary of a final, more refined analysis.</dbpm:text_selections>\n    </dbpm:document_info>\n  </dbpm:info>\n  <description>\n    <call id=\"a1\" endpoint=\"subprocess\"/>\n  </description>\n</description>"
+---
+timestamp: '2026-02-19T16:43:32.337Z'
+event: model_generated
+data:
+  id: fa387aa7-7f06-4269-bd72-be0c45f91122
+  name: Model_23
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>62b2cada-c0de-4ec1-8809-04cd51ee466c</dbpm:document_id>
+          <dbpm:text_selections>apply. In the public sector, it is important to understand how powerful suppliers can push up costs:among charities.it is important to avold excessive rivalry within the same ma</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description>
+        <call id="a1" endpoint="subprocess"/>
+      </description>
+    </description>
+---
+timestamp: '2026-02-19T16:44:55.166Z'
+event: model_generated
+data:
+  id: 4c8630c6-6749-4c34-aeb9-4da53d94b035
+  name: Model_24
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>556da83b-6695-4866-b28c-29835f1c36fd</dbpm:document_id>
+          <dbpm:text_selections>egistration number. •   This number is printed both next to the code and to the signature field in the attendance check list.  Appl</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description>
+        <call id="a1" endpoint="subprocess"/>
+      </description>
+    </description>
+---
+timestamp: '2026-02-19T16:46:54.876Z'
+event: model_generated
+data:
+  id: cbecc9b6-0d32-4148-ab73-05f650d9c4a6
+  name: Model_25
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>62b2cada-c0de-4ec1-8809-04cd51ee466c</dbpm:document_id>
+          <dbpm:text_selections>arkets in more detail, this section will refer to markets and most of th</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description>
+        <call id="a1" endpoint="subprocess"/>
+      </description>
+    </description>

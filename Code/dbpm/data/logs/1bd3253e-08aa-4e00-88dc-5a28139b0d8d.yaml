@@ -3088,3 +3088,56 @@ data:
         </call>
       </description>
     </description>
+---
+timestamp: '2026-02-19T20:02:57.202Z'
+event: model_generated
+data:
+  id: 5f1bc9e8-3183-42b5-95b9-a88ab4bac0ff
+  name: Model_18
+  data: |-
+    <description>
+      <dbpm:info
+        xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>946496ee-bf06-447e-bfb5-76fd83a3546c</dbpm:document_id>
+          <dbpm:text_selections>sure now that you received a complete copy of the exam. • The t</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description>
+        <call id="a1" endpoint="subprocess"/>
+      </description>
+    </description>
+---
+timestamp: '2026-02-19T20:09:47.708Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: 5f1bc9e8-3183-42b5-95b9-a88ab4bac0ff
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>946496ee-bf06-447e-bfb5-76fd83a3546c</dbpm:document_id>
+          <dbpm:text_selections>sure now that you received a complete copy of the exam. • The t</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description svg-id="description" svg-type="description" svg-subtype="description">
+        <call xmlns="http://cpee.org/ns/description/1.0" id="a1" endpoint="subprocess" svg-id="a1" svg-type="call" svg-subtype="call"><parameters><label/><color>#d4e1f1</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call>
+      </description>
+    </description>
+---
+timestamp: '2026-02-19T20:09:55.379Z'
+event: model_updated_manual_update_graph_properties_only
+data:
+  id: 5f1bc9e8-3183-42b5-95b9-a88ab4bac0ff
+  data: |-
+    <description>
+      <dbpm:info xmlns:dbpm="https://example.com/dbpm">
+        <dbpm:document_info>
+          <dbpm:document_id>946496ee-bf06-447e-bfb5-76fd83a3546c</dbpm:document_id>
+          <dbpm:text_selections>sure now that you received a complete copy of the exam. • The t</dbpm:text_selections>
+        </dbpm:document_info>
+      </dbpm:info>
+      <description svg-id="description" svg-type="description" svg-subtype="description">
+        <call id="a1" endpoint="subprocess" svg-id="a1" xmlns="http://cpee.org/ns/description/1.0" svg-type="call" svg-subtype="call"><parameters><label/><color>#d8f0dd</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/></parameters></call>
+      </description>
+    </description>

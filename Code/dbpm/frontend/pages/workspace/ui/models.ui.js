@@ -7,9 +7,10 @@ import { $cloneTemplate } from "../../../shared/util/dom.js";
 
 const PREVIEW_THEME_PATH =
   "pages/workspace/workflow/wf_themes/preset_customized/theme.js";
-const PREVIEW_LABEL_SELECTOR = "#modelGridSmall";
-const PREVIEW_CANVAS_SELECTOR = "#modelCanvasSmall";
+const PREVIEW_IFRAME_ID = "wfPreviewRendererIframe";
 let previewRenderQueue = Promise.resolve();
+let previewRendererWindow = null;
+let previewRendererWindowPromise = null;
 
 /**
  * Make all internal SVG id/url(#...) references unique by prefixing them
@@ -80,12 +81,32 @@ function prepareSvgForList(svgEl, modelId) {
   // 1. responsive sizing
   const svgW = parseFloat(svgEl.getAttribute("width")) || 0;
   const svgH = parseFloat(svgEl.getAttribute("height")) || 0;
+  const viewBoxAttr = svgEl.getAttribute("viewBox");
+  const viewBoxParts = viewBoxAttr
+    ? viewBoxAttr
+        .trim()
+        .split(/[\s,]+/)
+        .map((v) => parseFloat(v))
+    : [];
+  const viewBoxW = viewBoxParts.length === 4 ? viewBoxParts[2] : 0;
+
+  const intrinsicWidth = svgW > 0 ? svgW : viewBoxW;
+
   if (svgW > 0 && svgH > 0 && !svgEl.getAttribute("viewBox")) {
     svgEl.setAttribute("viewBox", `0 0 ${svgW} ${svgH}`);
   }
   svgEl.setAttribute("width", "100%");
   svgEl.removeAttribute("height"); // let aspect ratio determine height
   svgEl.style.display = "block";
+  svgEl.style.width = "100%";
+  svgEl.style.height = "auto";
+
+  if (intrinsicWidth > 0) {
+    // Fill the container when needed, but never upscale beyond original size.
+    svgEl.style.maxWidth = `${intrinsicWidth}px`;
+  } else {
+    svgEl.style.removeProperty("max-width");
+  }
 
   // 2. scope ids to prevent clashes between multiple SVGs in the page
   scopeSvgIds(svgEl, `m${modelId}`);
@@ -97,12 +118,89 @@ function queuePreviewRender(task) {
   return run;
 }
 
-function clearPreviewRenderContainers() {
-  const $svg = $(PREVIEW_CANVAS_SELECTOR);
-  const $label = $(PREVIEW_LABEL_SELECTOR);
-  if ($svg.length === 0 || $label.length === 0) return;
-  $svg.empty().attr("width", "1").attr("height", "1");
-  $label.children().not($svg).remove();
+function serializeEndpointSymbols(cache) {
+  const symbols = {};
+  for (const [endpoint, data] of Object.entries(cache || {})) {
+    if (data?.symbol) {
+      symbols[endpoint] = new XMLSerializer().serializeToString(data.symbol);
+    }
+  }
+  return symbols;
+}
+
+function collectEndpointProperties(cache) {
+  const properties = {};
+  for (const [endpoint, data] of Object.entries(cache || {})) {
+    if (data?.properties) {
+      properties[endpoint] = data.properties;
+    }
+  }
+  return properties;
+}
+
+function ensurePreviewRendererWindow() {
+  if (
+    previewRendererWindow &&
+    typeof previewRendererWindow.renderGraphPreview === "function"
+  ) {
+    return Promise.resolve(previewRendererWindow);
+  }
+  if (previewRendererWindowPromise) return previewRendererWindowPromise;
+
+  previewRendererWindowPromise = new Promise((resolve, reject) => {
+    const iframe = document.getElementById(PREVIEW_IFRAME_ID);
+    if (!iframe) {
+      reject(
+        new Error(
+          `Preview renderer iframe #${PREVIEW_IFRAME_ID} not found in workspace.html`,
+        ),
+      );
+      return;
+    }
+
+    const cleanup = () => {
+      iframe.removeEventListener("load", onLoad);
+      iframe.removeEventListener("error", onError);
+    };
+    const onError = () => {
+      cleanup();
+      reject(new Error("Failed to initialize preview renderer iframe"));
+    };
+    const onLoad = () => {
+      cleanup();
+      const rendererWindow = iframe.contentWindow;
+      if (
+        !rendererWindow ||
+        typeof rendererWindow.renderGraphPreview !== "function"
+      ) {
+        reject(new Error("Preview renderer iframe API is not available"));
+        return;
+      }
+      previewRendererWindow = rendererWindow;
+      resolve(rendererWindow);
+    };
+
+    iframe.addEventListener("load", onLoad);
+    iframe.addEventListener("error", onError);
+
+    if (
+      iframe.contentWindow &&
+      typeof iframe.contentWindow.renderGraphPreview === "function"
+    ) {
+      onLoad();
+      return;
+    }
+    if (iframe.contentDocument?.readyState === "complete") {
+      onError();
+      return;
+    }
+  }).catch((err) => {
+    previewRendererWindow = null;
+    previewRendererWindowPromise = null;
+    throw err;
+  });
+
+  return previewRendererWindowPromise;
 }
 
 function getDescriptionElement(modelData) {
@@ -123,47 +221,25 @@ function getDescriptionElement(modelData) {
 
 function renderDescriptionToSvg(descriptionElement) {
   return queuePreviewRender(
-    () =>
-      new Promise((resolve, reject) => {
-        const $svg = $(PREVIEW_CANVAS_SELECTOR);
-        const $label = $(PREVIEW_LABEL_SELECTOR);
-        if ($svg.length === 0 || $label.length === 0) {
-          reject(new Error("Preview render container not found"));
-          return;
-        }
+    async () => {
+      const descriptionText = new XMLSerializer().serializeToString(
+        descriptionElement,
+      );
+      const endpointSymbols = serializeEndpointSymbols(endpointLoader._cache);
+      const endpointProperties = collectEndpointProperties(endpointLoader._cache);
+      const previewThemeUrl = new URL(
+        PREVIEW_THEME_PATH,
+        document.baseURI,
+      ).toString();
 
-        const previousManifestation = window.manifestation;
-        const restoreState = () => {
-          window.manifestation = previousManifestation;
-          clearPreviewRenderContainers();
-        };
-
-        clearPreviewRenderContainers();
-
-        try {
-          new WfAdaptor(PREVIEW_THEME_PATH, function (graphrealization) {
-            try {
-              graphrealization.illustrator.get_symbol =
-                endpointLoader._boundGetSymbol;
-              graphrealization.illustrator.get_properties =
-                endpointLoader._boundGetProperties;
-              graphrealization.set_svg_container($svg);
-              graphrealization.set_label_container($label);
-              graphrealization.set_description($(descriptionElement), true);
-
-              const svgString = new XMLSerializer().serializeToString($svg[0]);
-              resolve(svgString);
-            } catch (err) {
-              reject(err);
-            } finally {
-              restoreState();
-            }
-          });
-        } catch (err) {
-          restoreState();
-          reject(err);
-        }
-      }),
+      const rendererWindow = await ensurePreviewRendererWindow();
+      return rendererWindow.renderGraphPreview({
+        themePath: previewThemeUrl,
+        descriptionXml: descriptionText,
+        endpointSymbols,
+        endpointProperties,
+      });
+    },
   );
 }
 

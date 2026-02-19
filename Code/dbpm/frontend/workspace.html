@@ -27,9 +27,12 @@
   <link rel="stylesheet" href="https://cpee.org/js_libs/relaxngui.css" type="text/css" />
 
   <!-- modelling ui -->
-  <script type="text/javascript" src="https://cpee.org/flow/js/wfadaptor.js"></script>
+  <script type="text/javascript" src="js_libs_backup/wfadaptor.js"></script>
+  <!-- <script type="text/javascript" src="https://cpee.org/flow/js/wfadaptor.js"></script> -->
   <link rel="stylesheet" href="https://cpee.org/flow/css/wfadaptor.css" type="text/css" />
-  <script type="text/javascript" src="https://cpee.org/flow/themes/base.js"></script>
+  <link rel="stylesheet" href="https://cpee.org/flow/css/wfadaptor.css" type="text/css" />
+  <!-- <script type="text/javascript" src="https://cpee.org/flow/themes/base.js"></script> -->
+  <script type="text/javascript" src="pages/workspace/workflow/wf_themes/base_new.js"></script>
   <script type="text/javascript" src="pages/workspace/workflow/wf_themes/base_customized.js" type="module"></script>
 
   <!-- <script type="text/javascript" src="js_cpee/extended_columns.js"></script> -->
@@ -266,12 +269,6 @@
                     <div data-ref="modelGrid"></div>
                   </div>
                 </template>
-                <div id="modelCanvasSmallContainer">
-                  <div id="modelGridSmall" style="position: absolute; left: -9999px; top: -9999px">
-                    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink"
-                      id="modelCanvasSmall" width="1" height="1"></svg>
-                  </div>
-                </div>
               </ui-area>
             </ui-content>
           </ui-rest>
@@ -288,6 +285,9 @@
   <div id="modelPopover" class="hidden">
     <div id="modelPopoverContainer"></div>
   </div>
+  <iframe id="wfPreviewRendererIframe" src="pages/workspace/workflow/graph-render.html" aria-hidden="true"
+    tabindex="-1"
+    style="position: absolute; left: -10000px; top: -10000px; width: 1px; height: 1px; opacity: 0; pointer-events: none;"></iframe>
 </body>
 
 </html>

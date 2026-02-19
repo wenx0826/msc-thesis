@@ -40,6 +40,7 @@ export const modelService = {
 
     if (rpstXml) {
       const generatedModel = await this.generateModel(userInput, rpstXml);
+
       const data = model.data;
       const doc = data.ownerDocument;
 
@@ -68,8 +69,9 @@ export const modelService = {
         currentRpst,
       );
       model.data = $(doc.documentElement).serializePrettyXML();
-      console.log("Updated model data:", model.data);
+      console.log("=======Updated model data:=====", model.data);
     }
+
     activeModelStore.setModel(model);
     modelsAPI.logs.createLogEntry({
       event: "model_regenerated_by_prompt",
@@ -80,7 +82,7 @@ export const modelService = {
   async generateModelBySelections() {
     const selectedText = activeDocumentStore.getSelectedText();
     const generatedModel = await this.generateModel(selectedText, EMPTY_MODEL);
-
+    console.log("=== line85 Generated model by selections:", generatedModel);
     const DBPM_NS = "https://example.com/dbpm";
     const eleDbpmInfo = document.implementation.createDocument(
       DBPM_NS,
@@ -182,6 +184,7 @@ export const modelService = {
   },
 
   async createModelAndTrace(modelData) {
+    console.log("==== Line187 Creating model with data:", modelData);
     const documentId = workspaceStore.getActiveDocumentId();
     const trace = {
       documentId,
@@ -193,17 +196,18 @@ export const modelService = {
         trace,
       });
 
+    console.log("Created model:", createdModel);
+    console.log("Created trace:", createdTrace);
+    console.log("=== 205 Created MOdel ID!!!:", createdModel.meta.id);
+    activeModelStore.setModelById(createdModel.meta.id);
     modelsStore.addModel({
       meta: createdModel.meta,
       documentId,
     });
-    console.log("Created model:", createdModel);
-    console.log("Created trace:", createdTrace);
-    activeModelStore.setModelById(createdModel.meta.id);
-    workspaceStore.setActiveModelId(createdModel.meta.id);
-    activeDocumentStore.setTemporarySelections([]);
-    activeDocumentStore.addTrace(createdTrace);
-    projectGraphStore.addModelNodeAndEdge(createdModel.meta, documentId);
+    // workspaceStore.setActiveModelId(createdModel.meta.id);
+    // activeDocumentStore.setTemporarySelections([]);
+    // activeDocumentStore.addTrace(createdTrace);
+    // projectGraphStore.addModelNodeAndEdge(createdModel.meta, documentId);
   },
 
   async updateActiveModel(type) {
