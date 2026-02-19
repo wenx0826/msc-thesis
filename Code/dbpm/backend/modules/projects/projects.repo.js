@@ -16,18 +16,13 @@ class ProjectRepository {
     const stmt = db.prepare(`
       SELECT
         p.*,
-        COUNT(DISTINCT d.id) AS documents_count,
-        COALESCE(SUM(md.models_count), 0) AS models_count
+        COUNT(DISTINCT d.document_id) AS documents_count,
+        COUNT(DISTINCT m.model_id) AS models_count
       FROM projects p
       LEFT JOIN documents d
         ON d.project_id = p.id AND d.deleted_at IS NULL
-      LEFT JOIN (
-        SELECT t.document_id,
-               COUNT(DISTINCT t.model_id) AS models_count
-        FROM traces t
-        WHERE t.model_id IS NOT NULL
-        GROUP BY t.document_id
-      ) md ON md.document_id = d.id
+      LEFT JOIN models m
+        ON m.project_id = p.id AND m.deleted_at IS NULL
       GROUP BY p.id
       ORDER BY p.created_at ASC
     `);

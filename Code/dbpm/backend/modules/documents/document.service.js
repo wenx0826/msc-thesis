@@ -1,5 +1,6 @@
 import crypto from "crypto";
 import documentRepo from "./documents.repo.js";
+import documentStorage from "./document.storage.js";
 import { logEvent } from "../../utils/logger.js";
 import {
   readDocumentContent,
@@ -10,31 +11,31 @@ import {
 
 class DocumentService {
   async createDocument(name, content, projectId) {
-    const id = crypto.randomUUID();
-    const uploadedAt = new Date().toISOString();
+    const documentId = crypto.randomUUID();
+    const versionId = crypto.randomUUID();
 
     try {
       // Write file content
-      writeDocumentContent(id, content);
+      documentStorage.writeDocumentContent(versionId, content);
 
       // Count words
       const wordsCount = countWords(content);
 
-      // Create database record
       const createdDocument = documentRepo.create({
-        id,
-        name,
+        versionId,
+        documentId,
         projectId,
+        name,
         wordsCount,
       });
 
-      // Log the event
       logEvent(projectId, "document_uploaded", createdDocument);
+      createdDocument.documentVersionId = versionId;
 
       return createdDocument;
     } catch (err) {
       // Cleanup on failure
-      deleteDocumentFile(id);
+      deleteDocumentFile(versionId);
       throw err;
     }
   }

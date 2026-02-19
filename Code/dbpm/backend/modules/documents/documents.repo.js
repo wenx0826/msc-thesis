@@ -2,13 +2,19 @@ import db from "../../database.js";
 import { toCamel, toSnake } from "snake-camel";
 
 class DocumentRepository {
-  create({ id, name, projectId, wordsCount }) {
+  create({ versionId, documentId, projectId, name, wordsCount }) {
     const stmt = db.prepare(`
-    INSERT INTO documents (id, name, project_id, words_count)
-    VALUES (@id, @name, @projectId, @wordsCount)
+    INSERT INTO documents (version_id, document_id, name, project_id, words_count)
+    VALUES (@versionId, @documentId, @name, @projectId, @wordsCount)
     RETURNING *
   `);
-    const row = stmt.get({ id, name, projectId, wordsCount });
+    const row = stmt.get({
+      versionId,
+      documentId,
+      name,
+      projectId,
+      wordsCount,
+    });
     return toCamel(row);
   }
   findAll() {
@@ -27,7 +33,7 @@ class DocumentRepository {
 
   findByProjectId(projectId) {
     const stmt = db.prepare(
-      "SELECT id, name, created_at, project_id FROM documents WHERE project_id = ?",
+      "SELECT version_id, document_id, project_id, name FROM documents WHERE project_id = ?",
     );
     const results = stmt.all(projectId);
     return results.map(toCamel);

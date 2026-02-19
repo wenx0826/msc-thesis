@@ -3,19 +3,19 @@ export const createDocumentSchema = {
     type: "object",
     required: ["name", "content", "projectId"],
     properties: {
+      projectId: { type: "string" },
       name: { type: "string" },
       content: { type: "string" },
-      projectId: { type: "string" },
     },
   },
   response: {
     200: {
       type: "object",
       properties: {
-        id: { type: "string" },
+        documentId: { type: "string" },
+        documentVersionId: { type: "string" },
         name: { type: "string" },
         createdAt: { type: "string" },
-        projectId: { type: "string" },
       },
     },
   },
@@ -28,10 +28,9 @@ export const getDocumentsSchema = {
       items: {
         type: "object",
         properties: {
-          id: { type: "string" },
+          versionId: { type: "string" },
           name: { type: "string" },
           createdAt: { type: "string" },
-          projectId: { type: "string" },
           words: { type: "number" },
         },
       },

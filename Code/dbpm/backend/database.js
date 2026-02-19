@@ -29,6 +29,7 @@ function initializeSchema() {
   db.exec(`
     CREATE TABLE IF NOT EXISTS documents (
       version_id TEXT PRIMARY KEY,
+      document_id TEXT NOT NULL,
       project_id TEXT NOT NULL,
       name TEXT NOT NULL,
       storage_path TEXT NOT NULL,
@@ -43,9 +44,9 @@ function initializeSchema() {
   db.exec(`
     CREATE TABLE IF NOT EXISTS models (
       version_id TEXT PRIMARY KEY,
+      model_id TEXT NOT NULL,
       project_id TEXT NOT NULL,
       name TEXT NOT NULL,
-      version INTEGER NOT NULL DEFAULT 1,
       storage_path TEXT NOT NULL,
       selected_words_count INTEGER DEFAULT 0,
       created_at TEXT NOT NULL DEFAULT current_timestamp,
@@ -59,10 +60,10 @@ function initializeSchema() {
     CREATE TABLE IF NOT EXISTS traces (
       id TEXT PRIMARY KEY,
       document_version_id TEXT NOT NULL,
-      model_id TEXT NOT NULL,
+      model_version_id TEXT NOT NULL,
+      selections TEXT NOT NULL,
       created_at TEXT NOT NULL DEFAULT current_timestamp,
       deleted_at TEXT,
-      selections TEXT NOT NULL,
       FOREIGN KEY (document_version_id) REFERENCES documents(version_id),
       FOREIGN KEY (model_version_id) REFERENCES models(version_id)
     )
@@ -71,12 +72,12 @@ function initializeSchema() {
   db.exec(`
     CREATE TABLE IF NOT EXISTS model_update_events (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      model_id TEXT NOT NULL,
+      model_version_id TEXT NOT NULL,
       type TEXT NOT NULL,
       details TEXT,
       created_at TEXT NOT NULL DEFAULT current_timestamp,
       deleted_at TEXT,
-      FOREIGN KEY (model_id) REFERENCES models(id)
+      FOREIGN KEY (model_version_id) REFERENCES models(version_id)
     )
   `);
 
@@ -85,12 +86,17 @@ function initializeSchema() {
     `CREATE INDEX IF NOT EXISTS idx_documents_project_id ON documents(project_id)`,
   );
   db.exec(
-    `CREATE INDEX IF NOT EXISTS idx_models_document_id ON models(document_id)`,
+    `CREATE INDEX IF NOT EXISTS idx_models_project_id ON models(project_id)`,
   );
   db.exec(
-    `CREATE INDEX IF NOT EXISTS idx_traces_document_id ON traces(document_id)`,
+    `CREATE INDEX IF NOT EXISTS idx_traces_document_version_id ON traces(document_version_id)`,
   );
-  db.exec(`CREATE INDEX IF NOT EXISTS idx_traces_model_id ON traces(model_id)`);
+  db.exec(
+    `CREATE INDEX IF NOT EXISTS idx_traces_model_version_id ON traces(model_version_id)`,
+  );
+  db.exec(
+    `CREATE INDEX IF NOT EXISTS idx_model_update_events_model_version_id ON model_update_events(model_version_id)`,
+  );
 }
 
 initializeSchema();

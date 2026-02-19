@@ -49,7 +49,6 @@ export const getProjectSchema = {
         id: { type: "string" },
         name: { type: "string" },
         createdAt: { type: "string" },
-        generatedModelCount: { type: "number" },
       },
     },
   },
@@ -69,11 +68,10 @@ export const getDocumentsSchema = {
       items: {
         type: "object",
         properties: {
-          id: { type: "string" },
-          name: { type: "string" },
-          uploadedAt: { type: "string" },
+          documentVersionId: { type: "string" },
+          documentId: { type: "string" },
           projectId: { type: "string" },
-          words: { type: "number" },
+          name: { type: "string" },
         },
       },
     },
@@ -94,43 +92,11 @@ export const getModelsSchema = {
       items: {
         type: "object",
         properties: {
-          id: { type: "string" },
-          name: { type: "string" },
-          timestamp: { type: "string" },
+          modelVersionId: { type: "string" },
+          modelId: { type: "string" },
           documentId: { type: "string" },
-          words: { type: "number" },
+          name: { type: "string" },
         },
-      },
-    },
-  },
-};
-
-export const getDocumentCountSchema = {
-  params: {
-    type: "object",
-    required: ["projectId"],
-    properties: {
-      projectId: { type: "string" },
-    },
-  },
-  response: {
-    200: { type: "string" },
-  },
-};
-
-export const getModelCountSchema = {
-  params: {
-    type: "object",
-    required: ["projectId"],
-    properties: {
-      projectId: { type: "string" },
-    },
-  },
-  response: {
-    200: {
-      type: "object",
-      properties: {
-        count: { type: "number" },
       },
     },
   },

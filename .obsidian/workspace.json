@@ -46,9 +46,23 @@
               "icon": "lucide-file",
               "title": "01.1 Motivation"
             }
+          },
+          {
+            "id": "5c0a565f43f84411",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Dataschema.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Dataschema"
+            }
           }
         ],
-        "currentTab": 2
+        "currentTab": 3
       }
     ],
     "direction": "vertical"
@@ -168,13 +182,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "01.1 Motivation.md",
+                "file": "Dataschema.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of 01.1 Motivation"
+              "title": "Outline of Dataschema"
             }
           },
           {
@@ -209,19 +223,20 @@
       "card-board:CardBoard": false
     }
   },
-  "active": "9b56cfd6d5839b01",
+  "active": "5c0a565f43f84411",
   "lastOpenFiles": [
-    "Code/dbpm/data/models/5f1bc9e8-3183-42b5-95b9-a88ab4bac0ff.xml",
-    "Code/dbpm/frontend/pages/workspace/workflow/graph-render.js",
-    "Code/dbpm/frontend/pages/workspace/workflow/graph-render.html",
-    "Code/dbpm/data/models/80cfdcfc-94cf-4404-b318-f9998bf85c9b.xml",
-    "Code/dbpm/data/models/4aa23248-c6f2-40aa-9411-7a0df1d33629.xml",
-    "Code/dbpm/data/models/83649908-878b-468a-bdfe-a9e814be23a0.xml",
-    "Code/dbpm/data/models/15e4abf1-e38b-4cbc-ba66-cbb3d4a12079.xml",
-    "Code/dbpm/data/models/adb9204f-4e47-47c6-8eaf-997b82488405.xml",
-    "Code/dbpm/data/models/f052e40f-e253-4b6e-927f-989c5ae9c835.xml",
-    "Code/dbpm/data/models/6d570970-436c-4b76-82ad-92e36fed8ab5.xml",
-    "Code/dbpm/data/models/bf19ae80-f399-4c9b-9092-dcaa4eee82a0.xml",
+    "01.1 Motivation.md",
+    "Dataschema.md",
+    "Code/dbpm/backend/modules/projects/projects.create.test.js",
+    "Code/dbpm/backend/modules/documents/document.storage.js",
+    "Code/dbpm/data/logs/851e009c-d7a8-4f86-a4bb-14b0c23471d5.yaml",
+    "Code/dbpm/data/logs/00ae3f2b-5553-438f-9dbd-58c09e4c122b.yaml",
+    "Code/dbpm/data/logs/f539a5e4-4313-4b15-9e10-8ac165d9673c.yaml",
+    "Code/dbpm/backend/test/projects.create.test.js",
+    "Code/dbpm/backend/test",
+    "Code/dbpm/backend/app.js",
+    "Code/dbpm/data/logs/7e88083f-7b7f-4bc6-a878-148a75be20f9.yaml",
+    "Code/dbpm/data/database.sqlite",
     "Untitled 1.md",
     "Code/dbpm/frontend/pages/workspace/workflow/wf_endpoints/subprocess/symbol.svg",
     "Code/dbpm/frontend/pages/workspace/workflow/endpoints/subprocess/symbol.svg",
@@ -239,7 +254,6 @@
     "01.6 Structure.md",
     "01.3 Contribution.md",
     "01.2 Research Questions.md",
-    "01.1 Motivation.md",
     "3 - 7.md",
     "Code/dbpm/backend/node_modules/snake-camel/README.md",
     "Code/dbpm/backend/node_modules/camelcase/readme.md",
