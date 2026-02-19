@@ -1,7 +1,9 @@
-// import { initProjectsUI } from "./projects.ui.js";
+import { createUI } from "../../../shared/util/ui.js";
+
 import { documentsAPI, projectsAPI } from "../../../api/index.js";
 import {
   getProjectIdFromURL,
+  getProjectWorkspaceURL,
   getDocumentURL,
 } from "../../../shared/util/url.js";
 import { $cloneTemplate } from "../../../shared/util/dom.js";
@@ -9,15 +11,23 @@ const projectId = getProjectIdFromURL();
 
 function renderProjectLink() {
   const $projectLink = $("#projectLink");
-  $projectLink[0].href = "workspace.html" + window.location.search;
+  $projectLink[0].href = getProjectWorkspaceURL(projectId);
   projectsAPI.get(projectId).then((project) => {
     $projectLink.text(project?.name || "Unnamed Project");
   });
 }
 
-async function renderDocumentModels(documentId) {
-  const $documentItem = $(`li[data-doc-id='${documentId}']`);
+async function renderDocumentModels(documentId, $documentItem) {
+  // const $documentItem = $(`li[data-doc-id='${documentId}']`);
   const $modelsList = $documentItem.find("[data-ref='modelsList']");
+  console.log(
+    "Rendering models for document ID:",
+    documentId,
+    $documentItem,
+    $documentItem.length,
+    $modelsList,
+    $modelsList.length,
+  );
   const models = await documentsAPI.getActiveModelsById(documentId);
 
   for (const model of models) {
@@ -37,7 +47,9 @@ async function renderDocumentsList() {
     const $documentsList = $("#documentsList");
 
     for (const doc of docs) {
-      const $documentItem = $cloneTemplate("documentItemTemplate");
+      const $documentItem = $cloneTemplate("documentItemTemplate")
+        .children()
+        .first();
       $documentItem.find("li").attr("data-doc-id", doc.id);
       $documentItem
         .find("[data-ref='documentName']")
@@ -46,15 +58,17 @@ async function renderDocumentsList() {
         .find("[data-ref='documentLink']")
         .attr("href", getDocumentURL(doc.id));
       $documentsList.append($documentItem);
-      renderDocumentModels(doc.id);
+      renderDocumentModels(doc.id, $documentItem);
     }
   } catch (error) {
     console.error("Error initializing stats:", error);
   }
 }
 
-function init() {
-  renderProjectLink();
-  renderDocumentsList();
-}
-init();
+createUI({
+  setup: () => {
+    renderProjectLink();
+    renderDocumentsList();
+  },
+  bindListeners: () => {},
+});

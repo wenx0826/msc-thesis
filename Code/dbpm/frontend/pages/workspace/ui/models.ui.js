@@ -106,7 +106,7 @@ function clearPreviewRenderContainers() {
 }
 
 function getDescriptionElement(modelData) {
-  const parsed = new DOMParser().parseFromString(modelData, "application/xml");
+  const parsed = $.parseXML(modelData);
   const parseError = parsed.getElementsByTagName("parsererror")[0];
   if (parseError) {
     throw new Error(parseError.textContent || "Invalid model XML");
@@ -174,18 +174,6 @@ async function getModelSvg(modelId) {
   return renderDescriptionToSvg(descriptionElement);
 }
 
-function toSvgElement(svgValue) {
-  if (!svgValue) return null;
-  if (typeof svgValue === "string") {
-    return new DOMParser().parseFromString(svgValue, "image/svg+xml")
-      .documentElement;
-  }
-  if (svgValue instanceof Element) {
-    return svgValue;
-  }
-  return null;
-}
-
 async function renderModelInList(model) {
   const modelId = model?.meta?.id;
   const gridId = `modelGrid_${modelId}`;
@@ -201,23 +189,15 @@ async function renderModelInList(model) {
   if (modelId == workspaceStore.getActiveModelId()) {
     $modelContainer.addClass("active");
   }
-  $modelContainer.on("click", (event) => {
-    event.stopPropagation();
-    workspaceService.toggleModelSelection(modelId);
-  });
   $modelsArea.append($modelContainer);
 
   console.log("Received SVG for model ID", modelId);
   try {
     const outputFrame = await getModelSvg(modelId);
 
-    model.svg = new DOMParser().parseFromString(
-      outputFrame,
-      "image/svg+xml",
-    ).documentElement;
+    model.svg = $.parseXML(outputFrame).documentElement;
 
     prepareSvgForList(model.svg, modelId);
-
     $gridDiv.append(model.svg);
   } catch (err) {
     console.error("Error getting model SVG for model ID", modelId, ":", err);
@@ -231,7 +211,7 @@ function updateModelInList(model) {
   const $gridDiv = $(`#${gridId}`);
   $gridDiv.empty();
 
-  const svgEl = toSvgElement(model.svg);
+  const svgEl = $X(model.svg);
   if (!svgEl) return;
   prepareSvgForList(svgEl, modelId);
   model.svg = svgEl;
@@ -252,7 +232,16 @@ const removeModelFromList = (modelId) => {
 };
 createUI({
   setup: () => {},
-  bindListeners: () => {},
+  bindListeners: () => {
+    const $modelsArea = $("#models");
+    $modelsArea.off("click.modelContainer");
+    $modelsArea.on("click.modelContainer", ".model-container", (event) => {
+      event.stopPropagation();
+      const element = event.currentTarget;
+      const modelId = element.dataset.modelId;
+      workspaceService.toggleModelSelection(modelId);
+    });
+  },
   subscribeStores: () => {
     workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
       switch (key) {

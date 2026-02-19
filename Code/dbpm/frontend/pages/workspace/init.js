@@ -19,7 +19,7 @@ import "./util/selection.util.js";
 import { getProjectIdFromURL } from "../../shared/util/url.js";
 
 // Import UI modules individually
-import { initActiveModelUI } from "./ui/index.js";
+import "./ui/index.js";
 
 const projectId = getProjectIdFromURL();
 workspaceStore.setProjectId(projectId);
@@ -34,6 +34,5 @@ projectGraphStore.init(documents, models);
 const activeDocumentId =
   documents.length > 0 ? documents[documents.length - 1].id : null;
 activeDocumentStore.init(activeDocumentId);
-// initActiveDocumentUI();
-initActiveModelUI();
+
 workspaceStore.setActiveDocumentId(activeDocumentId);

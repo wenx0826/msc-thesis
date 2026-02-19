@@ -20,7 +20,7 @@
           <manipulate id="a4" label="" svg-id="a4" svg-type="manipulate" svg-subtype="manipulate">data.i += 1</manipulate>
         </loop>
       </parallel>
-      <manipulate id="a3" label="" svg-id="a3" svg-type="manipulate" svg-subtype="manipulate">data.i = 0</manipulate>
+      <manipulate id="a3" label="" color="#ffffff" svg-id="a3" svg-type="manipulate" svg-subtype="manipulate"/>
       <_probability>
         <_probability_min/>
         <_probability_max/>

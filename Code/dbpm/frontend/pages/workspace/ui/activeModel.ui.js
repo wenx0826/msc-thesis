@@ -28,18 +28,6 @@ const $sendPromptButton = $("#sendPromptButton");
 const $clearPromptButton = $("#clearPromptButton");
 const $viewModelDataLink = $("#viewModelDataLink");
 
-setActiveModuleNameEditor({
-  $scope: $("#activeModelName").parent(),
-  trigger: "click",
-  autoGrow: true,
-  onSave: (name) => {
-    const activeModelId = workspaceStore.getActiveModelId();
-    if (activeModelId) {
-      // modelService.updateModelById(activeModelId, { name });
-    }
-  },
-});
-
 function syncActiveModelGraphInList() {
   var gc = $("#graphcanvas").clone();
   var start = parseInt(gc.attr("width"));
@@ -397,253 +385,268 @@ function do_main_work(svgid) {
     }
   });
 }
-export function initActiveModelUI() {
-  $viewModelDataLink.on("click", (e) => {
-    e.preventDefault();
-    window.open(
-      "/data/models/" + workspaceStore.getActiveModelId() + ".xml",
-      "_blank",
-    );
-  });
 
-  $exportTestsetButton.on("click", (e) => {
-    e.preventDefault();
-    const filename = "testset_" + workspaceStore.getActiveModelId() + ".xml";
-    const text =
-      '<?xml version="1.0"?>\n<testset xmlns="http://cpee.org/ns/properties/2.0">\n<executionhandler>ruby</executionhandler>\n<dataelements/>\n<endpoints/>\n<attributes>\n<guarded>none</guarded>\n<modeltype>CPEE</modeltype>\n<theme>preset</theme>\n<guarded_id/>\n<info>Subprocess</info>\n<creator>Christine Ashcreek</creator>\n<author>Christine Ashcreek</author>\n<model_uuid>1fc43528-3e4a-40ee-8503-c0ed7e5d883c</model_uuid>\n<model_version/>\n<design_stage>development</design_stage>\n<design_dir>Templates.dir</design_dir>\n</attributes>\n<description>' +
-      activeModelStore.getSerializedRpstData() +
-      "\n</description>\n</testset>";
-    const mime = "application/xml;charset=utf-8";
+createUI({
+  setup: () => {
+    setActiveModuleNameEditor({
+      $scope: $("#activeModelName").parent(),
+      trigger: "click",
+      autoGrow: true,
+      onSave: (name) => {
+        const activeModelId = workspaceStore.getActiveModelId();
+        if (activeModelId) {
+          // modelService.updateModelById(activeModelId, { name });
+        }
+      },
+    });
+    window.do_main_work = do_main_work;
+  },
+  bindListeners: () => {
+    $viewModelDataLink.on("click", (e) => {
+      e.preventDefault();
+      window.open(
+        "/data/models/" + workspaceStore.getActiveModelId() + ".xml",
+        "_blank",
+      );
+    });
 
-    const blob = new Blob([text], { type: mime });
-    const url = URL.createObjectURL(blob);
+    $exportTestsetButton.on("click", (e) => {
+      e.preventDefault();
+      const filename = "testset_" + workspaceStore.getActiveModelId() + ".xml";
+      const text =
+        '<?xml version="1.0"?>\n<testset xmlns="http://cpee.org/ns/properties/2.0">\n<executionhandler>ruby</executionhandler>\n<dataelements/>\n<endpoints/>\n<attributes>\n<guarded>none</guarded>\n<modeltype>CPEE</modeltype>\n<theme>preset</theme>\n<guarded_id/>\n<info>Subprocess</info>\n<creator>Christine Ashcreek</creator>\n<author>Christine Ashcreek</author>\n<model_uuid>1fc43528-3e4a-40ee-8503-c0ed7e5d883c</model_uuid>\n<model_version/>\n<design_stage>development</design_stage>\n<design_dir>Templates.dir</design_dir>\n</attributes>\n<description>' +
+        activeModelStore.getSerializedRpstData() +
+        "\n</description>\n</testset>";
+      const mime = "application/xml;charset=utf-8";
 
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
+      const blob = new Blob([text], { type: mime });
+      const url = URL.createObjectURL(blob);
 
-    a.remove();
-    URL.revokeObjectURL(url);
-  });
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
 
-  $deleteModelButton.on("click", () => {
-    modelService.deleteModel(workspaceStore.getActiveModelId());
-  });
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
 
-  $keepNewModelButton.on("click", async () => {
-    $regeneratedModelActionBar.hide();
-    modelService.updateActiveModel();
-    syncActiveModelGraphInList();
-  });
+    $deleteModelButton.on("click", () => {
+      modelService.deleteModel(workspaceStore.getActiveModelId());
+    });
 
-  $revertPrevModelButton.on("click", () => {
-    $("#activeModelName").text("");
-    $("#graphcanvas").empty();
-    $("#generatedModelActionBar").css("visibility", "hidden");
-  });
+    $keepNewModelButton.on("click", async () => {
+      $regeneratedModelActionBar.hide();
+      modelService.updateActiveModel();
+      syncActiveModelGraphInList();
+    });
 
-  $("#activeModelContainer").click(function (e) {
-    $("#graphgrid .selected").removeClass("selected");
-    localStorage.removeItem("marked");
-    localStorage.removeItem("marked_from");
-    $("#dat_details").empty();
-  });
+    $revertPrevModelButton.on("click", () => {
+      $("#activeModelName").text("");
+      $("#graphcanvas").empty();
+      $("#generatedModelActionBar").css("visibility", "hidden");
+    });
 
-  $promptInput.on("input", () => {
-    const promptText = $promptInput.text();
-    if (promptText && promptText.trim() !== "") {
-      $promptActionBar.removeAttr("disabled");
-    } else {
+    $("#activeModelContainer").click(function (e) {
+      $("#graphgrid .selected").removeClass("selected");
+      localStorage.removeItem("marked");
+      localStorage.removeItem("marked_from");
+      $("#dat_details").empty();
+    });
+
+    $promptInput.on("input", () => {
+      const promptText = $promptInput.text();
+      if (promptText && promptText.trim() !== "") {
+        $promptActionBar.removeAttr("disabled");
+      } else {
+        $promptActionBar.attr("disabled", "disabled");
+      }
+    });
+
+    $clearPromptButton.on("mousedown", (e) => {
+      e.preventDefault();
+      console.log("Clearing prompt input");
+      $promptInput.empty();
       $promptActionBar.attr("disabled", "disabled");
-    }
-  });
+    });
 
-  $clearPromptButton.on("mousedown", (e) => {
-    e.preventDefault();
-    console.log("Clearing prompt input");
-    $promptInput.empty();
-    $promptActionBar.attr("disabled", "disabled");
-  });
+    $sendPromptButton.on("click", () => {
+      const promptText = $promptInput.text();
+      if (!promptText || promptText.trim() === "") {
+        alert("Please enter a prompt.");
+        return;
+      }
+      $promptInput.empty();
+      $promptActionBar.attr("disabled", "disabled");
+      modelService.generateModelByPrompt(promptText);
+    });
+    $(document).on("wf:call-clicked", function (e) {
+      console.log(`Event Listener 'wf:call-clicked' listened`);
+      const $node = $(e.detail.node);
+      const endpoint = $node.attr("endpoint");
+      const $argumentsDiv = $(
+        `#dat_details div[data-relaxngui-path=" > call > parameters > arguments[data-main]"]`,
+      );
+      $argumentsDiv.css({ visibility: "hidden", height: "0px" });
+      const modelValue = $node
+        .children("parameters")
+        .children("dbpm_subprocess_model")
+        .text();
 
-  $sendPromptButton.on("click", () => {
-    const promptText = $promptInput.text();
-    if (!promptText || promptText.trim() === "") {
-      alert("Please enter a prompt.");
-      return;
-    }
-    $promptInput.empty();
-    $promptActionBar.attr("disabled", "disabled");
-    modelService.generateModelByPrompt(promptText);
-  });
-
-  // Subscribe to store changes
-  activeModelStore.subscribe((state, { key, oldValue, newValue }) => {
-    switch (key) {
-      case "model":
-        if (newValue) {
-          $("#activeModelName").text(newValue.name ? newValue.name : "");
-          $modelActionBar.prop("disabled", false);
-          $datDetails.empty();
-          showActiveModel(newValue);
-          const newModelId = newValue.id;
-          if (newModelId) {
-            $promptContainer.show();
+      const $endpointInput = $(
+        `#dat_details input[data-relaxngui-path=" > call[endpoint]"]`,
+      );
+      // if ($endpointInput.length > 0) {
+      //   $endpointInput.parent().css({ visibility: "hidden", height: "0px" });
+      // }
+      const isSubprocess = endpoint === "subprocess" ? true : false;
+      const $typeSeclect = $(
+        `#dat_details select[data-relaxngui-path=" > call > parameters > dbpm_type"]`,
+      );
+      $typeSeclect.val(isSubprocess ? "subprocess" : "task");
+      const $modelSelect = $(
+        `#dat_details select[data-relaxngui-path=" > call > parameters > dbpm_subprocess_model"]`,
+      );
+      $typeSeclect.on("change", function (e) {
+        const typeValue = $(this).val();
+        if (typeValue == "subprocess") {
+          if ($endpointInput.length > 0) {
+            $endpointInput.val("subprocess");
           }
-          const modelUpdateType = newValue.updateType;
-          if (
-            [
-              MODEL_UPDATE_TYPE.REGENERATION_BY_PROMPT,
-              MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS,
-            ].includes(modelUpdateType)
-          ) {
-            $viewPrevModelButton.prop("disabled", false);
-            $viewNewModelButton.prop("disabled", true);
-            $revertPrevModelButton.prop("disabled", true);
-            $keepNewModelButton.prop("disabled", false);
-            $regeneratedModelActionBar.show();
-            $viewPrevModelButton.on("click", () => {
-              showActiveModel(oldValue);
-              $viewPrevModelButton.prop("disabled", true);
-              $viewNewModelButton.prop("disabled", false);
-              $revertPrevModelButton.prop("disabled", false);
-              $keepNewModelButton.prop("disabled", true);
-            });
-            $viewNewModelButton.on("click", () => {
-              showActiveModel(newValue);
-              $viewPrevModelButton.prop("disabled", false);
-              $viewNewModelButton.prop("disabled", true);
-              $revertPrevModelButton.prop("disabled", true);
-              $keepNewModelButton.prop("disabled", false);
-            });
-            $revertPrevModelButton.on("click", () => {
-              showActiveModel(oldValue);
-              $regeneratedModelActionBar.hide();
-            });
-          }
+          renderModelSelect(modelValue);
         } else {
-          clearModelViewer();
+          if ($endpointInput.length > 0) {
+            $endpointInput.val("");
+          }
+          $modelSelect.val("");
+          $modelSelect.parent().parent().hide();
         }
-        break;
-      default:
-        break;
-    }
-  });
-
-  workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
-    switch (key) {
-      case "activeModelId":
-        break;
-      default:
-        break;
-    }
-  });
-
-  $(document).on("wf:call-clicked", function (e) {
-    console.log(`Event Listener 'wf:call-clicked' listened`);
-    const $node = $(e.detail.node);
-    const endpoint = $node.attr("endpoint");
-    const $argumentsDiv = $(
-      `#dat_details div[data-relaxngui-path=" > call > parameters > arguments[data-main]"]`,
-    );
-    $argumentsDiv.css({ visibility: "hidden", height: "0px" });
-    const modelValue = $node
-      .children("parameters")
-      .children("dbpm_subprocess_model")
-      .text();
-
-    const $endpointInput = $(
-      `#dat_details input[data-relaxngui-path=" > call[endpoint]"]`,
-    );
-    // if ($endpointInput.length > 0) {
-    //   $endpointInput.parent().css({ visibility: "hidden", height: "0px" });
-    // }
-    const isSubprocess = endpoint === "subprocess" ? true : false;
-    const $typeSeclect = $(
-      `#dat_details select[data-relaxngui-path=" > call > parameters > dbpm_type"]`,
-    );
-    $typeSeclect.val(isSubprocess ? "subprocess" : "task");
-    const $modelSelect = $(
-      `#dat_details select[data-relaxngui-path=" > call > parameters > dbpm_subprocess_model"]`,
-    );
-    $typeSeclect.on("change", function (e) {
-      const typeValue = $(this).val();
-      if (typeValue == "subprocess") {
-        if ($endpointInput.length > 0) {
-          $endpointInput.val("subprocess");
-        }
+      });
+      if (isSubprocess) {
         renderModelSelect(modelValue);
       } else {
-        if ($endpointInput.length > 0) {
-          $endpointInput.val("");
-        }
-        $modelSelect.val("");
         $modelSelect.parent().parent().hide();
       }
     });
-    if (isSubprocess) {
-      renderModelSelect(modelValue);
-    } else {
-      $modelSelect.parent().parent().hide();
-    }
-  });
-  $(document).on("wf:subprocess-dblclicked", function (e) {
-    console.log(`Event Listener 'wf:subprocess-dblclicked' listened`);
-    const $node = $(e.detail.node);
-    const modelId = $node
-      .children("parameters")
-      .children("dbpm_subprocess_model")
-      .text();
-    if (modelId) {
-      workspaceService.toggleModelSelection(modelId);
-    }
-  });
-  $(document).on("wf:subprocess-hovered", function (e) {
-    console.log(`Event Listener 'wf:subprocess-hovered' listened`);
-    const $node = $(e.detail.node);
-    const modelId = $node
-      .children("parameters")
-      .children("dbpm_subprocess_model")
-      .text();
-    const svgId = $node.attr("id");
-    const $element = $(`#graphcanvas [element-id="${svgId}"]`);
-    console.log("Hovered subprocess svgId:", svgId, "modelId:", modelId);
+    $(document).on("wf:subprocess-dblclicked", function (e) {
+      console.log(`Event Listener 'wf:subprocess-dblclicked' listened`);
+      const $node = $(e.detail.node);
+      const modelId = $node
+        .children("parameters")
+        .children("dbpm_subprocess_model")
+        .text();
+      if (modelId) {
+        workspaceService.toggleModelSelection(modelId);
+      }
+    });
+    $(document).on("wf:subprocess-hovered", function (e) {
+      console.log(`Event Listener 'wf:subprocess-hovered' listened`);
+      const $node = $(e.detail.node);
+      const modelId = $node
+        .children("parameters")
+        .children("dbpm_subprocess_model")
+        .text();
+      const svgId = $node.attr("id");
+      const $element = $(`#graphcanvas [element-id="${svgId}"]`);
+      console.log("Hovered subprocess svgId:", svgId, "modelId:", modelId);
 
-    // ✨ NEW: Pass source identifier to prevent conflicts
-    workspaceStore.setModelPopoverParams(
-      {
-        modelId,
-        anchor: { type: "element", element: $element[0] },
-      },
-      "subprocess-node",
-    ); // ✨ NEW: Source tracking for conflict prevention
+      // ✨ NEW: Pass source identifier to prevent conflicts
+      workspaceStore.setModelPopoverParams(
+        {
+          modelId,
+          anchor: { type: "element", element: $element[0] },
+        },
+        "subprocess-node",
+      ); // ✨ NEW: Source tracking for conflict prevention
 
-    /* OLD CODE - No source tracking:
+      /* OLD CODE - No source tracking:
     workspaceStore.setModelPopoverParams({
       modelId,
       anchor: { type: "element", element: $element[0] },
     });
     */
 
-    console.log("Subprocess modelId:", modelId);
-    // const modelName = modelsStore.getModelNameById(modelId); // OLD: Commented out unused code
-    // const modelGraph = $(modelsStore.getModelGraphById(modelId)).clone();
-    // const modelId = $node
-    //   .children("parameters")
-    //   .children("dbpm_subprocess_model")
-    //   .text();
-    // const modelName = modelsStore.getModelNameById(modelId);
-    // const modelGraph = $(modelsStore.getModelGraphById(modelId)).clone();
-  });
-  $(document).on("wf:subprocess-unhovered", function (e) {
-    console.log(`Event Listener 'wf:subprocess-unhovered' listened`);
-    // ✨ NEW: Pass source identifier to ensure only the same source can close
-    workspaceStore.requestCloseModelPopover("subprocess-node");
+      console.log("Subprocess modelId:", modelId);
+      // const modelName = modelsStore.getModelNameById(modelId); // OLD: Commented out unused code
+      // const modelGraph = $(modelsStore.getModelGraphById(modelId)).clone();
+      // const modelId = $node
+      //   .children("parameters")
+      //   .children("dbpm_subprocess_model")
+      //   .text();
+      // const modelName = modelsStore.getModelNameById(modelId);
+      // const modelGraph = $(modelsStore.getModelGraphById(modelId)).clone();
+    });
+    $(document).on("wf:subprocess-unhovered", function (e) {
+      console.log(`Event Listener 'wf:subprocess-unhovered' listened`);
+      // ✨ NEW: Pass source identifier to ensure only the same source can close
+      workspaceStore.requestCloseModelPopover("subprocess-node");
 
-    /* OLD CODE - No source tracking:
+      /* OLD CODE - No source tracking:
     workspaceStore.requestCloseModelPopover();
     */
-  });
-  window.do_main_work = do_main_work;
-}
+    });
+  },
+  subscribeStores: () => {
+    activeModelStore.subscribe((state, { key, oldValue, newValue }) => {
+      switch (key) {
+        case "model":
+          if (newValue) {
+            $("#activeModelName").text(newValue.name ? newValue.name : "");
+            $modelActionBar.prop("disabled", false);
+            $datDetails.empty();
+            showActiveModel(newValue);
+            const newModelId = newValue.id;
+            if (newModelId) {
+              $promptContainer.show();
+            }
+            const modelUpdateType = newValue.updateType;
+            if (
+              [
+                MODEL_UPDATE_TYPE.REGENERATION_BY_PROMPT,
+                MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS,
+              ].includes(modelUpdateType)
+            ) {
+              $viewPrevModelButton.prop("disabled", false);
+              $viewNewModelButton.prop("disabled", true);
+              $revertPrevModelButton.prop("disabled", true);
+              $keepNewModelButton.prop("disabled", false);
+              $regeneratedModelActionBar.show();
+              $viewPrevModelButton.on("click", () => {
+                showActiveModel(oldValue);
+                $viewPrevModelButton.prop("disabled", true);
+                $viewNewModelButton.prop("disabled", false);
+                $revertPrevModelButton.prop("disabled", false);
+                $keepNewModelButton.prop("disabled", true);
+              });
+              $viewNewModelButton.on("click", () => {
+                showActiveModel(newValue);
+                $viewPrevModelButton.prop("disabled", false);
+                $viewNewModelButton.prop("disabled", true);
+                $revertPrevModelButton.prop("disabled", true);
+                $keepNewModelButton.prop("disabled", false);
+              });
+              $revertPrevModelButton.on("click", () => {
+                showActiveModel(oldValue);
+                $regeneratedModelActionBar.hide();
+              });
+            }
+          } else {
+            clearModelViewer();
+          }
+          break;
+        default:
+          break;
+      }
+    });
+
+    workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
+      switch (key) {
+        case "activeModelId":
+          break;
+        default:
+          break;
+      }
+    });
+  },
+});

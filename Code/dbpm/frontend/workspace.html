@@ -1,7 +1,8 @@
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>Doc-Based Process Modeller</title>
   <!-- CPEE libs and styles -->
   <script type="text/javascript" src="https://cpee.org/js_libs/jquery.min.js"></script>
@@ -18,12 +19,12 @@
   <script type="text/javascript" src="https://cpee.org/js_libs/relaxngui.js"></script>
   <script type="text/javascript" src="https://cpee.org/js_libs/strftime.min.js"></script>
   <script type="text/javascript" src="https://cpee.org/js_libs/uidash.js"></script>
-  <link rel="stylesheet" href="https://cpee.org/js_libs/uidash.css" type="text/css">
-  <link rel="stylesheet" href="https://cpee.org/js_libs/uidash-icons.css" type="text/css">
+  <link rel="stylesheet" href="https://cpee.org/js_libs/uidash.css" type="text/css" />
+  <link rel="stylesheet" href="https://cpee.org/js_libs/uidash-icons.css" type="text/css" />
   <script type="text/javascript" src="https://cpee.org/js_libs/underscore.min.js"></script>
   <script type="text/javascript" src="https://cpee.org/js_libs/util.js"></script>
   <script type="text/javascript" src="https://cpee.org/js_libs/vkbeautify.js"></script>
-  <link rel="stylesheet" href="https://cpee.org/js_libs/relaxngui.css" type="text/css">
+  <link rel="stylesheet" href="https://cpee.org/js_libs/relaxngui.css" type="text/css" />
 
   <!-- modelling ui -->
   <script type="text/javascript" src="https://cpee.org/flow/js/wfadaptor.js"></script>
@@ -53,39 +54,39 @@
   <script src="https://unpkg.com/@popperjs/core@2"></script>
   <script src="https://unpkg.com/tippy.js@6"></script>
   <!-- DBPM ui-->
-  <link rel="stylesheet" href="assets/global.css" type="text/css">
+  <link rel="stylesheet" href="assets/global.css" type="text/css" />
   <link rel="stylesheet" href="pages/workspace/workspace.css" type="text/css" />
 </head>
+
 <body is="x-ui-">
   <ui-bar class="header">
-    <div>
-      <span>
-        <a href="index.html" title="Home"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+    <ul class="breadcrumb">
+      <li><a href="index.html" title="Home"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
             <polyline points="9,22 9,12 15,12 15,22"></polyline>
-          </svg></a></span> <span class="separator added">/</span>
-
-      <div id="projectNameEditor" class="inline-editor">
-        <span id="projectName" class="inline-editor__view" data-editable="1"></span>
-        <!-- <input class="inline-editor__input" type="text" /> -->
-      </div>
-    </div>
+          </svg></a></li>
+      <li>
+        <div id="projectNameEditor" class="inline-editor">
+          <span id="projectName" class="inline-editor__view" data-editable="1"></span>
+        </div>
+      </li>
+    </ul>
     <div class="right action-group">
       <span>LLM: gemini 2 Flash</span>
       <a id="logLink" href="" target="_blank">Log</a>
       <a id="statsLink" href="stats.html">Statistics</a>
     </div>
   </ui-bar>
-  <ui-rest style=" z-index: 2;" id="main">
+  <ui-rest style="z-index: 2" class="main">
     <ui-content>
       <!-- Left: Document Panel -->
-      <ui-rest style="flex:0.4;">
+      <ui-rest style="flex: 0.4">
         <!-- Document List Pane -->
-        <ui-tabbed style="z-index: 2;">
+        <ui-tabbed style="z-index: 2">
           <ui-tabbar>
             <ui-tab class="switch"></ui-tab>
-            <ui-tab class="" data-tab="documents" style="flex: 1;">Documents</ui-tab>
+            <ui-tab class="" data-tab="documents" style="flex: 1">Documents</ui-tab>
           </ui-tabbar>
           <ui-content>
             <ui-area data-belongs-to-tab="documents" id="areadocuments">
@@ -97,59 +98,63 @@
                     <div class="inline-editor">
                       <span class="document-name inline-editor__view" data-ref="documentName"></span>
                     </div>
-                    <span class="action-cell"><button class="right col-button action-btn">...</button></span>
+                    <span class="action-cell"><button class="right col-button action-btn">
+                        ...
+                      </button></span>
                   </li>
                 </template>
               </ul>
               <!-- <form onsubmit="return false;"> -->
-              <label for="documentsInput" style="cursor:pointer;">Upload Documents</label>
+              <label for="documentsInput" style="cursor: pointer">Upload Documents</label>
               <input type="file" id="documentsInput" multiple />
               <!-- </form> -->
             </ui-area>
           </ui-content>
         </ui-tabbed>
         <!-- Document Viewer -->
-        <ui-rest class="panel" style="margin-top: 0.5em;">
+        <ui-rest class="panel" style="margin-top: 0.5em">
           <!-- Text Action Bar -->
           <ui-bar id="textActionBar">
             <div class="right action-group">
-              <form id="selectionColorForm" style="margin: 0;">
+              <form id="selectionColorForm" style="margin: 0">
                 <div class="relaxngui_cell relaxngui_color_container">
                   <span class="round">
-                    <input type="radio" name="color" value="#d4e1f1" id="selectionColor1" checked>
-                    <label for="selectionColor1" style="background-color: #d4e1f1;"></label>
+                    <input type="radio" name="color" value="#d4e1f1" id="selectionColor1" checked />
+                    <label for="selectionColor1" style="background-color: #d4e1f1"></label>
                   </span>
                   <span class="round">
-                    <input type="radio" name="color" value="#d8f0dd" id="selectionColor2">
-                    <label for="selectionColor2" style="background-color: #d8f0dd;"></label>
+                    <input type="radio" name="color" value="#d8f0dd" id="selectionColor2" />
+                    <label for="selectionColor2" style="background-color: #d8f0dd"></label>
                   </span>
                   <span class="round">
-                    <input type="radio" name="color" value="#ffffcc" id="selectionColor3">
-                    <label for="selectionColor3" style="background-color: #ffffcc;"></label>
+                    <input type="radio" name="color" value="#ffffcc" id="selectionColor3" />
+                    <label for="selectionColor3" style="background-color: #ffffcc"></label>
                   </span>
                   <span class="round">
-                    <input type="radio" name="color" value="#e4c3e4" id="selectionColor4">
-                    <label for="selectionColor4" style="background-color: #e4c3e4;"></label></span>
+                    <input type="radio" name="color" value="#e4c3e4" id="selectionColor4" />
+                    <label for="selectionColor4" style="background-color: #e4c3e4"></label></span>
                   <span class="round">
-                    <input type="radio" name="color" value="#f8a8c6" id="selectionColor5">
-                    <label for="selectionColor5" style="background-color: #f8a8c6;"></label></span>
+                    <input type="radio" name="color" value="#f8a8c6" id="selectionColor5" />
+                    <label for="selectionColor5" style="background-color: #f8a8c6"></label></span>
                   <span class="round">
-                    <input type="radio" name="color" value="#ded0c5" id="selectionColor6">
-                    <label for="selectionColor6" style="background-color: #ded0c5;"></label></span>
+                    <input type="radio" name="color" value="#ded0c5" id="selectionColor6" />
+                    <label for="selectionColor6" style="background-color: #ded0c5"></label></span>
                   <span class="round">
-                    <input type="radio" name="color" value="#deddda" id="selectionColor7">
-                    <label for="selectionColor7" style="background-color: #deddda;"></label>
+                    <input type="radio" name="color" value="#deddda" id="selectionColor7" />
+                    <label for="selectionColor7" style="background-color: #deddda"></label>
                   </span>
                 </div>
               </form>
-              <button id="deleteSelectionButton" disabled>Delete Selection</button>
+              <button id="deleteSelectionButton" disabled>
+                Delete Selection
+              </button>
             </div>
           </ui-bar>
           <ui-divider></ui-divider>
           <!-- Document Content Area -->
           <ui-content>
             <ui-area id="viewerWrap">
-              <ui-area id="selectionsLayer" style="z-index: 1;"></ui-area>
+              <ui-area id="selectionsLayer" style="z-index: 1"></ui-area>
               <!-- <ui-area id="temporarySelectionsLayer"></ui-area> -->
               <ui-area id="documentContent"></ui-area>
               <ui-area id="interactionLayer">
@@ -157,14 +162,14 @@
                 <!-- <div id="activeModelTags"></div> -->
               </ui-area>
             </ui-area>
-            </ui-area>
-            <!-- </div> -->
           </ui-content>
           <ui-divider></ui-divider>
           <!-- Model (Re-)generation Bar -->
-          <ui-bar style="z-index: 3;">
+          <ui-bar style="z-index: 3">
             <div class="right action-group">
-              <button id="addSelectionsButton" class="hidden">Add Selections to Model</button>
+              <button id="addSelectionsButton" class="hidden">
+                Add Selections to Model
+              </button>
               <button id="generateButton" disabled>Generate Model</button>
               <!-- <button id="regenerateButton" style="display:none;">Regenerate</button> -->
             </div>
@@ -173,22 +178,21 @@
       </ui-rest>
       <ui-resizehandle id="columnResizehandle1" data-direction="vertical"></ui-resizehandle>
       <!-- Middle: Current Model Panel -->
-      <ui-rest class="panel" style="flex:0.4;">
-        <ui-rest style="flex:1 1 0;min-height: 100px">
+      <ui-rest class="panel" style="flex: 0.4">
+        <ui-rest style="flex: 1 1 0; min-height: 100px">
           <ui-bar>
             <!-- <div id="activeModelNameEditor" class="inline-editor"> -->
-            <span id="activeModelName" class="inline-editor__view"></span>
+            <span id="activeModelName" class="inline-editor__view" data-editable="1"></span>
+            <button class="right col-button action-btn">...</button>
             <!-- <input class="inline-editor__input" type="text" /> -->
             <!-- </div> -->
-            <fieldset id="modelActionBar" class="right action-group" disabled>
+            <!-- <fieldset id="modelActionBar" class="right action-group" disabled>
               <a id="viewModelDataLink">
                 View XML Data
               </a>
               <button id="exportTestsetButton">Export Testset</button>
-              <!-- <button name="deselsetModelButton" onclick="workspaceService.clearModelSelection()">Deselect
-                Model</button> -->
               <button id="deleteModelButton">Delete Model</button>
-            </fieldset>
+            </fieldset> -->
           </ui-bar>
           <ui-divider></ui-divider>
           <!-- <div>
@@ -199,9 +203,9 @@
           <button title='the SVG contains the graphical repesentation of the CPEE tree as you see it on the screen'
             name="savesvgfile">save svg<br>graph</button> -->
           <ui-content id="activeModelContainer">
-            <ui-area id='graphgrid'>
+            <ui-area id="graphgrid">
               <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink"
-                id='graphcanvas' width='1' height='1' style="display:block;"></svg>
+                id="graphcanvas" width="1" height="1" style="display: block"></svg>
             </ui-area>
           </ui-content>
           <div id="dat_details"></div>
@@ -210,15 +214,19 @@
             <div class="right action-group">
               <button id="viewPrevModelButton">Previous</button>
               <button id="viewNewModelButton">New</button>
-              <button id="revertPrevModelButton" title="Revert to the previous version">Revert</button>
-              <button id="keepNewModelButton" title="Keep the new version">Keep</button>
+              <button id="revertPrevModelButton" title="Revert to the previous version">
+                Revert
+              </button>
+              <button id="keepNewModelButton" title="Keep the new version">
+                Keep
+              </button>
             </div>
           </ui-bar>
         </ui-rest>
         <ui-resizehandle data-direction="horizontal"></ui-resizehandle>
-        <ui-rest style="flex: 0.25 1 0; min-height: 100px;" id="promptContainer" class="hidden">
+        <ui-rest style="flex: 0.25 1 0; min-height: 100px" id="promptContainer" class="hidden">
           <!-- <textarea id="modelXmlContent" style="width:100%; height:100%;"></textarea> -->
-          <div id="promptInput" contenteditable="true" style="width:100%; height:100%;"></div>
+          <div id="promptInput" contenteditable="true" style="width: 100%; height: 100%"></div>
           <ui-bar>
             <fieldset class="right action-group" id="promptActionBar" disabled>
               <button id="clearPromptButton">Clear</button>
@@ -226,21 +234,29 @@
             </fieldset>
           </ui-bar>
         </ui-rest>
-
       </ui-rest>
       <ui-resizehandle data-direction="vertical"></ui-resizehandle>
       <!-- Right: Models Panel-->
-      <ui-rest style="flex:0.2; min-width:180px;">
-        <ui-rest class="panel" style="flex:0.68 1 0;min-height: 100px">
-          <ui-bar><span style="font-size: 1.2em; font-weight: bold;">Models</span></ui-bar>
+      <ui-rest style="flex: 0.2; min-width: 180px">
+        <ui-rest class="panel" style="flex: 0.68 1 0; min-height: 100px">
+          <ui-bar><span style="font-size: 1.2em; font-weight: bold">Models</span></ui-bar>
           <ui-divider></ui-divider>
-          <ui-bar><label for="cars">Documents:</label>
+          <ui-bar>
+            <span id="activeModelName" class="inline-editor__view" data-editable="1"></span>
+            <button class="right col-button action-btn">...</button>
+          </ui-bar>
+          <ui-bar>
+            <!-- <div class="right"> -->
+
+            <label for="cars">Documents:</label>
             <select name="cars" id="cars">
               <option value="volvo">All</option>
               <option value="saab">Saab</option>
               <option value="mercedes">Mercedes</option>
               <option value="audi">Audi</option>
-            </select></ui-bar>
+            </select>
+            <!-- </div> -->
+          </ui-bar>
           <ui-rest>
             <ui-content>
               <ui-area id="models">
@@ -250,10 +266,10 @@
                     <div data-ref="modelGrid"></div>
                   </div>
                 </template>
-                <div id='modelCanvasSmallContainer'>
-                  <div id='modelGridSmall' style="position: absolute; left: -9999px; top: -9999px;">
+                <div id="modelCanvasSmallContainer">
+                  <div id="modelGridSmall" style="position: absolute; left: -9999px; top: -9999px">
                     <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink"
-                      id='modelCanvasSmall' width='1' height='1'></svg>
+                      id="modelCanvasSmall" width="1" height="1"></svg>
                   </div>
                 </div>
               </ui-area>
@@ -261,11 +277,9 @@
           </ui-rest>
         </ui-rest>
         <ui-resizehandle data-direction="horizontal"></ui-resizehandle>
-        <ui-rest class="panel" style="margin-top: 0.5em;flex:0.32 1 0;min-height: 100px">
+        <ui-rest class="panel" style="margin-top: 0.5em; flex: 0.32 1 0; min-height: 100px">
           <ui-content>
-            <ui-area id="cy">
-
-            </ui-area>
+            <ui-area id="cy"> </ui-area>
           </ui-content>
         </ui-rest>
       </ui-rest>
@@ -274,7 +288,6 @@
   <div id="modelPopover" class="hidden">
     <div id="modelPopoverContainer"></div>
   </div>
-  <script>
-  </script>
 </body>
+
 </html>

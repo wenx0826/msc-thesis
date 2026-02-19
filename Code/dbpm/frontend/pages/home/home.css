@@ -1,17 +1,11 @@
-[is="x-ui-"] {
-  overflow-y: auto;
-}
-body {
-  min-height: 100vh;
-  /* overflow-y: auto; */
-}
+
 .main {
   padding-bottom: 36px !important;
 }
 
 .hero {
   padding-top: 32px;
-  padding-bottom: 24px;
+  padding-bottom: 20px;
   text-align: center;
   background-color: var(--x-ui-outside-color);
 }
@@ -353,3 +347,122 @@ dialog {
   background: #000;
   border-color: #000;
 }
+
+
+
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            text-align: center;
+            /* 关键：整体居中 */
+        }
+
+        .kpi-title {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .kpi-value {
+            font-size: 42px;
+            font-weight: 600;
+            line-height: 1;
+        }
+
+        .kpi-sub {
+            margin-top: 10px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        /* ===== Distribution FULL WIDTH ===== */
+
+        .distribution-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 100px;
+            margin-top: 48px;
+        }
+
+        .dist-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 14px;
+        }
+
+        .bar-row {
+            display: grid;
+            grid-template-columns: 30px 1fr 40px;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .bar-track {
+            height: 6px;
+            background: #ecece7;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: #555;
+        }
+
+        .bar-pct {
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* ===== Divider ===== */
+
+        .divider {
+            margin: 48px 0 28px;
+            border-top: 1px solid #e5e5e0;
+        }
+
+        /* ===== Interaction (NARROW COLUMN) ===== */
+
+        .interaction {
+            max-width: 520px;
+        }
+
+        .interaction h3 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 18px;
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 14px;
+        }
+
+        .metric-label {
+            color: #444;
+        }
+
+        .metric-value {
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+        }
+
+        @media (max-width:1000px) {
+            .kpi-row {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .distribution-row {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .interaction {
+                max-width: 100%;
+            }
+        }

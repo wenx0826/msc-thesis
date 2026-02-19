@@ -1,6 +1,6 @@
-import { projectsAPI } from "../../../api/index.js";
 import { createUI } from "../../../shared/util/ui.js";
 import { getProjectWorkspaceURL } from "../../../shared/util/url.js";
+import { projectsAPI } from "../../../api/index.js";
 
 const $dialog = $("#projectCreationDialog");
 const $form = $dialog.find("form");
@@ -14,6 +14,7 @@ async function createProject(name) {
 }
 
 createUI({
+  setup: () => {},
   bindListeners: () => {
     $("#btnCreate").on("click", () => {
       $err.text("");

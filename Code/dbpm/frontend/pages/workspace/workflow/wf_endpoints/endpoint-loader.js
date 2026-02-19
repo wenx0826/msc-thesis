@@ -42,20 +42,9 @@ export const endpointLoader = {
         fetch(`${basePath}${endpoint}/schema.rng`).then((r) => r.text()),
       ])
         .then(([symbolText, properties, schemaText]) => {
-          // Parse symbol SVG
-          const svgDoc = new DOMParser().parseFromString(
-            symbolText,
-            "image/svg+xml",
-          );
-          this._cache[endpoint].symbol = svgDoc.documentElement;
-
-          // Parse schema RNG
+          this._cache[endpoint].symbol = $.parseXML(symbolText).documentElement;
           this._cache[endpoint].properties = properties;
-          this._cache[endpoint].schema = new DOMParser().parseFromString(
-            schemaText,
-            "application/xml",
-          );
-
+          this._cache[endpoint].schema = $.parseXML(schemaText).documentElement;
           console.log(
             `[endpoint-loader] Loaded symbol, properties & schema for: ${endpoint}`,
           );

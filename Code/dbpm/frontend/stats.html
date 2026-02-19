@@ -1,66 +1,84 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>Doc-Based Process Modeller</title>
   <script type="text/javascript" src="https://cpee.org/js_libs/jquery.min.js"></script>
   <script type="text/javascript" src="https://cpee.org/js_libs/jquery.browser.js"></script>
   <script type="text/javascript" src="https://cpee.org/js_libs/uidash.js" defer></script>
-  <link rel="stylesheet" href="https://cpee.org/js_libs/uidash.css" type="text/css">
+  <link rel="stylesheet" href="https://cpee.org/js_libs/uidash.css" type="text/css" />
 
-  <script src="stats/init.js" type="module"></script>
-  <link rel="stylesheet" href="css/global.css " type="text/css" />
-  <link rel="stylesheet" href="css/stats.css" type="text/css" />
+  <script src="pages/stats/init.js" type="module"></script>
+  <link rel="stylesheet" href="assets/global.css" type="text/css" />
+  <link rel="stylesheet" href="pages/stats/stats.css" type="text/css" />
 </head>
+
 <body is="x-ui-">
-  <ui-bar>
-    <div>
-      <span style="font-size: 1.2em;"><a href="index.html" title="Home"><svg width="16" height="16" viewBox="0 0 24 24"
-            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <ui-bar class="header">
+    <ul class="breadcrumb">
+      <li><a href="index.html" title="Home"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
             <polyline points="9,22 9,12 15,12 15,22"></polyline>
-          </svg></a></span>
-      <span class="separator added">/</span>
-      <span><a id="projectLink"></a></span>
-      <span class="separator added">/</span>
-      <span>Statistics</span>
-    </div>
-    <div class="right action-group">
-      <!-- <span>Theme: Preset</span>
-      <span>LLM: gemini 2 Flash</span>
-      <a id="logLink" href="" target="_blank">Log</a>
-      <a id="statsLink" href="stats.html" target="_blank">Stats</a> -->
-    </div>
+          </svg></a></li>
+      <li>
+        <a id="projectLink"></a>
+      </li>
+      <li>Statistics</li>
+    </ul>
   </ui-bar>
   <!-- <a href="index.html" class="back-link">← Back to Projects</a> -->
-  <ul id="documentsList">
-  </ul>
-  <template id="documentItemTemplate">
-    <li data-doc-id="">
-      <h3><span data-ref="documentName"></span></h3>
-      <div>
-        words: <span data-ref="wordsCount"></span>
-        |
-        models: <span data-ref="numModels"></span>
-        | <a data-ref="documentLink" target="_blank">View Document</a>
-      </div>
-      <ul data-ref="modelsList">
+  <ui-rest style="z-index: 2" class="main">
+    <div class="page-rail">
+      <section class="kpis" aria-label="Key statistics">
+        <div class="kpi">
+          <div class="kpiTitle">All Documents</div>
+          <div class="kpiValue" id="kpiDocs">—</div>
+          <div class="kpiMeta" id="kpiDocsMeta"></div>
+        </div>
+        <div class="kpi">
+          <div class="kpiTitle">All Models</div>
+          <div class="kpiValue" id="kpiModels">—</div>
+          <div class="kpiMeta" id="kpiModelsMeta"></div>
+        </div>
+      </section>
+      <section id="documentsList">
+      </section>
+      <template id="documentItemTemplate">
+        <ui-tabbed style="z-index: 2">
+          <ui-tabbar>
+            <ui-tab class="switch"></ui-tab>
+            <ui-tab class="" style="flex: 1">
+              <h3><span data-ref="documentName"></span></h3>
+              <ul class="doc-info">
+                <li>words: <span data-ref="wordsCount"></span></li>
+                <li>models: <span data-ref="modelsCount"></span></li>
+                <li><a data-ref="documentLink" target="_blank">View Document</a></li>
+              </ul>
+            </ui-tab>
+          </ui-tabbar>
+          <ui-content>
+            <ui-area>
+              <ul data-ref="modelsList">
+              </ul>
+            </ui-area>
+          </ui-content>
+        </ui-tabbed>
+      </template>
 
-      </ul>
-    </li>
-  </template>
-  <template id="modelItemTemplate">
-    <li data-model-id="">
-      <h4><span data-ref="modelName"></span></h4>
-      <div>
-        words: <span data-ref="selectedWordsCount"></span>
-        |
-        models: <span data-ref="numModels"></span>
-      </div>
-    </li>
-  </template>
+      <template id="modelItemTemplate">
+        <li data-model-id="">
+          <h4><span data-ref="modelName"></span></h4>
+          <div>
+            words: <span data-ref="selectedWordsCount"></span> |
+          </div>
+        </li>
+      </template>
+    </div>
+  </ui-rest>
 </body>
 
 </html>

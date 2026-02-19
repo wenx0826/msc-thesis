@@ -54,11 +54,11 @@ status.update 1, 'Hotel'</finalize>
           <description/>
         </code>
       </documentation>
-    </call><call id="a7" endpoint="" svg-id="a7" xmlns="http://cpee.org/ns/description/1.0" svg-type="call" svg-subtype="call"><parameters><label/><color>#e4c3e4</color><dbpm_type>task</dbpm_type></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a6" endpoint="" svg-id="a6" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" endpoint="" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call>
+    </call><call xmlns="http://cpee.org/ns/description/1.0" id="a7" endpoint="" svg-id="a7" svg-type="call" svg-subtype="call"><parameters><label/><color>#e4c3e4</color><dbpm_type>task</dbpm_type></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a6" endpoint="" svg-id="a6" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call><call xmlns="http://cpee.org/ns/description/1.0" id="a5" endpoint="" svg-id="a5" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call>
     <parallel wait="-1" cancel="last" svg-id="parallel_0" svg-type="parallel" svg-subtype="parallel_start">
       <loop mode="pre_test" condition="data.persons &gt; 0" svg-id="loop_0" svg-label="data.persons &gt; 0" svg-type="loop" svg-subtype="loop_head">
         <parallel_branch svg-id="parallel_branch_0" svg-type="parallel_branch" svg-subtype="parallel_branch_event">
-          <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="Book Hotel" svg-type="call" svg-subtype="call"><parameters><label>Book Hotel</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>b91d2def-24fc-4d5c-8529-c7ccbd1c50b9</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:3000/data/models/b91d2def-24fc-4d5c-8529-c7ccbd1c50b9.xml</url></arguments></parameters></call>
+          <call id="a2" endpoint="subprocess" svg-id="a2" svg-label="Book Hotel" svg-type="call" svg-subtype="call"><parameters><label>Book Hotel</label><color>#ffffcc</color><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>4789e4b6-ea31-4d35-a4e2-4ddc042b435d</dbpm_subprocess_model></parameters></call>
         </parallel_branch>
         <manipulate id="a3" svg-id="a3" svg-type="manipulate" svg-subtype="manipulate">data.persons -= 1</manipulate>
       </loop>
