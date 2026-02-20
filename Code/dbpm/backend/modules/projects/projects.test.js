@@ -4,8 +4,8 @@ import path from "node:path";
 import { test } from "node:test";
 import { fileURLToPath } from "node:url";
 
-import buildApp from "../app.js";
-import db from "../database.js";
+import buildApp from "../../app.js";
+import db from "../../database.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

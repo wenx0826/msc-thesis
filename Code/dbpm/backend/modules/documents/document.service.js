@@ -2,21 +2,17 @@ import crypto from "crypto";
 import documentRepo from "./documents.repo.js";
 import documentStorage from "./document.storage.js";
 import { logEvent } from "../../utils/logger.js";
-import {
-  readDocumentContent,
-  writeDocumentContent,
-  deleteDocumentFile,
-  countWords,
-} from "../../utils/fileHelper.js";
+import { countWords } from "../../utils/fileHelper.js";
 
 class DocumentService {
   async createDocument(name, content, projectId) {
     const documentId = crypto.randomUUID();
     const versionId = crypto.randomUUID();
+    const storagePath = documentStorage.getDocumentFilePath(versionId);
 
     try {
       // Write file content
-      documentStorage.writeDocumentContent(versionId, content);
+      documentStorage.write(versionId, content);
 
       // Count words
       const wordsCount = countWords(content);
@@ -26,6 +22,7 @@ class DocumentService {
         documentId,
         projectId,
         name,
+        storagePath,
         wordsCount,
       });
 
@@ -35,7 +32,7 @@ class DocumentService {
       return createdDocument;
     } catch (err) {
       // Cleanup on failure
-      deleteDocumentFile(versionId);
+      documentStorage.delete(versionId);
       throw err;
     }
   }
@@ -54,7 +51,7 @@ class DocumentService {
     if (!doc) {
       throw new Error("Document not found");
     }
-    const content = readDocumentContent(docId);
+    const content = documentStorage.read(docId);
     return { content };
   }
 
@@ -79,7 +76,7 @@ class DocumentService {
     }
 
     documentRepo.delete(docId);
-    deleteDocumentFile(docId);
+    documentStorage.delete(docId);
 
     return { message: "Document deleted" };
   }

@@ -5,37 +5,34 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const documentsPath = path.join(__dirname, "..", "..", "data", "documents");
 const modelsPath = path.join(__dirname, "..", "..", "data", "models");
 
-const readDocumentContent = (docId) => {
-  const contentFile = path.join(documentsPath, `${docId}.html`);
-  return fs.readFileSync(contentFile, "utf8");
+const readTextFile = (filePath) => {
+  return fs.readFileSync(filePath, "utf8");
 };
 
-const writeDocumentContent = (docId, content) => {
-  const contentFile = path.join(documentsPath, `${docId}.html`);
-  fs.writeFileSync(contentFile, content);
+const writeTextFile = (filePath, content) => {
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+  fs.writeFileSync(filePath, content);
 };
 
-const deleteDocumentFile = (docId) => {
-  const contentFile = path.join(documentsPath, `${docId}.html`);
-  fs.unlink(contentFile, () => {}); // Ignore errors
+const deleteFile = (filePath) => {
+  fs.unlink(filePath, () => {}); // Ignore errors
 };
 
 const readModelData = (modelId) => {
   const modelFile = path.join(modelsPath, `${modelId}.xml`);
-  return fs.readFileSync(modelFile, "utf8");
+  return readTextFile(modelFile);
 };
 
 const writeModelData = (modelId, data) => {
   const modelFile = path.join(modelsPath, `${modelId}.xml`);
-  fs.writeFileSync(modelFile, data);
+  writeTextFile(modelFile, data);
 };
 
 const deleteModelFile = (modelId) => {
   const modelFile = path.join(modelsPath, `${modelId}.xml`);
-  fs.unlink(modelFile, () => {}); // Ignore errors
+  deleteFile(modelFile);
 };
 
 const countWords = (text) => {
@@ -43,9 +40,9 @@ const countWords = (text) => {
 };
 
 export {
-  readDocumentContent,
-  writeDocumentContent,
-  deleteDocumentFile,
+  readTextFile,
+  writeTextFile,
+  deleteFile,
   readModelData,
   writeModelData,
   deleteModelFile,

@@ -1,27 +1,40 @@
 import {
-  readDocumentContent,
-  writeDocumentContent,
-  deleteDocumentFile,
+  readTextFile,
+  writeTextFile,
+  deleteFile,
 } from "../../utils/fileHelper.js";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const documentsPath = path.join(
+  __dirname,
+  "..",
+  "..",
+  "..",
+  "data",
+  "documents",
+);
 
 class DocumentStorage {
-  writeDocumentContent(versionId, content) {
+  write(versionId, content) {
     const filePath = this.getDocumentFilePath(versionId);
-    writeDocumentContent(filePath, content);
+    writeTextFile(filePath, content);
   }
 
-  readDocumentContent(versionId) {
+  read(versionId) {
     const filePath = this.getDocumentFilePath(versionId);
-    return readDocumentContent(filePath);
+    return readTextFile(filePath);
   }
 
-  deleteDocumentFile(versionId) {
+  delete(versionId) {
     const filePath = this.getDocumentFilePath(versionId);
-    deleteDocumentFile(filePath);
+    deleteFile(filePath);
   }
 
   getDocumentFilePath(versionId) {
-    return `data/documents/${versionId}.txt`;
+    return path.join(documentsPath, `${versionId}.html`);
   }
 }
 

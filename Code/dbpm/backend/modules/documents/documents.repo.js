@@ -2,10 +2,10 @@ import db from "../../database.js";
 import { toCamel, toSnake } from "snake-camel";
 
 class DocumentRepository {
-  create({ versionId, documentId, projectId, name, wordsCount }) {
+  create({ versionId, documentId, projectId, name, storagePath, wordsCount }) {
     const stmt = db.prepare(`
-    INSERT INTO documents (version_id, document_id, name, project_id, words_count)
-    VALUES (@versionId, @documentId, @name, @projectId, @wordsCount)
+    INSERT INTO documents (version_id, document_id, name, project_id, storage_path, words_count)
+    VALUES (@versionId, @documentId, @name, @projectId, @storagePath, @wordsCount)
     RETURNING *
   `);
     const row = stmt.get({
@@ -13,6 +13,7 @@ class DocumentRepository {
       documentId,
       name,
       projectId,
+      storagePath,
       wordsCount,
     });
     return toCamel(row);
