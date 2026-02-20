@@ -1,6 +1,6 @@
 import crypto from "crypto";
-import documentMetaRepo from "./documents.meta.repo.js";
-import documentContentRepo from "./documents.storage.repo.js";
+import documentMetaRepo from "./repositories/document.js";
+import documentContentRepo from "./repositories/storage.js";
 import { logEvent } from "../../utils/logger.js";
 import { countWords } from "../../utils/fileHelper.js";
 

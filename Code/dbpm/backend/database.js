@@ -28,14 +28,25 @@ function initializeSchema() {
   // Documents table
   db.exec(`
     CREATE TABLE IF NOT EXISTS documents (
-      version_id TEXT PRIMARY KEY,
-      document_id TEXT NOT NULL,
+      id TEXT PRIMARY KEY,
       project_id TEXT NOT NULL,
+      current_version_id TEXT NOT NULL,
+      created_at TEXT NOT NULL DEFAULT current_timestamp,
+      deleted_at TEXT,
+      FOREIGN KEY (project_id) REFERENCES projects(id)
+      FOREIGN KEY (current_version_id) REFERENCES document_versions(id)
+    )
+  `);
+  // Document_versions table
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS document_versions (
+      id TEXT PRIMARY KEY,
+      document_id TEXT NOT NULL,
       name TEXT NOT NULL,
       words_count INTEGER NOT NULL DEFAULT 0,
       created_at TEXT NOT NULL DEFAULT current_timestamp,
       deleted_at TEXT,
-      FOREIGN KEY (project_id) REFERENCES projects(id)
+      FOREIGN KEY (document_id) REFERENCES documents(id)
     )
   `);
 

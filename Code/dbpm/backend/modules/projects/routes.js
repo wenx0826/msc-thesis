@@ -1,4 +1,4 @@
-import projectService from "./projects.service.js";
+import projectService from "./service.js";
 import {
   createProjectSchema,
   getProjectsSchema,
@@ -6,9 +6,9 @@ import {
   getDocumentsSchema,
   getModelsSchema,
   updateProjectSchema,
-} from "./projects.schema.js";
+} from "./schema.js";
 
-async function projectsRoutes(fastify, options) {
+export default async function (fastify, options) {
   // POST /projects - Create a new project
   fastify.post("/", { schema: createProjectSchema }, async (request, reply) => {
     const { name } = request.body;
@@ -148,5 +148,3 @@ async function projectsRoutes(fastify, options) {
     },
   );
 }
-
-export default projectsRoutes;

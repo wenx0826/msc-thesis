@@ -1,7 +1,7 @@
-import traceService from "./traces.service.js";
-import { updateTraceSchema } from "./traces.schema.js";
+import traceService from "./service.js";
+import { updateTraceSchema } from "./schema.js";
 
-async function tracesRoutes(fastify, options) {
+export default async function (fastify, options) {
   fastify.put("/:id", { schema: updateTraceSchema }, async (request, reply) => {
     const traceId = request.params.id;
     const updatedTrace = request.body;
@@ -24,5 +24,3 @@ async function tracesRoutes(fastify, options) {
     }
   });
 }
-
-export default tracesRoutes;

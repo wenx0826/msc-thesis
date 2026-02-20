@@ -2,7 +2,7 @@ import {
   readTextFile,
   writeTextFile,
   deleteFile,
-} from "../../utils/fileHelper.js";
+} from "../../../utils/fileHelper.js";
 import path from "path";
 import { fileURLToPath } from "url";
 

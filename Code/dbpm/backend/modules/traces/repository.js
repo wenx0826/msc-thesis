@@ -41,7 +41,7 @@ class TraceRepository {
     return result.changes > 0;
   }
 
-  updateByModelId(modelId, prompt, selections) {
+  updateByModelId(modelId, selections) {
     const stmt = db.prepare(
       "UPDATE traces SET selections = ? WHERE model_id = ?",
     );

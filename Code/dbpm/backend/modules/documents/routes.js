@@ -1,11 +1,11 @@
-import documentService from "./document.service.js";
+import documentService from "./service.js";
 import {
   createDocumentSchema,
   getDocumentsSchema,
   getDocumentContentSchema,
   getTracesSchema,
   getModelsSchema,
-} from "./documents.schema.js";
+} from "./schema.js";
 
 async function documentsRoutes(fastify, options) {
   // POST /documents - Create a new document
@@ -17,9 +17,9 @@ async function documentsRoutes(fastify, options) {
 
       try {
         const result = await documentService.createDocument(
-          projectId,
           name,
           content,
+          projectId,
         );
         result.documentVersionId = result.versionId;
         reply.send(result);

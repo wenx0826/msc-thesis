@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import traceRepo from "./traces.repo.js";
+import traceRepo from "./repository.js";
 
 class TraceService {
   async createTrace({ documentId, modelId, selections }) {

@@ -1,7 +1,7 @@
 import db from "../../database.js";
 import { toCamel } from "snake-camel";
 
-class ProjectRepository {
+export default {
   create({ id, name }) {
     const stmt = db.prepare(`
     INSERT INTO projects (id, name)
@@ -10,7 +10,7 @@ class ProjectRepository {
   `);
     const row = stmt.get({ id, name });
     return toCamel(row);
-  }
+  },
 
   findAll() {
     const stmt = db.prepare(`
@@ -28,13 +28,13 @@ class ProjectRepository {
     `);
     const results = stmt.all();
     return results.map(toCamel);
-  }
+  },
 
   findById(projectId) {
     const stmt = db.prepare("SELECT * FROM projects WHERE id = ?");
     const result = stmt.get(projectId);
     return result ? toCamel(result) : null;
-  }
+  },
 
   update(projectId, updates) {
     const fields = [];
@@ -64,19 +64,19 @@ class ProjectRepository {
     }
 
     return this.findById(projectId);
-  }
+  },
   getModelGenerationCounter(projectId) {
     const stmt = db.prepare(
       "SELECT model_generation_counter FROM projects WHERE id = ?",
     );
     return toCamel(stmt.get(projectId));
-  }
+  },
   getDocumentCount(projectId) {
     const stmt = db.prepare(
       "SELECT COUNT(*) as count FROM documents WHERE project_id = ?",
     );
     return stmt.get(projectId);
-  }
+  },
 
   getModelCount(projectId) {
     const stmt = db.prepare(`
@@ -86,7 +86,7 @@ class ProjectRepository {
       WHERE d.project_id = ? AND m.deleted_at IS NULL
     `);
     return stmt.get(projectId);
-  }
+  },
 
   getTotalModelCount(projectId) {
     const stmt = db.prepare(`
@@ -96,7 +96,7 @@ class ProjectRepository {
       WHERE d.project_id = ?
     `);
     return stmt.get(projectId);
-  }
+  },
 
   getAllModelsByProjectId(projectId) {
     const stmt = db.prepare(`
@@ -107,7 +107,7 @@ class ProjectRepository {
     `);
     const results = stmt.all(projectId);
     return results.map(toCamel);
-  }
+  },
 
   getStats(projectId) {
     const docsStmt = db.prepare(
@@ -129,7 +129,5 @@ class ProjectRepository {
       modelCount: modelStats.count || 0,
       modelTotalWords: modelStats.totalWords || 0,
     };
-  }
-}
-
-export default new ProjectRepository();
+  },
+};

@@ -1,14 +1,14 @@
 import crypto from "crypto";
-import modelRepo from "./models.repo.js";
-import traceRepo from "../traces/traces.repo.js";
+import modelRepo from "./repositories/model.js";
+import traceRepo from "../traces/repository.js";
 import { logEvent, getISODate } from "../../utils/logger.js";
 import {
   readModelData,
   writeModelData,
   countWords,
 } from "../../utils/fileHelper.js";
-import documentsService from "../documents/document.service.js";
-import projectsService from "../projects/projects.service.js";
+import documentsService from "../documents/service.js";
+import projectsService from "../projects/service.js";
 
 class ModelService {
   async createModelAndTrace({ modelData, trace }) {
@@ -49,7 +49,7 @@ class ModelService {
         id,
         name,
         documentId: trace.documentId,
-        selectedModelWords,
+        selectedTextWords: selectedModelWords,
       });
       await projectsService.update(projectId, {
         modelGenerationCounter: newCounter,

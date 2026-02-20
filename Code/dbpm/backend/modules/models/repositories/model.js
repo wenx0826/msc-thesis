@@ -1,5 +1,5 @@
 import { toCamel } from "snake-camel";
-import db from "../../database.js";
+import db from "../../../database.js";
 
 class ModelRepository {
   getProjectIdByModelId(modelId) {

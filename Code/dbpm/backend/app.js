@@ -4,10 +4,10 @@ import { fileURLToPath } from "url";
 import cors from "@fastify/cors";
 import fastifyStatic from "@fastify/static";
 
-import projectsRoutes from "./modules/projects/projects.routes.js";
-import documentsRoutes from "./modules/documents/documents.routes.js";
-import modelsRoutes from "./modules/models/models.routes.js";
-import tracesRoutes from "./modules/traces/traces.routes.js";
+import projectsRoutes from "./modules/projects/routes.js";
+import documentsRoutes from "./modules/documents/routes.js";
+import modelsRoutes from "./modules/models/routes.js";
+import tracesRoutes from "./modules/traces/routes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

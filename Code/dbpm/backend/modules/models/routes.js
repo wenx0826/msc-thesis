@@ -1,15 +1,12 @@
-import crypto from "crypto";
-import modelService from "./models.service.js";
+import modelService from "./service.js";
 import {
   createModelSchema,
   getModelSchema,
   getModelDataSchema,
   getAllModelsSchema,
-  updateModelSchema,
   updateModelDataSchema,
-} from "./models.schema.js";
+} from "./schema.js";
 import { readModelData } from "../../utils/fileHelper.js";
-import modelsService from "./models.service.js";
 
 async function modelsRoutes(fastify, options) {
   // POST /models - Create a new model
@@ -64,7 +61,7 @@ async function modelsRoutes(fastify, options) {
     async (request, reply) => {
       console.log("Fetching all models including soft-deleted...");
       try {
-        const models = modelRepo.findAll();
+        const models = await modelService.getAllModels();
         reply.send(models);
       } catch (err) {
         console.error("Failed to fetch all models:", err);
@@ -76,31 +73,14 @@ async function modelsRoutes(fastify, options) {
   // PUT /models/:id - Update model
   fastify.put(
     "/:id",
-    // { schema: updateModelSchema },
     async (request, reply) => {
       const modelId = request.params.id;
       const { modelData, trace, type } = request.body;
-      // const projectId = modelRepo.getProjectIdByModelId(modelId);
       console.log("Updating model for ID:", modelId);
       console.log("Update payload:", { modelData, trace, type });
       try {
-        modelsService.updateModel({ modelId, modelData, trace, type });
-        // writeModelData(modelId, modelData);
-
-        // let words = null;
-        // if (trace) {
-        //   words = trace.selections.reduce(
-        //     (acc, sel) => acc + countWords(sel.text),
-        //     0,
-        //   );
-        //   traceRepo.updateByModelId(modelId, trace.prompt, trace.selections);
-        // }
-
+        await modelService.updateModel({ modelId, modelData, trace, type });
         reply.send({ message: "Model content updated" });
-        // logEvent(projectId, `model_updated_${type}`, {
-        //   id: modelId,
-        //   data: modelData,
-        // });
       } catch (err) {
         console.error("Failed to update model:", err);
         reply.code(500).send({ error: "Failed to update model" });
@@ -115,20 +95,10 @@ async function modelsRoutes(fastify, options) {
     async (request, reply) => {
       const modelId = request.params.id;
       const { modelData } = request.body;
-      // const projectId = modelRepo.getProjectIdByModelId(modelId);
-      // console.log("Updating model content for ID:", modelId);
 
       try {
-        modelService.updateModelData(modelId, modelData);
-        // writeModelData(modelId, modelData);
-        // modelRepo.updateStatus(modelId, "updated_manual");
-        // modelRepo.addStatUpdate(modelId, getISODate(), "manual_update", null);
-
-        // reply.send({ message: "Model content updated" });
-        // logEvent(projectId, "model_updated_manual", {
-        //   id: modelId,
-        //   data: modelData,
-        // });
+        await modelService.updateModelData(modelId, modelData);
+        reply.send({ message: "Model content updated" });
       } catch (err) {
         console.error("Failed to update model data:", err);
         reply.code(500).send({ error: "Failed to update model data" });
@@ -152,19 +122,16 @@ async function modelsRoutes(fastify, options) {
     },
     async (request, reply) => {
       const modelId = request.params.id;
-      const projectId = modelRepo.getProjectIdByModelId(modelId);
       try {
-        const model = modelRepo.findById(modelId);
-        if (!model) {
-          return reply.code(404).send({ error: "Model not found" });
-        }
-
-        modelRepo.softDelete(modelId);
-        reply.send({ message: "Model deleted" });
-        logEvent(projectId, "model_deleted", { id: modelId, name: model.name });
+        const result = await modelService.deleteModel(modelId);
+        reply.send(result);
       } catch (err) {
         console.error("Failed to delete model:", err);
-        reply.code(500).send({ error: "Failed to delete model" });
+        if (err.message === "Model not found") {
+          reply.code(404).send({ error: "Model not found" });
+        } else {
+          reply.code(500).send({ error: "Failed to delete model" });
+        }
       }
     },
   );
