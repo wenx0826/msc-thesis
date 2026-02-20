@@ -87,6 +87,23 @@ async function projectsRoutes(fastify, options) {
     },
   );
 
+  // GET /projects/:projectId/models - Get models for a project
+  fastify.get(
+    "/:projectId/models",
+    { schema: getModelsSchema },
+    async (request, reply) => {
+      const projectId = request.params.projectId;
+      console.log("Fetching models for project:", projectId);
+      try {
+        const models = await projectService.getModels(projectId);
+        reply.send(models);
+      } catch (err) {
+        console.error("Failed to fetch models:", err);
+        reply.code(500).send({ error: "Failed to fetch models" });
+      }
+    },
+  );
+
   // GET /projects/:projectId/models/all - Get all models for project including soft-deleted ones
   fastify.get(
     "/:projectId/models/all",

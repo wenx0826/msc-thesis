@@ -4,15 +4,14 @@
 // Import stores
 import {
   workspaceStore,
-  documentsStore,
   modelsStore,
   activeDocumentStore,
-  activeModelStore,
   projectGraphStore,
 } from "./store/index.js";
 
 // Import services
-import { workspaceService } from "./services/index.js";
+import { documentService } from "./services/index.js";
+import { workspaceService } from "./services/workspace.service.js";
 
 // Import utilities
 import "./util/selection.util.js";
@@ -23,16 +22,15 @@ import "./ui/index.js";
 
 const projectId = getProjectIdFromURL();
 workspaceStore.setProjectId(projectId);
+workspaceService.initAllStores(projectId);
+// const documents = await documentService.initDocumentsStore(projectId);
+// await modelsStore.init(documents);
 
-await documentsStore.init(projectId);
-const documents = documentsStore.getDocuments();
-await modelsStore.init(documents);
+// const models = modelsStore.getModels();
+// projectGraphStore.init(documents, models);
 
-const models = modelsStore.getModels();
-projectGraphStore.init(documents, models);
+// const activeDocumentId =
+//   documents.length > 0 ? documents[documents.length - 1].id : null;
+// activeDocumentStore.init(activeDocumentId);
 
-const activeDocumentId =
-  documents.length > 0 ? documents[documents.length - 1].id : null;
-activeDocumentStore.init(activeDocumentId);
-
-workspaceStore.setActiveDocumentId(activeDocumentId);
+// workspaceStore.setActiveDocumentId(activeDocumentId);

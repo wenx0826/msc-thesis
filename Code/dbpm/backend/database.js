@@ -20,7 +20,7 @@ function initializeSchema() {
     CREATE TABLE IF NOT EXISTS projects (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
-      generated_model_count INTEGER NOT NULL DEFAULT 0,
+      model_generation_index INTEGER NOT NULL DEFAULT 0,
       created_at TEXT NOT NULL DEFAULT current_timestamp,
       deleted_at TEXT
     )
@@ -32,7 +32,6 @@ function initializeSchema() {
       document_id TEXT NOT NULL,
       project_id TEXT NOT NULL,
       name TEXT NOT NULL,
-      storage_path TEXT NOT NULL,
       words_count INTEGER NOT NULL DEFAULT 0,
       created_at TEXT NOT NULL DEFAULT current_timestamp,
       deleted_at TEXT,
@@ -47,7 +46,6 @@ function initializeSchema() {
       model_id TEXT NOT NULL,
       project_id TEXT NOT NULL,
       name TEXT NOT NULL,
-      storage_path TEXT NOT NULL,
       selected_words_count INTEGER DEFAULT 0,
       created_at TEXT NOT NULL DEFAULT current_timestamp,
       deleted_at TEXT,

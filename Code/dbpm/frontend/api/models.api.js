@@ -5,6 +5,24 @@ export const modelsAPI = {
   LLMDisabled: true,
   path: "models",
 
+  async getByProjectId(projectId) {
+    const response = await fetch(
+      `${baseURL}/projects/${projectId}/${this.path}`,
+    );
+    if (!response.ok) throw new Error("Failed to fetch documents");
+    return await response.json();
+  },
+
+  async getAllByProjectId(projectId) {
+    const response = await fetch(
+      `${baseURL}/projects/${projectId}/documents/all`,
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return await response.json();
+  },
+
   async generateSampleModel() {
     const templatesFolder = "/pages/workspace/sample_models/";
 

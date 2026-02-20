@@ -40,7 +40,6 @@ export const projectGraphStore = Object.assign(
       this.notify({
         key: "elements",
         operation: "init",
-        // operation: "add",
         value: this.state.elements,
       });
     },

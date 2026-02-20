@@ -11,4 +11,6 @@ export const Constants = {
 };
 
 // For backward compatibility with non-module scripts
-window.Constants = Constants;
+if (typeof window !== "undefined") {
+  window.Constants = Constants;
+}

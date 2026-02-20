@@ -7,21 +7,13 @@ export const modelsStore = Object.assign(
     modelsById: {},
   }),
   {
-    async init(documents) {
+    async init(models = []) {
       let modelsById = {};
-      for (const { id: docId } of documents) {
-        const docModels = await documentsAPI.getActiveModelsById(docId);
-        docModels.forEach((model) => (model.documentId = docId));
-        modelsById = {
-          ...modelsById,
-          ...docModels.reduce((acc, model) => {
-            acc[model.id] = { meta: model, documentId: docId };
-            return acc;
-          }, {}),
-        };
+      for (const model of models) {
+        modelsById[model.meta.id] = { ...model };
       }
       this.state.modelsById = modelsById;
-      this.notify({ operation: "init", value: Object.values(modelsById) });
+      this.notify({ operation: "init", value: models });
     },
     addModel(value) {
       this.state.modelsById[value?.meta?.id] = value;

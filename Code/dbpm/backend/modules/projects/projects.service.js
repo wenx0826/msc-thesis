@@ -1,8 +1,8 @@
 import crypto from "crypto";
 import projectRepo from "./projects.repo.js";
-import documentRepo from "../documents/documents.repo.js";
+import documentRepo from "../documents/documents.meta.repo.js";
 import { logEvent, createEmptyLogFile } from "../../utils/logger.js";
-
+import documentService from "../documents/document.service.js";
 class ProjectService {
   async createProject(name) {
     const id = crypto.randomUUID();
@@ -31,6 +31,10 @@ class ProjectService {
 
   async getDocuments(projectId) {
     return documentRepo.findByProjectId(projectId);
+  }
+
+  async getModels(projectId) {
+    return projectRepo.getModelsByProjectId(projectId);
   }
 
   async getAllDocuments(projectId) {

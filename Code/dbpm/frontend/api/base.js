@@ -1,5 +1,18 @@
 // Base URL and shared utilities for API calls
-export const baseURL = window.location.origin;
+function resolveBaseURL() {
+  if (typeof window !== "undefined" && window.location?.origin) {
+    return window.location.origin;
+  }
+
+  // Node/runtime fallback for scripts/tests importing frontend API modules.
+  if (typeof process !== "undefined" && process.env?.API_BASE_URL) {
+    return process.env.API_BASE_URL;
+  }
+
+  return "http://127.0.0.1:6688";
+}
+
+export const baseURL = resolveBaseURL();
 
 /**
  * Handle fetch response with consistent error handling

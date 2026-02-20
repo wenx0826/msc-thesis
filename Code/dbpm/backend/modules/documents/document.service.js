@@ -1,6 +1,6 @@
 import crypto from "crypto";
-import documentRepo from "./documents.repo.js";
-import documentStorage from "./document.storage.js";
+import documentMetaRepo from "./documents.meta.repo.js";
+import documentContentRepo from "./documents.storage.repo.js";
 import { logEvent } from "../../utils/logger.js";
 import { countWords } from "../../utils/fileHelper.js";
 
@@ -8,76 +8,70 @@ class DocumentService {
   async createDocument(name, content, projectId) {
     const documentId = crypto.randomUUID();
     const versionId = crypto.randomUUID();
-    const storagePath = documentStorage.getDocumentFilePath(versionId);
+    // const storagePath = documentContentRepo.getDocumentFilePath(versionId);
 
     try {
-      // Write file content
-      documentStorage.write(versionId, content);
-
-      // Count words
+      documentContentRepo.write(versionId, content);
       const wordsCount = countWords(content);
-
-      const createdDocument = documentRepo.create({
+      const createdDocument = documentMetaRepo.create({
         versionId,
         documentId,
         projectId,
         name,
-        storagePath,
+        // storagePath,
         wordsCount,
       });
 
       logEvent(projectId, "document_uploaded", createdDocument);
-      createdDocument.documentVersionId = versionId;
 
       return createdDocument;
     } catch (err) {
       // Cleanup on failure
-      documentStorage.delete(versionId);
+      documentContentRepo.delete(versionId);
       throw err;
     }
   }
 
   async getDocuments() {
-    return documentRepo.findAll();
+    return documentMetaRepo.findAll();
   }
-
+  async findMetaByProjectId(projectId) {
+    return documentMetaRepo.findByProjectId(projectId);
+  }
   async getAllDocuments() {
     // Documents don't have soft delete yet, so this is the same as getDocuments
-    return documentRepo.findAll();
+    return documentMetaRepo.findAll();
   }
 
   async getDocumentContent(docId) {
-    const doc = documentRepo.findById(docId);
-    if (!doc) {
-      throw new Error("Document not found");
-    }
-    const content = documentStorage.read(docId);
-    return { content };
+    // const doc = documentMetaRepo.findById(docId);
+    // if (!doc) {
+    //   throw new Error("Document not found");
+    // }
+    return documentContentRepo.read(docId);
   }
 
   async getTraces(docId) {
-    return documentRepo.getTraces(docId);
+    return documentMetaRepo.getTraces(docId);
   }
 
   async getModels(docId) {
-    return documentRepo.getModels(docId);
+    return documentMetaRepo.getModels(docId);
   }
   async getProjectId(docId) {
-    return documentRepo.getProjectId(docId);
+    return documentMetaRepo.getProjectId(docId);
   }
   async getAllModels(docId) {
-    return documentRepo.getAllModels(docId);
+    return documentMetaRepo.getAllModels(docId);
   }
 
   async deleteDocument(docId) {
-    const doc = documentRepo.findById(docId);
+    const doc = documentMetaRepo.findById(docId);
     if (!doc) {
       throw new Error("Document not found");
     }
-
-    documentRepo.delete(docId);
-    documentStorage.delete(docId);
-
+    documentMetaRepo.delete(docId);
+    documentContentRepo.delete(docId);
     return { message: "Document deleted" };
   }
 }

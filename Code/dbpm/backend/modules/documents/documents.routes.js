@@ -1,4 +1,3 @@
-import crypto from "crypto";
 import documentService from "./document.service.js";
 import {
   createDocumentSchema,
@@ -14,14 +13,15 @@ async function documentsRoutes(fastify, options) {
     "/",
     { schema: createDocumentSchema },
     async (request, reply) => {
-      const { name, content, projectId } = request.body;
+      const { projectId, name, content } = request.body;
 
       try {
         const result = await documentService.createDocument(
+          projectId,
           name,
           content,
-          projectId,
         );
+        result.documentVersionId = result.versionId;
         reply.send(result);
       } catch (err) {
         console.error("Failed to create document:", err);

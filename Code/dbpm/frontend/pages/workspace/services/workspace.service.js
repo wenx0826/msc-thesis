@@ -1,4 +1,7 @@
 // Workspace Service - Orchestrates workspace operations
+import init from "../../../shared/widgets/inlineEditor.js";
+import { documentsAPI } from "../../../api/index.js";
+
 import {
   workspaceStore,
   documentsStore,
@@ -7,10 +10,35 @@ import {
   activeModelStore,
   projectGraphStore,
 } from "../store/index.js";
-
+import { documentService } from "./document.service.js";
+import { modelsAPI } from "../../../api/index.js";
 const STORAGE_KEY = "dbpm_workspace";
 
 export const workspaceService = {
+  async initAllStores(projectId) {
+    // documentService.initDocumentsStore(projectId);
+    // Placeholder for any future initialization logic
+    const documentsReady = documentsAPI
+      .getByProjectId(projectId)
+      .then((documents) => {
+        documentsStore.init(documents); // remove await if init is sync
+        return documents;
+      });
+
+    const modelsReady = modelsAPI.getByProjectId(projectId).then((models) => {
+      modelsStore.init(models); // remove await if init is sync
+      return models;
+    });
+
+    const [documents, models] = await Promise.all([
+      documentsReady,
+      modelsReady,
+    ]);
+
+    projectGraphStore.init(documents, models);
+
+    // return documents;
+  },
   // localStorage helpers
   _saveToStorage() {
     const data = {

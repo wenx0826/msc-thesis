@@ -2,10 +2,10 @@ import db from "../../database.js";
 import { toCamel, toSnake } from "snake-camel";
 
 class DocumentRepository {
-  create({ versionId, documentId, projectId, name, storagePath, wordsCount }) {
+  create({ versionId, documentId, projectId, name, wordsCount }) {
     const stmt = db.prepare(`
-    INSERT INTO documents (version_id, document_id, name, project_id, storage_path, words_count)
-    VALUES (@versionId, @documentId, @name, @projectId, @storagePath, @wordsCount)
+    INSERT INTO documents (version_id, document_id, name, project_id,  words_count)
+    VALUES (@versionId, @documentId, @name, @projectId,  @wordsCount)
     RETURNING *
   `);
     const row = stmt.get({
@@ -13,7 +13,6 @@ class DocumentRepository {
       documentId,
       name,
       projectId,
-      storagePath,
       wordsCount,
     });
     return toCamel(row);
@@ -27,15 +26,13 @@ class DocumentRepository {
   }
 
   findById(docId) {
-    const stmt = db.prepare("SELECT id FROM documents WHERE id = ?");
+    const stmt = db.prepare("SELECT * FROM documents WHERE id = ?");
     const result = stmt.get(docId);
     return toCamel(result);
   }
 
   findByProjectId(projectId) {
-    const stmt = db.prepare(
-      "SELECT version_id, document_id, project_id, name FROM documents WHERE project_id = ?",
-    );
+    const stmt = db.prepare("SELECT * FROM documents WHERE project_id = ?");
     const results = stmt.all(projectId);
     return results.map(toCamel);
   }

@@ -50,7 +50,7 @@ export const getDocumentContentSchema = {
     200: {
       type: "object",
       properties: {
-        content: { type: "string" },
+        200: { type: "string" },
       },
     },
   },
