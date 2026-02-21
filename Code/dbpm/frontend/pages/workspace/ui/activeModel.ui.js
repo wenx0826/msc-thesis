@@ -79,7 +79,6 @@ function syncActiveModelGraphInList() {
   gc.attr("width", start + 1);
   gc.find(".duration");
   gc.removeAttr("id");
-  console.log("???????????????????", gc[0].outerHTML);
   modelsStore.updateModelById(workspaceStore.getActiveModelId(), {
     svg: gc[0].outerHTML,
   });

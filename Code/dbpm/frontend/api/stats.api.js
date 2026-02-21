@@ -1,6 +1,6 @@
 import { baseURL, handleResponse } from "./base.js";
 
-export const statsAPI = {
+export default {
   path: "stats",
 
   async getStats(projectId = null) {

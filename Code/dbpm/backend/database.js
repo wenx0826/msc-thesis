@@ -30,11 +30,11 @@ function initializeSchema() {
     CREATE TABLE IF NOT EXISTS documents (
       id TEXT PRIMARY KEY,
       project_id TEXT NOT NULL,
-      current_version_id TEXT NOT NULL,
+      latest_version_id TEXT,
       created_at TEXT NOT NULL DEFAULT current_timestamp,
       deleted_at TEXT,
-      FOREIGN KEY (project_id) REFERENCES projects(id)
-      FOREIGN KEY (current_version_id) REFERENCES document_versions(id)
+      FOREIGN KEY (project_id) REFERENCES projects(id),
+      FOREIGN KEY (latest_version_id) REFERENCES document_versions(id)
     )
   `);
   // Document_versions table
@@ -49,18 +49,28 @@ function initializeSchema() {
       FOREIGN KEY (document_id) REFERENCES documents(id)
     )
   `);
-
   // Models table
   db.exec(`
     CREATE TABLE IF NOT EXISTS models (
-      version_id TEXT PRIMARY KEY,
-      model_id TEXT NOT NULL,
+      id TEXT PRIMARY KEY,
       project_id TEXT NOT NULL,
+      latest_version_id TEXT,
+      created_at TEXT NOT NULL DEFAULT current_timestamp,
+      deleted_at TEXT,
+      FOREIGN KEY (project_id) REFERENCES projects(id),
+      FOREIGN KEY (latest_version_id) REFERENCES model_versions(id)
+    )
+  `);
+  // Model Versions table
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS model_versions (
+      id TEXT PRIMARY KEY,
+      model_id TEXT NOT NULL,
       name TEXT NOT NULL,
       selected_words_count INTEGER DEFAULT 0,
       created_at TEXT NOT NULL DEFAULT current_timestamp,
       deleted_at TEXT,
-      FOREIGN KEY (project_id) REFERENCES projects(id)
+      FOREIGN KEY (model_id) REFERENCES models(id)
     )
   `);
 
@@ -73,8 +83,8 @@ function initializeSchema() {
       selections TEXT NOT NULL,
       created_at TEXT NOT NULL DEFAULT current_timestamp,
       deleted_at TEXT,
-      FOREIGN KEY (document_version_id) REFERENCES documents(version_id),
-      FOREIGN KEY (model_version_id) REFERENCES models(version_id)
+      FOREIGN KEY (document_version_id) REFERENCES document_versions(id),
+      FOREIGN KEY (model_version_id) REFERENCES model_versions(id)
     )
   `);
   // Model stat updates table
@@ -86,7 +96,7 @@ function initializeSchema() {
       details TEXT,
       created_at TEXT NOT NULL DEFAULT current_timestamp,
       deleted_at TEXT,
-      FOREIGN KEY (model_version_id) REFERENCES models(version_id)
+      FOREIGN KEY (model_version_id) REFERENCES model_versions(id)
     )
   `);
 

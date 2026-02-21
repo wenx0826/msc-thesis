@@ -96,8 +96,8 @@
               <ul id="documentsList">
                 <!-- Template for document list items -->
                 <template id="documentItemTemplate">
-                  <li data-doc-id="">
-                    <input class="doc-check" type="checkbox" />
+                  <li data-doc-id="" data-doc-version-id="">
+                    <input type="checkbox" />
                     <div class="inline-editor">
                       <span class="document-name inline-editor__view" data-ref="documentName"></span>
                     </div>
@@ -285,8 +285,7 @@
   <div id="modelPopover" class="hidden">
     <div id="modelPopoverContainer"></div>
   </div>
-  <iframe id="wfPreviewRendererIframe" src="pages/workspace/workflow/graph-render.html" aria-hidden="true"
-    tabindex="-1"
+  <iframe id="wfPreviewRendererIframe" src="pages/workspace/workflow/graph-render.html" aria-hidden="true" tabindex="-1"
     style="position: absolute; left: -10000px; top: -10000px; width: 1px; height: 1px; opacity: 0; pointer-events: none;"></iframe>
 </body>
 

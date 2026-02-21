@@ -8,7 +8,7 @@ import {
 } from "./schema.js";
 import { readModelData } from "../../utils/fileHelper.js";
 
-async function modelsRoutes(fastify, options) {
+export default async function (fastify, options) {
   // POST /models - Create a new model
   fastify.post("/", { schema: createModelSchema }, async (request, reply) => {
     try {
@@ -136,5 +136,3 @@ async function modelsRoutes(fastify, options) {
     },
   );
 }
-
-export default modelsRoutes;

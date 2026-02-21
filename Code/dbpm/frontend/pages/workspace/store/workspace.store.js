@@ -12,6 +12,10 @@ export const workspaceStore = Object.assign(
     llmModel: "gemini-2.0-flash",
     theme: null,
     project: {},
+    activeDocument: {
+      id: null,
+      versionId: null,
+    },
     // 🔧 IMPROVED: Consolidated all popover state into one object for better cohesion
     modelPopoverState: {
       modelId: null,
@@ -32,11 +36,10 @@ export const workspaceStore = Object.assign(
       this.setProjectId(projectId);
       const project = await projectsAPI.get(projectId);
     },
-    setProjectId(projectId) {
-      const oldValue = this.state.projectId;
-      this.state.projectId = projectId;
-      this.notify({ key: "projectId", oldValue, newValue: projectId });
-    },
+    // setProjectId(projectId) {
+    //   const oldValue = this.state.projectId;
+    //   this.state.projectId = projectId;
+    // },
     getProjectId() {
       return this.state.projectId;
     },
@@ -185,7 +188,8 @@ export const workspaceStore = Object.assign(
       this.state.theme = theme;
     },
     setWorkspace({ projectId, activeDocumentId, activeModelId }) {
-      this.setProjectId(projectId);
+      this.state.projectId = projectId;
+      // this.setProjectId(projectId);
       this.setActiveDocumentId(activeDocumentId);
       this.setActiveModelId(activeModelId);
     },

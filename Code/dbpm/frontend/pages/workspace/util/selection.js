@@ -1,5 +1,9 @@
-function getXPath(node, root = document.getElementById("documentContent")) {
-  // console.log("getXPath called with  root:", root);
+// Selection utilities for document text ranges
+const root = document.getElementById("documentContent");
+export function getXPath(
+  node,
+  // root = document.getElementById("documentContent"),
+) {
   if (node === root) return "/";
   const path = [];
   let cur = node;
@@ -11,9 +15,9 @@ function getXPath(node, root = document.getElementById("documentContent")) {
   return "/" + path.join("/");
 }
 
-function getNodeByXPath(
+export function getNodeByXPath(
   path,
-  root = document.getElementById("documentContent"),
+  // root = document.getElementById("documentContent"),
 ) {
   const parts = path.split("/").filter(Boolean);
   let node = root;
@@ -25,9 +29,8 @@ function getNodeByXPath(
   return node;
 }
 
-function serializeRange(range) {
+export function serializeRange(range) {
   return {
-    // color: h.color,
     startXPath: getXPath(range.startContainer),
     startOffset: range.startOffset,
     endXPath: getXPath(range.endContainer),
@@ -35,7 +38,12 @@ function serializeRange(range) {
   };
 }
 
-function deserializeRange({ startXPath, startOffset, endXPath, endOffset }) {
+export function deserializeRange({
+  startXPath,
+  startOffset,
+  endXPath,
+  endOffset,
+}) {
   const startNode = getNodeByXPath(startXPath);
   const endNode = getNodeByXPath(endXPath);
   const range = document.createRange();
@@ -46,31 +54,17 @@ function deserializeRange({ startXPath, startOffset, endXPath, endOffset }) {
   return range;
 }
 
-// function compareXPath(a, b) {
-//   const pa = a.split("/").filter(Boolean).map(Number);
-//   const pb = b.split("/").filter(Boolean).map(Number);
-
-//   const len = Math.min(pa.length, pb.length);
-
-//   for (let i = 0; i < len; i++) {
-//     if (pa[i] !== pb[i]) {
-//       return pa[i] - pb[i];
-//     }
-//   }
-//   return pa.length - pb.length;
-// }
-
-// function compareSerializedRange(r1, r2) {
-//   const pathDiff = compareXPath(r1.startXPath, r2.startXPath);
-//   if (pathDiff !== 0) return pathDiff;
-//   return r1.startOffset - r2.startOffset;
-// }
-
-function getSortedSelectionsByRange(items) {
-  console.log("Sorting selections by range:!!!!!", items);
+export function getSortedSelectionsByRange(items) {
   return items.sort((a, b) => {
     const rangeA = a.range;
     const rangeB = b.range;
     return rangeA.compareBoundaryPoints(Range.START_TO_START, rangeB);
   });
 }
+
+// Expose to window for legacy code
+window.getXPath = getXPath;
+window.getNodeByXPath = getNodeByXPath;
+window.serializeRange = serializeRange;
+window.deserializeRange = deserializeRange;
+window.getSortedSelectionsByRange = getSortedSelectionsByRange;

@@ -1,7 +1,7 @@
 import { baseURL, handleResponse, handleTextResponse } from "./base.js";
 import { Constants } from "../constants.js";
 
-export const modelsAPI = {
+export default {
   LLMDisabled: true,
   path: "models",
 

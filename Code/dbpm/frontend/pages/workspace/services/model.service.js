@@ -8,14 +8,14 @@ import {
   activeModelStore,
   projectGraphStore,
 } from "../store/index.js";
-import { workspaceService } from "./workspace.service.js";
+import workspaceService from "./workspace.service.js";
 import { Constants } from "../../../constants.js";
 
 // Import constants
 const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
 const EMPTY_MODEL = Constants.EMPTY_MODEL;
 
-export const modelService = {
+export default {
   async generateModel(userInput, rpstXml) {
     const model = activeModelStore.getModel() || {};
     const llm = workspaceStore.getLlmModel();
@@ -261,6 +261,3 @@ export const modelService = {
     const documentId = modelsStore.getModelDocumentIdById(modelId);
   },
 };
-
-// Expose to window for backward compatibility
-window.modelService = modelService;

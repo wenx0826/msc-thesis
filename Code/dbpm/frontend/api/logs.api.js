@@ -1,6 +1,6 @@
 import { baseURL, handleResponse } from "./base.js";
 
-export const logsAPI = {
+export default {
   path: "logs",
 
   async createLogEntry(entry) {

@@ -1,5 +1,6 @@
 import crypto from "crypto";
 import modelRepo from "./repositories/model.js";
+import versionRepo from "./repositories/version.js";
 import traceRepo from "../traces/repository.js";
 import { logEvent, getISODate } from "../../utils/logger.js";
 import {
@@ -9,8 +10,9 @@ import {
 } from "../../utils/fileHelper.js";
 import documentsService from "../documents/service.js";
 import projectsService from "../projects/service.js";
+import { version } from "os";
 
-class ModelService {
+export default {
   async createModelAndTrace({ modelData, trace }) {
     const projectId = await documentsService.getProjectId(trace.documentId);
     if (!projectId) {
@@ -81,7 +83,7 @@ class ModelService {
     } catch (err) {
       throw err;
     }
-  }
+  },
 
   async getModel(modelId) {
     const model = modelRepo.findById(modelId);
@@ -91,19 +93,25 @@ class ModelService {
     const data = readModelData(modelId);
     model.data = data;
     return model;
-  }
+  },
 
   async getModelData(modelId) {
     return readModelData(modelId);
-  }
-
-  async getAllModels() {
-    return modelRepo.findAll();
-  }
+  },
+  async getByProjectId(projectId, includeDeleted) {
+    const models = modelRepo.findByProjectId(projectId, includeDeleted);
+    if (!models) {
+      throw new Error("No models found for this project");
+    }
+    for (const model of models) {
+      const versions = versionRepo.findByModelId(model.id);
+      model.versions = versions;
+    }
+    return models;
+  },
 
   async updateModel({ modelId, modelData, trace, type }) {
     const projectId = modelRepo.getProjectIdByModelId(modelId);
-
     // Write model data to file
     writeModelData(modelId, modelData);
 
@@ -129,7 +137,7 @@ class ModelService {
     });
 
     return { message: "Model content updated" };
-  }
+  },
 
   async updateModelData(modelId, modelData) {
     const projectId = modelRepo.getProjectIdByModelId(modelId);
@@ -145,7 +153,7 @@ class ModelService {
     });
 
     return { message: "Model content updated" };
-  }
+  },
 
   async deleteModel(modelId) {
     const projectId = modelRepo.getProjectIdByModelId(modelId);
@@ -160,7 +168,5 @@ class ModelService {
     logEvent(projectId, "model_deleted", { id: modelId, name: model.name });
 
     return { message: "Model deleted" };
-  }
-}
-
-export default new ModelService();
+  },
+};

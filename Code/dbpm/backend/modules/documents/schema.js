@@ -12,10 +12,20 @@ export const createDocumentSchema = {
     200: {
       type: "object",
       properties: {
-        documentId: { type: "string" },
-        documentVersionId: { type: "string" },
-        name: { type: "string" },
-        createdAt: { type: "string" },
+        id: { type: "string" },
+        // currentVersionId: { type: "string" },
+        // name: { type: "string" },
+        versions: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              id: { type: "string" },
+              name: { type: "string" },
+              createdAt: { type: "string" },
+            },
+          },
+        },
       },
     },
   },
@@ -28,10 +38,10 @@ export const getDocumentsSchema = {
       items: {
         type: "object",
         properties: {
-          versionId: { type: "string" },
-          name: { type: "string" },
-          createdAt: { type: "string" },
-          words: { type: "number" },
+          // versionId: { type: "string" },
+          // name: { type: "string" },
+          // createdAt: { type: "string" },
+          // words: { type: "number" },
         },
       },
     },

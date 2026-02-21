@@ -1,7 +1,7 @@
 import crypto from "crypto";
 import traceRepo from "./repository.js";
 
-class TraceService {
+export default {
   async createTrace({ documentId, modelId, selections }) {
     const id = crypto.randomUUID();
     const createdTrace = traceRepo.create({
@@ -12,7 +12,7 @@ class TraceService {
     });
 
     return createdTrace;
-  }
+  },
 
   async updateTrace(traceId, documentId, modelId, selections) {
     const success = traceRepo.update(traceId, documentId, modelId, selections);
@@ -21,7 +21,5 @@ class TraceService {
     }
 
     return { documentId, modelId, selections };
-  }
-}
-
-export default new TraceService();
+  },
+};

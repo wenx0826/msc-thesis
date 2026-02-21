@@ -1,7 +1,4 @@
-// Workspace Service - Orchestrates workspace operations
-import init from "../../../shared/widgets/inlineEditor.js";
-import { documentsAPI } from "../../../api/index.js";
-
+import { documentsAPI, modelsAPI, projectsAPI } from "../../../api/index.js";
 import {
   workspaceStore,
   documentsStore,
@@ -10,35 +7,10 @@ import {
   activeModelStore,
   projectGraphStore,
 } from "../store/index.js";
-import { documentService } from "./document.service.js";
-import { modelsAPI } from "../../../api/index.js";
+
 const STORAGE_KEY = "dbpm_workspace";
 
-export const workspaceService = {
-  async initAllStores(projectId) {
-    // documentService.initDocumentsStore(projectId);
-    // Placeholder for any future initialization logic
-    const documentsReady = documentsAPI
-      .getByProjectId(projectId)
-      .then((documents) => {
-        documentsStore.init(documents); // remove await if init is sync
-        return documents;
-      });
-
-    const modelsReady = modelsAPI.getByProjectId(projectId).then((models) => {
-      modelsStore.init(models); // remove await if init is sync
-      return models;
-    });
-
-    const [documents, models] = await Promise.all([
-      documentsReady,
-      modelsReady,
-    ]);
-
-    projectGraphStore.init(documents, models);
-
-    // return documents;
-  },
+export default {
   // localStorage helpers
   _saveToStorage() {
     const data = {
@@ -60,18 +32,26 @@ export const workspaceService = {
   },
 
   async loadWorkspace(projectId) {
-    // Phase 1: Init independent stores (parallel)
-    // console.log("Loading workspace for project ID:", projectId);
-    // projectStore.init(projectId);
-    // await documentsStore.init(projectId);
-    // // Phase 2: Init dependent stores (pass data explicitly)
-    // const documents = documentsStore.getDocuments();
-    // await modelsStore.init(documents);
-    // // Phase 3: Init aggregate stores
-    // const models = modelsStore.getModels();
-    // projectGraphStore.init(documents, models);
-    // // Phase 4: Restore workspace state
-    // this.restoreWorkspaceState(projectId);
+    // workspaceStore.setStatus("loading");
+    workspaceStore.setWorkspace({ projectId });
+
+    // const documentsReady = projectsAPI
+    //   .getDocumentsById(projectId)
+    //   .then((documents) => {
+    //     documentsStore.init(documents); // remove await if init is sync
+    //     return documents;
+    //   });
+    // const modelsReady = projectsAPI.getModelsById(projectId).then((models) => {
+    //   modelsStore.init(models); // remove await if init is sync
+    //   return models;
+    // });
+
+    const details = await projectsAPI.getDetails(projectId);
+    const documents = details?.documents || [];
+    const models = details?.models || [];
+    documentsStore.init(documents);
+    modelsStore.init(models);
+    projectGraphStore.init(documents, models);
   },
 
   restoreWorkspaceState(projectId) {

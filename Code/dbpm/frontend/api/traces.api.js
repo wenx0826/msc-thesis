@@ -1,6 +1,6 @@
 import { baseURL, handleResponse } from "./base.js";
 
-export const tracesAPI = {
+export default {
   path: "traces",
 
   async getTracesByDocumentId(docId) {

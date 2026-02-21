@@ -12,7 +12,7 @@ function parseTraceSelections(trace) {
   };
 }
 
-class TraceRepository {
+export default {
   create({ id, documentId, modelId, selections }) {
     const stmt = db.prepare(
       `INSERT INTO traces (id, document_id, model_id, selections)
@@ -26,7 +26,7 @@ class TraceRepository {
       selections: JSON.stringify(selections),
     });
     return toCamel(parseTraceSelections(row));
-  }
+  },
 
   update(traceId, documentId, modelId, selections) {
     const stmt = db.prepare(
@@ -39,14 +39,12 @@ class TraceRepository {
       traceId,
     );
     return result.changes > 0;
-  }
+  },
 
   updateByModelId(modelId, selections) {
     const stmt = db.prepare(
       "UPDATE traces SET selections = ? WHERE model_id = ?",
     );
     return stmt.run(JSON.stringify(selections), modelId);
-  }
-}
-
-export default new TraceRepository();
+  },
+};

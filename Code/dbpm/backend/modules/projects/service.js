@@ -3,8 +3,9 @@ import projectRepo from "./repository.js";
 import documentRepo from "../documents/repositories/document.js";
 import { logEvent, createEmptyLogFile } from "../../utils/logger.js";
 import documentService from "../documents/service.js";
-class ProjectService {
-  async createProject(name) {
+import modelService from "../models/service.js";
+export default {
+  async create(name) {
     const id = crypto.randomUUID();
 
     try {
@@ -15,47 +16,50 @@ class ProjectService {
     } catch (err) {
       throw err;
     }
-  }
-
-  async getProjects() {
+  },
+  async getAll() {
     return projectRepo.findAll();
-  }
-
-  async getProject(projectId) {
+  },
+  async get(projectId) {
     const project = projectRepo.findById(projectId);
     if (!project) {
       throw new Error("Project not found");
     }
     return project;
-  }
-
+  },
+  async getDetails(projectId, includeDeleted = false) {
+    const project = projectRepo.findById(projectId);
+    if (!project) {
+      throw new Error("Project not found");
+    }
+    const documents = await documentService.getByProjectId(
+      projectId,
+      includeDeleted,
+    );
+    const models = await modelService.getByProjectId(projectId, includeDeleted);
+    return { ...project, documents, models };
+  },
   async getDocuments(projectId) {
-    return documentRepo.findByProjectId(projectId);
-  }
-
+    return documentService.getByProjectId(projectId);
+  },
   async getModels(projectId) {
-    return projectRepo.getModelsByProjectId(projectId);
-  }
-
+    return modelService.getByProjectId(projectId);
+  },
   async getAllDocuments(projectId) {
     // Documents don't have soft delete yet, so this is the same as getDocuments
-    return documentRepo.findByProjectId(projectId);
-  }
-
+    // return documentRepo.findByProjectId(projectId);
+  },
   async getAllModels(projectId) {
     return projectRepo.getAllModelsByProjectId(projectId);
-  }
-
-  async getModelGenerationCounter(projectId) {
-    return projectRepo.getModelGenerationCounter(projectId);
-  }
+  },
+  async getModelGenerationIndexById(projectId) {
+    return projectRepo.findModelGenerationIndexById(projectId);
+  },
   async update(projectId, updates) {
     const project = projectRepo.update(projectId, updates);
     if (!project) {
       throw new Error("Project not found or no valid fields to update");
     }
     return project;
-  }
-}
-
-export default new ProjectService();
+  },
+};

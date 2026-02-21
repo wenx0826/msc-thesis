@@ -17,25 +17,22 @@ const documentsPath = path.join(
   "documents",
 );
 
-class DocumentStorage {
+export default {
+  getDocumentFilePath(versionId) {
+    return path.join(documentsPath, `${versionId}.html`);
+  },
   write(versionId, content) {
     const filePath = this.getDocumentFilePath(versionId);
     writeTextFile(filePath, content);
-  }
+  },
 
   read(versionId) {
     const filePath = this.getDocumentFilePath(versionId);
     return readTextFile(filePath);
-  }
+  },
 
   delete(versionId) {
     const filePath = this.getDocumentFilePath(versionId);
     deleteFile(filePath);
-  }
-
-  getDocumentFilePath(versionId) {
-    return path.join(documentsPath, `${versionId}.html`);
-  }
-}
-
-export default new DocumentStorage();
+  },
+};

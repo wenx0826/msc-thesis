@@ -3,6 +3,7 @@ import {
   createProjectSchema,
   getProjectsSchema,
   getProjectSchema,
+  getProjectDetailsSchema,
   getDocumentsSchema,
   getModelsSchema,
   updateProjectSchema,
@@ -14,7 +15,7 @@ export default async function (fastify, options) {
     const { name } = request.body;
 
     try {
-      const result = await projectService.createProject(name);
+      const result = await projectService.create(name);
       reply.send(result);
     } catch (err) {
       console.error("Failed to create project:", err);
@@ -24,9 +25,8 @@ export default async function (fastify, options) {
 
   // GET /projects - Get all projects
   fastify.get("/", { schema: getProjectsSchema }, async (request, reply) => {
-    console.log("Fetching project list...");
     try {
-      const projects = await projectService.getProjects();
+      const projects = await projectService.getAll();
       reply.send(projects);
     } catch (err) {
       console.error("Failed to fetch projects:", err);
@@ -34,21 +34,44 @@ export default async function (fastify, options) {
     }
   });
 
-  // GET /projects/:id - Get project by ID
-  fastify.get("/:id", { schema: getProjectSchema }, async (request, reply) => {
-    const projectId = request.params.id;
-    try {
-      const project = await projectService.getProject(projectId);
-      reply.send(project);
-    } catch (err) {
-      console.error("Failed to fetch project:", err);
-      if (err.message === "Project not found") {
-        reply.code(404).send({ error: "Project not found" });
-      } else {
-        reply.code(500).send({ error: "Failed to fetch project" });
+  // GET /projects/:projectId - Get project by ID
+  fastify.get(
+    "/:projectId",
+    { schema: getProjectSchema },
+    async (request, reply) => {
+      const projectId = request.params.projectId;
+      try {
+        const project = await projectService.get(projectId);
+        reply.send(project);
+      } catch (err) {
+        console.error("Failed to fetch project:", err);
+        if (err.message === "Project not found") {
+          reply.code(404).send({ error: "Project not found" });
+        } else {
+          reply.code(500).send({ error: "Failed to fetch project" });
+        }
       }
-    }
-  });
+    },
+  );
+  // GET /projects/:projectId/details - Get project details including documents and models
+  fastify.get(
+    "/:projectId/details",
+    { schema: getProjectDetailsSchema },
+    async (request, reply) => {
+      const projectId = request.params.projectId;
+      const { includeDeleted } = request.query;
+      try {
+        const result = await projectService.getDetails(
+          projectId,
+          includeDeleted,
+        );
+        reply.send(result);
+      } catch (err) {
+        console.error("Failed to fetch project details:", err);
+        reply.code(500).send({ error: "Failed to fetch project details" });
+      }
+    },
+  );
 
   // GET /projects/:projectId/documents - Get documents for a project
   fastify.get(
@@ -56,7 +79,6 @@ export default async function (fastify, options) {
     { schema: getDocumentsSchema },
     async (request, reply) => {
       const projectId = request.params.projectId;
-      console.log("Fetching documents for project:", projectId);
       try {
         const documents = await projectService.getDocuments(projectId);
         reply.send(documents);
@@ -93,7 +115,6 @@ export default async function (fastify, options) {
     { schema: getModelsSchema },
     async (request, reply) => {
       const projectId = request.params.projectId;
-      console.log("Fetching models for project:", projectId);
       try {
         const models = await projectService.getModels(projectId);
         reply.send(models);
@@ -110,10 +131,6 @@ export default async function (fastify, options) {
     { schema: getModelsSchema },
     async (request, reply) => {
       const { projectId } = request.params;
-      console.log(
-        "Fetching all models for project (including soft-deleted):",
-        projectId,
-      );
       try {
         const models = await projectService.getAllModels(projectId);
         reply.send(models);
@@ -124,12 +141,12 @@ export default async function (fastify, options) {
     },
   );
 
-  // PUT /projects/:id - Update project
+  // PUT /projects/:projectId - Update project
   fastify.put(
-    "/:id",
+    "/:projectId",
     { schema: updateProjectSchema },
     async (request, reply) => {
-      const projectId = request.params.id;
+      const projectId = request.params.projectId;
       const updates = request.body;
 
       try {

@@ -6,7 +6,7 @@
 - created_at
 - deleted_at
 Each generated model is assigned `model_generation_index` , derived from this counter to provide a human-readable, stable identifier.
-next_model_seq
+
 ---
 
 ## documents (versioned)

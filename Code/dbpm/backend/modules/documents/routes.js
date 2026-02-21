@@ -7,21 +7,14 @@ import {
   getModelsSchema,
 } from "./schema.js";
 
-async function documentsRoutes(fastify, options) {
+export default async function (fastify, options) {
   // POST /documents - Create a new document
   fastify.post(
     "/",
     { schema: createDocumentSchema },
     async (request, reply) => {
-      const { projectId, name, content } = request.body;
-
       try {
-        const result = await documentService.createDocument(
-          name,
-          content,
-          projectId,
-        );
-        result.documentVersionId = result.versionId;
+        const result = await documentService.create(request.body);
         reply.send(result);
       } catch (err) {
         console.error("Failed to create document:", err);
@@ -160,5 +153,3 @@ async function documentsRoutes(fastify, options) {
     },
   );
 }
-
-export default documentsRoutes;

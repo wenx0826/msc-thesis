@@ -5,11 +5,11 @@ import {
   deserializeRange,
   serializeRange,
   getSortedSelectionsByRange,
-} from "../util/selection.util.js";
+} from "../util/selection.js";
 
 export const activeDocumentStore = Object.assign(
   createDomainStore({
-    id: null,
+    versions: [],
     status: null,
     htmlContent: null,
     traces: [],

@@ -1,3 +1,5 @@
+import { version } from "node:os";
+
 export const createProjectSchema = {
   body: {
     type: "object",
@@ -37,9 +39,9 @@ export const getProjectsSchema = {
 export const getProjectSchema = {
   params: {
     type: "object",
-    required: ["id"],
+    required: ["projectId"],
     properties: {
-      id: { type: "string" },
+      projectId: { type: "string" },
     },
   },
   response: {
@@ -49,6 +51,78 @@ export const getProjectSchema = {
         id: { type: "string" },
         name: { type: "string" },
         createdAt: { type: "string" },
+      },
+    },
+  },
+};
+
+export const getProjectDetailsSchema = {
+  params: {
+    type: "object",
+    required: ["projectId"],
+    properties: {
+      projectId: { type: "string" },
+    },
+  },
+  querystring: {
+    type: "object",
+    properties: {
+      includeDeleted: { type: "boolean" },
+    },
+  },
+  response: {
+    200: {
+      type: "object",
+      properties: {
+        id: { type: "string" },
+        name: { type: "string" },
+        createdAt: { type: "string" },
+        documents: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              id: { type: "string" },
+              name: { type: "string" },
+              createdAt: { type: "string" },
+              deletedAt: { type: ["string", "null"] },
+              versions: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    id: { type: "string" },
+                    name: { type: "string" },
+                    createdAt: { type: "string" },
+                  },
+                },
+              },
+            },
+          },
+        },
+        models: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              id: { type: "string" },
+              name: { type: "string" },
+              createdAt: { type: "string" },
+              deletedAt: { type: "string" },
+              versions: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    id: { type: "string" },
+                    name: { type: "string" },
+                    createdAt: { type: "string" },
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     },
   },
@@ -68,10 +142,18 @@ export const getDocumentsSchema = {
       items: {
         type: "object",
         properties: {
-          documentVersionId: { type: "string" },
-          documentId: { type: "string" },
-          projectId: { type: "string" },
-          name: { type: "string" },
+          id: { type: "string" },
+          versions: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                id: { type: "string" },
+                name: { type: "string" },
+                createdAt: { type: "string" },
+              },
+            },
+          },
         },
       },
     },
@@ -92,8 +174,8 @@ export const getModelsSchema = {
       items: {
         type: "object",
         properties: {
-          modelVersionId: { type: "string" },
-          modelId: { type: "string" },
+          id: { type: "string" },
+          currentVersionId: { type: "string" },
           documentId: { type: "string" },
           name: { type: "string" },
         },
@@ -105,9 +187,9 @@ export const getModelsSchema = {
 export const updateProjectSchema = {
   params: {
     type: "object",
-    required: ["id"],
+    required: ["projectId"],
     properties: {
-      id: { type: "string" },
+      projectId: { type: "string" },
     },
   },
   body: {

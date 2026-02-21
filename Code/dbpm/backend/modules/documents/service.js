@@ -1,79 +1,92 @@
 import crypto from "crypto";
-import documentMetaRepo from "./repositories/document.js";
-import documentContentRepo from "./repositories/storage.js";
+import documentRepo from "./repositories/document.js";
+import versionRepo from "./repositories/version.js";
+import dstorageRepo from "./repositories/storage.js";
 import { logEvent } from "../../utils/logger.js";
 import { countWords } from "../../utils/fileHelper.js";
 
-class DocumentService {
-  async createDocument(name, content, projectId) {
-    const documentId = crypto.randomUUID();
+export default {
+  async create({ projectId, name, content }) {
+    const id = crypto.randomUUID();
     const versionId = crypto.randomUUID();
-    // const storagePath = documentContentRepo.getDocumentFilePath(versionId);
 
     try {
-      documentContentRepo.write(versionId, content);
+      dstorageRepo.write(versionId, content);
       const wordsCount = countWords(content);
-      const createdDocument = documentMetaRepo.create({
-        versionId,
-        documentId,
+
+      const createdDocument = documentRepo.create({
+        id,
         projectId,
+      });
+      const createdVersion = versionRepo.create({
+        id: versionId,
+        documentId: id,
         name,
-        // storagePath,
         wordsCount,
       });
-
+      documentRepo.update(id, { latestVersionId: versionId });
       logEvent(projectId, "document_uploaded", createdDocument);
 
-      return createdDocument;
+      return { createdDocument, versions: [createdVersion] };
     } catch (err) {
       // Cleanup on failure
-      documentContentRepo.delete(versionId);
+      // dstorageRepo.delete(versionId);
       throw err;
     }
-  }
+  },
 
   async getDocuments() {
-    return documentMetaRepo.findAll();
-  }
-  async findMetaByProjectId(projectId) {
-    return documentMetaRepo.findByProjectId(projectId);
-  }
+    return documentRepo.findAll();
+  },
+  async getByProjectId(projectId, includeDeleted = false) {
+    const documents = documentRepo.findByProjectId(projectId, includeDeleted);
+    if (!documents) {
+      throw new Error("No documents found for this project");
+    }
+    for (const doc of documents) {
+      const versions = versionRepo.findByDocumentId(doc.id);
+      doc.versions = versions;
+    }
+    return documents;
+  },
+
+  async getAllByProjectId(projectId) {
+    return documentRepo.findByProjectId(projectId);
+  },
   async getAllDocuments() {
     // Documents don't have soft delete yet, so this is the same as getDocuments
-    return documentMetaRepo.findAll();
-  }
+    return documentRepo.findAll();
+  },
 
   async getDocumentContent(docId) {
-    // const doc = documentMetaRepo.findById(docId);
+    // const doc = documentRepo.findById(docId);
     // if (!doc) {
     //   throw new Error("Document not found");
     // }
-    return documentContentRepo.read(docId);
-  }
+    return dstorageRepo.read(docId);
+  },
 
   async getTraces(docId) {
-    return documentMetaRepo.getTraces(docId);
-  }
+    return documentRepo.getTraces(docId);
+  },
 
   async getModels(docId) {
-    return documentMetaRepo.getModels(docId);
-  }
+    return documentRepo.getModels(docId);
+  },
   async getProjectId(docId) {
-    return documentMetaRepo.getProjectId(docId);
-  }
+    return documentRepo.getProjectId(docId);
+  },
   async getAllModels(docId) {
-    return documentMetaRepo.getAllModels(docId);
-  }
+    return documentRepo.getAllModels(docId);
+  },
 
   async deleteDocument(docId) {
-    const doc = documentMetaRepo.findById(docId);
+    const doc = documentRepo.findById(docId);
     if (!doc) {
       throw new Error("Document not found");
     }
-    documentMetaRepo.delete(docId);
-    documentContentRepo.delete(docId);
+    documentRepo.delete(docId);
+    dstorageRepo.delete(docId);
     return { message: "Document deleted" };
-  }
-}
-
-export default new DocumentService();
+  },
+};

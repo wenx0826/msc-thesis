@@ -1,7 +1,7 @@
 // Documents Store - Documents list state
 import { createDomainStore } from "./createStore.js";
 
-export const documentsStore = Object.assign(
+export default Object.assign(
   createDomainStore({
     documents: [],
   }),
@@ -23,7 +23,9 @@ export const documentsStore = Object.assign(
     },
     removeDocumentById(docId) {
       this.notify({ key: "documents", operation: "delete", id: docId });
-      this.state.documents = this.state.documents.filter((doc) => doc.id != docId);
+      this.state.documents = this.state.documents.filter(
+        (doc) => doc.id != docId,
+      );
     },
   },
 );

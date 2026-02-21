@@ -12,7 +12,7 @@ import tracesRoutes from "./modules/traces/routes.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-async function buildApp(options = {}) {
+export default async function (options = {}) {
   const app = fastify({ logger: false, ...options });
 
   await app.register(cors, {
@@ -39,5 +39,3 @@ async function buildApp(options = {}) {
 
   return app;
 }
-
-export default buildApp;

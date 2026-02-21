@@ -5,12 +5,19 @@ import {
   documentsStore,
   projectGraphStore,
 } from "../store/index.js";
-import { workspaceService } from "./workspace.service.js";
+import workspaceService from "./workspace.service.js";
+import { getFileContentInHTML } from "../util/document.js";
 
-export const documentService = {
-  async uploadDocument(doc) {
+export default {
+  async uploadDocument(file) {
     const projectId = workspaceStore.getProjectId();
-    const newDoc = await documentsAPI.createDocument({ ...doc, projectId });
+    const name = file.name;
+    const content = await getFileContentInHTML(file);
+    const newDoc = await documentsAPI.create({
+      projectId,
+      name,
+      content,
+    });
     documentsStore.addDocument(newDoc);
     const docId = newDoc.id;
     projectGraphStore.addDocumentNode(newDoc);

@@ -4,34 +4,8 @@ import { workspaceService, documentService } from "../services/index.js";
 import { $cloneTemplate } from "../../../shared/util/dom.js";
 import initInlineEditor from "../../../shared/widgets/inlineEditor.js";
 
+const $documentsInput = $("#documentsInput");
 const $documentsList = $("#documentsList");
-
-const getFileContentInHTML = async (file) => {
-  let fileContent = "";
-  if (file.type === "application/pdf") {
-    const arrayBuffer = await file.arrayBuffer();
-    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-    for (let i = 1; i <= pdf.numPages; i++) {
-      const page = await pdf.getPage(i);
-      const content = await page.getTextContent();
-      fileContent += content.items.map((item) => item.str).join(" ") + "\n";
-    }
-  } else if (
-    file.type === "application/msword" ||
-    file.name.endsWith(".doc") ||
-    file.type ===
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
-    file.name.endsWith(".docx")
-  ) {
-    const arrayBuffer = await file.arrayBuffer();
-    const result = await mammoth.convertToHtml({ arrayBuffer });
-    fileContent = new DOMParser().parseFromString(result.value, "text/html")
-      .body.innerHTML;
-  } else {
-    fileContent = await file.text();
-  }
-  return fileContent;
-};
 
 const removeDocumentItem = (documentId) => {
   $documentsList
@@ -60,40 +34,35 @@ const highlightActiveDocumentItem = (activeDocumentId) => {
   });
 };
 
+function updateDocument(documentId) {
+  // Placeholder for update logic, e.g., open an edit modal or inline editor
+  console.log("Update document with ID:", documentId);
+}
+
 createUI({
   setup: () => {
     const documentNameEditor = initInlineEditor({
       $scope: $documentsList,
-      onSave: (name, $view) => {
+      onSave: (newValue, $view) => {
         const documentId = $view.closest("li").data("docId");
-        console.log(
-          "Saving document name:",
-          name,
-          "for documentId:",
-          documentId,
-        );
         // documentService.updateDocument(documentId, { name });
       },
     });
     return { documentNameEditor };
   },
   bindListeners: ({ documentNameEditor }) => {
-    $("#documentsInput").on("change", async (event) => {
+    $documentsInput.on("change", async (event) => {
       event.preventDefault();
       event.stopPropagation();
       for (const file of event.target.files) {
         try {
-          const content = await getFileContentInHTML(file);
-          const name = file.name;
-          documentService.uploadDocument({ name, content });
+          documentService.uploadDocument(file);
         } catch (error) {
           console.error("Error processing file:", error);
         }
       }
     });
     $documentsList.on("mousedown", "li", (e) => {
-      // const $li = $(e.currentTarget);
-      // const docId = $li.data("docId");
       const docId = e.currentTarget.dataset.docId;
       workspaceService.activateDocumentById(docId);
     });
@@ -104,7 +73,6 @@ createUI({
       const documentId = $documentItem.data("docId");
       const $documentNameView = $documentItem.find(".inline-editor__view");
 
-      console.log("Actions clicked for documentId:", documentId);
       const menu = {};
       menu[""] = [
         {
@@ -119,7 +87,13 @@ createUI({
           type: undefined,
           params: [$documentNameView],
         },
-
+        {
+          label: "Update Document",
+          function_call: updateDocument,
+          text_icon: undefined,
+          type: undefined,
+          params: [documentId],
+        },
         {
           label: "Delete Document",
           function_call: () => {},

@@ -9,14 +9,6 @@ import {
 import { $cloneTemplate } from "../../../shared/util/dom.js";
 const projectId = getProjectIdFromURL();
 
-function renderProjectLink() {
-  const $projectLink = $("#projectLink");
-  $projectLink[0].href = getProjectWorkspaceURL(projectId);
-  projectsAPI.get(projectId).then((project) => {
-    $projectLink.text(project?.name || "Unnamed Project");
-  });
-}
-
 async function renderDocumentModels(documentId, $documentItem) {
   // const $documentItem = $(`li[data-doc-id='${documentId}']`);
   const $modelsList = $documentItem.find("[data-ref='modelsList']");
@@ -67,7 +59,7 @@ async function renderDocumentsList() {
 
 createUI({
   setup: () => {
-    renderProjectLink();
+    // const
     renderDocumentsList();
   },
   bindListeners: () => {},
