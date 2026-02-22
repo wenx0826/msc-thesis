@@ -1,5 +1,3 @@
-import { version } from "node:os";
-
 export const createProjectSchema = {
   body: {
     type: "object",
@@ -36,6 +34,36 @@ export const getProjectsSchema = {
   },
 };
 
+export const getProjectsOverviewSchema = {
+  response: {
+    200: {
+      type: "object",
+      properties: {
+        projects: {
+          type: "object",
+          properties: {
+            count: { type: "number" },
+          },
+        },
+        documents: {
+          type: "object",
+          properties: {
+            count: { type: "number" },
+            averageWordsCount: { type: "number" },
+          },
+        },
+        models: {
+          type: "object",
+          properties: {
+            count: { type: "number" },
+            averageSelectedWordsCount: { type: "number" },
+          },
+        },
+      },
+    },
+  },
+};
+
 export const getProjectSchema = {
   params: {
     type: "object",
@@ -56,7 +84,38 @@ export const getProjectSchema = {
   },
 };
 
-export const getProjectDetailsSchema = {
+export const getProjectOverviewWithDeletedSchema = {
+  params: {
+    type: "object",
+    required: ["projectId"],
+    properties: {
+      projectId: { type: "string" },
+    },
+  },
+  response: {
+    200: {
+      type: "object",
+      properties: {
+        documents: {
+          type: "object",
+          properties: {
+            count: { type: "number" },
+            averageWordsCount: { type: "number" },
+          },
+        },
+        models: {
+          type: "object",
+          properties: {
+            count: { type: "number" },
+            averageSelectedWordsCount: { type: "number" },
+          },
+        },
+      },
+    },
+  },
+};
+
+export const getProjectComponentsSchema = {
   params: {
     type: "object",
     required: ["projectId"],
@@ -74,16 +133,12 @@ export const getProjectDetailsSchema = {
     200: {
       type: "object",
       properties: {
-        id: { type: "string" },
-        name: { type: "string" },
-        createdAt: { type: "string" },
         documents: {
           type: "array",
           items: {
             type: "object",
             properties: {
               id: { type: "string" },
-              name: { type: "string" },
               createdAt: { type: "string" },
               deletedAt: { type: ["string", "null"] },
               versions: {
@@ -106,9 +161,10 @@ export const getProjectDetailsSchema = {
             type: "object",
             properties: {
               id: { type: "string" },
+              latestVersionId: { type: "string" },
               name: { type: "string" },
               createdAt: { type: "string" },
-              deletedAt: { type: "string" },
+              deletedAt: { type: ["string", "null"] },
               versions: {
                 type: "array",
                 items: {
@@ -120,37 +176,10 @@ export const getProjectDetailsSchema = {
                   },
                 },
               },
-            },
-          },
-        },
-      },
-    },
-  },
-};
-
-export const getDocumentsSchema = {
-  params: {
-    type: "object",
-    required: ["projectId"],
-    properties: {
-      projectId: { type: "string" },
-    },
-  },
-  response: {
-    200: {
-      type: "array",
-      items: {
-        type: "object",
-        properties: {
-          id: { type: "string" },
-          versions: {
-            type: "array",
-            items: {
-              type: "object",
-              properties: {
-                id: { type: "string" },
-                name: { type: "string" },
-                createdAt: { type: "string" },
+              documentId: { type: "string" },
+              documentVersionIds: {
+                type: "array",
+                items: { type: "string" },
               },
             },
           },
@@ -160,7 +189,7 @@ export const getDocumentsSchema = {
   },
 };
 
-export const getModelsSchema = {
+export const getProjectComponentsStatsSchema = {
   params: {
     type: "object",
     required: ["projectId"],
@@ -168,16 +197,70 @@ export const getModelsSchema = {
       projectId: { type: "string" },
     },
   },
+  querystring: {
+    type: "object",
+    properties: {
+      includeDeleted: { type: "boolean" },
+    },
+  },
   response: {
     200: {
-      type: "array",
-      items: {
-        type: "object",
-        properties: {
-          id: { type: "string" },
-          currentVersionId: { type: "string" },
-          documentId: { type: "string" },
-          name: { type: "string" },
+      type: "object",
+      properties: {
+        documents: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              id: { type: "string" },
+              latestVersionId: { type: "string" },
+              name: { type: "string" },
+              createdAt: { type: "string" },
+              deletedAt: { type: ["string", "null"] },
+              versions: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    id: { type: "string" },
+                    name: { type: "string" },
+                    wordsCount: { type: "number" },
+                    createdAt: { type: "string" },
+                  },
+                },
+              },
+            },
+          },
+        },
+        models: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              id: { type: "string" },
+              latestVersionId: { type: "string" },
+              name: { type: "string" },
+              createdAt: { type: "string" },
+              deletedAt: { type: ["string", "null"] },
+              versions: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    id: { type: "string" },
+                    name: { type: "string" },
+                    createdAt: { type: "string" },
+                    averageSelectedWordsCount: { type: "number" },
+                  },
+                },
+              },
+              documentId: { type: "string" },
+              documentVersionIds: {
+                type: "array",
+                items: { type: "string" },
+              },
+            },
+          },
         },
       },
     },

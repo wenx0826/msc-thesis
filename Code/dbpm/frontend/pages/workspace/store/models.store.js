@@ -1,16 +1,15 @@
-// Models Store - Models list state
-import { createDomainStore } from "./createStore.js";
-import { documentsAPI } from "../../../api/index.js";
+import { createStore } from "../../../shared/utils/store.js";
 
-export const modelsStore = Object.assign(
-  createDomainStore({
+export default Object.assign(
+  createStore({
     modelsById: {},
   }),
   {
     async init(models = []) {
+      console.log("!!!! Initializing models store with models:", models);
       let modelsById = {};
       for (const model of models) {
-        modelsById[model.meta.id] = { ...model };
+        modelsById[model.id] = { ...model };
       }
       this.state.modelsById = modelsById;
       this.notify({ operation: "init", value: models });

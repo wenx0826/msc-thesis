@@ -1,10 +1,10 @@
-import { createUI } from "../../../shared/util/ui.js";
+import { createUI } from "../../../shared/utils/ui.js";
 import {
   getProjectWorkspaceURL,
   getProjectStatsURL,
   getProjectLogURL,
-} from "../../../shared/util/url.js";
-import initInlineEditor from "../../../shared/widgets/inlineEditor.js";
+} from "../../../shared/utils/url.js";
+import initInlineEditor from "../../../shared/widgets/inline-editor.js";
 import { projectsAPI } from "../../../api/index.js";
 
 const $projectsTable = $("#projectsTable");

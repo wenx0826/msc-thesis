@@ -1,10 +1,10 @@
-import { createUI } from "../../../shared/util/ui.js";
+import { createUI } from "../../../shared/utils/ui.js";
 import { projectsAPI } from "../../../api/index.js";
 import {
   getProjectIdFromURL,
   getProjectLogURL,
-} from "../../../shared/util/url.js";
-import { default as setProjectNameEditor } from "../../../shared/widgets/inlineEditor.js";
+} from "../../../shared/utils/url.js";
+import { default as setProjectNameEditor } from "../../../shared/widgets/inline-editor.js";
 
 const projectId = getProjectIdFromURL();
 const $projectName = $("#projectName");

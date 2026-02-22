@@ -1,7 +1,7 @@
-import { createUI } from "../../../shared/util/ui.js";
+import { createUI } from "../../../shared/utils/ui.js";
 import {
   workspaceStore,
-  activeDocumentStore,
+  documentViewerStore,
   modelsStore,
 } from "../store/index.js";
 import { workspaceService, modelService } from "../services/index.js";
@@ -92,7 +92,7 @@ const clearOverlayLayers = () => {
 };
 
 const clearDocumentViewer = () => {
-  $("#documentContent").empty();
+  $documentContent.empty();
   clearOverlayLayers();
 };
 
@@ -186,14 +186,14 @@ const onSelectionSelect = (event) => {
 };
 
 // function isActiveModel(modelId) {
-//   return modelId == workspaceStore.getActiveModelId();
+//   return modelId == workspaceStore.getDisplayedModelId();
 // }
 
 const renderSelection = ({ range, color, id: selectionId }, modelId) => {
-  const isActiveModel = modelId === workspaceStore.getActiveModelId();
+  const isActiveModel = modelId === workspaceStore.getDisplayedModelId();
   // console.log(
   //   "Rendering selection:",
-  //   workspaceStore.getActiveModelId(),
+  //   workspaceStore.getDisplayedModelId(),
   //   modelId,
   //   isActiveModel,
   // );
@@ -252,7 +252,7 @@ const renderSelection = ({ range, color, id: selectionId }, modelId) => {
         top: `${lastRect.top - eleViewerWrapRect.top + eleViewerWrap.scrollTop - 10}px`,
         left: `${lastRect.right - eleViewerWrapRect.left + eleViewerWrap.scrollLeft - 10}px`,
       });
-    if (modelId == workspaceStore.getActiveModelId()) {
+    if (modelId == workspaceStore.getDisplayedModelId()) {
       tagSpan.addClass("active");
     }
     $modelTags.append(tagSpan);
@@ -269,12 +269,12 @@ const renderSelection = ({ range, color, id: selectionId }, modelId) => {
   }
 };
 
-const highlightActiveModelSelections = (activeModelId) => {
+const highlightActiveModelSelections = (displayModelId) => {
   $modelTags
-    .find(`.tag-span[data-model-id="${activeModelId}"]`)
+    .find(`.tag-span[data-model-id="${displayModelId}"]`)
     .addClass("active");
   $selectionsLayer
-    .find(`.selection-wrap[data-model-id="${activeModelId}"]`)
+    .find(`.selection-wrap[data-model-id="${displayModelId}"]`)
     .each((index, element) => {
       const $box = $(element).clone(false).empty();
       console.log("Cloned box for active model selection:", $box);
@@ -315,11 +315,11 @@ const renderTrace = ({ selections, modelId }) => {
 const rerenderOverlayLayers = () => {
   clearSelectionsLayer();
   clearInteractionLayer();
-  const traces = activeDocumentStore.getTraces();
+  const traces = documentViewerStore.getTraces();
   if (traces.length) {
     traces.forEach((trace) => renderTrace(trace));
   }
-  const temporarySelections = activeDocumentStore.getTemporarySelections();
+  const temporarySelections = documentViewerStore.getTemporarySelections();
   temporarySelections.forEach((selection) => {
     renderSelection(selection);
   });
@@ -345,7 +345,7 @@ const handleTextSelection = () => {
     range: range.cloneRange(),
   };
   // temporarySelections.push(temporarySelection);
-  activeDocumentStore.addTemporarySelection(temporarySelection);
+  documentViewerStore.addTemporarySelection(temporarySelection);
   // renderSelection(temporarySelection);
   selection.removeAllRanges();
 };
@@ -361,12 +361,12 @@ createUI({
       const newColor = e.target.value;
       if (selectedSelection) {
         if (!selectedSelection.modelId) {
-          activeDocumentStore.updateTemporarySelectionColor(
+          documentViewerStore.updateTemporarySelectionColor(
             selectedSelection.selectionId,
             newColor,
           );
         } else {
-          activeDocumentStore.updateActiveModelTraceSelectionColor(
+          documentViewerStore.updateActiveModelTraceSelectionColor(
             selectedSelection.selectionId,
             newColor,
           );
@@ -378,10 +378,10 @@ createUI({
       if (selectedSelection) {
         const { selectionId, modelId } = selectedSelection;
         if (!modelId) {
-          activeDocumentStore.removeTemporarySelection(selectionId);
+          documentViewerStore.removeTemporarySelection(selectionId);
         } else {
           // todo change it to rerender after trace update
-          activeDocumentStore.removeActiveModelTraceSelectionById(selectionId);
+          documentViewerStore.removeActiveModelTraceSelectionById(selectionId);
           modelService.updateActiveModel(
             MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
           );
@@ -409,7 +409,7 @@ createUI({
       // const $target = $(event.currentTarget);
       event.stopPropagation();
       const modelId = event.currentTarget.dataset.modelId;
-      workspaceService.toggleModelSelection(modelId);
+      workspaceService.toggleModelDisplay(modelId);
     });
     $modelTags.on("mouseenter", ".tag-span", (event) => {
       event.stopPropagation();
@@ -455,7 +455,7 @@ createUI({
     });
   },
   subscribeStores: () => {
-    activeDocumentStore.subscribe((state, { key, operation, ...payload }) => {
+    documentViewerStore.subscribe((state, { key, operation, ...payload }) => {
       if (operation) {
         const { value } = payload;
         switch (key) {
@@ -475,7 +475,7 @@ createUI({
             switch (operation) {
               case "update":
                 removeRenderedSelection(value);
-                renderSelection(value, workspaceStore.getActiveModelId());
+                renderSelection(value, workspaceStore.getDisplayedModelId());
                 break;
               case "remove":
                 removeRenderedSelection(value);
@@ -511,9 +511,9 @@ createUI({
               $documentContent.text("Loading document...");
             }
             break;
-          case "htmlContent":
+          case "content":
             if (newValue) {
-              $documentContent.html(newValue || "");
+              $documentContent.append(newValue);
             } else {
               clearDocumentViewer();
             }
@@ -552,22 +552,22 @@ createUI({
 
     workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
       switch (key) {
-        case "activeModelId":
-          if (newValue) {
-            $generateButton.text("Regenerate Model");
-            $generateButton.prop(
-              "disabled",
-              !activeDocumentStore.getHasSelectionChanged(),
-            );
-            $addSelectionsButton.show();
-            $addSelectionsButton.prop(
-              "disabled",
-              !activeDocumentStore.getHasSelectionChanged(),
-            );
-          } else {
-            $generateButton.text("Generate Model");
-            $addSelectionsButton.hide();
-          }
+        case "displayedDocument":
+          // if (newValue.id) {
+          //   $generateButton.text("Regenerate Model");
+          //   $generateButton.prop(
+          //     "disabled",
+          //     !documentViewerStore.getHasSelectionChanged(),
+          //   );
+          //   $addSelectionsButton.show();
+          //   $addSelectionsButton.prop(
+          //     "disabled",
+          //     !documentViewerStore.getHasSelectionChanged(),
+          //   );
+          // } else {
+          //   $generateButton.text("Generate Model");
+          //   $addSelectionsButton.hide();
+          // }
           break;
         default:
           break;

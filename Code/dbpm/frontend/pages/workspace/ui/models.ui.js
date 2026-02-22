@@ -1,9 +1,9 @@
-import { createUI } from "../../../shared/util/ui.js";
+import { createUI } from "../../../shared/utils/ui.js";
 import { workspaceStore, modelsStore } from "../store/index.js";
 import { workspaceService } from "../services/index.js";
 import { modelsAPI } from "../../../api/index.js";
 import { endpointLoader } from "../workflow/wf_endpoints/endpoint-loader.js";
-import { $cloneTemplate } from "../../../shared/util/dom.js";
+import { $cloneTemplate } from "../../../shared/utils/dom.js";
 
 const PREVIEW_THEME_PATH =
   "pages/workspace/workflow/wf_themes/preset_customized/theme.js";
@@ -12,6 +12,7 @@ let previewRenderQueue = Promise.resolve();
 let previewRendererWindow = null;
 let previewRendererWindowPromise = null;
 
+const $modelsList = $("#modelsList");
 /**
  * Make all internal SVG id/url(#...) references unique by prefixing them
  * with a model-specific string.  This prevents collisions when multiple
@@ -220,59 +221,54 @@ function getDescriptionElement(modelData) {
 }
 
 function renderDescriptionToSvg(descriptionElement) {
-  return queuePreviewRender(
-    async () => {
-      const descriptionText = new XMLSerializer().serializeToString(
-        descriptionElement,
-      );
-      const endpointSymbols = serializeEndpointSymbols(endpointLoader._cache);
-      const endpointProperties = collectEndpointProperties(endpointLoader._cache);
-      const previewThemeUrl = new URL(
-        PREVIEW_THEME_PATH,
-        document.baseURI,
-      ).toString();
+  return queuePreviewRender(async () => {
+    const descriptionText = new XMLSerializer().serializeToString(
+      descriptionElement,
+    );
+    const endpointSymbols = serializeEndpointSymbols(endpointLoader._cache);
+    const endpointProperties = collectEndpointProperties(endpointLoader._cache);
+    const previewThemeUrl = new URL(
+      PREVIEW_THEME_PATH,
+      document.baseURI,
+    ).toString();
 
-      const rendererWindow = await ensurePreviewRendererWindow();
-      return rendererWindow.renderGraphPreview({
-        themePath: previewThemeUrl,
-        descriptionXml: descriptionText,
-        endpointSymbols,
-        endpointProperties,
-      });
-    },
-  );
+    const rendererWindow = await ensurePreviewRendererWindow();
+    return rendererWindow.renderGraphPreview({
+      themePath: previewThemeUrl,
+      descriptionXml: descriptionText,
+      endpointSymbols,
+      endpointProperties,
+    });
+  });
 }
 
 async function getModelSvg(modelId) {
   await endpointLoader.init();
-  const modelData = await modelsAPI.getModelDataById(modelId);
+  const modelData = await modelsAPI.getModelDataByVersionId(modelId);
   const descriptionElement = getDescriptionElement(modelData);
   return renderDescriptionToSvg(descriptionElement);
 }
 
 async function renderModelInList(model) {
-  const modelId = model?.meta?.id;
+  console.log("Rendering model in list:", model);
+  const modelId = model?.id;
   const gridId = `modelGrid_${modelId}`;
-  const $modelsArea = $("#models");
   const $modelContainer = $cloneTemplate("modelItemTemplate")
     .children()
     .first()
     .attr("data-model-id", modelId)
-    .attr("data-documentid", model.documentId);
+    .attr("data-document-id", model.documentId);
   const $gridDiv = $modelContainer.find("[data-ref='modelGrid']").first();
   $gridDiv.attr("id", gridId);
-  $modelContainer.find("[data-ref='modelName']").first().text(model.meta.name);
-  if (modelId == workspaceStore.getActiveModelId()) {
+  $modelContainer.find("[data-ref='modelName']").first().text(model.name);
+  if (modelId == workspaceStore.getDisplayedModel().id) {
     $modelContainer.addClass("active");
   }
-  $modelsArea.append($modelContainer);
-
+  $modelsList.append($modelContainer);
   console.log("Received SVG for model ID", modelId);
   try {
-    const outputFrame = await getModelSvg(modelId);
-
+    const outputFrame = await getModelSvg(model.latestVersionId);
     model.svg = $.parseXML(outputFrame).documentElement;
-
     prepareSvgForList(model.svg, modelId);
     $gridDiv.append(model.svg);
   } catch (err) {
@@ -309,19 +305,17 @@ const removeModelFromList = (modelId) => {
 createUI({
   setup: () => {},
   bindListeners: () => {
-    const $modelsArea = $("#models");
-    $modelsArea.off("click.modelContainer");
-    $modelsArea.on("click.modelContainer", ".model-container", (event) => {
+    $modelsList.on("click.modelContainer", ".model-container", (event) => {
       event.stopPropagation();
       const element = event.currentTarget;
       const modelId = element.dataset.modelId;
-      workspaceService.toggleModelSelection(modelId);
+      workspaceService.toggleModelDisplay({ id: modelId });
     });
   },
   subscribeStores: () => {
     workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
       switch (key) {
-        case "activeModelId":
+        case "displayModelId":
           if (newValue) {
             highlightActiveModelContainer(newValue);
           }

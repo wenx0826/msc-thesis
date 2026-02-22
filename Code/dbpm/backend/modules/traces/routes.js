@@ -2,12 +2,12 @@ import traceService from "./service.js";
 import { updateTraceSchema } from "./schema.js";
 
 export default async function (fastify, options) {
-  fastify.put("/:id", { schema: updateTraceSchema }, async (request, reply) => {
+  fastify.put("/:id", { schema: updateTraceSchema }, (request, reply) => {
     const traceId = request.params.id;
     const updatedTrace = request.body;
 
     try {
-      const result = await traceService.updateTrace(
+      const result = traceService.updateTrace(
         traceId,
         updatedTrace.documentId,
         updatedTrace.modelId,

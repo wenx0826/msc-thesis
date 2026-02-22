@@ -1,10 +1,9 @@
-// Active Model Store - Current model state
-import { createDomainStore } from "./createStore.js";
+import { createStore } from "../../../shared/utils/store.js";
 import { modelsAPI } from "../../../api/index.js";
-import { modelsStore } from "./models.store.js";
+import modelsStore from "./models.store.js";
 
-export const activeModelStore = Object.assign(
-  createDomainStore({
+export default Object.assign(
+  createStore({
     status: null, // 'loading', 'ready', 'error', 'generating'
     error: null,
     model: null,

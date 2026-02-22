@@ -10,6 +10,14 @@ export default {
     });
     return handleResponse(response);
   },
+  async createVersion(params) {
+    const response = await fetch(`${baseURL}/${this.path}/versions`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(params),
+    });
+    return handleResponse(response);
+  },
   async getByProjectId(projectId) {
     const response = await fetch(
       `${baseURL}/projects/${projectId}/${this.path}`,
@@ -32,18 +40,18 @@ export default {
     const data = await response.json();
     return data.content;
   },
-  async getContentById(id) {
-    const response = await fetch(`${baseURL}/${this.path}/${id}/content`);
-    if (!response.ok) throw new Error("Failed to fetch document");
-    const data = await response.json();
-    return handleTextResponse(response, "Failed to fetch document content");
+  async getContentByVersionId(versionId) {
+    const res = await fetch(
+      `${baseURL}/${this.path}/versions/${versionId}/content`,
+    );
+    return handleTextResponse(res, "Failed to fetch document content");
   },
   async getDocumentTracesById(id) {
     const response = await fetch(`${baseURL}/documents/${id}/traces`);
     if (!response.ok) throw new Error("Failed to fetch document traces");
     return await response.json();
   },
-  async getActiveModelsById(id) {
+  async getDisplayedModelsById(id) {
     const response = await fetch(`${baseURL}/documents/${id}/models`);
     if (!response.ok) throw new Error("Failed to fetch document models");
     return await response.json();

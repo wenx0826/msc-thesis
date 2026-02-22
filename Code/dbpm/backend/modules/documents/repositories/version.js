@@ -35,7 +35,6 @@ export default {
     const results = stmt.all(documentId);
     return results.map(toCamel);
   },
-  // todo
   getTraces(docId) {
     const stmt = db.prepare("SELECT * FROM traces WHERE document_id = ?");
     const results = stmt.all(docId);

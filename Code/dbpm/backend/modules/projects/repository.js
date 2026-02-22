@@ -36,7 +36,13 @@ export default {
     const results = stmt.all();
     return results.map(toCamel);
   },
-
+  count(includeDeleted = false) {
+    const stmt = db.prepare(
+      `SELECT COUNT(*) as count FROM projects ${includeDeleted ? "" : "WHERE deleted_at IS NULL"}`,
+    );
+    const result = stmt.get();
+    return result.count;
+  },
   update(id, updates) {
     const fields = [];
     const values = [];
@@ -45,9 +51,9 @@ export default {
       fields.push("name = ?");
       values.push(updates.name);
     }
-    if (updates.modelGenerationCounter !== undefined) {
-      fields.push("model_generation_counter = ?");
-      values.push(updates.modelGenerationCounter);
+    if (updates.modelGenerationIndex !== undefined) {
+      fields.push("model_generation_index = ?");
+      values.push(updates.modelGenerationIndex);
     }
 
     if (fields.length === 0) {
@@ -68,7 +74,7 @@ export default {
   },
   findModelGenerationIndexById(id) {
     const stmt = db.prepare(
-      "SELECT model_generation_counter FROM projects WHERE id = ?",
+      "SELECT model_generation_index FROM projects WHERE id = ?",
     );
     return toCamel(stmt.get(id));
   },

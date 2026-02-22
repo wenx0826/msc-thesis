@@ -1,6 +1,6 @@
-import { createUI } from "../../../shared/util/ui.js";
+import { createUI } from "../../../shared/utils/ui.js";
 import {
-  activeModelStore,
+  modelEditorStore,
   documentsStore,
   modelsStore,
   workspaceStore,
@@ -8,7 +8,7 @@ import {
 import { modelService, workspaceService } from "../services/index.js";
 import { endpointLoader } from "../workflow/wf_endpoints/endpoint-loader.js";
 import { Constants } from "../../../constants.js";
-import { default as setActiveModuleNameEditor } from "../../../shared/widgets/inlineEditor.js";
+import { default as setActiveModuleNameEditor } from "../../../shared/widgets/inline-editor.js";
 
 const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
 
@@ -79,7 +79,7 @@ function syncActiveModelGraphInList() {
   gc.attr("width", start + 1);
   gc.find(".duration");
   gc.removeAttr("id");
-  modelsStore.updateModelById(workspaceStore.getActiveModelId(), {
+  modelsStore.updateModelById(workspaceStore.getDisplayedModelId(), {
     svg: gc[0].outerHTML,
   });
 }
@@ -129,7 +129,7 @@ const showActiveModel = async (model) => {
 };
 
 const renderModelSelect = (modelValue) => {
-  const activeModelId = activeModelStore.getModelId();
+  const displayModelId = modelEditorStore.getModelId();
   const $modelSelect = $(
     `#dat_details select[data-relaxngui-path=" > call > parameters > dbpm_subprocess_model"]`,
   );
@@ -152,7 +152,7 @@ const renderModelSelect = (modelValue) => {
         .text(modelName)
         .appendTo($optGroup);
       if (modelId == modelValue) $option.prop("selected", true);
-      if (modelId == activeModelId) $option.prop("disabled", true);
+      if (modelId == displayModelId) $option.prop("disabled", true);
     }
   }
 };
@@ -392,9 +392,9 @@ createUI({
       trigger: "click",
       autoGrow: true,
       onSave: (name) => {
-        const activeModelId = workspaceStore.getActiveModelId();
-        if (activeModelId) {
-          // modelService.updateModelById(activeModelId, { name });
+        const displayModelId = workspaceStore.getDisplayedModelId();
+        if (displayModelId) {
+          // modelService.updateModelById(displayModelId, { name });
         }
       },
     });
@@ -404,17 +404,18 @@ createUI({
     $viewModelDataLink.on("click", (e) => {
       e.preventDefault();
       window.open(
-        "/data/models/" + workspaceStore.getActiveModelId() + ".xml",
+        "/data/models/" + workspaceStore.getDisplayedModelId() + ".xml",
         "_blank",
       );
     });
 
     $exportTestsetButton.on("click", (e) => {
       e.preventDefault();
-      const filename = "testset_" + workspaceStore.getActiveModelId() + ".xml";
+      const filename =
+        "testset_" + workspaceStore.getDisplayedModelId() + ".xml";
       const text =
         '<?xml version="1.0"?>\n<testset xmlns="http://cpee.org/ns/properties/2.0">\n<executionhandler>ruby</executionhandler>\n<dataelements/>\n<endpoints/>\n<attributes>\n<guarded>none</guarded>\n<modeltype>CPEE</modeltype>\n<theme>preset</theme>\n<guarded_id/>\n<info>Subprocess</info>\n<creator>Christine Ashcreek</creator>\n<author>Christine Ashcreek</author>\n<model_uuid>1fc43528-3e4a-40ee-8503-c0ed7e5d883c</model_uuid>\n<model_version/>\n<design_stage>development</design_stage>\n<design_dir>Templates.dir</design_dir>\n</attributes>\n<description>' +
-        activeModelStore.getSerializedRpstData() +
+        modelEditorStore.getSerializedRpstData() +
         "\n</description>\n</testset>";
       const mime = "application/xml;charset=utf-8";
 
@@ -432,7 +433,7 @@ createUI({
     });
 
     $deleteModelButton.on("click", () => {
-      modelService.deleteModel(workspaceStore.getActiveModelId());
+      modelService.deleteModel(workspaceStore.getDisplayedModelId());
     });
 
     $keepNewModelButton.on("click", async () => {
@@ -536,7 +537,7 @@ createUI({
         .children("dbpm_subprocess_model")
         .text();
       if (modelId) {
-        workspaceService.toggleModelSelection(modelId);
+        workspaceService.toggleModelDisplay(modelId);
       }
     });
     $(document).on("wf:subprocess-hovered", function (e) {
@@ -587,7 +588,7 @@ createUI({
     });
   },
   subscribeStores: () => {
-    activeModelStore.subscribe((state, { key, oldValue, newValue }) => {
+    modelEditorStore.subscribe((state, { key, oldValue, newValue }) => {
       switch (key) {
         case "model":
           if (newValue) {
@@ -641,7 +642,7 @@ createUI({
 
     workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
       switch (key) {
-        case "activeModelId":
+        case "displayModelId":
           break;
         default:
           break;

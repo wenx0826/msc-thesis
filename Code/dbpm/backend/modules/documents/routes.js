@@ -1,67 +1,52 @@
 import documentService from "./service.js";
 import {
   createDocumentSchema,
-  getDocumentsSchema,
+  createVersionSchema,
   getDocumentContentSchema,
   getTracesSchema,
-  getModelsSchema,
 } from "./schema.js";
 
 export default async function (fastify, options) {
   // POST /documents - Create a new document
-  fastify.post(
-    "/",
-    { schema: createDocumentSchema },
-    async (request, reply) => {
-      try {
-        const result = await documentService.create(request.body);
-        reply.send(result);
-      } catch (err) {
-        console.error("Failed to create document:", err);
-        reply
-          .code(500)
-          .send({ error: "Failed to create document", details: err.message });
-      }
-    },
-  );
-
-  // GET /documents - Get all documents
-  fastify.get("/", { schema: getDocumentsSchema }, async (request, reply) => {
-    console.log("Fetching documents list...");
+  fastify.post("/", { schema: createDocumentSchema }, (request, reply) => {
     try {
-      const documents = await documentService.getDocuments();
-      reply.send(documents);
+      const result = documentService.create(request.body);
+      reply.send(result);
     } catch (err) {
-      console.error("Failed to fetch documents:", err);
-      reply.code(500).send({ error: "Failed to fetch documents" });
+      console.error("Failed to create document:", err);
+      reply
+        .code(500)
+        .send({ error: "Failed to create document", details: err.message });
     }
   });
 
-  // GET /documents/all - Get all documents including soft-deleted ones (for stats)
-  fastify.get(
-    "/all",
-    { schema: getDocumentsSchema },
-    async (request, reply) => {
-      console.log("Fetching all documents including soft-deleted...");
+  // POST /documents/versions - Create a new version of a document
+  fastify.post(
+    "/versions",
+    { schema: createVersionSchema },
+    (request, reply) => {
       try {
-        const documents = await documentService.getAllDocuments();
-        reply.send(documents);
+        const result = documentService.createVersion(request.body);
+        reply.send(result);
       } catch (err) {
-        console.error("Failed to fetch all documents:", err);
-        reply.code(500).send({ error: "Failed to fetch all documents" });
+        console.error("Failed to create document version:", err);
+        reply.code(500).send({
+          error: "Failed to create document version",
+          details: err.message,
+        });
       }
     },
   );
 
-  // GET /documents/:id/content - Get document content
+  // GET /documents/versions/:versionId/content - Get document content by version ID
   fastify.get(
-    "/:id/content",
+    "/versions/:versionId/content",
     { schema: getDocumentContentSchema },
-    async (request, reply) => {
-      const docId = request.params.id;
-      console.log("Fetching document content for ID:", docId);
+    (request, reply) => {
+      const { versionId } = request.params;
+      console.log("Fetching document content for version ID:", versionId);
       try {
-        const result = await documentService.getDocumentContent(docId);
+        const result = documentService.getContent(versionId);
         reply.send(result);
       } catch (err) {
         console.error("Failed to read document content:", err);
@@ -75,53 +60,17 @@ export default async function (fastify, options) {
   );
 
   // GET /documents/:id/traces - Get traces for a document
-  fastify.get(
-    "/:id/traces",
-    { schema: getTracesSchema },
-    async (request, reply) => {
-      const { id } = request.params;
-      console.log("Fetching traces for document ID:", id);
-      try {
-        const traces = await documentService.getTraces(id);
-        reply.send(traces);
-      } catch (err) {
-        console.error("Failed to fetch traces:", err);
-        reply.code(500).send({ error: "Failed to fetch traces" });
-      }
-    },
-  );
-
-  // GET /documents/:id/models - Get models for a document
-  fastify.get(
-    "/:id/models",
-    { schema: getModelsSchema },
-    async (request, reply) => {
-      const docId = request.params.id;
-      try {
-        const models = await documentService.getModels(docId);
-        reply.send(models);
-      } catch (err) {
-        console.error("Failed to fetch models for document:", err);
-        reply.code(500).send({ error: "Failed to fetch models" });
-      }
-    },
-  );
-
-  // GET /documents/:id/models/all - Get all models for a document including soft-deleted ones
-  fastify.get(
-    "/:id/models/all",
-    { schema: getModelsSchema },
-    async (request, reply) => {
-      const docId = request.params.id;
-      try {
-        const models = await documentService.getAllModels(docId);
-        reply.send(models);
-      } catch (err) {
-        console.error("Failed to fetch all models for document:", err);
-        reply.code(500).send({ error: "Failed to fetch all models" });
-      }
-    },
-  );
+  fastify.get("/:id/traces", { schema: getTracesSchema }, (request, reply) => {
+    const { id } = request.params;
+    console.log("Fetching traces for document ID:", id);
+    try {
+      const traces = documentService.getTraces(id);
+      reply.send(traces);
+    } catch (err) {
+      console.error("Failed to fetch traces:", err);
+      reply.code(500).send({ error: "Failed to fetch traces" });
+    }
+  });
 
   // DELETE /documents/:id - Delete a document
   fastify.delete(
@@ -137,10 +86,10 @@ export default async function (fastify, options) {
         },
       },
     },
-    async (request, reply) => {
+    (request, reply) => {
       const docId = request.params.id;
       try {
-        const result = await documentService.deleteDocument(docId);
+        const result = documentService.deleteDocument(docId);
         reply.send(result);
       } catch (err) {
         console.error("Failed to delete document:", err);

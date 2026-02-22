@@ -4,8 +4,9 @@ import documentRepo from "../documents/repositories/document.js";
 import { logEvent, createEmptyLogFile } from "../../utils/logger.js";
 import documentService from "../documents/service.js";
 import modelService from "../models/service.js";
+import { get } from "http";
 export default {
-  async create(name) {
+  create(name) {
     const id = crypto.randomUUID();
 
     try {
@@ -17,45 +18,54 @@ export default {
       throw err;
     }
   },
-  async getAll() {
+  getAll() {
     return projectRepo.findAll();
   },
-  async get(projectId) {
+  getOverview() {
+    const overview = {
+      projects: { count: projectRepo.count() },
+      documents: {
+        count: documentRepo.count(),
+        averageWordsCount: documentRepo.getAverageWordsCount(),
+      },
+      models: {
+        count: modelService.count(),
+        averageSelectedWordsCount: modelService.getAverageSelectedWordsCount(),
+      },
+    };
+    return overview;
+  },
+  get(projectId) {
     const project = projectRepo.findById(projectId);
     if (!project) {
       throw new Error("Project not found");
     }
     return project;
   },
-  async getDetails(projectId, includeDeleted = false) {
+  getComponentsById(projectId) {
     const project = projectRepo.findById(projectId);
     if (!project) {
       throw new Error("Project not found");
     }
-    const documents = await documentService.getByProjectId(
-      projectId,
-      includeDeleted,
-    );
-    const models = await modelService.getByProjectId(projectId, includeDeleted);
-    return { ...project, documents, models };
+    const documents = documentService.getByProjectId(projectId);
+    const models = modelService.getByProjectId(projectId);
+    return { documents, models };
   },
-  async getDocuments(projectId) {
-    return documentService.getByProjectId(projectId);
+
+  getComponentsStatsById(projectId) {
+    const project = projectRepo.findById(projectId);
+    if (!project) {
+      throw new Error("Project not found");
+    }
+    const documents = documentService.getByProjectId(projectId, true);
+    const models = modelService.getByProjectId(projectId, true);
+    return { documents, models };
   },
-  async getModels(projectId) {
-    return modelService.getByProjectId(projectId);
-  },
-  async getAllDocuments(projectId) {
-    // Documents don't have soft delete yet, so this is the same as getDocuments
-    // return documentRepo.findByProjectId(projectId);
-  },
-  async getAllModels(projectId) {
-    return projectRepo.getAllModelsByProjectId(projectId);
-  },
-  async getModelGenerationIndexById(projectId) {
+
+  getModelGenerationIndexById(projectId) {
     return projectRepo.findModelGenerationIndexById(projectId);
   },
-  async update(projectId, updates) {
+  update(projectId, updates) {
     const project = projectRepo.update(projectId, updates);
     if (!project) {
       throw new Error("Project not found or no valid fields to update");

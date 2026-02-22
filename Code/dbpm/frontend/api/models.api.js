@@ -111,11 +111,11 @@ export default {
     return generatedModel;
   },
 
-  async createModelAndTrace({ modelData, trace }) {
+  async createModelAndTrace(params) {
     const response = await fetch(`${baseURL}/${this.path}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ modelData, trace }),
+      body: JSON.stringify(params),
     });
     return handleResponse(response, "Failed to create model");
   },
@@ -125,17 +125,22 @@ export default {
     return handleResponse(response, "Failed to fetch model");
   },
 
-  async getModelDataById(id) {
-    const response = await fetch(`${baseURL}/${this.path}/${id}/data`);
+  async getModelDataByVersionId(versionId) {
+    const response = await fetch(
+      `${baseURL}/${this.path}/versions/${versionId}/data`,
+    );
     return handleTextResponse(response, "Failed to fetch model");
   },
 
-  async updateModelDataById(id, modelData) {
-    const response = await fetch(`${baseURL}/${this.path}/${id}/data`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ modelData }),
-    });
+  async updateModelDataByVersionId(versionId, modelData) {
+    const response = await fetch(
+      `${baseURL}/${this.path}/versions/${versionId}/data`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ modelData }),
+      },
+    );
     return handleResponse(response, "Failed to update model data");
   },
 

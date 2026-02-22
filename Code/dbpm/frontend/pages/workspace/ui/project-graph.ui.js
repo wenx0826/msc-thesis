@@ -1,4 +1,4 @@
-import { createUI } from "../../../shared/util/ui.js";
+import { createUI } from "../../../shared/utils/ui.js";
 import { workspaceStore, projectGraphStore } from "../store/index.js";
 import { workspaceService } from "../services/index.js";
 
@@ -114,10 +114,10 @@ createUI({
       const entityType = getEntityType(node);
       switch (entityType) {
         case "document":
-          workspaceService.activateDocumentById(entityId);
+          workspaceService.displayDocument({ id: entityId });
           break;
         case "model":
-          workspaceService.toggleModelSelection(entityId);
+          workspaceService.toggleModelDisplay(entityId);
 
           break;
         default:
@@ -239,7 +239,7 @@ createUI({
 
     workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
       switch (key) {
-        case "activeDocumentId":
+        case "displayedDocumentId":
           if (newValue) {
             cy.getElementById(`cy-${newValue}`).addClass("active");
           }
@@ -247,7 +247,7 @@ createUI({
             cy.getElementById(`cy-${oldValue}`).removeClass("active");
           }
           break;
-        case "activeModelId":
+        case "displayModelId":
           if (newValue) {
             cy.getElementById(`cy-${newValue}`).addClass("active");
           }

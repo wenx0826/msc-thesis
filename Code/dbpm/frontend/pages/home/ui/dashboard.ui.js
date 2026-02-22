@@ -1,4 +1,6 @@
-import { createUI } from "../../../shared/util/ui.js";
+import { projectsAPI } from "../../../api/index.js";
+import { createUI } from "../../../shared/utils/ui.js";
+import { formatNumber } from "../../../shared/utils/number.js";
 // In real usage: compute these from API.
 const demo = {
   totals: {
@@ -100,18 +102,24 @@ function renderBarList(containerId, items) {
 }
 
 // ---------- Render dashboard ----------
-setText("projectsCount", demo.totals.projects);
-setText("documentsCount", demo.totals.documents);
-setText("modelsCount", demo.totals.models);
-
-renderSubLines("projectsSub", demo.subs.projects);
-renderSubLines("documentsSub", demo.subs.documents);
-renderSubLines("modelsSub", demo.subs.models);
 
 renderBarList("chartDocsPerProject", demo.docsPerProject);
 renderBarList("chartModelsPerDoc", demo.modelsPerDoc);
 
 createUI({
-  setup: () => {},
+  setup: async () => {
+    const overview = await projectsAPI.overview();
+    const { projects, documents, models } = overview;
+    setText("projectsCount", formatNumber(projects.count));
+    setText("documentsCount", formatNumber(documents.count));
+    setText("modelsCount", formatNumber(models.count));
+
+    renderSubLines("documentsSub", [
+      `avg words: ${formatNumber(documents.averageWordsCount.toFixed(0))}`,
+    ]);
+    renderSubLines("modelsSub", [
+      `avg selected words: ${formatNumber(models.averageSelectedWordsCount.toFixed(0))}`,
+    ]);
+  },
   bindListeners: () => {},
 });

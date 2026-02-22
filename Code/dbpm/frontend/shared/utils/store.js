@@ -1,5 +1,4 @@
-// Utility to create a domain store with subscribe/notify pattern
-export function createDomainStore(initialState, options = {}) {
+export function createStore(initialState, options = {}) {
   const subs = new Set();
   return {
     state: { ...initialState },

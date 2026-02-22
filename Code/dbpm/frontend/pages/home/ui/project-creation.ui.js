@@ -1,5 +1,5 @@
-import { createUI } from "../../../shared/util/ui.js";
-import { getProjectWorkspaceURL } from "../../../shared/util/url.js";
+import { createUI } from "../../../shared/utils/ui.js";
+import { getProjectWorkspaceURL } from "../../../shared/utils/url.js";
 import { projectsAPI } from "../../../api/index.js";
 
 const $dialog = $("#projectCreationDialog");

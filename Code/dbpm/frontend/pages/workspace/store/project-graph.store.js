@@ -1,8 +1,7 @@
-// Project Graph Store - Cytoscape graph state
-import { createDomainStore } from "./createStore.js";
+import { createStore } from "../../../shared/utils/store.js";
 
-export const projectGraphStore = Object.assign(
-  createDomainStore({
+export default Object.assign(
+  createStore({
     elements: [],
   }),
   {
@@ -21,9 +20,9 @@ export const projectGraphStore = Object.assign(
         nodes.push({
           group: "nodes",
           data: {
-            id: `cy-${model.meta.id}`,
+            id: `cy-${model.id}`,
             type: "model",
-            label: model.meta.name,
+            label: model.name,
             degree: 1,
           },
         });
@@ -31,7 +30,7 @@ export const projectGraphStore = Object.assign(
           group: "edges",
           data: {
             source: `cy-${model.documentId}`,
-            target: `cy-${model.meta.id}`,
+            target: `cy-${model.id}`,
             relation: "generated",
           },
         });

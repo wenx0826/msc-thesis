@@ -1,20 +1,21 @@
 export const createModelSchema = {
   body: {
     type: "object",
-    required: ["modelData", "trace"],
+    required: ["projectId", "modelData", "trace"],
     properties: {
+      projectId: { type: "string" },
       modelData: {
         type: "string",
       },
       trace: {
         type: "object",
         properties: {
-          documentId: { type: "string" },
+          documentVersionId: { type: "string" },
           selections: {
             type: "array",
           },
         },
-        required: ["documentId", "selections"],
+        required: ["documentVersionId", "selections"],
       },
     },
   },
@@ -25,14 +26,29 @@ export const createModelSchema = {
         model: {
           type: "object",
           properties: {
-            meta: {
-              type: "object",
-              properties: {
-                id: { type: "string" },
-                name: { type: "string" },
+            id: { type: "string" },
+            latestVersionId: { type: "string" },
+            createdAt: { type: "string" },
+            deletedAt: { type: ["string", "null"] },
+            versions: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  id: { type: "string" },
+                  name: { type: "string" },
+                  createdAt: { type: "string" },
+                },
               },
             },
-            data: { type: "string" },
+            // meta: {
+            //   type: "object",
+            //   properties: {
+            //     id: { type: "string" },
+            //     name: { type: "string" },
+            //   },
+            // },
+            // data: { type: "string" },
           },
         },
         trace: {
@@ -72,30 +88,13 @@ export const getModelSchema = {
 export const getModelDataSchema = {
   params: {
     type: "object",
-    required: ["id"],
+    required: ["versionId"],
     properties: {
-      id: { type: "string" },
+      versionId: { type: "string" },
     },
   },
   response: {
     200: { type: "string" },
-  },
-};
-
-export const getAllModelsSchema = {
-  response: {
-    200: {
-      type: "array",
-      items: {
-        type: "object",
-        properties: {
-          id: { type: "string" },
-          name: { type: "string" },
-          documentId: { type: "string" },
-          words: { type: "number" },
-        },
-      },
-    },
   },
 };
 

@@ -1,17 +1,17 @@
 import crypto from "crypto";
 import documentRepo from "./repositories/document.js";
 import versionRepo from "./repositories/version.js";
-import dstorageRepo from "./repositories/storage.js";
+import storageRepo from "./repositories/storage.js";
 import { logEvent } from "../../utils/logger.js";
 import { countWords } from "../../utils/fileHelper.js";
 
 export default {
-  async create({ projectId, name, content }) {
+  create({ projectId, name, content }) {
     const id = crypto.randomUUID();
     const versionId = crypto.randomUUID();
 
     try {
-      dstorageRepo.write(versionId, content);
+      storageRepo.write(versionId, content);
       const wordsCount = countWords(content);
 
       const createdDocument = documentRepo.create({
@@ -26,19 +26,48 @@ export default {
       });
       documentRepo.update(id, { latestVersionId: versionId });
       logEvent(projectId, "document_uploaded", createdDocument);
-
-      return { createdDocument, versions: [createdVersion] };
+      return { ...createdDocument, versions: [createdVersion] };
     } catch (err) {
       // Cleanup on failure
-      // dstorageRepo.delete(versionId);
+      // storageRepo.delete(versionId);
       throw err;
     }
   },
 
-  async getDocuments() {
+  createVersion({ documentId, name, content }) {
+    const versionId = crypto.randomUUID();
+
+    try {
+      storageRepo.write(versionId, content);
+      const wordsCount = countWords(content);
+      const createdVersion = versionRepo.create({
+        id: versionId,
+        documentId,
+        name,
+        wordsCount,
+      });
+      documentRepo.update(documentId, { latestVersionId: versionId });
+      logEvent(documentRepo.findProjectIdById(documentId), "document_updated", {
+        documentId,
+        versionId,
+      });
+      return createdVersion;
+    } catch (err) {
+      // Cleanup on failure
+      // storageRepo.delete(versionId);
+      throw err;
+    }
+  },
+  getCount() {
+    return documentRepo.count();
+  },
+  getAverageWordsCount() {
+    return documentRepo.getAverageWordsCount();
+  },
+  getDocuments() {
     return documentRepo.findAll();
   },
-  async getByProjectId(projectId, includeDeleted = false) {
+  getByProjectId(projectId, includeDeleted = false) {
     const documents = documentRepo.findByProjectId(projectId, includeDeleted);
     if (!documents) {
       throw new Error("No documents found for this project");
@@ -50,43 +79,37 @@ export default {
     return documents;
   },
 
-  async getAllByProjectId(projectId) {
+  getAllByProjectId(projectId) {
     return documentRepo.findByProjectId(projectId);
   },
-  async getAllDocuments() {
-    // Documents don't have soft delete yet, so this is the same as getDocuments
-    return documentRepo.findAll();
-  },
 
-  async getDocumentContent(docId) {
+  getContent(versionId) {
     // const doc = documentRepo.findById(docId);
     // if (!doc) {
     //   throw new Error("Document not found");
     // }
-    return dstorageRepo.read(docId);
+    return storageRepo.read(versionId);
   },
 
-  async getTraces(docId) {
+  getTraces(docId) {
     return documentRepo.getTraces(docId);
   },
 
-  async getModels(docId) {
+  getModels(docId) {
     return documentRepo.getModels(docId);
   },
-  async getProjectId(docId) {
+  getProjectId(docId) {
     return documentRepo.getProjectId(docId);
   },
-  async getAllModels(docId) {
+  getAllModels(docId) {
     return documentRepo.getAllModels(docId);
   },
 
-  async deleteDocument(docId) {
+  deleteDocument(docId) {
     const doc = documentRepo.findById(docId);
     if (!doc) {
       throw new Error("Document not found");
     }
-    documentRepo.delete(docId);
-    dstorageRepo.delete(docId);
     return { message: "Document deleted" };
   },
 };

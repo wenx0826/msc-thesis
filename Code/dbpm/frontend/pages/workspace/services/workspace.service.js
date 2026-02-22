@@ -1,10 +1,11 @@
-import { documentsAPI, modelsAPI, projectsAPI } from "../../../api/index.js";
+import { projectsAPI } from "../../../api/index.js";
+import documentService from "./document.service.js";
 import {
   workspaceStore,
   documentsStore,
+  documentViewerStore,
   modelsStore,
-  activeDocumentStore,
-  activeModelStore,
+  modelEditorStore,
   projectGraphStore,
 } from "../store/index.js";
 
@@ -15,8 +16,8 @@ export default {
   _saveToStorage() {
     const data = {
       projectId: workspaceStore.getProjectId(),
-      activeDocumentId: workspaceStore.getActiveDocumentId(),
-      activeModelId: workspaceStore.getActiveModelId(),
+      // displayedDocumentId: workspaceStore.getActiveDocumentId(),
+      // displayModelId: workspaceStore.getDisplayedModelId(),
       timestamp: Date.now(),
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
@@ -33,25 +34,26 @@ export default {
 
   async loadWorkspace(projectId) {
     // workspaceStore.setStatus("loading");
-    workspaceStore.setWorkspace({ projectId });
-
-    // const documentsReady = projectsAPI
-    //   .getDocumentsById(projectId)
-    //   .then((documents) => {
-    //     documentsStore.init(documents); // remove await if init is sync
-    //     return documents;
-    //   });
-    // const modelsReady = projectsAPI.getModelsById(projectId).then((models) => {
-    //   modelsStore.init(models); // remove await if init is sync
-    //   return models;
-    // });
-
-    const details = await projectsAPI.getDetails(projectId);
-    const documents = details?.documents || [];
-    const models = details?.models || [];
+    // workspaceStore.setWorkspace({ projectId });
+    let displayedDocument = {};
+    const { documents, models } = await projectsAPI.getComponents(projectId);
     documentsStore.init(documents);
     modelsStore.init(models);
     projectGraphStore.init(documents, models);
+    if (documents.length > 0) {
+      const doc = documents.at(-1);
+      const docLatestVersion = doc.versions.at(-1);
+      displayedDocument = {
+        id: doc.id,
+        versionId: docLatestVersion.id,
+      };
+      documentService.loadVersion(docLatestVersion.id);
+    }
+    workspaceStore.set({
+      projectId,
+      displayedDocument,
+    });
+    // workspaceStore.setStatus("ready");
   },
 
   restoreWorkspaceState(projectId) {
@@ -61,7 +63,7 @@ export default {
     const cached = this._loadFromStorage(projectId);
 
     // Determine active document
-    let docId = cached?.activeDocumentId ?? null;
+    let docId = cached?.displayedDocumentId ?? null;
     console.log("Restoring workspace - cached docId:", docId);
     // Validate cached docId still exists
     if (docId && !documents.find((d) => d.id === docId)) {
@@ -74,71 +76,81 @@ export default {
     }
 
     if (docId) {
-      this.activateDocumentById(docId);
+      this.displayDocument({ id: docId });
     }
 
     workspaceStore.setWorkspace({
       projectId,
-      activeDocumentId: docId,
+      displayedDocumentId: docId,
     });
 
     // Restore model selection if valid
-    if (cached?.activeModelId) {
-      const model = modelsStore.getModelById(cached.activeModelId);
+    if (cached?.displayModelId) {
+      const model = modelsStore.getModelById(cached.displayModelId);
       if (model) {
-        this.toggleModelSelection(cached.activeModelId);
+        this.toggleModelDisplay(cached.displayModelId);
       }
     }
     this._saveToStorage();
   },
 
-  clearModelSelection() {
-    workspaceStore.setActiveModelId(null);
-    activeModelStore.setModel(null);
-    activeDocumentStore.setActiveModelTrace(null);
+  clearModelDisplay() {
+    workspaceStore.setDisplayedModel({});
+    modelEditorStore.setModel(null);
+    documentViewerStore.setActiveModelTrace(null);
   },
 
-  async activateDocumentById(documentId) {
-    const currentActiveDocumentId = workspaceStore.getActiveDocumentId();
-    if (currentActiveDocumentId === documentId) {
+  async displayDocument(doc) {
+    const currDisplayedDocument = workspaceStore.getDisplayedDocument();
+    const curDisplayedDocId = currDisplayedDocument?.id;
+    const curDisplayedDocVersionId = currDisplayedDocument?.versionId;
+    if (
+      curDisplayedDocId === doc.id &&
+      curDisplayedDocVersionId === doc.versionId
+    ) {
       return;
     }
-    workspaceStore.setActiveDocumentId(documentId);
-    await activeDocumentStore.setDocumentById(documentId);
-    const activeModelId = workspaceStore.getActiveModelId();
-    if (activeModelId) {
-      const activeModelDocumentId =
-        modelsStore.getModelDocumentIdById(activeModelId);
-      if (documentId === activeModelDocumentId) {
-        activeDocumentStore.setActiveModelTraceByModelId(activeModelId);
-      } else {
-        this.clearModelSelection();
-      }
-    }
-    this._saveToStorage();
+    documentService.loadVersion(doc.versionId);
+    workspaceStore.setDisplayedDocument(doc);
+    // await documentViewerStore.setDocumentById(docId);
+    // const displayedModelId = workspaceStore.getDisplayedModelId();
+    // if (displayedModelId) {
+    //   const activeModelDocumentId =
+    //     modelsStore.getModelDocumentIdById(displayModelId);
+    //   if (doc.id === activeModelDocumentId) {
+    //     documentViewerStore.setActiveModelTraceByModelId(displayModelId);
+    //   } else {
+    //     this.clearModelDisplay();
+    //   }
+    // }
+    // this._saveToStorage();
   },
 
-  toggleModelSelection(modelId) {
-    const currentActiveModelId = workspaceStore.getActiveModelId();
-
-    if (currentActiveModelId === modelId) {
-      modelId = null;
-      this.clearModelSelection();
-      return;
+  toggleModelDisplay({ id, versionId }) {
+    const curActiveModel = workspaceStore.getDisplayedModel();
+    if (!versionId) {
     }
-    workspaceStore.setActiveModelId(modelId);
-    activeModelStore.setModelById(modelId);
+    workspaceStore.setActiveModel({ id, versionId });
+    // if (curActiveModelId === id) {
+    //   id = null;
+    //   this.clearModelDisplay();
+    //   return;
+    // }
+    // workspaceStore.setActiveModelId(model.id);
+    // modelEditorStore.setModelById(model.id);
 
-    if (modelId) {
-      const currentActiveDocumentId = workspaceStore.getActiveDocumentId();
-      const activeModelDocumentId = modelsStore.getModelDocumentIdById(modelId);
-      if (currentActiveDocumentId != activeModelDocumentId) {
-        this.activateDocumentById(activeModelDocumentId);
-      } else {
-        activeDocumentStore.setActiveModelTraceByModelId(modelId);
-      }
-      workspaceStore.setModelPopoverParams(null);
-    }
-    this._saveToStorage();
+    // if (model.id) {
+    //   const curDisplayedDocumentId = workspaceStore.getActiveDocumentId();
+    //   const activeModelDocumentId = modelsStore.getModelDocumentIdById(
+    //     model.id,
+    //   );
+    //   if (curDisplayedDocumentId != activeModelDocumentId) {
+    //     // this.displayDocument({ id: activeModelDocumentId });
+    //   } else {
+    //     documentViewerStore.setActiveModelTraceByModelId(model.id);
+    //   }
+    //   workspaceStore.setModelPopoverParams(null);
+    // }
+    // this._saveToStorage();
   },
 };

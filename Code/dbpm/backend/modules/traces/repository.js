@@ -13,38 +13,38 @@ function parseTraceSelections(trace) {
 }
 
 export default {
-  create({ id, documentId, modelId, selections }) {
+  create({ id, documentVersionId, modelVersionId, selections }) {
     const stmt = db.prepare(
-      `INSERT INTO traces (id, document_id, model_id, selections)
-       VALUES (@id, @documentId, @modelId, @selections)
+      `INSERT INTO traces (id, document_version_id, model_version_id, selections)
+       VALUES (@id, @documentVersionId, @modelVersionId, @selections)
         RETURNING *`,
     );
     const row = stmt.get({
       id,
-      documentId,
-      modelId,
+      documentVersionId,
+      modelVersionId,
       selections: JSON.stringify(selections),
     });
     return toCamel(parseTraceSelections(row));
   },
 
-  update(traceId, documentId, modelId, selections) {
+  update(traceId, documentVersionId, modelVersionId, selections) {
     const stmt = db.prepare(
-      "UPDATE traces SET document_id = ?, model_id = ?, selections = ? WHERE id = ?",
+      "UPDATE traces SET document_version_id = ?, model_version_id = ?, selections = ? WHERE id = ?",
     );
     const result = stmt.run(
-      documentId,
-      modelId,
+      documentVersionId,
+      modelVersionId,
       JSON.stringify(selections),
       traceId,
     );
     return result.changes > 0;
   },
 
-  updateByModelId(modelId, selections) {
+  updateByModelId(modelVersionId, selections) {
     const stmt = db.prepare(
-      "UPDATE traces SET selections = ? WHERE model_id = ?",
+      "UPDATE traces SET selections = ? WHERE model_version_id = ?",
     );
-    return stmt.run(JSON.stringify(selections), modelId);
+    return stmt.run(JSON.stringify(selections), modelVersionId);
   },
 };

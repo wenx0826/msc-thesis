@@ -1,4 +1,4 @@
-import { createUI } from "../../../shared/util/ui.js";
+import { createUI } from "../../../shared/utils/ui.js";
 import { modelsStore, workspaceStore } from "../store/index.js";
 
 /**
@@ -97,7 +97,7 @@ import { modelsStore, workspaceStore } from "../store/index.js";
  *
  * 2. HOVER SOURCES (with source identifiers):
  *    - 'graph-node': Cytoscape graph nodes (projectGraph.ui.js)
- *    - 'document-tag': Model tags in document viewer (activeDocument.ui.js)
+ *    - 'document-tag': Model tags in document viewer (displayedDocument.ui.js)
  *    - 'subprocess-node': Subprocess nodes in workflow (activeModel.ui.js)
  *    - 'popover': The popover itself (prevents closing when hovering popover)
  *

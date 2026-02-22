@@ -1,6 +1,7 @@
 import crypto from "crypto";
 import modelRepo from "./repositories/model.js";
 import versionRepo from "./repositories/version.js";
+import storageRepo from "./repositories/storage.js";
 import traceRepo from "../traces/repository.js";
 import { logEvent, getISODate } from "../../utils/logger.js";
 import {
@@ -10,61 +11,49 @@ import {
 } from "../../utils/fileHelper.js";
 import documentsService from "../documents/service.js";
 import projectsService from "../projects/service.js";
-import { version } from "os";
+import model from "./repositories/model.js";
+import { versions } from "process";
 
 export default {
-  async createModelAndTrace({ modelData, trace }) {
-    const projectId = await documentsService.getProjectId(trace.documentId);
+  createModelAndTrace({ projectId, modelData, trace }) {
+    // const projectId = documentsService.getProjectId(trace.documentId);
     if (!projectId) {
       throw new Error("Document not found or invalid");
     }
 
-    const counterResult =
-      await projectsService.getModelGenerationCounter(projectId);
-    const counter = counterResult ? counterResult.modelGenerationCounter : 0;
-    const newCounter = counter + 1;
-    const name = `Model_${newCounter}`;
-
-    console.log(
-      "!!!!Current model generation counter for project:",
-      trace.documentId,
-      projectId,
-      counter,
-      "->",
-      newCounter,
-      name,
-    );
-
+    const modelGenerationIndex =
+      projectsService.getModelGenerationIndexById(projectId);
+    const name = `Model_${modelGenerationIndex + 1}`;
     const id = crypto.randomUUID();
-    trace.modelId = id;
+    const versionId = crypto.randomUUID();
+    trace.modelVersionId = versionId;
     trace.id = crypto.randomUUID();
 
-    const selectedModelWords = trace.selections.reduce(
+    const selectedWordsCount = trace.selections.reduce(
       (acc, sel) => acc + countWords(sel.text),
       0,
     );
 
     try {
-      writeModelData(id, modelData);
-
-      const createdModelMeta = modelRepo.create({
+      // writeModelData(versionId, modelData);
+      storageRepo.write(versionId, modelData);
+      const createdModel = modelRepo.create({
         id,
+        projectId,
+      });
+      const createdModelVersion = versionRepo.create({
+        id: versionId,
+        modelId: id,
         name,
-        documentId: trace.documentId,
-        selectedTextWords: selectedModelWords,
+        selectedWordsCount,
       });
-      await projectsService.update(projectId, {
-        modelGenerationCounter: newCounter,
-      });
-      const createdTrace = traceRepo.create({ ...trace });
 
-      // Add stat update
-      modelRepo.addStatUpdate(
-        id,
-        getISODate(),
-        "generation",
-        selectedModelWords,
-      );
+      modelRepo.update(id, { latestVersionId: versionId });
+      projectsService.update(projectId, {
+        modelGenerationIndex: modelGenerationIndex + 1,
+      });
+
+      const createdTrace = traceRepo.create({ ...trace });
 
       // Log the event
       logEvent(projectId, "model_generated", {
@@ -75,8 +64,11 @@ export default {
 
       return {
         model: {
-          meta: createdModelMeta,
-          data: modelData,
+          ...createdModel,
+          latestVersionId: versionId,
+          versions: [createdModelVersion],
+          // meta: createdModelMeta,
+          // data: modelData,
         },
         trace: createdTrace,
       };
@@ -85,7 +77,7 @@ export default {
     }
   },
 
-  async getModel(modelId) {
+  getModel(modelId) {
     const model = modelRepo.findById(modelId);
     if (!model) {
       throw new Error("Model not found");
@@ -95,10 +87,24 @@ export default {
     return model;
   },
 
-  async getModelData(modelId) {
+  getModelData(modelId) {
     return readModelData(modelId);
   },
-  async getByProjectId(projectId, includeDeleted) {
+  getAllModels(includeDeleted = true) {
+    const models = modelRepo.findAll(includeDeleted);
+    for (const model of models) {
+      const versions = versionRepo.findByModelId(model.id);
+      model.versions = versions;
+    }
+    return models;
+  },
+  count(includeDeleted = false) {
+    return modelRepo.count(includeDeleted);
+  },
+  getAverageSelectedWordsCount(includeDeleted = false) {
+    return modelRepo.getAverageSelectedWordsCount(includeDeleted);
+  },
+  getByProjectId(projectId, includeDeleted) {
     const models = modelRepo.findByProjectId(projectId, includeDeleted);
     if (!models) {
       throw new Error("No models found for this project");
@@ -110,7 +116,7 @@ export default {
     return models;
   },
 
-  async updateModel({ modelId, modelData, trace, type }) {
+  updateModel({ modelId, modelData, trace, type }) {
     const projectId = modelRepo.getProjectIdByModelId(modelId);
     // Write model data to file
     writeModelData(modelId, modelData);
@@ -139,7 +145,7 @@ export default {
     return { message: "Model content updated" };
   },
 
-  async updateModelData(modelId, modelData) {
+  updateModelData(modelId, modelData) {
     const projectId = modelRepo.getProjectIdByModelId(modelId);
     writeModelData(modelId, modelData);
 
@@ -155,7 +161,7 @@ export default {
     return { message: "Model content updated" };
   },
 
-  async deleteModel(modelId) {
+  deleteModel(modelId) {
     const projectId = modelRepo.getProjectIdByModelId(modelId);
     const model = modelRepo.findById(modelId);
     if (!model) {

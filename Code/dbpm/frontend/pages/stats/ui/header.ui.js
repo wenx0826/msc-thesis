@@ -1,6 +1,13 @@
-import { createUI } from "../../../shared/util/ui.js";
+import { createUI } from "../../../shared/utils/ui.js";
+import { documentsAPI, projectsAPI } from "../../../api/index.js";
+import {
+  getProjectIdFromURL,
+  getProjectWorkspaceURL,
+  getDocumentURL,
+} from "../../../shared/utils/url.js";
+import store from "../store.js";
 
-function renderProjectLink() {
+function renderProjectLink(projectId) {
   const $projectLink = $("#projectLink");
   $projectLink[0].href = getProjectWorkspaceURL(projectId);
   projectsAPI.get(projectId).then((project) => {
@@ -10,8 +17,8 @@ function renderProjectLink() {
 
 createUI({
   setup: () => {
-    // const
-    renderProjectLink();
+    const projectId = getProjectIdFromURL();
+    renderProjectLink(projectId);
   },
   bindListeners: () => {},
 });

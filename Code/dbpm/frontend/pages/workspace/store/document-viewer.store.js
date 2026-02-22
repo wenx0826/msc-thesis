@@ -1,17 +1,14 @@
-// Active Document Store - Current document state
-import { createDomainStore } from "./createStore.js";
-import { documentsAPI, tracesAPI } from "../../../api/index.js";
+import { createStore } from "../../../shared/utils/store.js";
 import {
   deserializeRange,
   serializeRange,
   getSortedSelectionsByRange,
-} from "../util/selection.js";
+} from "../utils/selection.js";
 
-export const activeDocumentStore = Object.assign(
-  createDomainStore({
-    versions: [],
+export default Object.assign(
+  createStore({
     status: null,
-    htmlContent: null,
+    content: null,
     traces: [],
     hasSelectionChanged: false,
     activeModelTrace: null,
@@ -19,11 +16,12 @@ export const activeDocumentStore = Object.assign(
     temporarySelections: [],
   }),
   {
-    init(documentId) {
-      if (documentId) {
-        return this.setDocumentById(documentId);
-      }
-      return Promise.resolve();
+    clear() {
+      this.setContent(null);
+      this.setTraces([]);
+      this.setActiveModelTrace(null);
+      this.setTemporarySelections([]);
+      this.setHasSelectionChanged(false);
     },
     getStatus() {
       return this.state.status;
@@ -38,46 +36,9 @@ export const activeDocumentStore = Object.assign(
       this.state.status = newValue;
       this.notify({ key: "status", newValue });
     },
-    setHtmlContent(content) {
-      const newValue = new DOMParser().parseFromString(content, "text/html")
-        .body.innerHTML;
-      this.state.htmlContent = newValue;
-      this.notify({ key: "htmlContent", newValue });
-    },
-    async setDocumentById(id) {
-      const currentId = this.getId();
-      if (id === currentId) return Promise.resolve();
-      this.state.id = id;
-      this.setStatus("loading");
-      this.setTraces([]);
-      this.setActiveModelTrace(null);
-      this.setTemporarySelections([]);
-      this.setHasSelectionChanged(false);
-      const contentPromise = documentsAPI.getDocumentContentById(id);
-      const tracesPromise = tracesAPI.getTracesByDocumentId(id);
-      return new Promise((resolve, reject) => {
-        contentPromise.then(
-          (content) => {
-            this.setHtmlContent(content);
-            this.setStatus(null);
-            tracesPromise
-              .then((traces) => {
-                console.log("Loaded traces for document:", traces);
-                this.setTraces(traces);
-                resolve();
-              })
-              .catch((error) => {
-                console.log("Error loading traces:", error);
-                resolve();
-              });
-          },
-          (error) => {
-            this.setHtmlContent(null);
-            this.setStatus("error");
-            reject(error);
-          },
-        );
-      });
+    setContent(newValue) {
+      this.state.content = newValue;
+      this.notify({ key: "content", newValue });
     },
     getHasSelectionChanged() {
       return this.state.hasSelectionChanged;
@@ -134,11 +95,11 @@ export const activeDocumentStore = Object.assign(
     getTraceById(traceId) {
       return this.state.traces.find((trace) => trace.id == traceId);
     },
-    getActiveModelTrace() {
+    getDisplayedModelTrace() {
       return this.state.activeModelTrace;
     },
     getSerializedActiveModelTrace() {
-      const activeModelTrace = this.getActiveModelTrace();
+      const activeModelTrace = this.getDisplayedModelTrace();
       if (activeModelTrace) {
         return {
           ...activeModelTrace,
@@ -151,7 +112,7 @@ export const activeDocumentStore = Object.assign(
       }
     },
     setActiveModelTrace(newValue) {
-      const oldValue = this.getActiveModelTrace();
+      const oldValue = this.getDisplayedModelTrace();
       this.state.activeModelTrace = newValue;
       this.notify({ key: "activeModelTrace", oldValue, newValue });
     },
@@ -168,7 +129,7 @@ export const activeDocumentStore = Object.assign(
     },
     removeActiveModelTraceSelectionById(selectionId) {
       let value;
-      const activeModelTrace = this.getActiveModelTrace();
+      const activeModelTrace = this.getDisplayedModelTrace();
       if (activeModelTrace) {
         const index = activeModelTrace.selections.findIndex(
           (sel) => sel.id === selectionId,
@@ -185,7 +146,7 @@ export const activeDocumentStore = Object.assign(
       });
     },
     updateActiveModelTraceSelectionColor(selectionId, color) {
-      const activeModelTrace = this.getActiveModelTrace();
+      const activeModelTrace = this.getDisplayedModelTrace();
       if (activeModelTrace) {
         const selection = activeModelTrace.selections.find(
           (sel) => sel.id === selectionId,
@@ -272,7 +233,7 @@ export const activeDocumentStore = Object.assign(
     },
     getSortedNewSelections() {
       let selections = [...this.getTemporarySelections()];
-      const activeModelTrace = this.getActiveModelTrace();
+      const activeModelTrace = this.getDisplayedModelTrace();
       if (activeModelTrace) {
         selections = [...activeModelTrace.selections, ...selections];
       }
@@ -292,7 +253,7 @@ export const activeDocumentStore = Object.assign(
     getSerializedNewActiveModelTrace() {
       const selections = this.getSortedNewSelections();
       const serializedSelections = this.getSerializedSelections(selections);
-      const activeModelTrace = this.getActiveModelTrace();
+      const activeModelTrace = this.getDisplayedModelTrace();
       return Object.assign(
         { ...activeModelTrace },
         {

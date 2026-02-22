@@ -1,18 +1,17 @@
-// Workspace Store - Core workspace state
-import { createDomainStore } from "./createStore.js";
-import { projectsAPI } from "../../../api/index.js";
+import { createStore } from "../../../shared/utils/store.js";
 
-export const workspaceStore = Object.assign(
-  createDomainStore({
+export default Object.assign(
+  createStore({
     status: null, // 'loading', 'ready', 'error'
     projectId: null,
-    activeDocumentId: null,
-    activeModelId: null,
     hoveredModelId: null,
     llmModel: "gemini-2.0-flash",
     theme: null,
-    project: {},
-    activeDocument: {
+    displayedDocument: {
+      id: null,
+      versionId: null,
+    },
+    displayedModel: {
       id: null,
       versionId: null,
     },
@@ -32,10 +31,6 @@ export const workspaceStore = Object.assign(
     */
   }),
   {
-    async init(projectId) {
-      this.setProjectId(projectId);
-      const project = await projectsAPI.get(projectId);
-    },
     // setProjectId(projectId) {
     //   const oldValue = this.state.projectId;
     //   this.state.projectId = projectId;
@@ -43,14 +38,14 @@ export const workspaceStore = Object.assign(
     getProjectId() {
       return this.state.projectId;
     },
-    getActiveDocumentId() {
-      return this.state.activeDocumentId;
+    getDisplayedDocument() {
+      return this.state.displayedDocument;
     },
-    getActiveModelId() {
-      return this.state.activeModelId;
+    getDisplayedModel() {
+      return this.state.displayedModel;
     },
-    hasActiveModel() {
-      return this.state.activeModelId != null;
+    hasDisplayedModel() {
+      return this.state.displayedModel.id != null;
     },
     getLlmModel() {
       return this.state.llmModel;
@@ -59,11 +54,7 @@ export const workspaceStore = Object.assign(
       this.state.status = status;
       this.notify({ key: "status", newValue: status });
     },
-    setActiveModelId(newValue) {
-      const oldValue = this.getActiveModelId();
-      this.state.activeModelId = newValue;
-      this.notify({ key: "activeModelId", oldValue, newValue });
-    },
+
     setHoveredModelId(newValue) {
       const oldValue = this.state.hoveredModelId;
       if (oldValue === newValue) return; // No change
@@ -79,10 +70,10 @@ export const workspaceStore = Object.assign(
       const oldValue = this.state.modelPopoverState;
       const oldModelId = oldValue?.modelId;
       const newModelId = newValue?.modelId;
-      const activeModelId = this.getActiveModelId();
+      const displayModelId = this.getDisplayedModelId();
 
       // Don't show popover for the currently active model
-      if (newModelId === activeModelId) {
+      if (newModelId === displayModelId) {
         newValue = null;
       }
 
@@ -131,7 +122,7 @@ export const workspaceStore = Object.assign(
 
       if (
         oldHoveredModelId === newHoveredModelId &&
-        newHoveredModelId !== activeModelId
+        newHoveredModelId !== displayModelId
       )
         return; // No change
 
@@ -176,10 +167,33 @@ export const workspaceStore = Object.assign(
       }, 150);
       */
     },
-    setActiveDocumentId(newValue) {
-      const oldValue = this.getActiveDocumentId();
-      this.state.activeDocumentId = newValue;
-      this.notify({ key: "activeDocumentId", oldValue, newValue });
+    setDisplayedDocument(newValue) {
+      const oldValue = this.state.displayedDocument;
+      if (
+        oldValue?.id === newValue?.id &&
+        oldValue?.versionId === newValue?.versionId
+      )
+        return;
+      this.state.displayedDocument = newValue;
+      this.notify({
+        key: "displayedDocument",
+        oldValue,
+        newValue,
+      });
+    },
+    setDisplayedModel(newValue) {
+      const oldValue = this.state.displayedModel;
+      if (
+        oldValue?.id === newValue?.id &&
+        oldValue?.versionId === newValue?.versionId
+      )
+        return;
+      this.state.displayedModel = newValue;
+      this.notify({
+        key: "displayedModel",
+        oldValue,
+        newValue,
+      });
     },
     setLlmModel(llmModel) {
       this.state.llmModel = llmModel;
@@ -187,11 +201,10 @@ export const workspaceStore = Object.assign(
     setTheme(theme) {
       this.state.theme = theme;
     },
-    setWorkspace({ projectId, activeDocumentId, activeModelId }) {
+    set({ projectId, displayedDocument, activeModel }) {
       this.state.projectId = projectId;
-      // this.setProjectId(projectId);
-      this.setActiveDocumentId(activeDocumentId);
-      this.setActiveModelId(activeModelId);
+      if (displayedDocument) this.setDisplayedDocument(displayedDocument);
+      if (activeModel) this.setActiveModel(activeModel);
     },
   },
 );

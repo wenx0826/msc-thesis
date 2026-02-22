@@ -2,20 +2,21 @@ import projectService from "./service.js";
 import {
   createProjectSchema,
   getProjectsSchema,
+  getProjectsOverviewSchema,
   getProjectSchema,
-  getProjectDetailsSchema,
-  getDocumentsSchema,
-  getModelsSchema,
+  getProjectOverviewWithDeletedSchema,
+  getProjectComponentsSchema,
+  getProjectComponentsStatsSchema,
   updateProjectSchema,
 } from "./schema.js";
 
 export default async function (fastify, options) {
   // POST /projects - Create a new project
-  fastify.post("/", { schema: createProjectSchema }, async (request, reply) => {
+  fastify.post("/", { schema: createProjectSchema }, (request, reply) => {
     const { name } = request.body;
 
     try {
-      const result = await projectService.create(name);
+      const result = projectService.create(name);
       reply.send(result);
     } catch (err) {
       console.error("Failed to create project:", err);
@@ -24,9 +25,9 @@ export default async function (fastify, options) {
   });
 
   // GET /projects - Get all projects
-  fastify.get("/", { schema: getProjectsSchema }, async (request, reply) => {
+  fastify.get("/", { schema: getProjectsSchema }, (request, reply) => {
     try {
-      const projects = await projectService.getAll();
+      const projects = projectService.getAll();
       reply.send(projects);
     } catch (err) {
       console.error("Failed to fetch projects:", err);
@@ -34,109 +35,71 @@ export default async function (fastify, options) {
     }
   });
 
-  // GET /projects/:projectId - Get project by ID
+  // GET /projects/overview - Get overview statistics
   fastify.get(
-    "/:projectId",
-    { schema: getProjectSchema },
-    async (request, reply) => {
-      const projectId = request.params.projectId;
+    "/overview",
+    { schema: getProjectsOverviewSchema },
+    (request, reply) => {
       try {
-        const project = await projectService.get(projectId);
-        reply.send(project);
+        const result = projectService.getOverview();
+        reply.send(result);
       } catch (err) {
-        console.error("Failed to fetch project:", err);
-        if (err.message === "Project not found") {
-          reply.code(404).send({ error: "Project not found" });
-        } else {
-          reply.code(500).send({ error: "Failed to fetch project" });
-        }
+        console.error("Failed to fetch overview:", err);
+        reply.code(500).send({ error: "Failed to fetch overview" });
       }
     },
   );
-  // GET /projects/:projectId/details - Get project details including documents and models
+
+  // GET /projects/:projectId - Get project by ID
+  fastify.get("/:projectId", { schema: getProjectSchema }, (request, reply) => {
+    const projectId = request.params.projectId;
+    try {
+      const project = projectService.get(projectId);
+      reply.send(project);
+    } catch (err) {
+      console.error("Failed to fetch project:", err);
+      if (err.message === "Project not found") {
+        reply.code(404).send({ error: "Project not found" });
+      } else {
+        reply.code(500).send({ error: "Failed to fetch project" });
+      }
+    }
+  });
+
+  // GET /projects/:projectId/components - Get project components including documents and models
   fastify.get(
-    "/:projectId/details",
-    { schema: getProjectDetailsSchema },
-    async (request, reply) => {
+    "/:projectId/components",
+    { schema: getProjectComponentsSchema },
+    (request, reply) => {
       const projectId = request.params.projectId;
       const { includeDeleted } = request.query;
       try {
-        const result = await projectService.getDetails(
+        const result = projectService.getComponentsById(
           projectId,
           includeDeleted,
         );
         reply.send(result);
       } catch (err) {
-        console.error("Failed to fetch project details:", err);
-        reply.code(500).send({ error: "Failed to fetch project details" });
+        console.error("Failed to fetch project components:", err);
+        reply.code(500).send({ error: "Failed to fetch project components" });
       }
     },
   );
 
-  // GET /projects/:projectId/documents - Get documents for a project
+  // GET /projects/:projectId/components/stats - Get project components statistics including documents and models
   fastify.get(
-    "/:projectId/documents",
-    { schema: getDocumentsSchema },
-    async (request, reply) => {
+    "/:projectId/components/stats",
+    { schema: getProjectComponentsStatsSchema },
+    (request, reply) => {
       const projectId = request.params.projectId;
       try {
-        const documents = await projectService.getDocuments(projectId);
-        reply.send(documents);
+        const result = projectService.getComponentsStatsById(projectId);
+        reply.send(result);
       } catch (err) {
-        console.error("Failed to fetch documents:", err);
-        reply.code(500).send({ error: "Failed to fetch documents" });
-      }
-    },
-  );
-
-  // GET /projects/:projectId/documents/all - Get all documents for project including soft-deleted ones
-  fastify.get(
-    "/:projectId/documents/all",
-    { schema: getDocumentsSchema },
-    async (request, reply) => {
-      const { projectId } = request.params;
-      console.log(
-        "Fetching all documents for project (including soft-deleted):",
-        projectId,
-      );
-      try {
-        const documents = await projectService.getAllDocuments(projectId);
-        reply.send(documents);
-      } catch (err) {
-        console.error("Failed to fetch all documents:", err);
-        reply.code(500).send({ error: "Failed to fetch all documents" });
-      }
-    },
-  );
-
-  // GET /projects/:projectId/models - Get models for a project
-  fastify.get(
-    "/:projectId/models",
-    { schema: getModelsSchema },
-    async (request, reply) => {
-      const projectId = request.params.projectId;
-      try {
-        const models = await projectService.getModels(projectId);
-        reply.send(models);
-      } catch (err) {
-        console.error("Failed to fetch models:", err);
-        reply.code(500).send({ error: "Failed to fetch models" });
-      }
-    },
-  );
-
-  // GET /projects/:projectId/models/all - Get all models for project including soft-deleted ones
-  fastify.get(
-    "/:projectId/models/all",
-    { schema: getModelsSchema },
-    async (request, reply) => {
-      const { projectId } = request.params;
-      try {
-        const models = await projectService.getAllModels(projectId);
-        reply.send(models);
-      } catch (err) {
-        console.error("Failed to fetch all models for project:", err);
-        reply.code(500).send({ error: "Failed to fetch all models" });
+        console.error("Failed to fetch project components statistics:", err);
+        reply
+          .code(500)
+          .send({ error: "Failed to fetch project components statistics" });
       }
     },
   );
@@ -145,12 +108,12 @@ export default async function (fastify, options) {
   fastify.put(
     "/:projectId",
     { schema: updateProjectSchema },
-    async (request, reply) => {
+    (request, reply) => {
       const projectId = request.params.projectId;
       const updates = request.body;
 
       try {
-        const project = await projectService.update(projectId, updates);
+        const project = projectService.update(projectId, updates);
         reply.send(project);
       } catch (err) {
         console.error("Failed to update project:", err);

@@ -1,7 +1,7 @@
 import "./header.js";
-import "./modelPopover.ui.js";
-import "./documents.js";
-import "./activeDocument.js";
-import "./activeModel.ui.js";
+import "./documents.ui.js";
+import "./document-viewer.ui.js";
+import "./model-editor.ui.js";
 import "./models.ui.js";
-import "./projectGraph.ui.js";
+import "./project-graph.ui.js";
+import "./model-popover.ui.js";

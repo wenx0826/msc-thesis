@@ -94,7 +94,6 @@
           <ui-content>
             <ui-area data-belongs-to-tab="documents" id="areadocuments">
               <ul id="documentsList">
-                <!-- Template for document list items -->
                 <template id="documentItemTemplate">
                   <li data-doc-id="" data-doc-version-id="">
                     <input type="checkbox" />
@@ -107,10 +106,11 @@
                   </li>
                 </template>
               </ul>
-              <!-- <form onsubmit="return false;"> -->
-              <label for="documentsInput" style="cursor: pointer">Upload Documents</label>
-              <input type="file" id="documentsInput" multiple />
-              <!-- </form> -->
+              <div class="field">
+                <label for="documentsInput" style="cursor: pointer">Upload Documents</label>
+                <input type="file" id="documentsInput" multiple />
+              </div>
+              <input type="file" id="documentUpdateInput" class="hidden" />
             </ui-area>
           </ui-content>
         </ui-tabbed>
@@ -118,6 +118,14 @@
         <ui-rest class="panel" style="margin-top: 0.5em">
           <!-- Text Action Bar -->
           <ui-bar id="textActionBar">
+            <!-- <div class="field">
+              <label for="textSearchInput">Search:</label>
+              <input type="text" id="textSearchInput" placeholder="Type to search..." />
+            </div> -->
+            <div class="field">
+              <label for="docVersionSelect">Version:</label>
+              <select id="docVersionSelect"></select>
+            </div>
             <div class="right action-group">
               <form id="selectionColorForm" style="margin: 0">
                 <div class="relaxngui_cell relaxngui_color_container">
@@ -250,19 +258,20 @@
           </ui-bar>
           <ui-bar>
             <!-- <div class="right"> -->
-
-            <label for="cars">Documents:</label>
-            <select name="cars" id="cars">
-              <option value="volvo">All</option>
-              <option value="saab">Saab</option>
-              <option value="mercedes">Mercedes</option>
-              <option value="audi">Audi</option>
-            </select>
+            <div class="field">
+              <label for="cars">Documents:</label>
+              <select name="cars" id="cars">
+                <option value="volvo">All</option>
+                <option value="saab">Saab</option>
+                <option value="mercedes">Mercedes</option>
+                <option value="audi">Audi</option>
+              </select>
+            </div>
             <!-- </div> -->
           </ui-bar>
           <ui-rest>
             <ui-content>
-              <ui-area id="models">
+              <ui-area id="modelsList">
                 <template id="modelItemTemplate">
                   <div class="model-container" data-model-id="" data-documentid="">
                     <span data-ref="modelName"></span>

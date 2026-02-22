@@ -8,7 +8,7 @@ export default function init({
   autoGrow = false,
   saveOnBlur = false, // ✅ A方案：强制 false（或者外部传 false）
   onSave = (newValue, $view) => {},
-  normalize = (v) => String(v ?? "").trim() || "Untitled",
+  normalize = (v) => String(v ?? "").trim() || "-",
 } = {}) {
   let active = null; // { $view, $input, oldValue, id }
 

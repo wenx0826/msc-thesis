@@ -2,7 +2,7 @@ import crypto from "crypto";
 import traceRepo from "./repository.js";
 
 export default {
-  async createTrace({ documentId, modelId, selections }) {
+  createTrace({ documentId, modelId, selections }) {
     const id = crypto.randomUUID();
     const createdTrace = traceRepo.create({
       id,
@@ -14,7 +14,7 @@ export default {
     return createdTrace;
   },
 
-  async updateTrace(traceId, documentId, modelId, selections) {
+  updateTrace(traceId, documentId, modelId, selections) {
     const success = traceRepo.update(traceId, documentId, modelId, selections);
     if (!success) {
       throw new Error("Trace not found");

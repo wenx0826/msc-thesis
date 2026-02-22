@@ -13,8 +13,6 @@ export const createDocumentSchema = {
       type: "object",
       properties: {
         id: { type: "string" },
-        // currentVersionId: { type: "string" },
-        // name: { type: "string" },
         versions: {
           type: "array",
           items: {
@@ -31,18 +29,23 @@ export const createDocumentSchema = {
   },
 };
 
-export const getDocumentsSchema = {
+export const createVersionSchema = {
+  body: {
+    type: "object",
+    required: ["documentId", "name", "content"],
+    properties: {
+      documentId: { type: "string" },
+      name: { type: "string" },
+      content: { type: "string" },
+    },
+  },
   response: {
     200: {
-      type: "array",
-      items: {
-        type: "object",
-        properties: {
-          // versionId: { type: "string" },
-          // name: { type: "string" },
-          // createdAt: { type: "string" },
-          // words: { type: "number" },
-        },
+      type: "object",
+      properties: {
+        id: { type: "string" },
+        name: { type: "string" },
+        createdAt: { type: "string" },
       },
     },
   },
@@ -51,9 +54,9 @@ export const getDocumentsSchema = {
 export const getDocumentContentSchema = {
   params: {
     type: "object",
-    required: ["id"],
+    required: ["versionId"],
     properties: {
-      id: { type: "string" },
+      versionId: { type: "string" },
     },
   },
   response: {
@@ -84,31 +87,6 @@ export const getTracesSchema = {
           documentId: { type: "string" },
           modelId: { type: "string" },
           selections: { type: "array" },
-        },
-      },
-    },
-  },
-};
-
-export const getModelsSchema = {
-  params: {
-    type: "object",
-    required: ["id"],
-    properties: {
-      id: { type: "string" },
-    },
-  },
-  response: {
-    200: {
-      type: "array",
-      items: {
-        type: "object",
-        properties: {
-          id: { type: "string" },
-          name: { type: "string" },
-          createdAt: { type: "string" },
-          documentId: { type: "string" },
-          words: { type: "number" },
         },
       },
     },
