@@ -31,7 +31,7 @@ function renderDocumentItem({ id: docId, versions }) {
 
 function rerenderDocumentItem(docId, versionId, name) {
   if (!name) {
-    name = documentsStore.getDocumentVersionName(docId, versionId);
+    name = documentsStore.getVersionName(docId, versionId);
   }
   const $documentItem = $documentsList.find(`li[data-doc-id='${docId}']`);
   $documentItem.attr("data-doc-version-id", versionId);
@@ -76,7 +76,7 @@ function updateDisplayedDocVersionSelector(versionId) {
   });
 }
 function updateDocumentsCount() {
-  const count = Object.keys(documentsStore.state.documentsById).length;
+  const count = documentsStore.getCount();
   $("[data-ref='documentsCount']").text(count);
 }
 createUI({
@@ -188,7 +188,7 @@ createUI({
       switch (key) {
         case "displayedDocument":
           highlightActiveDocumentItem(newValue.id);
-          const versions = documentsStore.getDocumentVersions(newValue.id);
+          const versions = documentsStore.getVersions(newValue.id);
           displayedDocVersionSelector.update({
             versions,
             selectedId: newValue.versionId,

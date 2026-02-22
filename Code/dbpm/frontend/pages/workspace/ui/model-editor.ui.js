@@ -136,7 +136,7 @@ const renderModelSelect = (modelValue) => {
   $modelSelect.parent().parent().show();
   $modelSelect.empty();
   $("<option>").val("").text("--- Please select ---").appendTo($modelSelect);
-  const documentList = documentsStore.getDocuments();
+  const documentList = documentsStore.getList();
   console.log("Document List:", documentList);
   for (const { id: docId, name: docName } of documentList) {
     const $optGroup = $("<optgroup>")

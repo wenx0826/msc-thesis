@@ -48,9 +48,9 @@ export default {
     if (!project) {
       throw new Error("Project not found");
     }
-    const documents = documentService.getByProjectId(projectId);
-    const models = modelService.getByProjectId(projectId);
-    return { documents, models };
+    const documentsMeta = documentService.getByProjectId(projectId);
+    const modelsMeta = modelService.getByProjectId(projectId);
+    return { documentsMeta, modelsMeta };
   },
 
   getComponentsStatsById(projectId) {

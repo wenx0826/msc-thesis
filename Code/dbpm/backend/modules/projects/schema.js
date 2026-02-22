@@ -135,7 +135,7 @@ export const getProjectComponentsSchema = {
     200: {
       type: "object",
       properties: {
-        documents: {
+        documentsMeta: {
           type: "array",
           items: {
             type: "object",
@@ -158,7 +158,7 @@ export const getProjectComponentsSchema = {
             },
           },
         },
-        models: {
+        modelsMeta: {
           type: "array",
           items: {
             type: "object",

@@ -1,16 +1,19 @@
-import { createStore } from "../../shared/utils/store.js";
+import { Store } from "../../shared/utils/store.js";
 
-export default Object.assign(
-  createStore({
-    projectId: null,
-    // documentsById: {},
-  }),
-  {
-    setProjectId(projectId) {
-      this.state.projectId = projectId;
-      this.notify({ key: "projectId", newValue: projectId });
-    },
-    // setDocuments(documents) {
-    //   this.state.documentsById = documents
-  },
-);
+class StatsStore extends Store {
+  constructor() {
+    super({
+      projectId: null,
+      // documentsById: {},
+    });
+  }
+
+  setProjectId(projectId) {
+    this.state.projectId = projectId;
+    this.notify({ key: "projectId", newValue: projectId });
+  }
+  // setDocuments(documents) {
+  //   this.state.documentsById = documents
+}
+
+export default new StatsStore();

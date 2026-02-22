@@ -57,7 +57,7 @@ export default {
     const newVersion = await documentsAPI.updateVersionMeta(versionId, {
       name: newName,
     });
-    documentsStore.updateDocumentVersion(newVersion);
+    documentsStore.updateVersion(newVersion.documentId, newVersion);
   },
   async updateDocument(documentId, file) {
     const name = file.name;
@@ -71,7 +71,7 @@ export default {
       id: documentId,
       versionId: newVersion.id,
     });
-    documentsStore.addDocumentVersion(newVersion);
+    documentsStore.addVersion(documentId, newVersion);
   },
   async deleteDocument(documentId) {
     await documentsAPI.delete(documentId);

@@ -304,7 +304,7 @@ const removeModelFromList = (modelId) => {
 };
 
 function updateModelsCount() {
-  const count = Object.keys(modelsStore.state.modelsById).length;
+  const count = modelsStore.getCount();
   $("[data-ref='modelsCount']").text(count);
 }
 
