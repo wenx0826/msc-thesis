@@ -58,11 +58,11 @@ export default {
       throw err;
     }
   },
-  getCount() {
-    return documentRepo.count();
+  count(includeDeleted = false) {
+    return documentRepo.count(includeDeleted);
   },
-  getAverageWordsCount() {
-    return documentRepo.getAverageWordsCount();
+  getAverageWordsCount(includeDeleted = false) {
+    return documentRepo.getAverageWordsCount(includeDeleted);
   },
   getDocuments() {
     return documentRepo.findAll();

@@ -1,10 +1,9 @@
 import crypto from "crypto";
 import projectRepo from "./repository.js";
-import documentRepo from "../documents/repositories/document.js";
 import { logEvent, createEmptyLogFile } from "../../utils/logger.js";
 import documentService from "../documents/service.js";
 import modelService from "../models/service.js";
-import { get } from "http";
+
 export default {
   create(name) {
     const id = crypto.randomUUID();
@@ -25,8 +24,8 @@ export default {
     const overview = {
       projects: { count: projectRepo.count() },
       documents: {
-        count: documentRepo.count(),
-        averageWordsCount: documentRepo.getAverageWordsCount(),
+        count: documentService.count(),
+        averageWordsCount: documentService.getAverageWordsCount(),
       },
       models: {
         count: modelService.count(),
