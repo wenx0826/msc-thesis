@@ -242,7 +242,6 @@ export const getProjectComponentsStatsSchema = {
             properties: {
               id: { type: "string" },
               latestVersionId: { type: "string" },
-              name: { type: "string" },
               createdAt: { type: "string" },
               deletedAt: { type: ["string", "null"] },
               versions: {
@@ -252,8 +251,8 @@ export const getProjectComponentsStatsSchema = {
                   properties: {
                     id: { type: "string" },
                     name: { type: "string" },
+                    selectedWordsCount: { type: "number" },
                     createdAt: { type: "string" },
-                    averageSelectedWordsCount: { type: "number" },
                   },
                 },
               },

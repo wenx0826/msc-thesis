@@ -53,6 +53,11 @@
             <ui-tab class="switch"></ui-tab>
             <ui-tab class="" style="flex: 1">
               <h3><span data-ref="documentName"></span></h3>
+              <div class="field">
+                <label for="docVersionSelect">Version:</label>
+                <span data-ref="documentVersion"></span>
+                <!-- <select id="docVersionSelect"></select> -->
+              </div>
               <ul class="doc-info">
                 <li>words: <span data-ref="wordsCount"></span></li>
                 <li>models: <span data-ref="modelsCount"></span></li>
@@ -72,9 +77,14 @@
       <template id="modelItemTemplate">
         <li data-model-id="">
           <h4><span data-ref="modelName"></span></h4>
-          <div>
-            words: <span data-ref="selectedWordsCount"></span> |
-          </div>
+          <ul>
+            <li>version: <span data-ref="modelVersion"></span></li>
+            <li>
+              words: <span data-ref="selectedWordsCount"></span> |
+            </li>
+            <li><a data-ref="modelLink" target="_blank">View Model</a></li>
+
+          </ul>
         </li>
       </template>
     </div>

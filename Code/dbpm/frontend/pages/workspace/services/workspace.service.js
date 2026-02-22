@@ -12,7 +12,7 @@ import {
 export default {
   async loadWorkspace(projectId) {
     let displayedDocument = null;
-    const { documentsMeta = [], modelsMeta = [] } =
+    const { documentsMeta, modelsMeta } =
       await projectsAPI.getComponents(projectId);
 
     documentsStore.init(documentsMeta);

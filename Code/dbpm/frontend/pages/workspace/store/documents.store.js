@@ -1,22 +1,8 @@
-import { MetaByIdStore } from "./meta-by-id.store.js";
+import { VersionedEntityStore } from "./versioned-entity.store.js";
 
-function normalizeDocumentMeta(value) {
-  if (!value || typeof value !== "object" || !value.id) {
-    return null;
-  }
-
-  const normalized = { ...value };
-  if (!Array.isArray(normalized.versions)) {
-    normalized.versions = [];
-  }
-  return normalized;
-}
-
-class DocumentsStore extends MetaByIdStore {
+class DocumentsStore extends VersionedEntityStore {
   constructor() {
-    super({
-      normalizeMeta: normalizeDocumentMeta,
-    });
+    super();
   }
 
   getDocuments() {
@@ -24,7 +10,7 @@ class DocumentsStore extends MetaByIdStore {
   }
 
   getDocumentById(documentId) {
-    return this.getMeta(documentId);
+    return this.getEntity(documentId);
   }
 
   removeDocument(documentId) {

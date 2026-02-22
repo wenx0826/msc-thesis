@@ -1,45 +1,8 @@
-import { MetaByIdStore } from "./meta-by-id.store.js";
+import { VersionedEntityStore } from "./versioned-entity.store.js";
 
-function normalizeModelMeta(value) {
-  if (!value || typeof value !== "object") {
-    return null;
-  }
-
-  const rawMeta =
-    value.meta && typeof value.meta === "object" ? value.meta : {};
-  const id = value.id ?? rawMeta.id;
-  if (!id) {
-    return null;
-  }
-
-  const normalized = {
-    ...rawMeta,
-    ...value,
-    id,
-  };
-
-  if (!Array.isArray(normalized.versions)) {
-    normalized.versions = [];
-  }
-  if (!Array.isArray(normalized.documentVersionIds)) {
-    normalized.documentVersionIds = [];
-  }
-
-  normalized.meta = {
-    ...rawMeta,
-    id: normalized.id,
-    name: normalized.name ?? rawMeta.name ?? null,
-    latestVersionId: normalized.latestVersionId ?? rawMeta.latestVersionId,
-    documentId: normalized.documentId ?? rawMeta.documentId,
-  };
-
-  return normalized;
-}
-
-class ModelsStore extends MetaByIdStore {
+class ModelsStore extends VersionedEntityStore {
   constructor() {
     super({
-      normalizeMeta: normalizeModelMeta,
       initialState: {
         cachedModelsVersionById: {},
       },
@@ -55,7 +18,7 @@ class ModelsStore extends MetaByIdStore {
   }
 
   updateModelById(modelId, updates) {
-    const value = this.getMeta(modelId);
+    const value = this.getEntity(modelId);
     if (!value) {
       return;
     }
@@ -97,20 +60,20 @@ class ModelsStore extends MetaByIdStore {
   }
 
   getModelById(modelId) {
-    return this.getMeta(modelId);
+    return this.getEntity(modelId);
   }
 
   getModelLatestVersionIdById(modelId) {
-    return this.getMeta(modelId)?.latestVersionId || null;
+    return this.getEntity(modelId)?.latestVersionId || null;
   }
 
   getModelNameById(modelId) {
-    const model = this.getMeta(modelId);
+    const model = this.getEntity(modelId);
     return model?.name ?? model?.meta?.name ?? null;
   }
 
   getModelGraphById(modelId) {
-    const model = this.getMeta(modelId);
+    const model = this.getEntity(modelId);
     if (!model) return null;
 
     const versionId = model.latestVersionId;
@@ -125,14 +88,14 @@ class ModelsStore extends MetaByIdStore {
   }
 
   getModelDocumentIdById(modelId) {
-    return this.getMeta(modelId)?.documentId || null;
+    return this.getEntity(modelId)?.documentId || null;
   }
 
   async deleteModelById(modelId) {
-    const deletedValue = this.getMeta(modelId);
+    const deletedValue = this.getEntity(modelId);
     if (!deletedValue) return;
 
-    delete this.state.metaById[modelId];
+    delete this.state.entitiesById[modelId];
     if (deletedValue.latestVersionId) {
       delete this.state.cachedModelsVersionById[deletedValue.latestVersionId];
     }
