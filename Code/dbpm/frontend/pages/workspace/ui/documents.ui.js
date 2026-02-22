@@ -30,6 +30,9 @@ function renderDocumentItem({ id: docId, versions }) {
 }
 
 function rerenderDocumentItem(docId, versionId, name) {
+  if (!name) {
+    name = documentsStore.getDocumentVersionName(docId, versionId);
+  }
   const $documentItem = $documentsList.find(`li[data-doc-id='${docId}']`);
   $documentItem.attr("data-doc-version-id", versionId);
   $documentItem.find("[data-ref='documentName']").text(name);
@@ -64,13 +67,27 @@ const removeDocumentItem = (documentId) => {
     .filter((index, element) => $(element).data("docId") === documentId)
     .remove();
 };
-
+function updateDisplayedDocVersionSelector(versionId) {
+  const displayedDocument = workspaceStore.state.displayedDocument;
+  if (!displayedDocument) return;
+  workspaceService.displayDocument({
+    id: displayedDocument.id,
+    versionId,
+  });
+}
+function updateDocumentsCount() {
+  const count = Object.keys(documentsStore.state.documentsById).length;
+  $("[data-ref='documentsCount']").text(count);
+}
 createUI({
   setup: () => {
     const documentNameEditor = initInlineEditor({
       $scope: $documentsList,
       onSave: (newValue, $view) => {
-        const documentId = $view.closest("li").data("docId");
+        // const doc = $view.closest("li")[0].dataset;
+        // const documentId = doc.docId;
+        const docVersionId = $view.closest("li")[0].dataset.docVersionId;
+        documentService.renameDocumentVersion(docVersionId, newValue);
         // documentService.updateDocument(documentId, { name });
       },
     });
@@ -78,7 +95,7 @@ createUI({
       $select: $versionSelect,
       onSelect: ({ version }) => {
         workspaceService.displayDocument({
-          id: workspaceStore.state.displayedDocument.id,
+          id: version.documentId,
           versionId: version.id,
         });
       },
@@ -147,16 +164,23 @@ createUI({
       switch (operation) {
         case "init":
           value.forEach((doc) => renderDocumentItem(doc));
+          updateDocumentsCount();
           break;
         case "add":
           renderDocumentItem(value);
+          updateDocumentsCount();
           break;
         case "versions.add":
-          const latestVersion = value.versions.at(-1);
-          rerenderDocumentItem(value.id, latestVersion.id, latestVersion.name);
+          const docId = value.documentId;
+          const displayedDocumentId = workspaceStore.state.displayedDocument.id;
+          rerenderDocumentItem(value.documentId, value.id, value.name);
+          if (docId === displayedDocumentId) {
+            // updateVersionSelect(value.id);
+          }
           break;
         case "delete":
           removeDocumentItem(value.id);
+          updateDocumentsCount();
           break;
       }
     });
@@ -165,16 +189,11 @@ createUI({
         case "displayedDocument":
           highlightActiveDocumentItem(newValue.id);
           const versions = documentsStore.getDocumentVersions(newValue.id);
-          console.log(
-            "Updating version selector with versions:",
-            versions,
-            "selectedId:",
-            newValue.versionId,
-          );
           displayedDocVersionSelector.update({
             versions,
             selectedId: newValue.versionId,
           });
+          rerenderDocumentItem(newValue.id, newValue.versionId);
           break;
         default:
           break;

@@ -136,6 +136,13 @@ ui-resizehandle[data-direction="vertical"]::before {
 ui-area {
   padding: 0;
 }
+.button{
+  padding: 0.2em 1em;
+  border: 1pt solid var(--x-ui-border-color);
+  border-radius: 0.5em;
+  background-color: var(--x-ui-content-light-background);
+  cursor: pointer;
+}
 /* button {
     padding: 1em;
     border: 1pt solid var(--x-ui-border-color);
@@ -167,10 +174,16 @@ ui-area {
   z-index: 9999;
 }
 
-li:nth-child(odd) {
+*[is="x-ui-"]
+  ui-content:has(> ui-area[data-belongs-to-tab="documents"]) {
+  padding-top: 0;
+}
+
+
+#documentsList li:nth-child(odd) {
   background-color: var(--x-ui-content-light-background);
 }
-li:hover {
+#documentsList li:hover {
   background-color: var(--x-ui-content-hover-background);
 }
 /*--- document list pane ---*/
@@ -182,7 +195,7 @@ li:hover {
 }
 #documentsList li {
   display: flex;
-    align-items: center;
+  align-items: center;
   /* justify-content: space-between; */
   /* align-items: center; */
   /* width: 20%;

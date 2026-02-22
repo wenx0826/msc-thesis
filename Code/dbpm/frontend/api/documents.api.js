@@ -63,32 +63,24 @@ export default {
     }
     return await response.json();
   },
-
+  async updateVersionMeta(versionId, params) {
+    const response = await fetch(
+      `${baseURL}/${this.path}/versions/${versionId}/meta`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(params),
+      },
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return await response.json();
+  },
   async deleteById(id) {
     const response = await fetch(`${baseURL}/${this.path}/${id}`, {
       method: "DELETE",
     });
     return handleResponse(response, "Failed to delete document");
-  },
-
-  // Sub-API for accessing all records (including soft-deleted)
-  all: {
-    async getAll() {
-      const response = await fetch(`${baseURL}/documents/all`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return await response.json();
-    },
-
-    async getByProjectId(projectId) {
-      const response = await fetch(
-        `${baseURL}/projects/${projectId}/documents/all`,
-      );
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return await response.json();
-    },
   },
 };

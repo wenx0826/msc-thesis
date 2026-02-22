@@ -4,6 +4,7 @@ import {
   createVersionSchema,
   getDocumentContentSchema,
   getTracesSchema,
+  updateVersionMetaSchema,
 } from "./schema.js";
 
 export default async function (fastify, options) {
@@ -72,6 +73,28 @@ export default async function (fastify, options) {
     }
   });
 
+  // PUT /documents/versions/:versionId/meta - Update document version metadata (e.g., name)
+  fastify.put(
+    "/versions/:versionId/meta",
+    {
+      schema: updateVersionMetaSchema,
+    },
+    (request, reply) => {
+      try {
+        const { versionId } = request.params;
+        const result = documentService.updateVersionMeta(
+          versionId,
+          request.body,
+        );
+        reply.send(result);
+      } catch (err) {
+        console.error("Failed to update document version metadata:", err);
+        reply
+          .code(500)
+          .send({ error: "Failed to update document version metadata" });
+      }
+    },
+  );
   // DELETE /documents/:id - Delete a document
   fastify.delete(
     "/:id",

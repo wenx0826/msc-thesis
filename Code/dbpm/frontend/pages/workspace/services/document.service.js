@@ -21,7 +21,7 @@ export default {
     documentsStore.add(newDoc);
     workspaceService.displayDocument({
       id: newDoc.id,
-      versionId: newDoc.latestVersionId,
+      versionId: newDoc.versions[0].id,
     });
     return newDoc;
   },
@@ -53,6 +53,12 @@ export default {
       );
     });
   },
+  async renameDocumentVersion(versionId, newName) {
+    const newVersion = await documentsAPI.updateVersionMeta(versionId, {
+      name: newName,
+    });
+    documentsStore.updateDocumentVersion(newVersion);
+  },
   async updateDocument(documentId, file) {
     const name = file.name;
     const content = await getFileContentInHTML(file);
@@ -65,7 +71,7 @@ export default {
       id: documentId,
       versionId: newVersion.id,
     });
-    documentsStore.addDocumentVersion(documentId, newVersion);
+    documentsStore.addDocumentVersion(newVersion);
   },
   async deleteDocument(documentId) {
     await documentsAPI.delete(documentId);

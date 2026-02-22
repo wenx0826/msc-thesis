@@ -44,6 +44,7 @@ export const createVersionSchema = {
       type: "object",
       properties: {
         id: { type: "string" },
+        documentId: { type: "string" },
         name: { type: "string" },
         createdAt: { type: "string" },
       },
@@ -88,6 +89,33 @@ export const getTracesSchema = {
           modelId: { type: "string" },
           selections: { type: "array" },
         },
+      },
+    },
+  },
+};
+
+export const updateVersionMetaSchema = {
+  params: {
+    type: "object",
+    required: ["versionId"],
+    properties: {
+      versionId: { type: "string" },
+    },
+  },
+  body: {
+    type: "object",
+    properties: {
+      name: { type: "string" },
+    },
+  },
+  response: {
+    200: {
+      type: "object",
+      properties: {
+        id: { type: "string" },
+        documentId: { type: "string" },
+        name: { type: "string" },
+        createdAt: { type: "string" },
       },
     },
   },

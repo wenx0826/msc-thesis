@@ -302,6 +302,12 @@ const unhighlightActiveModelContainer = (modelId) => {
 const removeModelFromList = (modelId) => {
   $(`.model-container[data-model-id="${modelId}"]`).remove();
 };
+
+function updateModelsCount() {
+  const count = Object.keys(modelsStore.state.modelsById).length;
+  $("[data-ref='modelsCount']").text(count);
+}
+
 createUI({
   setup: () => {},
   bindListeners: () => {
@@ -334,6 +340,7 @@ createUI({
           for (const model of value) {
             await renderModelInList(model);
           }
+          updateModelsCount();
           // value.forEach((model) => renderModelInList(model));
           break;
         case "add":

@@ -89,10 +89,19 @@
         <ui-tabbed style="z-index: 2">
           <ui-tabbar>
             <ui-tab class="switch"></ui-tab>
-            <ui-tab class="" data-tab="documents" style="flex: 1">Documents</ui-tab>
+            <ui-tab class="" data-tab="documents" style="flex: 1">Documents (<span
+                data-ref="documentsCount"></span>)</ui-tab>
           </ui-tabbar>
           <ui-content>
             <ui-area data-belongs-to-tab="documents" id="areadocuments">
+              <ui-bar>
+                <input type="file" id="documentUpdateInput" class="hidden" />
+                <div class="right">
+                  <label for="documentsInput" class="button">
+                    Upload <input type="file" id="documentsInput" multiple class="hidden" />
+                  </label>
+                </div>
+              </ui-bar>
               <ul id="documentsList">
                 <template id="documentItemTemplate">
                   <li data-doc-id="" data-doc-version-id="">
@@ -106,11 +115,6 @@
                   </li>
                 </template>
               </ul>
-              <div class="field">
-                <label for="documentsInput" style="cursor: pointer">Upload Documents</label>
-                <input type="file" id="documentsInput" multiple />
-              </div>
-              <input type="file" id="documentUpdateInput" class="hidden" />
             </ui-area>
           </ui-content>
         </ui-tabbed>
@@ -250,7 +254,8 @@
       <!-- Right: Models Panel-->
       <ui-rest style="flex: 0.2; min-width: 180px">
         <ui-rest class="panel" style="flex: 0.68 1 0; min-height: 100px">
-          <ui-bar><span style="font-size: 1.2em; font-weight: bold">Models</span></ui-bar>
+          <ui-bar><span style="font-size: 1.2em; font-weight: bold">Models</span>(<span
+              data-ref="modelsCount"></span>)</ui-bar>
           <ui-divider></ui-divider>
           <ui-bar>
             <span id="activeModelName" class="inline-editor__view" data-editable="1"></span>

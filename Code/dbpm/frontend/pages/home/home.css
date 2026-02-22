@@ -110,12 +110,41 @@ ui-tabbed > ui-tabbar > ui-tab.switch {
   padding-bottom: 0.25em;
 }
 
+#projectsTable {
+  border-collapse: collapse;
+}
+
+table.dataTable thead th {
+  border-color: var(--x-ui-border-color);
+}
+
+/* table.dataTable.no-footer {
+  border-color: var(--x-ui-border-color);
+} */
+table thead th {
+  font-weight: bold;
+  text-align: left;
+  /* padding: 0.3em 0.5em; */
+}
+
+
+table tbody tr:hover td {
+  background-color: var(--x-ui-content-hover-background);
+}
+
+[is="x-ui-"] table tbody tr:hover td {
+  background-color: var(--x-ui-content-hover-background);
+}
+
+tr.contextmenuitem .capitalized {
+  text-transform: capitalize;
+}
+
 #projectsTable_info {
   /* margin-top: 0.5em; */
   font-size: 0.9em;
   color: var(--x-ui-text-secondary-color);
 }
-
 
 #projectsTable,
 #projectsTable th,
@@ -141,6 +170,10 @@ ui-tabbed > ui-tabbar > ui-tab.switch {
   padding: 0.5em 1em;
 }
 
+#projectsTable tbody td {
+  border-bottom: 1px solid var(--x-ui-border-light-color);
+}
+
 .col-num {
   text-align: right;
   width: 120px;
@@ -159,7 +192,9 @@ td.col-date {
 #projectsTable td:first-child {
   overflow: hidden;
   white-space: nowrap;
+  font-weight: 500;
 }
+
 #projectsTable td:first-child .inline-editor__view {
   display: block;
   width: 100%;

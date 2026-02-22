@@ -44,6 +44,27 @@ export default {
     }));
     return parsedTraces.map(toCamel);
   },
+  update(id, updates) {
+    const fields = [];
+    const values = [];
+
+    if (updates.name !== undefined) {
+      fields.push("name = ?");
+      values.push(updates.name);
+    }
+
+    if (fields.length === 0) {
+      return null;
+    }
+
+    values.push(id);
+    const stmt = db.prepare(
+      `UPDATE document_versions SET ${fields.join(", ")} WHERE id = ? RETURNING *`,
+    );
+    const result = stmt.get(...values);
+    return toCamel(result);
+  },
+
   softDelete(docId) {
     const stmt = db.prepare("UPDATE documents SET deleted_at = ? WHERE id = ?");
     return stmt.run(new Date().toISOString(), docId);

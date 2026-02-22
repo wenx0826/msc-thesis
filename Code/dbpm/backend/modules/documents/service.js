@@ -104,7 +104,13 @@ export default {
   getAllModels(docId) {
     return documentRepo.getAllModels(docId);
   },
-
+  updateVersionMeta(versionId, updates) {
+    const version = versionRepo.update(versionId, updates);
+    if (!version) {
+      throw new Error("Document version not found");
+    }
+    return version;
+  },
   deleteDocument(docId) {
     const doc = documentRepo.findById(docId);
     if (!doc) {

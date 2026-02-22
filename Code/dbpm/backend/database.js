@@ -100,6 +100,19 @@ function initializeSchema() {
     )
   `);
 
+  //
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS model_subprocesses (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      model_version_id TEXT NOT NULL,
+      task_id TEXT NOT NULL,
+      subprocess_model_id TEXT NOT NULL,
+      created_at TEXT NOT NULL DEFAULT current_timestamp,
+      deleted_at TEXT,
+      FOREIGN KEY (model_version_id) REFERENCES model_versions(id)
+    )
+  `);
+
   // Create indexes for common queries
   db.exec(
     `CREATE INDEX IF NOT EXISTS idx_documents_project_id ON documents(project_id)`,
