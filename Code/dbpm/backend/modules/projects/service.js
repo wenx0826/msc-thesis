@@ -26,10 +26,12 @@ export default {
       documents: {
         count: documentService.count(),
         averageWordsCount: documentService.getAverageWordsCount(),
+        averageVersionsCount: documentService.getAverageVersionsCount(),
       },
       models: {
         count: modelService.count(),
         averageSelectedWordsCount: modelService.getAverageSelectedWordsCount(),
+        averageVersionsCount: modelService.getAverageVersionsCount(),
       },
     };
     return overview;

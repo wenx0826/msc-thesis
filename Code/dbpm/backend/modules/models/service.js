@@ -104,6 +104,9 @@ export default {
   getAverageSelectedWordsCount(includeDeleted = false) {
     return modelRepo.getAverageSelectedWordsCount(includeDeleted);
   },
+  getAverageVersionsCount(includeDeleted = false) {
+    return modelRepo.getAverageVersionsCount(includeDeleted);
+  },
   getByProjectId(projectId, includeDeleted) {
     const models = modelRepo.findByProjectId(projectId, includeDeleted);
     if (!models) {

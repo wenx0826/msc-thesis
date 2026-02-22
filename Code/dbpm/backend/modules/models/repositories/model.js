@@ -60,6 +60,20 @@ export default {
     const result = stmt.get();
     return result.average_selected_words_count;
   },
+  getAverageVersionsCount(includeDeleted = false) {
+    const stmt = db.prepare(`
+      SELECT COALESCE(AVG(COALESCE(mvv.versions_count, 0)), 0) AS average_versions_count
+      FROM models m
+      LEFT JOIN (
+        SELECT model_id, COUNT(*) AS versions_count
+        FROM model_versions
+        GROUP BY model_id
+      ) mvv ON mvv.model_id = m.id
+      ${includeDeleted ? "" : "WHERE m.deleted_at IS NULL"}
+    `);
+    const result = stmt.get();
+    return result.average_versions_count;
+  },
   getProjectIdByModelId(modelId) {
     const stmt = db.prepare("SELECT project_id FROM models WHERE id = ?");
     const result = stmt.get(modelId);

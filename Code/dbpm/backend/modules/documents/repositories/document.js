@@ -31,6 +31,20 @@ export default {
     const result = stmt.get();
     return result.average_words_count;
   },
+  getAverageVersionsCount(includeDeleted = false) {
+    const stmt = db.prepare(`
+      SELECT COALESCE(AVG(COALESCE(dvv.versions_count, 0)), 0) AS average_versions_count
+      FROM documents d
+      LEFT JOIN (
+        SELECT document_id, COUNT(*) AS versions_count
+        FROM document_versions
+        GROUP BY document_id
+      ) dvv ON dvv.document_id = d.id
+      ${includeDeleted ? "" : "WHERE d.deleted_at IS NULL"}
+    `);
+    const result = stmt.get();
+    return result.average_versions_count;
+  },
   findById(id) {
     const stmt = db.prepare(`
       SELECT d.*, dv.name

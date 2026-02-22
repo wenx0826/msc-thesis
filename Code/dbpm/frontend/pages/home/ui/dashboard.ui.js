@@ -33,25 +33,8 @@ const demo = {
 
 // ---------- Render helpers ----------
 function setText(id, value) {
-  const el = document.getElementById(id);
-  if (el) el.textContent = value;
-}
-
-function renderSubLines(containerId, lines) {
-  const el = document.getElementById(containerId);
-  if (!el) return;
-  el.innerHTML = "";
-  (lines || []).slice(0, 2).forEach((line) => {
-    const div = document.createElement("div");
-    div.textContent = line;
-    el.appendChild(div);
-  });
-  // Keep height stable even when empty
-  if (!lines || lines.length === 0) {
-    const div = document.createElement("div");
-    div.innerHTML = "&nbsp;";
-    el.appendChild(div);
-  }
+  const $el = $(`#${id}`);
+  if ($el.length) $el.text(value);
 }
 
 function clampPct(p) {
@@ -110,16 +93,26 @@ createUI({
   setup: async () => {
     const overview = await projectsAPI.overview();
     const { projects, documents, models } = overview;
+
     setText("projectsCount", formatNumber(projects.count));
     setText("documentsCount", formatNumber(documents.count));
     setText("modelsCount", formatNumber(models.count));
-
-    renderSubLines("documentsSub", [
-      `avg words: ${formatNumber(documents.averageWordsCount.toFixed(0))}`,
-    ]);
-    renderSubLines("modelsSub", [
-      `avg selected words: ${formatNumber(models.averageSelectedWordsCount.toFixed(0))}`,
-    ]);
+    setText(
+      "documentsAvgWordsCount",
+      formatNumber(Number(documents.averageWordsCount).toFixed(0)),
+    );
+    setText(
+      "documentsAvgVersionsCount",
+      formatNumber(Number(documents.averageVersionsCount).toFixed(0)),
+    );
+    setText(
+      "modelsAvgSelectedWordsCount",
+      formatNumber(Number(models.averageSelectedWordsCount).toFixed(0)),
+    );
+    setText(
+      "modelsAvgVersionsCount",
+      formatNumber(Number(models.averageVersionsCount).toFixed(0)),
+    );
   },
   bindListeners: () => {},
 });

@@ -50,6 +50,7 @@ export const getProjectsOverviewSchema = {
           properties: {
             count: { type: "number" },
             averageWordsCount: { type: "number" },
+            averageVersionsCount: { type: "number" },
           },
         },
         models: {
@@ -57,6 +58,7 @@ export const getProjectsOverviewSchema = {
           properties: {
             count: { type: "number" },
             averageSelectedWordsCount: { type: "number" },
+            averageVersionsCount: { type: "number" },
           },
         },
       },

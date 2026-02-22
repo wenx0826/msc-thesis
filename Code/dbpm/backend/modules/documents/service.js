@@ -64,6 +64,9 @@ export default {
   getAverageWordsCount(includeDeleted = false) {
     return documentRepo.getAverageWordsCount(includeDeleted);
   },
+  getAverageVersionsCount(includeDeleted = false) {
+    return documentRepo.getAverageVersionsCount(includeDeleted);
+  },
   getDocuments() {
     return documentRepo.findAll();
   },
