@@ -1,36 +1,89 @@
 import { createStore } from "../../../shared/utils/store.js";
 
+function toCyNodeId(rawId) {
+  if (typeof rawId !== "string") {
+    return null;
+  }
+
+  const trimmedId = rawId.trim();
+  if (!trimmedId) {
+    return null;
+  }
+
+  return `cy-${trimmedId}`;
+}
+
+function isNodeElement(element) {
+  const data = element?.data;
+  return Boolean(data?.id) && !data?.source && !data?.target;
+}
+
 export default Object.assign(
   createStore({
     elements: [],
   }),
   {
     init(documents, models) {
-      const nodes = documents.map((doc) => ({
-        group: "nodes",
-        data: {
-          id: `cy-${doc.id}`,
-          type: "document",
-          label: doc.name,
-          degree: 1,
-        },
-      }));
-      let edges = [];
-      models.forEach((model) => {
+      const nodes = [];
+      const documentNodeIds = new Set();
+
+      documents.forEach((doc) => {
+        const nodeId = toCyNodeId(doc?.id);
+        if (!nodeId) {
+          console.warn(
+            "[projectGraphStore] Skipping document node with invalid id:",
+            doc,
+          );
+          return;
+        }
+
+        documentNodeIds.add(nodeId);
         nodes.push({
           group: "nodes",
           data: {
-            id: `cy-${model.id}`,
-            type: "model",
-            label: model.name,
+            id: nodeId,
+            type: "document",
+            label: doc?.name,
             degree: 1,
           },
         });
+      });
+
+      let edges = [];
+      models.forEach((model) => {
+        const modelNodeId = toCyNodeId(model?.id);
+        if (!modelNodeId) {
+          console.warn(
+            "[projectGraphStore] Skipping model node with invalid id:",
+            model,
+          );
+          return;
+        }
+
+        nodes.push({
+          group: "nodes",
+          data: {
+            id: modelNodeId,
+            type: "model",
+            label: model?.name,
+            degree: 1,
+          },
+        });
+
+        const sourceNodeId = toCyNodeId(model?.documentId);
+        if (!sourceNodeId || !documentNodeIds.has(sourceNodeId)) {
+          console.warn(
+            `[projectGraphStore] Skipping edge for model "${model?.id}" with missing or unknown documentId:`,
+            model?.documentId,
+          );
+          return;
+        }
+
         edges.push({
           group: "edges",
           data: {
-            source: `cy-${model.documentId}`,
-            target: `cy-${model.id}`,
+            source: sourceNodeId,
+            target: modelNodeId,
             relation: "generated",
           },
         });
@@ -46,9 +99,19 @@ export default Object.assign(
       return this.state.elements;
     },
     addDocumentNode(document) {
+      const nodeId = toCyNodeId(document?.id);
+      if (!nodeId) {
+        console.warn(
+          "[projectGraphStore] Skipping document node with invalid id:",
+          document,
+        );
+        return;
+      }
+
       const node = {
+        group: "nodes",
         data: {
-          id: `cy-${document.id}`,
+          id: nodeId,
           type: "document",
           label: document.name,
           degree: 1,
@@ -62,24 +125,53 @@ export default Object.assign(
       });
     },
     addModelNodeAndEdge(modelMeta, documentId) {
+      const modelNodeId = toCyNodeId(modelMeta?.id);
+      if (!modelNodeId) {
+        console.warn(
+          "[projectGraphStore] Skipping model node with invalid id:",
+          modelMeta,
+        );
+        return;
+      }
+
       const modelNode = {
+        group: "nodes",
         data: {
-          group: "nodes",
-          id: `model-${modelMeta.id}`,
+          id: modelNodeId,
           type: "model",
           label: modelMeta.name,
           degree: 1,
         },
       };
-      const edge = {
-        group: "edges",
-        data: {
-          source: `cy-${documentId}`,
-          target: `cy-${modelMeta.id}`,
-          relation: "generated",
-        },
-      };
-      this.state.elements.push(modelNode, edge);
+
+      const sourceNodeId = toCyNodeId(documentId);
+      const hasSourceNode = this.state.elements.some(
+        (element) =>
+          isNodeElement(element) && element?.data?.id === sourceNodeId,
+      );
+
+      let edge = null;
+      if (sourceNodeId && hasSourceNode) {
+        edge = {
+          group: "edges",
+          data: {
+            source: sourceNodeId,
+            target: modelNodeId,
+            relation: "generated",
+          },
+        };
+      } else {
+        console.warn(
+          `[projectGraphStore] Skipping edge for model "${modelMeta?.id}" with missing or unknown documentId:`,
+          documentId,
+        );
+      }
+
+      this.state.elements.push(modelNode);
+      if (edge) {
+        this.state.elements.push(edge);
+      }
+
       this.notify({
         key: "elements.modelNodeAndEdge",
         operation: "add",

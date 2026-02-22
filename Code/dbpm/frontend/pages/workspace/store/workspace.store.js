@@ -54,7 +54,6 @@ export default Object.assign(
       this.state.status = status;
       this.notify({ key: "status", newValue: status });
     },
-
     setHoveredModelId(newValue) {
       const oldValue = this.state.hoveredModelId;
       if (oldValue === newValue) return; // No change
@@ -202,6 +201,7 @@ export default Object.assign(
       this.state.theme = theme;
     },
     set({ projectId, displayedDocument, activeModel }) {
+      console.log("WorkspaceStore setProjectID!!!!!:", projectId);
       this.state.projectId = projectId;
       if (displayedDocument) this.setDisplayedDocument(displayedDocument);
       if (activeModel) this.setActiveModel(activeModel);

@@ -1,4 +1,3 @@
-
 .main {
   padding-bottom: 36px !important;
 }
@@ -10,7 +9,8 @@
   background-color: var(--x-ui-outside-color);
 }
 
-.hero a:link, .hero a:visited {
+.hero a:link,
+.hero a:visited {
   color: var(--x-ui-text-secondary-color);
 }
 
@@ -21,15 +21,17 @@
   background-color: var(--x-ui-outside-color);
 }
 
-.footer > div{
+.footer>div {
   display: inline-block;
   padding: 0.5em 8em 0.6em 8em;
   border-top: 1px solid var(--x-ui-border-light-color);
 }
 
-.footer a:link, .footer a:visited {
+.footer a:link,
+.footer a:visited {
   color: var(--x-ui-text-muted-color);
 }
+
 /* h1 {
   font-size: 2.5em;
   font-weight: 600;
@@ -47,7 +49,7 @@
   background: #222;
   color: #fff;
   border: none;
-  border-radius:0.6em;
+  border-radius: 0.6em;
   font-size: 1.25em;
   font-weight: 600;
 }
@@ -57,13 +59,15 @@
   padding-right: 1em;
   padding-bottom: 0;
 }
-*[is="x-ui-"] ui-tabbar > ui-tab {
+
+*[is="x-ui-"] ui-tabbar>ui-tab {
   /* border-bottom-width: 2pt; */
   position: relative;
   padding-left: 0.65em;
   padding-right: 0.65em;
 }
-*[is="x-ui-"] ui-tabbar > ui-tab:not(.inactive)::after {
+
+*[is="x-ui-"] ui-tabbar>ui-tab:not(.inactive)::after {
   content: "";
   position: absolute;
   /* 覆盖位置 */
@@ -78,11 +82,11 @@
   pointer-events: none;
 }
 
-*[is="x-ui-"] ui-tabbar > ui-tab.inactive {
+*[is="x-ui-"] ui-tabbar>ui-tab.inactive {
   border-bottom: none;
 }
 
-[is="x-ui-"] ui-tabbar > ui-before {
+[is="x-ui-"] ui-tabbar>ui-before {
   /* border-bottom: 1pt solid var(--x-ui-border-color); */
   padding-left: 1.5em;
 }
@@ -100,13 +104,12 @@
 /* *[is="x-ui-"] ui-content {
   padding-bottom: 0.25em;
 } */
-*[is="x-ui-"] ui-tabbar > ui-tab.inactive,
-ui-tabbed > ui-tabbar > ui-tab.switch {
+*[is="x-ui-"] ui-tabbar>ui-tab.inactive,
+ui-tabbed>ui-tabbar>ui-tab.switch {
   background-color: var(--x-tab-inactive-color);
 }
 
-*[is="x-ui-"]
-  ui-content:has(> ui-area[data-belongs-to-tab="projects"]:not(.inactive)) {
+*[is="x-ui-"] ui-content:has(> ui-area[data-belongs-to-tab="projects"]:not(.inactive)) {
   padding-bottom: 0.25em;
 }
 
@@ -151,6 +154,7 @@ tr.contextmenuitem .capitalized {
 #projectsTable td {
   box-sizing: border-box;
 }
+
 #projectsTable {
   table-layout: fixed;
   width: 100%;
@@ -178,6 +182,7 @@ tr.contextmenuitem .capitalized {
   text-align: right;
   width: 120px;
 }
+
 .col-date {
   padding-left: 2em;
   width: 180px;
@@ -212,19 +217,23 @@ td.col-date {
   width: 80px;
   text-align: center;
 }
+
 #projectsTable td:last-child {
   width: 80px;
   position: relative;
   /* padding: 0.1em 1em; */
 }
+
 #projectsTable td:last-child button {
   position: absolute;
-  inset: 0.2em 1.5em; /* 你要留边距就用 4px；要贴边就 0 */
+  inset: 0.2em 1.5em;
+  /* 你要留边距就用 4px；要贴边就 0 */
   display: flex;
   align-items: center;
   justify-content: center;
   /* inset: 0.1em 1.5em; */
 }
+
 /* #projectsTable td:first-child {
   outline: 2px solid red;
 }
@@ -273,6 +282,7 @@ dialog {
   flex-direction: column;
   box-sizing: border-box; */
 }
+
 /* 
 #projectCreationDialog #form > h3 {
   display: block;
@@ -383,159 +393,168 @@ dialog {
   border-color: #000;
 }
 
-    /* Metrics (borderless, typography blocks) */
-    .metrics {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 22px;
-      align-items: start;
-       text-align: center;
-      margin-bottom: 18px;
-    }
+/* ===== Dashboard Content ===== */
+
+*[is="x-ui-"] ui-content:has(> ui-area[data-belongs-to-tab="dashboard"]:not(.inactive)) {
+  padding: 1.5em 2em;
+}
+/* Metrics (borderless, typography blocks) */
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+  align-items: start;
+  text-align: center;
+  margin-bottom: 18px;
+}
 
 
-            .kpi-row {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            text-align: center;
-            /* 关键：整体居中 */
-        }
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  text-align: center;
+  /* 关键：整体居中 */
+}
 
-    .metric-card {
-      text-align: center;
-      padding: 2px 0;
-       text-align: center;
-    }
+.metric-card {
+  text-align: center;
+  padding: 2px 0;
+  text-align: center;
+}
 
-    .metric-title {
-      font-size: 12px;
-      color: var(--muted);
-      letter-spacing: 0.02em;
-      margin-bottom: 6px;
-    }
+.metric-title {
+  /* font-size: 12px; */
+  color: var(--muted);
+  letter-spacing: 0.02em;
+  margin-bottom: 6px;
+}
 
-        .kpi-title {
-            font-size: 13px;
-            color: #666;
-            margin-bottom: 8px;
-        }
+.kpi-title {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 8px;
+}
 
-    .metric-value {
-      font-size: 32px;
-      line-height: 1.05;
-      font-weight: 650;
-      margin: 0 0 10px;
-      font-variant-numeric: tabular-nums;
-    }
-        .kpi-value {
-            font-size: 42px;
-            font-weight: 600;
-            line-height: 1;
-        }
-    .metric-subtitle {
-      font-size: 12px;
-      color: var(--faint);
-      line-height: 1.4;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      min-height: 34px;
-      /* keeps blocks aligned when some have fewer lines */
-    }
-        .kpi-sub {
-            margin-top: 10px;
-            font-size: 13px;
-            color: #666;
-        }
+.metric-card .metric-value {
+  font-size: 32px;
+  line-height: 1.05;
+  font-weight: 650;
+  margin: 0 0 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.kpi-value {
+  font-size: 42px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.metric-subtitle {
+  font-size: 12px;
+  color: var(--faint);
+  /* line-height: 1.4; */
+  /* display: flex; */
+  /* flex-direction: column; */
+  /* gap: 4px; */
+  /* min-height: 34px; */
+  /* keeps blocks aligned when some have fewer lines */
+}
+
+.kpi-sub {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #666;
+}
 
 
 
-        .distribution-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 100px;
-            margin-top: 48px;
-        }
+.distribution-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 100px;
+  margin-top: 48px;
+}
 
-        .dist-title {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 14px;
-        }
+.dist-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
 
-        .bar-row {
-            display: grid;
-            grid-template-columns: 30px 1fr 40px;
-            gap: 12px;
-            align-items: center;
-            margin-bottom: 10px;
-            font-size: 12px;
-            color: #666;
-        }
+.bar-row {
+  display: grid;
+  grid-template-columns: 30px 1fr 40px;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 12px;
+  color: #666;
+}
 
-        .bar-track {
-            height: 6px;
-            background: #ecece7;
-        }
+.bar-track {
+  height: 6px;
+  background: #ecece7;
+}
 
-        .bar-fill {
-            height: 100%;
-            background: #555;
-        }
+.bar-fill {
+  height: 100%;
+  background: #555;
+}
 
-        .bar-pct {
-            text-align: right;
-            font-variant-numeric: tabular-nums;
-        }
+.bar-pct {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
 
-        /* ===== Divider ===== */
 
-        .divider {
-            margin: 48px 0 28px;
-            border-top: 1px solid #e5e5e0;
-        }
+/* ===== Interaction (NARROW COLUMN) ===== */
 
-        /* ===== Interaction (NARROW COLUMN) ===== */
+.interaction {
+  max-width: 520px;
+}
 
-        .interaction {
-            max-width: 520px;
-        }
+.interaction h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 18px;
+}
 
-        .interaction h3 {
-            font-size: 15px;
-            font-weight: 600;
-            margin-bottom: 18px;
-        }
+.interaction .interaction-stats {
+  display: grid;
+  grid-template-columns: max-content max-content;
+  column-gap: 8px;
+  row-gap: 8px;
+  justify-content: start;
+  align-items: baseline;
+  font-size: 14px;
+}
 
-        .metric-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            font-size: 14px;
-        }
+.interaction .interaction-stats .metric-row {
+  display: contents;
+}
 
-        .metric-label {
-            color: #444;
-        }
+.interaction .metric-label {
+  color: #444;
+}
 
-        .metric-value {
-            font-weight: 600;
-            font-variant-numeric: tabular-nums;
-        }
+.interaction .metric-value {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
 
-        @media (max-width:1000px) {
-            .kpi-row {
-                grid-template-columns: 1fr;
-                gap: 40px;
-            }
+@media (max-width:1000px) {
+  .kpi-row {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
 
-            .distribution-row {
-                grid-template-columns: 1fr;
-                gap: 40px;
-            }
+  .distribution-row {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
 
-            .interaction {
-                max-width: 100%;
-            }
-        }
+  .interaction {
+    max-width: 100%;
+  }
+}

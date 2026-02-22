@@ -21,7 +21,6 @@ export default Object.assign(
       delete this.state.documentsById[docId];
       this.notify({ operation: "delete", id: docId });
     },
-
     getDocumentVersions(docId) {
       return this.state.documentsById[docId]?.versions || [];
     },

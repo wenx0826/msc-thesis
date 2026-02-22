@@ -76,7 +76,7 @@ export default {
     const stmt = db.prepare(
       "SELECT model_generation_index FROM projects WHERE id = ?",
     );
-    return toCamel(stmt.get(id));
+    return stmt.get(id).model_generation_index;
   },
   getDocumentCount(id) {
     const stmt = db.prepare(

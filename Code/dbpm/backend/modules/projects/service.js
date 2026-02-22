@@ -64,7 +64,7 @@ export default {
   },
 
   getModelGenerationIndexById(projectId) {
-    return projectRepo.findModelGenerationIndexById(projectId);
+    return Number(projectRepo.findModelGenerationIndexById(projectId)) || 0;
   },
   update(projectId, updates) {
     const project = projectRepo.update(projectId, updates);

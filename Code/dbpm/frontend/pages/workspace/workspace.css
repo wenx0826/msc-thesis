@@ -176,7 +176,7 @@ ui-area {
 
 *[is="x-ui-"]
   ui-content:has(> ui-area[data-belongs-to-tab="documents"]) {
-  padding-top: 0;
+  padding: 0 0 0.5em 0;
 }
 
 
@@ -196,6 +196,7 @@ ui-area {
 #documentsList li {
   display: flex;
   align-items: center;
+  padding: 0 0.5em;
   /* justify-content: space-between; */
   /* align-items: center; */
   /* width: 20%;

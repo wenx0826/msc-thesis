@@ -118,7 +118,7 @@ export default {
 
     const modelData = this.injectDbpmData(generatedModel, eleDbpmInfo);
 
-    if (workspaceStore.hasActiveModel()) {
+    if (workspaceStore.hasDisplayedModel()) {
       const model = { ...modelEditorStore.getModel() };
       model.updateType = MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS;
       model.data = modelData;
@@ -184,12 +184,17 @@ export default {
   },
 
   async createModelAndTrace(modelData) {
-    console.log("==== Line187 Creating model with data:", modelData);
     const documentVersionId = workspaceStore.getDisplayedDocument().versionId;
     const trace = {
       documentVersionId,
       selections: documentViewerStore.getSerializedTemporarySelections(),
     };
+    console.log(
+      "==== !!!!Creating model with data:",
+      workspaceStore.getProjectId(),
+      modelData,
+      trace,
+    );
 
     const { model: createdModel, trace: createdTrace } =
       await modelsAPI.createModelAndTrace({
@@ -198,11 +203,11 @@ export default {
         trace,
       });
 
-    modelEditorStore.setModelById(createdModel.meta.id);
-    modelsStore.addModel({
-      meta: createdModel.meta,
-      documentId,
-    });
+    // modelEditorStore.setModelById(createdModel.meta.id);
+    // modelsStore.addModel({
+    //   meta: createdModel.meta,
+    //   documentId,
+    // });
     // workspaceStore.setActiveModelId(createdModel.meta.id);
     // documentViewerStore.setTemporarySelections([]);
     // documentViewerStore.addTrace(createdTrace);

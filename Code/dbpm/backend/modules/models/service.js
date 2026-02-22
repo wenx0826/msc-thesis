@@ -23,7 +23,8 @@ export default {
 
     const modelGenerationIndex =
       projectsService.getModelGenerationIndexById(projectId);
-    const name = `Model_${modelGenerationIndex + 1}`;
+    const nextModelGenerationIndex = modelGenerationIndex + 1;
+    const name = `Model_${nextModelGenerationIndex}`;
     const id = crypto.randomUUID();
     const versionId = crypto.randomUUID();
     trace.modelVersionId = versionId;
@@ -50,7 +51,7 @@ export default {
 
       modelRepo.update(id, { latestVersionId: versionId });
       projectsService.update(projectId, {
-        modelGenerationIndex: modelGenerationIndex + 1,
+        modelGenerationIndex: nextModelGenerationIndex,
       });
 
       const createdTrace = traceRepo.create({ ...trace });

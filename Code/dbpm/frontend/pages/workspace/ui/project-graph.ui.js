@@ -23,6 +23,19 @@ function getEntityType(node) {
   return node.data().type ?? null;
 }
 
+function safeCyAdd(cy, value, context) {
+  if (!value) {
+    return null;
+  }
+
+  try {
+    return cy.add(value);
+  } catch (error) {
+    console.error(`[project-graph.ui] Failed to add ${context}:`, error, value);
+    return null;
+  }
+}
+
 createUI({
   setup: () => {
     const cy = cytoscape({
@@ -197,7 +210,26 @@ createUI({
         case "elements":
           switch (operation) {
             case "init":
-              cy.add(value);
+              if (Array.isArray(value)) {
+                const nodes = value.filter(
+                  (element) => !element?.data?.source && !element?.data?.target,
+                );
+                const edges = value.filter(
+                  (element) => element?.data?.source && element?.data?.target,
+                );
+
+                safeCyAdd(cy, nodes, "initial nodes");
+                edges.forEach((edge) => {
+                  safeCyAdd(
+                    cy,
+                    edge,
+                    `edge "${edge?.data?.source}" -> "${edge?.data?.target}"`,
+                  );
+                });
+              } else {
+                safeCyAdd(cy, value, "initial elements");
+              }
+
               cy.layout({
                 ...cyLayoutOptions,
               }).run();
@@ -210,7 +242,7 @@ createUI({
         case "elements.documentNode":
           switch (operation) {
             case "add":
-              const newNode = cy.add(value);
+              safeCyAdd(cy, value, "document node");
               cy.layout({
                 ...cyLayoutOptions,
               }).run();
@@ -222,8 +254,8 @@ createUI({
         case "elements.modelNodeAndEdge":
           switch (operation) {
             case "add":
-              const added = cy.add(value.modelNode);
-              cy.add(value.edge);
+              safeCyAdd(cy, value.modelNode, "model node");
+              safeCyAdd(cy, value.edge, "model edge");
               cy.layout({
                 ...cyLayoutOptions,
               }).run();

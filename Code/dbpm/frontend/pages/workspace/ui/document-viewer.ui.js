@@ -190,7 +190,11 @@ const onSelectionSelect = (event) => {
 // }
 
 const renderSelection = ({ range, color, id: selectionId }, modelId) => {
-  const isActiveModel = modelId === workspaceStore.getDisplayedModelId();
+  //todo
+  const isActiveModel = modelId
+    ? modelId === workspaceStore.getDisplayedModelId()
+    : false;
+
   // console.log(
   //   "Rendering selection:",
   //   workspaceStore.getDisplayedModelId(),
