@@ -298,6 +298,20 @@ li .col-button {
   cursor: default;
 }
 
+#selectionsInteractionLayer .selection-wrap:not([data-model-id]) {
+  outline: 2px dashed var(--wfadaptor-highlight);
+  outline-offset: 2px;
+}
+
+#selectionsInteractionLayer .selection-wrap.selected {
+  outline: 2px solid var(--wfadaptor-selected);
+  outline-offset: 2px;
+}
+
+#selectionsInteractionLayer .selection-wrap.selected:not([data-model-id]) {
+  outline-style: dashed;
+}
+
 #selectionsInteractionLayer .range-rect {
   opacity: 1;
   background: transparent;

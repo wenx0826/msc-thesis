@@ -70,7 +70,6 @@ function createInteractionRect({
   traceId,
 }) {
   const $rect = createTemplateElement(SELECTION_RECT_TEMPLATE_ID)
-    .addClass("interaction-rect")
     .attr("data-selectionid", selectionId)
     .css({
       top,
@@ -250,7 +249,7 @@ const onSelectionSelect = (event) => {
   setSelectedSelection({ selectionId, modelId, traceId });
 
   const $buttonGroup = $("#textActionBar .action-group");
-  const selectionSelector = `.interaction-rect[data-selectionid="${selectionId}"]`;
+  const selectionSelector = `#selectionsInteractionLayer .range-rect[data-selectionid="${selectionId}"]`;
   $(document).one("mousedown", (e) => {
     const $t = $(e.target);
     const isInsideTarget = $t.closest(selectionSelector).length > 0;
