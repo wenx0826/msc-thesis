@@ -125,7 +125,7 @@ export default {
     return handleResponse(response, "Failed to fetch model");
   },
 
-  async getModelDataByVersionId(versionId) {
+  async getDataByVersionId(versionId) {
     const response = await fetch(
       `${baseURL}/${this.path}/versions/${versionId}/data`,
     );

@@ -8,6 +8,8 @@ class ModelEditorStore extends Store {
       status: null, // 'loading', 'ready', 'error', 'generating'
       error: null,
       model: null,
+      data: null,
+      latestUpdateType: null, // 'initial_load', 'regeneration_by_prompt', 'regeneration_by_selection', 'update_by_selection'
     });
   }
 
@@ -53,7 +55,14 @@ class ModelEditorStore extends Store {
     this.state.error = error;
     this.notify({ key: "error", newValue: error });
   }
-
+  setData(data) {
+    const parsedData = $.parseXML(data).documentElement;
+    this.state.data = parsedData;
+    this.notify({
+      key: "data",
+      newValue: parsedData,
+    });
+  }
   setModel(newValue) {
     const currentModel = this.getModel();
     let oldValue = null;

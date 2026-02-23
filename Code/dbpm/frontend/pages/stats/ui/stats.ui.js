@@ -1,13 +1,11 @@
 import { createUI } from "../../../shared/utils/ui.js";
-import { documentsAPI, projectsAPI } from "../../../api/index.js";
+import { projectsAPI } from "../../../api/index.js";
 import {
   getProjectIdFromURL,
-  getProjectWorkspaceURL,
   getDocumentURL,
+  getModelGraphRenderURL,
 } from "../../../shared/utils/url.js";
 import { $cloneTemplate } from "../../../shared/utils/dom.js";
-import initVersionSelector from "../../../shared/widgets/version-selector.js";
-import store from "../store.js";
 
 let documents = [];
 let models = [];
@@ -27,33 +25,40 @@ async function renderDocumentsList(documents) {
       .children()
       .first();
     $documentItem.find("li").attr("data-doc-id", doc.id);
-    $documentItem.find("[data-ref='documentName']").text(latestVersion.name);
+    $documentItem
+      .find("[data-ref='documentName']")
+      .text(latestVersion?.name || "Untitled Document");
     $documentItem
       .find("[data-ref='documentVersion']")
       .text(`v${versions.length}`);
     $documentItem
       .find("[data-ref='wordsCount']")
-      .text(latestVersion.wordsCount);
-    $documentItem
-      .find("[data-ref='wordsCount']")
-      .text(latestVersion.wordsCount);
+      .text(latestVersion?.wordsCount ?? 0);
     $documentItem.find("[data-ref='modelsCount']").text(docModels.length);
     $documentItem
       .find("[data-ref='documentLink']")
-      .attr("href", getDocumentURL(latestVersion.id));
+      .attr("href", latestVersion?.id ? getDocumentURL(latestVersion.id) : "#");
     $documentsList.append($documentItem);
     // renderDocumentModels(doc.id, $documentItem);
     const $modelsList = $documentItem.find("[data-ref='modelsList']");
     docModels.forEach((model) => {
       const $modelItem = $cloneTemplate("modelItemTemplate").children().first();
-      const latestModelVersion = model.versions.at(-1);
-      $modelItem.find("[data-ref='modelName']").text(latestModelVersion.name);
+      const modelVersions = model.versions || [];
+      const latestModelVersion = modelVersions.at(-1);
+      const modelVersionId = latestModelVersion?.id || model.latestVersionId;
+      $modelItem
+        .find("[data-ref='modelName']")
+        .text(latestModelVersion?.name || "Unnamed Model");
       $modelItem
         .find("[data-ref='modelVersion']")
-        .text(`v${model.versions.length}`);
+        .text(`v${modelVersions.length}`);
       $modelItem
         .find("[data-ref='selectedWordsCount']")
-        .text(latestModelVersion.selectedWordsCount);
+        .text(latestModelVersion?.selectedWordsCount ?? 0);
+      $modelItem
+        .find("[data-ref='modelLink']")
+        .attr("href", getModelGraphRenderURL(modelVersionId))
+        .text("View Model");
       $modelsList.append($modelItem);
     });
   }

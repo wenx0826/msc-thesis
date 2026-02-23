@@ -1,5 +1,6 @@
 import { projectsAPI } from "../../../api/index.js";
 import documentService from "./document.service.js";
+import modelService from "./model.service.js";
 import {
   workspaceStore,
   documentsStore,
@@ -83,16 +84,15 @@ export default {
     // }
   },
 
-  toggleModelDisplay(modelRef) {
-    const payload = typeof modelRef === "string" ? { id: modelRef } : modelRef;
-    if (!payload?.id) {
+  toggleModelDisplay(model) {
+    if (!model?.id) {
       this.clearModelDisplay();
       return;
     }
 
-    const modelId = payload.id;
+    const modelId = model.id;
     const versionId =
-      payload.versionId || modelsStore.getModelLatestVersionIdById(modelId);
+      model.versionId || modelsStore.getModelLatestVersionIdById(modelId);
     const curActiveModel = workspaceStore.getDisplayedModel();
 
     if (
@@ -107,7 +107,8 @@ export default {
       id: modelId,
       versionId: versionId || null,
     });
-    modelEditorStore.setModelById(modelId);
+    modelService.loadVersion(versionId);
+    // modelEditorStore.setModelById(modelId);
     documentViewerStore.setActiveModelTraceByModelId(modelId);
     workspaceStore.setModelPopoverParams(null);
     // if (curActiveModelId === id) {

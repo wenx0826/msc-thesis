@@ -19,6 +19,10 @@ export function getDocumentURL(documentId) {
   return `data/documents/${documentId}.html`;
 }
 
-// export function getModelURL(modelId) {
-//   return `data/models/${modelId}.html`;
-// }
+export function getModelGraphRenderURL(modelVersionId) {
+  if (!modelVersionId) {
+    return "pages/workspace/workflow/graph-render.html";
+  }
+  const versionId = encodeURIComponent(modelVersionId);
+  return `pages/workspace/workflow/graph-render.html?model_version_id=${versionId}`;
+}

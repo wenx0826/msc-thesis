@@ -244,7 +244,7 @@ function renderDescriptionToSvg(descriptionElement) {
 
 async function getModelSvg(modelId) {
   await endpointLoader.init();
-  const modelData = await modelsAPI.getModelDataByVersionId(modelId);
+  const modelData = await modelsAPI.getDataByVersionId(modelId);
   const descriptionElement = getDescriptionElement(modelData);
   return renderDescriptionToSvg(descriptionElement);
 }
@@ -313,9 +313,14 @@ createUI({
   bindListeners: () => {
     $modelsList.on("click.modelContainer", ".model-container", (event) => {
       event.stopPropagation();
-      const element = event.currentTarget;
-      const modelId = element.dataset.modelId;
-      workspaceService.toggleModelDisplay({ id: modelId });
+      const dataSet = event.currentTarget.dataset;
+      const modelId = dataSet.modelId;
+      const latestVersion = modelsStore.getLatestVersion(modelId);
+      // const versionId =
+      workspaceService.toggleModelDisplay({
+        id: modelId,
+        versionId: latestVersion?.id,
+      });
     });
   },
   subscribeStores: () => {

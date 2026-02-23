@@ -6,17 +6,50 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <base href="../../../" />
   <title>Graph Preview Renderer</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    #graphRenderStatus {
+      display: none;
+      margin: 0;
+      padding: 0.75rem 1rem;
+      color: #2f3d4a;
+      font-size: 14px;
+    }
+
+    #graphRenderStatus[data-state="error"] {
+      color: #9f1d1d;
+    }
+
+    #modelGridSmall {
+      padding: 1rem;
+      box-sizing: border-box;
+      overflow: auto;
+      min-height: calc(100vh - 3rem);
+    }
+  </style>
   <script src="https://cpee.org/js_libs/jquery.min.js"></script>
   <script src="https://cpee.org/js_libs/underscore.min.js"></script>
   <script src="https://cpee.org/js_libs/printf.js"></script>
   <script src="https://cpee.org/js_libs/util.js"></script>
   <script src="js_libs_backup/wfadaptor.js"></script>
+  <link rel="stylesheet" href="js_libs_backup/wfadaptor.css" />
   <script src="pages/workspace/workflow/wf_themes/base_new.js"></script>
   <script src="pages/workspace/workflow/wf_themes/base_customized.js"></script>
   <script src="pages/workspace/workflow/graph-render.js"></script>
 </head>
 
 <body>
+  <p id="graphRenderStatus" role="status" aria-live="polite"></p>
   <div id="modelGridSmall">
     <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink" id="modelCanvasSmall"
       width="1" height="1" style="display: block"></svg>

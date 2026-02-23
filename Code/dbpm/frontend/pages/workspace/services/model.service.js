@@ -213,7 +213,10 @@ export default {
     // documentViewerStore.addTrace(createdTrace);
     // projectGraphStore.addModelNodeAndEdge(createdModel.meta, documentId);
   },
-
+  async loadVersion(versionId) {
+    const data = await modelsAPI.getDataByVersionId(versionId);
+    modelEditorStore.setData(data);
+  },
   async updateActiveModel(type) {
     const model = modelEditorStore.getModel();
     const modelId = workspaceStore.getDisplayedModelId();

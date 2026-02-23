@@ -88,8 +88,8 @@ export default {
     return model;
   },
 
-  getModelData(modelId) {
-    return readModelData(modelId);
+  getData(versionId) {
+    return storageRepo.read(versionId);
   },
   getAllModels(includeDeleted = true) {
     const models = modelRepo.findAll(includeDeleted);

@@ -97,6 +97,44 @@ function clearModelViewer() {
   $promptContainer.hide();
 }
 
+function clearModelEditor() {
+  $("#activeModelName").text("");
+  $modelActionBar.prop("disabled", true);
+  $("#graphcanvas").empty();
+  $datDetails.empty();
+  $promptContainer.hide();
+}
+
+async function showModel(data) {
+  save["state"] = "ready";
+  save["graph_theme"] = "preset_customized";
+  // console.log("!!!!!!!!!!! Showing active model:", model);
+  // Initialize endpoints and map to save cache for details.js compatibility - WAIT for completion
+  await endpointLoader.init();
+  save["endpoints_cache"] = endpointLoader._cache;
+  save["graph_adaptor"] = new WfAdaptor(
+    "pages/workspace/workflow/wf_themes/preset_customized/theme.js",
+    function (graphrealization) {
+      graphrealization.illustrator.get_symbol = endpointLoader._boundGetSymbol;
+      graphrealization.illustrator.get_properties =
+        endpointLoader._boundGetProperties;
+      graphrealization.set_svg_container($("#graphcanvas"));
+      graphrealization.set_label_container($("#graphgrid"));
+      graphrealization.set_description($(data), true);
+      graphrealization.notify = function (svgid) {
+        console.log("Graph realization notify for svgid:", svgid);
+        var g = graphrealization.get_description();
+        manifestation.events.click(svgid);
+        format_instance_pos();
+        if (manifestation.selected() == "unknown") {
+          $("#dat_details").empty();
+        }
+        // saveActiveModel(MODEL_UPDATE_TYPE.MANUAL_UPDATE_GRAPH_CHANGED);
+      };
+    },
+  );
+}
+
 const showActiveModel = async (model) => {
   save["state"] = "ready";
   save["graph_theme"] = "preset_customized";
@@ -104,7 +142,6 @@ const showActiveModel = async (model) => {
   // Initialize endpoints and map to save cache for details.js compatibility - WAIT for completion
   await endpointLoader.init();
   save["endpoints_cache"] = endpointLoader._cache;
-
   save["graph_adaptor"] = new WfAdaptor(
     "pages/workspace/workflow/wf_themes/preset_customized/theme.js",
     function (graphrealization) {
@@ -590,6 +627,12 @@ createUI({
   subscribeStores: () => {
     modelEditorStore.subscribe((state, { key, oldValue, newValue }) => {
       switch (key) {
+        case "data":
+          if (newValue) {
+            showModel(newValue);
+            $promptContainer.show();
+          }
+          break;
         case "model":
           if (newValue) {
             $("#activeModelName").text(newValue.name ? newValue.name : "");

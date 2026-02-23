@@ -44,7 +44,7 @@ export default async function (fastify, options) {
       const versionId = request.params.versionId;
       console.log("Fetching model content for version ID:", versionId);
       try {
-        const data = readModelData(versionId);
+        const data = modelService.getData(versionId);
         reply.send(data);
       } catch (err) {
         console.error("Failed to read model data:", err);

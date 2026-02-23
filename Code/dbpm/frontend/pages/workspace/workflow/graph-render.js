@@ -1,6 +1,10 @@
 (function () {
   const PREVIEW_LABEL_SELECTOR = "#modelGridSmall";
   const PREVIEW_CANVAS_SELECTOR = "#modelCanvasSmall";
+  const PREVIEW_THEME_PATH =
+    "pages/workspace/workflow/wf_themes/preset_customized/theme.js";
+  const ENDPOINTS_BASE_PATH = "/pages/workspace/workflow/wf_endpoints/";
+  const ENDPOINT_NAMES = ["subprocess"];
 
   let previewRenderQueue = Promise.resolve();
   let previewAdaptor = null;
@@ -114,8 +118,13 @@
       if (!payload || typeof payload !== "object") {
         throw new Error("renderGraphPreview payload is required");
       }
-      const { themePath, descriptionXml, endpointSymbols, endpointProperties } =
-        payload;
+      const {
+        themePath,
+        descriptionXml,
+        endpointSymbols,
+        endpointProperties,
+        keepRenderedOutput = false,
+      } = payload;
       if (!themePath || typeof themePath !== "string") {
         throw new Error("renderGraphPreview requires a themePath");
       }
@@ -138,7 +147,9 @@
         throw new Error("Preview SVG container is missing in renderer iframe");
       }
       const svgString = new window.XMLSerializer().serializeToString(svgNode);
-      clearPreviewRenderContainers(true);
+      if (!keepRenderedOutput) {
+        clearPreviewRenderContainers(true);
+      }
       return svgString;
     });
 
@@ -146,5 +157,114 @@
     return run;
   }
 
+  function setStandaloneStatus(text, state = "info") {
+    const statusEl = window.document.getElementById("graphRenderStatus");
+    if (!statusEl) return;
+
+    if (!text) {
+      statusEl.textContent = "";
+      statusEl.style.display = "none";
+      statusEl.removeAttribute("data-state");
+      return;
+    }
+
+    statusEl.textContent = text;
+    statusEl.style.display = "block";
+    statusEl.setAttribute("data-state", state);
+  }
+
+  function getRequestedModelVersionId() {
+    const params = new URLSearchParams(window.location.search);
+    return (
+      params.get("model_version_id") ||
+      params.get("modelVersionId") ||
+      params.get("version_id") ||
+      params.get("versionId")
+    );
+  }
+
+  async function fetchModelDescriptionXml(modelVersionId) {
+    const encodedVersionId = encodeURIComponent(modelVersionId);
+    const response = await fetch(
+      `${window.location.origin}/models/versions/${encodedVersionId}/data`,
+    );
+    if (!response.ok) {
+      throw new Error(`Failed to fetch model version ${modelVersionId}`);
+    }
+    const modelXml = await response.text();
+    const description = parseDescriptionElement(modelXml);
+    return new window.XMLSerializer().serializeToString(description);
+  }
+
+  async function loadEndpointPreviewData() {
+    const endpointSymbols = {};
+    const endpointProperties = {};
+
+    await Promise.all(
+      ENDPOINT_NAMES.map(async (endpoint) => {
+        try {
+          const [symbolResponse, propertiesResponse] = await Promise.all([
+            fetch(`${ENDPOINTS_BASE_PATH}${endpoint}/symbol.svg`),
+            fetch(`${ENDPOINTS_BASE_PATH}${endpoint}/properties.json`),
+          ]);
+
+          if (symbolResponse.ok) {
+            endpointSymbols[endpoint] = await symbolResponse.text();
+          }
+          if (propertiesResponse.ok) {
+            endpointProperties[endpoint] = await propertiesResponse.json();
+          }
+        } catch (err) {
+          console.warn(
+            `Unable to load endpoint preview assets for "${endpoint}"`,
+            err,
+          );
+        }
+      }),
+    );
+
+    return { endpointSymbols, endpointProperties };
+  }
+
+  async function renderStandaloneGraphFromQuery() {
+    const modelVersionId = getRequestedModelVersionId();
+    if (!modelVersionId) return;
+
+    setStandaloneStatus("Loading model graph...");
+    try {
+      const [descriptionXml, endpointPayload] = await Promise.all([
+        fetchModelDescriptionXml(modelVersionId),
+        loadEndpointPreviewData(),
+      ]);
+      const previewThemeUrl = new URL(
+        PREVIEW_THEME_PATH,
+        window.document.baseURI,
+      ).toString();
+
+      await renderGraphPreview({
+        themePath: previewThemeUrl,
+        descriptionXml,
+        endpointSymbols: endpointPayload.endpointSymbols,
+        endpointProperties: endpointPayload.endpointProperties,
+        keepRenderedOutput: true,
+      });
+      setStandaloneStatus("");
+    } catch (err) {
+      console.error("Error rendering standalone model graph:", err);
+      setStandaloneStatus(
+        err?.message || "Failed to render model graph preview",
+        "error",
+      );
+    }
+  }
+
   window.renderGraphPreview = renderGraphPreview;
+
+  if (window.document.readyState === "loading") {
+    window.document.addEventListener("DOMContentLoaded", () => {
+      renderStandaloneGraphFromQuery();
+    });
+  } else {
+    renderStandaloneGraphFromQuery();
+  }
 })();
