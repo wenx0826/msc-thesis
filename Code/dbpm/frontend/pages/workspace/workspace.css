@@ -224,16 +224,12 @@ li .col-button {
     background-color: var(--x-ui-hover-background-color);
 } */
 
-/*
 #highlightLayer {
-            /* position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none; 
-        }*/
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
 
 /* ---------------- document viewer pane ----------------*/
 
@@ -263,11 +259,11 @@ li .col-button {
   /* user-select: text; */
   max-width: 100%;
 }
-#selectionsLayer {
+#interactionSelectionsLayer {
   position: absolute;
   inset: 0;
-  z-index: 0;
-  pointer-events: none; /* 不挡选区/点击 */
+  background: transparent;
+  pointer-events: none;
 }
 
 #interactionLayer * {
@@ -287,27 +283,30 @@ li .col-button {
   /* background-color: yellow; */
 }
 
-#selectionsLayer .selection-wrap.active * {
+#highlightLayer .selection-wrap.active * {
   z-index: 4;
 }
 
-#interactionLayer .selection-wrap {
+#interactionSelectionsLayer .selection-wrap {
   /* border: 2px solid var(--wfadaptor-highlight);
   pointer-events: auto;
   cursor: default; */
   /* z-index: 2; */
   /* background-color: yellow; */
+  background: transparent;
   outline: 2px solid var(--wfadaptor-highlight);
   /* outline: 2px solid var(--wfadaptor-highlight); */
   outline-offset: 2px;
+  pointer-events: auto;
+  cursor: pointer;
   /* transition: outline-offset 0.2s; */
 }
 
-#interactionLayer .selection-wrap.selected {
+#interactionSelectionsLayer .selection-wrap.selected {
   outline-color: var(--wfadaptor-selected);
   /* background-color: yellow; */
 }
-#interactionLayer .selection-wrap:not([data-model-id]) {
+#interactionSelectionsLayer .selection-wrap:not([data-model-id]) {
   outline-style: dashed;
   /* background-color: yellow; */
 }

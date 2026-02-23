@@ -3,7 +3,7 @@ import { workspaceStore, modelsStore } from "../store/index.js";
 import { workspaceService } from "../services/index.js";
 import { modelsAPI } from "../../../api/index.js";
 import { endpointLoader } from "../workflow/wf_endpoints/endpoint-loader.js";
-import { $cloneTemplate } from "../../../shared/utils/dom.js";
+import { createTemplateElement } from "../../../shared/utils/dom.js";
 
 const PREVIEW_THEME_PATH =
   "pages/workspace/workflow/wf_themes/preset_customized/theme.js";
@@ -253,9 +253,7 @@ async function renderModelInList(model) {
   console.log("Rendering model in list:", model);
   const modelId = model?.id;
   const gridId = `modelGrid_${modelId}`;
-  const $modelContainer = $cloneTemplate("modelItemTemplate")
-    .children()
-    .first()
+  const $modelContainer = createTemplateElement("modelItemTemplate")
     .attr("data-model-id", modelId)
     .attr("data-document-id", model.documentId);
   const $gridDiv = $modelContainer.find("[data-ref='modelGrid']").first();

@@ -1,7 +1,7 @@
 import { createUI } from "../../../shared/utils/ui.js";
 import { workspaceStore, documentsStore } from "../store/index.js";
 import { workspaceService, documentService } from "../services/index.js";
-import { $cloneTemplate } from "../../../shared/utils/dom.js";
+import { createTemplateElement } from "../../../shared/utils/dom.js";
 import initInlineEditor from "../../../shared/widgets/inline-editor.js";
 
 const $documentsInput = $("#documentsInput");
@@ -18,9 +18,7 @@ function getVersionName(versions, versionId) {
 }
 function renderDocumentItem({ id: docId, versions }) {
   const latestVersion = versions.at(-1);
-  const $documentItem = $cloneTemplate("documentItemTemplate")
-    .children()
-    .first();
+  const $documentItem = createTemplateElement("documentItemTemplate");
   $documentItem.attr("data-doc-id", docId);
   $documentItem.attr("data-doc-version-id", latestVersion.id);
   $documentItem.find("[data-ref='documentName']").text(latestVersion.name);

@@ -5,7 +5,7 @@ import {
   getDocumentURL,
   getModelGraphRenderURL,
 } from "../../../shared/utils/url.js";
-import { $cloneTemplate } from "../../../shared/utils/dom.js";
+import { createTemplateElement } from "../../../shared/utils/dom.js";
 import { formatNumber } from "../../../shared/utils/number.js";
 let documents = [];
 let models = [];
@@ -21,9 +21,7 @@ async function renderDocumentsList(documents) {
     const latestVersion = versions.at(-1);
     const docModels = getDocModels(doc.id);
     // const versionName = latestVersion ? latestVersion.name : "Untitled Document";
-    const $documentItem = $cloneTemplate("documentItemTemplate")
-      .children()
-      .first();
+    const $documentItem = createTemplateElement("documentItemTemplate");
     $documentItem.find("li").attr("data-doc-id", doc.id);
     $documentItem
       .find("[data-ref='documentName']")
@@ -42,7 +40,7 @@ async function renderDocumentsList(documents) {
     // renderDocumentModels(doc.id, $documentItem);
     const $modelsList = $documentItem.find("[data-ref='modelsList']");
     docModels.forEach((model) => {
-      const $modelItem = $cloneTemplate("modelItemTemplate").children().first();
+      const $modelItem = createTemplateElement("modelItemTemplate");
       const modelVersions = model.versions || [];
       const latestModelVersion = modelVersions.at(-1);
       const modelVersionId = latestModelVersion?.id || model.latestVersionId;

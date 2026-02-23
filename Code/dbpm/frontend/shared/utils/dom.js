@@ -1,4 +1,4 @@
-export function $cloneTemplate(templateId) {
+export function createTemplateElement(templateId) {
   const template = document.getElementById(templateId);
-  return $(template.content.cloneNode(true));
+  return $(template.content.cloneNode(true)).children().first();
 }
