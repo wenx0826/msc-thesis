@@ -5,9 +5,7 @@
   "main": "server.js",
   "scripts": {
     "dev": "nodemon server.js",
-    "reset": "node utils/resetData.js",
-    "test": "node --test",
-    "test:watch": "node --test --watch"
+    "reset": "node utils/resetData.js"
   },
   "keywords": [],
   "author": "",
