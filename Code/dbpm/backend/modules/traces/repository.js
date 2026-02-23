@@ -30,7 +30,7 @@ export default {
     const stmt = db.prepare(`
       SELECT t.*, mv.model_id FROM traces t
       LEFT JOIN model_versions mv ON t.model_version_id = mv.id
-      WHERE t.document_version_id = ? AND t.deleted_at IS NULL`);
+      WHERE t.document_version_id = ?`);
     const rows = stmt.all(documentVersionId);
     return rows.map((row) => toCamel(parseTraceSelections(row)));
   },

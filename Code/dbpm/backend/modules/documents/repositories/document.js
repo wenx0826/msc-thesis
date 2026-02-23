@@ -70,30 +70,6 @@ export default {
     const result = stmt.get(id);
     return result?.project_id ?? null;
   },
-  getTraces(docId, includeDeleted = false) {
-    const stmt = db.prepare(`
-      SELECT
-        t.id,
-        dv.document_id,
-        mv.model_id,
-        t.selections,
-        t.created_at,
-        t.deleted_at
-      FROM traces t
-      JOIN document_versions dv ON dv.id = t.document_version_id
-      JOIN model_versions mv ON mv.id = t.model_version_id
-      WHERE dv.document_id = ?
-      ${includeDeleted ? "" : "AND t.deleted_at IS NULL"}
-      ORDER BY t.created_at ASC
-    `);
-    const results = stmt.all(docId);
-    return results.map((trace) =>
-      toCamel({
-        ...trace,
-        selections: trace.selections ? JSON.parse(trace.selections) : [],
-      }),
-    );
-  },
   getModels(docId, includeDeleted = false) {
     const stmt = db.prepare(`
       SELECT DISTINCT m.*, lv.name

@@ -1,6 +1,6 @@
 import crypto from "crypto";
 import projectRepo from "./repository.js";
-import { logEvent, createEmptyLogFile } from "../../utils/logger.js";
+import logService from "../logs/service.js";
 import documentService from "../documents/service.js";
 import modelService from "../models/service.js";
 
@@ -10,8 +10,8 @@ export default {
 
     try {
       const createdProject = projectRepo.create({ id, name });
-      createEmptyLogFile(id);
-      logEvent(id, "project_created", { id, name });
+      logService.create(id);
+      logService.logEvent(id, "project_created", { id, name });
       return createdProject;
     } catch (err) {
       throw err;

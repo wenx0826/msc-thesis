@@ -3,7 +3,7 @@ import modelRepo from "./repositories/model.js";
 import versionRepo from "./repositories/version.js";
 import storageRepo from "./repositories/storage.js";
 import traceRepo from "../traces/repository.js";
-import { logEvent, getISODate } from "../../utils/logger.js";
+import logService from "../logs/service.js";
 import { countWords } from "../../utils/fileHelper.js";
 import documentsService from "../documents/service.js";
 import projectsService from "../projects/service.js";
@@ -52,7 +52,7 @@ export default {
       const createdTrace = traceService.create({ ...trace });
 
       // Log the event
-      logEvent(projectId, "model_generated", {
+      logService.logEvent(projectId, "model_generated", {
         id: id,
         name,
         data: modelData,
@@ -155,10 +155,10 @@ export default {
     }
 
     // Add stat update
-    modelRepo.addStatUpdate(modelId, getISODate(), type, words);
+    modelRepo.addStatUpdate(modelId, new Date().toISOString(), type, words);
 
     // Log the event
-    logEvent(projectId, `model_updated_${type}`, {
+    logService.logEvent(projectId, `model_updated_${type}`, {
       id: modelId,
       versionId,
       data: modelData,
@@ -172,10 +172,15 @@ export default {
     storageRepo.write(modelId, modelData);
 
     // Add stat update
-    modelRepo.addStatUpdate(modelId, getISODate(), "manual_update", null);
+    modelRepo.addStatUpdate(
+      modelId,
+      new Date().toISOString(),
+      "manual_update",
+      null,
+    );
 
     // Log the event
-    logEvent(projectId, "model_updated_manual", {
+    logService.logEvent(projectId, "model_updated_manual", {
       id: modelId,
       data: modelData,
     });
@@ -193,7 +198,10 @@ export default {
     modelRepo.softDelete(modelId);
 
     // Log the event
-    logEvent(projectId, "model_deleted", { id: modelId, name: model.name });
+    logService.logEvent(projectId, "model_deleted", {
+      id: modelId,
+      name: model.name,
+    });
 
     return { message: "Model deleted" };
   },

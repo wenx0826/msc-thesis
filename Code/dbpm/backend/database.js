@@ -76,7 +76,7 @@ function initializeSchema() {
   db.exec(`
     CREATE TABLE IF NOT EXISTS traces (
       id TEXT PRIMARY KEY,
-      marker_id TEXT,
+      trace_id TEXT,
       document_version_id TEXT NOT NULL,
       model_version_id TEXT NOT NULL,
       selections TEXT NOT NULL,

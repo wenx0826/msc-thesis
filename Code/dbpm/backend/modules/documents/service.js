@@ -2,7 +2,7 @@ import crypto from "crypto";
 import documentRepo from "./repositories/document.js";
 import versionRepo from "./repositories/version.js";
 import storageRepo from "./repositories/storage.js";
-import { logEvent } from "../../utils/logger.js";
+import logService from "../logs/service.js";
 import { countWords } from "../../utils/fileHelper.js";
 import traceService from "../traces/service.js";
 export default {
@@ -25,7 +25,7 @@ export default {
         wordsCount,
       });
       documentRepo.update(id, { latestVersionId: versionId });
-      logEvent(projectId, "document_uploaded", createdDocument);
+      logService.logEvent(projectId, "document_uploaded", createdDocument);
       return { ...createdDocument, versions: [createdVersion] };
     } catch (err) {
       // Cleanup on failure
@@ -47,10 +47,14 @@ export default {
         wordsCount,
       });
       documentRepo.update(documentId, { latestVersionId: versionId });
-      logEvent(documentRepo.findProjectIdById(documentId), "document_updated", {
-        documentId,
-        versionId,
-      });
+      logService.logEvent(
+        documentRepo.findProjectIdById(documentId),
+        "document_updated",
+        {
+          documentId,
+          versionId,
+        },
+      );
       return createdVersion;
     } catch (err) {
       // Cleanup on failure

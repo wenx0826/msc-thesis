@@ -99,7 +99,6 @@ export default {
           FROM traces t
           JOIN document_versions dv ON dv.id = t.document_version_id
           WHERE t.model_version_id = m.latest_version_id
-            AND t.deleted_at IS NULL
           ORDER BY t.created_at DESC
           LIMIT 1
         ) AS document_id,
@@ -110,7 +109,6 @@ export default {
               SELECT DISTINCT t.document_version_id AS doc_version_id
               FROM traces t
               WHERE t.model_version_id = m.latest_version_id
-                AND t.deleted_at IS NULL
             )
           ),
           '[]'
