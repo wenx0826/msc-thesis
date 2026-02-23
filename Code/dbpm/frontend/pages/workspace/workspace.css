@@ -272,6 +272,7 @@ li .col-button {
   position: absolute;
   inset: 0;
   background: transparent;
+  pointer-events: none;
 
 }
 #modelTagsLayer * {

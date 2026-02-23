@@ -16,14 +16,12 @@ const $deleteSelectionButton = $("#deleteSelectionButton");
 const $documentContent = $("#documentContent");
 const $viewerWrap = $("#viewerWrap");
 const $selectionsVisualLayer = $("#selectionsVisualLayer");
-const $temporarySelectionsLayer = $("#temporarySelectionsLayer");
 const $selectionsInteractionLayer = $("#selectionsInteractionLayer");
 const $modelTagsLayer = $("#modelTagsLayer");
 const $addSelectionsButton = $("#addSelectionsButton");
 const $generateButton = $("#generateButton");
-const HIGHLIGHT_SELECTION_TEMPLATE_ID = "highlightSelectionTemplate";
-const INTERACTION_SELECTION_TEMPLATE_ID = "interactionSelectionTemplate";
-const SELECTION_RECT_TEMPLATE_ID = "selectionRectTemplate";
+const SELECTION_WRAP_TEMPLATE_ID = "selectionWrapTemplate";
+const SELECTION_RECT_TEMPLATE_ID = "selectionRangeRectTemplate";
 const MODEL_TAG_TEMPLATE_ID = "modelTagTemplate";
 
 let selectedSelection = null;
@@ -308,7 +306,7 @@ const renderSelection = (
   const wrapHeight = `${selectionRect.height}px`;
 
   const $highlightWrap = createSelectionWrap({
-    templateId: HIGHLIGHT_SELECTION_TEMPLATE_ID,
+    templateId: SELECTION_WRAP_TEMPLATE_ID,
     selectionId,
     modelId,
     top: wrapTop,
@@ -348,7 +346,7 @@ const renderSelection = (
     $modelTagsLayer.append($tag);
   }
   const $interactionWrap = createSelectionWrap({
-    templateId: INTERACTION_SELECTION_TEMPLATE_ID,
+    templateId: SELECTION_WRAP_TEMPLATE_ID,
     selectionId,
     modelId,
     top: wrapTop,
@@ -362,7 +360,7 @@ const renderSelection = (
       top: `${rect.top - selectionRectTop + 2}px`,
       left: `${rect.left - selectionRectLeft}px`,
       width: `${rect.width}px`,
-      height: `${rect.height - 4}px`,
+      height: `${Math.max(rect.height - 4, 1)}px`,
       selectionId,
       modelId,
       traceId,
