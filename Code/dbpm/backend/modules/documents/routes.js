@@ -61,17 +61,21 @@ export default async function (fastify, options) {
   );
 
   // GET /documents/:id/traces - Get traces for a document
-  fastify.get("/:id/traces", { schema: getTracesSchema }, (request, reply) => {
-    const { id } = request.params;
-    console.log("Fetching traces for document ID:", id);
-    try {
-      const traces = documentService.getTraces(id);
-      reply.send(traces);
-    } catch (err) {
-      console.error("Failed to fetch traces:", err);
-      reply.code(500).send({ error: "Failed to fetch traces" });
-    }
-  });
+  fastify.get(
+    "/versions/:versionId/traces",
+    { schema: getTracesSchema },
+    (request, reply) => {
+      const { versionId } = request.params;
+      console.log("Fetching traces for document version ID:", versionId);
+      try {
+        const traces = documentService.getTraces(versionId);
+        reply.send(traces);
+      } catch (err) {
+        console.error("Failed to fetch traces:", err);
+        reply.code(500).send({ error: "Failed to fetch traces" });
+      }
+    },
+  );
 
   // PUT /documents/versions/:versionId/meta - Update document version metadata (e.g., name)
   fastify.put(

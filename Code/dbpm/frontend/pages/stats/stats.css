@@ -90,6 +90,20 @@
 }
 
 /* Documents list (semantic UL/LI, reset default styles) */
+ul.document-info > li,
+ul.model-info > li {
+  display: inline;
+  /* font-size: 18px; */
+}
+
+/* Add a slash symbol (/) before/behind each list item */
+ul.document-info > li+li:before,
+ul.model-info > li+li:before {
+  padding: 8px;
+  color: var(--x-ui-text-muted-color);
+  content: "|";
+}
+
 .documentsList {
   list-style: none;
   padding: 0;

@@ -11,7 +11,7 @@ import { Constants } from "../../../constants.js";
 import { default as setActiveModuleNameEditor } from "../../../shared/widgets/inline-editor.js";
 
 const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
-
+const $displayedVersionName = $("#displayedModelVersionName");
 const $modelActionBar = $("#modelActionBar");
 const $exportTestsetButton = $("#exportTestsetButton");
 const $deleteModelButton = $("#deleteModelButton");
@@ -90,7 +90,7 @@ function saveActiveModel(type) {
 }
 
 function clearModelViewer() {
-  $("#activeModelName").text("");
+  $displayedVersionName.text("");
   $modelActionBar.prop("disabled", true);
   $("#graphcanvas").empty();
   $datDetails.empty();
@@ -98,14 +98,14 @@ function clearModelViewer() {
 }
 
 function clearModelEditor() {
-  $("#activeModelName").text("");
+  $displayedVersionName.text("");
   $modelActionBar.prop("disabled", true);
   $("#graphcanvas").empty();
   $datDetails.empty();
   $promptContainer.hide();
 }
 
-async function showModel(data) {
+async function showWFGraph(data) {
   save["state"] = "ready";
   save["graph_theme"] = "preset_customized";
   // console.log("!!!!!!!!!!! Showing active model:", model);
@@ -129,6 +129,9 @@ async function showModel(data) {
         if (manifestation.selected() == "unknown") {
           $("#dat_details").empty();
         }
+        console.log(
+          "Graph realization notify!! - saving active model with updated graph",
+        );
         // saveActiveModel(MODEL_UPDATE_TYPE.MANUAL_UPDATE_GRAPH_CHANGED);
       };
     },
@@ -425,7 +428,7 @@ function do_main_work(svgid) {
 createUI({
   setup: () => {
     setActiveModuleNameEditor({
-      $scope: $("#activeModelName").parent(),
+      $scope: $displayedVersionName.parent(),
       trigger: "click",
       autoGrow: true,
       onSave: (name) => {
@@ -480,7 +483,7 @@ createUI({
     });
 
     $revertPrevModelButton.on("click", () => {
-      $("#activeModelName").text("");
+      $displayedVersionName.text("");
       $("#graphcanvas").empty();
       $("#generatedModelActionBar").css("visibility", "hidden");
     });
@@ -629,13 +632,15 @@ createUI({
       switch (key) {
         case "data":
           if (newValue) {
-            showModel(newValue);
+            showWFGraph(newValue);
             $promptContainer.show();
+          } else {
+            clearModelEditor();
           }
           break;
         case "model":
           if (newValue) {
-            $("#activeModelName").text(newValue.name ? newValue.name : "");
+            $displayedVersionName.text(newValue.name ? newValue.name : "");
             $modelActionBar.prop("disabled", false);
             $datDetails.empty();
             showActiveModel(newValue);
@@ -685,7 +690,15 @@ createUI({
 
     workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
       switch (key) {
-        case "displayModelId":
+        case "displayedModel":
+          if (newValue.id) {
+            const versionName = modelsStore.getVersionName(
+              newValue.id,
+              newValue.versionId,
+            );
+            $displayedVersionName.text(versionName);
+            // const name = modelsStore.getModelNameById(newValue.id);
+          }
           break;
         default:
           break;

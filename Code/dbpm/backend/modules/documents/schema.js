@@ -73,9 +73,9 @@ export const getDocumentContentSchema = {
 export const getTracesSchema = {
   params: {
     type: "object",
-    required: ["id"],
+    required: ["versionId"],
     properties: {
-      id: { type: "string" },
+      versionId: { type: "string" },
     },
   },
   response: {
@@ -85,7 +85,8 @@ export const getTracesSchema = {
         type: "object",
         properties: {
           id: { type: "string" },
-          documentId: { type: "string" },
+          // documentId: { type: "string" },
+          modelVersionId: { type: "string" },
           modelId: { type: "string" },
           selections: { type: "array" },
         },

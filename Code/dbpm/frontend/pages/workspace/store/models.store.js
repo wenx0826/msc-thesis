@@ -67,11 +67,6 @@ class ModelsStore extends VersionedEntityStore {
     return this.getEntity(modelId)?.latestVersionId || null;
   }
 
-  getModelNameById(modelId) {
-    const model = this.getEntity(modelId);
-    return model?.name ?? model?.meta?.name ?? null;
-  }
-
   getModelGraphById(modelId) {
     const model = this.getEntity(modelId);
     if (!model) return null;

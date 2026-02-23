@@ -1,14 +1,15 @@
 import { createUI } from "../../../shared/utils/ui.js";
 import {
-  workspaceStore,
+  documentsStore,
   documentViewerStore,
   modelsStore,
+  workspaceStore,
 } from "../store/index.js";
-import { workspaceService, modelService } from "../services/index.js";
+import { modelService, workspaceService } from "../services/index.js";
 import { Constants } from "../../../constants.js";
-
+import initVersionSelector from "../../../shared/widgets/version-selector.js";
 const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
-
+const $versionSelect = $("#docVersionSelect");
 const $selectionColorForm = $("#selectionColorForm");
 const $deleteSelectionButton = $("#deleteSelectionButton");
 const $documentContent = $("#documentContent");
@@ -189,7 +190,11 @@ const onSelectionSelect = (event) => {
 //   return modelId == workspaceStore.getDisplayedModelId();
 // }
 
-const renderSelection = ({ range, color, id: selectionId }, modelId) => {
+const renderSelection = (
+  { range, color, id: selectionId },
+  modelId,
+  modelVersionId,
+) => {
   //todo
   const isActiveModel = modelId
     ? modelId === workspaceStore.getDisplayedModelId()
@@ -245,7 +250,8 @@ const renderSelection = ({ range, color, id: selectionId }, modelId) => {
     const lastIndex = rects.length - 1;
     const lastRect = rects[lastIndex];
 
-    const modelName = modelsStore.getModelNameById(modelId);
+    const modelName =
+      modelsStore.getVersionName(modelId, modelVersionId) || "-";
 
     const tagSpan = $("<span>")
       .attr("data-model-id", modelId)
@@ -308,9 +314,9 @@ const rerenderTemporarySelectionsLayer = () => {
   // }
 };
 
-const renderTrace = ({ selections, modelId }) => {
+const renderTrace = ({ selections, modelId, modelVersionId }) => {
   selections.forEach((selection, index) => {
-    renderSelection(selection, modelId);
+    renderSelection(selection, modelId, modelVersionId);
   });
 };
 
@@ -357,6 +363,16 @@ const handleTextSelection = () => {
 createUI({
   setup: () => {
     // Initial UI setup if needed
+    const versionSelector = initVersionSelector({
+      $select: $versionSelect,
+      onSelect: ({ version }) => {
+        workspaceService.displayDocument({
+          id: version.documentId,
+          versionId: version.id,
+        });
+      },
+    });
+    return { versionSelector };
   },
   bindListeners: () => {
     $selectionColorForm.on("input", (e) => {
@@ -458,7 +474,7 @@ createUI({
     */
     });
   },
-  subscribeStores: () => {
+  subscribeStores: ({ versionSelector }) => {
     documentViewerStore.subscribe((state, { key, operation, ...payload }) => {
       if (operation) {
         const { value } = payload;
@@ -557,6 +573,18 @@ createUI({
     workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
       switch (key) {
         case "displayedDocument":
+          if (newValue.id) {
+            const versions = documentsStore.getVersions(newValue.id);
+            versionSelector.update({
+              versions,
+              selectedId: newValue.versionId,
+            });
+          }
+          // if (newValue) {
+          // versionSelector.update({
+          //   versions,
+          //   selectedId: newValue.versionId,
+          // });
           // if (newValue.id) {
           //   $generateButton.text("Regenerate Model");
           //   $generateButton.prop(

@@ -4,7 +4,7 @@ import versionRepo from "./repositories/version.js";
 import storageRepo from "./repositories/storage.js";
 import { logEvent } from "../../utils/logger.js";
 import { countWords } from "../../utils/fileHelper.js";
-
+import traceService from "../traces/service.js";
 export default {
   create({ projectId, name, content }) {
     const id = crypto.randomUUID();
@@ -94,8 +94,8 @@ export default {
     return storageRepo.read(versionId);
   },
 
-  getTraces(docId) {
-    return documentRepo.getTraces(docId);
+  getTraces(versionId) {
+    return traceService.getByDocumentVersionId(versionId);
   },
 
   getModels(docId) {

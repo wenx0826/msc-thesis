@@ -132,27 +132,31 @@ export default {
     return handleTextResponse(response, "Failed to fetch model");
   },
 
-  async updateModelDataByVersionId(versionId, modelData) {
+  async updateVersion(versionId, params) {
     const response = await fetch(
-      `${baseURL}/${this.path}/versions/${versionId}/data`,
+      `${baseURL}/${this.path}/versions/${versionId}`,
       {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ modelData }),
+        body: JSON.stringify(params),
       },
     );
-    return handleResponse(response, "Failed to update model data");
-  },
-
-  async updateModel(modelId, params) {
-    const response = await fetch(`${baseURL}/${this.path}/${modelId}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(params),
-    });
     return handleResponse(response, "Failed to update model and trace");
   },
-
+  async updateVersionMeta(versionId, params) {
+    const response = await fetch(
+      `${baseURL}/${this.path}/versions/${versionId}/meta`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(params),
+      },
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return await response.json();
+  },
   async deleteModelById(id) {
     const response = await fetch(`${baseURL}/${this.path}/${id}`, {
       method: "DELETE",

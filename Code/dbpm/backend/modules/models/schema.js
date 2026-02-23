@@ -85,7 +85,7 @@ export const getModelSchema = {
   },
 };
 
-export const getModelDataSchema = {
+export const getVersionDataSchema = {
   params: {
     type: "object",
     required: ["versionId"],
@@ -122,19 +122,61 @@ export const updateModelSchema = {
   },
 };
 
-export const updateModelDataSchema = {
+export const updateVersionMetaSchema = {
   params: {
     type: "object",
-    required: ["id"],
     properties: {
-      id: { type: "string" },
+      versionId: { type: "string" },
     },
+    required: ["versionId"],
   },
   body: {
     type: "object",
-    required: ["modelData"],
     properties: {
+      name: { type: "string" },
+    },
+  },
+  response: {
+    200: {
+      type: "object",
+      properties: {
+        id: { type: "string" },
+        modelId: { type: "string" },
+        name: { type: "string" },
+        createdAt: { type: "string" },
+      },
+    },
+  },
+};
+
+export const updateVersionSchema = {
+  params: {
+    type: "object",
+    properties: {
+      versionId: { type: "string" },
+    },
+    required: ["versionId"],
+  },
+  body: {
+    type: "object",
+    properties: {
+      // name: { type: "string" },
+      type: { type: "string" },
       modelData: { type: "string" },
+      trace: {
+        type: "object",
+        properties: {
+          selections: { type: "array" },
+        },
+      },
+    },
+  },
+  response: {
+    200: {
+      type: "object",
+      properties: {
+        id: { type: "string" },
+      },
     },
   },
 };

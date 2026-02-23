@@ -45,7 +45,6 @@ function initializeSchema() {
       name TEXT NOT NULL,
       words_count INTEGER NOT NULL DEFAULT 0,
       created_at TEXT NOT NULL DEFAULT current_timestamp,
-      deleted_at TEXT,
       FOREIGN KEY (document_id) REFERENCES documents(id)
     )
   `);
@@ -69,7 +68,6 @@ function initializeSchema() {
       name TEXT NOT NULL,
       selected_words_count INTEGER DEFAULT 0,
       created_at TEXT NOT NULL DEFAULT current_timestamp,
-      deleted_at TEXT,
       FOREIGN KEY (model_id) REFERENCES models(id)
     )
   `);
@@ -78,11 +76,12 @@ function initializeSchema() {
   db.exec(`
     CREATE TABLE IF NOT EXISTS traces (
       id TEXT PRIMARY KEY,
+      marker_id TEXT,
       document_version_id TEXT NOT NULL,
       model_version_id TEXT NOT NULL,
       selections TEXT NOT NULL,
+      is_latest BOOLEAN NOT NULL DEFAULT 1,
       created_at TEXT NOT NULL DEFAULT current_timestamp,
-      deleted_at TEXT,
       FOREIGN KEY (document_version_id) REFERENCES document_versions(id),
       FOREIGN KEY (model_version_id) REFERENCES model_versions(id)
     )

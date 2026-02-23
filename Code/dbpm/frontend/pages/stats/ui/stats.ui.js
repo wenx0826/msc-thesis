@@ -6,7 +6,7 @@ import {
   getModelGraphRenderURL,
 } from "../../../shared/utils/url.js";
 import { $cloneTemplate } from "../../../shared/utils/dom.js";
-
+import { formatNumber } from "../../../shared/utils/number.js";
 let documents = [];
 let models = [];
 const $documentsList = $("#documentsList");
@@ -33,7 +33,7 @@ async function renderDocumentsList(documents) {
       .text(`v${versions.length}`);
     $documentItem
       .find("[data-ref='wordsCount']")
-      .text(latestVersion?.wordsCount ?? 0);
+      .text(formatNumber(latestVersion?.wordsCount ?? 0));
     $documentItem.find("[data-ref='modelsCount']").text(docModels.length);
     $documentItem
       .find("[data-ref='documentLink']")
@@ -54,7 +54,7 @@ async function renderDocumentsList(documents) {
         .text(`v${modelVersions.length}`);
       $modelItem
         .find("[data-ref='selectedWordsCount']")
-        .text(latestModelVersion?.selectedWordsCount ?? 0);
+        .text(formatNumber(latestModelVersion?.selectedWordsCount ?? 0));
       $modelItem
         .find("[data-ref='modelLink']")
         .attr("href", getModelGraphRenderURL(modelVersionId))

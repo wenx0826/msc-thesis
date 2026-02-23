@@ -3,12 +3,10 @@ import { workspaceStore, documentsStore } from "../store/index.js";
 import { workspaceService, documentService } from "../services/index.js";
 import { $cloneTemplate } from "../../../shared/utils/dom.js";
 import initInlineEditor from "../../../shared/widgets/inline-editor.js";
-import initVersionSelector from "../../../shared/widgets/version-selector.js";
 
 const $documentsInput = $("#documentsInput");
 const $documentUpdateInput = $("#documentUpdateInput");
 const $documentsList = $("#documentsList");
-const $versionSelect = $("#docVersionSelect");
 
 function getLatestVersion(versions) {
   return versions[versions.length - 1];
@@ -87,20 +85,12 @@ createUI({
         // const doc = $view.closest("li")[0].dataset;
         // const documentId = doc.docId;
         const docVersionId = $view.closest("li")[0].dataset.docVersionId;
-        documentService.renameDocumentVersion(docVersionId, newValue);
+        documentService.renameVersion(docVersionId, newValue);
         // documentService.updateDocument(documentId, { name });
       },
     });
-    const displayedDocVersionSelector = initVersionSelector({
-      $select: $versionSelect,
-      onSelect: ({ version }) => {
-        workspaceService.displayDocument({
-          id: version.documentId,
-          versionId: version.id,
-        });
-      },
-    });
-    return { documentNameEditor, displayedDocVersionSelector };
+
+    return { documentNameEditor };
   },
   bindListeners: ({ documentNameEditor }) => {
     $documentsInput.on("change", async (event) => {
@@ -187,13 +177,13 @@ createUI({
     workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
       switch (key) {
         case "displayedDocument":
-          highlightActiveDocumentItem(newValue.id);
-          const versions = documentsStore.getVersions(newValue.id);
-          displayedDocVersionSelector.update({
-            versions,
-            selectedId: newValue.versionId,
-          });
-          rerenderDocumentItem(newValue.id, newValue.versionId);
+          if (newValue.id) {
+            highlightActiveDocumentItem(newValue.id);
+            const versions = documentsStore.getVersions(newValue.id);
+            rerenderDocumentItem(newValue.id, newValue.versionId);
+          } else if (oldValue?.id) {
+            // highlightActiveDocumentItem(null);
+          }
           break;
         default:
           break;

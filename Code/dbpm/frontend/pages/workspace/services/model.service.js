@@ -252,7 +252,44 @@ export default {
       documentViewerStore.updateTrace(trace);
     }
   },
+  async saveModel(type) {
+    const model = modelEditorStore.getModel();
+    const modelVersionId = workspaceStore.getDisplayedModel().versionId;
 
+    // if (model.updateType) {
+    //   type = model.updateType;
+    //   delete model.updateType;
+    // }
+    if ([MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS].includes(type)) {
+      const selectedText = documentViewerStore.getSelectedText();
+      modelEditorStore.updateModelDbpmTextSelections(selectedText);
+    }
+    const modelData = modelEditorStore.getSerializedData();
+
+    const trace =
+      type === MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS ||
+      type === MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS
+        ? documentViewerStore.getSerializedNewActiveModelTrace()
+        : null;
+    console.log("Updating active model TRACE:", trace);
+    const res = await modelsAPI.updateVersion(modelVersionId, {
+      modelData,
+      trace,
+      type,
+    });
+    if (
+      [
+        MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
+        MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS,
+      ].includes(type)
+    ) {
+      documentViewerStore.setTemporarySelections([]);
+      documentViewerStore.updateTrace(trace);
+    }
+  },
+  async renameVersion(versionId, newName) {
+    await modelsAPI.updateVersionMeta(versionId, { name: newName });
+  },
   async updateActiveModelTrace() {
     const updatedTrace = documentViewerStore.getSerializedActiveModelTrace();
     modelsAPI.traces

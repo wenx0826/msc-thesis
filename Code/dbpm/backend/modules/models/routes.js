@@ -2,7 +2,7 @@ import modelService from "./service.js";
 import {
   createModelSchema,
   getModelSchema,
-  getModelDataSchema,
+  getVersionDataSchema,
   updateModelDataSchema,
 } from "./schema.js";
 import { readModelData } from "../../utils/fileHelper.js";
@@ -39,7 +39,7 @@ export default async function (fastify, options) {
   // GET /models/:id/data - Get model data
   fastify.get(
     "/versions/:versionId/data",
-    { schema: getModelDataSchema },
+    { schema: getVersionDataSchema },
     (request, reply) => {
       const versionId = request.params.versionId;
       console.log("Fetching model content for version ID:", versionId);

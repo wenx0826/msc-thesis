@@ -28,32 +28,32 @@ export default {
   async loadVersion(versionId) {
     documentViewerStore.clear();
     const contentPromise = documentsAPI.getContentByVersionId(versionId);
-    // const tracesPromise = tracesAPI.getTracesByDocumentId(id);
-    return new Promise((resolve, reject) => {
-      contentPromise.then(
-        (content) => {
-          documentViewerStore.setContent(content);
-          // this.setStatus(null);
-          // tracesPromise
-          //   .then((traces) => {
-          //     console.log("Loaded traces for document:", traces);
-          //     this.setTraces(traces);
-          //     resolve();
-          //   })
-          //   .catch((error) => {
-          //     console.log("Error loading traces:", error);
-          //     resolve();
-          //   });
-        },
-        (error) => {
-          documentViewerStore.clear();
-          this.setStatus("error");
-          reject(error);
-        },
-      );
-    });
+    const tracesPromise = documentsAPI.getTracesByVersionId(versionId);
+    // return new Promise((resolve, reject) => {
+    contentPromise.then(
+      (content) => {
+        documentViewerStore.setContent(content);
+        // this.setStatus(null);
+        tracesPromise
+          .then((traces) => {
+            console.log("!!!!!Loaded traces for document:", traces);
+            documentViewerStore.setTraces(traces);
+            // resolve();
+          })
+          .catch((error) => {
+            console.log("Error loading traces:", error);
+            // resolve();
+          });
+      },
+      (error) => {
+        documentViewerStore.clear();
+        // this.setStatus("error");
+        // reject(error);
+      },
+    );
+    // });
   },
-  async renameDocumentVersion(versionId, newName) {
+  async renameVersion(versionId, newName) {
     const newVersion = await documentsAPI.updateVersionMeta(versionId, {
       name: newName,
     });

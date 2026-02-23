@@ -11,8 +11,7 @@ import {
 } from "../../utils/fileHelper.js";
 import documentsService from "../documents/service.js";
 import projectsService from "../projects/service.js";
-import model from "./repositories/model.js";
-import { versions } from "process";
+import traceService from "../traces/service.js";
 
 export default {
   createModelAndTrace({ projectId, modelData, trace }) {
@@ -54,7 +53,7 @@ export default {
         modelGenerationIndex: nextModelGenerationIndex,
       });
 
-      const createdTrace = traceRepo.create({ ...trace });
+      const createdTrace = traceService.create({ ...trace });
 
       // Log the event
       logEvent(projectId, "model_generated", {
