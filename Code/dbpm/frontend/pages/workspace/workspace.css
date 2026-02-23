@@ -208,6 +208,7 @@ ui-area {
 
 #documentContent {
   user-select: text;
+  cursor: text;
 }
 #documentsList li .inline-editor {
   flex: 1;
@@ -224,7 +225,7 @@ li .col-button {
     background-color: var(--x-ui-hover-background-color);
 } */
 
-#highlightLayer {
+#selectionsVisualLayer {
   position: absolute;
   inset: 0;
   z-index: 0;
@@ -259,17 +260,21 @@ li .col-button {
   /* user-select: text; */
   max-width: 100%;
 }
-#interactionSelectionsLayer {
-  position: absolute;
-  inset: 0;
-  background: transparent;
-  pointer-events: none;
-}
 
+
+#interactionLayer {
+    pointer-events: none;
+}
 #interactionLayer * {
   z-index: 2;
 }
-#modelTags * {
+#selectionsInteractionLayer {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+
+}
+#modelTagsLayer * {
   z-index: 3;
 }
 /*---------------- selection ----------------*/
@@ -283,32 +288,23 @@ li .col-button {
   /* background-color: yellow; */
 }
 
-#highlightLayer .selection-wrap.active * {
+#selectionsVisualLayer .selection-wrap.active * {
   z-index: 4;
 }
 
-#interactionSelectionsLayer .selection-wrap {
-  /* border: 2px solid var(--wfadaptor-highlight);
-  pointer-events: auto;
-  cursor: default; */
-  /* z-index: 2; */
-  /* background-color: yellow; */
+#selectionsInteractionLayer .selection-wrap {
   background: transparent;
-  outline: 2px solid var(--wfadaptor-highlight);
-  /* outline: 2px solid var(--wfadaptor-highlight); */
-  outline-offset: 2px;
-  pointer-events: auto;
-  cursor: pointer;
-  /* transition: outline-offset 0.2s; */
+  pointer-events: none;
+  cursor: default;
 }
 
-#interactionSelectionsLayer .selection-wrap.selected {
-  outline-color: var(--wfadaptor-selected);
-  /* background-color: yellow; */
-}
-#interactionSelectionsLayer .selection-wrap:not([data-model-id]) {
-  outline-style: dashed;
-  /* background-color: yellow; */
+#selectionsInteractionLayer .range-rect {
+  opacity: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  pointer-events: auto;
+  cursor: default;
 }
 .tag-span {
   position: absolute;

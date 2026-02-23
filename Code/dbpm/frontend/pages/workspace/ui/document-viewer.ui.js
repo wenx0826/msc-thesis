@@ -15,10 +15,10 @@ const $selectionColorForm = $("#selectionColorForm");
 const $deleteSelectionButton = $("#deleteSelectionButton");
 const $documentContent = $("#documentContent");
 const $viewerWrap = $("#viewerWrap");
-const $highlightLayer = $("#highlightLayer");
+const $selectionsVisualLayer = $("#selectionsVisualLayer");
 const $temporarySelectionsLayer = $("#temporarySelectionsLayer");
-const $interactionSelectionsLayer = $("#interactionSelectionsLayer");
-const $modelTags = $("#modelTags");
+const $selectionsInteractionLayer = $("#selectionsInteractionLayer");
+const $modelTagsLayer = $("#modelTagsLayer");
 const $addSelectionsButton = $("#addSelectionsButton");
 const $generateButton = $("#generateButton");
 const HIGHLIGHT_SELECTION_TEMPLATE_ID = "highlightSelectionTemplate";
@@ -60,6 +60,34 @@ function createSelectionRect({ top, left, width, height, color }) {
   });
 }
 
+function createInteractionRect({
+  top,
+  left,
+  width,
+  height,
+  selectionId,
+  modelId,
+  traceId,
+}) {
+  const $rect = createTemplateElement(SELECTION_RECT_TEMPLATE_ID)
+    .addClass("interaction-rect")
+    .attr("data-selectionid", selectionId)
+    .css({
+      top,
+      left,
+      width,
+      height,
+      backgroundColor: "transparent",
+    });
+  if (modelId) {
+    $rect.attr("data-model-id", modelId);
+  }
+  if (traceId) {
+    $rect.attr("data-traceid", traceId);
+  }
+  return $rect;
+}
+
 function createModelTag({
   modelId,
   selectionId,
@@ -80,7 +108,7 @@ function createModelTag({
 }
 
 function scrollToSelection(selectionId) {
-  const $selection = $highlightLayer.find(
+  const $selection = $selectionsVisualLayer.find(
     `.selection-wrap[data-selectionid="${selectionId}"]`,
   );
   if ($selection.length > 0) {
@@ -135,12 +163,12 @@ function scrollToRange(range) {
 }
 
 const clearHighlightLayer = () => {
-  $highlightLayer.empty();
+  $selectionsVisualLayer.empty();
 };
 
 const clearInteractionLayer = () => {
-  $modelTags.empty();
-  $interactionSelectionsLayer.empty();
+  $modelTagsLayer.empty();
+  $selectionsInteractionLayer.empty();
 };
 
 const clearOverlayLayers = () => {
@@ -160,18 +188,18 @@ const clearDocumentViewer = () => {
 //   }
 // };
 function removeRenderedTrace({ modelId }) {
-  $highlightLayer.find(`[data-model-id="${modelId}"]`).remove();
-  $interactionSelectionsLayer.find(`[data-model-id="${modelId}"]`).remove();
-  $modelTags.find(`[data-model-id="${modelId}"]`).remove();
+  $selectionsVisualLayer.find(`[data-model-id="${modelId}"]`).remove();
+  $selectionsInteractionLayer.find(`[data-model-id="${modelId}"]`).remove();
+  $modelTagsLayer.find(`[data-model-id="${modelId}"]`).remove();
 }
 function removeRenderedSelection({ id: selectionId }) {
-  $highlightLayer
+  $selectionsVisualLayer
     .find(`.selection-wrap[data-selectionid="${selectionId}"]`)
     .each((index, element) => {
       const $element = $(element);
       const elementModelId = $element.attr("data-model-id");
       if (elementModelId) {
-        $modelTags
+        $modelTagsLayer
           .find(
             `.tag-span[data-model-id="${elementModelId}"][data-selectionid="${selectionId}"]`,
           )
@@ -180,7 +208,7 @@ function removeRenderedSelection({ id: selectionId }) {
       $element.remove();
     });
 
-  $interactionSelectionsLayer
+  $selectionsInteractionLayer
     .find(`.selection-wrap[data-selectionid="${selectionId}"]`)
     .remove();
 }
@@ -190,7 +218,7 @@ function setSelectedSelection(selection) {
   selectedSelection = selection;
 
   if (currentSelectedSelection) {
-    $interactionSelectionsLayer
+    $selectionsInteractionLayer
       .find(
         `.selection-wrap[data-selectionid="${currentSelectedSelection.selectionId}"]`,
       )
@@ -198,7 +226,7 @@ function setSelectedSelection(selection) {
   }
   if (selection) {
     const { selectionId } = selection;
-    $interactionSelectionsLayer
+    $selectionsInteractionLayer
       .find(`.selection-wrap[data-selectionid="${selectionId}"]`)
       .addClass("selected");
     $deleteSelectionButton.prop("disabled", false);
@@ -212,15 +240,20 @@ const onSelectionSelect = (event) => {
   const $target = $(event.currentTarget);
   // $target.addClass("selected");
 
-  const selectionId = $target.attr("data-selectionid");
-  const modelId = $target.attr("data-model-id");
-  const traceId = $target.attr("data-traceid");
+  const $selectionWrap = $target.closest(".selection-wrap");
+  const selectionId =
+    $target.attr("data-selectionid") || $selectionWrap.attr("data-selectionid");
+  const modelId =
+    $target.attr("data-model-id") || $selectionWrap.attr("data-model-id");
+  const traceId =
+    $target.attr("data-traceid") || $selectionWrap.attr("data-traceid");
   setSelectedSelection({ selectionId, modelId, traceId });
 
   const $buttonGroup = $("#textActionBar .action-group");
+  const selectionSelector = `.interaction-rect[data-selectionid="${selectionId}"]`;
   $(document).one("mousedown", (e) => {
     const $t = $(e.target);
-    const isInsideTarget = $t.closest($target).length > 0;
+    const isInsideTarget = $t.closest(selectionSelector).length > 0;
     const isInsideButtonGroup = $t.closest($buttonGroup).length > 0;
     if (!isInsideTarget && !isInsideButtonGroup) {
       setSelectedSelection(null);
@@ -248,7 +281,7 @@ const onSelectionSelect = (event) => {
 // }
 
 const renderSelection = (
-  { range, color, id: selectionId },
+  { range, color, id: selectionId, traceId },
   modelId,
   modelVersionId,
 ) => {
@@ -296,7 +329,7 @@ const renderSelection = (
     });
     $highlightWrap.append($rectDiv);
   }
-  $highlightLayer.append($highlightWrap);
+  $selectionsVisualLayer.append($highlightWrap);
 
   if (modelId) {
     const lastIndex = rects.length - 1;
@@ -313,7 +346,7 @@ const renderSelection = (
       left: `${lastRect.right - eleViewerWrapRect.left + eleViewerWrap.scrollLeft - 10}px`,
       isActive: modelId == workspaceStore.getDisplayedModelId(),
     });
-    $modelTags.append($tag);
+    $modelTagsLayer.append($tag);
   }
   const $interactionWrap = createSelectionWrap({
     templateId: INTERACTION_SELECTION_TEMPLATE_ID,
@@ -323,50 +356,36 @@ const renderSelection = (
     left: wrapLeft,
     width: wrapWidth,
     height: wrapHeight,
-    isActive: isActiveModel,
   });
-  $interactionWrap.appendTo($interactionSelectionsLayer);
-  $interactionWrap.on("click", onSelectionSelect);
+
+  for (const rect of rects) {
+    const $interactionRect = createInteractionRect({
+      top: `${rect.top - selectionRectTop + 2}px`,
+      left: `${rect.left - selectionRectLeft}px`,
+      width: `${rect.width}px`,
+      height: `${rect.height - 4}px`,
+      selectionId,
+      modelId,
+      traceId,
+    });
+    $interactionWrap.append($interactionRect);
+  }
+
+  $interactionWrap.appendTo($selectionsInteractionLayer);
   if (selectedSelection && selectedSelection.selectionId === selectionId) {
     $interactionWrap.addClass("selected");
   }
 };
 
-const highlightActiveModelSelections = (displayModelId) => {
-  $interactionSelectionsLayer
-    .find(`.selection-wrap[data-model-id="${displayModelId}"]`)
-    .remove();
-  $modelTags
-    .find(`.tag-span[data-model-id="${displayModelId}"]`)
-    .addClass("active");
-  $highlightLayer
-    .find(`.selection-wrap[data-model-id="${displayModelId}"]`)
-    .each((index, element) => {
-      const $source = $(element);
-      const $interactionWrap = createSelectionWrap({
-        templateId: INTERACTION_SELECTION_TEMPLATE_ID,
-        selectionId: $source.attr("data-selectionid"),
-        modelId: $source.attr("data-model-id"),
-        top: $source.css("top"),
-        left: $source.css("left"),
-        width: $source.css("width"),
-        height: $source.css("height"),
-        isActive: true,
-      });
-      $interactionWrap.appendTo($interactionSelectionsLayer);
-      $interactionWrap.on("click", onSelectionSelect);
-    });
-};
-
 function unhighlightModelSelections(modelId) {
-  $highlightLayer
+  $selectionsVisualLayer
     .find(`.selection-wrap[data-model-id="${modelId}"]`)
     .removeClass("active");
-  $modelTags
+  $modelTagsLayer
     .find(`.tag-span[data-model-id="${modelId}"]`)
     .removeClass("active");
 
-  $interactionSelectionsLayer
+  $selectionsInteractionLayer
     .find(`.selection-wrap[data-model-id="${modelId}"]`)
     .remove();
 }
@@ -488,14 +507,15 @@ createUI({
       rerenderOverlayLayers();
     });
     $(window).on("resize", rerenderOverlayLayers);
+    $selectionsInteractionLayer.on("click", ".range-rect", onSelectionSelect);
     // Event listeners are set up in the initActiveDocumentUI function
-    $modelTags.on("click", ".tag-span", (event) => {
+    $modelTagsLayer.on("click", ".tag-span", (event) => {
       // const $target = $(event.currentTarget);
       event.stopPropagation();
       const modelId = event.currentTarget.dataset.modelId;
       workspaceService.toggleModelDisplay({ id: modelId });
     });
-    $modelTags.on("mouseenter", ".tag-span", (event) => {
+    $modelTagsLayer.on("mouseenter", ".tag-span", (event) => {
       event.stopPropagation();
       // const $target = $(event.currentTarget); // OLD: Unused
       const element = event.currentTarget;
@@ -524,7 +544,7 @@ createUI({
     });
     */
     });
-    $modelTags.on("mouseleave", ".tag-span", (event) => {
+    $modelTagsLayer.on("mouseleave", ".tag-span", (event) => {
       event.stopPropagation();
       console.log(
         "Mouse leaving model tag:",

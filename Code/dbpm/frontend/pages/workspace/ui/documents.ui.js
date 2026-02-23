@@ -8,14 +8,6 @@ const $documentsInput = $("#documentsInput");
 const $documentUpdateInput = $("#documentUpdateInput");
 const $documentsList = $("#documentsList");
 
-function getLatestVersion(versions) {
-  return versions[versions.length - 1];
-}
-
-function getVersionName(versions, versionId) {
-  const version = versions.find((v) => v.id === versionId);
-  return version ? version.name : "Untitled Document";
-}
 function renderDocumentItem({ id: docId, versions }) {
   const latestVersion = versions.at(-1);
   const $documentItem = createTemplateElement("documentItemTemplate");
@@ -63,14 +55,7 @@ const removeDocumentItem = (documentId) => {
     .filter((index, element) => $(element).data("docId") === documentId)
     .remove();
 };
-function updateDisplayedDocVersionSelector(versionId) {
-  const displayedDocument = workspaceStore.state.displayedDocument;
-  if (!displayedDocument) return;
-  workspaceService.displayDocument({
-    id: displayedDocument.id,
-    versionId,
-  });
-}
+
 function updateDocumentsCount() {
   const count = documentsStore.getCount();
   $("[data-ref='documentsCount']").text(count);
@@ -147,7 +132,7 @@ createUI({
       new CustomMenu(e).contextmenu(menu);
     });
   },
-  subscribeStores: ({ displayedDocVersionSelector }) => {
+  subscribeStores: ({}) => {
     documentsStore.subscribe((state, { key, operation, value }) => {
       switch (operation) {
         case "init":

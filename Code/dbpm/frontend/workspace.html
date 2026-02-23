@@ -169,12 +169,12 @@
           <!-- Document Content Area -->
           <ui-content>
             <ui-area id="viewerWrap">
-              <ui-area id="highlightLayer" style="z-index: 1; pointer-events: none"></ui-area>
+              <ui-area id="selectionsVisualLayer"></ui-area>
               <!-- <ui-area id="temporarySelectionsLayer"></ui-area> -->
               <ui-area id="documentContent"></ui-area>
               <ui-area id="interactionLayer">
-                <div id="interactionSelectionsLayer"></div>
-                <div id="modelTags"></div>
+                <div id="selectionsInteractionLayer"></div>
+                <div id="modelTagsLayer"></div>
                 <!-- <div id="activeModelTags"></div> -->
               </ui-area>
               <template id="highlightSelectionTemplate">
