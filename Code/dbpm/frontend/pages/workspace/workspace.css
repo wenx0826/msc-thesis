@@ -275,6 +275,12 @@ li .col-button {
   pointer-events: none;
 
 }
+#selectionHandlesLayer {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  pointer-events: none;
+}
 #modelTagsLayer * {
   z-index: 3;
 }
@@ -321,6 +327,37 @@ li .col-button {
   pointer-events: auto;
   cursor: default;
 }
+
+#selectionHandlesLayer .selection-handle {
+  position: absolute;
+  width: 12px;
+  height: 16px;
+  border: none;
+  background: transparent;
+  pointer-events: auto;
+  cursor: ew-resize;
+  transform: translate(-50%, -50%);
+  z-index: 4;
+}
+
+#selectionHandlesLayer .selection-handle::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+  border-radius: 1px;
+  background: var(--wfadaptor-selected);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.14);
+}
+
+#viewerWrap.selection-handle-dragging,
+#viewerWrap.selection-handle-dragging * {
+  cursor: ew-resize !important;
+}
+
 .tag-span {
   position: absolute;
   background-color: lightgray;

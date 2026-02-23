@@ -17,6 +17,7 @@ const $documentContent = $("#documentContent");
 const $viewerWrap = $("#viewerWrap");
 const $selectionsVisualLayer = $("#selectionsVisualLayer");
 const $selectionsInteractionLayer = $("#selectionsInteractionLayer");
+const $selectionHandlesLayer = $("#selectionHandlesLayer");
 const $modelTagsLayer = $("#modelTagsLayer");
 const $addSelectionsButton = $("#addSelectionsButton");
 const $generateButton = $("#generateButton");
@@ -25,11 +26,252 @@ const SELECTION_RECT_TEMPLATE_ID = "selectionRangeRectTemplate";
 const MODEL_TAG_TEMPLATE_ID = "modelTagTemplate";
 
 let selectedSelection = null;
+let handleDragState = null;
+
+function resolveSelectionScope(selection) {
+  if (!selection) return null;
+  if (selection.scope) return selection.scope;
+  return selection.modelId !== undefined && selection.modelId !== null
+    ? "model"
+    : "temporary";
+}
+
+function getNumericCssPx($element, property) {
+  return Number.parseFloat($element.css(property)) || 0;
+}
+
+function setHandleSelectionData($handle, selection) {
+  const { selectionId, modelId, traceId } = selection;
+  $handle.attr("data-selectionid", selectionId);
+  if (modelId !== undefined && modelId !== null) {
+    $handle.attr("data-model-id", modelId);
+  } else {
+    $handle.removeAttr("data-model-id");
+  }
+  if (traceId !== undefined && traceId !== null) {
+    $handle.attr("data-traceid", traceId);
+  } else {
+    $handle.removeAttr("data-traceid");
+  }
+}
+
+function hideSelectionHandles() {
+  $selectionHandlesLayer
+    .find(".selection-handle")
+    .removeAttr("data-selectionid data-model-id data-traceid")
+    .hide();
+}
+
+function getInteractionWrapsBySelection(selection) {
+  if (!selection) return $();
+  const { selectionId, modelId, traceId } = selection;
+  const resolvedScope = resolveSelectionScope(selection);
+  let $wraps = $selectionsInteractionLayer.find(
+    `.selection-wrap[data-selectionid="${selectionId}"]`,
+  );
+
+  if (resolvedScope === "temporary") {
+    $wraps = $wraps.filter(
+      (_, element) => !element.hasAttribute("data-model-id"),
+    );
+  } else if (modelId !== undefined && modelId !== null) {
+    $wraps = $wraps.filter(
+      (_, element) =>
+        $(element).attr("data-model-id") === String(modelId),
+    );
+  }
+  if (traceId !== undefined && traceId !== null) {
+    $wraps = $wraps.filter(
+      (_, element) => $(element).attr("data-traceid") === String(traceId),
+    );
+  }
+
+  return $wraps;
+}
+
+function findSelectedInteractionWrap() {
+  if (!selectedSelection) return $();
+  const $wraps = getInteractionWrapsBySelection(selectedSelection);
+  return $wraps.first();
+}
+
+function areRangesEqual(rangeA, rangeB) {
+  if (!rangeA || !rangeB) return false;
+  return (
+    rangeA.startContainer === rangeB.startContainer &&
+    rangeA.startOffset === rangeB.startOffset &&
+    rangeA.endContainer === rangeB.endContainer &&
+    rangeA.endOffset === rangeB.endOffset
+  );
+}
+
+function isNodeInsideDocumentContent(node) {
+  if (!node) return false;
+  if (node.nodeType === Node.TEXT_NODE) {
+    return $documentContent[0].contains(node.parentElement);
+  }
+  return $documentContent[0].contains(node);
+}
+
+function getCaretPointFromClientPoint(clientX, clientY) {
+  if (document.caretPositionFromPoint) {
+    const caretPosition = document.caretPositionFromPoint(clientX, clientY);
+    if (
+      caretPosition &&
+      isNodeInsideDocumentContent(caretPosition.offsetNode)
+    ) {
+      return {
+        node: caretPosition.offsetNode,
+        offset: caretPosition.offset,
+      };
+    }
+  }
+
+  if (document.caretRangeFromPoint) {
+    const caretRange = document.caretRangeFromPoint(clientX, clientY);
+    if (caretRange && isNodeInsideDocumentContent(caretRange.startContainer)) {
+      return {
+        node: caretRange.startContainer,
+        offset: caretRange.startOffset,
+      };
+    }
+  }
+
+  return null;
+}
+
+function createCollapsedRange({ node, offset }) {
+  const range = document.createRange();
+  range.setStart(node, offset);
+  range.collapse(true);
+  return range;
+}
+
+function createRangeFromPoints(pointA, pointB) {
+  const pointARange = createCollapsedRange(pointA);
+  const pointBRange = createCollapsedRange(pointB);
+  const compare = pointARange.compareBoundaryPoints(
+    Range.START_TO_START,
+    pointBRange,
+  );
+
+  const range = document.createRange();
+  if (compare <= 0) {
+    range.setStart(pointA.node, pointA.offset);
+    range.setEnd(pointB.node, pointB.offset);
+  } else {
+    range.setStart(pointB.node, pointB.offset);
+    range.setEnd(pointA.node, pointA.offset);
+  }
+
+  return range;
+}
+
+function getSelectionByMeta(selectionMeta) {
+  if (!selectionMeta) return null;
+
+  const scope = resolveSelectionScope(selectionMeta);
+  if (scope === "temporary") {
+    return (
+      documentViewerStore
+        .getTemporarySelections()
+        .find(
+          (selection) =>
+            String(selection.id) === String(selectionMeta.selectionId),
+        ) || null
+    );
+  }
+
+  let trace = null;
+  if (selectionMeta.traceId !== undefined && selectionMeta.traceId !== null) {
+    trace = documentViewerStore.getTraceById(selectionMeta.traceId);
+  }
+  if (!trace) {
+    trace = documentViewerStore.getDisplayedModelTrace();
+  }
+  if (!trace || !trace.selections) return null;
+
+  return (
+    trace.selections.find(
+      (selection) => String(selection.id) === String(selectionMeta.selectionId),
+    ) || null
+  );
+}
+
+function updateSelectionRangeByMeta(selectionMeta, nextRange) {
+  const scope = resolveSelectionScope(selectionMeta);
+  if (scope === "temporary") {
+    documentViewerStore.updateTemporarySelectionRange(
+      selectionMeta.selectionId,
+      nextRange,
+    );
+    return;
+  }
+
+  documentViewerStore.updateTraceSelectionRange({
+    selectionId: selectionMeta.selectionId,
+    traceId: selectionMeta.traceId,
+    modelId: selectionMeta.modelId,
+    range: nextRange,
+  });
+}
+
+function updateSelectionHandlesPosition() {
+  if (!selectedSelection) {
+    hideSelectionHandles();
+    return;
+  }
+
+  const $wrap = findSelectedInteractionWrap();
+  if ($wrap.length === 0) {
+    hideSelectionHandles();
+    return;
+  }
+
+  const $rects = $wrap.find(".range-rect");
+  if ($rects.length === 0) {
+    hideSelectionHandles();
+    return;
+  }
+
+  const $startRect = $($rects[0]);
+  const $endRect = $($rects[$rects.length - 1]);
+  const wrapTop = getNumericCssPx($wrap, "top");
+  const wrapLeft = getNumericCssPx($wrap, "left");
+
+  const startTop =
+    wrapTop +
+    getNumericCssPx($startRect, "top") +
+    getNumericCssPx($startRect, "height") / 2;
+  const startLeft = wrapLeft + getNumericCssPx($startRect, "left");
+  const endTop =
+    wrapTop +
+    getNumericCssPx($endRect, "top") +
+    getNumericCssPx($endRect, "height") / 2;
+  const endLeft =
+    wrapLeft +
+    getNumericCssPx($endRect, "left") +
+    getNumericCssPx($endRect, "width");
+
+  const $startHandle = $selectionHandlesLayer.find(
+    '.selection-handle[data-side="start"]',
+  );
+  const $endHandle = $selectionHandlesLayer.find(
+    '.selection-handle[data-side="end"]',
+  );
+
+  setHandleSelectionData($startHandle, selectedSelection);
+  setHandleSelectionData($endHandle, selectedSelection);
+
+  $startHandle.css({ top: `${startTop}px`, left: `${startLeft}px` }).show();
+  $endHandle.css({ top: `${endTop}px`, left: `${endLeft}px` }).show();
+}
 
 function createSelectionWrap({
   templateId,
   selectionId,
   modelId,
+  traceId,
   top,
   left,
   width,
@@ -39,8 +281,11 @@ function createSelectionWrap({
   const $wrap = createTemplateElement(templateId)
     .attr("data-selectionid", selectionId)
     .css({ top, left, width, height });
-  if (modelId) {
+  if (modelId !== undefined && modelId !== null) {
     $wrap.attr("data-model-id", modelId);
+  }
+  if (traceId !== undefined && traceId !== null) {
+    $wrap.attr("data-traceid", traceId);
   }
   if (isActive) {
     $wrap.addClass("active");
@@ -76,10 +321,10 @@ function createInteractionRect({
       height,
       backgroundColor: "transparent",
     });
-  if (modelId) {
+  if (modelId !== undefined && modelId !== null) {
     $rect.attr("data-model-id", modelId);
   }
-  if (traceId) {
+  if (traceId !== undefined && traceId !== null) {
     $rect.attr("data-traceid", traceId);
   }
   return $rect;
@@ -166,6 +411,7 @@ const clearHighlightLayer = () => {
 const clearInteractionLayer = () => {
   $modelTagsLayer.empty();
   $selectionsInteractionLayer.empty();
+  hideSelectionHandles();
 };
 
 const clearOverlayLayers = () => {
@@ -188,6 +434,7 @@ function removeRenderedTrace({ modelId }) {
   $selectionsVisualLayer.find(`[data-model-id="${modelId}"]`).remove();
   $selectionsInteractionLayer.find(`[data-model-id="${modelId}"]`).remove();
   $modelTagsLayer.find(`[data-model-id="${modelId}"]`).remove();
+  updateSelectionHandlesPosition();
 }
 function removeRenderedSelection({ id: selectionId }) {
   $selectionsVisualLayer
@@ -208,6 +455,7 @@ function removeRenderedSelection({ id: selectionId }) {
   $selectionsInteractionLayer
     .find(`.selection-wrap[data-selectionid="${selectionId}"]`)
     .remove();
+  updateSelectionHandlesPosition();
 }
 
 function setSelectedSelection(selection) {
@@ -215,21 +463,17 @@ function setSelectedSelection(selection) {
   selectedSelection = selection;
 
   if (currentSelectedSelection) {
-    $selectionsInteractionLayer
-      .find(
-        `.selection-wrap[data-selectionid="${currentSelectedSelection.selectionId}"]`,
-      )
-      .removeClass("selected");
+    getInteractionWrapsBySelection(currentSelectedSelection).removeClass(
+      "selected",
+    );
   }
   if (selection) {
-    const { selectionId } = selection;
-    $selectionsInteractionLayer
-      .find(`.selection-wrap[data-selectionid="${selectionId}"]`)
-      .addClass("selected");
+    getInteractionWrapsBySelection(selection).addClass("selected");
     $deleteSelectionButton.prop("disabled", false);
   } else {
     $deleteSelectionButton.prop("disabled", true);
   }
+  updateSelectionHandlesPosition();
 }
 const onSelectionSelect = (event) => {
   // console.log("Range selected:", event);
@@ -244,10 +488,14 @@ const onSelectionSelect = (event) => {
     $target.attr("data-model-id") || $selectionWrap.attr("data-model-id");
   const traceId =
     $target.attr("data-traceid") || $selectionWrap.attr("data-traceid");
-  setSelectedSelection({ selectionId, modelId, traceId });
+  const scope =
+    $target.is("[data-model-id]") || $selectionWrap.is("[data-model-id]")
+      ? "model"
+      : "temporary";
+  setSelectedSelection({ selectionId, modelId, traceId, scope });
 
   const $buttonGroup = $("#textActionBar .action-group");
-  const selectionSelector = `#selectionsInteractionLayer .range-rect[data-selectionid="${selectionId}"]`;
+  const selectionSelector = `#selectionsInteractionLayer .range-rect[data-selectionid="${selectionId}"], #selectionHandlesLayer .selection-handle[data-selectionid="${selectionId}"]`;
   $(document).one("mousedown", (e) => {
     const $t = $(e.target);
     const isInsideTarget = $t.closest(selectionSelector).length > 0;
@@ -349,6 +597,7 @@ const renderSelection = (
     templateId: SELECTION_WRAP_TEMPLATE_ID,
     selectionId,
     modelId,
+    traceId,
     top: wrapTop,
     left: wrapLeft,
     width: wrapWidth,
@@ -370,7 +619,88 @@ const renderSelection = (
 
   $interactionWrap.appendTo($selectionsInteractionLayer);
   if (selectedSelection && selectedSelection.selectionId === selectionId) {
-    $interactionWrap.addClass("selected");
+    getInteractionWrapsBySelection(selectedSelection).addClass("selected");
+    updateSelectionHandlesPosition();
+  }
+};
+
+const onSelectionHandleDragStart = (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+  const $handle = $(event.currentTarget);
+  const selectionId = $handle.attr("data-selectionid");
+  if (!selectionId) return;
+
+  const selectionMeta = {
+    selectionId,
+    modelId: $handle.attr("data-model-id"),
+    traceId: $handle.attr("data-traceid"),
+    scope: $handle.attr("data-model-id") ? "model" : "temporary",
+  };
+  const selection = getSelectionByMeta(selectionMeta);
+  if (!selection || !selection.range) return;
+
+  const fixedPoint =
+    $handle.attr("data-side") === "start"
+      ? {
+          node: selection.range.endContainer,
+          offset: selection.range.endOffset,
+        }
+      : {
+          node: selection.range.startContainer,
+          offset: selection.range.startOffset,
+        };
+
+  if (!isNodeInsideDocumentContent(fixedPoint.node)) return;
+
+  handleDragState = {
+    ...selectionMeta,
+    side: $handle.attr("data-side"),
+    fixedPoint,
+    didUpdate: false,
+  };
+  $viewerWrap.addClass("selection-handle-dragging");
+  $(document).on("mousemove.selectionHandleDrag", onSelectionHandleDragMove);
+  $(document).on("mouseup.selectionHandleDrag", onSelectionHandleDragEnd);
+};
+
+const onSelectionHandleDragMove = (event) => {
+  if (!handleDragState) return;
+  event.preventDefault();
+
+  const movingPoint = getCaretPointFromClientPoint(event.clientX, event.clientY);
+  if (!movingPoint) return;
+
+  let nextRange;
+  try {
+    nextRange = createRangeFromPoints(handleDragState.fixedPoint, movingPoint);
+  } catch (error) {
+    return;
+  }
+  if (!nextRange || nextRange.collapsed) return;
+
+  const currentSelection = getSelectionByMeta(handleDragState);
+  if (!currentSelection || !currentSelection.range) return;
+  if (areRangesEqual(currentSelection.range, nextRange)) return;
+
+  updateSelectionRangeByMeta(handleDragState, nextRange);
+  handleDragState.didUpdate = true;
+};
+
+const onSelectionHandleDragEnd = () => {
+  if (!handleDragState) return;
+  const { didUpdate, traceId } = handleDragState;
+  const scope = resolveSelectionScope(handleDragState);
+  const activeTrace = documentViewerStore.getDisplayedModelTrace();
+  const isActiveTraceUpdate =
+    !traceId ||
+    (activeTrace &&
+      String(activeTrace.id) === String(traceId));
+  handleDragState = null;
+  $viewerWrap.removeClass("selection-handle-dragging");
+  $(document).off(".selectionHandleDrag");
+  if (didUpdate && scope === "model" && isActiveTraceUpdate) {
+    modelService.updateActiveModelTrace();
   }
 };
 
@@ -385,6 +715,7 @@ function unhighlightModelSelections(modelId) {
   $selectionsInteractionLayer
     .find(`.selection-wrap[data-model-id="${modelId}"]`)
     .remove();
+  updateSelectionHandlesPosition();
 }
 
 const rerenderTemporarySelectionsLayer = () => {
@@ -394,9 +725,9 @@ const rerenderTemporarySelectionsLayer = () => {
   // }
 };
 
-const renderTrace = ({ selections, modelId, modelVersionId }) => {
+const renderTrace = ({ id: traceId, selections, modelId, modelVersionId }) => {
   selections.forEach((selection, index) => {
-    renderSelection(selection, modelId, modelVersionId);
+    renderSelection({ ...selection, traceId }, modelId, modelVersionId);
   });
 };
 
@@ -413,6 +744,7 @@ const rerenderOverlayLayers = () => {
   temporarySelections.forEach((selection) => {
     renderSelection(selection);
   });
+  updateSelectionHandlesPosition();
   // rerenderTemporarySelectionsLayer();
 };
 
@@ -442,6 +774,7 @@ const handleTextSelection = () => {
 
 createUI({
   setup: () => {
+    hideSelectionHandles();
     // Initial UI setup if needed
     const versionSelector = initVersionSelector({
       $select: $versionSelect,
@@ -505,6 +838,11 @@ createUI({
     });
     $(window).on("resize", rerenderOverlayLayers);
     $selectionsInteractionLayer.on("click", ".range-rect", onSelectionSelect);
+    $selectionHandlesLayer.on(
+      "mousedown",
+      ".selection-handle",
+      onSelectionHandleDragStart,
+    );
     // Event listeners are set up in the initActiveDocumentUI function
     $modelTagsLayer.on("click", ".tag-span", (event) => {
       // const $target = $(event.currentTarget);
@@ -567,6 +905,9 @@ createUI({
                 break;
               case "add":
                 renderTrace(value);
+                break;
+              case "update":
+                rerenderOverlayLayers();
                 break;
               default:
                 break;

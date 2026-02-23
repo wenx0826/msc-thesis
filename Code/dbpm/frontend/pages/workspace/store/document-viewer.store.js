@@ -18,6 +18,23 @@ class DocumentViewerStore extends Store {
     });
   }
 
+  areRangesEqual(rangeA, rangeB) {
+    if (!rangeA || !rangeB) return false;
+    return (
+      rangeA.startContainer === rangeB.startContainer &&
+      rangeA.startOffset === rangeB.startOffset &&
+      rangeA.endContainer === rangeB.endContainer &&
+      rangeA.endOffset === rangeB.endOffset
+    );
+  }
+
+  areIdsEqual(idA, idB) {
+    if (idA === undefined || idA === null || idB === undefined || idB === null) {
+      return false;
+    }
+    return String(idA) === String(idB);
+  }
+
   clear() {
     this.setContent(null);
     this.setTraces([]);
@@ -108,7 +125,7 @@ class DocumentViewerStore extends Store {
   }
 
   getTraceById(traceId) {
-    return this.state.traces.find((trace) => trace.id == traceId);
+    return this.state.traces.find((trace) => this.areIdsEqual(trace.id, traceId));
   }
 
   getDisplayedModelTrace() {
@@ -153,7 +170,7 @@ class DocumentViewerStore extends Store {
     const activeModelTrace = this.getDisplayedModelTrace();
     if (activeModelTrace) {
       const index = activeModelTrace.selections.findIndex(
-        (sel) => sel.id === selectionId,
+        (sel) => this.areIdsEqual(sel.id, selectionId),
       );
       if (index !== -1) {
         value = activeModelTrace.selections[index];
@@ -171,7 +188,7 @@ class DocumentViewerStore extends Store {
     const activeModelTrace = this.getDisplayedModelTrace();
     if (activeModelTrace) {
       const selection = activeModelTrace.selections.find(
-        (sel) => sel.id === selectionId,
+        (sel) => this.areIdsEqual(sel.id, selectionId),
       );
       if (selection && selection.color !== color) {
         selection.color = color;
@@ -182,6 +199,63 @@ class DocumentViewerStore extends Store {
         });
       }
     }
+  }
+
+  updateActiveModelTraceSelectionRange(selectionId, range) {
+    const activeModelTrace = this.getDisplayedModelTrace();
+    if (activeModelTrace) {
+      const selection = activeModelTrace.selections.find(
+        (sel) => this.areIdsEqual(sel.id, selectionId),
+      );
+      if (selection && !this.areRangesEqual(selection.range, range)) {
+        selection.range = range.cloneRange();
+        this.notify({
+          key: "activeModelTrace.selections",
+          operation: "update",
+          value: selection,
+        });
+      }
+    }
+  }
+
+  updateTraceSelectionRange({ selectionId, traceId, modelId, range }) {
+    if (!range) return false;
+    let trace = null;
+
+    if (traceId !== undefined && traceId !== null) {
+      trace = this.getTraceById(traceId);
+    }
+    if (!trace && modelId !== undefined && modelId !== null) {
+      trace = this.state.traces.find((item) => this.areIdsEqual(item.modelId, modelId));
+    }
+    if (!trace) {
+      trace = this.getDisplayedModelTrace();
+    }
+    if (!trace || !trace.selections) return false;
+
+    const selection = trace.selections.find((item) =>
+      this.areIdsEqual(item.id, selectionId),
+    );
+    if (!selection || this.areRangesEqual(selection.range, range)) {
+      return false;
+    }
+
+    selection.range = range.cloneRange();
+
+    if (this.areIdsEqual(this.state.activeModelTrace?.id, trace.id)) {
+      this.notify({
+        key: "activeModelTrace.selections",
+        operation: "update",
+        value: selection,
+      });
+    } else {
+      this.notify({
+        key: "traces",
+        operation: "update",
+        value: trace,
+      });
+    }
+    return true;
   }
 
   setActiveModelTraceById(traceId) {
@@ -219,7 +293,7 @@ class DocumentViewerStore extends Store {
   removeTemporarySelection(selectionId) {
     let value;
     const index = this.state.temporarySelections.findIndex(
-      (sel) => sel.id === selectionId,
+      (sel) => this.areIdsEqual(sel.id, selectionId),
     );
     if (index !== -1) {
       value = this.state.temporarySelections[index];
@@ -231,10 +305,24 @@ class DocumentViewerStore extends Store {
 
   updateTemporarySelectionColor(selectionId, color) {
     const selection = this.state.temporarySelections.find(
-      (sel) => sel.id === selectionId,
+      (sel) => this.areIdsEqual(sel.id, selectionId),
     );
     if (selection && selection.color !== color) {
       selection.color = color;
+      this.notify({
+        key: "temporarySelections",
+        operation: "update",
+        value: selection,
+      });
+    }
+  }
+
+  updateTemporarySelectionRange(selectionId, range) {
+    const selection = this.state.temporarySelections.find(
+      (sel) => this.areIdsEqual(sel.id, selectionId),
+    );
+    if (selection && !this.areRangesEqual(selection.range, range)) {
+      selection.range = range.cloneRange();
       this.notify({
         key: "temporarySelections",
         operation: "update",
