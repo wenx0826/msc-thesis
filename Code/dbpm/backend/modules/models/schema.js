@@ -112,7 +112,7 @@ export const updateModelSchema = {
     properties: {
       modelData: { type: "string" },
       trace: {
-        type: "object",
+        type: ["object", "null"],
         properties: {
           selections: { type: "array" },
         },
@@ -160,23 +160,24 @@ export const updateVersionSchema = {
   body: {
     type: "object",
     properties: {
-      // name: { type: "string" },
       type: { type: "string" },
+      modelMeta: {
+        type: "object",
+        properties: {
+          name: { type: "string" },
+        },
+      },
       modelData: { type: "string" },
       trace: {
-        type: "object",
+        type: ["object", "null"],
         properties: {
           selections: { type: "array" },
         },
       },
     },
+    required: ["type", "modelData"],
   },
   response: {
-    200: {
-      type: "object",
-      properties: {
-        id: { type: "string" },
-      },
-    },
+    200: {},
   },
 };

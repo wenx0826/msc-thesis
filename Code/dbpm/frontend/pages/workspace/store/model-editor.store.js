@@ -43,7 +43,8 @@ class ModelEditorStore extends Store {
   }
 
   getSerializedData() {
-    return new XMLSerializer().serializeToString(this.state.model.data);
+    // return new XMLSerializer().serializeToString(this.state.model.data);
+    return new XMLSerializer().serializeToString(this.state.data);
   }
 
   setStatus(status) {

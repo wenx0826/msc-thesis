@@ -1,7 +1,7 @@
 import {
-  readTextFile,
-  writeTextFile,
-  deleteFile,
+  read,
+  write,
+  delete as deleteFile,
 } from "../../../utils/fileHelper.js";
 import { fileURLToPath } from "url";
 
@@ -13,12 +13,12 @@ export default {
   },
   write(versionId, content) {
     const filePath = this.getDocumentFilePath(versionId);
-    writeTextFile(filePath, content);
+    write(filePath, content);
   },
 
   read(versionId) {
     const filePath = this.getDocumentFilePath(versionId);
-    return readTextFile(filePath);
+    return read(filePath);
   },
 
   delete(versionId) {

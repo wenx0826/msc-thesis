@@ -24,10 +24,10 @@ export default {
     return results.map(toCamel);
   },
 
-  findById(modelId) {
-    const stmt = db.prepare("SELECT * FROM models WHERE id = ?");
-    const result = stmt.get(modelId);
-    return toCamel(result);
+  findById(versionId) {
+    const stmt = db.prepare("SELECT * FROM model_versions WHERE id = ?");
+    const result = stmt.get(versionId);
+    return result ? toCamel(result) : null;
   },
 
   findByModelId(modelId) {

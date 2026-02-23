@@ -132,6 +132,7 @@ async function showWFGraph(data) {
         console.log(
           "Graph realization notify!! - saving active model with updated graph",
         );
+        modelService.saveModel(MODEL_UPDATE_TYPE.MANUAL_UPDATE_GRAPH_CHANGED);
         // saveActiveModel(MODEL_UPDATE_TYPE.MANUAL_UPDATE_GRAPH_CHANGED);
       };
     },
@@ -156,13 +157,16 @@ const showActiveModel = async (model) => {
       graphrealization.set_description($(model.data), true);
       graphrealization.notify = function (svgid) {
         console.log("Graph realization notify for svgid:", svgid);
+        console.log("Saving model 111");
+
         var g = graphrealization.get_description();
         manifestation.events.click(svgid);
         format_instance_pos();
         if (manifestation.selected() == "unknown") {
           $("#dat_details").empty();
         }
-        saveActiveModel(MODEL_UPDATE_TYPE.MANUAL_UPDATE_GRAPH_CHANGED);
+        // saveActiveModel(MODEL_UPDATE_TYPE.MANUAL_UPDATE_GRAPH_CHANGED);
+        // console.log("Saving model 222");
       };
     },
   );

@@ -4,11 +4,7 @@ import versionRepo from "./repositories/version.js";
 import storageRepo from "./repositories/storage.js";
 import traceRepo from "../traces/repository.js";
 import { logEvent, getISODate } from "../../utils/logger.js";
-import {
-  readModelData,
-  writeModelData,
-  countWords,
-} from "../../utils/fileHelper.js";
+import { countWords } from "../../utils/fileHelper.js";
 import documentsService from "../documents/service.js";
 import projectsService from "../projects/service.js";
 import traceService from "../traces/service.js";
@@ -35,7 +31,7 @@ export default {
     );
 
     try {
-      // writeModelData(versionId, modelData);
+      // Persist model XML for this version.
       storageRepo.write(versionId, modelData);
       const createdModel = modelRepo.create({
         id,
@@ -82,7 +78,7 @@ export default {
     if (!model) {
       throw new Error("Model not found");
     }
-    const data = readModelData(modelId);
+    const data = storageRepo.read(modelId);
     model.data = data;
     return model;
   },
@@ -120,9 +116,31 @@ export default {
   },
 
   updateModel({ modelId, modelData, trace, type }) {
+    const model = modelRepo.findById(modelId);
+    if (!model) {
+      throw new Error("Model not found");
+    }
+    if (!model.latestVersionId) {
+      throw new Error("Model has no versions");
+    }
+
+    return this.updateVersion({
+      versionId: model.latestVersionId,
+      modelData,
+      trace,
+      type,
+    });
+  },
+
+  updateVersion({ versionId, modelData, trace, type }) {
+    const version = versionRepo.findById(versionId);
+    if (!version) {
+      throw new Error("Model version not found");
+    }
+    const modelId = version.modelId;
     const projectId = modelRepo.getProjectIdByModelId(modelId);
     // Write model data to file
-    writeModelData(modelId, modelData);
+    storageRepo.write(versionId, modelData);
 
     // Update model status
     // modelRepo.updateStatus(modelId, "updated");
@@ -133,7 +151,7 @@ export default {
         (acc, sel) => acc + countWords(sel.text),
         0,
       );
-      traceRepo.updateByModelId(modelId, trace.selections);
+      traceRepo.updateByModelId(versionId, trace.selections);
     }
 
     // Add stat update
@@ -142,6 +160,7 @@ export default {
     // Log the event
     logEvent(projectId, `model_updated_${type}`, {
       id: modelId,
+      versionId,
       data: modelData,
     });
 
@@ -150,7 +169,7 @@ export default {
 
   updateModelData(modelId, modelData) {
     const projectId = modelRepo.getProjectIdByModelId(modelId);
-    writeModelData(modelId, modelData);
+    storageRepo.write(modelId, modelData);
 
     // Add stat update
     modelRepo.addStatUpdate(modelId, getISODate(), "manual_update", null);

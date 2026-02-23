@@ -55,6 +55,7 @@ body {
 
 [is="x-ui-"] {
   overflow-y: auto;
+  font-size: 14px;
 }
 
 *[is="x-ui-"] {

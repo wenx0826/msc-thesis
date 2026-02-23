@@ -3,9 +3,8 @@ import {
   createModelSchema,
   getModelSchema,
   getVersionDataSchema,
-  updateModelDataSchema,
+  updateVersionSchema,
 } from "./schema.js";
-import { readModelData } from "../../utils/fileHelper.js";
 
 export default async function (fastify, options) {
   // POST /models - Create a new model
@@ -42,7 +41,6 @@ export default async function (fastify, options) {
     { schema: getVersionDataSchema },
     (request, reply) => {
       const versionId = request.params.versionId;
-      console.log("Fetching model content for version ID:", versionId);
       try {
         const data = modelService.getData(versionId);
         reply.send(data);
@@ -68,20 +66,19 @@ export default async function (fastify, options) {
     }
   });
 
-  // PUT /models/:id/data - Update model data only
+  // PUT /models/versions/:versionId - Update model version by version ID
   fastify.put(
-    "/:id/data",
-    { schema: updateModelDataSchema },
+    "/versions/:versionId",
+    { schema: updateVersionSchema },
     (request, reply) => {
-      const modelId = request.params.id;
-      const { modelData } = request.body;
-
+      const { versionId } = request.params;
+      const { modelData, trace, type } = request.body;
       try {
-        modelService.updateModelData(modelId, modelData);
-        reply.send({ message: "Model content updated" });
+        modelService.updateVersion({ versionId, modelData, trace, type });
+        reply.send({ message: "Model version updated" });
       } catch (err) {
-        console.error("Failed to update model data:", err);
-        reply.code(500).send({ error: "Failed to update model data" });
+        console.error("Failed to update model version:", err);
+        reply.code(500).send({ error: "Failed to update model version" });
       }
     },
   );
