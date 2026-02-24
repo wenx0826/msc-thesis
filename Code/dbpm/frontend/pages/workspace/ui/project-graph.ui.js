@@ -15,12 +15,58 @@ const cyLayoutOptions = {
   animate: false,
 };
 
-function getEntityId(node) {
-  return node.id()?.replace("cy-", "") ?? null;
+const DOCUMENT_NODE_NAMESPACE = "document";
+const MODEL_NODE_NAMESPACE = "model";
+
+function toCyNodeId(rawId, namespace) {
+  if (typeof rawId !== "string") {
+    return null;
+  }
+  if (typeof namespace !== "string" || namespace.trim() === "") {
+    return null;
+  }
+
+  const trimmedId = rawId.trim();
+  if (!trimmedId) {
+    return null;
+  }
+
+  return `cy-${namespace.trim()}-${trimmedId}`;
 }
 
 function getEntityType(node) {
-  return node.data().type ?? null;
+  return node.data("type") ?? null;
+}
+
+function getDocumentRef(node) {
+  return {
+    id: node.data("documentId") ?? null,
+    versionId: node.data("versionId") ?? null,
+  };
+}
+
+function getModelRef(node) {
+  return {
+    id: node.data("modelId") ?? null,
+    versionId: node.data("versionId") ?? null,
+  };
+}
+
+function toggleActiveNodeByVersionId(cy, versionId, namespace, isActive) {
+  const nodeId = toCyNodeId(versionId, namespace);
+  if (!nodeId) {
+    return;
+  }
+  const node = cy.getElementById(nodeId);
+  if (!node || node.length === 0) {
+    return;
+  }
+
+  if (isActive) {
+    node.addClass("active");
+    return;
+  }
+  node.removeClass("active");
 }
 
 function safeCyAdd(cy, value, context) {
@@ -123,16 +169,25 @@ createUI({
   bindListeners: ({ cy }) => {
     cy.on("tap", "node", (evt) => {
       const node = evt.target;
-      const entityId = getEntityId(node);
       const entityType = getEntityType(node);
       switch (entityType) {
-        case "document":
-          workspaceService.displayDocument({ id: entityId });
+        case "document": {
+          const documentRef = getDocumentRef(node);
+          if (!documentRef.id) {
+            return;
+          }
+          workspaceService.displayDocument(documentRef);
           break;
-        case "model":
-          workspaceService.toggleModelDisplay(entityId);
+        }
+        case "model": {
+          const modelRef = getModelRef(node);
+          if (!modelRef.id) {
+            return;
+          }
+          workspaceService.toggleModelDisplay(modelRef);
 
           break;
+        }
         default:
           break;
       }
@@ -141,17 +196,20 @@ createUI({
     cy.on("mouseover", "node", (evt) => {
       cy.container().style.cursor = "pointer";
       const node = evt.target;
-      const entityId = getEntityId(node);
       const entityType = getEntityType(node);
       switch (entityType) {
         case "document":
           node.addClass("hovered");
           break;
-        case "model":
+        case "model": {
+          const modelId = node.data("modelId");
+          if (!modelId) {
+            return;
+          }
           // ✨ ENABLED: Show model popover on hover with source tracking
           workspaceStore.setModelPopoverParams(
             {
-              modelId: entityId,
+              modelId,
               anchor: {
                 type: "point",
                 point: {
@@ -163,6 +221,7 @@ createUI({
             "graph-node",
           ); // ✨ NEW: Pass source identifier to prevent conflicts
           break;
+        }
         default:
           break;
       }
@@ -271,21 +330,33 @@ createUI({
 
     workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
       switch (key) {
-        case "displayedDocumentId":
-          if (newValue) {
-            cy.getElementById(`cy-${newValue}`).addClass("active");
-          }
-          if (oldValue) {
-            cy.getElementById(`cy-${oldValue}`).removeClass("active");
-          }
+        case "displayedDocument":
+          toggleActiveNodeByVersionId(
+            cy,
+            newValue?.versionId,
+            DOCUMENT_NODE_NAMESPACE,
+            true,
+          );
+          toggleActiveNodeByVersionId(
+            cy,
+            oldValue?.versionId,
+            DOCUMENT_NODE_NAMESPACE,
+            false,
+          );
           break;
-        case "displayModelId":
-          if (newValue) {
-            cy.getElementById(`cy-${newValue}`).addClass("active");
-          }
-          if (oldValue) {
-            cy.getElementById(`cy-${oldValue}`).removeClass("active");
-          }
+        case "displayedModel":
+          toggleActiveNodeByVersionId(
+            cy,
+            newValue?.versionId,
+            MODEL_NODE_NAMESPACE,
+            true,
+          );
+          toggleActiveNodeByVersionId(
+            cy,
+            oldValue?.versionId,
+            MODEL_NODE_NAMESPACE,
+            false,
+          );
           break;
         default:
           break;

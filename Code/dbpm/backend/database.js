@@ -105,7 +105,7 @@ function initializeSchema() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       model_version_id TEXT NOT NULL,
       task_id TEXT NOT NULL,
-      subprocess_model_id TEXT NOT NULL,
+      subprocess_model_version_id TEXT NOT NULL,
       created_at TEXT NOT NULL DEFAULT current_timestamp,
       deleted_at TEXT,
       FOREIGN KEY (model_version_id) REFERENCES model_versions(id)
