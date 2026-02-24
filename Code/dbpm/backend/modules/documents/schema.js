@@ -13,6 +13,7 @@ export const createDocumentSchema = {
       type: "object",
       properties: {
         id: { type: "string" },
+        latestVersionId: { type: "string" },
         versions: {
           type: "array",
           items: {

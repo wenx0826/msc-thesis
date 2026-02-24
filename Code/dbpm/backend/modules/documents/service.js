@@ -22,7 +22,11 @@ export default {
         latestVersionId: createdVersion.id,
       });
       logService.logEvent(projectId, "document_uploaded", createdDocument);
-      return { ...createdDocument, versions: [createdVersion] };
+      return {
+        ...createdDocument,
+        latestVersionId: createdVersion.id,
+        versions: [createdVersion],
+      };
     } catch (err) {
       // Cleanup on failure
       // If storage was already written, remove by created version id.

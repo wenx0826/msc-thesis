@@ -23,7 +23,7 @@ export const createModelSchema = {
     200: {
       type: "object",
       properties: {
-        model: {
+        modelMeta: {
           type: "object",
           properties: {
             id: { type: "string" },
