@@ -16,7 +16,7 @@ async function createProject(name) {
 createUI({
   setup: () => {},
   bindListeners: () => {
-    $("#btnCreate").on("click", () => {
+    $("#createProjectButton").on("click", () => {
       $err.text("");
       $name.val("");
       $dialog[0].showModal();

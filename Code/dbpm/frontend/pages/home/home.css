@@ -21,7 +21,7 @@
   background-color: var(--x-ui-outside-color);
 }
 
-.footer>div {
+.footer > div {
   display: inline-block;
   padding: 0.5em 8em 0.6em 8em;
   border-top: 1px solid var(--x-ui-border-light-color);
@@ -38,7 +38,7 @@
   color: #111;
 } */
 
-#btnCreate {
+#createProjectButton {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -60,14 +60,14 @@
   padding-bottom: 0;
 }
 
-*[is="x-ui-"] ui-tabbar>ui-tab {
+*[is="x-ui-"] ui-tabbar > ui-tab {
   /* border-bottom-width: 2pt; */
   position: relative;
   padding-left: 0.65em;
   padding-right: 0.65em;
 }
 
-*[is="x-ui-"] ui-tabbar>ui-tab:not(.inactive)::after {
+*[is="x-ui-"] ui-tabbar > ui-tab:not(.inactive)::after {
   content: "";
   position: absolute;
   /* 覆盖位置 */
@@ -82,11 +82,11 @@
   pointer-events: none;
 }
 
-*[is="x-ui-"] ui-tabbar>ui-tab.inactive {
+*[is="x-ui-"] ui-tabbar > ui-tab.inactive {
   border-bottom: none;
 }
 
-[is="x-ui-"] ui-tabbar>ui-before {
+[is="x-ui-"] ui-tabbar > ui-before {
   /* border-bottom: 1pt solid var(--x-ui-border-color); */
   padding-left: 1.5em;
 }
@@ -104,12 +104,13 @@
 /* *[is="x-ui-"] ui-content {
   padding-bottom: 0.25em;
 } */
-*[is="x-ui-"] ui-tabbar>ui-tab.inactive,
-ui-tabbed>ui-tabbar>ui-tab.switch {
+*[is="x-ui-"] ui-tabbar > ui-tab.inactive,
+ui-tabbed > ui-tabbar > ui-tab.switch {
   background-color: var(--x-tab-inactive-color);
 }
 
-*[is="x-ui-"] ui-content:has(> ui-area[data-belongs-to-tab="projects"]:not(.inactive)) {
+*[is="x-ui-"]
+  ui-content:has(> ui-area[data-belongs-to-tab="projects"]:not(.inactive)) {
   padding-bottom: 0.25em;
 }
 
@@ -129,7 +130,6 @@ table thead th {
   text-align: left;
   /* padding: 0.3em 0.5em; */
 }
-
 
 table tbody tr:hover td {
   background-color: var(--x-ui-content-hover-background);
@@ -395,7 +395,8 @@ dialog {
 
 /* ===== Dashboard Content ===== */
 
-*[is="x-ui-"] ui-content:has(> ui-area[data-belongs-to-tab="dashboard"]:not(.inactive)) {
+*[is="x-ui-"]
+  ui-content:has(> ui-area[data-belongs-to-tab="dashboard"]:not(.inactive)) {
   padding: 1.5em 2em;
 }
 /* Metrics (borderless, typography blocks) */
@@ -407,7 +408,6 @@ dialog {
   text-align: center;
   margin-bottom: 18px;
 }
-
 
 .kpi-row {
   display: grid;
@@ -467,8 +467,6 @@ dialog {
   color: #666;
 }
 
-
-
 .distribution-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -507,7 +505,6 @@ dialog {
   font-variant-numeric: tabular-nums;
 }
 
-
 /* ===== Interaction (NARROW COLUMN) ===== */
 
 .interaction {
@@ -543,7 +540,7 @@ dialog {
   font-variant-numeric: tabular-nums;
 }
 
-@media (max-width:1000px) {
+@media (max-width: 1000px) {
   .kpi-row {
     grid-template-columns: 1fr;
     gap: 40px;

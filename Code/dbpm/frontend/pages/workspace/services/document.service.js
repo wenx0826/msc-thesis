@@ -6,7 +6,7 @@ import {
   projectGraphStore,
 } from "../store/index.js";
 import workspaceService from "./workspace.service.js";
-import { getFileContentInHTML } from "../utils/document.js";
+import { getFileContentInHTML } from "../utils/file.js";
 
 export default {
   async uploadDocument(file) {

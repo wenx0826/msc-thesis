@@ -314,7 +314,6 @@ createUI({
       const dataSet = event.currentTarget.dataset;
       const modelId = dataSet.modelId;
       const latestVersion = modelsStore.getLatestVersion(modelId);
-      // const versionId =
       workspaceService.toggleModelDisplay({
         id: modelId,
         versionId: latestVersion?.id,

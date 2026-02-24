@@ -37,6 +37,7 @@ export default {
       viewedDocument,
     });
   },
+
   clearModelDisplay() {
     workspaceStore.setEditingModel({
       id: null,
@@ -60,10 +61,7 @@ export default {
     const currViewedDocument = workspaceStore.getViewedDocument();
     const curViewedDocId = currViewedDocument?.id;
     const curViewedDocVersionId = currViewedDocument?.versionId;
-    if (
-      curViewedDocId === doc.id &&
-      curViewedDocVersionId === versionId
-    ) {
+    if (curViewedDocId === doc.id && curViewedDocVersionId === versionId) {
       return;
     }
     documentService.loadVersion(versionId);

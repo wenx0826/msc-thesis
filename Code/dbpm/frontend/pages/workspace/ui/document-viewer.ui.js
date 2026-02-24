@@ -10,6 +10,7 @@ import { createTemplateElement } from "../../../shared/utils/dom.js";
 import { Constants } from "../../../constants.js";
 import initVersionSelector from "../../../shared/widgets/version-selector.js";
 const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
+const MODEL_GENERATION_TARGET = Constants.MODEL_GENERATION_TARGET;
 const $versionSelect = $("#docVersionSelect");
 const $selectionColorForm = $("#selectionColorForm");
 const $deleteSelectionButton = $("#deleteSelectionButton");
@@ -21,10 +22,12 @@ const $selectionHandlesLayer = $("#selectionHandlesLayer");
 const $modelTagsLayer = $("#modelTagsLayer");
 const $addSelectionsButton = $("#addSelectionsButton");
 const $generateModelButton = $("#generateModelButton");
-const $regenerateModelButton = $("#regenerateModelButton");
 const SELECTION_WRAP_TEMPLATE_ID = "selectionWrapTemplate";
 const SELECTION_RECT_TEMPLATE_ID = "selectionRangeRectTemplate";
 const MODEL_TAG_TEMPLATE_ID = "modelTagTemplate";
+const MODEL_GENERATION_TARGET_VALUES = new Set(
+  Object.values(MODEL_GENERATION_TARGET),
+);
 
 let selectedSelection = null;
 let handleDragState = null;
@@ -61,6 +64,18 @@ function hideSelectionHandles() {
     .find(".selection-handle")
     .removeAttr("data-selectionid data-model-id data-traceid")
     .hide();
+}
+
+function resolveGenerationTargetFromButton(element) {
+  const target = element?.dataset?.target;
+  if (MODEL_GENERATION_TARGET_VALUES.has(target)) {
+    return target;
+  }
+  console.warn(
+    "Unknown model generation target on button, falling back to NEW_MODEL:",
+    target,
+  );
+  return MODEL_GENERATION_TARGET.NEW_MODEL;
 }
 
 function getInteractionWrapsBySelection(selection) {
@@ -731,7 +746,10 @@ const renderTrace = ({ id: traceId, selections, modelId, modelVersionId }) => {
     renderSelection({ ...selection, traceId }, modelId, modelVersionId);
   });
 };
-
+function onGenerationButtonClick(event) {
+  const target = event.currentTarget?.dataset?.target;
+  modelService.generateModelBySelections(target);
+}
 // const rerenderSelectionsLayer = () => {};
 
 const rerenderOverlayLayers = () => {
@@ -829,9 +847,8 @@ createUI({
         MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
       );
     });
-    $generateModelButton.on("click", async () => {
-      modelService.generateModelBySelections();
-    });
+
+    $generateModelButton.on("click", onGenerationButtonClick);
     $viewerWrap.on("scroll", rerenderOverlayLayers);
     $("#columnResizehandle1").on("dragcolumnmove", (e) => {
       // e.stopPropagation();
@@ -1003,26 +1020,26 @@ createUI({
               selectedId: newValue.versionId,
             });
           }
-          // if (newValue) {
-          // versionSelector.update({
-          //   versions,
-          //   selectedId: newValue.versionId,
-          // });
-          // if (newValue.id) {
-          //   $generateModelButton.text("Regenerate Model");
-          //   $generateModelButton.prop(
-          //     "disabled",
-          //     !documentViewerStore.getHasSelectionChanged(),
-          //   );
-          //   $addSelectionsButton.show();
-          //   $addSelectionsButton.prop(
-          //     "disabled",
-          //     !documentViewerStore.getHasSelectionChanged(),
-          //   );
-          // } else {
-          //   $generateModelButton.text("Generate Model");
-          //   $addSelectionsButton.hide();
-          // }
+          break;
+        case "editingModel":
+          const hasEditingModel = Boolean(newValue?.id);
+          if (Boolean(oldValue?.id) !== Boolean(newValue?.id)) {
+            if (hasEditingModel) {
+              $addSelectionsButton.show();
+              $generateModelButton.attr(
+                "data-target",
+                MODEL_GENERATION_TARGET.EDITING_MODEL,
+              );
+              $generateModelButton.text("Regenerate model");
+            } else {
+              $addSelectionsButton.hide();
+              $generateModelButton.attr(
+                "data-target",
+                MODEL_GENERATION_TARGET.NEW_MODEL,
+              );
+              $generateModelButton.text("Generate new model");
+            }
+          }
           break;
         default:
           break;

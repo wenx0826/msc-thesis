@@ -176,8 +176,8 @@
                 <div id="selectionsInteractionLayer"></div>
                 <div id="modelTagsLayer"></div>
                 <div id="selectionHandlesLayer">
-                  <div class="selection-handle" data-side="start"></div>
-                  <div class="selection-handle" data-side="end"></div>
+                  <div class="selection-handle hidden" data-side="start"></div>
+                  <div class="selection-handle hidden" data-side="end"></div>
                 </div>
 
                 <!-- <div id="activeModelTags"></div> -->
@@ -197,11 +197,12 @@
           <!-- Model (Re-)generation Bar -->
           <ui-bar style="z-index: 3">
             <div class="right action-group">
-              <button id="addSelectionsButton" class="hidden">
+              <button id="addSelectionsButton" class="hidden" disabled>
                 Add Selections to Model
               </button>
-              <button id="generateModelButton" disabled>Generate new model</button>
-              <button id="regenerateModelButton" style="display:none;">Regenerate model</button>
+              <button id="generateModelButton" data-target="new_model" disabled>
+                Generate new model
+              </button>
             </div>
           </ui-bar>
         </ui-rest>
