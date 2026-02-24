@@ -1,4 +1,3 @@
-import crypto from "crypto";
 import documentRepo from "./repositories/document.js";
 import versionRepo from "./repositories/version.js";
 import storageRepo from "./repositories/storage.js";
@@ -7,58 +6,54 @@ import { countWords } from "../../utils/fileHelper.js";
 import traceService from "../traces/service.js";
 export default {
   create({ projectId, name, content }) {
-    const id = crypto.randomUUID();
-    const versionId = crypto.randomUUID();
-
     try {
-      storageRepo.write(versionId, content);
       const wordsCount = countWords(content);
 
       const createdDocument = documentRepo.create({
-        id,
         projectId,
       });
       const createdVersion = versionRepo.create({
-        id: versionId,
-        documentId: id,
+        documentId: createdDocument.id,
         name,
         wordsCount,
       });
-      documentRepo.update(id, { latestVersionId: versionId });
+      storageRepo.write(createdVersion.id, content);
+      documentRepo.updateById(createdDocument.id, {
+        latestVersionId: createdVersion.id,
+      });
       logService.logEvent(projectId, "document_uploaded", createdDocument);
       return { ...createdDocument, versions: [createdVersion] };
     } catch (err) {
       // Cleanup on failure
-      // storageRepo.delete(versionId);
+      // If storage was already written, remove by created version id.
       throw err;
     }
   },
 
   createVersion({ documentId, name, content }) {
-    const versionId = crypto.randomUUID();
-
     try {
-      storageRepo.write(versionId, content);
       const wordsCount = countWords(content);
       const createdVersion = versionRepo.create({
-        id: versionId,
         documentId,
         name,
         wordsCount,
       });
-      documentRepo.update(documentId, { latestVersionId: versionId });
+      storageRepo.write(createdVersion.id, content);
+      documentRepo.updateById(documentId, {
+        latestVersionId: createdVersion.id,
+      });
       logService.logEvent(
         documentRepo.findProjectIdById(documentId),
         "document_updated",
         {
           documentId,
-          versionId,
+          versionId: createdVersion.id,
         },
       );
       return createdVersion;
     } catch (err) {
       // Cleanup on failure
-      // storageRepo.delete(versionId);
+      // If storage was already written, remove by created version id.
       throw err;
     }
   },
@@ -112,7 +107,7 @@ export default {
     return documentRepo.getAllModels(docId);
   },
   updateVersionMeta(versionId, updates) {
-    const version = versionRepo.update(versionId, updates);
+    const version = versionRepo.updateById(versionId, updates);
     if (!version) {
       throw new Error("Document version not found");
     }

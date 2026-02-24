@@ -1,22 +1,15 @@
 import db from "../../database.js";
 import { toCamel } from "snake-camel";
+import BaseSqlRepository from "../shared/repositories/BaseSqlRepository.js";
 
-export default {
-  create({ id, name }) {
-    const stmt = db.prepare(`
-    INSERT INTO projects (id, name)
-    VALUES (@id, @name)
-    RETURNING *
-  `);
-    const row = stmt.get({ id, name });
-    return toCamel(row);
-  },
-
-  findById(id) {
-    const stmt = db.prepare("SELECT * FROM projects WHERE id = ?");
-    const result = stmt.get(id);
-    return result ? toCamel(result) : null;
-  },
+class ProjectsRepository extends BaseSqlRepository {
+  constructor() {
+    super({
+      db,
+      tableName: "projects",
+      requiredCreateColumns: ["name"],
+    });
+  }
 
   findAll() {
     const stmt = db.prepare(`
@@ -35,55 +28,29 @@ export default {
     `);
     const results = stmt.all();
     return results.map(toCamel);
-  },
+  }
+
   count(includeDeleted = false) {
     const stmt = db.prepare(
       `SELECT COUNT(*) as count FROM projects ${includeDeleted ? "" : "WHERE deleted_at IS NULL"}`,
     );
     const result = stmt.get();
     return result.count;
-  },
-  update(id, updates) {
-    const fields = [];
-    const values = [];
+  }
 
-    if (updates.name !== undefined) {
-      fields.push("name = ?");
-      values.push(updates.name);
-    }
-    if (updates.modelGenerationIndex !== undefined) {
-      fields.push("model_generation_index = ?");
-      values.push(updates.modelGenerationIndex);
-    }
-
-    if (fields.length === 0) {
-      return null;
-    }
-
-    values.push(id);
-    const stmt = db.prepare(
-      `UPDATE projects SET ${fields.join(", ")} WHERE id = ?`,
-    );
-    const result = stmt.run(...values);
-
-    if (result.changes === 0) {
-      return null;
-    }
-
-    return this.findById(id);
-  },
   findModelGenerationIndexById(id) {
     const stmt = db.prepare(
       "SELECT model_generation_index FROM projects WHERE id = ?",
     );
     return stmt.get(id).model_generation_index;
-  },
+  }
+
   getDocumentCount(id) {
     const stmt = db.prepare(
       "SELECT COUNT(*) as count FROM documents WHERE project_id = ?",
     );
     return stmt.get(id);
-  },
+  }
 
   getModelCount(id) {
     const stmt = db.prepare(`
@@ -93,7 +60,7 @@ export default {
       WHERE d.project_id = ? AND m.deleted_at IS NULL
     `);
     return stmt.get(id);
-  },
+  }
 
   getTotalModelCount(id) {
     const stmt = db.prepare(`
@@ -103,7 +70,7 @@ export default {
       WHERE d.project_id = ?
     `);
     return stmt.get(id);
-  },
+  }
 
   getAllModelsByid(id) {
     const stmt = db.prepare(`
@@ -114,7 +81,7 @@ export default {
     `);
     const results = stmt.all(id);
     return results.map(toCamel);
-  },
+  }
 
   getStats(id) {
     const docsStmt = db.prepare(
@@ -136,5 +103,7 @@ export default {
       modelCount: modelStats.count || 0,
       modelTotalWords: modelStats.totalWords || 0,
     };
-  },
-};
+  }
+}
+
+export default new ProjectsRepository();

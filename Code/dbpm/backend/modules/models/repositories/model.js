@@ -1,5 +1,6 @@
 import { toCamel } from "snake-camel";
 import db from "../../../database.js";
+import BaseSqlRepository from "../../shared/repositories/BaseSqlRepository.js";
 
 function parseDocumentVersionIds(model) {
   if (typeof model.documentId !== "string") {
@@ -30,26 +31,23 @@ function parseDocumentVersionIds(model) {
   return model;
 }
 
-export default {
-  create({ id, projectId }) {
-    const stmt = db.prepare(`
-    INSERT INTO models (id, project_id)
-    VALUES (@id, @projectId)
-    RETURNING *
-  `);
-    const row = stmt.get({
-      id,
-      projectId,
+class ModelRepository extends BaseSqlRepository {
+  constructor() {
+    super({
+      db,
+      tableName: "models",
+      requiredCreateColumns: ["project_id"],
     });
-    return toCamel(row);
-  },
+  }
+
   count(includeDeleted = false) {
     const stmt = db.prepare(
       `SELECT COUNT(*) AS count FROM models ${includeDeleted ? "" : "WHERE deleted_at IS NULL"}`,
     );
     const result = stmt.get();
     return result.count;
-  },
+  }
+
   getAverageSelectedWordsCount(includeDeleted = false) {
     const stmt = db.prepare(`
       SELECT COALESCE(AVG(COALESCE(mv.selected_words_count, 0)), 0) AS average_selected_words_count
@@ -59,7 +57,8 @@ export default {
     `);
     const result = stmt.get();
     return result.average_selected_words_count;
-  },
+  }
+
   getAverageVersionsCount(includeDeleted = false) {
     const stmt = db.prepare(`
       SELECT COALESCE(AVG(COALESCE(mvv.versions_count, 0)), 0) AS average_versions_count
@@ -73,12 +72,14 @@ export default {
     `);
     const result = stmt.get();
     return result.average_versions_count;
-  },
+  }
+
   getProjectIdByModelId(modelId) {
     const stmt = db.prepare("SELECT project_id FROM models WHERE id = ?");
     const result = stmt.get(modelId);
     return result?.project_id ?? null;
-  },
+  }
+
   findById(modelId) {
     const stmt = db.prepare(
       `SELECT m.*, mv.name
@@ -88,7 +89,8 @@ export default {
     );
     const result = stmt.get(modelId);
     return result ? toCamel(result) : null;
-  },
+  }
+
   findByProjectId(projectId, includeDeleted = false) {
     const stmt = db.prepare(`
       SELECT
@@ -120,59 +122,33 @@ export default {
     `);
     const results = stmt.all(projectId);
     return results.map((row) => parseDocumentVersionIds(toCamel(row)));
-  },
+  }
+
   incrementRegeneratedByPrompt(modelId) {
     const stmt = db.prepare(
       "UPDATE models SET regenerated_by_prompt_times = regenerated_by_prompt_times + 1 WHERE id = ?",
     );
     return stmt.run(modelId);
-  },
+  }
+
   incrementRegeneratedBySelections(modelId) {
     const stmt = db.prepare(
       "UPDATE models SET regenerated_by_selections_times = regenerated_by_selections_times + 1 WHERE id = ?",
     );
     return stmt.run(modelId);
-  },
-  update(modelId, updates) {
-    const fields = [];
-    const values = [];
+  }
 
-    if (updates.latestVersionId !== undefined) {
-      fields.push("latest_version_id = ?");
-      values.push(updates.latestVersionId);
-    }
-    if (updates.status !== undefined) {
-      fields.push("status = ?");
-      values.push(updates.status);
-    }
-
-    if (fields.length === 0) {
-      return null;
-    }
-
-    values.push(modelId);
-    const stmt = db.prepare(
-      `UPDATE models SET ${fields.join(", ")} WHERE id = ?`,
-    );
-    const result = stmt.run(...values);
-
-    if (result.changes === 0) {
-      return null;
-    }
-
-    return this.findById(modelId);
-  },
   softDelete(modelId) {
     const stmt = db.prepare("UPDATE models SET deleted_at = ? WHERE id = ?");
     return stmt.run(new Date().toISOString(), modelId);
-  },
+  }
 
   addStatUpdate(modelId, timestamp, type, words) {
     const stmt = db.prepare(
       "INSERT INTO model_stat_updates (model_id, created_at, type, words) VALUES (?, ?, ?, ?)",
     );
     return stmt.run(modelId, timestamp, type, words);
-  },
+  }
 
   getStatUpdates(projectId) {
     const stmt = db.prepare(`
@@ -186,5 +162,7 @@ export default {
     `);
     const results = stmt.all(projectId);
     return results.map(toCamel);
-  },
-};
+  }
+}
+
+export default new ModelRepository();

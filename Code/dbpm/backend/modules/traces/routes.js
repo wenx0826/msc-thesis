@@ -7,17 +7,14 @@ export default async function (fastify, options) {
     const updatedTrace = request.body;
 
     try {
-      const result = traceService.update(
-        traceId,
-        updatedTrace.documentVersionId,
-        updatedTrace.modelVersionId,
-        updatedTrace.selections,
-      );
+      const result = traceService.update(traceId, updatedTrace);
       reply.send(result);
     } catch (err) {
       console.error("Failed to update trace:", err);
-      if (err.message === "Trace not found") {
-        reply.code(404).send({ error: "Trace not found" });
+      if (err.message === "Trace not found or no valid fields to update") {
+        reply
+          .code(404)
+          .send({ error: "Trace not found or no valid fields to update" });
       } else {
         reply.code(500).send({ error: "Failed to update trace" });
       }

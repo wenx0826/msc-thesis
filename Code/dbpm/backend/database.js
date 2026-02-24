@@ -89,7 +89,7 @@ function initializeSchema() {
   // Model stat updates table
   db.exec(`
     CREATE TABLE IF NOT EXISTS model_update_events (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id TEXT PRIMARY KEY,
       model_version_id TEXT NOT NULL,
       type TEXT NOT NULL,
       details TEXT,

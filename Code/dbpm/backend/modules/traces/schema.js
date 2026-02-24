@@ -8,7 +8,8 @@ export const updateTraceSchema = {
   },
   body: {
     type: "object",
-    required: ["documentVersionId", "modelVersionId", "selections"],
+    minProperties: 1,
+    additionalProperties: false,
     properties: {
       documentVersionId: { type: "string" },
       modelVersionId: { type: "string" },

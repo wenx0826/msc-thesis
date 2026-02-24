@@ -1,4 +1,3 @@
-import crypto from "crypto";
 import projectRepo from "./repository.js";
 import logService from "../logs/service.js";
 import documentService from "../documents/service.js";
@@ -6,12 +5,13 @@ import modelService from "../models/service.js";
 
 export default {
   create(name) {
-    const id = crypto.randomUUID();
-
     try {
-      const createdProject = projectRepo.create({ id, name });
-      logService.create(id);
-      logService.logEvent(id, "project_created", { id, name });
+      const createdProject = projectRepo.create({ name });
+      logService.create(createdProject.id);
+      logService.logEvent(createdProject.id, "project_created", {
+        id: createdProject.id,
+        name,
+      });
       return createdProject;
     } catch (err) {
       throw err;
@@ -67,7 +67,7 @@ export default {
     return Number(projectRepo.findModelGenerationIndexById(projectId)) || 0;
   },
   update(projectId, updates) {
-    const project = projectRepo.update(projectId, updates);
+    const project = projectRepo.updateById(projectId, updates);
     if (!project) {
       throw new Error("Project not found or no valid fields to update");
     }

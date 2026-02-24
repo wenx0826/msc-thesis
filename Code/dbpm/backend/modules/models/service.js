@@ -1,4 +1,3 @@
-import crypto from "crypto";
 import modelRepo from "./repositories/model.js";
 import versionRepo from "./repositories/version.js";
 import storageRepo from "./repositories/storage.js";
@@ -50,10 +49,6 @@ export default {
       projectsService.getModelGenerationIndexById(projectId);
     const nextModelGenerationIndex = modelGenerationIndex + 1;
     const name = `Model_${nextModelGenerationIndex}`;
-    const id = crypto.randomUUID();
-    const versionId = crypto.randomUUID();
-    trace.modelVersionId = versionId;
-    trace.id = crypto.randomUUID();
 
     const selections = Array.isArray(trace.selections) ? trace.selections : [];
     const selectedWordsCount = selections.reduce(
@@ -67,29 +62,30 @@ export default {
     );
 
     try {
-      // Persist model XML for this version.
-      storageRepo.write(versionId, enrichedModelData);
-      const createdModel = modelRepo.create({
-        id,
-        projectId,
-      });
+      const createdModel = modelRepo.create({ projectId });
       const createdModelVersion = versionRepo.create({
-        id: versionId,
-        modelId: id,
+        modelId: createdModel.id,
         name,
         selectedWordsCount,
       });
 
-      modelRepo.update(id, { latestVersionId: versionId });
+      // Persist model XML for this version.
+      storageRepo.write(createdModelVersion.id, enrichedModelData);
+      modelRepo.updateById(createdModel.id, {
+        latestVersionId: createdModelVersion.id,
+      });
       projectsService.update(projectId, {
         modelGenerationIndex: nextModelGenerationIndex,
       });
 
-      const createdTrace = traceService.create({ ...trace });
+      const createdTrace = traceService.create({
+        ...trace,
+        modelVersionId: createdModelVersion.id,
+      });
 
       // Log the event
       logService.logEvent(projectId, "model_generated", {
-        id: id,
+        id: createdModel.id,
         name,
         data: enrichedModelData,
       });
@@ -97,7 +93,7 @@ export default {
       return {
         model: {
           ...createdModel,
-          latestVersionId: versionId,
+          latestVersionId: createdModelVersion.id,
           versions: [createdModelVersion],
           // meta: createdModelMeta,
           // data: modelData,

@@ -1,23 +1,19 @@
-import crypto from "crypto";
 import traceRepo from "./repository.js";
 
 export default {
   create({ documentVersionId, modelVersionId, selections }) {
-    const createdTrace = traceRepo.create({
-      id: crypto.randomUUID(),
-      traceId: crypto.randomUUID(),
+    return traceRepo.create({
       documentVersionId,
       modelVersionId,
       selections,
     });
-    return createdTrace;
   },
   update(id, updates) {
-    const success = traceRepo.update(id, updates);
-    if (!success) {
-      throw new Error("Trace not found");
+    const updatedTrace = traceRepo.updateById(id, updates);
+    if (!updatedTrace) {
+      throw new Error("Trace not found or no valid fields to update");
     }
-    return { documentVersionId, modelVersionId, selections };
+    return updatedTrace;
   },
   getByDocumentVersionId(versionId) {
     return traceRepo.findByDocumentVersionId(versionId);

@@ -1,40 +1,58 @@
+import crypto from "crypto";
 import db from "../../database.js";
+import BaseSqlRepository from "../shared/repositories/BaseSqlRepository.js";
 
-import { toCamel, toSnake } from "snake-camel";
-
-function parseTraceSelections(trace) {
-  if (!trace.selections) {
-    return trace;
-  }
-  return {
-    ...trace,
-    selections: JSON.parse(trace.selections),
-  };
-}
-
-export default {
-  create({ id, traceId, documentVersionId, modelVersionId, selections }) {
-    const stmt = db.prepare(`
-      INSERT INTO traces (id, trace_id, document_version_id, model_version_id, selections)
-      VALUES (@id, @traceId, @documentVersionId, @modelVersionId, @selections)
-      RETURNING *`);
-    const row = stmt.get({
-      id,
-      traceId,
-      documentVersionId,
-      modelVersionId,
-      selections: JSON.stringify(selections),
+class TracesRepository extends BaseSqlRepository {
+  constructor() {
+    super({
+      db,
+      tableName: "traces",
+      requiredCreateColumns: [
+        "document_version_id",
+        "model_version_id",
+        "selections",
+      ],
+      generatedColumns: {
+        id: () => crypto.randomUUID(),
+        trace_id: () => crypto.randomUUID(),
+      },
+      jsonColumns: ["selections"],
+      nonUpdatableColumns: ["id", "trace_id", "created_at"],
     });
-    return toCamel(parseTraceSelections(row));
-  },
+  }
+
+  deserializeRow(row) {
+    if (!row?.selections || typeof row.selections !== "string") {
+      return row;
+    }
+    return {
+      ...row,
+      selections: JSON.parse(row.selections),
+    };
+  }
+
+  findById(id) {
+    const stmt = db.prepare(`
+      SELECT t.*, mv.model_id
+      FROM traces t
+      LEFT JOIN model_versions mv ON t.model_version_id = mv.id
+      WHERE t.id = ?
+    `);
+    const row = stmt.get(id);
+    return this.mapRow(row);
+  }
+
   findByDocumentVersionId(documentVersionId) {
     const stmt = db.prepare(`
-      SELECT t.*, mv.model_id FROM traces t
+      SELECT t.*, mv.model_id
+      FROM traces t
       LEFT JOIN model_versions mv ON t.model_version_id = mv.id
-      WHERE t.document_version_id = ?`);
+      WHERE t.document_version_id = ?
+    `);
     const rows = stmt.all(documentVersionId);
-    return rows.map((row) => toCamel(parseTraceSelections(row)));
-  },
+    return rows.map((row) => this.mapRow(row));
+  }
+
   findLatestByModelVersionId(modelVersionId) {
     const stmt = db.prepare(`
       SELECT *
@@ -44,24 +62,15 @@ export default {
       LIMIT 1
     `);
     const row = stmt.get(modelVersionId);
-    return row ? toCamel(parseTraceSelections(row)) : null;
-  },
-  update(traceId, documentVersionId, modelVersionId, selections) {
-    const stmt = db.prepare(
-      "UPDATE traces SET document_version_id = ?, model_version_id = ?, selections = ? WHERE id = ?",
-    );
-    const result = stmt.run(
-      documentVersionId,
-      modelVersionId,
-      JSON.stringify(selections),
-      traceId,
-    );
-    return result.changes > 0;
-  },
+    return this.mapRow(row);
+  }
+
   updateByModelId(modelVersionId, selections) {
     const stmt = db.prepare(
       "UPDATE traces SET selections = ? WHERE model_version_id = ?",
     );
     return stmt.run(JSON.stringify(selections), modelVersionId);
-  },
-};
+  }
+}
+
+export default new TracesRepository();
