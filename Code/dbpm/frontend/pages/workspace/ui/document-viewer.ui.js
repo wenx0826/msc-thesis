@@ -20,7 +20,8 @@ const $selectionsInteractionLayer = $("#selectionsInteractionLayer");
 const $selectionHandlesLayer = $("#selectionHandlesLayer");
 const $modelTagsLayer = $("#modelTagsLayer");
 const $addSelectionsButton = $("#addSelectionsButton");
-const $generateButton = $("#generateButton");
+const $generateModelButton = $("#generateModelButton");
+const $regenerateModelButton = $("#regenerateModelButton");
 const SELECTION_WRAP_TEMPLATE_ID = "selectionWrapTemplate";
 const SELECTION_RECT_TEMPLATE_ID = "selectionRangeRectTemplate";
 const MODEL_TAG_TEMPLATE_ID = "modelTagTemplate";
@@ -76,8 +77,7 @@ function getInteractionWrapsBySelection(selection) {
     );
   } else if (modelId !== undefined && modelId !== null) {
     $wraps = $wraps.filter(
-      (_, element) =>
-        $(element).attr("data-model-id") === String(modelId),
+      (_, element) => $(element).attr("data-model-id") === String(modelId),
     );
   }
   if (traceId !== undefined && traceId !== null) {
@@ -522,7 +522,7 @@ const onSelectionSelect = (event) => {
 };
 
 // function isActiveModel(modelId) {
-//   return modelId == workspaceStore.getDisplayedModelId();
+//   return modelId == workspaceStore.getEditingModelId();
 // }
 
 const renderSelection = (
@@ -532,12 +532,12 @@ const renderSelection = (
 ) => {
   //todo
   const isActiveModel = modelId
-    ? modelId === workspaceStore.getDisplayedModelId()
+    ? modelId === workspaceStore.getEditingModelId()
     : false;
 
   // console.log(
   //   "Rendering selection:",
-  //   workspaceStore.getDisplayedModelId(),
+  //   workspaceStore.getEditingModelId(),
   //   modelId,
   //   isActiveModel,
   // );
@@ -589,7 +589,7 @@ const renderSelection = (
       modelName: `${modelName}`,
       top: `${lastRect.top - eleViewerWrapRect.top + eleViewerWrap.scrollTop - 10}px`,
       left: `${lastRect.right - eleViewerWrapRect.left + eleViewerWrap.scrollLeft - 10}px`,
-      isActive: modelId == workspaceStore.getDisplayedModelId(),
+      isActive: modelId == workspaceStore.getEditingModelId(),
     });
     $modelTagsLayer.append($tag);
   }
@@ -668,7 +668,10 @@ const onSelectionHandleDragMove = (event) => {
   if (!handleDragState) return;
   event.preventDefault();
 
-  const movingPoint = getCaretPointFromClientPoint(event.clientX, event.clientY);
+  const movingPoint = getCaretPointFromClientPoint(
+    event.clientX,
+    event.clientY,
+  );
   if (!movingPoint) return;
 
   let nextRange;
@@ -693,9 +696,7 @@ const onSelectionHandleDragEnd = () => {
   const scope = resolveSelectionScope(handleDragState);
   const activeTrace = documentViewerStore.getDisplayedModelTrace();
   const isActiveTraceUpdate =
-    !traceId ||
-    (activeTrace &&
-      String(activeTrace.id) === String(traceId));
+    !traceId || (activeTrace && String(activeTrace.id) === String(traceId));
   handleDragState = null;
   $viewerWrap.removeClass("selection-handle-dragging");
   $(document).off(".selectionHandleDrag");
@@ -760,7 +761,7 @@ const handleTextSelection = () => {
   const range = selection.getRangeAt(0);
   if (range.collapsed) return;
   // if (!content.contains(range.commonAncestorContainer)) return;
-  // $generateButton.prop("disabled", false);
+  // $generateModelButton.prop("disabled", false);
   const temporarySelection = {
     id: crypto.randomUUID(),
     color: getSelectionColor(),
@@ -828,7 +829,7 @@ createUI({
         MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
       );
     });
-    $generateButton.on("click", async () => {
+    $generateModelButton.on("click", async () => {
       modelService.generateModelBySelections();
     });
     $viewerWrap.on("scroll", rerenderOverlayLayers);
@@ -917,7 +918,7 @@ createUI({
             switch (operation) {
               case "update":
                 removeRenderedSelection(value);
-                renderSelection(value, workspaceStore.getDisplayedModelId());
+                renderSelection(value, workspaceStore.getEditingModelId());
                 break;
               case "remove":
                 removeRenderedSelection(value);
@@ -980,10 +981,10 @@ createUI({
             break;
           case "hasSelectionChanged":
             if (newValue) {
-              $generateButton.prop("disabled", false);
+              $generateModelButton.prop("disabled", false);
               $addSelectionsButton.prop("disabled", false);
             } else {
-              $generateButton.prop("disabled", true);
+              $generateModelButton.prop("disabled", true);
             }
             break;
           default:
@@ -994,7 +995,7 @@ createUI({
 
     workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
       switch (key) {
-        case "displayedDocument":
+        case "viewedDocument":
           if (newValue.id) {
             const versions = documentsStore.getVersions(newValue.id);
             versionSelector.update({
@@ -1008,8 +1009,8 @@ createUI({
           //   selectedId: newValue.versionId,
           // });
           // if (newValue.id) {
-          //   $generateButton.text("Regenerate Model");
-          //   $generateButton.prop(
+          //   $generateModelButton.text("Regenerate Model");
+          //   $generateModelButton.prop(
           //     "disabled",
           //     !documentViewerStore.getHasSelectionChanged(),
           //   );
@@ -1019,7 +1020,7 @@ createUI({
           //     !documentViewerStore.getHasSelectionChanged(),
           //   );
           // } else {
-          //   $generateButton.text("Generate Model");
+          //   $generateModelButton.text("Generate Model");
           //   $addSelectionsButton.hide();
           // }
           break;

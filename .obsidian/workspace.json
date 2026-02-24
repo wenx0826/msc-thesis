@@ -225,6 +225,7 @@
   },
   "active": "5c0a565f43f84411",
   "lastOpenFiles": [
+    "Code/dbpm/data/models/0b60d4a3-dbf1-4be6-a4ed-190272d65206.xml",
     "Code/dbpm/data/models/ec79b340-af3e-43c7-90b6-3aefb12d9e74.xml",
     "Code/dbpm/data/database.sqlite-journal",
     "Code/dbpm/data/documents/b5f49747-defd-44f0-b4a5-8b884437b391.html",
@@ -235,7 +236,6 @@
     "Code/dbpm/data/models/566f778d-575a-402b-a2ca-050706efaaaa.xml",
     "Code/dbpm/data/documents/9d7689e3-5ca9-4835-896b-eb81358ce3b6.html",
     "Code/dbpm/data/documents/284597b2-c4da-45f1-a05c-f5d46834fabe.html",
-    "Code/dbpm/data/logs/2c942e7d-8997-442b-90c0-bc163b274123.yaml",
     "Code/dbpm/backend/node_modules/kill-port/logo.png",
     "Code/dbpm/backend/node_modules/kill-port/README.md",
     "Code/dbpm/backend/node_modules/shell-exec/README.md",

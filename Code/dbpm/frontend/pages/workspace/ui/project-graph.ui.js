@@ -330,7 +330,7 @@ createUI({
 
     workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
       switch (key) {
-        case "displayedDocument":
+        case "viewedDocument":
           toggleActiveNodeByVersionId(
             cy,
             newValue?.versionId,
@@ -344,7 +344,7 @@ createUI({
             false,
           );
           break;
-        case "displayedModel":
+        case "editingModel":
           toggleActiveNodeByVersionId(
             cy,
             newValue?.versionId,

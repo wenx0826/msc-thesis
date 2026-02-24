@@ -8,11 +8,11 @@ class WorkspaceStore extends Store {
       hoveredModelId: null,
       llmModel: "gemini-2.0-flash",
       theme: null,
-      displayedDocument: {
+      viewedDocument: {
         id: null,
         versionId: null,
       },
-      displayedModel: {
+      editingModel: {
         id: null,
         versionId: null,
       },
@@ -37,32 +37,53 @@ class WorkspaceStore extends Store {
     return this.state.projectId;
   }
 
-  getDisplayedDocument() {
-    return this.state.displayedDocument;
+  getViewedDocument() {
+    return this.state.viewedDocument;
   }
 
-  getDisplayedDocumentId() {
-    return this.state.displayedDocument?.id || null;
+  getViewedDocumentId() {
+    return this.state.viewedDocument?.id || null;
   }
 
   getActiveDocumentId() {
-    return this.getDisplayedDocumentId();
+    return this.getViewedDocumentId();
   }
 
-  getDisplayedModel() {
-    return this.state.displayedModel;
+  getEditingModel() {
+    return this.state.editingModel;
   }
 
-  getDisplayedModelId() {
-    return this.state.displayedModel?.id || null;
+  getEditingModelId() {
+    return this.state.editingModel?.id || null;
   }
 
-  hasDisplayedModel() {
-    return this.state.displayedModel.id != null;
+  hasEditingModel() {
+    return this.state.editingModel.id != null;
   }
 
   getLlmModel() {
     return this.state.llmModel;
+  }
+
+  // Legacy compatibility wrappers
+  getDisplayedDocument() {
+    return this.getViewedDocument();
+  }
+
+  getDisplayedDocumentId() {
+    return this.getViewedDocumentId();
+  }
+
+  getDisplayedModel() {
+    return this.getEditingModel();
+  }
+
+  getDisplayedModelId() {
+    return this.getEditingModelId();
+  }
+
+  hasDisplayedModel() {
+    return this.hasEditingModel();
   }
 
   setStatus(status) {
@@ -86,10 +107,10 @@ class WorkspaceStore extends Store {
     const oldValue = this.state.modelPopoverState;
     const oldModelId = oldValue?.modelId;
     const newModelId = newValue?.modelId;
-    const displayModelId = this.getDisplayedModelId();
+    const editingModelId = this.getEditingModelId();
 
     // Don't show popover for the currently active model
-    if (newModelId === displayModelId) {
+    if (newModelId === editingModelId) {
       newValue = null;
     }
 
@@ -165,38 +186,47 @@ class WorkspaceStore extends Store {
     }, 300); // OLD: was 150ms
   }
 
-  setDisplayedDocument(newValue) {
-    const oldValue = this.state.displayedDocument;
+  setViewedDocument(newValue) {
+    const oldValue = this.state.viewedDocument;
     if (
       oldValue?.id === newValue?.id &&
       oldValue?.versionId === newValue?.versionId
     )
       return;
-    this.state.displayedDocument = newValue;
+    this.state.viewedDocument = newValue;
     this.notify({
-      key: "displayedDocument",
+      key: "viewedDocument",
       oldValue,
       newValue,
     });
   }
 
-  setDisplayedModel(newValue) {
-    const oldValue = this.state.displayedModel;
+  setEditingModel(newValue) {
+    const oldValue = this.state.editingModel;
     if (
       oldValue?.id === newValue?.id &&
       oldValue?.versionId === newValue?.versionId
     )
       return;
-    this.state.displayedModel = newValue;
+    this.state.editingModel = newValue;
     this.notify({
-      key: "displayedModel",
+      key: "editingModel",
       oldValue,
       newValue,
     });
   }
 
   setActiveModel(newValue) {
-    this.setDisplayedModel(newValue);
+    this.setEditingModel(newValue);
+  }
+
+  // Legacy compatibility wrappers
+  setDisplayedDocument(newValue) {
+    this.setViewedDocument(newValue);
+  }
+
+  setDisplayedModel(newValue) {
+    this.setEditingModel(newValue);
   }
 
   setLlmModel(llmModel) {
@@ -207,11 +237,19 @@ class WorkspaceStore extends Store {
     this.state.theme = theme;
   }
 
-  set({ projectId, displayedDocument, activeModel }) {
+  set({
+    projectId,
+    viewedDocument,
+    editingModel,
+    displayedDocument,
+    activeModel,
+  }) {
     console.log("WorkspaceStore setProjectID!!!!!:", projectId);
     this.state.projectId = projectId;
-    if (displayedDocument) this.setDisplayedDocument(displayedDocument);
-    if (activeModel) this.setActiveModel(activeModel);
+    const resolvedViewedDocument = viewedDocument || displayedDocument;
+    const resolvedEditingModel = editingModel || activeModel;
+    if (resolvedViewedDocument) this.setViewedDocument(resolvedViewedDocument);
+    if (resolvedEditingModel) this.setEditingModel(resolvedEditingModel);
   }
 }
 

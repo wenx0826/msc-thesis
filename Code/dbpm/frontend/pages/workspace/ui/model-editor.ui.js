@@ -11,7 +11,7 @@ import { Constants } from "../../../constants.js";
 import { default as setActiveModuleNameEditor } from "../../../shared/widgets/inline-editor.js";
 
 const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
-const $displayedVersionName = $("#displayedModelVersionName");
+const $editingModelVersionName = $("#editingModelVersionName");
 const $modelActionBar = $("#modelActionBar");
 const $exportTestsetButton = $("#exportTestsetButton");
 const $deleteModelButton = $("#deleteModelButton");
@@ -81,7 +81,7 @@ function syncActiveModelGraphInList() {
   gc.attr("width", start + 1);
   gc.find(".duration");
   gc.removeAttr("id");
-  modelsStore.updateModelById(workspaceStore.getDisplayedModelId(), {
+  modelsStore.updateModelById(workspaceStore.getEditingModelId(), {
     svg: gc[0].outerHTML,
   });
 }
@@ -92,7 +92,7 @@ function saveActiveModel(type) {
 }
 
 function clearModelViewer() {
-  $displayedVersionName.text("");
+  $editingModelVersionName.text("");
   $modelActionBar.prop("disabled", true);
   $("#graphcanvas").empty();
   $datDetails.empty();
@@ -100,7 +100,7 @@ function clearModelViewer() {
 }
 
 function clearModelEditor() {
-  $displayedVersionName.text("");
+  $editingModelVersionName.text("");
   $modelActionBar.prop("disabled", true);
   $("#graphcanvas").empty();
   $datDetails.empty();
@@ -227,7 +227,7 @@ const renderModelSelect = (modelValue) => {
   if ($modelSelect.length === 0) {
     return;
   }
-  const displayModelId = modelEditorStore.getModelId();
+  const editingModelId = modelEditorStore.getModelId();
   const modelsByDocumentId = new Map();
   for (const { documentId, modelId, modelName } of getAvailableSubprocessModels()) {
     const documentKey = String(documentId);
@@ -249,7 +249,7 @@ const renderModelSelect = (modelValue) => {
         .val(modelId)
         .text(modelName)
         .appendTo($optGroup);
-      if (modelId == displayModelId) {
+      if (modelId == editingModelId) {
         $option.prop("disabled", true);
       }
     }
@@ -489,13 +489,13 @@ function do_main_work(svgid) {
 createUI({
   setup: () => {
     setActiveModuleNameEditor({
-      $scope: $displayedVersionName.parent(),
+      $scope: $editingModelVersionName.parent(),
       trigger: "click",
       autoGrow: true,
       onSave: (name) => {
-        const displayModelId = workspaceStore.getDisplayedModelId();
-        if (displayModelId) {
-          // modelService.updateModelById(displayModelId, { name });
+        const editingModelId = workspaceStore.getEditingModelId();
+        if (editingModelId) {
+          // modelService.updateModelById(editingModelId, { name });
         }
       },
     });
@@ -505,7 +505,7 @@ createUI({
     $viewModelDataLink.on("click", (e) => {
       e.preventDefault();
       window.open(
-        "/data/models/" + workspaceStore.getDisplayedModelId() + ".xml",
+        "/data/models/" + workspaceStore.getEditingModelId() + ".xml",
         "_blank",
       );
     });
@@ -513,7 +513,7 @@ createUI({
     $exportTestsetButton.on("click", (e) => {
       e.preventDefault();
       const filename =
-        "testset_" + workspaceStore.getDisplayedModelId() + ".xml";
+        "testset_" + workspaceStore.getEditingModelId() + ".xml";
       const text =
         '<?xml version="1.0"?>\n<testset xmlns="http://cpee.org/ns/properties/2.0">\n<executionhandler>ruby</executionhandler>\n<dataelements/>\n<endpoints/>\n<attributes>\n<guarded>none</guarded>\n<modeltype>CPEE</modeltype>\n<theme>preset</theme>\n<guarded_id/>\n<info>Subprocess</info>\n<creator>Christine Ashcreek</creator>\n<author>Christine Ashcreek</author>\n<model_uuid>1fc43528-3e4a-40ee-8503-c0ed7e5d883c</model_uuid>\n<model_version/>\n<design_stage>development</design_stage>\n<design_dir>Templates.dir</design_dir>\n</attributes>\n<description>' +
         modelEditorStore.getSerializedRpstData() +
@@ -534,7 +534,7 @@ createUI({
     });
 
     $deleteModelButton.on("click", () => {
-      modelService.deleteModel(workspaceStore.getDisplayedModelId());
+      modelService.deleteModel(workspaceStore.getEditingModelId());
     });
 
     $keepNewModelButton.on("click", async () => {
@@ -544,7 +544,7 @@ createUI({
     });
 
     $revertPrevModelButton.on("click", () => {
-      $displayedVersionName.text("");
+      $editingModelVersionName.text("");
       $("#graphcanvas").empty();
       $("#generatedModelActionBar").css("visibility", "hidden");
     });
@@ -722,7 +722,7 @@ createUI({
           break;
         case "model":
           if (newValue) {
-            $displayedVersionName.text(newValue.name ? newValue.name : "");
+            $editingModelVersionName.text(newValue.name ? newValue.name : "");
             $modelActionBar.prop("disabled", false);
             $datDetails.empty();
             showActiveModel(newValue);
@@ -772,13 +772,13 @@ createUI({
 
     workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
       switch (key) {
-        case "displayedModel":
+        case "editingModel":
           if (newValue.id) {
             const versionName = modelsStore.getVersionName(
               newValue.id,
               newValue.versionId,
             );
-            $displayedVersionName.text(versionName);
+            $editingModelVersionName.text(versionName);
             // const name = modelsStore.getModelNameById(newValue.id);
           }
           break;

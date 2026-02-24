@@ -78,8 +78,8 @@ export default {
     documentsStore.removeDocument(documentId);
     projectGraphStore.removeDocumentNode(documentId);
     // If the deleted document is currently active, clear the selection
-    const displayedDocumentId = workspaceStore.getActiveDocumentId();
-    if (displayedDocumentId === documentId) {
+    const viewedDocumentId = workspaceStore.getViewedDocumentId();
+    if (viewedDocumentId === documentId) {
       workspaceService.clearDocumentSelection();
     }
   },

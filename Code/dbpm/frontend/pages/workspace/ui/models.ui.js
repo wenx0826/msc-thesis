@@ -259,7 +259,7 @@ async function renderModelInList(model) {
   const $gridDiv = $modelContainer.find("[data-ref='modelGrid']").first();
   $gridDiv.attr("id", gridId);
   $modelContainer.find("[data-ref='modelName']").first().text(model.name);
-  if (modelId == workspaceStore.getDisplayedModel().id) {
+  if (modelId == workspaceStore.getEditingModel().id) {
     $modelContainer.addClass("active");
   }
   $modelsList.append($modelContainer);
@@ -324,12 +324,12 @@ createUI({
   subscribeStores: () => {
     workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
       switch (key) {
-        case "displayModelId":
-          if (newValue) {
-            highlightActiveModelContainer(newValue);
+        case "editingModel":
+          if (newValue?.id) {
+            highlightActiveModelContainer(newValue.id);
           }
-          if (oldValue) {
-            unhighlightActiveModelContainer(oldValue);
+          if (oldValue?.id) {
+            unhighlightActiveModelContainer(oldValue.id);
           }
           break;
         default:

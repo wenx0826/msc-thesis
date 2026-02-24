@@ -12,7 +12,7 @@ import {
 
 export default {
   async loadWorkspace(projectId) {
-    let displayedDocument = null;
+    let viewedDocument = null;
     const { documentsMeta, modelsMeta } =
       await projectsAPI.getComponents(projectId);
 
@@ -24,7 +24,7 @@ export default {
       const doc = documentsMeta.at(-1);
       const docLatestVersion = doc.versions.at(-1);
       if (docLatestVersion?.id) {
-        displayedDocument = {
+        viewedDocument = {
           id: doc.id,
           versionId: docLatestVersion.id,
         };
@@ -34,11 +34,11 @@ export default {
 
     workspaceStore.set({
       projectId,
-      displayedDocument,
+      viewedDocument,
     });
   },
   clearModelDisplay() {
-    workspaceStore.setDisplayedModel({
+    workspaceStore.setEditingModel({
       id: null,
       versionId: null,
     });
@@ -57,17 +57,17 @@ export default {
       return;
     }
 
-    const currDisplayedDocument = workspaceStore.getDisplayedDocument();
-    const curDisplayedDocId = currDisplayedDocument?.id;
-    const curDisplayedDocVersionId = currDisplayedDocument?.versionId;
+    const currViewedDocument = workspaceStore.getViewedDocument();
+    const curViewedDocId = currViewedDocument?.id;
+    const curViewedDocVersionId = currViewedDocument?.versionId;
     if (
-      curDisplayedDocId === doc.id &&
-      curDisplayedDocVersionId === versionId
+      curViewedDocId === doc.id &&
+      curViewedDocVersionId === versionId
     ) {
       return;
     }
     documentService.loadVersion(versionId);
-    workspaceStore.setDisplayedDocument({
+    workspaceStore.setViewedDocument({
       id: doc.id,
       versionId,
     });
@@ -93,17 +93,17 @@ export default {
     const modelId = model.id;
     const versionId =
       model.versionId || modelsStore.getModelLatestVersionIdById(modelId);
-    const curActiveModel = workspaceStore.getDisplayedModel();
+    const curEditingModel = workspaceStore.getEditingModel();
 
     if (
-      curActiveModel?.id === modelId &&
-      curActiveModel?.versionId === versionId
+      curEditingModel?.id === modelId &&
+      curEditingModel?.versionId === versionId
     ) {
       this.clearModelDisplay();
       return;
     }
 
-    workspaceStore.setActiveModel({
+    workspaceStore.setEditingModel({
       id: modelId,
       versionId: versionId || null,
     });

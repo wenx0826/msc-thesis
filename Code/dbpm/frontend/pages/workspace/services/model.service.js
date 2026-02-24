@@ -99,7 +99,7 @@ export default {
       DBPM_NS,
       "dbpm:document_id",
     );
-    const documentId = workspaceStore.getDisplayedDocument().id;
+    const documentId = workspaceStore.getViewedDocument().id;
     eleDocumentId.textContent = documentId;
     const eleDocumentName = eleDbpmInfo.createElementNS(
       DBPM_NS,
@@ -118,7 +118,7 @@ export default {
 
     const modelData = this.injectDbpmData(generatedModel, eleDbpmInfo);
 
-    if (workspaceStore.hasDisplayedModel()) {
+    if (workspaceStore.hasEditingModel()) {
       const model = { ...modelEditorStore.getModel() };
       model.updateType = MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS;
       model.data = modelData;
@@ -184,7 +184,7 @@ export default {
   },
 
   async createModelAndTrace(modelData) {
-    const documentVersionId = workspaceStore.getDisplayedDocument().versionId;
+    const documentVersionId = workspaceStore.getViewedDocument().versionId;
     const trace = {
       documentVersionId,
       selections: documentViewerStore.getSerializedTemporarySelections(),
@@ -219,7 +219,7 @@ export default {
   },
   async updateActiveModel(type) {
     const model = modelEditorStore.getModel();
-    const modelId = workspaceStore.getDisplayedModelId();
+    const modelId = workspaceStore.getEditingModelId();
 
     if (model.updateType) {
       type = model.updateType;
@@ -254,7 +254,7 @@ export default {
   },
   async saveModel(type) {
     const model = modelEditorStore.getModel();
-    const modelVersionId = workspaceStore.getDisplayedModel().versionId;
+    const modelVersionId = workspaceStore.getEditingModel().versionId;
 
     // if (model.updateType) {
     //   type = model.updateType;
@@ -299,7 +299,7 @@ export default {
 
   async deleteModel(modelId) {
     modelsAPI.deleteModelById(modelId);
-    if (modelId === workspaceStore.getDisplayedModelId()) {
+    if (modelId === workspaceStore.getEditingModelId()) {
       workspaceService.clearModelDisplay();
     }
     const documentId = modelsStore.getModelDocumentIdById(modelId);

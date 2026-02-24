@@ -26,10 +26,10 @@ function rerenderDocumentItem(docId, versionId, name) {
   $documentItem.find("[data-ref='documentName']").text(name);
 }
 
-const highlightActiveDocumentItem = (displayedDocumentId) => {
+const highlightActiveDocumentItem = (viewedDocumentId) => {
   $documentsList.children().each((index, element) => {
     const $element = $(element);
-    if ($element.data("docId") === displayedDocumentId) {
+    if ($element.data("docId") === viewedDocumentId) {
       $element.addClass("active");
     } else {
       $element.removeClass("active");
@@ -145,9 +145,9 @@ createUI({
           break;
         case "versions.add":
           const docId = value.documentId;
-          const displayedDocumentId = workspaceStore.state.displayedDocument.id;
+          const viewedDocumentId = workspaceStore.state.viewedDocument.id;
           rerenderDocumentItem(value.documentId, value.id, value.name);
-          if (docId === displayedDocumentId) {
+          if (docId === viewedDocumentId) {
             // updateVersionSelect(value.id);
           }
           break;
@@ -159,7 +159,7 @@ createUI({
     });
     workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
       switch (key) {
-        case "displayedDocument":
+        case "viewedDocument":
           if (newValue.id) {
             highlightActiveDocumentItem(newValue.id);
             const versions = documentsStore.getVersions(newValue.id);

@@ -161,7 +161,7 @@
                 </div>
               </form>
               <button id="deleteSelectionButton" disabled>
-                Delete Selection
+                Clear selections
               </button>
             </div>
           </ui-bar>
@@ -200,8 +200,8 @@
               <button id="addSelectionsButton" class="hidden">
                 Add Selections to Model
               </button>
-              <button id="generateButton" disabled>Generate Model</button>
-              <!-- <button id="regenerateButton" style="display:none;">Regenerate</button> -->
+              <button id="generateModelButton" disabled>Generate new model</button>
+              <button id="regenerateModelButton" style="display:none;">Regenerate model</button>
             </div>
           </ui-bar>
         </ui-rest>
@@ -212,8 +212,17 @@
         <ui-rest style="flex: 1 1 0; min-height: 100px">
           <ui-bar>
             <!-- <div id="activeModelNameEditor" class="inline-editor"> -->
-            <span id="displayedModelVersionName" class="inline-editor__view" data-editable="1"></span>
-            <button class="right col-button action-btn">...</button>
+            <span id="editingModelVersionName" class="inline-editor__view" data-editable="1"></span>
+            <div class="right action-group">
+              <div class="field">
+                <label for="modelVersionSelect">Version:</label>
+                <select id="modelVersionSelect"></select>
+
+              </div>
+              <button>Create new version</button>
+              <button class="col-button action-btn">...</button>
+            </div>
+
             <!-- <input class="inline-editor__input" type="text" /> -->
             <!-- </div> -->
             <!-- <fieldset id="modelActionBar" class="right action-group" disabled>
@@ -294,7 +303,10 @@
               <ui-area id="modelsList">
                 <template id="modelItemTemplate">
                   <div class="model-container" data-model-id="" data-documentid="">
-                    <span data-ref="modelName"></span>
+                    <ui-bar>
+                      <span data-ref="modelName"></span>
+                      <button class="right col-button action-btn">...</button>
+                    </ui-bar>
                     <div data-ref="modelGrid"></div>
                   </div>
                 </template>
