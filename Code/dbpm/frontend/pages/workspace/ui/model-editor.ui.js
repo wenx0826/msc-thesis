@@ -27,6 +27,8 @@ const $promptActionBar = $("#promptActionBar");
 const $sendPromptButton = $("#sendPromptButton");
 const $clearPromptButton = $("#clearPromptButton");
 const $viewModelDataLink = $("#viewModelDataLink");
+const CALL_TYPE_SELECTOR = `#dat_details select[data-relaxngui-path=" > call > parameters > dbpm_type"]`;
+const CALL_SUBPROCESS_MODEL_SELECTOR = `#dat_details select[data-relaxngui-path=" > call > parameters > dbpm_subprocess_model"]`;
 
 function syncActiveModelGraphInList() {
   var gc = $("#graphcanvas").clone();
@@ -172,33 +174,88 @@ const showActiveModel = async (model) => {
   );
 };
 
-const renderModelSelect = (modelValue) => {
-  const displayModelId = modelEditorStore.getModelId();
-  const $modelSelect = $(
-    `#dat_details select[data-relaxngui-path=" > call > parameters > dbpm_subprocess_model"]`,
+const getModelSelectContainer = ($modelSelect) => {
+  const $container = $modelSelect.closest(
+    `div[data-relaxngui-path=" > call > parameters > dbpm_subprocess_model"]`,
   );
-  $modelSelect.parent().parent().show();
+  if ($container.length > 0) {
+    return $container;
+  }
+  const $fallbackContainer = $(
+    `#dat_details div[data-relaxngui-path=" > call > parameters > dbpm_subprocess_model"]`,
+  );
+  if ($fallbackContainer.length > 0) {
+    return $fallbackContainer.first();
+  }
+  return $modelSelect.parent().parent();
+};
+
+const setModelSelectVisibility = ($modelSelect, isVisible) => {
+  const $container = getModelSelectContainer($modelSelect);
+  if ($container.length === 0) {
+    return;
+  }
+  if (isVisible) {
+    $container.show();
+  } else {
+    $container.hide();
+  }
+};
+
+const getAvailableSubprocessModels = () => {
+  const availableModels = [];
+  for (const model of modelsStore.getModels() || []) {
+    const meta =
+      model?.meta && typeof model.meta === "object" ? model.meta : model;
+    const modelId = meta?.id ?? model?.id;
+    const modelName = meta?.name ?? model?.name;
+    const documentId = model?.documentId ?? meta?.documentId;
+    if (!modelId || !documentId) {
+      continue;
+    }
+    availableModels.push({
+      documentId,
+      modelId,
+      modelName: modelName || modelId,
+    });
+  }
+  return availableModels;
+};
+
+const renderModelSelect = (modelValue) => {
+  const $modelSelect = $(CALL_SUBPROCESS_MODEL_SELECTOR);
+  if ($modelSelect.length === 0) {
+    return;
+  }
+  const displayModelId = modelEditorStore.getModelId();
+  const modelsByDocumentId = new Map();
+  for (const { documentId, modelId, modelName } of getAvailableSubprocessModels()) {
+    const documentKey = String(documentId);
+    if (!modelsByDocumentId.has(documentKey)) {
+      modelsByDocumentId.set(documentKey, []);
+    }
+    modelsByDocumentId.get(documentKey).push({ modelId, modelName });
+  }
+
   $modelSelect.empty();
   $("<option>").val("").text("--- Please select ---").appendTo($modelSelect);
-  const documentList = documentsStore.getList();
-  console.log("Document List:", documentList);
-  for (const { id: docId, name: docName } of documentList) {
+  for (const { id: docId, name: docName } of documentsStore.getList() || []) {
     const $optGroup = $("<optgroup>")
       .attr("label", docName)
       .appendTo($modelSelect);
-    const models = modelsStore
-      .getModels()
-      .filter((m) => m.documentId === docId);
-    for (const { meta } of models) {
-      const { id: modelId, name: modelName } = meta;
+    const models = modelsByDocumentId.get(String(docId)) || [];
+    for (const { modelId, modelName } of models) {
       const $option = $("<option>")
         .val(modelId)
         .text(modelName)
         .appendTo($optGroup);
-      if (modelId == modelValue) $option.prop("selected", true);
-      if (modelId == displayModelId) $option.prop("disabled", true);
+      if (modelId == displayModelId) {
+        $option.prop("disabled", true);
+      }
     }
   }
+  setModelSelectVisibility($modelSelect, true);
+  $modelSelect.val(modelValue || "");
 };
 
 function do_main_work(svgid) {
@@ -525,10 +582,41 @@ createUI({
       $promptActionBar.attr("disabled", "disabled");
       modelService.generateModelByPrompt(promptText);
     });
+    $(document)
+      .off("change.call-type", CALL_TYPE_SELECTOR)
+      .on("change.call-type", CALL_TYPE_SELECTOR, function () {
+        const $endpointInput = $(
+          `#dat_details input[data-relaxngui-path=" > call[endpoint]"]`,
+        );
+        const $modelSelect = $(CALL_SUBPROCESS_MODEL_SELECTOR);
+        const initialModelValue = $modelSelect.data("initial-model-value") || "";
+        const typeValue = $(this).val();
+        if (typeValue === "subprocess") {
+          if ($endpointInput.length > 0) {
+            $endpointInput.val("subprocess");
+          }
+          renderModelSelect($modelSelect.val() || initialModelValue);
+          return;
+        }
+        if ($endpointInput.length > 0) {
+          $endpointInput.val("");
+        }
+        $modelSelect.val("");
+        setModelSelectVisibility($modelSelect, false);
+      });
     $(document).on("wf:call-clicked", function (e) {
       console.log(`Event Listener 'wf:call-clicked' listened`);
-      const $node = $(e.detail.node);
-      const endpoint = $node.attr("endpoint");
+      const nodeData = e.detail?.node || e.detail?.nn;
+      if (!nodeData) {
+        return;
+      }
+      const $node = $(nodeData);
+      const endpoint = ($node.attr("endpoint") || "").trim();
+      const type = $node
+        .children("parameters")
+        .children("dbpm_type")
+        .text()
+        .trim();
       const $argumentsDiv = $(
         `#dat_details div[data-relaxngui-path=" > call > parameters > arguments[data-main]"]`,
       );
@@ -536,7 +624,8 @@ createUI({
       const modelValue = $node
         .children("parameters")
         .children("dbpm_subprocess_model")
-        .text();
+        .text()
+        .trim();
 
       const $endpointInput = $(
         `#dat_details input[data-relaxngui-path=" > call[endpoint]"]`,
@@ -544,33 +633,22 @@ createUI({
       // if ($endpointInput.length > 0) {
       //   $endpointInput.parent().css({ visibility: "hidden", height: "0px" });
       // }
-      const isSubprocess = endpoint === "subprocess" ? true : false;
-      const $typeSeclect = $(
-        `#dat_details select[data-relaxngui-path=" > call > parameters > dbpm_type"]`,
-      );
-      $typeSeclect.val(isSubprocess ? "subprocess" : "task");
-      const $modelSelect = $(
-        `#dat_details select[data-relaxngui-path=" > call > parameters > dbpm_subprocess_model"]`,
-      );
-      $typeSeclect.on("change", function (e) {
-        const typeValue = $(this).val();
-        if (typeValue == "subprocess") {
-          if ($endpointInput.length > 0) {
-            $endpointInput.val("subprocess");
-          }
-          renderModelSelect(modelValue);
-        } else {
-          if ($endpointInput.length > 0) {
-            $endpointInput.val("");
-          }
-          $modelSelect.val("");
-          $modelSelect.parent().parent().hide();
-        }
-      });
+      const isSubprocess = endpoint === "subprocess" || type === "subprocess";
+      const $typeSelect = $(CALL_TYPE_SELECTOR);
+      $typeSelect.val(isSubprocess ? "subprocess" : "task");
+      const $modelSelect = $(CALL_SUBPROCESS_MODEL_SELECTOR);
+      $modelSelect.data("initial-model-value", modelValue);
       if (isSubprocess) {
+        if ($endpointInput.length > 0) {
+          $endpointInput.val("subprocess");
+        }
         renderModelSelect(modelValue);
       } else {
-        $modelSelect.parent().parent().hide();
+        if ($endpointInput.length > 0) {
+          $endpointInput.val("");
+        }
+        $modelSelect.val("");
+        setModelSelectVisibility($modelSelect, false);
       }
     });
     $(document).on("wf:subprocess-dblclicked", function (e) {

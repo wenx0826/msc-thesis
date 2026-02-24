@@ -13,13 +13,14 @@ function parseTraceSelections(trace) {
 }
 
 export default {
-  create({ id, documentVersionId, modelVersionId, selections }) {
+  create({ id, traceId, documentVersionId, modelVersionId, selections }) {
     const stmt = db.prepare(`
-      INSERT INTO traces (id, document_version_id, model_version_id, selections)
-      VALUES (@id, @documentVersionId, @modelVersionId, @selections)
+      INSERT INTO traces (id, trace_id, document_version_id, model_version_id, selections)
+      VALUES (@id, @traceId, @documentVersionId, @modelVersionId, @selections)
       RETURNING *`);
     const row = stmt.get({
       id,
+      traceId,
       documentVersionId,
       modelVersionId,
       selections: JSON.stringify(selections),
@@ -57,7 +58,6 @@ export default {
     );
     return result.changes > 0;
   },
-
   updateByModelId(modelVersionId, selections) {
     const stmt = db.prepare(
       "UPDATE traces SET selections = ? WHERE model_version_id = ?",

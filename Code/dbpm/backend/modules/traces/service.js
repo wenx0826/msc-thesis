@@ -5,22 +5,15 @@ export default {
   create({ documentVersionId, modelVersionId, selections }) {
     const createdTrace = traceRepo.create({
       id: crypto.randomUUID(),
-      markerId: crypto.randomUUID(),
+      traceId: crypto.randomUUID(),
       documentVersionId,
       modelVersionId,
       selections,
     });
-
     return createdTrace;
   },
-
-  update(traceId, documentVersionId, modelVersionId, selections) {
-    const success = traceRepo.update(
-      traceId,
-      documentVersionId,
-      modelVersionId,
-      selections,
-    );
+  update(id, updates) {
+    const success = traceRepo.update(id, updates);
     if (!success) {
       throw new Error("Trace not found");
     }
