@@ -12,7 +12,7 @@ import {
 
 export default {
   async loadWorkspace(projectId) {
-    let viewedDocument = null;
+    let viewedDocument = undefined;
     const { documentsMeta, modelsMeta } =
       await projectsAPI.getComponents(projectId);
 
@@ -21,15 +21,12 @@ export default {
     projectGraphStore.init(documentsMeta, modelsMeta);
 
     if (documentsMeta.length > 0) {
-      const doc = documentsMeta.at(-1);
-      const docLatestVersion = doc.versions.at(-1);
-      if (docLatestVersion?.id) {
-        viewedDocument = {
-          id: doc.id,
-          versionId: docLatestVersion.id,
-        };
-        documentService.loadVersion(docLatestVersion.id);
-      }
+      const docMeta = documentsMeta.at(-1);
+      viewedDocument = {
+        id: docMeta.id,
+        versionId: docMeta.latestVersionId,
+      };
+      documentService.loadVersion(docMeta.latestVersionId);
     }
 
     workspaceStore.set({
@@ -47,28 +44,14 @@ export default {
     documentViewerStore.setActiveModelTrace(null);
   },
 
-  async displayDocument(doc) {
-    if (!doc?.id) {
-      return;
-    }
-
-    const versionId =
-      doc.versionId || documentsStore.getVersions(doc.id).at(-1)?.id || null;
-    if (!versionId) {
-      return;
-    }
-
-    const currViewedDocument = workspaceStore.getViewedDocument();
-    const curViewedDocId = currViewedDocument?.id;
-    const curViewedDocVersionId = currViewedDocument?.versionId;
-    if (curViewedDocId === doc.id && curViewedDocVersionId === versionId) {
+  async displayDocument({ id, versionId }) {
+    const { id: currViewedDocId, versionId: currViewedDocVersionId } =
+      workspaceStore.getViewedDocument();
+    if (currViewedDocId === id && currViewedDocVersionId === versionId) {
       return;
     }
     documentService.loadVersion(versionId);
-    workspaceStore.setViewedDocument({
-      id: doc.id,
-      versionId,
-    });
+    workspaceStore.setViewedDocument({ id, versionId });
     // await documentViewerStore.setDocumentById(docId);
     // const displayedModelId = workspaceStore.getDisplayedModelId();
     // if (displayedModelId) {
@@ -82,34 +65,24 @@ export default {
     // }
   },
 
-  toggleModelDisplay(model) {
-    if (!model?.id) {
+  toggleModelDisplay({ id, versionId }) {
+    if (!id) {
       this.clearModelDisplay();
       return;
     }
+    const { id: currEditingModelId, versionId: currEditingModelVersionId } =
+      workspaceStore.getEditingModel();
 
-    const modelId = model.id;
-    const versionId =
-      model.versionId || modelsStore.getModelLatestVersionIdById(modelId);
-    const curEditingModel = workspaceStore.getEditingModel();
-
-    if (
-      curEditingModel?.id === modelId &&
-      curEditingModel?.versionId === versionId
-    ) {
+    if (currEditingModelId === id && currEditingModelVersionId === versionId) {
       this.clearModelDisplay();
       return;
     }
-
-    workspaceStore.setEditingModel({
-      id: modelId,
-      versionId: versionId || null,
-    });
+    workspaceStore.setEditingModel({ id, versionId });
     modelService.loadVersion(versionId);
     // modelEditorStore.setModelById(modelId);
     documentViewerStore.setActiveModelTraceByModelId(modelId);
     workspaceStore.setModelPopoverParams(null);
-    // if (curActiveModelId === id) {
+    // if (currActiveModelId === id) {
     //   id = null;
     //   this.clearModelDisplay();
     //   return;
@@ -118,11 +91,11 @@ export default {
     // modelEditorStore.setModelById(model.id);
 
     // if (model.id) {
-    //   const curDisplayedDocumentId = workspaceStore.getActiveDocumentId();
+    //   const currDisplayedDocumentId = workspaceStore.getActiveDocumentId();
     //   const activeModelDocumentId = modelsStore.getModelDocumentIdById(
     //     model.id,
     //   );
-    //   if (curDisplayedDocumentId != activeModelDocumentId) {
+    //   if (currDisplayedDocumentId != activeModelDocumentId) {
     //     // this.displayDocument({ id: activeModelDocumentId });
     //   } else {
     //     documentViewerStore.setActiveModelTraceByModelId(model.id);

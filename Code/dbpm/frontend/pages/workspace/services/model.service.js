@@ -200,16 +200,23 @@ export default {
     //   trace,
     // );
 
-    const { model: createdModelMeta, trace: createdTrace } =
+    const { modelMeta: createdModelMeta, trace: createdTrace } =
       await modelsAPI.createModelAndTrace({
         projectId: workspaceStore.getProjectId(),
         modelData,
         trace,
       });
-    workspaceService.setEditingModel(
-      createdModelMeta.id,
-      createdModelMeta.versions[0].id,
+    console.log(
+      "Created model meta:",
+      createdModelMeta,
+      "Created trace:",
+      createdTrace,
     );
+    modelsStore.add(createdModelMeta);
+    workspaceStore.setEditingModel({
+      id: createdModelMeta.id,
+      versionId: createdModelMeta.latestVersionId,
+    });
     modelEditorStore.setData(modelData);
     // modelEditorStore.setModelById(createdModelMeta.id);
     // modelsStore.addModel({

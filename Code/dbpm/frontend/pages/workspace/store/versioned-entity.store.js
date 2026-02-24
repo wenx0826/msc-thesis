@@ -10,20 +10,19 @@ export class VersionedEntityStore extends Store {
 
   init(entities) {
     const entitiesById = {};
-    entities = Array.isArray(entities) ? entities : [];
     entities.forEach((entity) => {
-      if (!entity?.id) return;
+      entity.latestVersion = entity.versions?.at(-1);
       entitiesById[entity.id] = entity;
     });
     this.state.entitiesById = entitiesById;
     this.notify({ operation: "init", value: entities });
   }
 
-  add(value) {
-    if (!value?.id) return null;
-    this.state.entitiesById[value.id] = value;
-    this.notify({ operation: "add", value });
-    return value;
+  add(entity) {
+    entity.latestVersion = entity.versions?.at(-1);
+    this.state.entitiesById[entity.id] = entity;
+    this.notify({ operation: "add", value: entity });
+    return entity;
   }
 
   delete(id) {
@@ -56,18 +55,25 @@ export class VersionedEntityStore extends Store {
   }
 
   getLatestVersion(id) {
-    const versions = this.getVersions(id);
-    return versions.at(-1) || null;
+    const entity = this.getEntity(id);
+    if (!entity) return null;
+    if (entity.latestVersion) return entity.latestVersion;
+    return this.syncLatestVersion(entity)?.latestVersion || null;
+  }
+
+  getLatestVersionId(id) {
+    const entity = this.getEntity(id);
+    if (typeof entity.latestVersionId === "string") {
+      return entity.latestVersionId;
+    }
+    return this.getLatestVersion(id)?.id || null;
   }
 
   addVersion(id, value) {
-    if (!id) return null;
     const entity = this.getEntity(id);
-    if (!entity) return null;
-    if (!Array.isArray(entity.versions)) {
-      entity.versions = [];
-    }
     entity.versions.push(value);
+    entity.latestVersion = value;
+    entity.latestVersionId = value.id;
     this.notify({ operation: "versions.add", value });
     return value;
   }
@@ -81,6 +87,7 @@ export class VersionedEntityStore extends Store {
     );
     if (versionIndex === -1) return null;
     entity.versions[versionIndex] = value;
+    this.syncLatestVersion(entity);
     return value;
   }
 }

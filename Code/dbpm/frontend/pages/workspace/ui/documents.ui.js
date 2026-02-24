@@ -8,12 +8,17 @@ const $documentsInput = $("#documentsInput");
 const $documentUpdateInput = $("#documentUpdateInput");
 const $documentsList = $("#documentsList");
 
-function renderDocumentItem({ id: docId, versions }) {
-  const latestVersion = versions.at(-1);
+function renderDocumentItem({ id: docId, versions = [], latestVersion }) {
+  const resolvedLatestVersion = latestVersion || versions.at(-1) || null;
+  if (!resolvedLatestVersion?.id) {
+    return;
+  }
   const $documentItem = createTemplateElement("documentItemTemplate");
   $documentItem.attr("data-doc-id", docId);
-  $documentItem.attr("data-doc-version-id", latestVersion.id);
-  $documentItem.find("[data-ref='documentName']").text(latestVersion.name);
+  $documentItem.attr("data-doc-version-id", resolvedLatestVersion.id);
+  $documentItem
+    .find("[data-ref='documentName']")
+    .text(resolvedLatestVersion.name);
   $documentsList.append($documentItem);
 }
 

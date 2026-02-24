@@ -91,7 +91,7 @@ export default {
       });
 
       return {
-        model: {
+        modelMeta: {
           ...createdModel,
           latestVersionId: createdModelVersion.id,
           versions: [createdModelVersion],
@@ -183,7 +183,9 @@ export default {
 
     let words = null;
     if (trace) {
-      effectiveSelections = Array.isArray(trace.selections) ? trace.selections : [];
+      effectiveSelections = Array.isArray(trace.selections)
+        ? trace.selections
+        : [];
       words = effectiveSelections.reduce(
         (acc, sel) => acc + countWords(sel?.text ?? ""),
         0,

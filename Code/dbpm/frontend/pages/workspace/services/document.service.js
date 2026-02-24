@@ -21,8 +21,9 @@ export default {
     documentsStore.add(newDoc);
     workspaceService.displayDocument({
       id: newDoc.id,
-      versionId: newDoc.versions[0].id,
+      versionId: newDoc.latestVersionId,
     });
+
     return newDoc;
   },
   async loadVersion(versionId) {
