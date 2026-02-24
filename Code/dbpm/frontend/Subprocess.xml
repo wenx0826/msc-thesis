@@ -1,6 +1,6 @@
 
     <description xmlns="http://cpee.org/ns/description/1.0">
-      <manipulate id="a3" label="">data.start = Time.now.to_f</manipulate>
+      <!-- <manipulate id="a3" label="">data.start = Time.now.to_f</manipulate>
       <call id="a1" endpoint="subprocess">
         <parameters>
           <label>Create Sub</label>
@@ -57,5 +57,5 @@ data.teams = result</finalize>
           </code>
         </documentation>
       </call>
-      <stop id="a2"/>
+      <stop id="a2"/> -->
     </description>

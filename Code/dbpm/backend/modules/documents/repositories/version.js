@@ -35,6 +35,18 @@ export default {
     const results = stmt.all(documentId);
     return results.map(toCamel);
   },
+  findDocumentInfoByVersionId(versionId) {
+    const stmt = db.prepare(`
+      SELECT
+        dv.id AS document_version_id,
+        dv.document_id,
+        dv.name AS document_version_name
+      FROM document_versions dv
+      WHERE dv.id = ?
+    `);
+    const result = stmt.get(versionId);
+    return result ? toCamel(result) : null;
+  },
   getTraces(docId) {
     const stmt = db.prepare("SELECT * FROM traces WHERE document_id = ?");
     const results = stmt.all(docId);

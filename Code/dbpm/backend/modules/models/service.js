@@ -5,9 +5,39 @@ import storageRepo from "./repositories/storage.js";
 import traceRepo from "../traces/repository.js";
 import logService from "../logs/service.js";
 import { countWords } from "../../utils/fileHelper.js";
-import documentsService from "../documents/service.js";
 import projectsService from "../projects/service.js";
 import traceService from "../traces/service.js";
+import documentVersionRepo from "../documents/repositories/version.js";
+import { injectDbpmMeta } from "./utils/dbpmMetaXml.js";
+
+function selectionsToText(selections) {
+  if (!Array.isArray(selections)) {
+    return "";
+  }
+  return selections
+    .map((selection) =>
+      typeof selection?.text === "string" ? selection.text.trim() : "",
+    )
+    .filter(Boolean)
+    .join(" ");
+}
+
+function enrichModelData(modelData, documentVersionId, selections) {
+  if (!documentVersionId) {
+    return modelData;
+  }
+
+  const documentInfo =
+    documentVersionRepo.findDocumentInfoByVersionId(documentVersionId);
+  if (!documentInfo) {
+    return modelData;
+  }
+
+  return injectDbpmMeta(modelData, {
+    ...documentInfo,
+    selectedText: selectionsToText(selections),
+  });
+}
 
 export default {
   createModelAndTrace({ projectId, modelData, trace }) {
@@ -25,14 +55,20 @@ export default {
     trace.modelVersionId = versionId;
     trace.id = crypto.randomUUID();
 
-    const selectedWordsCount = trace.selections.reduce(
-      (acc, sel) => acc + countWords(sel.text),
+    const selections = Array.isArray(trace.selections) ? trace.selections : [];
+    const selectedWordsCount = selections.reduce(
+      (acc, sel) => acc + countWords(sel?.text ?? ""),
       0,
+    );
+    const enrichedModelData = enrichModelData(
+      modelData,
+      trace.documentVersionId,
+      selections,
     );
 
     try {
       // Persist model XML for this version.
-      storageRepo.write(versionId, modelData);
+      storageRepo.write(versionId, enrichedModelData);
       const createdModel = modelRepo.create({
         id,
         projectId,
@@ -55,7 +91,7 @@ export default {
       logService.logEvent(projectId, "model_generated", {
         id: id,
         name,
-        data: modelData,
+        data: enrichedModelData,
       });
 
       return {
@@ -139,20 +175,37 @@ export default {
     }
     const modelId = version.modelId;
     const projectId = modelRepo.getProjectIdByModelId(modelId);
-    // Write model data to file
-    storageRepo.write(versionId, modelData);
 
     // Update model status
     // modelRepo.updateStatus(modelId, "updated");
 
+    const currentTrace = traceRepo.findLatestByModelVersionId(versionId);
+    let documentVersionId = currentTrace?.documentVersionId ?? null;
+    let effectiveSelections = Array.isArray(currentTrace?.selections)
+      ? currentTrace.selections
+      : [];
+
     let words = null;
     if (trace) {
-      words = trace.selections.reduce(
-        (acc, sel) => acc + countWords(sel.text),
+      effectiveSelections = Array.isArray(trace.selections) ? trace.selections : [];
+      words = effectiveSelections.reduce(
+        (acc, sel) => acc + countWords(sel?.text ?? ""),
         0,
       );
-      traceRepo.updateByModelId(versionId, trace.selections);
+      traceRepo.updateByModelId(versionId, effectiveSelections);
+      documentVersionId =
+        documentVersionId ||
+        (typeof trace.documentVersionId === "string"
+          ? trace.documentVersionId
+          : null);
     }
+
+    const enrichedModelData = enrichModelData(
+      modelData,
+      documentVersionId,
+      effectiveSelections,
+    );
+    storageRepo.write(versionId, enrichedModelData);
 
     // Add stat update
     modelRepo.addStatUpdate(modelId, new Date().toISOString(), type, words);
@@ -161,7 +214,7 @@ export default {
     logService.logEvent(projectId, `model_updated_${type}`, {
       id: modelId,
       versionId,
-      data: modelData,
+      data: enrichedModelData,
     });
 
     return { message: "Model content updated" };

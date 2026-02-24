@@ -64,7 +64,7 @@ export default {
       //   await resp.text(),
       // );
       if (!resp.ok) throw err;
-      return '<description><call id="a1" endpoint="subprocess"/></description>';
+      return '<description xmlns="http://cpee.org/ns/description/1.0"/>';
     }
   },
 

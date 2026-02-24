@@ -34,6 +34,17 @@ export default {
     const rows = stmt.all(documentVersionId);
     return rows.map((row) => toCamel(parseTraceSelections(row)));
   },
+  findLatestByModelVersionId(modelVersionId) {
+    const stmt = db.prepare(`
+      SELECT *
+      FROM traces
+      WHERE model_version_id = ?
+      ORDER BY created_at DESC
+      LIMIT 1
+    `);
+    const row = stmt.get(modelVersionId);
+    return row ? toCamel(parseTraceSelections(row)) : null;
+  },
   update(traceId, documentVersionId, modelVersionId, selections) {
     const stmt = db.prepare(
       "UPDATE traces SET document_version_id = ?, model_version_id = ?, selections = ? WHERE id = ?",

@@ -7,10 +7,10 @@ export default async function (fastify, options) {
     const updatedTrace = request.body;
 
     try {
-      const result = traceService.updateTrace(
+      const result = traceService.update(
         traceId,
-        updatedTrace.documentId,
-        updatedTrace.modelId,
+        updatedTrace.documentVersionId,
+        updatedTrace.modelVersionId,
         updatedTrace.selections,
       );
       reply.send(result);
