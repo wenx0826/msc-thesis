@@ -48,10 +48,15 @@ export class VersionedEntityStore extends Store {
   getVersions(id) {
     return this.getEntity(id)?.versions || [];
   }
-
-  getVersionName(id, versionId) {
-    const version = this.getVersions(id).find((item) => item.id === versionId);
+  getVersionName(versions, versionId) {
+    const version = versions.find((item) => item.id === versionId);
     return version ? version.name : null;
+  }
+
+  getVersionDisplayName(id, versionId) {
+    const entity = this.getEntity(id);
+    const versionName = this.getVersionName(entity.versions, versionId);
+    return `${entity.name} - ${versionName}`;
   }
 
   getLatestVersion(id) {

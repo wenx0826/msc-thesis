@@ -27,6 +27,7 @@ export const createModelSchema = {
           type: "object",
           properties: {
             id: { type: "string" },
+            name: { type: "string" },
             latestVersionId: { type: "string" },
             createdAt: { type: "string" },
             deletedAt: { type: ["string", "null"] },
