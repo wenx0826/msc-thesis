@@ -63,8 +63,14 @@ export default {
     return { documents, models };
   },
 
-  getModelGenerationIndexById(projectId) {
-    return Number(projectRepo.findModelGenerationIndexById(projectId)) || 0;
+  allocateLatestModelNumberById(projectId) {
+    const latestModelNumber = projectRepo.allocateLatestModelNumberById(
+      projectId,
+    );
+    if (!latestModelNumber) {
+      throw new Error("Project not found");
+    }
+    return Number(latestModelNumber);
   },
   update(projectId, updates) {
     const project = projectRepo.updateById(projectId, updates);

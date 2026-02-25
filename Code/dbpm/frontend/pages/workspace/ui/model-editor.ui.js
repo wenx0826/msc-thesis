@@ -792,7 +792,7 @@ createUI({
       switch (key) {
         case "editingModel":
           if (newValue.id) {
-            const versionName = modelsStore.getVersionName(
+            const versionName = modelsStore.getVersionDisplayName(
               newValue.id,
               newValue.versionId,
             );

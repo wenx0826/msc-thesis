@@ -596,7 +596,7 @@ const renderSelection = (
     const lastRect = rects[lastIndex];
 
     const modelName =
-      modelsStore.getVersionName(modelId, modelVersionId) || "-";
+      modelsStore.getVersionDisplayName(modelId, modelVersionId) || "-";
 
     const $tag = createModelTag({
       modelId,

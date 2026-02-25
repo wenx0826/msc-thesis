@@ -4,7 +4,7 @@ import {
   createVersionSchema,
   getDocumentContentSchema,
   getTracesSchema,
-  updateVersionMetaSchema,
+  updateMetaSchema,
 } from "./schema.js";
 
 export default async function (fastify, options) {
@@ -77,19 +77,16 @@ export default async function (fastify, options) {
     },
   );
 
-  // PUT /documents/versions/:versionId/meta - Update document version metadata (e.g., name)
+  // PUT /documents/:documentId/meta - Update document version metadata (e.g., name)
   fastify.put(
-    "/versions/:versionId/meta",
+    "/:documentId/meta",
     {
-      schema: updateVersionMetaSchema,
+      schema: updateMetaSchema,
     },
     (request, reply) => {
       try {
-        const { versionId } = request.params;
-        const result = documentService.updateVersionMeta(
-          versionId,
-          request.body,
-        );
+        const { documentId } = request.params;
+        const result = documentService.updateMeta(documentId, request.body);
         reply.send(result);
       } catch (err) {
         console.error("Failed to update document version metadata:", err);

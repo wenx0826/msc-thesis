@@ -7,7 +7,7 @@ class ModelVersionRepository extends BaseSqlRepository {
     super({
       db,
       tableName: "model_versions",
-      requiredCreateColumns: ["model_id", "name"],
+      requiredCreateColumns: ["model_id", "version_number", "name"],
     });
   }
 
@@ -21,7 +21,7 @@ class ModelVersionRepository extends BaseSqlRepository {
 
   findByModelId(modelId) {
     const stmt = db.prepare(
-      "SELECT * FROM model_versions WHERE model_id = ? ORDER BY created_at ASC",
+      "SELECT * FROM model_versions WHERE model_id = ? ORDER BY version_number ASC",
     );
     const results = stmt.all(modelId);
     return results.map(toCamel);

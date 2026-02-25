@@ -152,7 +152,9 @@ export const getProjectComponentsSchema = {
                   properties: {
                     id: { type: "string" },
                     documentId: { type: "string" },
+                    versionNumber: { type: "number" },
                     name: { type: "string" },
+                    filename: { type: "string" },
                     createdAt: { type: "string" },
                   },
                 },
@@ -176,6 +178,7 @@ export const getProjectComponentsSchema = {
                   type: "object",
                   properties: {
                     id: { type: "string" },
+                    versionNumber: { type: "number" },
                     name: { type: "string" },
                     createdAt: { type: "string" },
                   },
@@ -228,7 +231,9 @@ export const getProjectComponentsStatsSchema = {
                   type: "object",
                   properties: {
                     id: { type: "string" },
+                    versionNumber: { type: "number" },
                     name: { type: "string" },
+                    filename: { type: "string" },
                     wordsCount: { type: "number" },
                     createdAt: { type: "string" },
                   },
@@ -253,6 +258,7 @@ export const getProjectComponentsStatsSchema = {
                   type: "object",
                   properties: {
                     id: { type: "string" },
+                    versionNumber: { type: "number" },
                     name: { type: "string" },
                     selectedWordsCount: { type: "number" },
                     createdAt: { type: "string" },

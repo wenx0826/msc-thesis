@@ -8,17 +8,11 @@ const $documentsInput = $("#documentsInput");
 const $documentUpdateInput = $("#documentUpdateInput");
 const $documentsList = $("#documentsList");
 
-function renderDocumentItem({ id: docId, versions = [], latestVersion }) {
-  const resolvedLatestVersion = latestVersion || versions.at(-1) || null;
-  if (!resolvedLatestVersion?.id) {
-    return;
-  }
+function renderDocumentItem({ id: docId, name }) {
   const $documentItem = createTemplateElement("documentItemTemplate");
   $documentItem.attr("data-doc-id", docId);
-  $documentItem.attr("data-doc-version-id", resolvedLatestVersion.id);
-  $documentItem
-    .find("[data-ref='documentName']")
-    .text(resolvedLatestVersion.name);
+  // $documentItem.attr("data-doc-version-id", resolvedLatestVersion.id);
+  $documentItem.find("[data-ref='documentName']").text(name);
   $documentsList.append($documentItem);
 }
 
@@ -26,9 +20,9 @@ function getDocumentItem(documentId) {
   return $documentsList.find(`li[data-doc-id='${documentId}']`);
 }
 function rerenderDocumentItem(docId, versionId, name) {
-  if (!name) {
-    name = documentsStore.getVersionName(docId, versionId);
-  }
+  // if (!name) {
+  //   name = documentsStore.getVersionDisplayName(docId, versionId);
+  // }
   const $documentItem = getDocumentItem(docId);
   $documentItem.attr("data-doc-version-id", versionId);
   $documentItem.find("[data-ref='documentName']").text(name);
@@ -75,12 +69,10 @@ createUI({
       onSave: (newValue, $view) => {
         // const doc = $view.closest("li")[0].dataset;
         // const documentId = doc.docId;
-        const docVersionId = $view.closest("li")[0].dataset.docVersionId;
-        documentService.renameVersion(docVersionId, newValue);
-        // documentService.updateDocument(documentId, { name });
+        const docId = $view.closest("li")[0].dataset.docId;
+        documentService.renameDocument(docId, newValue);
       },
     });
-
     return { documentNameEditor };
   },
   bindListeners: ({ documentNameEditor }) => {
@@ -97,8 +89,7 @@ createUI({
     });
     $documentsList.on("mousedown", "li", (e) => {
       const id = e.currentTarget.dataset.docId;
-      const versionId = e.currentTarget.dataset.docVersionId;
-      workspaceService.displayDocument({ id, versionId });
+      workspaceService.displayDocument({ id });
     });
     $documentsList.on("mousedown", "li > :last-child", (e) => {
       e.stopPropagation();
@@ -122,7 +113,7 @@ createUI({
           params: [$documentNameView],
         },
         {
-          label: "Update Document",
+          label: "Upload New Version",
           function_call: updateDocument,
           text_icon: undefined,
           type: undefined,

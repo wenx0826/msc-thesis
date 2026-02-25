@@ -17,14 +17,21 @@ export class VersionedEntityStore extends Store {
     this.state.entitiesById = entitiesById;
     this.notify({ operation: "init", value: entities });
   }
-
+  getList() {
+    return Object.values(this.state.entitiesById);
+  }
   add(entity) {
     entity.latestVersion = entity.versions?.at(-1);
     this.state.entitiesById[entity.id] = entity;
     this.notify({ operation: "add", value: entity });
     return entity;
   }
-
+  updateName(id, newName) {
+    const entity = this.getEntity(id);
+    entity.name = newName;
+    this.notify({ operation: "update.name", value: entity });
+    return entity;
+  }
   delete(id) {
     if (!id) return null;
     const value = this.state.entitiesById[id] || null;
@@ -39,10 +46,6 @@ export class VersionedEntityStore extends Store {
 
   getEntity(id) {
     return this.state.entitiesById[id] || null;
-  }
-
-  getList() {
-    return Object.values(this.state.entitiesById);
   }
 
   getVersions(id) {
@@ -85,7 +88,6 @@ export class VersionedEntityStore extends Store {
     );
     if (versionIndex === -1) return null;
     entity.versions[versionIndex] = value;
-    this.syncLatestVersion(entity);
     return value;
   }
 }

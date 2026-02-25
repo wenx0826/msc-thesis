@@ -1,10 +1,29 @@
+const documentMetaProperties = {
+  id: { type: "string" },
+  name: { type: "string" },
+  latestVersionId: { type: "string" },
+  versions: {
+    type: "array",
+    items: {
+      type: "object",
+      properties: {
+        id: { type: "string" },
+        versionNumber: { type: "number" },
+        name: { type: "string" },
+        filename: { type: "string" },
+        createdAt: { type: "string" },
+      },
+    },
+  },
+};
+
 export const createDocumentSchema = {
   body: {
     type: "object",
-    required: ["name", "content", "projectId"],
+    required: ["projectId", "filename", "content"],
     properties: {
       projectId: { type: "string" },
-      name: { type: "string" },
+      filename: { type: "string" },
       content: { type: "string" },
     },
   },
@@ -12,20 +31,7 @@ export const createDocumentSchema = {
     200: {
       type: "object",
       properties: {
-        id: { type: "string" },
-        name: { type: "string" },
-        latestVersionId: { type: "string" },
-        versions: {
-          type: "array",
-          items: {
-            type: "object",
-            properties: {
-              id: { type: "string" },
-              name: { type: "string" },
-              createdAt: { type: "string" },
-            },
-          },
-        },
+        ...documentMetaProperties,
       },
     },
   },
@@ -34,10 +40,11 @@ export const createDocumentSchema = {
 export const createVersionSchema = {
   body: {
     type: "object",
-    required: ["documentId", "name", "content"],
+    required: ["documentId", "filename", "content"],
     properties: {
       documentId: { type: "string" },
       name: { type: "string" },
+      filename: { type: "string" },
       content: { type: "string" },
     },
   },
@@ -47,7 +54,9 @@ export const createVersionSchema = {
       properties: {
         id: { type: "string" },
         documentId: { type: "string" },
+        versionNumber: { type: "number" },
         name: { type: "string" },
+        filename: { type: "string" },
         createdAt: { type: "string" },
       },
     },
@@ -97,12 +106,12 @@ export const getTracesSchema = {
   },
 };
 
-export const updateVersionMetaSchema = {
+export const updateMetaSchema = {
   params: {
     type: "object",
-    required: ["versionId"],
+    required: ["documentId"],
     properties: {
-      versionId: { type: "string" },
+      documentId: { type: "string" },
     },
   },
   body: {
@@ -115,10 +124,7 @@ export const updateVersionMetaSchema = {
     200: {
       type: "object",
       properties: {
-        id: { type: "string" },
-        documentId: { type: "string" },
-        name: { type: "string" },
-        createdAt: { type: "string" },
+        ...documentMetaProperties,
       },
     },
   },

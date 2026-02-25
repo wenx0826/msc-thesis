@@ -7,7 +7,7 @@ class DocumentVersionRepository extends BaseSqlRepository {
     super({
       db,
       tableName: "document_versions",
-      requiredCreateColumns: ["document_id", "name"],
+      requiredCreateColumns: ["document_id", "version_number", "name", "filename"],
     });
   }
 
@@ -21,7 +21,7 @@ class DocumentVersionRepository extends BaseSqlRepository {
 
   findByDocumentId(documentId) {
     const stmt = db.prepare(
-      "SELECT * FROM document_versions WHERE document_id = ? ORDER BY created_at ASC",
+      "SELECT * FROM document_versions WHERE document_id = ? ORDER BY version_number ASC",
     );
     const results = stmt.all(documentId);
     return results.map(toCamel);

@@ -37,6 +37,7 @@ export const createModelSchema = {
                 type: "object",
                 properties: {
                   id: { type: "string" },
+                  versionNumber: { type: "number" },
                   name: { type: "string" },
                   createdAt: { type: "string" },
                 },
@@ -143,6 +144,7 @@ export const updateVersionMetaSchema = {
       properties: {
         id: { type: "string" },
         modelId: { type: "string" },
+        versionNumber: { type: "number" },
         name: { type: "string" },
         createdAt: { type: "string" },
       },

@@ -11,11 +11,11 @@ import { getFileContentInHTML } from "../utils/file.js";
 export default {
   async uploadDocument(file) {
     const projectId = workspaceStore.getProjectId();
-    const name = file.name;
+    const filename = file.name;
     const content = await getFileContentInHTML(file);
     const newDoc = await documentsAPI.create({
       projectId,
-      name,
+      filename,
       content,
     });
     documentsStore.add(newDoc);
@@ -60,12 +60,20 @@ export default {
     });
     documentsStore.updateVersion(newVersion.documentId, newVersion);
   },
+  async renameDocument(documentId, newName) {
+    const newDoc = await documentsAPI.updateDocumentMeta(documentId, {
+      name: newName,
+    });
+    documentsStore.updateDocumentName(newName);
+  },
   async updateDocument(documentId, file) {
     const name = file.name;
+    const filename = file.name;
     const content = await getFileContentInHTML(file);
     const newVersion = await documentsAPI.createVersion({
       documentId,
       name,
+      filename,
       content,
     });
     workspaceService.displayDocument({

@@ -36,7 +36,7 @@ class ModelRepository extends BaseSqlRepository {
     super({
       db,
       tableName: "models",
-      requiredCreateColumns: ["project_id"],
+      requiredCreateColumns: ["project_id", "name"],
     });
   }
 
@@ -61,13 +61,8 @@ class ModelRepository extends BaseSqlRepository {
 
   getAverageVersionsCount(includeDeleted = false) {
     const stmt = db.prepare(`
-      SELECT COALESCE(AVG(COALESCE(mvv.versions_count, 0)), 0) AS average_versions_count
+      SELECT COALESCE(AVG(COALESCE(m.latest_version_number, 0)), 0) AS average_versions_count
       FROM models m
-      LEFT JOIN (
-        SELECT model_id, COUNT(*) AS versions_count
-        FROM model_versions
-        GROUP BY model_id
-      ) mvv ON mvv.model_id = m.id
       ${includeDeleted ? "" : "WHERE m.deleted_at IS NULL"}
     `);
     const result = stmt.get();
@@ -78,6 +73,17 @@ class ModelRepository extends BaseSqlRepository {
     const stmt = db.prepare("SELECT project_id FROM models WHERE id = ?");
     const result = stmt.get(modelId);
     return result?.project_id ?? null;
+  }
+
+  allocateLatestVersionNumber(modelId) {
+    const stmt = db.prepare(`
+      UPDATE models
+      SET latest_version_number = latest_version_number + 1
+      WHERE id = ?
+      RETURNING latest_version_number
+    `);
+    const result = stmt.get(modelId);
+    return result?.latest_version_number ?? null;
   }
 
   findById(modelId) {
@@ -115,6 +121,62 @@ class ModelRepository extends BaseSqlRepository {
     `);
     const results = stmt.all(projectId);
     return results.map((row) => parseDocumentVersionIds(toCamel(row)));
+  }
+
+  findVersionsByModelIds(modelIds) {
+    if (!Array.isArray(modelIds) || modelIds.length === 0) {
+      return new Map();
+    }
+
+    const placeholders = modelIds.map(() => "?").join(", ");
+    const stmt = db.prepare(`
+      SELECT *
+      FROM model_versions
+      WHERE model_id IN (${placeholders})
+      ORDER BY model_id ASC, version_number ASC
+    `);
+    const versions = stmt.all(...modelIds).map(toCamel);
+    const versionsByModelId = new Map();
+
+    for (const version of versions) {
+      const existing = versionsByModelId.get(version.modelId);
+      if (existing) {
+        existing.push(version);
+      } else {
+        versionsByModelId.set(version.modelId, [version]);
+      }
+    }
+
+    return versionsByModelId;
+  }
+
+  attachVersions(models) {
+    if (!Array.isArray(models) || models.length === 0) {
+      return models ?? [];
+    }
+
+    const modelIds = models.map((model) => model.id);
+    const versionsByModelId = this.findVersionsByModelIds(modelIds);
+
+    for (const model of models) {
+      model.versions = versionsByModelId.get(model.id) ?? [];
+    }
+
+    return models;
+  }
+
+  findByIdWithVersions(modelId) {
+    const model = this.findById(modelId);
+    if (!model) {
+      return null;
+    }
+
+    return this.attachVersions([model])[0];
+  }
+
+  findByProjectIdWithVersions(projectId, includeDeleted = false) {
+    const models = this.findByProjectId(projectId, includeDeleted);
+    return this.attachVersions(models);
   }
 
   incrementRegeneratedByPrompt(modelId) {

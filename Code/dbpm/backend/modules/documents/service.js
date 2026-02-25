@@ -5,16 +5,25 @@ import logService from "../logs/service.js";
 import { countWords } from "../../utils/fileHelper.js";
 import traceService from "../traces/service.js";
 export default {
-  create({ projectId, name, content }) {
+  create({ projectId, filename, content }) {
     try {
       const wordsCount = countWords(content);
-
+      const documentName = filename; // Default document name to filename, can be updated later
       const createdDocument = documentRepo.create({
         projectId,
+        name: documentName,
       });
+      const latestVersionNumber = documentRepo.allocateLatestVersionNumber(
+        createdDocument.id,
+      );
+      if (!latestVersionNumber) {
+        throw new Error("Failed to allocate document version number");
+      }
       const createdVersion = versionRepo.create({
         documentId: createdDocument.id,
-        name,
+        versionNumber: latestVersionNumber,
+        name: `v${latestVersionNumber}`,
+        filename,
         wordsCount,
       });
       storageRepo.write(createdVersion.id, content);
@@ -34,18 +43,29 @@ export default {
     }
   },
 
-  createVersion({ documentId, name, content }) {
+  createVersion({ documentId, name, filename, content }) {
     try {
       const wordsCount = countWords(content);
+      const latestVersionNumber =
+        documentRepo.allocateLatestVersionNumber(documentId);
+      if (!latestVersionNumber) {
+        throw new Error("Document not found");
+      }
       const createdVersion = versionRepo.create({
         documentId,
-        name,
+        versionNumber: latestVersionNumber,
+        name: `v${latestVersionNumber}`,
+        filename,
         wordsCount,
       });
       storageRepo.write(createdVersion.id, content);
-      documentRepo.updateById(documentId, {
+      const documentUpdates = {
         latestVersionId: createdVersion.id,
-      });
+      };
+      if (typeof name === "string" && name.trim() !== "") {
+        documentUpdates.name = name;
+      }
+      documentRepo.updateById(documentId, documentUpdates);
       logService.logEvent(
         documentRepo.findProjectIdById(documentId),
         "document_updated",
@@ -74,21 +94,8 @@ export default {
     return documentRepo.findAll();
   },
   getByProjectId(projectId, includeDeleted = false) {
-    const documents = documentRepo.findByProjectId(projectId, includeDeleted);
-    if (!documents) {
-      throw new Error("No documents found for this project");
-    }
-    for (const doc of documents) {
-      const versions = versionRepo.findByDocumentId(doc.id);
-      doc.versions = versions;
-    }
-    return documents;
+    return documentRepo.findByProjectIdWithVersions(projectId, includeDeleted);
   },
-
-  getAllByProjectId(projectId) {
-    return documentRepo.findByProjectId(projectId);
-  },
-
   getContent(versionId) {
     // const doc = documentRepo.findById(docId);
     // if (!doc) {
@@ -104,19 +111,15 @@ export default {
   getModels(docId) {
     return documentRepo.getModels(docId);
   },
-  getProjectId(docId) {
-    return documentRepo.getProjectId(docId);
-  },
+
   getAllModels(docId) {
     return documentRepo.getAllModels(docId);
   },
-  updateVersionMeta(versionId, updates) {
-    const version = versionRepo.updateById(versionId, updates);
-    if (!version) {
-      throw new Error("Document version not found");
-    }
-    return version;
+  updateMeta(docId, updates) {
+    documentRepo.updateById(docId, updates);
+    return documentRepo.findById(docId);
   },
+
   deleteDocument(docId) {
     const doc = documentRepo.findById(docId);
     if (!doc) {

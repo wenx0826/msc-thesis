@@ -40,15 +40,13 @@ function enrichModelData(modelData, documentVersionId, selections) {
 
 export default {
   createModelAndTrace({ projectId, modelData, trace }) {
-    // const projectId = documentsService.getProjectId(trace.documentId);
     if (!projectId) {
       throw new Error("Document not found or invalid");
     }
 
-    const modelGenerationIndex =
-      projectsService.getModelGenerationIndexById(projectId);
-    const nextModelGenerationIndex = modelGenerationIndex + 1;
-    const name = `Model_${nextModelGenerationIndex}`;
+    const latestModelNumber =
+      projectsService.allocateLatestModelNumberById(projectId);
+    const modelName = `Model_${latestModelNumber}`;
 
     const selections = Array.isArray(trace.selections) ? trace.selections : [];
     const selectedWordsCount = selections.reduce(
@@ -62,10 +60,17 @@ export default {
     );
 
     try {
-      const createdModel = modelRepo.create({ projectId });
+      const createdModel = modelRepo.create({ projectId, name: modelName });
+      const latestVersionNumber = modelRepo.allocateLatestVersionNumber(
+        createdModel.id,
+      );
+      if (!latestVersionNumber) {
+        throw new Error("Failed to allocate model version number");
+      }
       const createdModelVersion = versionRepo.create({
         modelId: createdModel.id,
-        name,
+        versionNumber: latestVersionNumber,
+        name: `v${latestVersionNumber}`,
         selectedWordsCount,
       });
 
@@ -73,9 +78,6 @@ export default {
       storageRepo.write(createdModelVersion.id, enrichedModelData);
       modelRepo.updateById(createdModel.id, {
         latestVersionId: createdModelVersion.id,
-      });
-      projectsService.update(projectId, {
-        modelGenerationIndex: nextModelGenerationIndex,
       });
 
       const createdTrace = traceService.create({
@@ -86,7 +88,7 @@ export default {
       // Log the event
       logService.logEvent(projectId, "model_generated", {
         id: createdModel.id,
-        name,
+        name: modelName,
         data: enrichedModelData,
       });
 
@@ -113,7 +115,6 @@ export default {
     model.data = data;
     return model;
   },
-
   getData(versionId) {
     const model = storageRepo.read(versionId);
     return getDescription(model);
@@ -136,15 +137,7 @@ export default {
     return modelRepo.getAverageVersionsCount(includeDeleted);
   },
   getByProjectId(projectId, includeDeleted) {
-    const models = modelRepo.findByProjectId(projectId, includeDeleted);
-    if (!models) {
-      throw new Error("No models found for this project");
-    }
-    for (const model of models) {
-      const versions = versionRepo.findByModelId(model.id);
-      model.versions = versions;
-    }
-    return models;
+    return modelRepo.findByProjectIdWithVersions(projectId, includeDeleted);
   },
   updateModel({ modelId, modelData, trace, type }) {
     const model = modelRepo.findById(modelId);
@@ -162,7 +155,6 @@ export default {
       type,
     });
   },
-
   updateVersion({ versionId, modelData, trace, type }) {
     const version = versionRepo.findById(versionId);
     if (!version) {

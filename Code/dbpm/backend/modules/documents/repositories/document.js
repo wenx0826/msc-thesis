@@ -7,7 +7,7 @@ class DocumentRepository extends BaseSqlRepository {
     super({
       db,
       tableName: "documents",
-      requiredCreateColumns: ["project_id"],
+      requiredCreateColumns: ["project_id", "name"],
     });
   }
 
@@ -32,13 +32,8 @@ class DocumentRepository extends BaseSqlRepository {
 
   getAverageVersionsCount(includeDeleted = false) {
     const stmt = db.prepare(`
-      SELECT COALESCE(AVG(COALESCE(dvv.versions_count, 0)), 0) AS average_versions_count
+      SELECT COALESCE(AVG(COALESCE(d.latest_version_number, 0)), 0) AS average_versions_count
       FROM documents d
-      LEFT JOIN (
-        SELECT document_id, COUNT(*) AS versions_count
-        FROM document_versions
-        GROUP BY document_id
-      ) dvv ON dvv.document_id = d.id
       ${includeDeleted ? "" : "WHERE d.deleted_at IS NULL"}
     `);
     const result = stmt.get();
@@ -46,14 +41,9 @@ class DocumentRepository extends BaseSqlRepository {
   }
 
   findById(id) {
-    const stmt = db.prepare(`
-      SELECT d.*, dv.name
-      FROM documents d 
-      LEFT JOIN document_versions dv ON d.latest_version_id = dv.id 
-      WHERE d.id = ?
-    `);
+    const stmt = db.prepare("SELECT * FROM documents WHERE id = ?");
     const result = stmt.get(id);
-    return toCamel(result);
+    return result ? toCamel(result) : null;
   }
 
   findByProjectId(projectId, includeDeleted = false) {
@@ -67,36 +57,81 @@ class DocumentRepository extends BaseSqlRepository {
     return results.map(toCamel);
   }
 
+  findVersionsByDocumentIds(documentIds) {
+    if (!Array.isArray(documentIds) || documentIds.length === 0) {
+      return new Map();
+    }
+
+    const placeholders = documentIds.map(() => "?").join(", ");
+    const stmt = db.prepare(`
+      SELECT *
+      FROM document_versions
+      WHERE document_id IN (${placeholders})
+      ORDER BY document_id ASC, version_number ASC
+    `);
+    const versions = stmt.all(...documentIds).map(toCamel);
+    const versionsByDocumentId = new Map();
+
+    for (const version of versions) {
+      const existing = versionsByDocumentId.get(version.documentId);
+      if (existing) {
+        existing.push(version);
+      } else {
+        versionsByDocumentId.set(version.documentId, [version]);
+      }
+    }
+
+    return versionsByDocumentId;
+  }
+
+  attachVersions(documents) {
+    if (!Array.isArray(documents) || documents.length === 0) {
+      return documents ?? [];
+    }
+
+    const documentIds = documents.map((document) => document.id);
+    const versionsByDocumentId = this.findVersionsByDocumentIds(documentIds);
+
+    for (const document of documents) {
+      document.versions = versionsByDocumentId.get(document.id) ?? [];
+    }
+
+    return documents;
+  }
+
+  findByIdWithVersions(id) {
+    const document = this.findById(id);
+    if (!document) {
+      return null;
+    }
+    return this.attachVersions([document])[0];
+  }
+
+  findByProjectIdWithVersions(projectId, includeDeleted = false) {
+    const documents = this.findByProjectId(projectId, includeDeleted);
+    return this.attachVersions(documents);
+  }
+
   findProjectIdById(id) {
     const stmt = db.prepare("SELECT project_id FROM documents WHERE id = ?");
     const result = stmt.get(id);
     return result?.project_id ?? null;
   }
 
-  getModels(docId, includeDeleted = false) {
+  getProjectId(id) {
+    return this.findProjectIdById(id);
+  }
+
+  allocateLatestVersionNumber(documentId) {
     const stmt = db.prepare(`
-      SELECT DISTINCT m.*, lv.name
-      FROM traces t
-      JOIN document_versions dv ON dv.id = t.document_version_id
-      JOIN model_versions mv ON mv.id = t.model_version_id
-      JOIN models m ON m.id = mv.model_id
-      LEFT JOIN model_versions lv ON lv.id = m.latest_version_id
-      WHERE dv.document_id = ?
-      ${includeDeleted ? "" : "AND m.deleted_at IS NULL"}
-      ORDER BY m.created_at ASC
+      UPDATE documents
+      SET latest_version_number = latest_version_number + 1
+      WHERE id = ?
+      RETURNING latest_version_number
     `);
-    const results = stmt.all(docId);
-    return results.map(toCamel);
+    const result = stmt.get(documentId);
+    return result?.latest_version_number ?? null;
   }
-
-  getAllModels(docId) {
-    return this.getModels(docId, true);
-  }
-
-  delete(id) {
-    return this.softDelete(id);
-  }
-
   softDelete(id) {
     const stmt = db.prepare("UPDATE documents SET deleted_at = ? WHERE id = ?");
     return stmt.run(new Date().toISOString(), id);

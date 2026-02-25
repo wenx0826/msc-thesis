@@ -20,7 +20,7 @@ function initializeSchema() {
     CREATE TABLE IF NOT EXISTS projects (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
-      model_generation_index INTEGER NOT NULL DEFAULT 0,
+      latest_model_number INTEGER NOT NULL DEFAULT 0,
       created_at TEXT NOT NULL DEFAULT current_timestamp,
       deleted_at TEXT
     )
@@ -30,8 +30,9 @@ function initializeSchema() {
     CREATE TABLE IF NOT EXISTS documents (
       id TEXT PRIMARY KEY,
       project_id TEXT NOT NULL,
-      latest_version_id TEXT,
       name TEXT NOT NULL,
+      latest_version_id TEXT,
+      latest_version_number INTEGER NOT NULL DEFAULT 0,
       created_at TEXT NOT NULL DEFAULT current_timestamp,
       deleted_at TEXT,
       FOREIGN KEY (project_id) REFERENCES projects(id),
@@ -43,7 +44,9 @@ function initializeSchema() {
     CREATE TABLE IF NOT EXISTS document_versions (
       id TEXT PRIMARY KEY,
       document_id TEXT NOT NULL,
+      version_number INTEGER NOT NULL,
       name TEXT NOT NULL,
+      filename TEXT NOT NULL,
       words_count INTEGER NOT NULL DEFAULT 0,
       created_at TEXT NOT NULL DEFAULT current_timestamp,
       FOREIGN KEY (document_id) REFERENCES documents(id)
@@ -54,8 +57,9 @@ function initializeSchema() {
     CREATE TABLE IF NOT EXISTS models (
       id TEXT PRIMARY KEY,
       project_id TEXT NOT NULL,
-      latest_version_id TEXT,
       name TEXT NOT NULL,
+      latest_version_id TEXT,
+      latest_version_number INTEGER NOT NULL DEFAULT 0,
       created_at TEXT NOT NULL DEFAULT current_timestamp,
       deleted_at TEXT,
       FOREIGN KEY (project_id) REFERENCES projects(id),
@@ -67,6 +71,7 @@ function initializeSchema() {
     CREATE TABLE IF NOT EXISTS model_versions (
       id TEXT PRIMARY KEY,
       model_id TEXT NOT NULL,
+      version_number INTEGER NOT NULL,
       name TEXT NOT NULL,
       selected_words_count INTEGER DEFAULT 0,
       created_at TEXT NOT NULL DEFAULT current_timestamp,
@@ -123,6 +128,12 @@ function initializeSchema() {
   );
   db.exec(
     `CREATE INDEX IF NOT EXISTS idx_traces_document_version_id ON traces(document_version_id)`,
+  );
+  db.exec(
+    `CREATE UNIQUE INDEX IF NOT EXISTS idx_document_versions_document_id_version_number ON document_versions(document_id, version_number)`,
+  );
+  db.exec(
+    `CREATE UNIQUE INDEX IF NOT EXISTS idx_model_versions_model_id_version_number ON model_versions(model_id, version_number)`,
   );
   db.exec(
     `CREATE INDEX IF NOT EXISTS idx_traces_model_version_id ON traces(model_version_id)`,

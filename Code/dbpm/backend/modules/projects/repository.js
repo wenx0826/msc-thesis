@@ -38,11 +38,15 @@ class ProjectsRepository extends BaseSqlRepository {
     return result.count;
   }
 
-  findModelGenerationIndexById(id) {
-    const stmt = db.prepare(
-      "SELECT model_generation_index FROM projects WHERE id = ?",
-    );
-    return stmt.get(id).model_generation_index;
+  allocateLatestModelNumberById(id) {
+    const stmt = db.prepare(`
+      UPDATE projects
+      SET latest_model_number = latest_model_number + 1
+      WHERE id = ?
+      RETURNING latest_model_number
+    `);
+    const result = stmt.get(id);
+    return result?.latest_model_number ?? null;
   }
 
   getDocumentCount(id) {

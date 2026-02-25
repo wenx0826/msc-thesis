@@ -15,7 +15,7 @@ export default {
     let viewedDocument = undefined;
     const { documentsMeta, modelsMeta } =
       await projectsAPI.getComponents(projectId);
-
+    console.log("Loaded workspace components:", { documentsMeta, modelsMeta });
     documentsStore.init(documentsMeta);
     modelsStore.init(modelsMeta);
     projectGraphStore.init(documentsMeta, modelsMeta);
@@ -47,6 +47,7 @@ export default {
   async displayDocument({ id, versionId }) {
     const { id: currViewedDocId, versionId: currViewedDocVersionId } =
       workspaceStore.getViewedDocument();
+    if (!versionId) versionId = documentsStore.getLatestVersionId(id);
     if (currViewedDocId === id && currViewedDocVersionId === versionId) {
       return;
     }
