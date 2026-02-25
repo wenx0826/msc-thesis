@@ -81,30 +81,30 @@
       <a id="statsLink" href="stats.html">Statistics</a>
     </div>
   </ui-bar>
-  <ui-rest style="z-index: 2" class="main">
+  <ui-rest class="main">
     <ui-content>
-      <!-- Left: Document Panel -->
-      <ui-rest style="flex: 0.4">
-        <!-- Document List Pane -->
-        <ui-tabbed style="z-index: 2">
+      <ui-rest class="pane pane--left">
+        <ui-tabbed id="documentsPanel">
           <ui-tabbar>
             <ui-tab class="switch"></ui-tab>
-            <ui-tab class="" data-tab="documents" style="flex: 1">Documents (<span
-                data-ref="documentsCount"></span>)</ui-tab>
+            <ui-tab class="" data-tab="documents">Documents (<span data-ref="documentsCount"></span>)</ui-tab>
           </ui-tabbar>
           <ui-content>
-            <ui-area data-belongs-to-tab="documents" id="areadocuments">
+            <ui-area data-belongs-to-tab="documents">
               <ui-bar>
                 <input type="file" id="documentUpdateInput" class="hidden" />
+                <input type="file" id="documentsInput" multiple class="hidden" />
+
                 <div class="right">
-                  <label for="documentsInput" class="button">
+                  <button onclick="document.getElementById('documentsInput').click()">Upload</button>
+                  <!-- <label for="documentsInput" class="button">
                     Upload <input type="file" id="documentsInput" multiple class="hidden" />
-                  </label>
+                  </label> -->
                 </div>
               </ui-bar>
               <ul id="documentsList">
                 <template id="documentItemTemplate">
-                  <li data-doc-id="" data-doc-version-id="">
+                  <li class="list-item" data-doc-id="" data-doc-version-id="">
                     <!-- <input type="checkbox" /> -->
                     <div class="inline-editor">
                       <span class="document-name inline-editor__view" data-ref="documentName"></span>
@@ -118,8 +118,7 @@
             </ui-area>
           </ui-content>
         </ui-tabbed>
-        <!-- Document Viewer -->
-        <ui-rest class="panel" style="margin-top: 0.5em">
+        <ui-rest id="documentViewer" class="panel">
           <!-- Text Action Bar -->
           <ui-bar id="textActionBar">
             <!-- <div class="field">
@@ -208,8 +207,7 @@
         </ui-rest>
       </ui-rest>
       <ui-resizehandle id="columnResizehandle1" data-direction="vertical"></ui-resizehandle>
-      <!-- Middle: Current Model Panel -->
-      <ui-rest class="panel" style="flex: 0.4">
+      <ui-rest class="pane pane--middle panel">
         <ui-rest style="flex: 1 1 0; min-height: 100px">
           <ui-bar>
             <!-- <div id="activeModelNameEditor" class="inline-editor"> -->
@@ -218,9 +216,8 @@
               <div class="field">
                 <label for="modelVersionSelect">Version:</label>
                 <select id="modelVersionSelect"></select>
-
               </div>
-              <button>Create new version</button>
+              <button>+ New version</button>
               <button class="col-button action-btn">...</button>
             </div>
 
@@ -276,46 +273,63 @@
         </ui-rest>
       </ui-rest>
       <ui-resizehandle data-direction="vertical"></ui-resizehandle>
-      <!-- Right: Models Panel-->
-      <ui-rest style="flex: 0.2; min-width: 180px">
-        <ui-rest class="panel" style="flex: 0.68 1 0; min-height: 100px">
+      <ui-rest class="pane pane--right">
+        <ui-rest id="modelsPanel" class="panel" data-current-view="grid" style="flex: 0.68 1 0; min-height: 100px">
           <ui-bar><span style="font-size: 1.2em; font-weight: bold">Models</span>(<span
               data-ref="modelsCount"></span>)</ui-bar>
           <ui-divider></ui-divider>
           <ui-bar>
+            <div id="modelsViewSwitch" class="switch-btn-group">
+              <button class="switch-btn current" data-view="grid">
+                ⬜
+              </button>
+              <button class="switch-btn" data-view="list">
+                ☰
+              </button>
+            </div>
             <span id="activeModelName" class="inline-editor__view" data-editable="1"></span>
             <button class="right col-button action-btn">...</button>
           </ui-bar>
           <ui-bar>
             <!-- <div class="right"> -->
             <div class="field">
-              <label for="cars">Documents:</label>
-              <select name="cars" id="cars">
-                <option value="volvo">All</option>
-                <option value="saab">Saab</option>
-                <option value="mercedes">Mercedes</option>
-                <option value="audi">Audi</option>
+              <label for="documentsSelect">Documents:</label>
+              <select name="documentsSelect" id="documentsSelect">
+
               </select>
             </div>
             <!-- </div> -->
           </ui-bar>
           <ui-rest>
             <ui-content>
-              <ui-area id="modelsList">
-                <template id="modelItemTemplate">
-                  <div class="model-container" data-model-id="" data-documentid="">
-                    <ui-bar>
-                      <span data-ref="modelName"></span>
+              <ui-area>
+                <div id="modelsGrid" data-belongs-to-view="grid">
+                  <template id="modelGridTemplate">
+                    <div class="model-grid-container" data-model-id="" data-model-version-id="" data-document-id="">
+                      <ui-bar>
+                        <span data-ref="modelName"></span>
+                        <button class="right col-button action-btn">...</button>
+                      </ui-bar>
+                      <div data-ref="modelGrid"></div>
+                    </div>
+                  </template>
+                </div>
+                <ul id="modelsList" data-belongs-to-view="list">
+                  <template id="modelItemTemplate">
+                    <li class="list-item model-list-item" data-model-id="" data-model-version-id="" data-document-id="">
+                      <div class="inline-editor">
+                        <span class="inline-editor__view" data-ref="modelName"></span>
+                      </div>
                       <button class="right col-button action-btn">...</button>
-                    </ui-bar>
-                    <div data-ref="modelGrid"></div>
-                  </div>
-                </template>
+                    </li>
+                  </template>
+                </ul>
               </ui-area>
             </ui-content>
           </ui-rest>
         </ui-rest>
         <ui-resizehandle data-direction="horizontal"></ui-resizehandle>
+        <!-- Model Detail/Comparison Panel -->
         <ui-rest class="panel" style="margin-top: 0.5em; flex: 0.32 1 0; min-height: 100px">
           <ui-content>
             <ui-area id="cy"> </ui-area>

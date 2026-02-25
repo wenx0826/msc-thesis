@@ -66,6 +66,7 @@ export default {
   },
 
   toggleModelDisplay({ id, versionId }) {
+    console.log("Toggling model display for:", { id, versionId });
     if (!id) {
       this.clearModelDisplay();
       return;
@@ -80,7 +81,7 @@ export default {
     workspaceStore.setEditingModel({ id, versionId });
     modelService.loadVersion(versionId);
     // modelEditorStore.setModelById(modelId);
-    documentViewerStore.setActiveModelTraceByModelId(modelId);
+    // documentViewerStore.setActiveModelTraceByModelId(modelId);
     workspaceStore.setModelPopoverParams(null);
     // if (currActiveModelId === id) {
     //   id = null;

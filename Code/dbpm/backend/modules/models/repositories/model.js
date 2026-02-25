@@ -81,12 +81,7 @@ class ModelRepository extends BaseSqlRepository {
   }
 
   findById(modelId) {
-    const stmt = db.prepare(
-      `SELECT m.*, mv.name
-       FROM models m
-       LEFT JOIN model_versions mv ON m.latest_version_id = mv.id
-       WHERE m.id = ?`,
-    );
+    const stmt = db.prepare(`SELECT * FROM models WHERE id = ?`);
     const result = stmt.get(modelId);
     return result ? toCamel(result) : null;
   }
@@ -95,7 +90,6 @@ class ModelRepository extends BaseSqlRepository {
     const stmt = db.prepare(`
       SELECT
         m.*,
-        mv.name,
         (
           SELECT dv.document_id
           FROM traces t
@@ -116,7 +110,6 @@ class ModelRepository extends BaseSqlRepository {
           '[]'
         ) AS document_version_ids
       FROM models m
-      LEFT JOIN model_versions mv ON m.latest_version_id = mv.id
       WHERE m.project_id = ? ${includeDeleted ? "" : "AND m.deleted_at IS NULL"}
       ORDER BY m.created_at ASC
     `);

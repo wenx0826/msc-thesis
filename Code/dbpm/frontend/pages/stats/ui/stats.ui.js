@@ -38,9 +38,9 @@ async function renderDocumentsList(documents) {
       .attr("href", latestVersion?.id ? getDocumentURL(latestVersion.id) : "#");
     $documentsList.append($documentItem);
     // renderDocumentModels(doc.id, $documentItem);
-    const $modelsList = $documentItem.find("[data-ref='modelsList']");
+    const $modelsGrid = $documentItem.find("[data-ref='modelsGrid']");
     docModels.forEach((model) => {
-      const $modelItem = createTemplateElement("modelItemTemplate");
+      const $modelItem = createTemplateElement("modelGridTemplate");
       const modelVersions = model.versions || [];
       const latestModelVersion = modelVersions.at(-1);
       const modelVersionId = latestModelVersion?.id || model.latestVersionId;
@@ -57,7 +57,7 @@ async function renderDocumentsList(documents) {
         .find("[data-ref='modelLink']")
         .attr("href", getModelGraphRenderURL(modelVersionId))
         .text("View Model");
-      $modelsList.append($modelItem);
+      $modelsGrid.append($modelItem);
     });
   }
 }

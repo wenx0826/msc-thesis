@@ -7,7 +7,7 @@ import { countWords } from "../../utils/fileHelper.js";
 import projectsService from "../projects/service.js";
 import traceService from "../traces/service.js";
 import documentVersionRepo from "../documents/repositories/version.js";
-import { injectDbpmMeta } from "./utils/dbpmMetaXml.js";
+import { injectDbpmMeta, getDescription } from "./utils/dbpmMetaXml.js";
 
 function selectionsToText(selections) {
   if (!Array.isArray(selections)) {
@@ -104,7 +104,6 @@ export default {
       throw err;
     }
   },
-
   getModel(modelId) {
     const model = modelRepo.findById(modelId);
     if (!model) {
@@ -116,7 +115,8 @@ export default {
   },
 
   getData(versionId) {
-    return storageRepo.read(versionId);
+    const model = storageRepo.read(versionId);
+    return getDescription(model);
   },
   getAllModels(includeDeleted = true) {
     const models = modelRepo.findAll(includeDeleted);
@@ -146,7 +146,6 @@ export default {
     }
     return models;
   },
-
   updateModel({ modelId, modelData, trace, type }) {
     const model = modelRepo.findById(modelId);
     if (!model) {

@@ -1,13 +1,42 @@
 ui-rest.main {
-  padding: 0.6em;
+  padding: 0 10px 5px 10px;
 }
-.relaxngui_color_container .round label {
-  box-sizing: content-box;
-}
+
 /* .relaxngui_color_container .round label:after {
   box-sizing: content-box;
 } */
 /* -- x-ui overrides --*/
+ui-rest.pane {
+  /* gap: 8px; */
+  /* overflow: hidden; */
+  /* display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0; */
+}
+
+ui-rest.pane--left {
+  gap: 8px;
+}
+
+ui-rest.pane--left,
+ui-rest.pane--middle {
+  flex: 0.4;
+  min-width: 180px;
+}
+ui-rest.pane--right {
+  flex: 0.2; 
+  min-width: 180px;
+}
+.panel {
+  background-color: var(--background-color);
+  padding: 1em;
+  margin: 0;
+  border: 1px solid var(--x-ui-border-color);
+  border-radius: 1em;
+  overflow: hidden;
+}
+
 
 ui-resizehandle[data-direction="vertical"] {
   /* flex: 0 0 1em; */
@@ -108,15 +137,6 @@ ui-resizehandle[data-direction="vertical"]::before {
   margin-top: 0 !important;
 }
 
-.panel {
-  background-color: var(--background-color);
-  padding: 1em;
-  margin: 0;
-  border: 1px solid var(--x-ui-border-color);
-  border-radius: 1em;
-  overflow: hidden;
-  min-width: 180px;
-}
 
 *[is="x-ui-"] ui-tabbed ui-content {
   margin: 0;
@@ -132,6 +152,7 @@ ui-resizehandle[data-direction="vertical"]::before {
 }
 *[is="x-ui-"] ui-tabbed ui-tab[data-tab="documents"] {
   cursor: default;
+  flex:1;
 }
 ui-area {
   padding: 0;
@@ -178,12 +199,13 @@ ui-area {
   ui-content:has(> ui-area[data-belongs-to-tab="documents"]) {
   padding: 0 0 0.5em 0;
 }
-
-
-#documentsList li:nth-child(odd) {
+.relaxngui_color_container .round label {
+  box-sizing: content-box;
+}
+ul li.list-item:nth-child(odd) {
   background-color: var(--x-ui-content-light-background);
 }
-#documentsList li:hover {
+ul li.list-item:hover {
   background-color: var(--x-ui-content-hover-background);
 }
 /*--- document list pane ---*/
@@ -193,7 +215,7 @@ ui-area {
   padding: 0;
   margin: 0; */
 }
-#documentsList li {
+li.list-item {
   display: flex;
   align-items: center;
   padding: 0 0.5em;
@@ -210,10 +232,10 @@ ui-area {
   user-select: text;
   cursor: text;
 }
-#documentsList li .inline-editor {
+li.list-item .inline-editor {
   flex: 1;
 }
-li.active {
+li.list-item.active {
   /* font-weight: bold; */
   font-weight: 600;
   background-color: var(--x-ui-content-highlight-background);
@@ -260,7 +282,6 @@ li .col-button {
   /* user-select: text; */
   max-width: 100%;
 }
-
 
 #interactionLayer {
     pointer-events: none;
@@ -446,7 +467,14 @@ text.duration {
 }
 /* ---------------- middle pane end----------------*/
 /* ---------------- models pane ----------------*/
-.model-container {
+#modelsPanel[data-current-view="grid"]
+  [data-belongs-to-view]:not([data-belongs-to-view="grid"]),
+#modelsPanel[data-current-view="list"]
+  [data-belongs-to-view]:not([data-belongs-to-view="list"]) {
+  display: none;
+}
+
+.model-grid-container {
   border: 1.5px solid var(--x-ui-border-color);
   padding: 0.5em;
   margin: 0.5em;
@@ -454,18 +482,18 @@ text.duration {
   overflow: hidden;
 }
 
-.model-container svg {
+.model-grid-container svg {
   width: 100%;
   height: auto;
   display: block;
   overflow: visible;
 }
 
-.model-container:hover {
+.model-grid-container:hover {
   border: 2px solid var(--wfadaptor-hover-border);
 }
 
-.model-container.active {
+.model-grid-container.active {
   border: 2px solid var(--wfadaptor-highlight);
 }
 /* ---------------- models pane ----------------*/

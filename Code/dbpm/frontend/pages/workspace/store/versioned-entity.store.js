@@ -55,18 +55,11 @@ export class VersionedEntityStore extends Store {
   }
 
   getLatestVersion(id) {
-    const entity = this.getEntity(id);
-    if (!entity) return null;
-    if (entity.latestVersion) return entity.latestVersion;
-    return this.syncLatestVersion(entity)?.latestVersion || null;
+    return this.getEntity(id)?.latestVersion ?? {};
   }
 
   getLatestVersionId(id) {
-    const entity = this.getEntity(id);
-    if (typeof entity.latestVersionId === "string") {
-      return entity.latestVersionId;
-    }
-    return this.getLatestVersion(id)?.id || null;
+    return this.getEntity(id)?.latestVersionId;
   }
 
   addVersion(id, value) {

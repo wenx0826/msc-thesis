@@ -219,7 +219,7 @@ export default {
     });
     modelEditorStore.setData(modelData);
     // modelEditorStore.setModelById(createdModelMeta.id);
-    // modelsStore.addModel({
+    // modelsStore.add({
     //   meta: createdModelMeta,
     //   documentId,
     // });
@@ -230,6 +230,7 @@ export default {
   },
   async loadVersion(versionId) {
     const data = await modelsAPI.getDataByVersionId(versionId);
+    console.log("Loaded model data for versionId", versionId, ":", data);
     modelEditorStore.setData(data);
   },
   async updateActiveModel(type) {

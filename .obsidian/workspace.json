@@ -51,18 +51,31 @@
             "id": "5c0a565f43f84411",
             "type": "leaf",
             "state": {
+              "type": "bases",
+              "state": {
+                "file": "Untitled.base",
+                "viewName": "Table"
+              },
+              "icon": "lucide-table",
+              "title": "Untitled"
+            }
+          },
+          {
+            "id": "1f57c41513d47a3d",
+            "type": "leaf",
+            "state": {
               "type": "markdown",
               "state": {
-                "file": "Dataschema.md",
+                "file": "Untitled 2.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Dataschema"
+              "title": "Untitled 2"
             }
           }
         ],
-        "currentTab": 3
+        "currentTab": 4
       }
     ],
     "direction": "vertical"
@@ -182,13 +195,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Dataschema.md",
+                "file": "Untitled 2.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of Dataschema"
+              "title": "Outline of Untitled 2"
             }
           },
           {
@@ -223,25 +236,26 @@
       "card-board:CardBoard": false
     }
   },
-  "active": "5c0a565f43f84411",
+  "active": "1f57c41513d47a3d",
   "lastOpenFiles": [
+    "Code/dbpm/data/documents/d7cdc06d-e871-4146-a410-347f70121420.html",
+    "Code/dbpm/data/documents/546303c7-2f76-4c96-9b47-ae451670dc7b.html",
+    "Untitled.base",
+    "Untitled 2.md",
+    "Dataschema.md",
+    "Code/dbpm/data/documents/c5156918-0046-4639-87dc-1347a60c1b44.html",
+    "Code/dbpm/data/models/d90dd3ab-ed2c-4206-8bfa-813bafce64d3.xml",
+    "Code/dbpm/data/documents/54b89678-3aa7-45c8-aa42-e9f2ec5b9326.html",
+    "Code/dbpm/data/logs/90eeb729-9679-4daf-9b04-6e93ad7ecd5f.yaml",
     "Code/dbpm/data/models/c5287dc9-b2b1-40ac-acf2-921270f0d8df.xml",
     "Code/dbpm/data/database.sqlite-journal",
     "Code/dbpm/data/models/814f095c-ba72-4daf-b638-8220c7044537.xml",
     "Code/dbpm/data/models/a9eefabd-87f9-420a-a1fb-b62d2327d857.xml",
-    "Code/dbpm/data/documents/411fef03-4f48-48b2-8ad0-d35b69f70007.html",
-    "Code/dbpm/data/documents/32fa150a-ccab-448e-a5c9-fdf7450dcf99.html",
-    "Code/dbpm/data/models/806bd429-caa8-42f4-8a34-52c05d3489f9.xml",
-    "Code/dbpm/data/models/4f4969c1-f8df-423a-ad24-9ded174ed5de.xml",
-    "Code/dbpm/data/models/c3f0aae3-a4f6-4b28-9a78-b6a146f7e376.xml",
-    "Code/dbpm/data/models/fa74520a-d1f3-49f3-8b4c-ad6ab6b3f106.xml",
-    "Code/dbpm/data/documents/8a345189-1322-4741-8ae4-a6dd73528f45.html",
     "Code/dbpm/backend/node_modules/kill-port/logo.png",
     "Code/dbpm/backend/node_modules/kill-port/README.md",
     "Code/dbpm/backend/node_modules/shell-exec/README.md",
     "Code/dbpm/backend/node_modules/get-them-args/README.md",
     "01.1 Motivation.md",
-    "Dataschema.md",
     "Untitled 1.md",
     "Code/dbpm/frontend/pages/workspace/workflow/wf_endpoints/subprocess/symbol.svg",
     "Code/dbpm/frontend/pages/workspace/workflow/endpoints/subprocess/symbol.svg",
@@ -270,7 +284,6 @@
     "Code/dbpm/backend/node_modules/type-fest/readme.md",
     "Code/dbpm/backend/node_modules/quick-lru/readme.md",
     "Code/dbpm/backend/node_modules/map-obj/readme.md",
-    "Code/dbpm/backend/node_modules/mnemonist/README.md",
     "Untitled.canvas"
   ]
 }

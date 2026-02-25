@@ -1,7 +1,11 @@
 const DBPM_NS = "https://example.com/dbpm";
 const DESCRIPTION_ROOT_PATTERN =
   /^\s*(<\?xml[\s\S]*?\?>\s*)?<description\b[^>]*>[\s\S]*<\/description>\s*$/i;
+const DESCRIPTION_ROOT_CONTENT_PATTERN =
+  /^\s*<description\b[^>]*>([\s\S]*)<\/description>\s*$/i;
 const DESCRIPTION_OPEN_TAG_PATTERN = /<description\b[^>]*>/i;
+const INNER_DESCRIPTION_ROOT_PATTERN =
+  /^\s*(?:<dbpm:info\b[\s\S]*?<\/dbpm:info>\s*)*(<description\b[^>]*(?:\/>|>[\s\S]*<\/description>))\s*$/i;
 const DBPM_INFO_BLOCK_PATTERN = /<dbpm:info\b[\s\S]*?<\/dbpm:info>/i;
 const DBPM_DOCUMENT_INFO_BLOCK_PATTERN =
   /<dbpm:document_info\b[\s\S]*?<\/dbpm:document_info>/i;
@@ -50,7 +54,10 @@ function buildDocumentInfoBlock({
 
 function upsertDocumentInfoInInfoBlock(infoBlock, documentInfoBlock) {
   if (DBPM_DOCUMENT_INFO_BLOCK_PATTERN.test(infoBlock)) {
-    return infoBlock.replace(DBPM_DOCUMENT_INFO_BLOCK_PATTERN, documentInfoBlock);
+    return infoBlock.replace(
+      DBPM_DOCUMENT_INFO_BLOCK_PATTERN,
+      documentInfoBlock,
+    );
   }
 
   const infoOpenTagMatch = infoBlock.match(/<dbpm:info\b[^>]*>/i);
@@ -96,9 +103,8 @@ export function injectDbpmMeta(modelData, meta = {}) {
   let outputBody;
   if (DESCRIPTION_ROOT_PATTERN.test(body)) {
     if (DBPM_INFO_BLOCK_PATTERN.test(body)) {
-      outputBody = body.replace(
-        DBPM_INFO_BLOCK_PATTERN,
-        (matchedInfo) => upsertDocumentInfoInInfoBlock(matchedInfo, documentInfoBlock),
+      outputBody = body.replace(DBPM_INFO_BLOCK_PATTERN, (matchedInfo) =>
+        upsertDocumentInfoInInfoBlock(matchedInfo, documentInfoBlock),
       );
     } else {
       const descriptionOpenTagMatch = body.match(DESCRIPTION_OPEN_TAG_PATTERN);
@@ -120,4 +126,28 @@ export function injectDbpmMeta(modelData, meta = {}) {
   }
 
   return declaration ? `${declaration}\n${outputBody}` : outputBody;
+}
+
+export function getDescription(modelData) {
+  if (typeof modelData !== "string" || !modelData.trim()) {
+    throw new Error("Model data must be a non-empty XML string");
+  }
+
+  const { body } = splitXmlDeclaration(modelData);
+  const descriptionMatch = body.match(DESCRIPTION_ROOT_PATTERN);
+  if (!descriptionMatch) {
+    return null;
+  }
+
+  const rootContentMatch = body.match(DESCRIPTION_ROOT_CONTENT_PATTERN);
+  if (!rootContentMatch) {
+    return descriptionMatch[0];
+  }
+
+  const innerDescriptionRootMatch = rootContentMatch[1].match(
+    INNER_DESCRIPTION_ROOT_PATTERN,
+  );
+  return innerDescriptionRootMatch
+    ? innerDescriptionRootMatch[1]
+    : descriptionMatch[0];
 }

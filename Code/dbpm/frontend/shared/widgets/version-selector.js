@@ -4,7 +4,7 @@ export default function initVersionSelector({
   versions = [],
   selectedId = null, // only selection control
   getId = (v) => v?.id,
-  labelOf = ({ index }) => `V${index + 1}`,
+  labelOf = ({ index }) => `v${index + 1}`,
   titleOf = ({ v }) => v?.name ?? "",
   stopRowClick = true,
   onSelect = ({ version }) => {},

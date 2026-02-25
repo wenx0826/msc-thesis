@@ -8,10 +8,12 @@ import {
 import { modelService, workspaceService } from "../services/index.js";
 import { endpointLoader } from "../workflow/wf_endpoints/endpoint-loader.js";
 import { Constants } from "../../../constants.js";
-import { default as setActiveModuleNameEditor } from "../../../shared/widgets/inline-editor.js";
+import { default as setModelNameEditor } from "../../../shared/widgets/inline-editor.js";
+import initVersionSelector from "../../../shared/widgets/version-selector.js";
 
 const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
 const $editingModelVersionName = $("#editingModelVersionName");
+const $versionSelect = $("#modelVersionSelect");
 const $modelActionBar = $("#modelActionBar");
 const $exportTestsetButton = $("#exportTestsetButton");
 const $deleteModelButton = $("#deleteModelButton");
@@ -204,7 +206,7 @@ const setModelSelectVisibility = ($modelSelect, isVisible) => {
 
 const getAvailableSubprocessModels = () => {
   const availableModels = [];
-  for (const model of modelsStore.getModels() || []) {
+  for (const model of modelsStore.getList() || []) {
     const meta =
       model?.meta && typeof model.meta === "object" ? model.meta : model;
     const modelId = meta?.id ?? model?.id;
@@ -229,7 +231,11 @@ const renderModelSelect = (modelValue) => {
   }
   const editingModelId = modelEditorStore.getModelId();
   const modelsByDocumentId = new Map();
-  for (const { documentId, modelId, modelName } of getAvailableSubprocessModels()) {
+  for (const {
+    documentId,
+    modelId,
+    modelName,
+  } of getAvailableSubprocessModels()) {
     const documentKey = String(documentId);
     if (!modelsByDocumentId.has(documentKey)) {
       modelsByDocumentId.set(documentKey, []);
@@ -488,7 +494,8 @@ function do_main_work(svgid) {
 
 createUI({
   setup: () => {
-    setActiveModuleNameEditor({
+    window.do_main_work = do_main_work;
+    setModelNameEditor({
       $scope: $editingModelVersionName.parent(),
       trigger: "click",
       autoGrow: true,
@@ -499,7 +506,18 @@ createUI({
         }
       },
     });
-    window.do_main_work = do_main_work;
+    const versionSelector = initVersionSelector({
+      $select: $versionSelect,
+      onSelect: ({ version }) => {
+        workspaceService.toggleModelDisplay({
+          id: version.modelId,
+          versionId: version.id,
+        });
+      },
+    });
+    return {
+      versionSelector,
+    };
   },
   bindListeners: () => {
     $viewModelDataLink.on("click", (e) => {
@@ -512,8 +530,7 @@ createUI({
 
     $exportTestsetButton.on("click", (e) => {
       e.preventDefault();
-      const filename =
-        "testset_" + workspaceStore.getEditingModelId() + ".xml";
+      const filename = "testset_" + workspaceStore.getEditingModelId() + ".xml";
       const text =
         '<?xml version="1.0"?>\n<testset xmlns="http://cpee.org/ns/properties/2.0">\n<executionhandler>ruby</executionhandler>\n<dataelements/>\n<endpoints/>\n<attributes>\n<guarded>none</guarded>\n<modeltype>CPEE</modeltype>\n<theme>preset</theme>\n<guarded_id/>\n<info>Subprocess</info>\n<creator>Christine Ashcreek</creator>\n<author>Christine Ashcreek</author>\n<model_uuid>1fc43528-3e4a-40ee-8503-c0ed7e5d883c</model_uuid>\n<model_version/>\n<design_stage>development</design_stage>\n<design_dir>Templates.dir</design_dir>\n</attributes>\n<description>' +
         modelEditorStore.getSerializedRpstData() +
@@ -589,7 +606,8 @@ createUI({
           `#dat_details input[data-relaxngui-path=" > call[endpoint]"]`,
         );
         const $modelSelect = $(CALL_SUBPROCESS_MODEL_SELECTOR);
-        const initialModelValue = $modelSelect.data("initial-model-value") || "";
+        const initialModelValue =
+          $modelSelect.data("initial-model-value") || "";
         const typeValue = $(this).val();
         if (typeValue === "subprocess") {
           if ($endpointInput.length > 0) {
@@ -709,7 +727,7 @@ createUI({
     */
     });
   },
-  subscribeStores: () => {
+  subscribeStores: ({ versionSelector }) => {
     modelEditorStore.subscribe((state, { key, oldValue, newValue }) => {
       switch (key) {
         case "data":
@@ -779,7 +797,10 @@ createUI({
               newValue.versionId,
             );
             $editingModelVersionName.text(versionName);
-            // const name = modelsStore.getModelNameById(newValue.id);
+            versionSelector.update({
+              versions: modelsStore.getVersions(newValue.id),
+              selectedId: newValue.versionId,
+            });
           }
           break;
         default:

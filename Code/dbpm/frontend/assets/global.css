@@ -371,21 +371,49 @@ ul.breadcrumb {
   /* padding: 10px 16px; */
   /* list-style: none; */
   /* background-color: #eee; */
+  display: flex;
+  align-items: center;
 }
 
-/* Display list items side by side */
+
 ul.breadcrumb li {
   display: inline;
-  /* font-size: 18px; */
 }
 
-/* Add a slash symbol (/) before/behind each list item */
-ul.breadcrumb li+li:before {
+
+ul.breadcrumb > li+li:before {
   padding: 8px;
   color: var(--x-ui-text-muted-color);
   content: "/\00a0";
 }
 
+.switch-btn-group {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.switch-btn {
+  border: none;
+  background: var(--x-ui-background-color) !important;
+  padding: 8px 10px;
+  border-radius: 8px;
+  /* cursor: pointer; */
+  /* font-size: 18px; */
+  /* color: #555; */
+  transition: all 0.2s ease;
+}
+
+/* .switch-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+} */
+
+.switch-btn.current {
+  background: var(--x-ui-content-light-background) !important;
+  /* background: white; */
+  /* color: #555; */
+  /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15); */
+  /* color: black; */
+}
 /* Add a color to all links inside the list */
 /* ul.breadcrumb li a {
   color: #0275d8;

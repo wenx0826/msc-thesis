@@ -32,37 +32,65 @@ class WorkspaceStore extends Store {
       */
     });
   }
-
+  set({ projectId, viewedDocument, editingModel }) {
+    this.state.projectId = projectId;
+    if (viewedDocument) this.setViewedDocument(viewedDocument);
+    if (editingModel) this.setEditingModel(editingModel);
+  }
   getProjectId() {
     return this.state.projectId;
   }
-
+  setLlmModel(llmModel) {
+    this.state.llmModel = llmModel;
+  }
+  getLlmModel() {
+    return this.state.llmModel;
+  }
+  setTheme(theme) {
+    this.state.theme = theme;
+  }
+  setViewedDocument(newValue) {
+    const oldValue = this.state.viewedDocument;
+    if (
+      oldValue?.id === newValue?.id &&
+      oldValue?.versionId === newValue?.versionId
+    )
+      return;
+    this.state.viewedDocument = newValue;
+    this.notify({
+      key: "viewedDocument",
+      oldValue,
+      newValue,
+    });
+  }
   getViewedDocument() {
     return this.state.viewedDocument;
   }
-
   getViewedDocumentId() {
-    return this.state.viewedDocument?.id || null;
+    return this.state.viewedDocument.id;
   }
-
-  getActiveDocumentId() {
-    return this.getViewedDocumentId();
+  setEditingModel(newValue) {
+    const oldValue = this.state.editingModel;
+    if (
+      oldValue.id === newValue.id &&
+      oldValue.versionId === newValue.versionId
+    )
+      return;
+    this.state.editingModel = newValue;
+    this.notify({
+      key: "editingModel",
+      oldValue,
+      newValue,
+    });
   }
-
   getEditingModel() {
     return this.state.editingModel;
   }
-
   getEditingModelId() {
-    return this.state.editingModel?.id || null;
+    return this.state.editingModel.id;
   }
-
   hasEditingModel() {
-    return this.state.editingModel.id != null;
-  }
-
-  getLlmModel() {
-    return this.state.llmModel;
+    return !!this.getEditingModelId();
   }
 
   // Legacy compatibility wrappers
@@ -175,81 +203,13 @@ class WorkspaceStore extends Store {
     if (this.state.modelPopoverState.hoverSource !== source) {
       return;
     }
-
     this.cancelOpenModelPopover();
     this.cancelCloseModelPopover();
-
     // ✨ NEW: Increased delay to 300ms for better UX (less flickering)
     this.state.modelPopoverState.closeTimer = setTimeout(() => {
       this.setModelPopoverParams(null);
       this.state.modelPopoverState.closeTimer = null;
     }, 300); // OLD: was 150ms
-  }
-
-  setViewedDocument(newValue) {
-    const oldValue = this.state.viewedDocument;
-    if (
-      oldValue?.id === newValue?.id &&
-      oldValue?.versionId === newValue?.versionId
-    )
-      return;
-    this.state.viewedDocument = newValue;
-    this.notify({
-      key: "viewedDocument",
-      oldValue,
-      newValue,
-    });
-  }
-
-  setEditingModel(newValue) {
-    const oldValue = this.state.editingModel;
-    if (
-      oldValue?.id === newValue?.id &&
-      oldValue?.versionId === newValue?.versionId
-    )
-      return;
-    this.state.editingModel = newValue;
-    this.notify({
-      key: "editingModel",
-      oldValue,
-      newValue,
-    });
-  }
-
-  setActiveModel(newValue) {
-    this.setEditingModel(newValue);
-  }
-
-  // Legacy compatibility wrappers
-  setDisplayedDocument(newValue) {
-    this.setViewedDocument(newValue);
-  }
-
-  setDisplayedModel(newValue) {
-    this.setEditingModel(newValue);
-  }
-
-  setLlmModel(llmModel) {
-    this.state.llmModel = llmModel;
-  }
-
-  setTheme(theme) {
-    this.state.theme = theme;
-  }
-
-  set({
-    projectId,
-    viewedDocument,
-    editingModel,
-    displayedDocument,
-    activeModel,
-  }) {
-    console.log("WorkspaceStore setProjectID!!!!!:", projectId);
-    this.state.projectId = projectId;
-    const resolvedViewedDocument = viewedDocument || displayedDocument;
-    const resolvedEditingModel = editingModel || activeModel;
-    if (resolvedViewedDocument) this.setViewedDocument(resolvedViewedDocument);
-    if (resolvedEditingModel) this.setEditingModel(resolvedEditingModel);
   }
 }
 

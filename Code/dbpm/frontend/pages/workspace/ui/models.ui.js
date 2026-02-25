@@ -1,5 +1,5 @@
 import { createUI } from "../../../shared/utils/ui.js";
-import { workspaceStore, modelsStore } from "../store/index.js";
+import { modelsStore, workspaceStore } from "../store/index.js";
 import { workspaceService } from "../services/index.js";
 import { modelsAPI } from "../../../api/index.js";
 import { endpointLoader } from "../workflow/wf_endpoints/endpoint-loader.js";
@@ -11,8 +11,11 @@ const PREVIEW_IFRAME_ID = "wfPreviewRendererIframe";
 let previewRenderQueue = Promise.resolve();
 let previewRendererWindow = null;
 let previewRendererWindowPromise = null;
-
+const $modelsPanel = $("#modelsPanel");
+const $viewSwitch = $("#modelsViewSwitch");
+const $modelsGrid = $("#modelsGrid");
 const $modelsList = $("#modelsList");
+
 /**
  * Make all internal SVG id/url(#...) references unique by prefixing them
  * with a model-specific string.  This prevents collisions when multiple
@@ -249,20 +252,23 @@ async function getModelSvg(modelId) {
   return renderDescriptionToSvg(descriptionElement);
 }
 
-async function renderModelInList(model) {
-  console.log("Rendering model in list:", model);
+async function renderModel(model) {
+  //
   const modelId = model?.id;
+
+  // Grid view
   const gridId = `modelGrid_${modelId}`;
-  const $modelContainer = createTemplateElement("modelItemTemplate")
+  const $modelContainer = createTemplateElement("modelGridTemplate")
     .attr("data-model-id", modelId)
+    .attr("data-model-version-id", model.latestVersionId)
     .attr("data-document-id", model.documentId);
   const $gridDiv = $modelContainer.find("[data-ref='modelGrid']").first();
   $gridDiv.attr("id", gridId);
-  $modelContainer.find("[data-ref='modelName']").first().text(model.name);
-  if (modelId == workspaceStore.getEditingModel().id) {
+  $modelContainer.find("[data-ref='modelName']").text(model.latestVersion.name);
+  if (modelId == workspaceStore.getEditingModel()?.id) {
     $modelContainer.addClass("active");
   }
-  $modelsList.append($modelContainer);
+  $modelsGrid.append($modelContainer);
   console.log("Received SVG for model ID", modelId);
   try {
     const outputFrame = await getModelSvg(model.latestVersionId);
@@ -271,13 +277,22 @@ async function renderModelInList(model) {
     $gridDiv.append(model.svg);
   } catch (err) {
     console.error("Error getting model SVG for model ID", modelId, ":", err);
-    return;
+    // return;
   }
+
+  // List view
+  const $listItem = createTemplateElement("modelItemTemplate")
+    .attr("data-model-id", modelId)
+    .attr("data-model-version-id", model.latestVersionId)
+    .attr("data-document-id", model.documentId);
+  $listItem.find("[data-ref='modelName']").text(model.latestVersion.name);
+  $modelsList.append($listItem);
 }
 
 function updateModelInList(model) {
   const modelId = model?.meta?.id;
-  var gridId = `modelGrid_${modelId}`;
+  const modelVersionId = model?.latestVersionId;
+  var gridId = `modelGrid_${modelVersionId}`;
   const $gridDiv = $(`#${gridId}`);
   $gridDiv.empty();
 
@@ -289,16 +304,16 @@ function updateModelInList(model) {
   $gridDiv.append(svgEl);
 }
 
-const highlightActiveModelContainer = (modelId) => {
-  $(`.model-container[data-model-id="${modelId}"]`).addClass("active");
+const highlightEditingModelContainer = (modelId) => {
+  $(`.model-grid-container[data-model-id="${modelId}"]`).addClass("active");
 };
 
-const unhighlightActiveModelContainer = (modelId) => {
-  $(`.model-container[data-model-id="${modelId}"]`).removeClass("active");
+const unhighlightEditingModelContainer = (modelId) => {
+  $(`.model-grid-container[data-model-id="${modelId}"]`).removeClass("active");
 };
 
 const removeModelFromList = (modelId) => {
-  $(`.model-container[data-model-id="${modelId}"]`).remove();
+  $(`.model-grid-container[data-model-id="${modelId}"]`).remove();
 };
 
 function updateModelsCount() {
@@ -306,47 +321,40 @@ function updateModelsCount() {
   $("[data-ref='modelsCount']").text(count);
 }
 
+function setView(event) {
+  $viewSwitch.find(".switch-btn").removeClass("current");
+  const targetSwitchButton = event.currentTarget;
+  const targetView = targetSwitchButton.dataset.view;
+  targetSwitchButton.classList.add("current");
+  $modelsPanel.attr("data-current-view", targetView);
+}
+function onModelClick(event) {
+  event.stopPropagation();
+  const dataSet = event.currentTarget.dataset;
+  workspaceService.toggleModelDisplay({
+    id: dataSet.modelId,
+    versionId: dataSet.modelVersionId,
+  });
+}
 createUI({
   setup: () => {},
   bindListeners: () => {
-    $modelsList.on("click.modelContainer", ".model-container", (event) => {
-      event.stopPropagation();
-      const dataSet = event.currentTarget.dataset;
-      const modelId = dataSet.modelId;
-      const latestVersion = modelsStore.getLatestVersion(modelId);
-      workspaceService.toggleModelDisplay({
-        id: modelId,
-        versionId: latestVersion?.id,
-      });
-    });
+    $viewSwitch.on("click", ".switch-btn", setView);
+    $modelsGrid.on("click", ".model-grid-container", onModelClick);
+    $modelsList.on("click", ".model-list-item", onModelClick);
   },
   subscribeStores: () => {
-    workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
-      switch (key) {
-        case "editingModel":
-          if (newValue?.id) {
-            highlightActiveModelContainer(newValue.id);
-          }
-          if (oldValue?.id) {
-            unhighlightActiveModelContainer(oldValue.id);
-          }
-          break;
-        default:
-          break;
-      }
-    });
-
     modelsStore.subscribe(async (state, { key, operation, value }) => {
       switch (operation) {
         case "init":
           for (const model of value) {
-            await renderModelInList(model);
+            await renderModel(model);
           }
           updateModelsCount();
-          // value.forEach((model) => renderModelInList(model));
+          // value.forEach((model) => renderModel(model));
           break;
         case "add":
-          await renderModelInList(value);
+          await renderModel(value);
           break;
         case "update":
           updateModelInList(value);
@@ -354,6 +362,20 @@ createUI({
         case "delete":
           console.log("Model deleted with ID:", value.id);
           removeModelFromList(value.id);
+          break;
+      }
+    });
+    workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
+      switch (key) {
+        case "editingModel":
+          if (newValue?.id) {
+            highlightEditingModelContainer(newValue.id);
+          }
+          if (oldValue?.id) {
+            unhighlightEditingModelContainer(oldValue.id);
+          }
+          break;
+        default:
           break;
       }
     });

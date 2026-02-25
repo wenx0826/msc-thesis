@@ -22,16 +22,19 @@ function renderDocumentItem({ id: docId, versions = [], latestVersion }) {
   $documentsList.append($documentItem);
 }
 
+function getDocumentItem(documentId) {
+  return $documentsList.find(`li[data-doc-id='${documentId}']`);
+}
 function rerenderDocumentItem(docId, versionId, name) {
   if (!name) {
     name = documentsStore.getVersionName(docId, versionId);
   }
-  const $documentItem = $documentsList.find(`li[data-doc-id='${docId}']`);
+  const $documentItem = getDocumentItem(docId);
   $documentItem.attr("data-doc-version-id", versionId);
   $documentItem.find("[data-ref='documentName']").text(name);
 }
 
-const highlightActiveDocumentItem = (viewedDocumentId) => {
+function highlightViewedDocumentItem(viewedDocumentId) {
   $documentsList.children().each((index, element) => {
     const $element = $(element);
     if ($element.data("docId") === viewedDocumentId) {
@@ -40,7 +43,7 @@ const highlightActiveDocumentItem = (viewedDocumentId) => {
       $element.removeClass("active");
     }
   });
-};
+}
 
 function updateDocument(documentId) {
   $documentUpdateInput.click();
@@ -166,11 +169,10 @@ createUI({
       switch (key) {
         case "viewedDocument":
           if (newValue.id) {
-            highlightActiveDocumentItem(newValue.id);
-            const versions = documentsStore.getVersions(newValue.id);
             rerenderDocumentItem(newValue.id, newValue.versionId);
+            highlightViewedDocumentItem(newValue.id);
           } else if (oldValue?.id) {
-            // highlightActiveDocumentItem(null);
+            // highlightViewedDocumentItem(null);
           }
           break;
         default:

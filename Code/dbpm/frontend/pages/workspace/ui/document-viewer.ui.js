@@ -809,7 +809,6 @@ createUI({
   bindListeners: () => {
     $selectionColorForm.on("input", (e) => {
       console.log("Selection color input.");
-      console.log(e.target.value);
       const newColor = e.target.value;
       if (selectedSelection) {
         if (!selectedSelection.modelId) {
@@ -1022,8 +1021,8 @@ createUI({
           }
           break;
         case "editingModel":
-          const hasEditingModel = Boolean(newValue?.id);
-          if (Boolean(oldValue?.id) !== Boolean(newValue?.id)) {
+          const hasEditingModel = !!newValue.id;
+          if (!!oldValue.id !== hasEditingModel) {
             if (hasEditingModel) {
               $addSelectionsButton.show();
               $generateModelButton.attr(

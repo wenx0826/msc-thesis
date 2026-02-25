@@ -29,6 +29,16 @@
       </li>
       <li>Statistics</li>
     </ul>
+    <div class="right">
+      <div id="viewSwitch" class="switch-btn-group">
+        <button class="switch-btn current" data-value="all">
+          All
+        </button>
+        <button class="switch-btn" data-value="active">
+          Active
+        </button>
+      </div>
+    </div>
   </ui-bar>
   <!-- <a href="index.html" class="back-link">← Back to Projects</a> -->
   <ui-rest style="z-index: 2" class="main">
@@ -67,14 +77,14 @@
           </ui-tabbar>
           <ui-content>
             <ui-area>
-              <ul data-ref="modelsList">
+              <ul data-ref="modelsGrid">
               </ul>
             </ui-area>
           </ui-content>
         </ui-tabbed>
       </template>
 
-      <template id="modelItemTemplate">
+      <template id="modelGridTemplate">
         <li data-model-id="">
           <h4><span class="model-name" data-ref="modelName"></span></h4>
           <ul class="model-info">

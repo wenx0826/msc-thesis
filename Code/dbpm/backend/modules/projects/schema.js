@@ -166,7 +166,6 @@ export const getProjectComponentsSchema = {
             properties: {
               id: { type: "string" },
               latestVersionId: { type: "string" },
-              name: { type: "string" },
               createdAt: { type: "string" },
               deletedAt: { type: ["string", "null"] },
               versions: {

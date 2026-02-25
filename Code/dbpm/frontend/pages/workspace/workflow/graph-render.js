@@ -43,7 +43,10 @@
     if (parseError) {
       throw new Error(parseError.textContent || "Invalid model XML");
     }
-    if (parsed.documentElement && parsed.documentElement.nodeName === "description") {
+    if (
+      parsed.documentElement &&
+      parsed.documentElement.nodeName === "description"
+    ) {
       return parsed.documentElement;
     }
     const description = parsed.getElementsByTagName("description")[0];

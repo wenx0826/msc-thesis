@@ -14,24 +14,24 @@ import "./ui/index.js";
 
 // async function renderDocumentModels(documentId, $documentItem) {
 //   // const $documentItem = $(`li[data-doc-id='${documentId}']`);
-//   const $modelsList = $documentItem.find("[data-ref='modelsList']");
+//   const $modelsGrid = $documentItem.find("[data-ref='modelsGrid']");
 //   console.log(
 //     "Rendering models for document ID:",
 //     documentId,
 //     $documentItem,
 //     $documentItem.length,
-//     $modelsList,
-//     $modelsList.length,
+//     $modelsGrid,
+//     $modelsGrid.length,
 //   );
 //   const models = await documentsAPI.getDisplayedModelsById(documentId);
 
 //   for (const model of models) {
-//     const $modelItem = $cloneTemplate("modelItemTemplate").children().first();
+//     const $modelItem = $cloneTemplate("modelGridTemplate").children().first();
 //     $modelItem.attr("data-model-id", model.id);
 //     $modelItem
 //       .find("[data-ref='modelName']")
 //       .text(model.name || "Unnamed Model");
-//     $modelsList.append($modelItem);
+//     $modelsGrid.append($modelItem);
 //   }
 //   console.log("Fetched models for document:", documentId, models);
 // }
