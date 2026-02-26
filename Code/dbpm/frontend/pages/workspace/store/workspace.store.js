@@ -17,15 +17,16 @@ class WorkspaceStore extends Store {
         versionId: null,
       },
       // 🔧 IMPROVED: Consolidated all popover state into one object for better cohesion
-      modelPopoverState: {
+      modelPopover: {
         modelId: null,
+        versionId: null,
         anchor: null,
         closeTimer: null, // ✨ Timer for delayed closing
         openTimer: null, // ✨ Timer for delayed opening (debounce)
         hoverSource: null, // ✨ Track which UI element triggered hover (prevents conflicts)
       },
       /* OLD: Separate top-level properties (less organized):
-      modelPopoverState: null,
+      modelPopover: null,
       modelPopoverCloseTimer: null,
       modelPopoverOpenTimer: null,
       modelPopoverHoverSource: null,
@@ -93,27 +94,6 @@ class WorkspaceStore extends Store {
     return !!this.getEditingModelId();
   }
 
-  // Legacy compatibility wrappers
-  getDisplayedDocument() {
-    return this.getViewedDocument();
-  }
-
-  getDisplayedDocumentId() {
-    return this.getViewedDocumentId();
-  }
-
-  getDisplayedModel() {
-    return this.getEditingModel();
-  }
-
-  getDisplayedModelId() {
-    return this.getEditingModelId();
-  }
-
-  hasDisplayedModel() {
-    return this.hasEditingModel();
-  }
-
   setStatus(status) {
     this.state.status = status;
     this.notify({ key: "status", newValue: status });
@@ -132,7 +112,7 @@ class WorkspaceStore extends Store {
     this.cancelCloseModelPopover();
     this.cancelOpenModelPopover();
 
-    const oldValue = this.state.modelPopoverState;
+    const oldValue = this.state.modelPopover;
     const oldModelId = oldValue?.modelId;
     const newModelId = newValue?.modelId;
     const editingModelId = this.getEditingModelId();
@@ -144,71 +124,71 @@ class WorkspaceStore extends Store {
 
     // ✨ NEW: If same model, just update anchor position without delay
     if (oldModelId === newModelId && newModelId) {
-      this.state.modelPopoverState.modelId = newValue.modelId;
-      this.state.modelPopoverState.anchor = newValue.anchor;
-      this.state.modelPopoverState.hoverSource = source;
+      this.state.modelPopover.modelId = newValue.modelId;
+      this.state.modelPopover.anchor = newValue.anchor;
+      this.state.modelPopover.hoverSource = source;
       this.notify({
-        key: "modelPopoverState",
+        key: "modelPopover",
         oldValue,
-        newValue: this.state.modelPopoverState,
+        newValue: this.state.modelPopover,
       });
       return;
     }
 
     // ✨ NEW: Debounce opening (200ms delay) to prevent popover from appearing too quickly
     if (newValue) {
-      this.state.modelPopoverState.openTimer = setTimeout(() => {
-        this.state.modelPopoverState.modelId = newValue.modelId;
-        this.state.modelPopoverState.anchor = newValue.anchor;
-        this.state.modelPopoverState.hoverSource = source;
-        const newState = this.state.modelPopoverState;
+      this.state.modelPopover.openTimer = setTimeout(() => {
+        this.state.modelPopover.modelId = newValue.modelId;
+        this.state.modelPopover.anchor = newValue.anchor;
+        this.state.modelPopover.hoverSource = source;
+        const newState = this.state.modelPopover;
         this.notify({
-          key: "modelPopoverState",
+          key: "modelPopover",
           oldValue,
           newValue: newState,
         });
-        this.state.modelPopoverState.openTimer = null;
+        this.state.modelPopover.openTimer = null;
       }, 200);
     } else {
       // Close immediately when newValue is null
-      this.state.modelPopoverState.modelId = null;
-      this.state.modelPopoverState.anchor = null;
-      this.state.modelPopoverState.hoverSource = null;
+      this.state.modelPopover.modelId = null;
+      this.state.modelPopover.anchor = null;
+      this.state.modelPopover.hoverSource = null;
       this.notify({
-        key: "modelPopoverState",
+        key: "modelPopover",
         oldValue,
-        newValue: this.state.modelPopoverState,
+        newValue: this.state.modelPopover,
       });
     }
   }
 
   // ✨ NEW: Cancel any pending open timer
   cancelOpenModelPopover() {
-    if (this.state.modelPopoverState.openTimer) {
-      clearTimeout(this.state.modelPopoverState.openTimer);
-      this.state.modelPopoverState.openTimer = null;
+    if (this.state.modelPopover.openTimer) {
+      clearTimeout(this.state.modelPopover.openTimer);
+      this.state.modelPopover.openTimer = null;
     }
   }
 
   cancelCloseModelPopover() {
-    if (this.state.modelPopoverState.closeTimer) {
-      clearTimeout(this.state.modelPopoverState.closeTimer);
-      this.state.modelPopoverState.closeTimer = null;
+    if (this.state.modelPopover.closeTimer) {
+      clearTimeout(this.state.modelPopover.closeTimer);
+      this.state.modelPopover.closeTimer = null;
     }
   }
 
   // 🔧 IMPROVED: Added source tracking to prevent different hover sources from interfering
   requestCloseModelPopover(source = "unknown") {
     // ✨ NEW: Only close if request comes from the same source that opened it
-    if (this.state.modelPopoverState.hoverSource !== source) {
+    if (this.state.modelPopover.hoverSource !== source) {
       return;
     }
     this.cancelOpenModelPopover();
     this.cancelCloseModelPopover();
     // ✨ NEW: Increased delay to 300ms for better UX (less flickering)
-    this.state.modelPopoverState.closeTimer = setTimeout(() => {
+    this.state.modelPopover.closeTimer = setTimeout(() => {
       this.setModelPopoverParams(null);
-      this.state.modelPopoverState.closeTimer = null;
+      this.state.modelPopover.closeTimer = null;
     }, 300); // OLD: was 150ms
   }
 }

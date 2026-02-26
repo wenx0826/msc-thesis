@@ -140,21 +140,20 @@ createUI({
           if (!modelId) {
             return;
           }
-          // ✨ ENABLED: Show model popover on hover with source tracking
-          workspaceStore.setModelPopoverParams(
-            {
-              modelId,
-              anchor: {
-                type: "point",
-                point: {
-                  x: evt.originalEvent.clientX,
-                  y: evt.originalEvent.clientY,
-                },
-              },
-            },
-            "graph-node",
-          ); // ✨ NEW: Pass source identifier to prevent conflicts
-          break;
+          // workspaceService.showModelPopover({
+          //   modelId,
+
+          //   anchor: {
+          //     type: "point",
+          //     point: {
+          //       x: evt.originalEvent.clientX,
+          //       y: evt.originalEvent.clientY,
+          //     },
+          //   },
+
+          //   source: "graph-node",
+          // });
+          // break;
         }
         default:
           break;

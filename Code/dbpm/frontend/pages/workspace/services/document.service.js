@@ -87,6 +87,7 @@ export default {
         // this.setStatus(null);
         tracesPromise
           .then((traces) => {
+            console.log("Loaded traces for version", versionId, traces);
             documentViewerStore.setTraces(traces);
             // resolve();
           })

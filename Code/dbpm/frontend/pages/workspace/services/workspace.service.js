@@ -36,6 +36,9 @@ export default {
   },
 
   async displayDocument({ id, versionId }) {
+    if (!id) {
+      return;
+    }
     if (!versionId) versionId = documentsStore.getLatestVersionId(id);
     const { id: currViewedDocId, versionId: currViewedDocVersionId } =
       workspaceStore.getViewedDocument();
@@ -44,17 +47,17 @@ export default {
     }
     documentService.loadVersion(versionId);
     workspaceStore.setViewedDocument({ id, versionId });
-    // await documentViewerStore.setDocumentById(docId);
-    // const displayedModelId = workspaceStore.getDisplayedModelId();
-    // if (displayedModelId) {
-    //   const activeModelDocumentId =
-    //     modelsStore.getModelDocumentIdById(displayModelId);
-    //   if (doc.id === activeModelDocumentId) {
-    //     documentViewerStore.setActiveModelTraceByModelId(displayModelId);
-    //   } else {
-    //     this.clearModelDisplay();
-    //   }
-    // }
+    const editingModelId = workspaceStore.getEditingModelId();
+    if (!!editingModelId) {
+      const editingModelDocumentId =
+        modelsStore.getModelDocumentId(editingModelId);
+      if (editingModelDocumentId !== id) {
+        this.toggleModelDisplay({
+          id: null,
+          versionId: null,
+        });
+      }
+    }
   },
   clearModelDisplay() {
     workspaceStore.setEditingModel({
@@ -92,13 +95,14 @@ export default {
     // workspaceStore.setActiveModelId(model.id);
     // modelEditorStore.setModelById(model.id);
 
-    // if (model.id) {
-    //   const currDisplayedDocumentId = workspaceStore.getActiveDocumentId();
-    //   const activeModelDocumentId = modelsStore.getModelDocumentIdById(
-    //     model.id,
-    //   );
-    //   if (currDisplayedDocumentId != activeModelDocumentId) {
-    //     // this.displayDocument({ id: activeModelDocumentId });
+    const currDisplayedDocumentId = workspaceStore.getViewedDocumentId();
+    const currModelDocumentId = modelsStore.getModelDocumentId(id);
+    if (currDisplayedDocumentId !== currModelDocumentId) {
+      this.displayDocument({ id: currModelDocumentId });
+    } else {
+      // documentViewerStore.setActiveModelTraceByModelId(id);
+    }
+
     //   } else {
     //     documentViewerStore.setActiveModelTraceByModelId(model.id);
     //   }

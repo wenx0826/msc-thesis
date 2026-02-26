@@ -2,33 +2,12 @@ import { toCamel } from "snake-camel";
 import db from "../../../database.js";
 import BaseSqlRepository from "../../shared/repositories/BaseSqlRepository.js";
 
-function parseDocumentVersionIds(model) {
-  if (typeof model.documentId !== "string") {
-    model.documentId = "";
-  }
-
-  if (Array.isArray(model.documentVersionIds)) {
-    model.documentVersionIds = model.documentVersionIds.filter(
-      (id) => typeof id === "string",
-    );
-    return model;
-  }
-
-  if (typeof model.documentVersionIds !== "string") {
-    model.documentVersionIds = [];
-    return model;
-  }
-
-  try {
-    const parsed = JSON.parse(model.documentVersionIds);
-    model.documentVersionIds = Array.isArray(parsed)
-      ? parsed.filter((id) => typeof id === "string")
-      : [];
-  } catch {
-    model.documentVersionIds = [];
-  }
-
-  return model;
+function mapProjectModelRow(row) {
+  const model = toCamel(row);
+  return {
+    ...model,
+    documentId: typeof model.documentId === "string" ? model.documentId : "",
+  };
 }
 
 class ModelRepository extends BaseSqlRepository {
@@ -103,24 +82,13 @@ class ModelRepository extends BaseSqlRepository {
           WHERE t.model_version_id = m.latest_version_id
           ORDER BY t.created_at DESC
           LIMIT 1
-        ) AS document_id,
-        COALESCE(
-          (
-            SELECT json_group_array(doc_version_id)
-            FROM (
-              SELECT DISTINCT t.document_version_id AS doc_version_id
-              FROM traces t
-              WHERE t.model_version_id = m.latest_version_id
-            )
-          ),
-          '[]'
-        ) AS document_version_ids
+        ) AS document_id
       FROM models m
       WHERE m.project_id = ? ${includeDeleted ? "" : "AND m.deleted_at IS NULL"}
       ORDER BY m.created_at ASC
     `);
     const results = stmt.all(projectId);
-    return results.map((row) => parseDocumentVersionIds(toCamel(row)));
+    return results.map(mapProjectModelRow);
   }
 
   findVersionsByModelIds(modelIds) {

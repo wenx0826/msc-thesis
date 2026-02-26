@@ -28,7 +28,7 @@ import { modelsStore, workspaceStore } from "../store/index.js";
  *    - Multiple async operations overlapped
  *    Error: "Cannot read properties of null (reading 'children')"
  *
- * 4. STATE MANAGEMENT: modelPopoverState was a simple value (null or object) which
+ * 4. STATE MANAGEMENT: modelPopover was a simple value (null or object) which
  *    made it hard to track timers, hover sources, and prevent conflicts.
  *
  * SOLUTIONS ATTEMPTED (IN ORDER):
@@ -40,7 +40,7 @@ import { modelsStore, workspaceStore } from "../store/index.js";
  *    RESULT: Helped reduce some conflicts but didn't fix corruption
  *
  * 2. ATTEMPT: Consolidate state into single object
- *    - Changed modelPopoverState from simple value to object with properties:
+ *    - Changed modelPopover from simple value to object with properties:
  *      { modelId, anchor, closeTimer, openTimer, hoverSource }
  *    RESULT: Better organization but subscription needed fixing (always object now)
  *
@@ -90,7 +90,7 @@ import { modelsStore, workspaceStore } from "../store/index.js";
  * -----------------------
  *
  * 1. STATE MANAGEMENT (workspace.store.js):
- *    - modelPopoverState: { modelId, anchor, closeTimer, openTimer, hoverSource }
+ *    - modelPopover: { modelId, anchor, closeTimer, openTimer, hoverSource }
  *    - setModelPopoverParams(newValue, source): Sets popover state with source tracking
  *    - requestCloseModelPopover(source): Only closes if source matches
  *    - Debouncing: 200ms open delay, 300ms close delay
@@ -272,7 +272,7 @@ tip.popper.addEventListener("mouseleave", () => {
 */
 
 workspaceStore.subscribe((state, { key, newValue }) => {
-  if (key === "modelPopoverState") {
+  if (key === "modelPopover") {
     // 🔧 FIXED: Check for newValue.modelId instead of newValue since it's always an object now
     if (newValue && newValue.modelId && newValue.anchor) {
       // ✨ FIXED: Also check for anchor to prevent null reference errors

@@ -226,7 +226,7 @@ export default {
     // workspaceStore.setActiveModelId(createdModelMeta.id);
     // documentViewerStore.setTemporarySelections([]);
     // documentViewerStore.addTrace(createdTrace);
-    // projectGraphStore.addModelNodeAndEdge(createdModelMeta, documentId);
+    projectGraphStore.addModelNodeAndEdge(createdModelMeta, documentId);
   },
   async loadVersion(versionId) {
     const data = await modelsAPI.getDataByVersionId(versionId);

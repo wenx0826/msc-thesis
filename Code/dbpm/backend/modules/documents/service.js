@@ -62,13 +62,11 @@ export default {
         filename,
         wordsCount,
       });
-      storageRepo.write(createdVersion.id, content);
+      const versionId = createdVersion.id;
+      storageRepo.write(versionId, content);
       const documentUpdates = {
-        latestVersionId: createdVersion.id,
+        latestVersionId: versionId,
       };
-      if (typeof name === "string" && name.trim() !== "") {
-        documentUpdates.name = name;
-      }
       documentRepo.updateById(documentId, documentUpdates);
       logService.logEvent(
         documentRepo.findProjectIdById(documentId),

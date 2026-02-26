@@ -185,10 +185,6 @@ export const getProjectComponentsSchema = {
                 },
               },
               documentId: { type: "string" },
-              documentVersionIds: {
-                type: "array",
-                items: { type: "string" },
-              },
             },
           },
         },
@@ -266,10 +262,6 @@ export const getProjectComponentsStatsSchema = {
                 },
               },
               documentId: { type: "string" },
-              documentVersionIds: {
-                type: "array",
-                items: { type: "string" },
-              },
             },
           },
         },

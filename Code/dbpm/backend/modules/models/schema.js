@@ -43,6 +43,7 @@ export const createModelSchema = {
                 },
               },
             },
+            documentId: { type: "string" },
             // meta: {
             //   type: "object",
             //   properties: {

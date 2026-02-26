@@ -70,7 +70,7 @@ class ModelsStore extends VersionedEntityStore {
     return model.svg || null;
   }
 
-  getModelDocumentIdById(modelId) {
+  getModelDocumentId(modelId) {
     return this.getEntity(modelId)?.documentId || null;
   }
 }

@@ -132,20 +132,17 @@ class ProjectGraphStore extends Store {
     });
   }
 
-  addModelNodeAndEdge(modelMeta, documentId) {
+  addModelNodeAndEdge({ id, name, documentId }) {
     const modelId = modelMeta.id;
-    if (!modelNodeId) return;
-    const modelNodeId = getModelNodeId(modelId);
 
     const modelNode = {
       group: "nodes",
       data: {
-        id: modelNodeId,
+        id: id,
         type: "model",
-        label: getEntityLabel(modelMeta, "Model"),
+        label: name,
         degree: 1,
-        documentId: modelMeta?.documentId || documentId || null,
-        entityId: modelId,
+        documentId: documentId,
       },
     };
 

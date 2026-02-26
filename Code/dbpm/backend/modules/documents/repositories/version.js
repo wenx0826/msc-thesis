@@ -7,24 +7,13 @@ class DocumentVersionRepository extends BaseSqlRepository {
     super({
       db,
       tableName: "document_versions",
-      requiredCreateColumns: ["document_id", "version_number", "name", "filename"],
+      requiredCreateColumns: [
+        "document_id",
+        "version_number",
+        "name",
+        "filename",
+      ],
     });
-  }
-
-  findAll() {
-    const stmt = db.prepare(
-      "SELECT id, name, created_at, project_id FROM documents",
-    );
-    const results = stmt.all();
-    return results.map(toCamel);
-  }
-
-  findByDocumentId(documentId) {
-    const stmt = db.prepare(
-      "SELECT * FROM document_versions WHERE document_id = ? ORDER BY version_number ASC",
-    );
-    const results = stmt.all(documentId);
-    return results.map(toCamel);
   }
 
   findDocumentInfoByVersionId(versionId) {
@@ -38,21 +27,6 @@ class DocumentVersionRepository extends BaseSqlRepository {
     `);
     const result = stmt.get(versionId);
     return result ? toCamel(result) : null;
-  }
-
-  getTraces(docId) {
-    const stmt = db.prepare("SELECT * FROM traces WHERE document_id = ?");
-    const results = stmt.all(docId);
-    const parsedTraces = results.map((trace) => ({
-      ...trace,
-      selections: trace.selections ? JSON.parse(trace.selections) : null,
-    }));
-    return parsedTraces.map(toCamel);
-  }
-
-  softDelete(docId) {
-    const stmt = db.prepare("UPDATE documents SET deleted_at = ? WHERE id = ?");
-    return stmt.run(new Date().toISOString(), docId);
   }
 }
 

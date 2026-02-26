@@ -120,7 +120,8 @@ export const getTracesSchema = {
         type: "object",
         properties: {
           id: { type: "string" },
-          // documentId: { type: "string" },
+          documentVersionId: { type: "string" },
+          documentId: { type: "string" },
           modelVersionId: { type: "string" },
           modelId: { type: "string" },
           selections: { type: "array" },
