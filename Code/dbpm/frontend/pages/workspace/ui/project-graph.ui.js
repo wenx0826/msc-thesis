@@ -5,7 +5,7 @@ import { workspaceService } from "../services/index.js";
 const theme = (() => {
   const style = getComputedStyle(document.documentElement);
   return {
-    activeColor: style.getPropertyValue("--wfadaptor-highlight").trim(),
+    currentColor: style.getPropertyValue("--wfadaptor-highlight").trim(),
   };
 })();
 const cyLayoutOptions = {
@@ -19,17 +19,9 @@ function getNodeType(node) {
 function getNodeId(node) {
   return node.data("id") ?? null;
 }
-function toggleActiveNodeByEntityId(cy, nodeId, isActive) {
+function setNodeCurrent(cy, nodeId, isCurrent) {
   const node = cy.getElementById(nodeId);
-  if (!node || node.length === 0) {
-    return;
-  }
-
-  if (isActive) {
-    node.addClass("active");
-    return;
-  }
-  node.removeClass("active");
+  node.toggleClass("is-current", isCurrent);
 }
 
 createUI({
@@ -56,9 +48,9 @@ createUI({
           },
         },
         {
-          selector: "node.active",
+          selector: "node.is-current",
           style: {
-            "background-color": theme.activeColor,
+            "background-color": theme.currentColor,
           },
         },
         // ---------- Node types ----------
@@ -242,12 +234,11 @@ createUI({
           const oldId = oldValue?.id;
           const newId = newValue?.id;
           if (oldId) {
-            toggleActiveNodeByEntityId(cy, oldId, false);
+            setNodeCurrent(cy, oldId, false);
           }
           if (newId) {
-            toggleActiveNodeByEntityId(cy, newId, true);
+            setNodeCurrent(cy, newId, true);
           }
-
           break;
         default:
           break;

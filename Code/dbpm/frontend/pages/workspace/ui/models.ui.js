@@ -270,6 +270,7 @@ async function getModelSvg(modelId) {
 async function renderModel(model) {
   //
   const modelId = model?.id;
+  const isCurrent = modelId == workspaceStore.getEditingModel()?.id;
 
   // Grid view
   const gridId = `modelGrid_${modelId}`;
@@ -280,8 +281,8 @@ async function renderModel(model) {
   const $gridDiv = $gridItem.find("[data-ref='modelGrid']").first();
   $gridDiv.attr("id", gridId);
   $gridItem.find("[data-ref='modelName']").text(model.name);
-  if (modelId == workspaceStore.getEditingModel()?.id) {
-    $gridItem.addClass("active");
+  if (isCurrent) {
+    $gridItem.addClass("is-current");
   }
   $modelsGrid.append($gridItem);
   console.log("Received SVG for model ID", modelId);
@@ -301,6 +302,9 @@ async function renderModel(model) {
     .attr("data-model-version-id", model.latestVersionId)
     .attr("data-document-id", model.documentId);
   $listItem.find("[data-ref='modelName']").text(model.name);
+  if (isCurrent) {
+    $listItem.addClass("is-current");
+  }
   $modelsList.append($listItem);
 }
 
@@ -319,16 +323,10 @@ function updateModelInList(model) {
   $gridDiv.append(svgEl);
 }
 
-const highlightEditingModelContainer = (modelId) => {
-  $(`.model-grid-item[data-model-id="${modelId}"]`).addClass("active");
-};
-
-const unhighlightEditingModelContainer = (modelId) => {
-  $(`.model-grid-item[data-model-id="${modelId}"]`).removeClass("active");
-};
 // #region DOM Manipulation
 function setView(view) {
-  $viewSwitch.find(".switch-btn").toggleClass("current");
+  $viewSwitch.find(".switch-btn").removeClass("is-current");
+  $viewSwitch.find(`.switch-btn[data-view="${view}"]`).addClass("is-current");
   $modelsPanel.attr("data-current-view", view);
 }
 
@@ -352,8 +350,8 @@ function updateModelItem(model) {
   getModelItem(modelId).find("[data-ref='modelName']").text(modelName);
 }
 
-function setModelItemHighlighted(modelId, highlighted) {
-  getModelItem(modelId).toggleClass("active", highlighted);
+function setModelItemCurrent(modelId, isCurrent) {
+  getModelItem(modelId).toggleClass("is-current", isCurrent);
 }
 
 const removeModelItem = (modelId) => {
@@ -401,10 +399,10 @@ createUI({
             break;
           }
           if (newModelId) {
-            setModelItemHighlighted(newModelId, true);
+            setModelItemCurrent(newModelId, true);
           }
           if (oldModelId) {
-            setModelItemHighlighted(oldModelId, false);
+            setModelItemCurrent(oldModelId, false);
           }
           break;
         default:

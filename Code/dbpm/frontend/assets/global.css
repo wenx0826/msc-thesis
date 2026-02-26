@@ -415,7 +415,7 @@ ul.breadcrumb>li+li:before {
   background: rgba(0, 0, 0, 0.05);
 } */
 
-.switch-btn.current {
+.switch-btn.is-current {
   background: var(--x-ui-content-light-background) !important;
   /* background: white; */
   /* color: #555; */

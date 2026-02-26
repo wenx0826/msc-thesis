@@ -32,9 +32,9 @@ function rerenderDocumentItem(docId, name) {
   $documentItem.find("[data-ref='documentName']").text(name);
 }
 
-function setDocumentItemHighlighted(docId, highlighted) {
+function setDocumentItemCurrent(docId, isCurrent) {
   const $documentItem = getDocumentItem(docId);
-  $documentItem.toggleClass("highlighted", highlighted);
+  $documentItem.toggleClass("is-current", isCurrent);
 }
 
 function removeDocumentItem(docId) {
@@ -154,10 +154,10 @@ createUI({
             break;
           }
           if (newDocId) {
-            setDocumentItemHighlighted(newDocId, true);
+            setDocumentItemCurrent(newDocId, true);
           }
           if (oldDocId) {
-            setDocumentItemHighlighted(oldDocId, false);
+            setDocumentItemCurrent(oldDocId, false);
           }
           break;
         default:

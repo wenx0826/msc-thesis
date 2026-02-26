@@ -272,7 +272,7 @@ li.list-item .inline-editor__view {
   min-width: 0;
 }
 
-li.list-item.highlighted {
+li.list-item.is-current {
   /* font-weight: bold; */
   font-weight: 600;
   background-color: var(--x-ui-content-highlighted-background);
@@ -542,7 +542,7 @@ text.duration {
   border: 2px solid var(--wfadaptor-hover-border);
 }
 
-.model-grid-item.active {
+.model-grid-item.is-current {
   border: 2px solid var(--wfadaptor-highlight);
 }
 
