@@ -5,24 +5,6 @@ export default {
   LLMDisabled: true,
   path: "models",
 
-  async getByProjectId(projectId) {
-    const response = await fetch(
-      `${baseURL}/projects/${projectId}/${this.path}`,
-    );
-    if (!response.ok) throw new Error("Failed to fetch documents");
-    return await response.json();
-  },
-
-  async getAllByProjectId(projectId) {
-    const response = await fetch(
-      `${baseURL}/projects/${projectId}/documents/all`,
-    );
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    return await response.json();
-  },
-
   async generateSampleModel() {
     const templatesFolder = "/pages/workspace/sample_models/";
 
@@ -119,6 +101,17 @@ export default {
     });
     return handleResponse(response, "Failed to create model");
   },
+  async updateMeta(modelId, params) {
+    const response = await fetch(`${baseURL}/${this.path}/${modelId}/meta`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(params),
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return await response.json();
+  },
 
   async getModelById(id) {
     const response = await fetch(`${baseURL}/${this.path}/${id}`);
@@ -143,20 +136,7 @@ export default {
     );
     return handleResponse(response, "Failed to update model and trace");
   },
-  async updateVersionMeta(versionId, params) {
-    const response = await fetch(
-      `${baseURL}/${this.path}/versions/${versionId}/meta`,
-      {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(params),
-      },
-    );
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    return await response.json();
-  },
+
   async deleteModelById(id) {
     const response = await fetch(`${baseURL}/${this.path}/${id}`, {
       method: "DELETE",

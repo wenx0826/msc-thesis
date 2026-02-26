@@ -4,132 +4,126 @@ import { workspaceService, documentService } from "../services/index.js";
 import { createTemplateElement } from "../../../shared/utils/dom.js";
 import initInlineEditor from "../../../shared/widgets/inline-editor.js";
 
+// #region DOM References
 const $documentsInput = $("#documentsInput");
-const $documentUpdateInput = $("#documentUpdateInput");
+const $documentVersionInput = $("#documentVersionInput");
 const $documentsList = $("#documentsList");
+// #endregion
 
-function renderDocumentItem({ id: docId, name }) {
-  const $documentItem = createTemplateElement("documentItemTemplate");
-  $documentItem.attr("data-doc-id", docId);
-  // $documentItem.attr("data-doc-version-id", resolvedLatestVersion.id);
-  $documentItem.find("[data-ref='documentName']").text(name);
-  $documentsList.append($documentItem);
-}
-
-function getDocumentItem(documentId) {
-  return $documentsList.find(`li[data-doc-id='${documentId}']`);
-}
-function rerenderDocumentItem(docId, versionId, name) {
-  // if (!name) {
-  //   name = documentsStore.getVersionDisplayName(docId, versionId);
-  // }
-  const $documentItem = getDocumentItem(docId);
-  $documentItem.attr("data-doc-version-id", versionId);
-  $documentItem.find("[data-ref='documentName']").text(name);
-}
-
-function highlightViewedDocumentItem(viewedDocumentId) {
-  $documentsList.children().each((index, element) => {
-    const $element = $(element);
-    if ($element.data("docId") === viewedDocumentId) {
-      $element.addClass("active");
-    } else {
-      $element.removeClass("active");
-    }
-  });
-}
-
-function updateDocument(documentId) {
-  $documentUpdateInput.click();
-  $documentUpdateInput.one("change", async (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    const file = event.target.files[0];
-    if (!file) return;
-    documentService.updateDocument(documentId, file);
-    // Placeholder for update logic, e.g., open an edit modal or inline editor
-  });
-}
-
-const removeDocumentItem = (documentId) => {
-  $documentsList
-    .children()
-    .filter((index, element) => $(element).data("docId") === documentId)
-    .remove();
-};
-
+// #region DOM Rendering and Manipulation
 function updateDocumentsCount() {
   const count = documentsStore.getCount();
   $("[data-ref='documentsCount']").text(count);
 }
+
+function renderDocumentItem({ id: docId, name }) {
+  const $documentItem = createTemplateElement("documentItemTemplate");
+  $documentItem.attr("data-doc-id", docId);
+  $documentItem.find("[data-ref='documentName']").text(name);
+  $documentsList.append($documentItem);
+}
+
+function getDocumentItem(docId) {
+  return $documentsList.find(`li[data-doc-id='${docId}']`);
+}
+
+function rerenderDocumentItem(docId, name) {
+  const $documentItem = getDocumentItem(docId);
+  $documentItem.find("[data-ref='documentName']").text(name);
+}
+
+function setDocumentItemHighlighted(docId, highlighted) {
+  const $documentItem = getDocumentItem(docId);
+  $documentItem.toggleClass("highlighted", highlighted);
+}
+
+function removeDocumentItem(docId) {
+  getDocumentItem(docId).remove();
+}
+// #endregion
+
+// #region DOM Actions
+function onDocumnentsInputChange(event) {
+  const files = event.target.files;
+  if (!files || files.length === 0) return;
+  documentService.uploadDocuments(files);
+}
+
+function onVersionInputChange(event, docId) {
+  const file = event.target.files[0];
+  if (!file) return;
+  documentService.uploadNewVersion(docId, file);
+}
+
+function onDocItemClick(event) {
+  const documentId = $(event.currentTarget).data("docId");
+  workspaceService.displayDocument({ id: documentId });
+}
+
+function onDocItemActionsBtnClick(event, renameDocument, uploadNewVersion) {
+  event.stopPropagation();
+  const $documentItem = $(event.currentTarget).parent();
+  const documentId = $documentItem.data("docId");
+
+  const menu = {};
+  menu[""] = [
+    {
+      label: "Rename Document",
+      function_call: renameDocument,
+      text_icon: undefined,
+      type: undefined,
+      params: [documentId],
+    },
+    {
+      label: "Upload New Version",
+      function_call: uploadNewVersion,
+      text_icon: undefined,
+      type: undefined,
+      params: [documentId],
+    },
+    {
+      label: "Delete Document",
+      function_call: () => {},
+      text_icon: undefined,
+      type: undefined,
+      params: [documentId],
+    },
+  ];
+  new CustomMenu(event).contextmenu(menu);
+}
+// #endregion
+
 createUI({
   setup: () => {
     const documentNameEditor = initInlineEditor({
       $scope: $documentsList,
       onSave: (newValue, $view) => {
-        // const doc = $view.closest("li")[0].dataset;
-        // const documentId = doc.docId;
-        const docId = $view.closest("li")[0].dataset.docId;
+        const docId = $view.closest("li").data("docId");
         documentService.renameDocument(docId, newValue);
       },
     });
-    return { documentNameEditor };
+
+    function renameDocument(docId) {
+      const $documentNameView = getDocumentItem(docId).find(
+        ".inline-editor__view",
+      );
+      setTimeout(() => documentNameEditor.startEdit($documentNameView), 0);
+    }
+
+    return { renameDocument };
   },
-  bindListeners: ({ documentNameEditor }) => {
-    $documentsInput.on("change", async (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      for (const file of event.target.files) {
-        try {
-          documentService.uploadDocument(file);
-        } catch (error) {
-          console.error("Error processing file:", error);
-        }
-      }
-    });
-    $documentsList.on("mousedown", "li", (e) => {
-      const id = e.currentTarget.dataset.docId;
-      workspaceService.displayDocument({ id });
-    });
-    $documentsList.on("mousedown", "li > :last-child", (e) => {
-      e.stopPropagation();
-      // const $td = ;
-      const $documentItem = $(e.currentTarget).parent();
-      const documentId = $documentItem.data("docId");
-      const $documentNameView = $documentItem.find(".inline-editor__view");
-
-      const menu = {};
-      menu[""] = [
-        {
-          label: "Rename Document",
-          function_call: ($documentNameView) => {
-            setTimeout(
-              () => documentNameEditor.startEdit($documentNameView),
-              0,
-            );
-          },
-          text_icon: undefined,
-          type: undefined,
-          params: [$documentNameView],
-        },
-        {
-          label: "Upload New Version",
-          function_call: updateDocument,
-          text_icon: undefined,
-          type: undefined,
-          params: [documentId],
-        },
-        {
-          label: "Delete Document",
-          function_call: () => {},
-          text_icon: undefined,
-          type: undefined,
-          params: [documentId],
-        },
-      ];
-
-      new CustomMenu(e).contextmenu(menu);
-    });
+  bindListeners: ({ renameDocument }) => {
+    $documentsInput.on("change", onDocumnentsInputChange);
+    function uploadNewVersion(docId) {
+      $documentVersionInput.click();
+      $documentVersionInput.one("change", (e) =>
+        onVersionInputChange(e, docId),
+      );
+    }
+    $documentsList.on("mousedown", "li", onDocItemClick);
+    $documentsList.on("mousedown", "li > :last-child", (e) =>
+      onDocItemActionsBtnClick(e, renameDocument, uploadNewVersion),
+    );
   },
   subscribeStores: ({}) => {
     documentsStore.subscribe((state, { key, operation, value }) => {
@@ -142,13 +136,8 @@ createUI({
           renderDocumentItem(value);
           updateDocumentsCount();
           break;
-        case "versions.add":
-          const docId = value.documentId;
-          const viewedDocumentId = workspaceStore.state.viewedDocument.id;
-          rerenderDocumentItem(value.documentId, value.id, value.name);
-          if (docId === viewedDocumentId) {
-            // updateVersionSelect(value.id);
-          }
+        case "update":
+          rerenderDocumentItem(value.id, value.name);
           break;
         case "delete":
           removeDocumentItem(value.id);
@@ -159,11 +148,16 @@ createUI({
     workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
       switch (key) {
         case "viewedDocument":
-          if (newValue.id) {
-            rerenderDocumentItem(newValue.id, newValue.versionId);
-            highlightViewedDocumentItem(newValue.id);
-          } else if (oldValue?.id) {
-            // highlightViewedDocumentItem(null);
+          const newDocId = newValue?.id;
+          const oldDocId = oldValue?.id;
+          if (newDocId === oldDocId) {
+            break;
+          }
+          if (newDocId) {
+            setDocumentItemHighlighted(newDocId, true);
+          }
+          if (oldDocId) {
+            setDocumentItemHighlighted(oldDocId, false);
           }
           break;
         default:

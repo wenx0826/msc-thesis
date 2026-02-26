@@ -37,6 +37,30 @@ export const createDocumentSchema = {
   },
 };
 
+export const updateMetaSchema = {
+  params: {
+    type: "object",
+    required: ["documentId"],
+    properties: {
+      documentId: { type: "string" },
+    },
+  },
+  body: {
+    type: "object",
+    properties: {
+      name: { type: "string" },
+    },
+  },
+  response: {
+    200: {
+      type: "object",
+      properties: {
+        ...documentMetaProperties,
+      },
+    },
+  },
+};
+
 export const createVersionSchema = {
   body: {
     type: "object",
@@ -101,30 +125,6 @@ export const getTracesSchema = {
           modelId: { type: "string" },
           selections: { type: "array" },
         },
-      },
-    },
-  },
-};
-
-export const updateMetaSchema = {
-  params: {
-    type: "object",
-    required: ["documentId"],
-    properties: {
-      documentId: { type: "string" },
-    },
-  },
-  body: {
-    type: "object",
-    properties: {
-      name: { type: "string" },
-    },
-  },
-  response: {
-    200: {
-      type: "object",
-      properties: {
-        ...documentMetaProperties,
       },
     },
   },

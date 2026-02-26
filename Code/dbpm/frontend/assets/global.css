@@ -16,8 +16,8 @@
 } */
 
 :root {
-  --x-ui-background-color: #ffffff;
   --background-color: #f4f4f4;
+  --x-ui-background-color: #ffffff;
   --x-ui-outside-color: #f4f4f4;
   --x-tab-inactive-color: #f3f3f3;
   --x-ui-border-color: #d4d4d4;
@@ -26,7 +26,8 @@
   /* --x-ui-content-border-color: #ffed00; */
   --x-ui-content-light-background: #f3f3f3;
   --x-ui-content-hover-background: #e6e6e6;
-  --x-ui-content-highlight-background: #dddddd;
+  --x-ui-content-highlighted-background: #99cce660;
+  /* #dddddd;*/
 
   /* --x-ui-outside-behind-text-color: #333;
   --x-ui-outside-behind-text-active-color: #333; */
@@ -73,8 +74,9 @@ body {
   background-color: transparent;
 }
 
-ui-bar.header {
+.header {
   background-color: var(--x-ui-outside-color);
+  padding: 0.4rem 1rem;
 }
 
 .page-rail {
@@ -83,10 +85,15 @@ ui-bar.header {
   width: 100%;
 }
 
-
 input {
   border-color: var(--x-ui-border-color);
   /* width: 100%; */
+}
+
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .clickable {
@@ -114,12 +121,10 @@ input {
   /* padding: 2px 6px; */
   /* border-radius: 6px; */
 
-  /* overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis; */
-  white-space: nowrap;
+  max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .inline-editor__view[data-editable="1"] {
@@ -154,7 +159,6 @@ input {
 ui-bar {
   display: flex;
   align-items: center;
-  padding: 0.5em 1em;
   background-color: var(--x-ui-background-color);
 }
 
@@ -366,6 +370,10 @@ ul {
   margin: 0;
 }
 
+li {
+  max-width: 100%;
+}
+
 /* Style the list */
 ul.breadcrumb {
   /* padding: 10px 16px; */
@@ -381,7 +389,7 @@ ul.breadcrumb li {
 }
 
 
-ul.breadcrumb > li+li:before {
+ul.breadcrumb>li+li:before {
   padding: 8px;
   color: var(--x-ui-text-muted-color);
   content: "/\00a0";
@@ -414,6 +422,7 @@ ul.breadcrumb > li+li:before {
   /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15); */
   /* color: black; */
 }
+
 /* Add a color to all links inside the list */
 /* ul.breadcrumb li a {
   color: #0275d8;

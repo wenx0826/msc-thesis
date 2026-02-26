@@ -35,19 +35,10 @@ export default {
     });
   },
 
-  clearModelDisplay() {
-    workspaceStore.setEditingModel({
-      id: null,
-      versionId: null,
-    });
-    modelEditorStore.setModel(null);
-    documentViewerStore.setActiveModelTrace(null);
-  },
-
   async displayDocument({ id, versionId }) {
+    if (!versionId) versionId = documentsStore.getLatestVersionId(id);
     const { id: currViewedDocId, versionId: currViewedDocVersionId } =
       workspaceStore.getViewedDocument();
-    if (!versionId) versionId = documentsStore.getLatestVersionId(id);
     if (currViewedDocId === id && currViewedDocVersionId === versionId) {
       return;
     }
@@ -65,12 +56,21 @@ export default {
     //   }
     // }
   },
-
+  clearModelDisplay() {
+    workspaceStore.setEditingModel({
+      id: null,
+      versionId: null,
+    });
+    modelEditorStore.setModel(null);
+    documentViewerStore.setActiveModelTrace(null);
+  },
   toggleModelDisplay({ id, versionId }) {
-    console.log("Toggling model display for:", { id, versionId });
     if (!id) {
       this.clearModelDisplay();
       return;
+    }
+    if (!versionId) {
+      versionId = modelsStore.getLatestVersionId(id);
     }
     const { id: currEditingModelId, versionId: currEditingModelVersionId } =
       workspaceStore.getEditingModel();

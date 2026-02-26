@@ -9,22 +9,72 @@ import workspaceService from "./workspace.service.js";
 import { getFileContentInHTML } from "../utils/file.js";
 
 export default {
-  async uploadDocument(file) {
+  async uploadDocuments(files) {
     const projectId = workspaceStore.getProjectId();
+
+    const uploadResults = await Promise.allSettled(
+      Array.from(files).map(async (file) => {
+        const filename = file.name;
+        const content = await getFileContentInHTML(file);
+        return documentsAPI.create({
+          projectId,
+          filename,
+          content,
+        });
+      }),
+    );
+
+    let lastUploadedDoc = null;
+    for (const result of uploadResults) {
+      if (result.status === "fulfilled") {
+        console.log("Uploaded document:", result.value);
+        documentsStore.add(result.value);
+        lastUploadedDoc = result.value;
+      } else {
+        console.error("Error uploading document:", result.reason);
+      }
+    }
+
+    if (lastUploadedDoc) {
+      console.log("Displaying last uploaded document:", lastUploadedDoc);
+      workspaceService.displayDocument({
+        id: lastUploadedDoc.id,
+        versionId: lastUploadedDoc.latestVersionId,
+      });
+    }
+  },
+  async renameDocument(docId, newName) {
+    const newDoc = await documentsAPI.updateMeta(docId, {
+      name: newName,
+    });
+    documentsStore.update(docId, { name: newDoc.name });
+  },
+  async deleteDocument(documentId) {
+    await documentsAPI.delete(documentId);
+    documentsStore.removeDocument(documentId);
+    projectGraphStore.removeDocumentNode(documentId);
+    // If the deleted document is currently active, clear the selection
+    const viewedDocumentId = workspaceStore.getViewedDocumentId();
+    if (viewedDocumentId === documentId) {
+      workspaceService.clearDocumentSelection();
+    }
+  },
+  async uploadNewVersion(documentId, file) {
     const filename = file.name;
     const content = await getFileContentInHTML(file);
-    const newDoc = await documentsAPI.create({
-      projectId,
+    const newVersion = await documentsAPI.createVersion({
+      documentId,
       filename,
       content,
     });
-    documentsStore.add(newDoc);
-    workspaceService.displayDocument({
-      id: newDoc.id,
-      versionId: newDoc.latestVersionId,
-    });
-
-    return newDoc;
+    documentsStore.addVersion(documentId, newVersion);
+    const currViewedDocId = workspaceStore.getViewedDocumentId();
+    if (currViewedDocId === documentId) {
+      workspaceService.displayDocument({
+        id: documentId,
+        versionId: newVersion.id,
+      });
+    }
   },
   async loadVersion(versionId) {
     documentViewerStore.clear();
@@ -37,7 +87,6 @@ export default {
         // this.setStatus(null);
         tracesPromise
           .then((traces) => {
-            console.log("!!!!!Loaded traces for document:", traces);
             documentViewerStore.setTraces(traces);
             // resolve();
           })
@@ -53,43 +102,5 @@ export default {
       },
     );
     // });
-  },
-  async renameVersion(versionId, newName) {
-    const newVersion = await documentsAPI.updateVersionMeta(versionId, {
-      name: newName,
-    });
-    documentsStore.updateVersion(newVersion.documentId, newVersion);
-  },
-  async renameDocument(documentId, newName) {
-    const newDoc = await documentsAPI.updateDocumentMeta(documentId, {
-      name: newName,
-    });
-    documentsStore.updateDocumentName(newName);
-  },
-  async updateDocument(documentId, file) {
-    const name = file.name;
-    const filename = file.name;
-    const content = await getFileContentInHTML(file);
-    const newVersion = await documentsAPI.createVersion({
-      documentId,
-      name,
-      filename,
-      content,
-    });
-    workspaceService.displayDocument({
-      id: documentId,
-      versionId: newVersion.id,
-    });
-    documentsStore.addVersion(documentId, newVersion);
-  },
-  async deleteDocument(documentId) {
-    await documentsAPI.delete(documentId);
-    documentsStore.removeDocument(documentId);
-    projectGraphStore.removeDocumentNode(documentId);
-    // If the deleted document is currently active, clear the selection
-    const viewedDocumentId = workspaceStore.getViewedDocumentId();
-    if (viewedDocumentId === documentId) {
-      workspaceService.clearDocumentSelection();
-    }
   },
 };

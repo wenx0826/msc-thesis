@@ -1,3 +1,7 @@
+:root {
+  --x-ui-content-hover-background: #efefef;
+}
+
 .main {
   padding-bottom: 36px !important;
 }
@@ -204,9 +208,6 @@ td.col-date {
   display: block;
   width: 100%;
   max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 #projectsTable td:first-child:hover {
@@ -353,8 +354,7 @@ dialog {
   gap: 8px;
 } */
 
-#projectCreationDialog #cancel,
-#projectCreationDialog #save {
+#projectCreationDialog button {
   height: 32px;
   min-width: 74px;
   padding: 0 12px;

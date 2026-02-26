@@ -501,9 +501,7 @@ createUI({
       autoGrow: true,
       onSave: (name) => {
         const editingModelId = workspaceStore.getEditingModelId();
-        if (editingModelId) {
-          // modelService.updateModelById(editingModelId, { name });
-        }
+        modelService.renameModel(editingModelId, name);
       },
     });
     const versionSelector = initVersionSelector({
@@ -791,16 +789,19 @@ createUI({
     workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
       switch (key) {
         case "editingModel":
-          if (newValue.id) {
-            const versionName = modelsStore.getVersionDisplayName(
-              newValue.id,
-              newValue.versionId,
-            );
-            $editingModelVersionName.text(versionName);
-            versionSelector.update({
-              versions: modelsStore.getVersions(newValue.id),
-              selectedId: newValue.versionId,
-            });
+          const { id: newModelId, versionId: newVersionId } = newValue;
+          const { id: oldModelId, versionId: oldVersionId } = oldValue;
+          if (newModelId) {
+            const modelMeta = modelsStore.getEntity(newModelId);
+            if (newModelId !== oldModelId)
+              $editingModelVersionName.text(modelMeta?.name || "");
+            if (newVersionId !== oldVersionId)
+              versionSelector.update({
+                versions: modelMeta?.versions || [],
+                selectedId: newVersionId,
+              });
+          } else {
+            clearModelEditor();
           }
           break;
         default:

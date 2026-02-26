@@ -11,10 +11,25 @@ const PREVIEW_IFRAME_ID = "wfPreviewRendererIframe";
 let previewRenderQueue = Promise.resolve();
 let previewRendererWindow = null;
 let previewRendererWindowPromise = null;
+
 const $modelsPanel = $("#modelsPanel");
 const $viewSwitch = $("#modelsViewSwitch");
 const $modelsGrid = $("#modelsGrid");
 const $modelsList = $("#modelsList");
+
+// #region DOM Actions
+function onViewSwitch(event) {
+  const targetView = event.currentTarget.dataset.view;
+  setView(targetView);
+}
+
+function onModelItemClick(event) {
+  const modelId = event.currentTarget.dataset.modelId;
+  workspaceService.toggleModelDisplay({
+    id: modelId,
+  });
+}
+// #endregion
 
 /**
  * Make all internal SVG id/url(#...) references unique by prefixing them
@@ -258,17 +273,17 @@ async function renderModel(model) {
 
   // Grid view
   const gridId = `modelGrid_${modelId}`;
-  const $modelContainer = createTemplateElement("modelGridTemplate")
+  const $gridItem = createTemplateElement("modelGridTemplate")
     .attr("data-model-id", modelId)
     .attr("data-model-version-id", model.latestVersionId)
     .attr("data-document-id", model.documentId);
-  const $gridDiv = $modelContainer.find("[data-ref='modelGrid']").first();
+  const $gridDiv = $gridItem.find("[data-ref='modelGrid']").first();
   $gridDiv.attr("id", gridId);
-  $modelContainer.find("[data-ref='modelName']").text(model.latestVersion.name);
+  $gridItem.find("[data-ref='modelName']").text(model.name);
   if (modelId == workspaceStore.getEditingModel()?.id) {
-    $modelContainer.addClass("active");
+    $gridItem.addClass("active");
   }
-  $modelsGrid.append($modelContainer);
+  $modelsGrid.append($gridItem);
   console.log("Received SVG for model ID", modelId);
   try {
     const outputFrame = await getModelSvg(model.latestVersionId);
@@ -285,7 +300,7 @@ async function renderModel(model) {
     .attr("data-model-id", modelId)
     .attr("data-model-version-id", model.latestVersionId)
     .attr("data-document-id", model.documentId);
-  $listItem.find("[data-ref='modelName']").text(model.latestVersion.name);
+  $listItem.find("[data-ref='modelName']").text(model.name);
   $modelsList.append($listItem);
 }
 
@@ -305,43 +320,54 @@ function updateModelInList(model) {
 }
 
 const highlightEditingModelContainer = (modelId) => {
-  $(`.model-grid-container[data-model-id="${modelId}"]`).addClass("active");
+  $(`.model-grid-item[data-model-id="${modelId}"]`).addClass("active");
 };
 
 const unhighlightEditingModelContainer = (modelId) => {
-  $(`.model-grid-container[data-model-id="${modelId}"]`).removeClass("active");
+  $(`.model-grid-item[data-model-id="${modelId}"]`).removeClass("active");
 };
-
-const removeModelFromList = (modelId) => {
-  $(`.model-grid-container[data-model-id="${modelId}"]`).remove();
-};
+// #region DOM Manipulation
+function setView(view) {
+  $viewSwitch.find(".switch-btn").toggleClass("current");
+  $modelsPanel.attr("data-current-view", view);
+}
 
 function updateModelsCount() {
   const count = modelsStore.getCount();
   $("[data-ref='modelsCount']").text(count);
 }
+function getModelItem(modelId) {
+  return $modelsPanel.find(`[data-model-id="${modelId}"]`);
+}
+function findModelGridItem(modelId) {
+  return $modelsGrid.find(`.model-grid-item[data-model-id="${modelId}"]`);
+}
+function findModelListItem(modelId) {
+  return $modelsList.find(`.model-list-item[data-model-id="${modelId}"]`);
+}
 
-function setView(event) {
-  $viewSwitch.find(".switch-btn").removeClass("current");
-  const targetSwitchButton = event.currentTarget;
-  const targetView = targetSwitchButton.dataset.view;
-  targetSwitchButton.classList.add("current");
-  $modelsPanel.attr("data-current-view", targetView);
+function updateModelItem(model) {
+  const modelId = model.id;
+  const modelName = model.name;
+  getModelItem(modelId).find("[data-ref='modelName']").text(modelName);
 }
-function onModelClick(event) {
-  event.stopPropagation();
-  const dataSet = event.currentTarget.dataset;
-  workspaceService.toggleModelDisplay({
-    id: dataSet.modelId,
-    versionId: dataSet.modelVersionId,
-  });
+
+function setModelItemHighlighted(modelId, highlighted) {
+  getModelItem(modelId).toggleClass("active", highlighted);
 }
+
+const removeModelItem = (modelId) => {
+  $(`.model-grid-item[data-model-id="${modelId}"]`).remove();
+};
+// #endregion
+
+// UI Initialization
 createUI({
   setup: () => {},
   bindListeners: () => {
-    $viewSwitch.on("click", ".switch-btn", setView);
-    $modelsGrid.on("click", ".model-grid-container", onModelClick);
-    $modelsList.on("click", ".model-list-item", onModelClick);
+    $viewSwitch.on("click", ".switch-btn", onViewSwitch);
+    $modelsGrid.on("click", ".model-grid-item", onModelItemClick);
+    $modelsList.on("click", ".model-list-item", onModelItemClick);
   },
   subscribeStores: () => {
     modelsStore.subscribe(async (state, { key, operation, value }) => {
@@ -351,28 +377,34 @@ createUI({
             await renderModel(model);
           }
           updateModelsCount();
-          // value.forEach((model) => renderModel(model));
           break;
         case "add":
           await renderModel(value);
+          updateModelsCount();
           break;
         case "update":
-          updateModelInList(value);
+          updateModelItem(value);
           break;
         case "delete":
           console.log("Model deleted with ID:", value.id);
-          removeModelFromList(value.id);
+          removeModelItem(value.id);
+          updateModelsCount();
           break;
       }
     });
     workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
       switch (key) {
         case "editingModel":
-          if (newValue?.id) {
-            highlightEditingModelContainer(newValue.id);
+          const newModelId = newValue?.id;
+          const oldModelId = oldValue?.id;
+          if (newModelId === oldModelId) {
+            break;
           }
-          if (oldValue?.id) {
-            unhighlightEditingModelContainer(oldValue.id);
+          if (newModelId) {
+            setModelItemHighlighted(newModelId, true);
+          }
+          if (oldModelId) {
+            setModelItemHighlighted(oldModelId, false);
           }
           break;
         default:

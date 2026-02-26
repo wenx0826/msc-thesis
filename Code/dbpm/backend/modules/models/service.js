@@ -106,6 +106,10 @@ export default {
       throw err;
     }
   },
+  updateMeta(modelId, updates) {
+    modelRepo.updateById(modelId, updates);
+    return modelRepo.findById(modelId);
+  },
   getModel(modelId) {
     const model = modelRepo.findById(modelId);
     if (!model) {

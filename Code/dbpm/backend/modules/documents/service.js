@@ -42,6 +42,10 @@ export default {
       throw err;
     }
   },
+  updateMeta(docId, updates) {
+    documentRepo.updateById(docId, updates);
+    return documentRepo.findById(docId);
+  },
 
   createVersion({ documentId, name, filename, content }) {
     try {
@@ -114,10 +118,6 @@ export default {
 
   getAllModels(docId) {
     return documentRepo.getAllModels(docId);
-  },
-  updateMeta(docId, updates) {
-    documentRepo.updateById(docId, updates);
-    return documentRepo.findById(docId);
   },
 
   deleteDocument(docId) {

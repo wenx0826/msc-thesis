@@ -303,8 +303,10 @@ export default {
       documentViewerStore.updateTrace(trace);
     }
   },
-  async renameVersion(versionId, newName) {
-    await modelsAPI.updateVersionMeta(versionId, { name: newName });
+  async renameModel(modelId, newName) {
+    console.log(`Renaming model ${modelId} to "${newName}"`);
+    const updatedModel = await modelsAPI.updateMeta(modelId, { name: newName });
+    modelsStore.update(modelId, { name: updatedModel.name });
   },
   async updateActiveModelTrace() {
     const updatedTrace = documentViewerStore.getSerializedActiveModelTrace();

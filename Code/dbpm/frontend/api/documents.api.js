@@ -2,6 +2,7 @@ import { baseURL, handleResponse, handleTextResponse } from "./base.js";
 
 export default {
   path: "documents",
+  // Document
   async create(params) {
     const response = await fetch(`${baseURL}/${this.path}`, {
       method: "POST",
@@ -10,6 +11,24 @@ export default {
     });
     return handleResponse(response);
   },
+  async updateMeta(documentId, params) {
+    const response = await fetch(`${baseURL}/${this.path}/${documentId}/meta`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(params),
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return await response.json();
+  },
+  async delete(id) {
+    const response = await fetch(`${baseURL}/${this.path}/${id}`, {
+      method: "DELETE",
+    });
+    return handleResponse(response, "Failed to delete document");
+  },
+  // Document Version
   async createVersion(params) {
     const response = await fetch(`${baseURL}/${this.path}/versions`, {
       method: "POST",
@@ -17,28 +36,6 @@ export default {
       body: JSON.stringify(params),
     });
     return handleResponse(response);
-  },
-  async getByProjectId(projectId) {
-    const response = await fetch(
-      `${baseURL}/projects/${projectId}/${this.path}`,
-    );
-    if (!response.ok) throw new Error("Failed to fetch documents");
-    return handleResponse(response);
-  },
-  async getAllByProjectId(projectId) {
-    const response = await fetch(
-      `${baseURL}/projects/${projectId}/documents/all`,
-    );
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    return handleResponse(response);
-  },
-  async getById(id) {
-    const response = await fetch(`${baseURL}/${this.path}/${id}`);
-    if (!response.ok) throw new Error("Failed to fetch document");
-    const data = await response.json();
-    return data.content;
   },
   async getContentByVersionId(versionId) {
     const res = await fetch(
@@ -52,37 +49,5 @@ export default {
     );
     if (!response.ok) throw new Error("Failed to fetch document traces");
     return await response.json();
-  },
-  async getDisplayedModelsById(id) {
-    const response = await fetch(`${baseURL}/documents/${id}/models`);
-    if (!response.ok) throw new Error("Failed to fetch document models");
-    return await response.json();
-  },
-  async getAllModelsByDocumentId(id) {
-    const response = await fetch(`${baseURL}/documents/${id}/models/all`);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    return await response.json();
-  },
-  async updateVersionMeta(versionId, params) {
-    const response = await fetch(
-      `${baseURL}/${this.path}/versions/${versionId}/meta`,
-      {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(params),
-      },
-    );
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    return await response.json();
-  },
-  async deleteById(id) {
-    const response = await fetch(`${baseURL}/${this.path}/${id}`, {
-      method: "DELETE",
-    });
-    return handleResponse(response, "Failed to delete document");
   },
 };

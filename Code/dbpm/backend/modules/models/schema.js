@@ -1,7 +1,6 @@
 export const createModelSchema = {
   body: {
     type: "object",
-    required: ["projectId", "modelData", "trace"],
     properties: {
       projectId: { type: "string" },
       modelData: {
@@ -18,6 +17,7 @@ export const createModelSchema = {
         required: ["documentVersionId", "selections"],
       },
     },
+    required: ["projectId", "modelData", "trace"],
   },
   response: {
     200: {
@@ -62,6 +62,32 @@ export const createModelSchema = {
             selections: { type: "array" },
           },
         },
+      },
+    },
+  },
+};
+
+export const updateMetaSchema = {
+  params: {
+    type: "object",
+    properties: {
+      modelId: { type: "string" },
+    },
+    required: ["modelId"],
+  },
+  body: {
+    type: "object",
+    properties: {
+      name: { type: "string" },
+    },
+  },
+  response: {
+    200: {
+      type: "object",
+      properties: {
+        id: { type: "string" },
+        name: { type: "string" },
+        createdAt: { type: "string" },
       },
     },
   },
@@ -120,34 +146,6 @@ export const updateModelSchema = {
         },
       },
       type: { type: "string" },
-    },
-  },
-};
-
-export const updateVersionMetaSchema = {
-  params: {
-    type: "object",
-    properties: {
-      versionId: { type: "string" },
-    },
-    required: ["versionId"],
-  },
-  body: {
-    type: "object",
-    properties: {
-      name: { type: "string" },
-    },
-  },
-  response: {
-    200: {
-      type: "object",
-      properties: {
-        id: { type: "string" },
-        modelId: { type: "string" },
-        versionNumber: { type: "number" },
-        name: { type: "string" },
-        createdAt: { type: "string" },
-      },
     },
   },
 };

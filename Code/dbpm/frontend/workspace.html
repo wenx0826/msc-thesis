@@ -87,19 +87,18 @@
         <ui-tabbed id="documentsPanel">
           <ui-tabbar>
             <ui-tab class="switch"></ui-tab>
-            <ui-tab class="" data-tab="documents">Documents (<span data-ref="documentsCount"></span>)</ui-tab>
+            <ui-tab class="panel-header" data-tab="documents">
+              <span class="panel-header__title">Documents</span>
+              <span class="panel-header__subtitle">(<span data-ref="documentsCount"></span>)</span>
+            </ui-tab>
           </ui-tabbar>
           <ui-content>
             <ui-area data-belongs-to-tab="documents">
               <ui-bar>
-                <input type="file" id="documentUpdateInput" class="hidden" />
+                <input type="file" id="documentVersionInput" class="hidden" />
                 <input type="file" id="documentsInput" multiple class="hidden" />
-
                 <div class="right">
                   <button onclick="document.getElementById('documentsInput').click()">Upload</button>
-                  <!-- <label for="documentsInput" class="button">
-                    Upload <input type="file" id="documentsInput" multiple class="hidden" />
-                  </label> -->
                 </div>
               </ui-bar>
               <ul id="documentsList">
@@ -127,11 +126,11 @@
             </div> -->
             <div class="field">
               <label for="docVersionSelect">Version:</label>
-              <select id="docVersionSelect"></select>
             </div>
             <div class="right action-group">
+              <select id="docVersionSelect"></select>
               <form id="selectionColorForm" style="margin: 0">
-                <div class="relaxngui_cell relaxngui_color_container">
+                <div class="relaxngui_color_container">
                   <span class="round">
                     <input type="radio" name="color" value="#d4e1f1" id="selectionColor1" checked />
                     <label for="selectionColor1" style="background-color: #d4e1f1"></label>
@@ -275,8 +274,10 @@
       <ui-resizehandle data-direction="vertical"></ui-resizehandle>
       <ui-rest class="pane pane--right">
         <ui-rest id="modelsPanel" class="panel" data-current-view="grid" style="flex: 0.68 1 0; min-height: 100px">
-          <ui-bar><span style="font-size: 1.2em; font-weight: bold">Models</span>(<span
-              data-ref="modelsCount"></span>)</ui-bar>
+          <ui-bar class="panel-header">
+            <span class="panel-header__title">Models</span>
+            <span class="panel-header__subtitle">(<span data-ref="modelsCount"></span>)</span>
+          </ui-bar>
           <ui-divider></ui-divider>
           <ui-bar>
             <div id="modelsViewSwitch" class="switch-btn-group">
@@ -305,7 +306,7 @@
               <ui-area>
                 <div id="modelsGrid" data-belongs-to-view="grid">
                   <template id="modelGridTemplate">
-                    <div class="model-grid-container" data-model-id="" data-model-version-id="" data-document-id="">
+                    <div class="model-grid-item" data-model-id="" data-model-version-id="" data-document-id="">
                       <ui-bar>
                         <span data-ref="modelName"></span>
                         <button class="right col-button action-btn">...</button>

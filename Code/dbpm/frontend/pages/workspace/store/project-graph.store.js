@@ -4,14 +4,14 @@ const DOCUMENT_NODE_NAMESPACE = "document";
 const MODEL_NODE_NAMESPACE = "model";
 
 function toCyNodeId(rawId, namespace) {
-  if (typeof rawId !== "string") {
+  if (typeof rawId !== "string" && typeof rawId !== "number") {
     return null;
   }
   if (typeof namespace !== "string" || namespace.trim() === "") {
     return null;
   }
 
-  const trimmedId = rawId.trim();
+  const trimmedId = String(rawId).trim();
   if (!trimmedId) {
     return null;
   }
@@ -24,65 +24,38 @@ function isNodeElement(element) {
   return Boolean(data?.id) && !data?.source && !data?.target;
 }
 
-function getLatestDocumentVersionId(documentMeta) {
-  if (typeof documentMeta?.latestVersionId === "string") {
-    return documentMeta.latestVersionId;
-  }
-  if (!Array.isArray(documentMeta?.versions) || documentMeta.versions.length === 0) {
-    return null;
-  }
-  return documentMeta.versions.at(-1)?.id || null;
-}
-
 function getLatestModelVersionId(modelMeta) {
-  if (typeof modelMeta?.latestVersionId === "string") {
-    return modelMeta.latestVersionId;
+  if (
+    typeof modelMeta?.latestVersionId === "string" ||
+    typeof modelMeta?.latestVersionId === "number"
+  ) {
+    const latestVersionId = String(modelMeta.latestVersionId).trim();
+    return latestVersionId || null;
   }
   if (!Array.isArray(modelMeta?.versions) || modelMeta.versions.length === 0) {
     return null;
   }
-  return modelMeta.versions.at(-1)?.id || null;
-}
-
-function getDocumentLabel(documentMeta, versionId) {
-  const versions = Array.isArray(documentMeta?.versions)
-    ? documentMeta.versions
-    : [];
-  const matchedVersion =
-    versions.find((version) => version?.id === versionId) || versions.at(-1);
-  return (
-    matchedVersion?.name ||
-    documentMeta?.name ||
-    documentMeta?.id ||
-    versionId ||
-    "Document"
-  );
-}
-
-function getModelLabel(modelMeta, versionId) {
-  const versions = Array.isArray(modelMeta?.versions) ? modelMeta.versions : [];
-  const matchedVersion =
-    versions.find((version) => version?.id === versionId) || versions.at(-1);
-  return (
-    modelMeta?.name ||
-    matchedVersion?.name ||
-    modelMeta?.id ||
-    versionId ||
-    "Model"
-  );
-}
-
-function getLastDocumentVersionId(modelMeta) {
-  if (!Array.isArray(modelMeta?.documentVersionIds)) {
-    return null;
-  }
-  for (let index = modelMeta.documentVersionIds.length - 1; index >= 0; index -= 1) {
-    const versionId = modelMeta.documentVersionIds[index];
-    if (typeof versionId === "string" && versionId.trim()) {
-      return versionId;
-    }
+  const latestVersionId = modelMeta.versions.at(-1)?.id;
+  if (
+    typeof latestVersionId === "string" ||
+    typeof latestVersionId === "number"
+  ) {
+    const normalizedVersionId = String(latestVersionId).trim();
+    return normalizedVersionId || null;
   }
   return null;
+}
+
+function getDocumentNodeId(documentId) {
+  return toCyNodeId(documentId, DOCUMENT_NODE_NAMESPACE);
+}
+
+function getModelNodeId(modelId) {
+  return toCyNodeId(modelId, MODEL_NODE_NAMESPACE);
+}
+
+function getEntityLabel(entity, fallbackLabel) {
+  return entity?.name || entity?.id || fallbackLabel;
 }
 
 class ProjectGraphStore extends Store {
@@ -92,94 +65,41 @@ class ProjectGraphStore extends Store {
     });
   }
 
-  init(documents, models) {
+  init(documentsMeta, modelsMeta) {
     const nodes = [];
-    const documentNodeIds = new Set();
-    const documentVersionIdByDocumentId = new Map();
+    const edges = [];
 
-    documents.forEach((doc) => {
-      const documentId = doc?.id;
-      const documentVersionId = getLatestDocumentVersionId(doc);
-      const nodeId = toCyNodeId(documentVersionId, DOCUMENT_NODE_NAMESPACE);
-      if (!nodeId) {
-        console.warn(
-          "[projectGraphStore] Skipping document node with invalid versionId:",
-          doc,
-        );
-        return;
-      }
-
-      if (typeof documentId === "string" && documentId.trim()) {
-        documentVersionIdByDocumentId.set(documentId, documentVersionId);
-      }
-      documentNodeIds.add(nodeId);
+    documentsMeta.forEach(({ id, name }) => {
       nodes.push({
         group: "nodes",
         data: {
-          id: nodeId,
+          id,
           type: "document",
-          label: getDocumentLabel(doc, documentVersionId),
+          label: name,
           degree: 1,
-          documentId,
-          versionId: documentVersionId,
         },
       });
     });
 
-    const edges = [];
-    models.forEach((model) => {
-      const modelId = model?.id;
-      const modelVersionId = getLatestModelVersionId(model);
-      const modelNodeId = toCyNodeId(modelVersionId, MODEL_NODE_NAMESPACE);
-      if (!modelNodeId) {
-        console.warn(
-          "[projectGraphStore] Skipping model node with invalid versionId:",
-          model,
-        );
-        return;
-      }
-
+    modelsMeta.forEach(({ id: modelId, name, documentId }) => {
       nodes.push({
         group: "nodes",
         data: {
-          id: modelNodeId,
+          id: modelId,
           type: "model",
-          label: getModelLabel(model, modelVersionId),
+          label: name,
           degree: 1,
-          modelId,
-          versionId: modelVersionId,
-          documentId: model?.documentId || null,
         },
       });
-
-      const sourceDocumentVersionId =
-        documentVersionIdByDocumentId.get(model?.documentId) ||
-        getLastDocumentVersionId(model);
-      const sourceNodeId = toCyNodeId(
-        sourceDocumentVersionId,
-        DOCUMENT_NODE_NAMESPACE,
-      );
-      if (!sourceNodeId || !documentNodeIds.has(sourceNodeId)) {
-        console.warn(
-          `[projectGraphStore] Skipping edge for model "${modelId}" with missing or unknown document version:`,
-          {
-            documentId: model?.documentId,
-            documentVersionId: sourceDocumentVersionId,
-          },
-        );
-        return;
-      }
-
       edges.push({
         group: "edges",
         data: {
-          source: sourceNodeId,
-          target: modelNodeId,
+          source: documentId,
+          target: modelId,
           relation: "generated",
         },
       });
     });
-
     this.state.elements = [...nodes, ...edges];
     this.notify({
       key: "elements",
@@ -192,27 +112,16 @@ class ProjectGraphStore extends Store {
     return this.state.elements;
   }
 
-  addDocumentNode(document) {
-    const documentId = document?.id;
-    const documentVersionId = getLatestDocumentVersionId(document);
-    const nodeId = toCyNodeId(documentVersionId, DOCUMENT_NODE_NAMESPACE);
-    if (!nodeId) {
-      console.warn(
-        "[projectGraphStore] Skipping document node with invalid versionId:",
-        document,
-      );
-      return;
-    }
-
+  addDocumentNode({ id, name }) {
+    const documentId = documentMeta?.id;
+    const nodeId = getDocumentNodeId(documentId);
     const node = {
       group: "nodes",
       data: {
-        id: nodeId,
+        id,
         type: "document",
-        label: getDocumentLabel(document, documentVersionId),
+        label: name,
         degree: 1,
-        documentId,
-        versionId: documentVersionId,
       },
     };
     this.state.elements.push(node);
@@ -224,42 +133,24 @@ class ProjectGraphStore extends Store {
   }
 
   addModelNodeAndEdge(modelMeta, documentId) {
-    const modelId = modelMeta?.id;
-    const modelVersionId = getLatestModelVersionId(modelMeta);
-    const modelNodeId = toCyNodeId(modelVersionId, MODEL_NODE_NAMESPACE);
-    if (!modelNodeId) {
-      console.warn(
-        "[projectGraphStore] Skipping model node with invalid versionId:",
-        modelMeta,
-      );
-      return;
-    }
+    const modelId = modelMeta.id;
+    if (!modelNodeId) return;
+    const modelNodeId = getModelNodeId(modelId);
 
     const modelNode = {
       group: "nodes",
       data: {
         id: modelNodeId,
         type: "model",
-        label: getModelLabel(modelMeta, modelVersionId),
+        label: getEntityLabel(modelMeta, "Model"),
         degree: 1,
-        modelId,
-        versionId: modelVersionId,
         documentId: modelMeta?.documentId || documentId || null,
+        entityId: modelId,
       },
     };
 
-    const sourceDocumentNodeIdByDocumentId = this.state.elements.find(
-      (element) =>
-        isNodeElement(element) &&
-        element?.data?.type === "document" &&
-        element?.data?.documentId === documentId,
-    )?.data?.id;
-    const sourceDocumentVersionId = sourceDocumentNodeIdByDocumentId
-      ? null
-      : getLastDocumentVersionId(modelMeta);
-    const sourceNodeId =
-      sourceDocumentNodeIdByDocumentId ||
-      toCyNodeId(sourceDocumentVersionId, DOCUMENT_NODE_NAMESPACE);
+    const sourceDocumentId = modelMeta?.documentId || documentId || null;
+    const sourceNodeId = getDocumentNodeId(sourceDocumentId);
     const hasSourceNode = this.state.elements.some(
       (element) => isNodeElement(element) && element?.data?.id === sourceNodeId,
     );
@@ -278,8 +169,7 @@ class ProjectGraphStore extends Store {
       console.warn(
         `[projectGraphStore] Skipping edge for model "${modelId}" with missing or unknown document reference:`,
         {
-          documentId,
-          documentVersionId: sourceDocumentVersionId,
+          documentId: sourceDocumentId,
         },
       );
     }

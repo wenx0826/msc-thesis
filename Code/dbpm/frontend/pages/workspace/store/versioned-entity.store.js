@@ -11,27 +11,29 @@ export class VersionedEntityStore extends Store {
   init(entities) {
     const entitiesById = {};
     entities.forEach((entity) => {
-      entity.latestVersion = entity.versions?.at(-1);
       entitiesById[entity.id] = entity;
     });
     this.state.entitiesById = entitiesById;
     this.notify({ operation: "init", value: entities });
   }
+
   getList() {
     return Object.values(this.state.entitiesById);
   }
+
   add(entity) {
-    entity.latestVersion = entity.versions?.at(-1);
     this.state.entitiesById[entity.id] = entity;
     this.notify({ operation: "add", value: entity });
     return entity;
   }
-  updateName(id, newName) {
+
+  update(id, updates) {
     const entity = this.getEntity(id);
-    entity.name = newName;
-    this.notify({ operation: "update.name", value: entity });
+    Object.assign(entity, updates);
+    this.notify({ operation: "update", value: entity });
     return entity;
   }
+
   delete(id) {
     if (!id) return null;
     const value = this.state.entitiesById[id] || null;
@@ -62,32 +64,20 @@ export class VersionedEntityStore extends Store {
     return `${entity.name} - ${versionName}`;
   }
 
-  getLatestVersion(id) {
-    return this.getEntity(id)?.latestVersion ?? {};
-  }
-
   getLatestVersionId(id) {
     return this.getEntity(id)?.latestVersionId;
+  }
+
+  getLatestVersion(id) {
+    const versions = this.getEntity(id)?.versions || [];
+    return versions.at(-1) || null;
   }
 
   addVersion(id, value) {
     const entity = this.getEntity(id);
     entity.versions.push(value);
-    entity.latestVersion = value;
     entity.latestVersionId = value.id;
     this.notify({ operation: "versions.add", value });
-    return value;
-  }
-
-  updateVersion(id, value) {
-    if (!id) return null;
-    const entity = this.getEntity(id);
-    if (!entity || !Array.isArray(entity.versions)) return null;
-    const versionIndex = entity.versions.findIndex(
-      (item) => item.id === value.id,
-    );
-    if (versionIndex === -1) return null;
-    entity.versions[versionIndex] = value;
     return value;
   }
 }
