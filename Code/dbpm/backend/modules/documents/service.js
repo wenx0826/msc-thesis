@@ -92,9 +92,6 @@ export default {
   getAverageVersionsCount(includeDeleted = false) {
     return documentRepo.getAverageVersionsCount(includeDeleted);
   },
-  getDocuments() {
-    return documentRepo.findAll();
-  },
   getByProjectId(projectId, includeDeleted = false) {
     return documentRepo.findByProjectIdWithVersions(projectId, includeDeleted);
   },
@@ -108,14 +105,6 @@ export default {
 
   getTraces(versionId) {
     return traceService.getByDocumentVersionId(versionId);
-  },
-
-  getModels(docId) {
-    return documentRepo.getModels(docId);
-  },
-
-  getAllModels(docId) {
-    return documentRepo.getAllModels(docId);
   },
 
   deleteDocument(docId) {

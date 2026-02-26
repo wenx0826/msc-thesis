@@ -99,14 +99,6 @@ class DocumentRepository extends BaseSqlRepository {
     return documents;
   }
 
-  findByIdWithVersions(id) {
-    const document = this.findById(id);
-    if (!document) {
-      return null;
-    }
-    return this.attachVersions([document])[0];
-  }
-
   findByProjectIdWithVersions(projectId, includeDeleted = false) {
     const documents = this.findByProjectId(projectId, includeDeleted);
     return this.attachVersions(documents);
@@ -118,10 +110,6 @@ class DocumentRepository extends BaseSqlRepository {
     return result?.project_id ?? null;
   }
 
-  getProjectId(id) {
-    return this.findProjectIdById(id);
-  }
-
   allocateLatestVersionNumber(documentId) {
     const stmt = db.prepare(`
       UPDATE documents
@@ -131,10 +119,6 @@ class DocumentRepository extends BaseSqlRepository {
     `);
     const result = stmt.get(documentId);
     return result?.latest_version_number ?? null;
-  }
-  softDelete(id) {
-    const stmt = db.prepare("UPDATE documents SET deleted_at = ? WHERE id = ?");
-    return stmt.run(new Date().toISOString(), id);
   }
 }
 

@@ -133,32 +133,9 @@ class ModelRepository extends BaseSqlRepository {
     return models;
   }
 
-  findByIdWithVersions(modelId) {
-    const model = this.findById(modelId);
-    if (!model) {
-      return null;
-    }
-
-    return this.attachVersions([model])[0];
-  }
-
   findByProjectIdWithVersions(projectId, includeDeleted = false) {
     const models = this.findByProjectId(projectId, includeDeleted);
     return this.attachVersions(models);
-  }
-
-  incrementRegeneratedByPrompt(modelId) {
-    const stmt = db.prepare(
-      "UPDATE models SET regenerated_by_prompt_times = regenerated_by_prompt_times + 1 WHERE id = ?",
-    );
-    return stmt.run(modelId);
-  }
-
-  incrementRegeneratedBySelections(modelId) {
-    const stmt = db.prepare(
-      "UPDATE models SET regenerated_by_selections_times = regenerated_by_selections_times + 1 WHERE id = ?",
-    );
-    return stmt.run(modelId);
   }
 
   softDelete(modelId) {
@@ -171,20 +148,6 @@ class ModelRepository extends BaseSqlRepository {
       "INSERT INTO model_stat_updates (model_id, created_at, type, words) VALUES (?, ?, ?, ?)",
     );
     return stmt.run(modelId, timestamp, type, words);
-  }
-
-  getStatUpdates(projectId) {
-    const stmt = db.prepare(`
-      SELECT msu.id, msu.model_id, msu.created_at, msu.type, msu.words,
-             m.name as model_name
-      FROM model_stat_updates msu
-      JOIN models m ON msu.model_id = m.id
-      JOIN documents d ON m.document_id = d.id
-      WHERE d.project_id = ?
-      ORDER BY msu.created_at DESC
-    `);
-    const results = stmt.all(projectId);
-    return results.map(toCamel);
   }
 }
 

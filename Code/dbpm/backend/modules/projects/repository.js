@@ -48,66 +48,6 @@ class ProjectsRepository extends BaseSqlRepository {
     const result = stmt.get(id);
     return result?.latest_model_number ?? null;
   }
-
-  getDocumentCount(id) {
-    const stmt = db.prepare(
-      "SELECT COUNT(*) as count FROM documents WHERE project_id = ?",
-    );
-    return stmt.get(id);
-  }
-
-  getModelCount(id) {
-    const stmt = db.prepare(`
-      SELECT COUNT(DISTINCT m.id) as count 
-      FROM models m
-      JOIN documents d ON m.document_id = d.id
-      WHERE d.project_id = ? AND m.deleted_at IS NULL
-    `);
-    return stmt.get(id);
-  }
-
-  getTotalModelCount(id) {
-    const stmt = db.prepare(`
-      SELECT COUNT(DISTINCT m.id) as count 
-      FROM models m
-      JOIN documents d ON m.document_id = d.id
-      WHERE d.project_id = ?
-    `);
-    return stmt.get(id);
-  }
-
-  getAllModelsByid(id) {
-    const stmt = db.prepare(`
-      SELECT DISTINCT m.* FROM models m
-      INNER JOIN documents d ON m.document_id = d.id
-      WHERE d.project_id = ?
-      ORDER BY m.timestamp DESC
-    `);
-    const results = stmt.all(id);
-    return results.map(toCamel);
-  }
-
-  getStats(id) {
-    const docsStmt = db.prepare(
-      "SELECT COUNT(*) as count, SUM(words) as totalWords FROM documents WHERE project_id = ?",
-    );
-    const docStats = docsStmt.get(id);
-
-    const modelsStmt = db.prepare(`
-      SELECT COUNT(*) as count, SUM(m.words) as totalWords
-      FROM models m
-      JOIN documents d ON m.document_id = d.id
-      WHERE d.project_id = ? AND m.deleted_at IS NULL
-    `);
-    const modelStats = modelsStmt.get(id);
-
-    return {
-      documentCount: docStats.count || 0,
-      documentTotalWords: docStats.totalWords || 0,
-      modelCount: modelStats.count || 0,
-      modelTotalWords: modelStats.totalWords || 0,
-    };
-  }
 }
 
 export default new ProjectsRepository();

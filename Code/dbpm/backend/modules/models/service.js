@@ -123,14 +123,6 @@ export default {
     const model = storageRepo.read(versionId);
     return getDescription(model);
   },
-  getAllModels(includeDeleted = true) {
-    const models = modelRepo.findAll(includeDeleted);
-    for (const model of models) {
-      const versions = versionRepo.findByModelId(model.id);
-      model.versions = versions;
-    }
-    return models;
-  },
   count(includeDeleted = false) {
     return modelRepo.count(includeDeleted);
   },
@@ -208,27 +200,6 @@ export default {
       id: modelId,
       versionId,
       data: enrichedModelData,
-    });
-
-    return { message: "Model content updated" };
-  },
-
-  updateModelData(modelId, modelData) {
-    const projectId = modelRepo.getProjectIdByModelId(modelId);
-    storageRepo.write(modelId, modelData);
-
-    // Add stat update
-    modelRepo.addStatUpdate(
-      modelId,
-      new Date().toISOString(),
-      "manual_update",
-      null,
-    );
-
-    // Log the event
-    logService.logEvent(projectId, "model_updated_manual", {
-      id: modelId,
-      data: modelData,
     });
 
     return { message: "Model content updated" };

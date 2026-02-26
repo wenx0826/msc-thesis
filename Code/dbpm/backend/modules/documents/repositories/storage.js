@@ -1,8 +1,4 @@
-import {
-  read,
-  write,
-  delete as deleteFile,
-} from "../../../utils/fileHelper.js";
+import { read, write } from "../../../utils/fileHelper.js";
 import { fileURLToPath } from "url";
 
 const documentsDirUrl = new URL("../../../../data/documents/", import.meta.url);
@@ -19,10 +15,5 @@ export default {
   read(versionId) {
     const filePath = this.getDocumentFilePath(versionId);
     return read(filePath);
-  },
-
-  delete(versionId) {
-    const filePath = this.getDocumentFilePath(versionId);
-    deleteFile(filePath);
   },
 };
