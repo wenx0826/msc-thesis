@@ -4,7 +4,6 @@ import {
   getProjectsSchema,
   getProjectsOverviewSchema,
   getProjectSchema,
-  getProjectOverviewWithDeletedSchema,
   getProjectComponentsSchema,
   getProjectComponentsStatsSchema,
   updateProjectSchema,

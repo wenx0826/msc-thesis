@@ -86,37 +86,6 @@ export const getProjectSchema = {
   },
 };
 
-export const getProjectOverviewWithDeletedSchema = {
-  params: {
-    type: "object",
-    required: ["projectId"],
-    properties: {
-      projectId: { type: "string" },
-    },
-  },
-  response: {
-    200: {
-      type: "object",
-      properties: {
-        documents: {
-          type: "object",
-          properties: {
-            count: { type: "number" },
-            averageWordsCount: { type: "number" },
-          },
-        },
-        models: {
-          type: "object",
-          properties: {
-            count: { type: "number" },
-            averageSelectedWordsCount: { type: "number" },
-          },
-        },
-      },
-    },
-  },
-};
-
 export const getProjectComponentsSchema = {
   params: {
     type: "object",

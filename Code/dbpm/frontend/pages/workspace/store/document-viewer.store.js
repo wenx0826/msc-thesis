@@ -5,6 +5,27 @@ import {
   getSortedSelectionsByRange,
 } from "../utils/selection.js";
 
+function hydrateSelections(selections) {
+  if (!Array.isArray(selections)) {
+    return [];
+  }
+
+  return selections
+    .map((selection) => {
+      const range = deserializeRange(selection?.range, {
+        text: selection?.text,
+      });
+      if (!range) {
+        return null;
+      }
+      return {
+        ...selection,
+        range,
+      };
+    })
+    .filter(Boolean);
+}
+
 class DocumentViewerStore extends Store {
   constructor() {
     super({
@@ -87,9 +108,7 @@ class DocumentViewerStore extends Store {
   // #region traces && active trace
   addTrace(trace) {
     console.log("Adding trace:???", trace);
-    trace.selections.forEach((selection) => {
-      selection.range = deserializeRange(selection.range);
-    });
+    trace.selections = hydrateSelections(trace.selections);
     this.state.traces.push(trace);
     this.setActiveModelTrace(trace);
   }
@@ -97,9 +116,7 @@ class DocumentViewerStore extends Store {
   setTraces(traces) {
     if (traces.length) {
       traces.forEach((trace) => {
-        trace.selections.forEach((selection) => {
-          selection.range = deserializeRange(selection.range);
-        });
+        trace.selections = hydrateSelections(trace.selections);
       });
     }
     this.state.traces = traces;
@@ -112,10 +129,7 @@ class DocumentViewerStore extends Store {
     );
     if (index !== -1) {
       const trace = this.state.traces[index];
-      trace.selections = serializedTrace.selections.map((selection) => ({
-        ...selection,
-        range: deserializeRange(selection.range),
-      }));
+      trace.selections = hydrateSelections(serializedTrace.selections);
       this.setActiveModelTrace(trace);
     }
   }
@@ -153,10 +167,7 @@ class DocumentViewerStore extends Store {
   }
 
   setActiveModelTraceBySerializedTrace(trace) {
-    trace.selections = trace.selections.map((selection) => ({
-      ...selection,
-      range: deserializeRange(selection.range),
-    }));
+    trace.selections = hydrateSelections(trace.selections);
     this.setActiveModelTrace(trace);
   }
 

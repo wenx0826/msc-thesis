@@ -66,9 +66,22 @@ class ModelRepository extends BaseSqlRepository {
   }
 
   findById(modelId) {
-    const stmt = db.prepare(`SELECT * FROM models WHERE id = ?`);
+    const stmt = db.prepare(`
+      SELECT
+        m.*,
+        (
+          SELECT dv.document_id
+          FROM traces t
+          JOIN document_versions dv ON dv.id = t.document_version_id
+          WHERE t.model_version_id = m.latest_version_id
+          ORDER BY dv.version_number DESC, t.created_at DESC
+          LIMIT 1
+        ) AS document_id
+      FROM models m
+      WHERE m.id = ?
+    `);
     const result = stmt.get(modelId);
-    return result ? toCamel(result) : null;
+    return result ? mapProjectModelRow(result) : null;
   }
 
   findByProjectId(projectId, includeDeleted = false) {
@@ -80,7 +93,7 @@ class ModelRepository extends BaseSqlRepository {
           FROM traces t
           JOIN document_versions dv ON dv.id = t.document_version_id
           WHERE t.model_version_id = m.latest_version_id
-          ORDER BY t.created_at DESC
+          ORDER BY dv.version_number DESC, t.created_at DESC
           LIMIT 1
         ) AS document_id
       FROM models m
@@ -136,6 +149,12 @@ class ModelRepository extends BaseSqlRepository {
   findByProjectIdWithVersions(projectId, includeDeleted = false) {
     const models = this.findByProjectId(projectId, includeDeleted);
     return this.attachVersions(models);
+  }
+
+  findByIdWithVersions(modelId) {
+    const model = this.findById(modelId);
+    const [modelWithVersions] = this.attachVersions([model]);
+    return modelWithVersions;
   }
 
   softDelete(modelId) {

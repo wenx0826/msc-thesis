@@ -1,5 +1,25 @@
 import traceRepo from "./repository.js";
 
+function cloneSelections(selections) {
+  if (!Array.isArray(selections)) {
+    return [];
+  }
+
+  return selections.map((selection) => {
+    if (!selection || typeof selection !== "object") {
+      return selection;
+    }
+
+    return {
+      ...selection,
+      range:
+        selection.range && typeof selection.range === "object"
+          ? { ...selection.range }
+          : selection.range,
+    };
+  });
+}
+
 export default {
   create({ documentVersionId, modelVersionId, selections }) {
     return traceRepo.create({
@@ -7,6 +27,31 @@ export default {
       modelVersionId,
       selections,
     });
+  },
+  copyByDocumentVersionId({
+    sourceDocumentVersionId,
+    targetDocumentVersionId,
+  }) {
+    if (
+      !sourceDocumentVersionId ||
+      !targetDocumentVersionId ||
+      sourceDocumentVersionId === targetDocumentVersionId
+    ) {
+      return [];
+    }
+
+    const sourceTraces = traceRepo.findByDocumentVersionId(sourceDocumentVersionId);
+    if (!sourceTraces.length) {
+      return [];
+    }
+
+    return sourceTraces.map((trace) =>
+      this.create({
+        documentVersionId: targetDocumentVersionId,
+        modelVersionId: trace.modelVersionId,
+        selections: cloneSelections(trace.selections),
+      }),
+    );
   },
   update(id, updates) {
     const updatedTrace = traceRepo.updateById(id, updates);

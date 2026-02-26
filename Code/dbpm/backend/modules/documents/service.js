@@ -13,6 +13,7 @@ export default {
         projectId,
         name: documentName,
       });
+      const documentId = createdDocument.id;
       const latestVersionNumber = documentRepo.allocateLatestVersionNumber(
         createdDocument.id,
       );
@@ -26,16 +27,13 @@ export default {
         filename,
         wordsCount,
       });
-      storageRepo.write(createdVersion.id, content);
-      documentRepo.updateById(createdDocument.id, {
-        latestVersionId: createdVersion.id,
+      const versionId = createdVersion.id;
+      storageRepo.write(versionId, content);
+      documentRepo.updateById(documentId, {
+        latestVersionId: versionId,
       });
       logService.logEvent(projectId, "document_uploaded", createdDocument);
-      return {
-        ...createdDocument,
-        latestVersionId: createdVersion.id,
-        versions: [createdVersion],
-      };
+      return documentRepo.findByIdWithVersions(documentId);
     } catch (err) {
       // Cleanup on failure
       // If storage was already written, remove by created version id.
@@ -44,11 +42,17 @@ export default {
   },
   updateMeta(docId, updates) {
     documentRepo.updateById(docId, updates);
-    return documentRepo.findById(docId);
+    return documentRepo.findByIdWithVersions(docId);
   },
 
   createVersion({ documentId, name, filename, content }) {
     try {
+      const document = documentRepo.findById(documentId);
+      if (!document) {
+        throw new Error("Document not found");
+      }
+
+      const sourceVersionId = document.latestVersionId ?? null;
       const wordsCount = countWords(content);
       const latestVersionNumber =
         documentRepo.allocateLatestVersionNumber(documentId);
@@ -68,6 +72,10 @@ export default {
         latestVersionId: versionId,
       };
       documentRepo.updateById(documentId, documentUpdates);
+      traceService.copyByDocumentVersionId({
+        sourceDocumentVersionId: sourceVersionId,
+        targetDocumentVersionId: versionId,
+      });
       logService.logEvent(
         documentRepo.findProjectIdById(documentId),
         "document_updated",

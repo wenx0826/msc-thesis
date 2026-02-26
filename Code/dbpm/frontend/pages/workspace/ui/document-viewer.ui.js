@@ -545,6 +545,10 @@ const renderSelection = (
   modelId,
   modelVersionId,
 ) => {
+  if (!range) {
+    return;
+  }
+
   //todo
   const isActiveModel = modelId
     ? modelId === workspaceStore.getEditingModelId()
@@ -560,6 +564,10 @@ const renderSelection = (
   const eleViewerWrapRect = eleViewerWrap.getBoundingClientRect();
 
   const rects = range.getClientRects();
+  if (!rects || rects.length === 0) {
+    return;
+  }
+
   const selectionRect = range.getBoundingClientRect();
   const selectionRectTop = selectionRect.top;
   const selectionRectLeft = selectionRect.left;

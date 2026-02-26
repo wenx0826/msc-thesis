@@ -88,7 +88,6 @@ class DocumentRepository extends BaseSqlRepository {
     if (!Array.isArray(documents) || documents.length === 0) {
       return documents ?? [];
     }
-
     const documentIds = documents.map((document) => document.id);
     const versionsByDocumentId = this.findVersionsByDocumentIds(documentIds);
 
@@ -102,6 +101,12 @@ class DocumentRepository extends BaseSqlRepository {
   findByProjectIdWithVersions(projectId, includeDeleted = false) {
     const documents = this.findByProjectId(projectId, includeDeleted);
     return this.attachVersions(documents);
+  }
+
+  findByIdWithVersions(id) {
+    const document = this.findById(id);
+    const [documentWithVersions] = this.attachVersions([document]);
+    return documentWithVersions;
   }
 
   findProjectIdById(id) {

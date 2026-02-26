@@ -93,13 +93,7 @@ export default {
       });
 
       return {
-        modelMeta: {
-          ...createdModel,
-          latestVersionId: createdModelVersion.id,
-          versions: [createdModelVersion],
-          // meta: createdModelMeta,
-          // data: modelData,
-        },
+        modelMeta: modelRepo.findByIdWithVersions(createdModel.id),
         trace: createdTrace,
       };
     } catch (err) {
@@ -177,7 +171,13 @@ export default {
         (acc, sel) => acc + countWords(sel?.text ?? ""),
         0,
       );
-      traceRepo.updateByModelId(versionId, effectiveSelections);
+      const traceIdToUpdate =
+        typeof trace.id === "string" ? trace.id : currentTrace?.id;
+      if (traceIdToUpdate) {
+        traceRepo.updateById(traceIdToUpdate, {
+          selections: effectiveSelections,
+        });
+      }
       documentVersionId =
         documentVersionId ||
         (typeof trace.documentVersionId === "string"
