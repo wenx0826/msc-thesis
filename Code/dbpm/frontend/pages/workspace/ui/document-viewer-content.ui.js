@@ -1,36 +1,30 @@
 import { createUI } from "../../../shared/utils/ui.js";
 import {
-  documentsStore,
   documentViewerStore,
   modelsStore,
   workspaceStore,
 } from "../store/index.js";
 import { modelService, workspaceService } from "../services/index.js";
 import { createTemplateElement } from "../../../shared/utils/dom.js";
-import { Constants } from "../../../constants.js";
-import initVersionSelector from "../../../shared/widgets/version-selector.js";
-const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
-const MODEL_GENERATION_TARGET = Constants.MODEL_GENERATION_TARGET;
-const $versionSelect = $("#docVersionSelect");
-const $selectionColorForm = $("#selectionColorForm");
-const $deleteSelectionButton = $("#deleteSelectionButton");
-const $documentContent = $("#documentContent");
+
 const $viewerWrap = $("#viewerWrap");
+const $documentContent = $("#documentContent");
 const $selectionsVisualLayer = $("#selectionsVisualLayer");
 const $selectionsInteractionLayer = $("#selectionsInteractionLayer");
 const $selectionHandlesLayer = $("#selectionHandlesLayer");
 const $modelTagsLayer = $("#modelTagsLayer");
-const $addSelectionsButton = $("#addSelectionsButton");
-const $generateModelButton = $("#generateModelButton");
 const SELECTION_WRAP_TEMPLATE_ID = "selectionWrapTemplate";
 const SELECTION_RECT_TEMPLATE_ID = "selectionRangeRectTemplate";
 const MODEL_TAG_TEMPLATE_ID = "modelTagTemplate";
-const MODEL_GENERATION_TARGET_VALUES = new Set(
-  Object.values(MODEL_GENERATION_TARGET),
-);
-
-let selectedSelection = null;
 let handleDragState = null;
+
+function getCurrentSelectionColor() {
+  return documentViewerStore.getSelectionColor() || "#d4e1f1";
+}
+
+function getSelectedSelection() {
+  return documentViewerStore.getSelectedSelection();
+}
 
 function resolveSelectionScope(selection) {
   if (!selection) return null;
@@ -66,18 +60,6 @@ function hideSelectionHandles() {
     .hide();
 }
 
-function resolveGenerationTargetFromButton(element) {
-  const target = element?.dataset?.target;
-  if (MODEL_GENERATION_TARGET_VALUES.has(target)) {
-    return target;
-  }
-  console.warn(
-    "Unknown model generation target on button, falling back to NEW_MODEL:",
-    target,
-  );
-  return MODEL_GENERATION_TARGET.NEW_MODEL;
-}
-
 function getInteractionWrapsBySelection(selection) {
   if (!selection) return $();
   const { selectionId, modelId, traceId } = selection;
@@ -105,6 +87,7 @@ function getInteractionWrapsBySelection(selection) {
 }
 
 function findSelectedInteractionWrap() {
+  const selectedSelection = getSelectedSelection();
   if (!selectedSelection) return $();
   const $wraps = getInteractionWrapsBySelection(selectedSelection);
   return $wraps.first();
@@ -232,6 +215,7 @@ function updateSelectionRangeByMeta(selectionMeta, nextRange) {
 }
 
 function updateSelectionHandlesPosition() {
+  const selectedSelection = getSelectedSelection();
   if (!selectedSelection) {
     hideSelectionHandles();
     return;
@@ -473,22 +457,18 @@ function removeRenderedSelection({ id: selectionId }) {
   updateSelectionHandlesPosition();
 }
 
-function setSelectedSelection(selection) {
-  const currentSelectedSelection = selectedSelection;
-  selectedSelection = selection;
-
-  if (currentSelectedSelection) {
-    getInteractionWrapsBySelection(currentSelectedSelection).removeClass(
-      "selected",
-    );
+function syncSelectedSelectionUI(oldSelection, newSelection) {
+  if (oldSelection) {
+    getInteractionWrapsBySelection(oldSelection).removeClass("selected");
   }
-  if (selection) {
-    getInteractionWrapsBySelection(selection).addClass("selected");
-    $deleteSelectionButton.prop("disabled", false);
-  } else {
-    $deleteSelectionButton.prop("disabled", true);
+  if (newSelection) {
+    getInteractionWrapsBySelection(newSelection).addClass("selected");
   }
   updateSelectionHandlesPosition();
+}
+
+function setSelectedSelection(selection) {
+  documentViewerStore.setSelectedSelection(selection);
 }
 const onSelectionSelect = (event) => {
   // console.log("Range selected:", event);
@@ -593,7 +573,7 @@ const renderSelection = (
       left: `${rect.left - selectionRectLeft}px`,
       width: `${rect.width}px`,
       height: `${rect.height}px`,
-      color: color ? color : getSelectionColor(),
+      color: color || getCurrentSelectionColor(),
     });
     $highlightWrap.append($rectDiv);
   }
@@ -640,6 +620,7 @@ const renderSelection = (
   }
 
   $interactionWrap.appendTo($selectionsInteractionLayer);
+  const selectedSelection = getSelectedSelection();
   if (selectedSelection && selectedSelection.selectionId === selectionId) {
     getInteractionWrapsBySelection(selectedSelection).addClass("selected");
     updateSelectionHandlesPosition();
@@ -760,10 +741,6 @@ const renderTrace = ({ id: traceId, selections, modelId, modelVersionId }) => {
     renderSelection({ ...selection, traceId }, modelId, modelVersionId);
   });
 };
-function onGenerationButtonClick(event) {
-  const target = event.currentTarget?.dataset?.target;
-  modelService.generateModelBySelections(target);
-}
 // const rerenderSelectionsLayer = () => {};
 
 const rerenderOverlayLayers = () => {
@@ -781,11 +758,6 @@ const rerenderOverlayLayers = () => {
   // rerenderTemporarySelectionsLayer();
 };
 
-function getSelectionColor() {
-  const color = new FormData($selectionColorForm[0]).get("color");
-  return color;
-}
-
 const handleTextSelection = () => {
   const selection = window.getSelection();
 
@@ -796,7 +768,7 @@ const handleTextSelection = () => {
   // $generateModelButton.prop("disabled", false);
   const temporarySelection = {
     id: crypto.randomUUID(),
-    color: getSelectionColor(),
+    color: getCurrentSelectionColor(),
     range: range.cloneRange(),
   };
   // temporarySelections.push(temporarySelection);
@@ -808,57 +780,10 @@ const handleTextSelection = () => {
 createUI({
   setup: () => {
     hideSelectionHandles();
-    // Initial UI setup if needed
-    const versionSelector = initVersionSelector({
-      $select: $versionSelect,
-      onSelect: ({ version }) => {
-        workspaceService.displayDocument(version.documentId, version.id);
-      },
-    });
-    return { versionSelector };
+    return {};
   },
   bindListeners: () => {
-    $selectionColorForm.on("input", (e) => {
-      console.log("Selection color input.");
-      const newColor = e.target.value;
-      if (selectedSelection) {
-        if (!selectedSelection.modelId) {
-          documentViewerStore.updateTemporarySelectionColor(
-            selectedSelection.selectionId,
-            newColor,
-          );
-        } else {
-          documentViewerStore.updateActiveModelTraceSelectionColor(
-            selectedSelection.selectionId,
-            newColor,
-          );
-          modelService.updateActiveModelTrace();
-        }
-      }
-    });
-    $deleteSelectionButton.on("click", () => {
-      if (selectedSelection) {
-        const { selectionId, modelId } = selectedSelection;
-        if (!modelId) {
-          documentViewerStore.removeTemporarySelection(selectionId);
-        } else {
-          // todo change it to rerender after trace update
-          documentViewerStore.removeActiveModelTraceSelectionById(selectionId);
-          modelService.updateActiveModel(
-            MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
-          );
-        }
-        setSelectedSelection(null);
-      }
-    });
     $documentContent.on("mouseup", handleTextSelection);
-    $addSelectionsButton.on("click", () => {
-      modelService.updateActiveModel(
-        MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
-      );
-    });
-
-    $generateModelButton.on("click", onGenerationButtonClick);
     $viewerWrap.on("scroll", rerenderOverlayLayers);
     $("#columnResizehandle1").on("dragcolumnmove", (e) => {
       // e.stopPropagation();
@@ -921,7 +846,7 @@ createUI({
     */
     });
   },
-  subscribeStores: ({ versionSelector }) => {
+  subscribeStores: () => {
     documentViewerStore.subscribe((state, { key, operation, ...payload }) => {
       if (operation) {
         const { value } = payload;
@@ -1006,13 +931,8 @@ createUI({
               removeRenderedSelection(selection);
             });
             break;
-          case "hasSelectionChanged":
-            if (newValue) {
-              $generateModelButton.prop("disabled", false);
-              $addSelectionsButton.prop("disabled", false);
-            } else {
-              $generateModelButton.prop("disabled", true);
-            }
+          case "selectedSelection":
+            syncSelectedSelectionUI(oldValue, newValue);
             break;
           default:
             break;
@@ -1020,48 +940,14 @@ createUI({
       }
     });
 
-    workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
+    workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
       switch (key) {
-        case "viewedDocument":
-          const { id, versionId } = newValue || {};
-          if (id) {
-            const versions = documentsStore.getVersions(id);
-            versionSelector.update({
-              versions,
-              selectedId: newValue.versionId,
-            });
-
-            const fileName = documentsStore.getFileName(id, versionId);
-            console.log("Updating document file name:", fileName);
-            $(`[data-ref="versionFileName"]`).text(fileName);
-          }
-          break;
         case "editingModelId":
           if (oldValue === newValue) {
             break;
           }
           setModelTagCurrent(oldValue, false);
           setModelTagCurrent(newValue, true);
-          break;
-        case "editingModel":
-          const hasEditingModel = !!newValue.id;
-          if (!!oldValue.id !== hasEditingModel) {
-            if (hasEditingModel) {
-              $addSelectionsButton.show();
-              $generateModelButton.attr(
-                "data-target",
-                MODEL_GENERATION_TARGET.EDITING_MODEL,
-              );
-              $generateModelButton.text("Regenerate model");
-            } else {
-              $addSelectionsButton.hide();
-              $generateModelButton.attr(
-                "data-target",
-                MODEL_GENERATION_TARGET.NEW_MODEL,
-              );
-              $generateModelButton.text("Generate new model");
-            }
-          }
           break;
         default:
           break;

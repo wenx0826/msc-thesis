@@ -36,6 +36,8 @@ class DocumentViewerStore extends Store {
       activeModelTrace: null,
       originalActiveModelSerializedSelections: null,
       temporarySelections: [],
+      selectionColor: "#d4e1f1",
+      selectedSelection: null,
     });
   }
 
@@ -62,6 +64,7 @@ class DocumentViewerStore extends Store {
     this.setActiveModelTrace(null);
     this.setTemporarySelections([]);
     this.setHasSelectionChanged(false);
+    this.setSelectedSelection(null);
   }
 
   getStatus() {
@@ -84,6 +87,51 @@ class DocumentViewerStore extends Store {
   setContent(newValue) {
     this.state.content = newValue;
     this.notify({ key: "content", newValue });
+  }
+
+  getSelectionColor() {
+    return this.state.selectionColor;
+  }
+
+  setSelectionColor(newValue) {
+    const oldValue = this.state.selectionColor;
+    if (!newValue || oldValue === newValue) {
+      return;
+    }
+    this.state.selectionColor = newValue;
+    this.notify({ key: "selectionColor", oldValue, newValue });
+  }
+
+  getSelectedSelection() {
+    return this.state.selectedSelection;
+  }
+
+  setSelectedSelection(newValue) {
+    const oldValue = this.state.selectedSelection;
+    const normalizedValue = newValue
+      ? {
+          selectionId: newValue.selectionId,
+          modelId: newValue.modelId,
+          traceId: newValue.traceId,
+          scope: newValue.scope,
+        }
+      : null;
+
+    const isSameSelection =
+      oldValue?.selectionId === normalizedValue?.selectionId &&
+      oldValue?.modelId === normalizedValue?.modelId &&
+      oldValue?.traceId === normalizedValue?.traceId &&
+      oldValue?.scope === normalizedValue?.scope;
+    if (isSameSelection) {
+      return;
+    }
+
+    this.state.selectedSelection = normalizedValue;
+    this.notify({
+      key: "selectedSelection",
+      oldValue,
+      newValue: normalizedValue,
+    });
   }
 
   getHasSelectionChanged() {

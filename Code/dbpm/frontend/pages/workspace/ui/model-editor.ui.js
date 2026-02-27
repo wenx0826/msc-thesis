@@ -12,23 +12,30 @@ import { default as setModelNameEditor } from "../../../shared/widgets/inline-ed
 import initVersionSelector from "../../../shared/widgets/version-selector.js";
 
 const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
+// Header bar
 const $editingModelVersionName = $("#editingModelVersionName");
 const $versionSelect = $("#modelVersionSelect");
 const $createVersionButton = $("#createModelVersionButton");
-const $modelActionBar = $("#modelActionBar");
 const $exportTestsetButton = $("#exportTestsetButton");
+// Graph and details
 const $deleteModelButton = $("#deleteModelButton");
 const $datDetails = $("#dat_details");
-const $regeneratedModelActionBar = $("#regeneratedModelActionBar");
-const $viewPrevModelButton = $("#viewPrevModelButton");
-const $viewNewModelButton = $("#viewNewModelButton");
-const $revertPrevModelButton = $("#revertPrevModelButton");
-const $keepNewModelButton = $("#keepNewModelButton");
+// Action bars and buttons
+// Prompt editor
 const $promptInput = $("#promptInput");
 const $promptContainer = $("#promptContainer");
 const $promptActionBar = $("#promptActionBar");
 const $sendPromptButton = $("#sendPromptButton");
 const $clearPromptButton = $("#clearPromptButton");
+
+const $modelActionBar = $("#modelActionBar");
+
+const $regeneratedModelActionBar = $("#regeneratedModelActionBar");
+const $viewPrevModelButton = $("#viewPrevModelButton");
+const $viewNewModelButton = $("#viewNewModelButton");
+const $revertPrevModelButton = $("#revertPrevModelButton");
+const $keepNewModelButton = $("#keepNewModelButton");
+
 const $viewModelDataLink = $("#viewModelDataLink");
 const CALL_TYPE_SELECTOR = `#dat_details select[data-relaxngui-path=" > call > parameters > dbpm_type"]`;
 const CALL_SUBPROCESS_MODEL_SELECTOR = `#dat_details select[data-relaxngui-path=" > call > parameters > dbpm_subprocess_model"]`;
