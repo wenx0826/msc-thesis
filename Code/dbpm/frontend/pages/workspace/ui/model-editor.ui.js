@@ -14,6 +14,7 @@ import initVersionSelector from "../../../shared/widgets/version-selector.js";
 const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
 const $editingModelVersionName = $("#editingModelVersionName");
 const $versionSelect = $("#modelVersionSelect");
+const $createVersionButton = $("#createModelVersionButton");
 const $modelActionBar = $("#modelActionBar");
 const $exportTestsetButton = $("#exportTestsetButton");
 const $deleteModelButton = $("#deleteModelButton");
@@ -96,6 +97,7 @@ function saveActiveModel(type) {
 function clearModelViewer() {
   $editingModelVersionName.text("");
   $modelActionBar.prop("disabled", true);
+  setCreateVersionButton(true);
   $("#graphcanvas").empty();
   $datDetails.empty();
   $promptContainer.hide();
@@ -104,9 +106,35 @@ function clearModelViewer() {
 function clearModelEditor() {
   $editingModelVersionName.text("");
   $modelActionBar.prop("disabled", true);
+  setCreateVersionButton(true);
   $("#graphcanvas").empty();
   $datDetails.empty();
   $promptContainer.hide();
+}
+
+function setCreateVersionButton(isSelectedVersionLatest) {
+  const shouldCreateNewVersion = isSelectedVersionLatest !== false;
+  if (shouldCreateNewVersion) {
+    $createVersionButton
+      .text("+ New version")
+      .attr("title", "Create a version from the current latest version")
+      .attr("data-action", "new_version");
+    return;
+  }
+  $createVersionButton
+    .text("Revert to this version")
+    .attr("title", "Create a new version by copying this selected version")
+    .attr("data-action", "revert");
+}
+
+function syncCreateVersionButtonState() {
+  const { id: modelId, versionId: sourceVersionId } =
+    workspaceStore.getEditingModel() || {};
+  if (!modelId || !sourceVersionId) {
+    setCreateVersionButton(true);
+    return;
+  }
+  setCreateVersionButton(modelsStore.isLatestVersion(modelId, sourceVersionId));
 }
 
 async function showWFGraph(data) {
@@ -146,7 +174,6 @@ async function showWFGraph(data) {
 const showActiveModel = async (model) => {
   save["state"] = "ready";
   save["graph_theme"] = "preset_customized";
-  console.log("!!!!!!!!!!! Showing active model:", model);
   // Initialize endpoints and map to save cache for details.js compatibility - WAIT for completion
   await endpointLoader.init();
   save["endpoints_cache"] = endpointLoader._cache;
@@ -495,6 +522,7 @@ function do_main_work(svgid) {
 createUI({
   setup: () => {
     window.do_main_work = do_main_work;
+    setCreateVersionButton(true);
     setModelNameEditor({
       $scope: $editingModelVersionName.parent(),
       trigger: "click",
@@ -513,11 +541,36 @@ createUI({
         });
       },
     });
-    return {
-      versionSelector,
-    };
+    return { versionSelector };
   },
   bindListeners: () => {
+    $createVersionButton.on("click", async () => {
+      const { id: modelId, versionId: sourceVersionId } =
+        workspaceStore.getEditingModel() || {};
+      if (!modelId || !sourceVersionId) {
+        alert("No model version is currently selected.");
+        return;
+      }
+
+      $createVersionButton.prop("disabled", true);
+      try {
+        const result = await modelService.createModelVersion({
+          modelId,
+          sourceVersionId,
+        });
+        if (result?.meta?.reason === "revert") {
+          console.log(
+            `Created new version by reverting from ${result.meta.sourceVersionLabel}`,
+          );
+        }
+      } catch (error) {
+        console.error("Failed to create model version:", error);
+        alert("Failed to create model version.");
+      } finally {
+        $createVersionButton.prop("disabled", false);
+        syncCreateVersionButtonState();
+      }
+    });
     $viewModelDataLink.on("click", (e) => {
       e.preventDefault();
       window.open(
@@ -675,7 +728,7 @@ createUI({
         .children("dbpm_subprocess_model")
         .text();
       if (modelId) {
-        workspaceService.toggleModelDisplay(modelId);
+        workspaceService.toggleModelDisplay({ id: modelId });
       }
     });
     $(document).on("wf:subprocess-hovered", function (e) {
@@ -786,11 +839,18 @@ createUI({
       }
     });
 
+    modelsStore.subscribe((state, { operation }) => {
+      if (operation !== "versions.add") {
+        return;
+      }
+      syncCreateVersionButtonState();
+    });
+
     workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
       switch (key) {
         case "editingModel":
-          const { id: newModelId, versionId: newVersionId } = newValue;
-          const { id: oldModelId, versionId: oldVersionId } = oldValue;
+          const { id: newModelId, versionId: newVersionId } = newValue || {};
+          const { id: oldModelId, versionId: oldVersionId } = oldValue || {};
           if (newModelId) {
             const modelMeta = modelsStore.getEntity(newModelId);
             if (newModelId !== oldModelId)
@@ -800,6 +860,7 @@ createUI({
                 versions: modelMeta?.versions || [],
                 selectedId: newVersionId,
               });
+            syncCreateVersionButtonState();
           } else {
             clearModelEditor();
           }

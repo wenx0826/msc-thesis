@@ -101,6 +101,14 @@ export default {
     });
     return handleResponse(response, "Failed to create model");
   },
+  async createVersion(params) {
+    const response = await fetch(`${baseURL}/${this.path}/versions`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(params),
+    });
+    return handleResponse(response, "Failed to create model version");
+  },
   async updateMeta(modelId, params) {
     const response = await fetch(`${baseURL}/${this.path}/${modelId}/meta`, {
       method: "PUT",

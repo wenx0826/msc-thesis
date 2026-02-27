@@ -35,7 +35,7 @@ export default {
     });
   },
 
-  async displayDocument({ id, versionId }) {
+  async displayDocument({ id, versionId } = {}) {
     if (!id) {
       return;
     }
@@ -67,7 +67,7 @@ export default {
     modelEditorStore.setModel(null);
     documentViewerStore.setActiveModelTrace(null);
   },
-  toggleModelDisplay({ id, versionId }) {
+  toggleModelDisplay({ id, versionId } = {}) {
     if (!id) {
       this.clearModelDisplay();
       return;

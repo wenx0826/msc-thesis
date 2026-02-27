@@ -68,6 +68,62 @@ export const createModelSchema = {
   },
 };
 
+export const createVersionSchema = {
+  body: {
+    type: "object",
+    required: ["modelId", "sourceVersionId"],
+    properties: {
+      modelId: { type: "string" },
+      sourceVersionId: { type: "string" },
+      reason: { type: "string", enum: ["new_version", "revert"] },
+    },
+  },
+  response: {
+    200: {
+      type: "object",
+      properties: {
+        modelMeta: {
+          type: "object",
+          properties: {
+            id: { type: "string" },
+            name: { type: "string" },
+            latestVersionId: { type: "string" },
+            createdAt: { type: "string" },
+            deletedAt: { type: ["string", "null"] },
+            versions: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  id: { type: "string" },
+                  modelId: { type: "string" },
+                  versionNumber: { type: "number" },
+                  name: { type: "string" },
+                  selectedWordsCount: { type: "number" },
+                  createdAt: { type: "string" },
+                },
+              },
+            },
+            documentId: { type: "string" },
+          },
+        },
+        newVersion: {
+          type: "object",
+          properties: {
+            id: { type: "string" },
+            modelId: { type: "string" },
+            versionNumber: { type: "number" },
+            name: { type: "string" },
+            selectedWordsCount: { type: "number" },
+            createdAt: { type: "string" },
+          },
+        },
+        copiedTracesCount: { type: "number" },
+      },
+    },
+  },
+};
+
 export const updateMetaSchema = {
   params: {
     type: "object",

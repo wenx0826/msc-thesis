@@ -1,6 +1,7 @@
 import modelService from "./service.js";
 import {
   createModelSchema,
+  createVersionSchema,
   updateMetaSchema,
   getModelSchema,
   getVersionDataSchema,
@@ -17,6 +18,35 @@ export default async function (fastify, options) {
       reply.code(500).send({ error: "Failed to create model" });
     }
   });
+  // POST /models/versions - Create a new version from a source model version
+  fastify.post(
+    "/versions",
+    { schema: createVersionSchema },
+    (request, reply) => {
+      try {
+        const result = modelService.createVersion(request.body);
+        reply.send(result);
+      } catch (err) {
+        console.error("Failed to create model version:", err);
+        if (
+          ["Model not found", "Source model version not found"].includes(
+            err.message,
+          )
+        ) {
+          reply.code(404).send({ error: err.message });
+          return;
+        }
+        if (err.message === "Source version does not belong to the model") {
+          reply.code(400).send({ error: err.message });
+          return;
+        }
+        reply.code(500).send({
+          error: "Failed to create model version",
+          details: err.message,
+        });
+      }
+    },
+  );
   // PUT /models/:id/meta - Update model metadata (e.g., name)
   fastify.put(
     "/:modelId/meta",

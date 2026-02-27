@@ -53,6 +53,28 @@ export default {
       }),
     );
   },
+  copyByModelVersionId({ sourceModelVersionId, targetModelVersionId }) {
+    if (
+      !sourceModelVersionId ||
+      !targetModelVersionId ||
+      sourceModelVersionId === targetModelVersionId
+    ) {
+      return [];
+    }
+
+    const sourceTraces = traceRepo.findByModelVersionId(sourceModelVersionId);
+    if (!sourceTraces.length) {
+      return [];
+    }
+
+    return sourceTraces.map((trace) =>
+      this.create({
+        documentVersionId: trace.documentVersionId,
+        modelVersionId: targetModelVersionId,
+        selections: cloneSelections(trace.selections),
+      }),
+    );
+  },
   update(id, updates) {
     const updatedTrace = traceRepo.updateById(id, updates);
     if (!updatedTrace) {

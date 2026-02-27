@@ -53,6 +53,18 @@ class TracesRepository extends BaseSqlRepository {
     return rows.map((row) => this.mapRow(row));
   }
 
+  findByModelVersionId(modelVersionId) {
+    const stmt = db.prepare(`
+      SELECT t.*, mv.model_id
+      FROM traces t
+      LEFT JOIN model_versions mv ON t.model_version_id = mv.id
+      WHERE t.model_version_id = ?
+      ORDER BY t.created_at ASC
+    `);
+    const rows = stmt.all(modelVersionId);
+    return rows.map((row) => this.mapRow(row));
+  }
+
   findLatestByModelVersionId(modelVersionId) {
     const stmt = db.prepare(`
       SELECT *

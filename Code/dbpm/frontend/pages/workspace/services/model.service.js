@@ -228,6 +228,59 @@ export default {
     // documentViewerStore.addTrace(createdTrace);
     projectGraphStore.addModelNodeAndEdge(createdModelMeta, documentId);
   },
+  async createModelVersion({ modelId, sourceVersionId } = {}) {
+    const sourceVersion = modelsStore.getVersion(modelId, sourceVersionId);
+    const isSelectedVersionLatest = modelsStore.isLatestVersion(
+      modelId,
+      sourceVersionId,
+    );
+    const reason = isSelectedVersionLatest ? "new_version" : "revert";
+    const sourceVersionLabel =
+      sourceVersion?.name ||
+      (typeof sourceVersion?.versionNumber === "number"
+        ? `v${sourceVersion.versionNumber}`
+        : String(sourceVersionId));
+
+    const result = await modelsAPI.createVersion({
+      modelId,
+      sourceVersionId,
+      reason,
+    });
+    const modelMeta = result?.modelMeta || null;
+    const createdVersion =
+      result?.newVersion || result?.version || (result?.id ? result : null);
+
+    if (modelMeta && modelMeta.id === modelId) {
+      modelsStore.update(modelId, modelMeta);
+    } else if (createdVersion?.id) {
+      modelsStore.addVersion(modelId, createdVersion);
+    }
+
+    const createdVersionId =
+      modelMeta?.latestVersionId ||
+      createdVersion?.id ||
+      result?.latestVersionId;
+    if (!createdVersionId) {
+      throw new Error("Failed to resolve created model version");
+    }
+
+    workspaceStore.setEditingModel({
+      id: modelId,
+      versionId: createdVersionId,
+    });
+    await this.loadVersion(createdVersionId);
+
+    return {
+      ...(result || {}),
+      meta: {
+        ...(result?.meta || {}),
+        reason,
+        isSelectedVersionLatest,
+        sourceVersionId,
+        sourceVersionLabel,
+      },
+    };
+  },
   async loadVersion(versionId) {
     const data = await modelsAPI.getDataByVersionId(versionId);
     console.log("Loaded model data for versionId", versionId, ":", data);

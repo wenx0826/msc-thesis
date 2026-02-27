@@ -100,6 +100,72 @@ export default {
       throw err;
     }
   },
+  createVersion({ modelId, sourceVersionId, reason }) {
+    if (!modelId) {
+      throw new Error("Model not found");
+    }
+    if (!sourceVersionId) {
+      throw new Error("Source model version not found");
+    }
+
+    const model = modelRepo.findById(modelId);
+    if (!model) {
+      throw new Error("Model not found");
+    }
+
+    const sourceVersion = versionRepo.findById(sourceVersionId);
+    if (!sourceVersion) {
+      throw new Error("Source model version not found");
+    }
+    if (sourceVersion.modelId !== modelId) {
+      throw new Error("Source version does not belong to the model");
+    }
+
+    const normalizedReason = reason === "revert" ? "revert" : "new_version";
+    const sourceModelData = storageRepo.read(sourceVersionId);
+    const latestVersionNumber = modelRepo.allocateLatestVersionNumber(modelId);
+    if (!latestVersionNumber) {
+      throw new Error("Failed to allocate model version number");
+    }
+
+    const selectedWordsCount =
+      typeof sourceVersion.selectedWordsCount === "number"
+        ? sourceVersion.selectedWordsCount
+        : 0;
+    const createdVersion = versionRepo.create({
+      modelId,
+      versionNumber: latestVersionNumber,
+      name: `v${latestVersionNumber}`,
+      selectedWordsCount,
+    });
+
+    storageRepo.write(createdVersion.id, sourceModelData);
+    modelRepo.updateById(modelId, {
+      latestVersionId: createdVersion.id,
+    });
+
+    const copiedTraces = traceService.copyByModelVersionId({
+      sourceModelVersionId: sourceVersionId,
+      targetModelVersionId: createdVersion.id,
+    });
+
+    const projectId = model.projectId || modelRepo.getProjectIdByModelId(modelId);
+    if (projectId) {
+      logService.logEvent(projectId, "model_version_created", {
+        modelId,
+        sourceVersionId,
+        newVersionId: createdVersion.id,
+        reason: normalizedReason,
+        copiedTracesCount: copiedTraces.length,
+      });
+    }
+
+    return {
+      modelMeta: modelRepo.findByIdWithVersions(modelId),
+      newVersion: createdVersion,
+      copiedTracesCount: copiedTraces.length,
+    };
+  },
   updateMeta(modelId, updates) {
     modelRepo.updateById(modelId, updates);
     return modelRepo.findById(modelId);

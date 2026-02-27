@@ -16,6 +16,7 @@ const $modelsPanel = $("#modelsPanel");
 const $viewSwitch = $("#modelsViewSwitch");
 const $modelsGrid = $("#modelsGrid");
 const $modelsList = $("#modelsList");
+const $createVersionButton = $("#createModelVersionButton");
 
 // #region DOM Actions
 function onViewSwitch(event) {

@@ -29,8 +29,9 @@ export class VersionedEntityStore extends Store {
 
   update(id, updates) {
     const entity = this.getEntity(id);
+    const oldValue = { ...entity };
     Object.assign(entity, updates);
-    this.notify({ operation: "update", value: entity });
+    this.notify({ operation: "update", value: entity, oldValue });
     return entity;
   }
 
@@ -67,6 +68,10 @@ export class VersionedEntityStore extends Store {
   getLatestVersion(id) {
     const versions = this.getEntity(id)?.versions || [];
     return versions.at(-1) || null;
+  }
+  isLatestVersion(id, versionId) {
+    const latestVersionId = this.getLatestVersionId(id);
+    return versionId === latestVersionId;
   }
 
   addVersion(id, value) {
