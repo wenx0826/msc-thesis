@@ -272,84 +272,88 @@ tip.popper.addEventListener("mouseleave", () => {
 */
 
 workspaceStore.subscribe((state, { key, newValue }) => {
-  if (key === "modelPopover") {
-    // 🔧 FIXED: Check for newValue.modelId instead of newValue since it's always an object now
-    if (newValue && newValue.modelId && newValue.anchor) {
-      // ✨ FIXED: Also check for anchor to prevent null reference errors
-      const modelId = newValue.modelId;
-      const modelName = modelsStore.getModelNameById(modelId);
-      const modelGraph = $(modelsStore.getModelGraphById(modelId)).clone();
-      const anchor = newValue.anchor;
+  switch (key) {
+    case "modelPopover":
+      // 🔧 FIXED: Check for newValue.modelId instead of newValue since it's always an object now
+      if (newValue && newValue.modelId && newValue.anchor) {
+        // ✨ FIXED: Also check for anchor to prevent null reference errors
+        const modelId = newValue.modelId;
+        const modelName = modelsStore.getModelNameById(modelId);
+        const modelGraph = $(modelsStore.getModelGraphById(modelId)).clone();
+        const anchor = newValue.anchor;
 
-      // ✨ NEW: Validate anchor element exists in DOM before proceeding
-      if (
-        anchor.type === "element" &&
-        !document.body.contains(anchor.element)
-      ) {
-        console.warn("Anchor element not in DOM, skipping popover show");
-        return;
-      }
-
-      // 🔧 RADICAL CHANGE: Always recreate tippy for each show to avoid corruption
-      // This is more reliable than trying to reuse a potentially corrupted instance
-      try {
-        // ✨ NEW: Recreate the instance fresh for each show (prevents corruption)
-        if (!isRecreating) {
-          createTippyInstance();
+        // ✨ NEW: Validate anchor element exists in DOM before proceeding
+        if (
+          anchor.type === "element" &&
+          !document.body.contains(anchor.element)
+        ) {
+          console.warn("Anchor element not in DOM, skipping popover show");
+          break;
         }
 
-        // ✨ NEW: Set content with fresh instance
-        tip.setContent(modelGraph[0]);
+        // 🔧 RADICAL CHANGE: Always recreate tippy for each show to avoid corruption
+        // This is more reliable than trying to reuse a potentially corrupted instance
+        try {
+          // ✨ NEW: Recreate the instance fresh for each show (prevents corruption)
+          if (!isRecreating) {
+            createTippyInstance();
+          }
 
-        tip.setProps({
-          getReferenceClientRect:
-            anchor.type === "element"
-              ? () => anchor.element.getBoundingClientRect()
-              : () => ({
-                  width: 0,
-                  height: 0,
-                  top: anchor.point.y,
-                  bottom: anchor.point.y,
-                  left: anchor.point.x,
-                  right: anchor.point.x,
-                }),
-        });
-        tip.show();
-      } catch (error) {
-        console.error("Error showing model popover:", error);
-        // If even fresh instance fails, just log and skip
-      }
-    } else {
-      console.log("Hiding model popover");
+          // ✨ NEW: Set content with fresh instance
+          tip.setContent(modelGraph[0]);
 
-      // ✨ NEW: Validate tippy instance health BEFORE using it
-      if (!tip || !tip.popper || !tip.state) {
-        console.warn("Tippy instance corrupted, skipping hide");
-        return; // Just skip, no need to recreate for hide
-      }
-
-      // ✨ NEW: Wrap hide in try-catch and check if tippy instance is valid
-      try {
-        // Only hide if actually visible
-        if (tip.state.isVisible) {
-          tip.hide();
+          tip.setProps({
+            getReferenceClientRect:
+              anchor.type === "element"
+                ? () => anchor.element.getBoundingClientRect()
+                : () => ({
+                    width: 0,
+                    height: 0,
+                    top: anchor.point.y,
+                    bottom: anchor.point.y,
+                    left: anchor.point.x,
+                    right: anchor.point.x,
+                  }),
+          });
+          tip.show();
+        } catch (error) {
+          console.error("Error showing model popover:", error);
+          // If even fresh instance fails, just log and skip
         }
-      } catch (error) {
-        console.error("Error hiding model popover:", error);
-        // Silently fail on hide errors
+      } else {
+        console.log("Hiding model popover");
+
+        // ✨ NEW: Validate tippy instance health BEFORE using it
+        if (!tip || !tip.popper || !tip.state) {
+          console.warn("Tippy instance corrupted, skipping hide");
+          break; // Just skip, no need to recreate for hide
+        }
+
+        // ✨ NEW: Wrap hide in try-catch and check if tippy instance is valid
+        try {
+          // Only hide if actually visible
+          if (tip.state.isVisible) {
+            tip.hide();
+          }
+        } catch (error) {
+          console.error("Error hiding model popover:", error);
+          // Silently fail on hide errors
+        }
       }
-    }
-    /* OLD CODE - Was checking if (newValue) which doesn't work when newValue is always an object:
-    if (newValue) { ... }
-    Also was calling setProps even when hiding, causing null reference errors.
-    OLD: No error handling or DOM validation, causing crashes when elements removed.
-    OLD: setContent after setProps could cause DOM issues, and no hide before show.
-    OLD: Calling setModelPopoverParams(null) in catch caused recursive updates.
-    OLD: Not checking if tip.popper exists before accessing state.
-    OLD: No instance recreation when tippy gets corrupted.
-    OLD: Tried to use corrupted instance first, then recreate after failure.
-    OLD: Validated health but instance could still corrupt during operation.
-    NEW: ALWAYS recreate for each show - more reliable than trying to reuse.
-    */
+      /* OLD CODE - Was checking if (newValue) which doesn't work when newValue is always an object:
+      if (newValue) { ... }
+      Also was calling setProps even when hiding, causing null reference errors.
+      OLD: No error handling or DOM validation, causing crashes when elements removed.
+      OLD: setContent after setProps could cause DOM issues, and no hide before show.
+      OLD: Calling setModelPopoverParams(null) in catch caused recursive updates.
+      OLD: Not checking if tip.popper exists before accessing state.
+      OLD: No instance recreation when tippy gets corrupted.
+      OLD: Tried to use corrupted instance first, then recreate after failure.
+      OLD: Validated health but instance could still corrupt during operation.
+      NEW: ALWAYS recreate for each show - more reliable than trying to reuse.
+      */
+      break;
+    default:
+      break;
   }
 });

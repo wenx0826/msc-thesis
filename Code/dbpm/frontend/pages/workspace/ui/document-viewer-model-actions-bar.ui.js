@@ -66,21 +66,29 @@ createUI({
   },
   subscribeStores: () => {
     documentViewerStore.subscribe((state, { key, newValue }) => {
-      if (key === "hasSelectionChanged") {
-        applySelectionChangedState(newValue);
+      switch (key) {
+        case "hasSelectionChanged":
+          applySelectionChangedState(newValue);
+          break;
+        default:
+          break;
       }
     });
 
     workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
-      if (key !== "editingModel") {
-        return;
+      switch (key) {
+        case "editingModel": {
+          const oldHasEditingModel = !!oldValue?.id;
+          const newHasEditingModel = !!newValue?.id;
+          if (oldHasEditingModel === newHasEditingModel) {
+            break;
+          }
+          applyEditingModelState(newValue);
+          break;
+        }
+        default:
+          break;
       }
-      const oldHasEditingModel = !!oldValue?.id;
-      const newHasEditingModel = !!newValue?.id;
-      if (oldHasEditingModel === newHasEditingModel) {
-        return;
-      }
-      applyEditingModelState(newValue);
     });
   },
 });

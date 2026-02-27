@@ -83,13 +83,6 @@ class WorkspaceStore extends Store {
       oldValue,
       newValue,
     });
-    // if (oldValue.id !== newValue.id) {
-    //   this.notify({
-    //     key: "editingModelId",
-    //     oldValue: oldValue.id,
-    //     newValue: newValue.id,
-    //   });
-    // }
   }
   getEditingModel() {
     return this.state.editingModel;

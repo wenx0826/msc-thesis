@@ -8,27 +8,19 @@ import {
 import { modelService, workspaceService } from "../services/index.js";
 import { endpointLoader } from "../workflow/wf_endpoints/endpoint-loader.js";
 import { Constants } from "../../../constants.js";
-import { default as setModelNameEditor } from "../../../shared/widgets/inline-editor.js";
-import initVersionSelector from "../../../shared/widgets/version-selector.js";
 
 const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
 // Header bar
-const $editingModelVersionName = $("#editingModelVersionName");
-const $versionSelect = $("#modelVersionSelect");
-const $createVersionButton = $("#createModelVersionButton");
 const $exportTestsetButton = $("#exportTestsetButton");
 // Graph and details
 const $deleteModelButton = $("#deleteModelButton");
 const $datDetails = $("#dat_details");
 // Action bars and buttons
-// Prompt editor
-const $promptInput = $("#promptInput");
-const $promptContainer = $("#promptContainer");
-const $promptActionBar = $("#promptActionBar");
-const $sendPromptButton = $("#sendPromptButton");
-const $clearPromptButton = $("#clearPromptButton");
-
 const $modelActionBar = $("#modelActionBar");
+
+// disable all controls inside
+
+// enable all controls inside
 
 const $regeneratedModelActionBar = $("#regeneratedModelActionBar");
 const $viewPrevModelButton = $("#viewPrevModelButton");
@@ -102,46 +94,15 @@ function saveActiveModel(type) {
 }
 
 function clearModelViewer() {
-  $editingModelVersionName.text("");
   $modelActionBar.prop("disabled", true);
-  setCreateVersionButton(true);
   $("#graphcanvas").empty();
   $datDetails.empty();
-  $promptContainer.hide();
 }
 
 function clearModelEditor() {
-  $editingModelVersionName.text("");
   $modelActionBar.prop("disabled", true);
-  setCreateVersionButton(true);
   $("#graphcanvas").empty();
   $datDetails.empty();
-  $promptContainer.hide();
-}
-
-function setCreateVersionButton(isSelectedVersionLatest) {
-  const shouldCreateNewVersion = isSelectedVersionLatest !== false;
-  if (shouldCreateNewVersion) {
-    $createVersionButton
-      .text("+ New version")
-      .attr("title", "Create a version from the current latest version")
-      .attr("data-action", "new_version");
-    return;
-  }
-  $createVersionButton
-    .text("Revert to this version")
-    .attr("title", "Create a new version by copying this selected version")
-    .attr("data-action", "revert");
-}
-
-function syncCreateVersionButtonState() {
-  const { id: modelId, versionId: sourceVersionId } =
-    workspaceStore.getEditingModel() || {};
-  if (!modelId || !sourceVersionId) {
-    setCreateVersionButton(true);
-    return;
-  }
-  setCreateVersionButton(modelsStore.isLatestVersion(modelId, sourceVersionId));
 }
 
 async function showWFGraph(data) {
@@ -529,52 +490,8 @@ function do_main_work(svgid) {
 createUI({
   setup: () => {
     window.do_main_work = do_main_work;
-    setCreateVersionButton(true);
-    setModelNameEditor({
-      $scope: $editingModelVersionName.parent(),
-      trigger: "click",
-      autoGrow: true,
-      onSave: (name) => {
-        const editingModelId = workspaceStore.getEditingModelId();
-        modelService.renameModel(editingModelId, name);
-      },
-    });
-    const versionSelector = initVersionSelector({
-      $select: $versionSelect,
-      onSelect: ({ version }) => {
-        workspaceService.toggleModelDisplay(version.modelId, version.id);
-      },
-    });
-    return { versionSelector };
   },
   bindListeners: () => {
-    $createVersionButton.on("click", async () => {
-      const { id: modelId, versionId: sourceVersionId } =
-        workspaceStore.getEditingModel() || {};
-      if (!modelId || !sourceVersionId) {
-        alert("No model version is currently selected.");
-        return;
-      }
-
-      $createVersionButton.prop("disabled", true);
-      try {
-        const result = await modelService.createModelVersion(
-          modelId,
-          sourceVersionId,
-        );
-        if (result?.meta?.reason === "revert") {
-          console.log(
-            `Created new version by reverting from ${result.meta.sourceVersionLabel}`,
-          );
-        }
-      } catch (error) {
-        console.error("Failed to create model version:", error);
-        alert("Failed to create model version.");
-      } finally {
-        $createVersionButton.prop("disabled", false);
-        syncCreateVersionButtonState();
-      }
-    });
     $viewModelDataLink.on("click", (e) => {
       e.preventDefault();
       window.open(
@@ -616,7 +533,6 @@ createUI({
     });
 
     $revertPrevModelButton.on("click", () => {
-      $editingModelVersionName.text("");
       $("#graphcanvas").empty();
       $("#generatedModelActionBar").css("visibility", "hidden");
     });
@@ -628,32 +544,6 @@ createUI({
       $("#dat_details").empty();
     });
 
-    $promptInput.on("input", () => {
-      const promptText = $promptInput.text();
-      if (promptText && promptText.trim() !== "") {
-        $promptActionBar.removeAttr("disabled");
-      } else {
-        $promptActionBar.attr("disabled", "disabled");
-      }
-    });
-
-    $clearPromptButton.on("mousedown", (e) => {
-      e.preventDefault();
-      console.log("Clearing prompt input");
-      $promptInput.empty();
-      $promptActionBar.attr("disabled", "disabled");
-    });
-
-    $sendPromptButton.on("click", () => {
-      const promptText = $promptInput.text();
-      if (!promptText || promptText.trim() === "") {
-        alert("Please enter a prompt.");
-        return;
-      }
-      $promptInput.empty();
-      $promptActionBar.attr("disabled", "disabled");
-      modelService.generateModelByPrompt(promptText);
-    });
     $(document)
       .off("change.call-type", CALL_TYPE_SELECTOR)
       .on("change.call-type", CALL_TYPE_SELECTOR, function () {
@@ -782,20 +672,19 @@ createUI({
     */
     });
   },
-  subscribeStores: ({ versionSelector }) => {
+  subscribeStores: () => {
     modelEditorStore.subscribe((state, { key, oldValue, newValue }) => {
       switch (key) {
         case "data":
           if (newValue) {
             showWFGraph(newValue);
-            $promptContainer.show();
           } else {
             clearModelEditor();
           }
           break;
         // case "model":
         //   if (newValue) {
-        //     $editingModelVersionName.text(newValue.name ? newValue.name : "");
+        //     $editingModelName.text(newValue.name ? newValue.name : "");
         //     $modelActionBar.prop("disabled", false);
         //     $datDetails.empty();
         //     showActiveModel(newValue);
@@ -843,29 +732,10 @@ createUI({
       }
     });
 
-    modelsStore.subscribe((state, { key, operation }) => {
-      if (key !== "entitiesById.versions" || operation !== "add") {
-        return;
-      }
-      syncCreateVersionButtonState();
-    });
-
-    workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
+    workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
       switch (key) {
         case "editingModel":
-          const { id: newModelId, versionId: newVersionId } = newValue || {};
-          const { id: oldModelId, versionId: oldVersionId } = oldValue || {};
-          if (newModelId) {
-            const modelMeta = modelsStore.getEntity(newModelId);
-            if (newModelId !== oldModelId)
-              $editingModelVersionName.text(modelMeta?.name || "");
-            if (newVersionId !== oldVersionId)
-              versionSelector.update({
-                versions: modelMeta?.versions || [],
-                selectedId: newVersionId,
-              });
-            syncCreateVersionButtonState();
-          } else {
+          if (!newValue?.id) {
             clearModelEditor();
           }
           break;

@@ -3,6 +3,8 @@ import "./documents.ui.js";
 import "./document-viewer-toolbar.ui.js";
 import "./document-viewer-content.ui.js";
 import "./document-viewer-model-actions-bar.ui.js";
+import "./model-editor-toolbar.ui.js";
+import "./model-editor-prompt-panel.ui.js";
 import "./model-editor.ui.js";
 import "./models.ui.js";
 import "./project-graph.ui.js";

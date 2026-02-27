@@ -9,20 +9,10 @@ import {
 import { modelService, workspaceService } from "../services/index.js";
 
 const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
-const $versionFileName = $(`[data-ref="versionFileName"]`);
+const $versionFilename = $("#versionFilename");
 const $versionSelect = $("#docVersionSelect");
 const $selectionColorForm = $("#selectionColorForm");
 const $deleteSelectionButton = $("#deleteSelectionButton");
-
-function syncSelectionColorInput(color) {
-  if (!color) return;
-  const $input = $selectionColorForm.find(
-    `input[name="color"][value="${color}"]`,
-  );
-  if ($input.length > 0) {
-    $input.prop("checked", true);
-  }
-}
 
 createUI({
   setup: () => {
@@ -33,7 +23,6 @@ createUI({
       },
     });
 
-    syncSelectionColorInput(documentViewerStore.getSelectionColor());
     $deleteSelectionButton.prop(
       "disabled",
       !documentViewerStore.getSelectedSelection(),
@@ -85,25 +74,29 @@ createUI({
   },
   subscribeStores: ({ versionSelector }) => {
     workspaceStore.subscribe((state, { key, newValue }) => {
-      if (key !== "viewedDocument") {
-        return;
+      switch (key) {
+        case "viewedDocument": {
+          const { id, versionId } = newValue || {};
+          if (!id) {
+            break;
+          }
+          versionSelector.update({
+            versions: documentsStore.getVersions(id),
+            selectedId: versionId,
+          });
+          $versionFilename.text(
+            documentsStore.getFileName(id, versionId) || "",
+          );
+          break;
+        }
+        default:
+          break;
       }
-      const { id, versionId } = newValue || {};
-      if (!id) {
-        return;
-      }
-
-      versionSelector.update({
-        versions: documentsStore.getVersions(id),
-        selectedId: versionId,
-      });
-      $versionFileName.text(documentsStore.getFileName(id, versionId) || "");
     });
 
     documentViewerStore.subscribe((state, { key, newValue }) => {
       switch (key) {
         case "selectionColor":
-          syncSelectionColorInput(newValue);
           break;
         case "selectedSelection":
           $deleteSelectionButton.prop("disabled", !newValue);

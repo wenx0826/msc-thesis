@@ -942,12 +942,11 @@ createUI({
 
     workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
       switch (key) {
-        case "editingModelId":
-          if (oldValue === newValue) {
-            break;
-          }
-          setModelTagCurrent(oldValue, false);
-          setModelTagCurrent(newValue, true);
+        case "editingModel":
+          const oldModelId = oldValue.id;
+          const newModelId = newValue.id;
+          if (oldModelId) setModelTagCurrent(oldModelId, false);
+          if (newModelId) setModelTagCurrent(newModelId, true);
           break;
         default:
           break;

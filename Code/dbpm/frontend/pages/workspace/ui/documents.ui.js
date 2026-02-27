@@ -5,18 +5,19 @@ import { createTemplateElement } from "../../../shared/utils/dom.js";
 import initInlineEditor from "../../../shared/widgets/inline-editor.js";
 
 // #region DOM References
+const $documentsCount = $("#documentsCount");
 const $documentsInput = $("#documentsInput");
 const $documentVersionInput = $("#documentVersionInput");
 const $documentsList = $("#documentsList");
 // #endregion
 
 // #region DOM Rendering and Manipulation
-function updateDocumentsCount() {
+function syncDocumentsCount() {
   const count = documentsStore.getCount();
-  $("[data-ref='documentsCount']").text(count);
+  $documentsCount.text(count);
 }
 
-function renderDocumentItem({ id: docId, name }) {
+function addDocumentItem({ id: docId, name }) {
   const $documentItem = createTemplateElement("documentItemTemplate");
   $documentItem.attr("data-doc-id", docId);
   $documentItem.find("[data-ref='documentName']").text(name);
@@ -29,14 +30,11 @@ function getDocumentItem(docId) {
   return $documentsList.find(`li[data-doc-id='${docId}']`);
 }
 
-function rerenderDocumentItem(docId, docName, versionName) {
+function syncDocumentItem(docId, { name, versionName } = {}) {
   const $documentItem = getDocumentItem(docId);
-  if (!docName)
-    docName = documentsStore.getEntity(docId)?.name || "Untitled Document";
-  if (!versionName)
-    versionName = documentsStore.getLatestVersionName(docId) || "No Versions";
-  $documentItem.find("[data-ref='documentName']").text(docName);
-  $documentItem.find("[data-ref='versionName']").text(versionName);
+  if (name) $documentItem.find("[data-ref='documentName']").text(name);
+  if (versionName)
+    $documentItem.find("[data-ref='versionName']").text(versionName);
 }
 
 function setDocumentItemCurrent(docId, isCurrent) {
@@ -50,7 +48,7 @@ function removeDocumentItem(docId) {
 // #endregion
 
 // #region DOM Actions
-function onDocumnentsInputChange(event) {
+function onDocumentsInputChange(event) {
   const files = event.target.files;
   if (!files || files.length === 0) return;
   documentService.uploadDocuments(files);
@@ -67,38 +65,19 @@ function onDocItemClick(event) {
   workspaceService.displayDocument(documentId);
 }
 
-function onDocItemActionsBtnClick(event, renameDocument, uploadNewVersion) {
+function onDocItemActionsBtnClick(event, getActionsMenu) {
   event.stopPropagation();
-  const $documentItem = $(event.currentTarget).parent();
+  const $documentItem = $(event.currentTarget).closest("li");
   const documentId = $documentItem.data("docId");
-
-  const menu = {};
-  menu[""] = [
-    {
-      label: "Rename Document",
-      function_call: renameDocument,
-      text_icon: undefined,
-      type: undefined,
-      params: [documentId],
-    },
-    {
-      label: "Upload New Version",
-      function_call: uploadNewVersion,
-      text_icon: undefined,
-      type: undefined,
-      params: [documentId],
-    },
-    {
-      label: "Delete Document",
-      function_call: () => {},
-      text_icon: undefined,
-      type: undefined,
-      params: [documentId],
-    },
-  ];
+  const menu = getActionsMenu(documentId);
   new CustomMenu(event).contextmenu(menu);
 }
 // #endregion
+
+function uploadNewVersion(docId) {
+  $documentVersionInput.click();
+  $documentVersionInput.one("change", (e) => onVersionInputChange(e, docId));
+}
 
 createUI({
   setup: () => {
@@ -109,7 +88,6 @@ createUI({
         documentService.renameDocument(docId, newValue);
       },
     });
-
     function renameDocument(docId) {
       const $documentNameView = getDocumentItem(docId).find(
         ".inline-editor__view",
@@ -117,47 +95,67 @@ createUI({
       setTimeout(() => documentNameEditor.startEdit($documentNameView), 0);
     }
 
-    return { renameDocument };
-  },
-  bindListeners: ({ renameDocument }) => {
-    $documentsInput.on("change", onDocumnentsInputChange);
-    function uploadNewVersion(docId) {
-      $documentVersionInput.click();
-      $documentVersionInput.one("change", (e) =>
-        onVersionInputChange(e, docId),
-      );
+    function getActionsMenu(docId) {
+      const menu = {};
+      menu[""] = [
+        {
+          label: "Rename Document",
+          function_call: renameDocument,
+          text_icon: undefined,
+          type: undefined,
+          params: [docId],
+        },
+        {
+          label: "Upload New Version",
+          function_call: uploadNewVersion,
+          text_icon: undefined,
+          type: undefined,
+          params: [docId],
+        },
+        {
+          label: "Delete Document",
+          function_call: () => {},
+          text_icon: undefined,
+          type: undefined,
+          params: [docId],
+        },
+      ];
+      return menu;
     }
+    return { getActionsMenu };
+  },
+  bindListeners: ({ getActionsMenu }) => {
+    $documentsInput.on("change", onDocumentsInputChange);
     $documentsList.on("mousedown", "li", onDocItemClick);
     $documentsList.on("mousedown", "li > :last-child", (e) =>
-      onDocItemActionsBtnClick(e, renameDocument, uploadNewVersion),
+      onDocItemActionsBtnClick(e, getActionsMenu),
     );
   },
   subscribeStores: ({}) => {
-    documentsStore.subscribe((state, { key, operation, value, ...others }) => {
+    documentsStore.subscribe((state, { key, operation, value }) => {
       switch (key) {
         case "entitiesById":
           switch (operation) {
             case "init":
-              value.forEach((doc) => renderDocumentItem(doc));
-              updateDocumentsCount();
+              value.forEach((doc) => addDocumentItem(doc));
+              syncDocumentsCount();
               break;
             case "add":
-              renderDocumentItem(value);
-              updateDocumentsCount();
+              addDocumentItem(value);
+              syncDocumentsCount();
               break;
             case "update":
-              rerenderDocumentItem(value.id, value.name);
+              syncDocumentItem(value.id, { name: value.name });
               break;
             case "delete":
               removeDocumentItem(value.id);
-              updateDocumentsCount();
+              syncDocumentsCount();
               break;
           }
           break;
         case "entitiesById.versions":
           if (operation === "add") {
-            const docId = value.documentId;
-            rerenderDocumentItem(docId, null, value.name);
+            syncDocumentItem(value.documentId, { versionName: value.name });
           }
         default:
           break;
