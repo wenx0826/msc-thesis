@@ -49,21 +49,17 @@ export class VersionedEntityStore extends Store {
   getEntity(id) {
     return this.state.entitiesById[id] || null;
   }
-
+  getEntityName(id) {
+    return this.getEntity(id)?.name || null;
+  }
   getVersions(id) {
     return this.getEntity(id)?.versions || [];
   }
-  getVersionName(versions, versionId) {
+  getVersion(docId, versionId) {
+    const versions = this.getVersions(docId);
     const version = versions.find((item) => item.id === versionId);
-    return version ? version.name : null;
+    return version;
   }
-
-  getVersionDisplayName(id, versionId) {
-    const entity = this.getEntity(id);
-    const versionName = this.getVersionName(entity.versions, versionId);
-    return `${entity.name} - ${versionName}`;
-  }
-
   getLatestVersionId(id) {
     return this.getEntity(id)?.latestVersionId;
   }

@@ -351,15 +351,15 @@ function createModelTag({
   modelName,
   top,
   left,
-  isActive,
+  isCurrent,
 }) {
   const $tag = createTemplateElement(MODEL_TAG_TEMPLATE_ID)
     .attr("data-model-id", modelId)
     .attr("data-selectionid", selectionId)
     .text(modelName)
     .css({ top, left });
-  if (isActive) {
-    $tag.addClass("active");
+  if (isCurrent) {
+    $tag.addClass("is-current");
   }
   return $tag;
 }
@@ -603,16 +603,15 @@ const renderSelection = (
     const lastIndex = rects.length - 1;
     const lastRect = rects[lastIndex];
 
-    const modelName =
-      modelsStore.getVersionDisplayName(modelId, modelVersionId) || "-";
+    const modelName = modelsStore.getEntityName(modelId) || "-";
 
     const $tag = createModelTag({
       modelId,
       selectionId,
       modelName: `${modelName}`,
-      top: `${lastRect.top - eleViewerWrapRect.top + eleViewerWrap.scrollTop - 10}px`,
-      left: `${lastRect.right - eleViewerWrapRect.left + eleViewerWrap.scrollLeft - 10}px`,
-      isActive: modelId == workspaceStore.getEditingModelId(),
+      top: `${lastRect.top - eleViewerWrapRect.top + eleViewerWrap.scrollTop - 11}px`,
+      left: `${lastRect.right - eleViewerWrapRect.left + eleViewerWrap.scrollLeft - 11}px`,
+      isCurrent: modelId == workspaceStore.getEditingModelId(),
     });
     $modelTagsLayer.append($tag);
   }
@@ -734,12 +733,19 @@ function unhighlightModelSelections(modelId) {
     .removeClass("active");
   $modelTagsLayer
     .find(`.tag-span[data-model-id="${modelId}"]`)
-    .removeClass("active");
+    .removeClass("is-current");
 
   $selectionsInteractionLayer
     .find(`.selection-wrap[data-model-id="${modelId}"]`)
     .remove();
   updateSelectionHandlesPosition();
+}
+
+function setModelTagCurrent(modelId, isCurrent) {
+  if (modelId === undefined || modelId === null) return;
+  $modelTagsLayer
+    .find(`.tag-span[data-model-id="${modelId}"]`)
+    .toggleClass("is-current", isCurrent);
 }
 
 const rerenderTemporarySelectionsLayer = () => {
@@ -1020,13 +1026,25 @@ createUI({
     workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
       switch (key) {
         case "viewedDocument":
-          if (newValue.id) {
-            const versions = documentsStore.getVersions(newValue.id);
+          const { id, versionId } = newValue || {};
+          if (id) {
+            const versions = documentsStore.getVersions(id);
             versionSelector.update({
               versions,
               selectedId: newValue.versionId,
             });
+
+            const fileName = documentsStore.getFileName(id, versionId);
+            console.log("Updating document file name:", fileName);
+            $(`[data-ref="versionFileName"]`).text(fileName);
           }
+          break;
+        case "editingModelId":
+          if (oldValue === newValue) {
+            break;
+          }
+          setModelTagCurrent(oldValue, false);
+          setModelTagCurrent(newValue, true);
           break;
         case "editingModel":
           const hasEditingModel = !!newValue.id;

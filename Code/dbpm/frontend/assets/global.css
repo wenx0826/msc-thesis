@@ -76,7 +76,7 @@ body {
 
 .header {
   background-color: var(--x-ui-outside-color);
-  padding: 0.4rem 1rem;
+  padding: 5px 12px;
 }
 
 .page-rail {
