@@ -40,10 +40,6 @@ function enrichModelData(modelData, documentVersionId, selections) {
 
 export default {
   createModelAndTrace({ projectId, modelData, trace }) {
-    if (!projectId) {
-      throw new Error("Document not found or invalid");
-    }
-
     const latestModelNumber =
       projectsService.allocateLatestModelNumberById(projectId);
     const modelName = `Model_${latestModelNumber}`;
@@ -94,7 +90,7 @@ export default {
 
       return {
         modelMeta: modelRepo.findByIdWithVersions(createdModel.id),
-        trace: createdTrace,
+        trace: traceService.getById(createdTrace.id),
       };
     } catch (err) {
       throw err;
@@ -149,7 +145,8 @@ export default {
       targetModelVersionId: createdVersion.id,
     });
 
-    const projectId = model.projectId || modelRepo.getProjectIdByModelId(modelId);
+    const projectId =
+      model.projectId || modelRepo.getProjectIdByModelId(modelId);
     if (projectId) {
       logService.logEvent(projectId, "model_version_created", {
         modelId,

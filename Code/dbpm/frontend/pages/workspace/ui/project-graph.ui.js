@@ -29,6 +29,7 @@ createUI({
     const cy = cytoscape({
       container: document.getElementById("cy"),
       pixelRatio: window.devicePixelRatio || 1,
+      autounselectify: true,
       layout: cyLayoutOptions,
       zoom: 1,
       minZoom: 0.3,
@@ -189,15 +190,8 @@ createUI({
                 cy.layout({
                   ...cyLayoutOptions,
                 }).run();
-                cy.elements().unselectify();
               }
               break;
-            default:
-              break;
-          }
-          break;
-        case "elements.documentNode":
-          switch (operation) {
             case "add":
               cy.add(value);
               cy.layout({
@@ -208,14 +202,27 @@ createUI({
               break;
           }
           break;
+
+        case "elements.documentNode":
+          switch (operation) {
+            case "add":
+              // cy.add(value);
+              // cy.layout({
+              //   ...cyLayoutOptions,
+              // }).run();
+              break;
+            default:
+              break;
+          }
+          break;
         case "elements.modelNodeAndEdge":
           switch (operation) {
             case "add":
-              cy.add(value.modelNode);
-              cy.add(value.edge);
-              cy.layout({
-                ...cyLayoutOptions,
-              }).run();
+              // cy.add(value.modelNode);
+              // cy.add(value.edge);
+              // cy.layout({
+              //   ...cyLayoutOptions,
+              // }).run();
               break;
             default:
               break;

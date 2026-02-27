@@ -58,7 +58,9 @@ export const createModelSchema = {
           type: "object",
           properties: {
             id: { type: "string" },
+            documentVersionId: { type: "string" },
             documentId: { type: "string" },
+            documentVersionId: { type: "string" },
             modelId: { type: "string" },
             selections: { type: "array" },
           },

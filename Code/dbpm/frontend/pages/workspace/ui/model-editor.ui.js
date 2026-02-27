@@ -786,58 +786,58 @@ createUI({
             clearModelEditor();
           }
           break;
-        case "model":
-          if (newValue) {
-            $editingModelVersionName.text(newValue.name ? newValue.name : "");
-            $modelActionBar.prop("disabled", false);
-            $datDetails.empty();
-            showActiveModel(newValue);
-            const newModelId = newValue.id;
-            if (newModelId) {
-              $promptContainer.show();
-            }
-            const modelUpdateType = newValue.updateType;
-            if (
-              [
-                MODEL_UPDATE_TYPE.REGENERATION_BY_PROMPT,
-                MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS,
-              ].includes(modelUpdateType)
-            ) {
-              $viewPrevModelButton.prop("disabled", false);
-              $viewNewModelButton.prop("disabled", true);
-              $revertPrevModelButton.prop("disabled", true);
-              $keepNewModelButton.prop("disabled", false);
-              $regeneratedModelActionBar.show();
-              $viewPrevModelButton.on("click", () => {
-                showActiveModel(oldValue);
-                $viewPrevModelButton.prop("disabled", true);
-                $viewNewModelButton.prop("disabled", false);
-                $revertPrevModelButton.prop("disabled", false);
-                $keepNewModelButton.prop("disabled", true);
-              });
-              $viewNewModelButton.on("click", () => {
-                showActiveModel(newValue);
-                $viewPrevModelButton.prop("disabled", false);
-                $viewNewModelButton.prop("disabled", true);
-                $revertPrevModelButton.prop("disabled", true);
-                $keepNewModelButton.prop("disabled", false);
-              });
-              $revertPrevModelButton.on("click", () => {
-                showActiveModel(oldValue);
-                $regeneratedModelActionBar.hide();
-              });
-            }
-          } else {
-            clearModelViewer();
-          }
-          break;
+        // case "model":
+        //   if (newValue) {
+        //     $editingModelVersionName.text(newValue.name ? newValue.name : "");
+        //     $modelActionBar.prop("disabled", false);
+        //     $datDetails.empty();
+        //     showActiveModel(newValue);
+        //     const newModelId = newValue.id;
+        //     if (newModelId) {
+        //       $promptContainer.show();
+        //     }
+        //     const modelUpdateType = newValue.updateType;
+        //     if (
+        //       [
+        //         MODEL_UPDATE_TYPE.REGENERATION_BY_PROMPT,
+        //         MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS,
+        //       ].includes(modelUpdateType)
+        //     ) {
+        //       $viewPrevModelButton.prop("disabled", false);
+        //       $viewNewModelButton.prop("disabled", true);
+        //       $revertPrevModelButton.prop("disabled", true);
+        //       $keepNewModelButton.prop("disabled", false);
+        //       $regeneratedModelActionBar.show();
+        //       $viewPrevModelButton.on("click", () => {
+        //         showActiveModel(oldValue);
+        //         $viewPrevModelButton.prop("disabled", true);
+        //         $viewNewModelButton.prop("disabled", false);
+        //         $revertPrevModelButton.prop("disabled", false);
+        //         $keepNewModelButton.prop("disabled", true);
+        //       });
+        //       $viewNewModelButton.on("click", () => {
+        //         showActiveModel(newValue);
+        //         $viewPrevModelButton.prop("disabled", false);
+        //         $viewNewModelButton.prop("disabled", true);
+        //         $revertPrevModelButton.prop("disabled", true);
+        //         $keepNewModelButton.prop("disabled", false);
+        //       });
+        //       $revertPrevModelButton.on("click", () => {
+        //         showActiveModel(oldValue);
+        //         $regeneratedModelActionBar.hide();
+        //       });
+        //     }
+        //   } else {
+        //     clearModelViewer();
+        //   }
+        //   break;
         default:
           break;
       }
     });
 
-    modelsStore.subscribe((state, { operation }) => {
-      if (operation !== "versions.add") {
+    modelsStore.subscribe((state, { key, operation }) => {
+      if (key !== "entitiesById.versions" || operation !== "add") {
         return;
       }
       syncCreateVersionButtonState();

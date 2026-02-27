@@ -1,3 +1,4 @@
+import { get } from "http";
 import traceRepo from "./repository.js";
 
 function cloneSelections(selections) {
@@ -40,7 +41,9 @@ export default {
       return [];
     }
 
-    const sourceTraces = traceRepo.findByDocumentVersionId(sourceDocumentVersionId);
+    const sourceTraces = traceRepo.findByDocumentVersionId(
+      sourceDocumentVersionId,
+    );
     if (!sourceTraces.length) {
       return [];
     }
@@ -75,14 +78,17 @@ export default {
       }),
     );
   },
+  getById(id) {
+    return traceRepo.findById(id);
+  },
+  getByDocumentVersionId(versionId) {
+    return traceRepo.findByDocumentVersionId(versionId);
+  },
   update(id, updates) {
     const updatedTrace = traceRepo.updateById(id, updates);
     if (!updatedTrace) {
       throw new Error("Trace not found or no valid fields to update");
     }
     return updatedTrace;
-  },
-  getByDocumentVersionId(versionId) {
-    return traceRepo.findByDocumentVersionId(versionId);
   },
 };

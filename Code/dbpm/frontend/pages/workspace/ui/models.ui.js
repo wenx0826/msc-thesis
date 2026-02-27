@@ -270,6 +270,7 @@ async function renderModel(model) {
   //
   const modelId = model?.id;
   const isCurrent = modelId == workspaceStore.getEditingModel()?.id;
+  const versionName = modelsStore.getLatestVersionName(modelId) || "No Versions";
 
   // Grid view
   const gridId = `modelGrid_${modelId}`;
@@ -280,6 +281,7 @@ async function renderModel(model) {
   const $gridDiv = $gridItem.find("[data-ref='modelGrid']").first();
   $gridDiv.attr("id", gridId);
   $gridItem.find("[data-ref='modelName']").text(model.name);
+  $gridItem.find("[data-ref='versionName']").text(versionName);
   if (isCurrent) {
     $gridItem.addClass("is-current");
   }
@@ -301,6 +303,7 @@ async function renderModel(model) {
     .attr("data-model-version-id", model.latestVersionId)
     .attr("data-document-id", model.documentId);
   $listItem.find("[data-ref='modelName']").text(model.name);
+  $listItem.find("[data-ref='versionName']").text(versionName);
   if (isCurrent) {
     $listItem.addClass("is-current");
   }
@@ -346,7 +349,12 @@ function findModelListItem(modelId) {
 function updateModelItem(model) {
   const modelId = model.id;
   const modelName = model.name;
-  getModelItem(modelId).find("[data-ref='modelName']").text(modelName);
+  const versionName = modelsStore.getLatestVersionName(modelId) || "No Versions";
+  getModelItem(modelId)
+    .attr("data-model-version-id", model.latestVersionId || "")
+    .find("[data-ref='modelName']")
+    .text(modelName);
+  getModelItem(modelId).find("[data-ref='versionName']").text(versionName);
 }
 
 function setModelItemCurrent(modelId, isCurrent) {
@@ -368,24 +376,43 @@ createUI({
   },
   subscribeStores: () => {
     modelsStore.subscribe(async (state, { key, operation, value }) => {
-      switch (operation) {
-        case "init":
-          for (const model of value) {
-            await renderModel(model);
+      switch (key) {
+        case "entitiesById":
+          switch (operation) {
+            case "init":
+              for (const model of value) {
+                await renderModel(model);
+              }
+              updateModelsCount();
+              break;
+            case "add":
+              await renderModel(value);
+              updateModelsCount();
+              break;
+            case "update":
+              updateModelItem(value);
+              break;
+            case "delete":
+              console.log("Model deleted with ID:", value.id);
+              removeModelItem(value.id);
+              updateModelsCount();
+              break;
+            default:
+              break;
           }
-          updateModelsCount();
           break;
-        case "add":
-          await renderModel(value);
-          updateModelsCount();
+        case "entitiesById.versions":
+          if (operation !== "add") {
+            break;
+          }
+          if (value?.modelId) {
+            const model = modelsStore.getEntity(value.modelId);
+            if (model) {
+              updateModelItem(model);
+            }
+          }
           break;
-        case "update":
-          updateModelItem(value);
-          break;
-        case "delete":
-          console.log("Model deleted with ID:", value.id);
-          removeModelItem(value.id);
-          updateModelsCount();
+        default:
           break;
       }
     });

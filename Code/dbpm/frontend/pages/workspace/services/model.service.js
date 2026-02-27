@@ -2,7 +2,6 @@
 import { modelsAPI } from "../../../api/index.js";
 import {
   workspaceStore,
-  documentsStore,
   modelsStore,
   documentViewerStore,
   modelEditorStore,
@@ -18,7 +17,6 @@ const EMPTY_MODEL = Constants.EMPTY_MODEL;
 
 export default {
   async generateModel(userInput, rpstXml) {
-    const model = modelEditorStore.getModel() || {};
     const llm = workspaceStore.getLlmModel();
     try {
       const generatedModel = await modelsAPI.generateModel({
@@ -83,57 +81,33 @@ export default {
   async generateModelBySelections(target) {
     const selectedText = documentViewerStore.getSelectedText();
     const generatedModel = await this.generateModel(selectedText, EMPTY_MODEL);
-    // console.log("=== line85 Generated model by selections:", generatedModel);
-    // const DBPM_NS = "https://example.com/dbpm";
-    // const eleDbpmInfo = document.implementation.createDocument(
-    //   DBPM_NS,
-    //   "dbpm:info",
-    //   null,
-    // );
-    // const eleDbpmInfoRoot = eleDbpmInfo.documentElement;
-
-    // const eleDocumentInfo = eleDbpmInfo.createElementNS(
-    //   DBPM_NS,
-    //   "dbpm:document_info",
-    // );
-    // const eleDocumentId = eleDbpmInfo.createElementNS(
-    //   DBPM_NS,
-    //   "dbpm:document_id",
-    // );
-    // const documentId = workspaceStore.getViewedDocument().id;
-    // eleDocumentId.textContent = documentId;
-    // const eleDocumentName = eleDbpmInfo.createElementNS(
-    //   DBPM_NS,
-    //   "dbpm:document_name",
-    // );
-    // // eleDocumentName.textContent =
-    // //   documentsStore.getDocumentNameById(documentId) || "Unknown Document";
-    // eleDocumentInfo.appendChild(eleDocumentId);
-    // const eleDocumentText = eleDbpmInfo.createElementNS(
-    //   DBPM_NS,
-    //   "dbpm:text_selections",
-    // );
-    // eleDocumentText.textContent = selectedText;
-    // eleDocumentInfo.appendChild(eleDocumentText);
-    // eleDbpmInfoRoot.appendChild(eleDocumentInfo);
-
-    // const modelData = this.injectDbpmData(generatedModel, eleDbpmInfo);
-
-    // const shouldApplyToEditingModel =
-    //   target === MODEL_GENERATION_TARGET.EDITING_MODEL ||
-    //   (target == null && workspaceStore.hasEditingModel());
-    if (target === MODEL_GENERATION_TARGET.NEW_MODEL) {
-      this.createModelAndTrace(generatedModel);
-    } else {
-      const model = { ...modelEditorStore.getModel() };
-      model.updateType = MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS;
-      model.data = modelData;
-      modelEditorStore.setModel(model);
-      // modelsAPI.logs.createLogEntry({
-      //   event: "model_regenerated_by_selections",
-      //   data: { modelId: model.id },
-      // });
+    if (!generatedModel) {
+      console.warn("Model generation returned an empty result.");
+      return null;
     }
+
+    const normalizedTarget =
+      target === MODEL_GENERATION_TARGET.EDITING_MODEL
+        ? MODEL_GENERATION_TARGET.EDITING_MODEL
+        : MODEL_GENERATION_TARGET.NEW_MODEL;
+
+    if (normalizedTarget === MODEL_GENERATION_TARGET.NEW_MODEL) {
+      return this.createModelAndTrace(generatedModel);
+    }
+
+    const currentModel = modelEditorStore.getModel();
+    if (!currentModel) {
+      console.warn(
+        "No active editing model found for regeneration; creating a new model instead.",
+      );
+      return this.createModelAndTrace(generatedModel);
+    }
+
+    const model = { ...currentModel };
+    model.updateType = MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS;
+    model.data = generatedModel;
+    modelEditorStore.setModel(model);
+    return model;
   },
 
   injectDbpmData(xmlString, eleDbpmInfo) {
@@ -188,45 +162,35 @@ export default {
   },
 
   async createModelAndTrace(modelData) {
-    const documentVersionId = workspaceStore.getViewedDocument().versionId;
+    const { id: documentId, versionId: documentVersionId } =
+      workspaceStore.getViewedDocument() || {};
+
     const trace = {
       documentVersionId,
       selections: documentViewerStore.getSerializedTemporarySelections(),
     };
-    // console.log(
-    //   "==== !!!!Creating model with data:",
-    //   workspaceStore.getProjectId(),
-    //   modelData,
-    //   trace,
-    // );
-
     const { modelMeta: createdModelMeta, trace: createdTrace } =
       await modelsAPI.createModelAndTrace({
         projectId: workspaceStore.getProjectId(),
         modelData,
         trace,
       });
-    console.log(
-      "Created model meta:",
-      createdModelMeta,
-      "Created trace:",
-      createdTrace,
-    );
+
     modelsStore.add(createdModelMeta);
+    modelEditorStore.setModel({
+      ...createdModelMeta,
+      data: modelData,
+    });
     workspaceStore.setEditingModel({
       id: createdModelMeta.id,
       versionId: createdModelMeta.latestVersionId,
     });
     modelEditorStore.setData(modelData);
-    // modelEditorStore.setModelById(createdModelMeta.id);
-    // modelsStore.add({
-    //   meta: createdModelMeta,
-    //   documentId,
-    // });
-    // workspaceStore.setActiveModelId(createdModelMeta.id);
-    // documentViewerStore.setTemporarySelections([]);
-    // documentViewerStore.addTrace(createdTrace);
-    projectGraphStore.addModelNodeAndEdge(createdModelMeta, documentId);
+    documentViewerStore.setTemporarySelections([]);
+    documentViewerStore.setHasSelectionChanged(false);
+    documentViewerStore.addTrace(createdTrace);
+    projectGraphStore.addModelNodeAndEdge(createdModelMeta);
+    // return { modelMeta: createdModelMeta, trace: normalizedTrace };
   },
   async createModelVersion(modelId, sourceVersionId) {
     const sourceVersion = modelsStore.getVersion(modelId, sourceVersionId);
@@ -290,7 +254,7 @@ export default {
     const model = modelEditorStore.getModel();
     const modelId = workspaceStore.getEditingModelId();
 
-    if (model.updateType) {
+    if (model?.updateType) {
       type = model.updateType;
       delete model.updateType;
     }

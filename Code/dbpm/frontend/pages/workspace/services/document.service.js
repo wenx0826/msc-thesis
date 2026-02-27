@@ -27,8 +27,8 @@ export default {
     let lastUploadedDoc = null;
     for (const result of uploadResults) {
       if (result.status === "fulfilled") {
-        console.log("Uploaded document:", result.value);
         documentsStore.add(result.value);
+        projectGraphStore.addDocumentNode(result.value);
         lastUploadedDoc = result.value;
       } else {
         console.error("Error uploading document:", result.reason);
@@ -36,7 +36,6 @@ export default {
     }
 
     if (lastUploadedDoc) {
-      console.log("Displaying last uploaded document:", lastUploadedDoc);
       workspaceService.displayDocument(
         lastUploadedDoc.id,
         lastUploadedDoc.latestVersionId,

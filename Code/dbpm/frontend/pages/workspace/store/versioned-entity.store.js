@@ -14,7 +14,7 @@ export class VersionedEntityStore extends Store {
       entitiesById[entity.id] = entity;
     });
     this.state.entitiesById = entitiesById;
-    this.notify({ operation: "init", value: entities });
+    this.notify({ key: "entitiesById", operation: "init", value: entities });
   }
 
   getList() {
@@ -23,7 +23,7 @@ export class VersionedEntityStore extends Store {
 
   add(entity) {
     this.state.entitiesById[entity.id] = entity;
-    this.notify({ operation: "add", value: entity });
+    this.notify({ key: "entitiesById", operation: "add", value: entity });
     return entity;
   }
 
@@ -31,7 +31,12 @@ export class VersionedEntityStore extends Store {
     const entity = this.getEntity(id);
     const oldValue = { ...entity };
     Object.assign(entity, updates);
-    this.notify({ operation: "update", value: entity, oldValue });
+    this.notify({
+      key: "entitiesById",
+      operation: "update",
+      value: entity,
+      oldValue,
+    });
     return entity;
   }
 
@@ -39,7 +44,7 @@ export class VersionedEntityStore extends Store {
     if (!id) return null;
     const value = this.state.entitiesById[id] || null;
     delete this.state.entitiesById[id];
-    this.notify({ operation: "delete", value });
+    this.notify({ key: "entitiesById", operation: "delete", value });
     return value;
   }
 
@@ -66,19 +71,30 @@ export class VersionedEntityStore extends Store {
   }
 
   getLatestVersion(id) {
-    const versions = this.getEntity(id)?.versions || [];
-    return versions.at(-1) || null;
+    const entity = this.getEntity(id);
+    const versions = entity?.versions || [];
+    const latestVersionId = entity?.latestVersionId;
+    if (!latestVersionId) {
+      return versions.at(-1) || null;
+    }
+    return versions.find((item) => item.id === latestVersionId) || null;
   }
   isLatestVersion(id, versionId) {
     const latestVersionId = this.getLatestVersionId(id);
     return versionId === latestVersionId;
   }
-
+  getLatestVersionName(id) {
+    return this.getLatestVersion(id)?.name;
+  }
   addVersion(id, value) {
     const entity = this.getEntity(id);
     entity.versions.push(value);
     entity.latestVersionId = value.id;
-    this.notify({ operation: "versions.add", value });
+    this.notify({
+      key: "entitiesById.versions",
+      operation: "add",
+      value,
+    });
     return value;
   }
 }

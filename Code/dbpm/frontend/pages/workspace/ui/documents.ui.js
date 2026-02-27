@@ -20,6 +20,8 @@ function renderDocumentItem({ id: docId, name }) {
   const $documentItem = createTemplateElement("documentItemTemplate");
   $documentItem.attr("data-doc-id", docId);
   $documentItem.find("[data-ref='documentName']").text(name);
+  const versionName = documentsStore.getLatestVersionName(docId);
+  $documentItem.find("[data-ref='versionName']").text(versionName);
   $documentsList.append($documentItem);
 }
 
@@ -27,9 +29,14 @@ function getDocumentItem(docId) {
   return $documentsList.find(`li[data-doc-id='${docId}']`);
 }
 
-function rerenderDocumentItem(docId, name) {
+function rerenderDocumentItem(docId, docName, versionName) {
   const $documentItem = getDocumentItem(docId);
-  $documentItem.find("[data-ref='documentName']").text(name);
+  if (!docName)
+    docName = documentsStore.getEntity(docId)?.name || "Untitled Document";
+  if (!versionName)
+    versionName = documentsStore.getLatestVersionName(docId) || "No Versions";
+  $documentItem.find("[data-ref='documentName']").text(docName);
+  $documentItem.find("[data-ref='versionName']").text(versionName);
 }
 
 function setDocumentItemCurrent(docId, isCurrent) {
@@ -126,22 +133,33 @@ createUI({
     );
   },
   subscribeStores: ({}) => {
-    documentsStore.subscribe((state, { key, operation, value }) => {
-      switch (operation) {
-        case "init":
-          value.forEach((doc) => renderDocumentItem(doc));
-          updateDocumentsCount();
+    documentsStore.subscribe((state, { key, operation, value, ...others }) => {
+      switch (key) {
+        case "entitiesById":
+          switch (operation) {
+            case "init":
+              value.forEach((doc) => renderDocumentItem(doc));
+              updateDocumentsCount();
+              break;
+            case "add":
+              renderDocumentItem(value);
+              updateDocumentsCount();
+              break;
+            case "update":
+              rerenderDocumentItem(value.id, value.name);
+              break;
+            case "delete":
+              removeDocumentItem(value.id);
+              updateDocumentsCount();
+              break;
+          }
           break;
-        case "add":
-          renderDocumentItem(value);
-          updateDocumentsCount();
-          break;
-        case "update":
-          rerenderDocumentItem(value.id, value.name);
-          break;
-        case "delete":
-          removeDocumentItem(value.id);
-          updateDocumentsCount();
+        case "entitiesById.versions":
+          if (operation === "add") {
+            const docId = value.documentId;
+            rerenderDocumentItem(docId, null, value.name);
+          }
+        default:
           break;
       }
     });

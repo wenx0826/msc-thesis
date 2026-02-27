@@ -260,6 +260,12 @@ li.list-item {
   padding-right: 0.5em; */
 }
 
+.version-name {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--x-ui-text-secondary-color);
+}
+
 #documentContent {
   user-select: text;
   cursor: text;
