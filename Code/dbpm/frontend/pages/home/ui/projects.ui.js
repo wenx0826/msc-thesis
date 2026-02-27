@@ -37,7 +37,7 @@ async function renderProjectsTable() {
       project.documentsCount || 0,
       project.modelsCount || 0,
       project.createdAt,
-      "...",
+      "",
     ]);
     $projectsTable.DataTable({
       data: data,
@@ -62,7 +62,7 @@ async function renderProjectsTable() {
         {
           title: "Actions",
           render: function () {
-            return `<button class="action-btn">...</button>`; // Action button for context menu
+            return `<button class="more-actions-btn"></button>`; // Action button for context menu
           },
         },
       ],

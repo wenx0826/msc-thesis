@@ -10,8 +10,7 @@ const $versionSelect = $("#modelVersionSelect");
 const $createVersionButton = $("#createModelVersionButton");
 
 function updateCreateVersionButton(isSelectedVersionLatest) {
-  const shouldCreateNewVersion = isSelectedVersionLatest !== false;
-  if (shouldCreateNewVersion) {
+  if (isSelectedVersionLatest) {
     $createVersionButton
       .text("+ New version")
       .attr("title", "Create a version from the current latest version")

@@ -103,17 +103,13 @@
               </ui-bar>
               <ul id="documentsList">
                 <template id="documentItemTemplate">
-                  <li class="list-item" data-doc-id="" data-doc-version-id="">
+                  <li class="list-item" data-doc-id="">
                     <!-- <input type="checkbox" /> -->
                     <div class="inline-editor">
                       <span class="document-name inline-editor__view" data-ref="documentName"></span>
-
                     </div>
                     <span class="version-name" data-ref="versionName"></span>
-
-                    <span class="action-cell"><button class="right col-button action-btn">
-                        ...
-                      </button></span>
+                    <button class="more-actions-btn"></button>
                   </li>
                 </template>
               </ul>
@@ -219,7 +215,7 @@
                 <select id="modelVersionSelect"></select>
               </div>
               <button id="createModelVersionButton">+ New version</button>
-              <button class="col-button action-btn">...</button>
+              <button class="more-actions-btn"></button>
             </fieldset>
 
             <!-- <input class="inline-editor__input" type="text" /> -->
@@ -290,8 +286,7 @@
                 ☰
               </button>
             </div>
-            <span id="activeModelName" class="inline-editor__view" data-editable="1"></span>
-            <button class="right col-button action-btn">...</button>
+            <button class="right more-actions-btn"></button>
           </ui-bar>
           <ui-bar>
             <!-- <div class="right"> -->
@@ -310,9 +305,12 @@
                   <template id="modelGridTemplate">
                     <div class="model-grid-item" data-model-id="" data-model-version-id="" data-document-id="">
                       <ui-bar>
-                        <span class="inline-editor__view" data-ref="modelName"></span>
+                        <input type="checkbox" />
+                        <div class="inline-editor">
+                          <span class="inline-editor__view" data-ref="modelName"></span>
+                        </div>
                         <span class="version-name" data-ref="versionName"></span>
-                        <button class="right col-button action-btn">...</button>
+                        <button class="more-actions-btn"></button>
                       </ui-bar>
                       <div data-ref="modelGrid"></div>
                     </div>
@@ -321,11 +319,12 @@
                 <ul id="modelsList" data-belongs-to-view="list">
                   <template id="modelItemTemplate">
                     <li class="list-item model-list-item" data-model-id="" data-model-version-id="" data-document-id="">
+                      <input type="checkbox" />
                       <div class="inline-editor">
                         <span class="inline-editor__view" data-ref="modelName"></span>
-                        <span class="version-name" data-ref="versionName"></span>
                       </div>
-                      <button class="right col-button action-btn">...</button>
+                      <span class="version-name" data-ref="versionName"></span>
+                      <button class="more-actions-btn"></button>
                     </li>
                   </template>
                 </ul>

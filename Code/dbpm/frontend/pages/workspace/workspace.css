@@ -251,6 +251,7 @@ li.list-item {
   padding: 0.1em 0.5em;
   min-width: 0;
   cursor: pointer;
+  gap: 0.5em;
   /* justify-content: space-between; */
   /* align-items: center; */
   /* width: 20%;
@@ -261,9 +262,12 @@ li.list-item {
 }
 
 .version-name {
-  margin-left: auto;
+  /* margin-left: auto; */
+  /* margin: 0 0.5em; */
   font-size: 11px;
   color: var(--x-ui-text-secondary-color);
+  text-align: left;
+  /* flex: 0 0 7ch; */
 }
 
 #documentContent {
@@ -271,18 +275,19 @@ li.list-item {
   cursor: text;
 }
 
-li.list-item .inline-editor {
+li.list-item .inline-editor,
+.model-grid-item .inline-editor {
   flex: 1 1 auto;
   min-width: 0;
   overflow: hidden;
-  /* max-width: 100%; */
+  max-width: 100%;
   /* max-width: 50px; */
 }
 
 li.list-item .inline-editor__view {
-  display: block;
-  width: 100%;
-  min-width: 0;
+  /* display: inline-block; */
+  /* width: 100%; */
+  /* min-width: 0; */
 }
 
 li.list-item.is-current {
@@ -290,8 +295,6 @@ li.list-item.is-current {
   font-weight: 600;
   background-color: var(--x-ui-content-highlighted-background);
 }
-
-li .col-button {}
 
 /* li:hover {
     cursor: pointer;
@@ -451,7 +454,6 @@ li .col-button {}
 }
 
 .tag-span {
-  cursor: pointer;
   position: absolute;
 
   font-size: 11px;
@@ -467,8 +469,7 @@ li .col-button {}
 
 
   cursor: pointer;
-  transition: background .12s ease, color .12s ease;
-
+  /* transition: background .12s ease, color .12s ease; */
   pointer-events: auto;
 }
 
@@ -533,6 +534,7 @@ text.duration {
   /* display: flex;
   flex-direction: column; */
   padding: 0.5em;
+  padding-bottom: 0;
   /* border: 0.5pt solid var(--x-ui-border-color); */
   /* border-top: 0; */
   border-bottom-left-radius: 0.9em;
@@ -561,6 +563,11 @@ text.duration {
   /* border-bottom-right-radius: 0.6em; */
 }
 
+#promptContainer ui-bar {
+  margin: 0 -10px 0 8px;
+  background-color: transparent;
+}
+
 /* ---------------- middle pane end----------------*/
 /* ---------------- models pane ----------------*/
 #modelsPanel[data-current-view="grid"] [data-belongs-to-view]:not([data-belongs-to-view="grid"]),
@@ -570,10 +577,15 @@ text.duration {
 
 .model-grid-item {
   border: 1.5px solid var(--x-ui-border-color);
-  padding: 0.5em;
+  /* padding: 0.5em; */
   margin: 0.5em;
   cursor: pointer;
   overflow: hidden;
+}
+
+.model-grid-item ui-bar {
+  padding: 0;
+  gap: 0.3em;
 }
 
 .model-grid-item svg {
