@@ -35,7 +35,7 @@ export default {
     });
   },
 
-  async displayDocument({ id, versionId } = {}) {
+  async displayDocument(id, versionId) {
     if (!id) {
       return;
     }
@@ -52,10 +52,7 @@ export default {
       const editingModelDocumentId =
         modelsStore.getModelDocumentId(editingModelId);
       if (editingModelDocumentId !== id) {
-        this.toggleModelDisplay({
-          id: null,
-          versionId: null,
-        });
+        this.toggleModelDisplay(null, null);
       }
     }
   },
@@ -67,7 +64,7 @@ export default {
     modelEditorStore.setModel(null);
     documentViewerStore.setActiveModelTrace(null);
   },
-  toggleModelDisplay({ id, versionId } = {}) {
+  toggleModelDisplay(id, versionId) {
     if (!id) {
       this.clearModelDisplay();
       return;
@@ -98,7 +95,7 @@ export default {
     const currDisplayedDocumentId = workspaceStore.getViewedDocumentId();
     const currModelDocumentId = modelsStore.getModelDocumentId(id);
     if (currDisplayedDocumentId !== currModelDocumentId) {
-      this.displayDocument({ id: currModelDocumentId });
+      this.displayDocument(currModelDocumentId);
     } else {
       // documentViewerStore.setActiveModelTraceByModelId(id);
     }

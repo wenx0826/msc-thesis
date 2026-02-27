@@ -57,7 +57,7 @@ function onVersionInputChange(event, docId) {
 
 function onDocItemClick(event) {
   const documentId = $(event.currentTarget).data("docId");
-  workspaceService.displayDocument({ id: documentId });
+  workspaceService.displayDocument(documentId);
 }
 
 function onDocItemActionsBtnClick(event, renameDocument, uploadNewVersion) {

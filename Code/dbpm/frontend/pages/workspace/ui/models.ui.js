@@ -26,9 +26,7 @@ function onViewSwitch(event) {
 
 function onModelItemClick(event) {
   const modelId = event.currentTarget.dataset.modelId;
-  workspaceService.toggleModelDisplay({
-    id: modelId,
-  });
+  workspaceService.toggleModelDisplay(modelId);
 }
 // #endregion
 

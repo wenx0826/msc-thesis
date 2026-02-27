@@ -115,11 +115,11 @@ createUI({
       const id = getNodeId(node);
       switch (nodeType) {
         case "document": {
-          workspaceService.displayDocument({ id });
+          workspaceService.displayDocument(id);
           break;
         }
         case "model": {
-          workspaceService.toggleModelDisplay({ id });
+          workspaceService.toggleModelDisplay(id);
           break;
         }
         default:

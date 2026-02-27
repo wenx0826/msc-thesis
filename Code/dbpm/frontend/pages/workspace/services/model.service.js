@@ -228,7 +228,7 @@ export default {
     // documentViewerStore.addTrace(createdTrace);
     projectGraphStore.addModelNodeAndEdge(createdModelMeta, documentId);
   },
-  async createModelVersion({ modelId, sourceVersionId } = {}) {
+  async createModelVersion(modelId, sourceVersionId) {
     const sourceVersion = modelsStore.getVersion(modelId, sourceVersionId);
     const isSelectedVersionLatest = modelsStore.isLatestVersion(
       modelId,

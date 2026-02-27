@@ -535,10 +535,7 @@ createUI({
     const versionSelector = initVersionSelector({
       $select: $versionSelect,
       onSelect: ({ version }) => {
-        workspaceService.toggleModelDisplay({
-          id: version.modelId,
-          versionId: version.id,
-        });
+        workspaceService.toggleModelDisplay(version.modelId, version.id);
       },
     });
     return { versionSelector };
@@ -554,10 +551,10 @@ createUI({
 
       $createVersionButton.prop("disabled", true);
       try {
-        const result = await modelService.createModelVersion({
+        const result = await modelService.createModelVersion(
           modelId,
           sourceVersionId,
-        });
+        );
         if (result?.meta?.reason === "revert") {
           console.log(
             `Created new version by reverting from ${result.meta.sourceVersionLabel}`,
@@ -728,7 +725,7 @@ createUI({
         .children("dbpm_subprocess_model")
         .text();
       if (modelId) {
-        workspaceService.toggleModelDisplay({ id: modelId });
+        workspaceService.toggleModelDisplay(modelId);
       }
     });
     $(document).on("wf:subprocess-hovered", function (e) {

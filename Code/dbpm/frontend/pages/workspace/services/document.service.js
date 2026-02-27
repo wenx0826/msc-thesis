@@ -37,10 +37,10 @@ export default {
 
     if (lastUploadedDoc) {
       console.log("Displaying last uploaded document:", lastUploadedDoc);
-      workspaceService.displayDocument({
-        id: lastUploadedDoc.id,
-        versionId: lastUploadedDoc.latestVersionId,
-      });
+      workspaceService.displayDocument(
+        lastUploadedDoc.id,
+        lastUploadedDoc.latestVersionId,
+      );
     }
   },
   async renameDocument(docId, newName) {
@@ -70,10 +70,7 @@ export default {
     documentsStore.addVersion(documentId, newVersion);
     const currViewedDocId = workspaceStore.getViewedDocumentId();
     if (currViewedDocId === documentId) {
-      workspaceService.displayDocument({
-        id: documentId,
-        versionId: newVersion.id,
-      });
+      workspaceService.displayDocument(documentId, newVersion.id);
     }
   },
   async loadVersion(versionId) {

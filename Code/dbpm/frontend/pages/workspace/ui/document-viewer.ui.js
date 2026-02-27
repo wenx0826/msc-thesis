@@ -812,10 +812,7 @@ createUI({
     const versionSelector = initVersionSelector({
       $select: $versionSelect,
       onSelect: ({ version }) => {
-        workspaceService.displayDocument({
-          id: version.documentId,
-          versionId: version.id,
-        });
+        workspaceService.displayDocument(version.documentId, version.id);
       },
     });
     return { versionSelector };
@@ -879,7 +876,7 @@ createUI({
       // const $target = $(event.currentTarget);
       event.stopPropagation();
       const modelId = event.currentTarget.dataset.modelId;
-      workspaceService.toggleModelDisplay({ id: modelId });
+      workspaceService.toggleModelDisplay(modelId);
     });
     $modelTagsLayer.on("mouseenter", ".tag-span", (event) => {
       event.stopPropagation();
