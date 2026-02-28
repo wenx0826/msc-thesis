@@ -137,6 +137,9 @@ class WorkspaceStore extends Store {
 
     // ✨ NEW: Debounce opening (200ms delay) to prevent popover from appearing too quickly
     if (newValue) {
+      // Track the current hover source immediately so quick mouseleave can cancel pending open.
+      this.state.modelPopover.hoverSource = source;
+      this.state.modelPopover.anchor = newValue.anchor;
       this.state.modelPopover.openTimer = setTimeout(() => {
         this.state.modelPopover.modelId = newValue.modelId;
         this.state.modelPopover.anchor = newValue.anchor;
@@ -179,12 +182,26 @@ class WorkspaceStore extends Store {
 
   // 🔧 IMPROVED: Added source tracking to prevent different hover sources from interfering
   requestCloseModelPopover(source = "unknown") {
+    const hasPendingOpen = !!this.state.modelPopover.openTimer;
+    const hasVisiblePopover = !!this.state.modelPopover.modelId;
+    if (!hasPendingOpen && !hasVisiblePopover) {
+      return;
+    }
     // ✨ NEW: Only close if request comes from the same source that opened it
-    if (this.state.modelPopover.hoverSource !== source) {
+    // Allow the popover itself to request close after pointer leaves it.
+    if (
+      source !== "popover" &&
+      this.state.modelPopover.hoverSource !== source
+    ) {
       return;
     }
     this.cancelOpenModelPopover();
     this.cancelCloseModelPopover();
+    if (!hasVisiblePopover) {
+      this.state.modelPopover.anchor = null;
+      this.state.modelPopover.hoverSource = null;
+      return;
+    }
     // ✨ NEW: Increased delay to 300ms for better UX (less flickering)
     this.state.modelPopover.closeTimer = setTimeout(() => {
       this.setModelPopoverParams(null);

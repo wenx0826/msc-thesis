@@ -204,9 +204,9 @@ function createTippyInstance() {
 
     // ✨ NEW: Prevent multiple tippy instances
     onShow(instance) {
-      document.querySelectorAll(".tippy-box").forEach((box) => {
-        if (box !== instance.popper) {
-          box.remove();
+      document.querySelectorAll("[data-tippy-root]").forEach((root) => {
+        if (root !== instance.popper) {
+          root.remove();
         }
       });
     },
@@ -278,8 +278,16 @@ workspaceStore.subscribe((state, { key, newValue }) => {
       if (newValue && newValue.modelId && newValue.anchor) {
         // ✨ FIXED: Also check for anchor to prevent null reference errors
         const modelId = newValue.modelId;
-        const modelName = modelsStore.getModelNameById(modelId);
-        const modelGraph = $(modelsStore.getModelGraphById(modelId)).clone();
+        const modelGraphSource = modelsStore.getModelGraphById(modelId);
+        if (!modelGraphSource) {
+          console.warn("Model graph not available for popover:", modelId);
+          break;
+        }
+        const modelGraph = $(modelGraphSource).clone();
+        if (!modelGraph.length) {
+          console.warn("Model graph is empty for popover:", modelId);
+          break;
+        }
         const anchor = newValue.anchor;
 
         // ✨ NEW: Validate anchor element exists in DOM before proceeding

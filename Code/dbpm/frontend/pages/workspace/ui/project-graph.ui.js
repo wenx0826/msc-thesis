@@ -4,8 +4,15 @@ import { workspaceService } from "../services/index.js";
 
 const theme = (() => {
   const style = getComputedStyle(document.documentElement);
+  const token = (name) => style.getPropertyValue(name).trim();
   return {
-    currentColor: style.getPropertyValue("--wfadaptor-highlight").trim(),
+    currentColor: token("--wfadaptor-highlight"),
+    tagBackground: token("--x-ui-content-light-background"),
+    tagBorder: token("--x-ui-border-light-color"),
+    tagText: token("--x-ui-text-secondary-color"),
+    tagHoverBackground: token("--x-ui-content-hover-background"),
+    tagHoverBorder: token("--x-ui-border-color"),
+    tagHoverText: token("--x-ui-text-color"),
   };
 })();
 const cyLayoutOptions = {
@@ -45,6 +52,8 @@ createUI({
             // "font-size": 12,
             color: "#000000",
             "text-events": "yes",
+            "text-wrap": "wrap",
+            "text-max-width": 120,
             "min-zoomed-font-size": 6,
           },
         },
@@ -63,7 +72,7 @@ createUI({
             "text-valign": "bottom",
             "text-halign": "center",
             "text-wrap": "wrap",
-            "text-max-width": 80,
+            "text-max-width": 120,
           },
         },
         // hover：显示 tag
@@ -75,7 +84,7 @@ createUI({
             "text-background-opacity": 1,
             "text-background-color": "lightGrey",
             "text-background-shape": "roundrectangle",
-            "text-background-padding": 3,
+            "text-background-padding": 0,
             "font-size": 12,
             "min-zoomed-font-size": 12,
           },
@@ -83,14 +92,39 @@ createUI({
         {
           selector: 'node[type="model"]',
           style: {
+            label: "data(label)",
             width: 12,
             height: 12,
+            color: theme.tagText,
+            "font-size": 11,
             "text-valign": "bottom",
             "text-halign": "center",
-            "text-margin-y": 2,
+            "text-margin-y": 4,
+            "text-wrap": "ellipsis",
+            "text-max-width": 120,
             "text-background-opacity": 1,
-            "text-background-color": "lightGrey",
+            "text-background-color": theme.tagBackground,
             "text-background-shape": "roundrectangle",
+            "text-background-padding": 1,
+            "text-border-width": 1,
+            "text-border-color": theme.tagBorder,
+            "text-border-opacity": 1,
+          },
+        },
+        {
+          selector: 'node[type="model"].hovered',
+          style: {
+            color: theme.tagHoverText,
+            "text-background-color": theme.tagHoverBackground,
+            "text-border-color": theme.tagHoverBorder,
+          },
+        },
+        {
+          selector: 'node[type="model"].is-current',
+          style: {
+            color: "#ffffff",
+            "text-background-color": theme.currentColor,
+            "text-border-width": 0,
           },
         },
         // ---------- Edges ----------
@@ -137,6 +171,7 @@ createUI({
           node.addClass("hovered");
           break;
         case "model": {
+          node.addClass("hovered");
           const modelId = node.data("modelId");
           if (!modelId) {
             return;
@@ -170,6 +205,7 @@ createUI({
           node.removeClass("hovered"); // ✨ ADDED: Properly remove hover state
           break;
         case "model":
+          node.removeClass("hovered");
           // workspaceStore.setHoveredModelId(null);
           workspaceStore.requestCloseModelPopover("graph-node");
           // workspaceStore.requestCloseModelPopover();
