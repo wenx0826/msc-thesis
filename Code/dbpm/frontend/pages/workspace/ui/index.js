@@ -1,11 +1,11 @@
 import "./header.js";
 import "./documents.ui.js";
 import "./document-viewer-header-bar.ui.js";
-import "./document-viewer-content.ui.js";
+import "./document-viewer-main-pane.ui.js";
 import "./document-viewer-model-actions-bar.ui.js";
 import "./model-editor-header-bar.ui.js";
-import "./model-editor-prompt-container.ui.js";
-import "./model-editor-editing-container.ui.js";
+import "./model-editor-prompt-pane.ui.js";
+import "./model-editor-editing-pane.ui.js";
 import "./models.ui.js";
 import "./project-graph.ui.js";
 import "./model-popover.ui.js";

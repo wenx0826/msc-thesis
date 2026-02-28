@@ -2,7 +2,7 @@ import { createUI } from "../../../shared/utils/ui.js";
 import { modelEditorStore, workspaceStore } from "../store/index.js";
 import { modelService } from "../services/index.js";
 
-const $promptContainer = $("#promptContainer");
+const $promptPane = $("#promptPane");
 const $promptInput = $("#promptInput");
 const $promptActionsGroup = $("#promptActionsGroup");
 const $sendPromptButton = $("#sendPromptButton");
@@ -23,9 +23,9 @@ function resetPrompt() {
 
 function setPromptVisible(isVisible) {
   if (isVisible) {
-    $promptContainer.show();
+    $promptPane.show();
   } else {
-    $promptContainer.hide();
+    $promptPane.hide();
     resetPrompt();
   }
 }

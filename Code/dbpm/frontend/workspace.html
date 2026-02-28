@@ -126,7 +126,7 @@
             <div>
               <span class="" id="versionFilename"></span>
             </div>
-            <div class="right action-group">
+            <fieldset id="" class="right action-group">
               <select id="docVersionSelect"></select>
               <form id="selectionColorForm" class="relaxngui_color_container">
                 <span class="round">
@@ -158,7 +158,7 @@
               <button id="deselectAllSelectionsButton" disabled>
                 Deselect All
               </button>
-            </div>
+            </fieldset>
           </ui-bar>
           <ui-divider></ui-divider>
           <!-- Document Content Area -->
@@ -244,7 +244,7 @@
           <ui-bar>
             <!-- <div id="activeModelNameEditor" class="inline-editor"> -->
             <span id="editingModelName" class="inline-editor__view" data-editable="1"></span>
-            <fieldset id="editingModelActionsGroup" class="right action-group">
+            <fieldset id="editingModelActionsGroup" class="right action-group" disabled>
               <div class="field">
                 <select id="modelVersionSelect"></select>
               </div>
@@ -260,7 +260,7 @@
             name="savetestsetfile">save<br>testset</button>
           <button title='the SVG contains the graphical repesentation of the CPEE tree as you see it on the screen'
             name="savesvgfile">save svg<br>graph</button> -->
-          <ui-content id="editingModelContainer">
+          <ui-content id="editingModelPane">
             <ui-area id="graphgrid">
               <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink"
                 id="graphcanvas" width="1" height="1" style="display: block"></svg>
@@ -282,7 +282,7 @@
           </ui-bar>
         </ui-rest>
         <ui-resizehandle data-direction="horizontal" data-style="transparent"></ui-resizehandle>
-        <ui-rest style="flex: 0.25 1 0; min-height: 100px" id="promptContainer" class="hidden">
+        <ui-rest style="flex: 0.25 1 0; min-height: 100px" id="promptPane" class="hidden">
           <!-- <textarea id="modelXmlContent" style="width:100%; height:100%;"></textarea> -->
           <div id="promptInput" contenteditable="true" style="width: 100%; height: 100%"></div>
           <ui-bar>

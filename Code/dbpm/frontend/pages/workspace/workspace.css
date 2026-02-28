@@ -589,7 +589,7 @@ text.duration {
   padding: 0;
 }
 
-#promptContainer {
+#promptPane {
   /* display: flex;
   flex-direction: column; */
   padding: 0.5em;
@@ -601,7 +601,7 @@ text.duration {
   background-color: var(--x-ui-background-color);
 }
 
-#promptContainer:focus-within {
+#promptPane:focus-within {
   /* border-color: var(--wfadaptor-highlight);
   border-width: 2px;
   border-top-width: 0; */
@@ -622,7 +622,7 @@ text.duration {
   /* border-bottom-right-radius: 0.6em; */
 }
 
-#promptContainer ui-bar {
+#promptPane ui-bar {
   margin: 0 -10px 0 8px;
   background-color: transparent;
 }

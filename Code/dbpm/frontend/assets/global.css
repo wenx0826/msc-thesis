@@ -220,6 +220,13 @@ button.action-btn {
   /* cursor: pointer; */
 }
 
+button:disabled,
+select:disabled {
+  /* cursor: not-allowed; */
+  opacity: 0.6;
+  color: var(--x-ui-text-muted-color) !important;
+}
+
 button.more-actions-btn {
   /* width: 100%; */
   border: none;
@@ -239,7 +246,7 @@ button.more-actions-btn::before {
   content: "\22EF";
 }
 
-button.more-actions-btn:hover {
+button.more-actions-btn:hover:not(:disabled) {
   color: var(--x-ui-text-color);
   background-color: rgba(0, 0, 0, 0.1);
 }

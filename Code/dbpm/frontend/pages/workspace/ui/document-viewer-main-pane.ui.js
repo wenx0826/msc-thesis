@@ -100,23 +100,23 @@ function clampModelTagHorizontalPosition($tag) {
 
 function setHandleSelectionData($handle, selection) {
   const { selectionId, modelId, traceId } = selection;
-  $handle.attr("data-selectionid", selectionId);
+  $handle.attr("data-selection-id", selectionId);
   if (modelId !== undefined && modelId !== null) {
     $handle.attr("data-model-id", modelId);
   } else {
     $handle.removeAttr("data-model-id");
   }
   if (traceId !== undefined && traceId !== null) {
-    $handle.attr("data-traceid", traceId);
+    $handle.attr("data-trace-id", traceId);
   } else {
-    $handle.removeAttr("data-traceid");
+    $handle.removeAttr("data-trace-id");
   }
 }
 
 function hideSelectionHandles() {
   $selectionHandlesLayer
     .find(".selection-handle")
-    .removeAttr("data-selectionid data-model-id data-traceid")
+    .removeAttr("data-selection-id data-model-id data-trace-id")
     .hide();
 }
 
@@ -197,7 +197,7 @@ function getInteractionWrapsBySelection(selection) {
   const { selectionId, modelId, traceId } = selection;
   const resolvedScope = resolveSelectionScope(selection);
   let $wraps = $selectionsInteractionLayer.find(
-    `.selection-wrap[data-selectionid="${selectionId}"]`,
+    `.selection-wrap[data-selection-id="${selectionId}"]`,
   );
 
   if (resolvedScope === "temporary") {
@@ -211,7 +211,7 @@ function getInteractionWrapsBySelection(selection) {
   }
   if (traceId !== undefined && traceId !== null) {
     $wraps = $wraps.filter(
-      (_, element) => $(element).attr("data-traceid") === String(traceId),
+      (_, element) => $(element).attr("data-trace-id") === String(traceId),
     );
   }
 
@@ -414,13 +414,13 @@ function createSelectionWrap({
   isCurrent = false,
 }) {
   const $wrap = createTemplateElement(templateId)
-    .attr("data-selectionid", selectionId)
+    .attr("data-selection-id", selectionId)
     .css({ top, left, width, height });
   if (modelId !== undefined && modelId !== null) {
     $wrap.attr("data-model-id", modelId);
   }
   if (traceId !== undefined && traceId !== null) {
-    $wrap.attr("data-traceid", traceId);
+    $wrap.attr("data-trace-id", traceId);
   }
   if (isCurrent) {
     $wrap.addClass("is-current");
@@ -448,7 +448,7 @@ function createInteractionRect({
   traceId,
 }) {
   const $rect = createTemplateElement(SELECTION_RECT_TEMPLATE_ID)
-    .attr("data-selectionid", selectionId)
+    .attr("data-selection-id", selectionId)
     .css({
       top,
       left,
@@ -460,7 +460,7 @@ function createInteractionRect({
     $rect.attr("data-model-id", modelId);
   }
   if (traceId !== undefined && traceId !== null) {
-    $rect.attr("data-traceid", traceId);
+    $rect.attr("data-trace-id", traceId);
   }
   return $rect;
 }
@@ -475,7 +475,7 @@ function createModelTag({
 }) {
   const $tag = createTemplateElement(MODEL_TAG_TEMPLATE_ID)
     .attr("data-model-id", modelId)
-    .attr("data-selectionid", selectionId)
+    .attr("data-selection-id", selectionId)
     .text(modelName)
     .css({ top, left });
   if (isCurrent) {
@@ -486,7 +486,7 @@ function createModelTag({
 
 function scrollToSelection(selectionId) {
   const $selection = $selectionsVisualLayer.find(
-    `.selection-wrap[data-selectionid="${selectionId}"]`,
+    `.selection-wrap[data-selection-id="${selectionId}"]`,
   );
   if ($selection.length > 0) {
     const eleViewerWrap = $viewerWrap[0];
@@ -573,14 +573,14 @@ function removeRenderedTrace({ modelId }) {
 }
 function removeRenderedSelection({ id: selectionId }) {
   $selectionsVisualLayer
-    .find(`.selection-wrap[data-selectionid="${selectionId}"]`)
+    .find(`.selection-wrap[data-selection-id="${selectionId}"]`)
     .each((index, element) => {
       const $element = $(element);
       const elementModelId = $element.attr("data-model-id");
       if (elementModelId) {
         $modelTagsLayer
           .find(
-            `.tag-span[data-model-id="${elementModelId}"][data-selectionid="${selectionId}"]`,
+            `.tag-span[data-model-id="${elementModelId}"][data-selection-id="${selectionId}"]`,
           )
           .remove();
       }
@@ -588,7 +588,7 @@ function removeRenderedSelection({ id: selectionId }) {
     });
 
   $selectionsInteractionLayer
-    .find(`.selection-wrap[data-selectionid="${selectionId}"]`)
+    .find(`.selection-wrap[data-selection-id="${selectionId}"]`)
     .remove();
   updateSelectionHandlesPosition();
 }
@@ -627,11 +627,11 @@ const onSelectionSelect = (event) => {
 
   const $selectionWrap = $target.closest(".selection-wrap");
   const selectionId =
-    $target.attr("data-selectionid") || $selectionWrap.attr("data-selectionid");
+    $target.attr("data-selection-id") || $selectionWrap.attr("data-selection-id");
   const modelId =
     $target.attr("data-model-id") || $selectionWrap.attr("data-model-id");
   const traceId =
-    $target.attr("data-traceid") || $selectionWrap.attr("data-traceid");
+    $target.attr("data-trace-id") || $selectionWrap.attr("data-trace-id");
   const scope =
     $target.is("[data-model-id]") || $selectionWrap.is("[data-model-id]")
       ? "model"
@@ -764,13 +764,13 @@ const onSelectionHandleDragStart = (event) => {
   event.preventDefault();
   event.stopPropagation();
   const $handle = $(event.currentTarget);
-  const selectionId = $handle.attr("data-selectionid");
+  const selectionId = $handle.attr("data-selection-id");
   if (!selectionId) return;
 
   const selectionMeta = {
     selectionId,
     modelId: $handle.attr("data-model-id"),
-    traceId: $handle.attr("data-traceid"),
+    traceId: $handle.attr("data-trace-id"),
     scope: $handle.attr("data-model-id") ? "model" : "temporary",
   };
   const selection = getSelectionByMeta(selectionMeta);

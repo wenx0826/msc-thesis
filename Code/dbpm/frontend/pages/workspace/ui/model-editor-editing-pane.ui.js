@@ -500,7 +500,7 @@ createUI({
       $("#generatedModelActionBar").css("visibility", "hidden");
     });
 
-    $("#editingModelContainer").click(function (e) {
+    $("#editingModelPane").click(function (e) {
       $("#graphgrid .selected").removeClass("selected");
       localStorage.removeItem("marked");
       localStorage.removeItem("marked_from");
@@ -653,7 +653,7 @@ createUI({
         //     showActiveModel(newValue);
         //     const newModelId = newValue.id;
         //     if (newModelId) {
-        //       $promptContainer.show();
+        //       $promptPane.show();
         //     }
         //     const modelUpdateType = newValue.updateType;
         //     if (
