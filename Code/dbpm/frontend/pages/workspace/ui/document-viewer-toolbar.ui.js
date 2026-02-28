@@ -13,7 +13,7 @@ const $versionFilename = $("#versionFilename");
 const $versionSelect = $("#docVersionSelect");
 const $selectionColorForm = $("#selectionColorForm");
 const $selectedSelectionColorForm = $("#selectedSelectionColorForm");
-const $clearAllSelectionsButton = $("#clearAllSelectionsButton");
+const $deselectAllSelectionsButton = $("#deselectAllSelectionsButton");
 const $deleteSelectionButton = $("#selectedSelectionDeleteButton");
 
 function syncNextSelectionColorInput(color) {
@@ -84,8 +84,12 @@ function syncToolbarButtonStates() {
   const hasTemporarySelections =
     documentViewerStore.getTemporarySelections().length > 0;
   const hasSelectedSelection = !!documentViewerStore.getSelectedSelection();
+  const hasEditingModel = workspaceStore.hasEditingModel();
 
-  $clearAllSelectionsButton.prop("disabled", !hasTemporarySelections);
+  const hasAnySelectionStateToClear =
+    hasTemporarySelections || hasSelectedSelection || hasEditingModel;
+
+  $deselectAllSelectionsButton.prop("disabled", !hasAnySelectionStateToClear);
   $deleteSelectionButton.prop("disabled", !hasSelectedSelection);
 }
 
@@ -154,21 +158,20 @@ createUI({
       documentViewerStore.setSelectedSelection(null);
     });
 
-    $clearAllSelectionsButton.on("click", () => {
+    $deselectAllSelectionsButton.on("click", () => {
       const temporarySelections = [
         ...documentViewerStore.getTemporarySelections(),
       ];
-      if (temporarySelections.length === 0) {
-        return;
-      }
-
       temporarySelections.forEach((selection) => {
         documentViewerStore.removeTemporarySelection(selection.id);
       });
 
-      const selectedSelection = documentViewerStore.getSelectedSelection();
-      if (selectedSelection?.scope === "temporary") {
+      if (documentViewerStore.getSelectedSelection()) {
         documentViewerStore.setSelectedSelection(null);
+      }
+
+      if (workspaceStore.hasEditingModel()) {
+        workspaceService.clearModelDisplay();
       }
     });
   },
@@ -189,6 +192,9 @@ createUI({
           );
           break;
         }
+        case "editingModel":
+          syncToolbarButtonStates();
+          break;
         default:
           break;
       }

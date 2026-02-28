@@ -235,7 +235,7 @@ ui-bar {
   gap: 10px;
   padding: 6px 10px;
   border: 1px solid var(--x-ui-border-color);
-  border-radius: 999px;
+  border-radius: 0.5em;
   /* background: var(--x-ui-light-back-color); */
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
   z-index: 5;
@@ -273,7 +273,7 @@ ui-bar {
   box-sizing: content-box;
 }
 
-#clearAllSelectionsButton,
+#deselectAllSelectionsButton,
 #selectedSelectionDeleteButton {
   white-space: nowrap;
   height: 24px;
