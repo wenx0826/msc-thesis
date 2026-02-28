@@ -12,7 +12,82 @@ const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
 const $versionFilename = $("#versionFilename");
 const $versionSelect = $("#docVersionSelect");
 const $selectionColorForm = $("#selectionColorForm");
-const $deleteSelectionButton = $("#deleteSelectionButton");
+const $selectedSelectionColorForm = $("#selectedSelectionColorForm");
+const $clearAllSelectionsButton = $("#clearAllSelectionsButton");
+const $deleteSelectionButton = $("#selectedSelectionDeleteButton");
+
+function syncNextSelectionColorInput(color) {
+  if (!color) return;
+  const $input = $selectionColorForm.find(`input[value="${color}"]`);
+  if ($input.length) {
+    $input.prop("checked", true);
+  }
+}
+
+function getSelectedSelectionColor() {
+  const selectedSelection = documentViewerStore.getSelectedSelection();
+  if (!selectedSelection) {
+    return null;
+  }
+
+  if (
+    selectedSelection.scope === "temporary" ||
+    selectedSelection.modelId === undefined ||
+    selectedSelection.modelId === null
+  ) {
+    const selection = documentViewerStore
+      .getTemporarySelections()
+      .find((item) => String(item.id) === String(selectedSelection.selectionId));
+    return selection?.color || null;
+  }
+
+  let trace = null;
+  if (
+    selectedSelection.traceId !== undefined &&
+    selectedSelection.traceId !== null
+  ) {
+    trace = documentViewerStore.getTraceById(selectedSelection.traceId);
+  }
+  if (!trace) {
+    trace = documentViewerStore.getDisplayedModelTrace();
+  }
+  if (!trace?.selections) {
+    return null;
+  }
+
+  const selection = trace.selections.find(
+    (item) => String(item.id) === String(selectedSelection.selectionId),
+  );
+  return selection?.color || null;
+}
+
+function syncSelectedSelectionColorInput() {
+  const hasSelectedSelection = !!documentViewerStore.getSelectedSelection();
+  $selectedSelectionColorForm.find("input").prop("disabled", !hasSelectedSelection);
+
+  if (!hasSelectedSelection) {
+    return;
+  }
+
+  const color = getSelectedSelectionColor();
+  if (!color) {
+    return;
+  }
+
+  const $input = $selectedSelectionColorForm.find(`input[value="${color}"]`);
+  if ($input.length) {
+    $input.prop("checked", true);
+  }
+}
+
+function syncToolbarButtonStates() {
+  const hasTemporarySelections =
+    documentViewerStore.getTemporarySelections().length > 0;
+  const hasSelectedSelection = !!documentViewerStore.getSelectedSelection();
+
+  $clearAllSelectionsButton.prop("disabled", !hasTemporarySelections);
+  $deleteSelectionButton.prop("disabled", !hasSelectedSelection);
+}
 
 createUI({
   setup: () => {
@@ -23,10 +98,9 @@ createUI({
       },
     });
 
-    $deleteSelectionButton.prop(
-      "disabled",
-      !documentViewerStore.getSelectedSelection(),
-    );
+    syncToolbarButtonStates();
+    syncNextSelectionColorInput(documentViewerStore.getSelectionColor());
+    syncSelectedSelectionColorInput();
 
     return { versionSelector };
   },
@@ -34,12 +108,20 @@ createUI({
     $selectionColorForm.on("input", (event) => {
       const newColor = event.target.value;
       documentViewerStore.setSelectionColor(newColor);
+    });
+
+    $selectedSelectionColorForm.on("input", (event) => {
+      const newColor = event.target.value;
 
       const selectedSelection = documentViewerStore.getSelectedSelection();
       if (!selectedSelection) {
         return;
       }
-      if (!selectedSelection.modelId) {
+      if (
+        selectedSelection.scope === "temporary" ||
+        selectedSelection.modelId === undefined ||
+        selectedSelection.modelId === null
+      ) {
         documentViewerStore.updateTemporarySelectionColor(
           selectedSelection.selectionId,
           newColor,
@@ -71,6 +153,24 @@ createUI({
       }
       documentViewerStore.setSelectedSelection(null);
     });
+
+    $clearAllSelectionsButton.on("click", () => {
+      const temporarySelections = [
+        ...documentViewerStore.getTemporarySelections(),
+      ];
+      if (temporarySelections.length === 0) {
+        return;
+      }
+
+      temporarySelections.forEach((selection) => {
+        documentViewerStore.removeTemporarySelection(selection.id);
+      });
+
+      const selectedSelection = documentViewerStore.getSelectedSelection();
+      if (selectedSelection?.scope === "temporary") {
+        documentViewerStore.setSelectedSelection(null);
+      }
+    });
   },
   subscribeStores: ({ versionSelector }) => {
     workspaceStore.subscribe((state, { key, newValue }) => {
@@ -97,9 +197,19 @@ createUI({
     documentViewerStore.subscribe((state, { key, newValue }) => {
       switch (key) {
         case "selectionColor":
+          syncNextSelectionColorInput(newValue);
           break;
         case "selectedSelection":
-          $deleteSelectionButton.prop("disabled", !newValue);
+          syncToolbarButtonStates();
+          syncSelectedSelectionColorInput();
+          break;
+        case "temporarySelections":
+          syncToolbarButtonStates();
+          syncSelectedSelectionColorInput();
+          break;
+        case "activeModelTrace.selections":
+        case "activeModelTrace":
+          syncSelectedSelectionColorInput();
           break;
         default:
           break;

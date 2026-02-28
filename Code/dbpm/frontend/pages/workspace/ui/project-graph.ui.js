@@ -6,13 +6,14 @@ const theme = (() => {
   const style = getComputedStyle(document.documentElement);
   const token = (name) => style.getPropertyValue(name).trim();
   return {
-    currentColor: token("--wfadaptor-highlight"),
-    tagBackground: token("--x-ui-content-light-background"),
-    tagBorder: token("--x-ui-border-light-color"),
-    tagText: token("--x-ui-text-secondary-color"),
-    tagHoverBackground: token("--x-ui-content-hover-background"),
-    tagHoverBorder: token("--x-ui-border-color"),
-    tagHoverText: token("--x-ui-text-color"),
+    textColor: token("--x-ui-text-color"),
+    highlightColor: token("--wfadaptor-highlight"),
+    modelTagBackground: token("--x-ui-content-light-background"),
+    modelTagBorder: token("--x-ui-border-light-color"),
+    modelTagText: token("--x-ui-text-secondary-color"),
+    modelTagHoverBackground: token("--x-ui-content-hover-background"),
+    modelTagHoverBorder: token("--x-ui-border-color"),
+    modelTagHoverText: token("--x-ui-text-color"),
   };
 })();
 const cyLayoutOptions = {
@@ -50,9 +51,8 @@ createUI({
             // "text-valign": "center",
             // "text-halign": "center",
             // "font-size": 12,
-            color: "#000000",
+            color: theme.textColor,
             "text-events": "yes",
-            "text-wrap": "wrap",
             "text-max-width": 120,
             "min-zoomed-font-size": 6,
           },
@@ -60,33 +60,32 @@ createUI({
         {
           selector: "node.is-current",
           style: {
-            "background-color": theme.currentColor,
+            "background-color": theme.highlightColor,
           },
         },
         // ---------- Node types ----------
         {
           selector: 'node[type="document"]',
           style: {
+            label: "data(label)",
             width: 20,
             height: 20,
             "text-valign": "bottom",
             "text-halign": "center",
             "text-wrap": "wrap",
-            "text-max-width": 120,
+            "text-opacity": 1,
+            "font-size": 12,
+            "min-zoomed-font-size": 12,
+            // "text-background-opacity": 0,
           },
         },
-        // hover：显示 tag
         {
           selector: 'node[type="document"].hovered',
           style: {
-            label: "data(label)",
-            "text-opacity": 1,
+            color: theme.modelTagHoverText,
             "text-background-opacity": 1,
-            "text-background-color": "lightGrey",
-            "text-background-shape": "roundrectangle",
-            "text-background-padding": 0,
-            "font-size": 12,
-            "min-zoomed-font-size": 12,
+            "text-background-color": theme.modelTagHoverBackground,
+            "text-border-color": theme.modelTagHoverBorder,
           },
         },
         {
@@ -95,35 +94,35 @@ createUI({
             label: "data(label)",
             width: 12,
             height: 12,
-            color: theme.tagText,
+            color: theme.modelTagText,
             "font-size": 11,
             "text-valign": "bottom",
             "text-halign": "center",
             "text-margin-y": 4,
             "text-wrap": "ellipsis",
-            "text-max-width": 120,
             "text-background-opacity": 1,
-            "text-background-color": theme.tagBackground,
-            "text-background-shape": "roundrectangle",
+            "text-background-color": theme.modelTagBackground,
+            // "text-background-shape": "round-rectangle",
             "text-background-padding": 1,
-            "text-border-width": 1,
-            "text-border-color": theme.tagBorder,
+            "text-border-width": 0.5,
+            "corner-radius": 2,
+            "text-border-color": theme.modelTagBorder,
             "text-border-opacity": 1,
           },
         },
         {
           selector: 'node[type="model"].hovered',
           style: {
-            color: theme.tagHoverText,
-            "text-background-color": theme.tagHoverBackground,
-            "text-border-color": theme.tagHoverBorder,
+            color: theme.modelTagHoverText,
+            "text-background-color": theme.modelTagHoverBackground,
+            "text-border-color": theme.modelTagHoverBorder,
           },
         },
         {
           selector: 'node[type="model"].is-current',
           style: {
             color: "#ffffff",
-            "text-background-color": theme.currentColor,
+            "text-background-color": theme.highlightColor,
             "text-border-width": 0,
           },
         },
@@ -165,7 +164,9 @@ createUI({
     cy.on("mouseover", "node", (e) => {
       cy.container().style.cursor = "pointer";
       const node = e.target;
+      node.addClass("hovered");
       const nodeType = getNodeType(node);
+      const nodeId = getNodeId(node);
       switch (nodeType) {
         case "document":
           node.addClass("hovered");
@@ -199,13 +200,14 @@ createUI({
     cy.on("mouseout", "node", (evt) => {
       cy.container().style.cursor = "default";
       const node = evt.target;
+      node.removeClass("hovered");
       const nodeType = getNodeType(node);
       switch (nodeType) {
         case "document":
-          node.removeClass("hovered"); // ✨ ADDED: Properly remove hover state
+          // node.removeClass("hovered");
           break;
         case "model":
-          node.removeClass("hovered");
+          // node.removeClass("hovered");
           // workspaceStore.setHoveredModelId(null);
           workspaceStore.requestCloseModelPopover("graph-node");
           // workspaceStore.requestCloseModelPopover();

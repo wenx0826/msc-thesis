@@ -225,23 +225,59 @@ ui-bar {
   align-items: center;
 }
 
-#selectionColorForm {
+#selectedSelectionToolbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, 0);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  border: 1px solid var(--x-ui-border-color);
+  border-radius: 999px;
+  /* background: var(--x-ui-light-back-color); */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+  z-index: 5;
+  pointer-events: auto;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.12s ease, visibility 0.12s ease;
+}
+
+#selectedSelectionToolbar.is-visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+#selectionColorForm,
+#selectedSelectionColorForm {
   margin: 0;
   display: flex;
   align-items: center;
+  gap: 2px;
   height: 100%;
 }
 
-#selectionColorForm .round {
+#selectionColorForm .round,
+#selectedSelectionColorForm .round {
   display: inline-flex;
   align-items: center;
   height: 100%;
 }
 
-#selectionColorForm .round label {
+#selectionColorForm .round label,
+#selectedSelectionColorForm .round label {
   top: 50%;
   transform: translateY(-50%);
   box-sizing: content-box;
+}
+
+#clearAllSelectionsButton,
+#selectedSelectionDeleteButton {
+  white-space: nowrap;
+  height: 24px;
+  padding: 0 8px;
 }
 
 li.list-item:nth-child(odd) {
@@ -284,7 +320,7 @@ li.list-item {
   /* margin-left: auto; */
   /* margin: 0 0.5em; */
   font-size: 11px;
-  color: var(--x-ui-text-secondary-color);
+  color: var(--x-ui-text-muted-color);
   text-align: left;
   /* flex: 0 0 7ch; */
 }
@@ -385,8 +421,6 @@ li.list-item.is-current {
 .range-rect {
   position: absolute;
   opacity: 0.75;
-  /* border: 2px solid red; */
-  /* background-color: yellow; */
 }
 
 #selectionsVisualLayer .selection-wrap.is-current * {
@@ -394,27 +428,24 @@ li.list-item.is-current {
 }
 
 #selectionsInteractionLayer .selection-wrap {
-  background: transparent;
   pointer-events: none;
-  cursor: default;
+  outline-offset: 2px;
 }
 
 #selectionsInteractionLayer .selection-wrap:not([data-model-id]) {
   outline: 2px dashed var(--wfadaptor-highlight);
-  outline-offset: 2px;
-}
-#selectionsInteractionLayer .selection-wrap.selected:not([data-model-id]) {
-  outline-style: dashed;
 }
 
 #selectionsInteractionLayer .selection-wrap.is-current {
   outline: 2px solid var(--wfadaptor-highlight);
-  outline-offset: 2px;
 }
 
 #selectionsInteractionLayer .selection-wrap.selected {
-  outline: 2px solid var(--wfadaptor-selected) !important;
-  outline-offset: 2px;
+  outline: 2px solid var(--wfadaptor-selected);
+}
+
+#selectionsInteractionLayer .selection-wrap.selected:not([data-model-id]) {
+  outline-style: dashed;
 }
 
 #selectionsInteractionLayer .range-rect {

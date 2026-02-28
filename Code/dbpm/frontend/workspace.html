@@ -129,36 +129,34 @@
             <div class="right action-group">
               <select id="docVersionSelect"></select>
               <form id="selectionColorForm" class="relaxngui_color_container">
-                <!-- <div class="relaxngui_color_container"> -->
                 <span class="round">
-                  <input type="radio" name="color" value="#d4e1f1" id="selectionColor1" checked />
+                  <input type="radio" name="selectionColor" value="#d4e1f1" id="selectionColor1" checked />
                   <label for="selectionColor1" style="background-color: #d4e1f1"></label>
                 </span>
                 <span class="round">
-                  <input type="radio" name="color" value="#d8f0dd" id="selectionColor2" />
+                  <input type="radio" name="selectionColor" value="#d8f0dd" id="selectionColor2" />
                   <label for="selectionColor2" style="background-color: #d8f0dd"></label>
                 </span>
                 <span class="round">
-                  <input type="radio" name="color" value="#ffffcc" id="selectionColor3" />
+                  <input type="radio" name="selectionColor" value="#ffffcc" id="selectionColor3" />
                   <label for="selectionColor3" style="background-color: #ffffcc"></label>
                 </span>
                 <span class="round">
-                  <input type="radio" name="color" value="#e4c3e4" id="selectionColor4" />
+                  <input type="radio" name="selectionColor" value="#e4c3e4" id="selectionColor4" />
                   <label for="selectionColor4" style="background-color: #e4c3e4"></label></span>
                 <span class="round">
-                  <input type="radio" name="color" value="#f8a8c6" id="selectionColor5" />
+                  <input type="radio" name="selectionColor" value="#f8a8c6" id="selectionColor5" />
                   <label for="selectionColor5" style="background-color: #f8a8c6"></label></span>
                 <span class="round">
-                  <input type="radio" name="color" value="#ded0c5" id="selectionColor6" />
+                  <input type="radio" name="selectionColor" value="#ded0c5" id="selectionColor6" />
                   <label for="selectionColor6" style="background-color: #ded0c5"></label></span>
                 <span class="round">
-                  <input type="radio" name="color" value="#deddda" id="selectionColor7" />
+                  <input type="radio" name="selectionColor" value="#deddda" id="selectionColor7" />
                   <label for="selectionColor7" style="background-color: #deddda"></label>
                 </span>
-                <!-- </div> -->
               </form>
-              <button id="deleteSelectionButton" disabled>
-                Clear selections
+              <button id="clearAllSelectionsButton" disabled>
+                Clear all selections
               </button>
             </div>
           </ui-bar>
@@ -176,7 +174,41 @@
                   <div class="selection-handle hidden" data-side="start"></div>
                   <div class="selection-handle hidden" data-side="end"></div>
                 </div>
-
+                <ui-bar id="selectedSelectionToolbar" aria-hidden="true">
+                  <form id="selectedSelectionColorForm" class="relaxngui_color_container">
+                    <!-- <div class="relaxngui_color_container"> -->
+                    <span class="round">
+                      <input type="radio" name="selectedSelectionColor" value="#d4e1f1" id="selectedSelectionColor1"
+                        checked />
+                      <label for="selectedSelectionColor1" style="background-color: #d4e1f1"></label>
+                    </span>
+                    <span class="round">
+                      <input type="radio" name="selectedSelectionColor" value="#d8f0dd" id="selectedSelectionColor2" />
+                      <label for="selectedSelectionColor2" style="background-color: #d8f0dd"></label>
+                    </span>
+                    <span class="round">
+                      <input type="radio" name="selectedSelectionColor" value="#ffffcc" id="selectedSelectionColor3" />
+                      <label for="selectedSelectionColor3" style="background-color: #ffffcc"></label>
+                    </span>
+                    <span class="round">
+                      <input type="radio" name="selectedSelectionColor" value="#e4c3e4" id="selectedSelectionColor4" />
+                      <label for="selectedSelectionColor4" style="background-color: #e4c3e4"></label></span>
+                    <span class="round">
+                      <input type="radio" name="selectedSelectionColor" value="#f8a8c6" id="selectedSelectionColor5" />
+                      <label for="selectedSelectionColor5" style="background-color: #f8a8c6"></label></span>
+                    <span class="round">
+                      <input type="radio" name="selectedSelectionColor" value="#ded0c5" id="selectedSelectionColor6" />
+                      <label for="selectedSelectionColor6" style="background-color: #ded0c5"></label></span>
+                    <span class="round">
+                      <input type="radio" name="selectedSelectionColor" value="#deddda" id="selectedSelectionColor7" />
+                      <label for="selectedSelectionColor7" style="background-color: #deddda"></label>
+                    </span>
+                    <!-- </div> -->
+                  </form>
+                  <button id="selectedSelectionDeleteButton" disabled>
+                    Delete selection
+                  </button>
+                </ui-bar>
                 <!-- <div id="activeModelTags"></div> -->
               </ui-area>
               <template id="selectionWrapTemplate">
@@ -188,6 +220,8 @@
               <template id="modelTagTemplate">
                 <span class="tag-span"></span>
               </template>
+
+
             </ui-area>
           </ui-content>
           <ui-divider></ui-divider>
@@ -305,7 +339,7 @@
                   <template id="modelGridTemplate">
                     <div class="model-grid-item" data-model-id="" data-model-version-id="" data-document-id="">
                       <ui-bar>
-                        <input type="checkbox" />
+                        <!-- <input type="checkbox" /> -->
                         <div class="inline-editor">
                           <span class="inline-editor__view" data-ref="modelName"></span>
                         </div>
@@ -319,7 +353,7 @@
                 <ul id="modelsList" data-belongs-to-view="list">
                   <template id="modelItemTemplate">
                     <li class="list-item model-list-item" data-model-id="" data-model-version-id="" data-document-id="">
-                      <input type="checkbox" />
+                      <!-- <input type="checkbox" /> -->
                       <div class="inline-editor">
                         <span class="inline-editor__view" data-ref="modelName"></span>
                       </div>

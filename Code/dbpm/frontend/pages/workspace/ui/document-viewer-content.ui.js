@@ -13,6 +13,7 @@ const $selectionsVisualLayer = $("#selectionsVisualLayer");
 const $selectionsInteractionLayer = $("#selectionsInteractionLayer");
 const $selectionHandlesLayer = $("#selectionHandlesLayer");
 const $modelTagsLayer = $("#modelTagsLayer");
+const $selectedSelectionToolbar = $("#selectedSelectionToolbar");
 const SELECTION_WRAP_TEMPLATE_ID = "selectionWrapTemplate";
 const SELECTION_RECT_TEMPLATE_ID = "selectionRangeRectTemplate";
 const MODEL_TAG_TEMPLATE_ID = "modelTagTemplate";
@@ -117,6 +118,78 @@ function hideSelectionHandles() {
     .find(".selection-handle")
     .removeAttr("data-selectionid data-model-id data-traceid")
     .hide();
+}
+
+function hideSelectedSelectionToolbar() {
+  $selectedSelectionToolbar
+    .removeClass("is-visible")
+    .attr("aria-hidden", "true");
+}
+
+function updateSelectedSelectionToolbarPosition() {
+  if (handleDragState) {
+    hideSelectedSelectionToolbar();
+    return;
+  }
+
+  const selectedSelection = getSelectedSelection();
+  if (!selectedSelection) {
+    hideSelectedSelectionToolbar();
+    return;
+  }
+
+  const $wrap = findSelectedInteractionWrap();
+  if ($wrap.length === 0) {
+    hideSelectedSelectionToolbar();
+    return;
+  }
+
+  const $rects = $wrap.find(".range-rect");
+  if ($rects.length === 0) {
+    hideSelectedSelectionToolbar();
+    return;
+  }
+
+  const viewerElement = $viewerWrap[0];
+  if (!viewerElement) {
+    hideSelectedSelectionToolbar();
+    return;
+  }
+
+  const $firstRect = $($rects[0]);
+  const $lastRect = $($rects[$rects.length - 1]);
+  const wrapTop = getNumericCssPx($wrap, "top");
+  const wrapLeft = getNumericCssPx($wrap, "left");
+
+  const anchorCenterX =
+    wrapLeft +
+    getNumericCssPx($firstRect, "left") +
+    getNumericCssPx($firstRect, "width") / 2;
+  const selectionTop = wrapTop + getNumericCssPx($firstRect, "top");
+  const selectionBottom =
+    wrapTop +
+    getNumericCssPx($lastRect, "top") +
+    getNumericCssPx($lastRect, "height");
+
+  const toolbarWidth = $selectedSelectionToolbar.outerWidth() || 0;
+  const toolbarHeight = $selectedSelectionToolbar.outerHeight() || 0;
+  const padding = 8;
+
+  const minLeft = viewerElement.scrollLeft + padding + toolbarWidth / 2;
+  const maxLeft =
+    viewerElement.scrollLeft + viewerElement.clientWidth - padding - toolbarWidth / 2;
+  const left = Math.min(Math.max(anchorCenterX, minLeft), Math.max(minLeft, maxLeft));
+
+  const preferredTop = selectionTop - toolbarHeight - padding;
+  const minTop = viewerElement.scrollTop + padding;
+  const fallbackTop = selectionBottom + padding;
+  const top = preferredTop < minTop ? fallbackTop : preferredTop;
+
+  $selectedSelectionToolbar.css({
+    left: `${left}px`,
+    top: `${top}px`,
+  });
+  $selectedSelectionToolbar.addClass("is-visible").attr("aria-hidden", "false");
 }
 
 function getInteractionWrapsBySelection(selection) {
@@ -277,18 +350,21 @@ function updateSelectionHandlesPosition() {
   const selectedSelection = getSelectedSelection();
   if (!selectedSelection) {
     hideSelectionHandles();
+    hideSelectedSelectionToolbar();
     return;
   }
 
   const $wrap = findSelectedInteractionWrap();
   if ($wrap.length === 0) {
     hideSelectionHandles();
+    hideSelectedSelectionToolbar();
     return;
   }
 
   const $rects = $wrap.find(".range-rect");
   if ($rects.length === 0) {
     hideSelectionHandles();
+    hideSelectedSelectionToolbar();
     return;
   }
 
@@ -323,6 +399,7 @@ function updateSelectionHandlesPosition() {
 
   $startHandle.css({ top: `${startTop}px`, left: `${startLeft}px` }).show();
   $endHandle.css({ top: `${endTop}px`, left: `${endLeft}px` }).show();
+  updateSelectedSelectionToolbarPosition();
 }
 
 function createSelectionWrap({
@@ -554,7 +631,13 @@ const onSelectionSelect = (event) => {
     const $t = $(e.target);
     const isInsideTarget = $t.closest(selectionSelector).length > 0;
     const isInsideButtonGroup = $t.closest($buttonGroup).length > 0;
-    if (!isInsideTarget && !isInsideButtonGroup) {
+    const isInsideSelectedSelectionToolbar =
+      $t.closest("#selectedSelectionToolbar").length > 0;
+    if (
+      !isInsideTarget &&
+      !isInsideButtonGroup &&
+      !isInsideSelectedSelectionToolbar
+    ) {
       setSelectedSelection(null);
     }
   });
@@ -716,6 +799,7 @@ const onSelectionHandleDragStart = (event) => {
     fixedPoint,
     didUpdate: false,
   };
+  hideSelectedSelectionToolbar();
   $viewerWrap.addClass("selection-handle-dragging");
   $(document).on("mousemove.selectionHandleDrag", onSelectionHandleDragMove);
   $(document).on("mouseup.selectionHandleDrag", onSelectionHandleDragEnd);
@@ -757,6 +841,7 @@ const onSelectionHandleDragEnd = () => {
   handleDragState = null;
   $viewerWrap.removeClass("selection-handle-dragging");
   $(document).off(".selectionHandleDrag");
+  updateSelectionHandlesPosition();
   if (didUpdate && scope === "model" && isActiveTraceUpdate) {
     modelService.updateActiveModelTrace();
   }
