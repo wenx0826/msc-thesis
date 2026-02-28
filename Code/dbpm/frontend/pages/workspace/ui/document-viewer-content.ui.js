@@ -606,6 +606,19 @@ function syncSelectedSelectionUI(oldSelection, newSelection) {
 function setSelectedSelection(selection) {
   documentViewerStore.setSelectedSelection(selection);
 }
+
+const onSelectedSelectionOutsideMouseDown = (event) => {
+  if (!getSelectedSelection()) return;
+
+  const isInsideSelectedSelectionToolbar =
+    $(event.target).closest("#selectedSelectionToolbar").length > 0;
+  if (isInsideSelectedSelectionToolbar) {
+    return;
+  }
+
+  setSelectedSelection(null);
+};
+
 const onSelectionSelect = (event) => {
   // console.log("Range selected:", event);
   event.stopPropagation();
@@ -624,23 +637,6 @@ const onSelectionSelect = (event) => {
       ? "model"
       : "temporary";
   setSelectedSelection({ selectionId, modelId, traceId, scope });
-
-  const $buttonGroup = $("#textActionBar .action-group");
-  const selectionSelector = `#selectionsInteractionLayer .range-rect[data-selectionid="${selectionId}"], #selectionHandlesLayer .selection-handle[data-selectionid="${selectionId}"]`;
-  $(document).one("mousedown", (e) => {
-    const $t = $(e.target);
-    const isInsideTarget = $t.closest(selectionSelector).length > 0;
-    const isInsideButtonGroup = $t.closest($buttonGroup).length > 0;
-    const isInsideSelectedSelectionToolbar =
-      $t.closest("#selectedSelectionToolbar").length > 0;
-    if (
-      !isInsideTarget &&
-      !isInsideButtonGroup &&
-      !isInsideSelectedSelectionToolbar
-    ) {
-      setSelectedSelection(null);
-    }
-  });
 
   // $deleteSelectionButton
   //   .show()
@@ -939,6 +935,9 @@ createUI({
       rerenderOverlayLayers();
     });
     $(window).on("resize", rerenderOverlayLayers);
+    $(document)
+      .off("mousedown.selectedSelectionDismiss")
+      .on("mousedown.selectedSelectionDismiss", onSelectedSelectionOutsideMouseDown);
     $selectionsInteractionLayer.on("click", ".range-rect", onSelectionSelect);
     $selectionHandlesLayer.on(
       "mousedown",
