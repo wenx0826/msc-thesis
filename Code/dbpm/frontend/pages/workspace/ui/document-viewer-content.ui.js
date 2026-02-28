@@ -334,7 +334,7 @@ function createSelectionWrap({
   left,
   width,
   height,
-  isActive = false,
+  isCurrent = false,
 }) {
   const $wrap = createTemplateElement(templateId)
     .attr("data-selectionid", selectionId)
@@ -345,8 +345,8 @@ function createSelectionWrap({
   if (traceId !== undefined && traceId !== null) {
     $wrap.attr("data-traceid", traceId);
   }
-  if (isActive) {
-    $wrap.addClass("active");
+  if (isCurrent) {
+    $wrap.addClass("is-current");
   }
   return $wrap;
 }
@@ -575,10 +575,6 @@ const onSelectionSelect = (event) => {
   //   });
 };
 
-// function isActiveModel(modelId) {
-//   return modelId == workspaceStore.getEditingModelId();
-// }
-
 const renderSelection = (
   { range, color, id: selectionId, traceId },
   modelId,
@@ -588,17 +584,14 @@ const renderSelection = (
     return;
   }
 
-  //todo
-  const isActiveModel = modelId
-    ? modelId === workspaceStore.getEditingModelId()
-    : false;
+  const editingModelId = workspaceStore.getEditingModelId();
+  const isEditingModel =
+    modelId !== undefined &&
+    modelId !== null &&
+    editingModelId !== undefined &&
+    editingModelId !== null &&
+    String(modelId) === String(editingModelId);
 
-  // console.log(
-  //   "Rendering selection:",
-  //   workspaceStore.getEditingModelId(),
-  //   modelId,
-  //   isActiveModel,
-  // );
   const eleViewerWrap = $viewerWrap[0];
   const eleViewerWrapRect = eleViewerWrap.getBoundingClientRect();
 
@@ -623,7 +616,7 @@ const renderSelection = (
     left: wrapLeft,
     width: wrapWidth,
     height: wrapHeight,
-    isActive: isActiveModel,
+    isCurrent: isEditingModel,
   });
 
   for (const rect of rects) {
@@ -650,7 +643,7 @@ const renderSelection = (
       modelName: `${modelName}`,
       top: `${lastRect.top - eleViewerWrapRect.top + eleViewerWrap.scrollTop - 11}px`,
       left: `${lastRect.right - eleViewerWrapRect.left + eleViewerWrap.scrollLeft - 11}px`,
-      isCurrent: modelId == workspaceStore.getEditingModelId(),
+      isCurrent: isEditingModel,
     });
     $modelTagsLayer.append($tag);
     clampModelTagHorizontalPosition($tag);
@@ -664,6 +657,7 @@ const renderSelection = (
     left: wrapLeft,
     width: wrapWidth,
     height: wrapHeight,
+    isCurrent: isEditingModel,
   });
 
   for (const rect of rects) {
@@ -771,7 +765,7 @@ const onSelectionHandleDragEnd = () => {
 function unhighlightModelSelections(modelId) {
   $selectionsVisualLayer
     .find(`.selection-wrap[data-model-id="${modelId}"]`)
-    .removeClass("active");
+    .removeClass("is-current");
   $modelTagsLayer
     .find(`.tag-span[data-model-id="${modelId}"]`)
     .removeClass("is-current");
@@ -786,6 +780,16 @@ function setModelTagCurrent(modelId, isCurrent) {
   if (modelId === undefined || modelId === null) return;
   $modelTagsLayer
     .find(`.tag-span[data-model-id="${modelId}"]`)
+    .toggleClass("is-current", isCurrent);
+}
+
+function setModelSelectionWrapCurrent(modelId, isCurrent) {
+  if (modelId === undefined || modelId === null) return;
+  $selectionsVisualLayer
+    .find(`.selection-wrap[data-model-id="${modelId}"]`)
+    .toggleClass("is-current", isCurrent);
+  $selectionsInteractionLayer
+    .find(`.selection-wrap[data-model-id="${modelId}"]`)
     .toggleClass("is-current", isCurrent);
 }
 
@@ -1003,10 +1007,16 @@ createUI({
     workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
       switch (key) {
         case "editingModel":
-          const oldModelId = oldValue.id;
-          const newModelId = newValue.id;
-          if (oldModelId) setModelTagCurrent(oldModelId, false);
-          if (newModelId) setModelTagCurrent(newModelId, true);
+          const oldModelId = oldValue?.id;
+          const newModelId = newValue?.id;
+          if (oldModelId) {
+            setModelTagCurrent(oldModelId, false);
+            setModelSelectionWrapCurrent(oldModelId, false);
+          }
+          if (newModelId) {
+            setModelTagCurrent(newModelId, true);
+            setModelSelectionWrapCurrent(newModelId, true);
+          }
           break;
         default:
           break;

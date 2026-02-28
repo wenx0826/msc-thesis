@@ -389,7 +389,7 @@ li.list-item.is-current {
   /* background-color: yellow; */
 }
 
-#selectionsVisualLayer .selection-wrap.active * {
+#selectionsVisualLayer .selection-wrap.is-current * {
   z-index: 4;
 }
 
@@ -403,14 +403,18 @@ li.list-item.is-current {
   outline: 2px dashed var(--wfadaptor-highlight);
   outline-offset: 2px;
 }
+#selectionsInteractionLayer .selection-wrap.selected:not([data-model-id]) {
+  outline-style: dashed;
+}
 
-#selectionsInteractionLayer .selection-wrap.selected {
-  outline: 2px solid var(--wfadaptor-selected);
+#selectionsInteractionLayer .selection-wrap.is-current {
+  outline: 2px solid var(--wfadaptor-highlight);
   outline-offset: 2px;
 }
 
-#selectionsInteractionLayer .selection-wrap.selected:not([data-model-id]) {
-  outline-style: dashed;
+#selectionsInteractionLayer .selection-wrap.selected {
+  outline: 2px solid var(--wfadaptor-selected) !important;
+  outline-offset: 2px;
 }
 
 #selectionsInteractionLayer .range-rect {
