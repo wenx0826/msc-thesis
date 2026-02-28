@@ -48,6 +48,15 @@ class ProjectsRepository extends BaseSqlRepository {
     const result = stmt.get(id);
     return result?.latest_model_number ?? null;
   }
+
+  softDelete(projectId) {
+    const stmt = db.prepare(`
+      UPDATE projects
+      SET deleted_at = ?
+      WHERE id = ? AND deleted_at IS NULL
+    `);
+    return stmt.run(new Date().toISOString(), projectId);
+  }
 }
 
 export default new ProjectsRepository();

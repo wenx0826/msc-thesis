@@ -125,6 +125,15 @@ class DocumentRepository extends BaseSqlRepository {
     const result = stmt.get(documentId);
     return result?.latest_version_number ?? null;
   }
+
+  softDelete(documentId) {
+    const stmt = db.prepare(`
+      UPDATE documents
+      SET deleted_at = ?
+      WHERE id = ? AND deleted_at IS NULL
+    `);
+    return stmt.run(new Date().toISOString(), documentId);
+  }
 }
 
 export default new DocumentRepository();

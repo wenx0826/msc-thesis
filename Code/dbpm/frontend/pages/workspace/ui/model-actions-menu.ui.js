@@ -2,8 +2,12 @@ import { modelsStore } from "../store/index.js";
 import { modelService } from "../services/index.js";
 import { getModelURL } from "../../../shared/utils/url.js";
 import { createMenu } from "../../../shared/utils/dom.js";
-function deleteModel(modelId) {
-  modelService.deleteModel(modelId);
+async function deleteModel(modelId) {
+  try {
+    await modelService.deleteModel(modelId);
+  } catch (err) {
+    console.error("Failed to delete model:", err);
+  }
 }
 
 function renameModel(modelNameEditor, $modelNameView) {

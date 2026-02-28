@@ -186,6 +186,35 @@ class DocumentViewerStore extends Store {
     return this.state.traces;
   }
 
+  removeTracesByModelId(modelId) {
+    if (modelId === undefined || modelId === null) {
+      return [];
+    }
+
+    const removed = this.state.traces.filter(
+      (trace) => this.areIdsEqual(trace?.modelId, modelId),
+    );
+    if (!removed.length) {
+      return [];
+    }
+
+    const traces = this.state.traces.filter(
+      (trace) => !this.areIdsEqual(trace?.modelId, modelId),
+    );
+    const currentActiveTrace = this.getDisplayedModelTrace();
+    if (this.areIdsEqual(currentActiveTrace?.modelId, modelId)) {
+      this.setActiveModelTrace(null);
+    }
+
+    const selectedSelection = this.getSelectedSelection();
+    if (this.areIdsEqual(selectedSelection?.modelId, modelId)) {
+      this.setSelectedSelection(null);
+    }
+
+    this.setTraces(traces);
+    return removed;
+  }
+
   getTraceById(traceId) {
     return this.state.traces.find((trace) => this.areIdsEqual(trace.id, traceId));
   }

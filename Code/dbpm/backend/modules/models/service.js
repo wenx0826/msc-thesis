@@ -104,9 +104,12 @@ export default {
       throw new Error("Source model version not found");
     }
 
-    const model = modelRepo.findById(modelId);
+    const model = modelRepo.findById(modelId, true);
     if (!model) {
       throw new Error("Model not found");
+    }
+    if (model.deletedAt) {
+      throw new Error("Model deleted");
     }
 
     const sourceVersion = versionRepo.findById(sourceVersionId);
@@ -164,6 +167,13 @@ export default {
     };
   },
   updateMeta(modelId, updates) {
+    const model = modelRepo.findById(modelId, true);
+    if (!model) {
+      throw new Error("Model not found");
+    }
+    if (model.deletedAt) {
+      throw new Error("Model deleted");
+    }
     modelRepo.updateById(modelId, updates);
     return modelRepo.findById(modelId);
   },
@@ -172,7 +182,10 @@ export default {
     if (!model) {
       throw new Error("Model not found");
     }
-    const data = storageRepo.read(modelId);
+    if (!model.latestVersionId) {
+      throw new Error("Model has no versions");
+    }
+    const data = storageRepo.read(model.latestVersionId);
     model.data = data;
     return model;
   },
@@ -189,7 +202,7 @@ export default {
   getAverageVersionsCount(includeDeleted = false) {
     return modelRepo.getAverageVersionsCount(includeDeleted);
   },
-  getByProjectId(projectId, includeDeleted) {
+  getByProjectId(projectId, includeDeleted = false) {
     return modelRepo.findByProjectIdWithVersions(projectId, includeDeleted);
   },
   updateModel({ modelId, modelData, trace, type }) {
@@ -214,7 +227,11 @@ export default {
       throw new Error("Model version not found");
     }
     const modelId = version.modelId;
-    const projectId = modelRepo.getProjectIdByModelId(modelId);
+    const model = modelRepo.findById(modelId);
+    if (!model) {
+      throw new Error("Model not found");
+    }
+    const projectId = model.projectId || modelRepo.getProjectIdByModelId(modelId);
 
     // Update model status
     // modelRepo.updateStatus(modelId, "updated");
@@ -269,13 +286,20 @@ export default {
   },
 
   deleteModel(modelId) {
-    const projectId = modelRepo.getProjectIdByModelId(modelId);
-    const model = modelRepo.findById(modelId);
+    const model = modelRepo.findById(modelId, true);
     if (!model) {
       throw new Error("Model not found");
     }
+    if (model.deletedAt) {
+      return { message: "Model deleted" };
+    }
 
-    modelRepo.softDelete(modelId);
+    const result = modelRepo.softDelete(modelId);
+    if (result.changes === 0) {
+      return { message: "Model deleted" };
+    }
+
+    const projectId = model.projectId || modelRepo.getProjectIdByModelId(modelId);
 
     // Log the event
     logService.logEvent(projectId, "model_deleted", {

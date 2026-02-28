@@ -43,6 +43,7 @@ export default {
 
     const sourceTraces = traceRepo.findByDocumentVersionId(
       sourceDocumentVersionId,
+      true,
     );
     if (!sourceTraces.length) {
       return [];
@@ -81,8 +82,8 @@ export default {
   getById(id) {
     return traceRepo.findById(id);
   },
-  getByDocumentVersionId(versionId) {
-    return traceRepo.findByDocumentVersionId(versionId);
+  getByDocumentVersionId(versionId, includeDeletedModels = false) {
+    return traceRepo.findByDocumentVersionId(versionId, includeDeletedModels);
   },
   update(id, updates) {
     const updatedTrace = traceRepo.updateById(id, updates);

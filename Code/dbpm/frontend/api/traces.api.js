@@ -30,11 +30,4 @@ export default {
     });
     return handleResponse(response, "Failed to update trace");
   },
-
-  async deleteTraceById(id) {
-    const response = await fetch(`${baseURL}/${this.path}/${id}`, {
-      method: "DELETE",
-    });
-    return handleResponse(response, "Failed to delete trace");
-  },
 };

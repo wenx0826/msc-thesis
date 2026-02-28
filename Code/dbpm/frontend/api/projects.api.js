@@ -22,13 +22,23 @@ export default {
     const res = await fetch(`${baseURL}/${this.path}/${projectId}`);
     return handleResponse(res, "Failed to fetch project");
   },
-  async getComponents(projectId) {
-    const res = await fetch(`${baseURL}/${this.path}/${projectId}/components`);
+  async getComponents(projectId, { includeDeleted = false } = {}) {
+    const params = new URLSearchParams();
+    if (includeDeleted) {
+      params.set("includeDeleted", "true");
+    }
+    const query = params.toString();
+    const res = await fetch(
+      `${baseURL}/${this.path}/${projectId}/components${query ? `?${query}` : ""}`,
+    );
     return handleResponse(res);
   },
-  async getComponentsStats(projectId) {
+  async getComponentsStats(projectId, { includeDeleted = true } = {}) {
+    const params = new URLSearchParams();
+    params.set("includeDeleted", includeDeleted ? "true" : "false");
+    const query = params.toString();
     const res = await fetch(
-      `${baseURL}/${this.path}/${projectId}/components/stats`,
+      `${baseURL}/${this.path}/${projectId}/components/stats${query ? `?${query}` : ""}`,
     );
     return handleResponse(res);
   },
@@ -40,5 +50,11 @@ export default {
       body: JSON.stringify(updatedFields),
     });
     return handleResponse(res, "Failed to update project");
+  },
+  async delete(projectId) {
+    const res = await fetch(`${baseURL}/${this.path}/${projectId}`, {
+      method: "DELETE",
+    });
+    return handleResponse(res, "Failed to delete project");
   },
 };

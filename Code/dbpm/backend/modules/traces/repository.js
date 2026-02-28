@@ -43,13 +43,16 @@ class TracesRepository extends BaseSqlRepository {
     return this.mapRow(row);
   }
 
-  findByDocumentVersionId(documentVersionId) {
+  findByDocumentVersionId(documentVersionId, includeDeletedModels = false) {
     const stmt = db.prepare(`
       SELECT t.*, mv.model_id, dv.document_id
       FROM traces t
       LEFT JOIN model_versions mv ON t.model_version_id = mv.id
+      LEFT JOIN models m ON mv.model_id = m.id
       LEFT JOIN document_versions dv ON t.document_version_id = dv.id
       WHERE t.document_version_id = ?
+      ${includeDeletedModels ? "" : "AND m.deleted_at IS NULL"}
+      ORDER BY t.created_at ASC
     `);
     const rows = stmt.all(documentVersionId);
     return rows.map((row) => this.mapRow(row));

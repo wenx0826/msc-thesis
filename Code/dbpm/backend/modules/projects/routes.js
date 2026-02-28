@@ -7,6 +7,7 @@ import {
   getProjectComponentsSchema,
   getProjectComponentsStatsSchema,
   updateProjectSchema,
+  deleteProjectSchema,
 } from "./schema.js";
 
 export default async function (fastify, options) {
@@ -91,8 +92,12 @@ export default async function (fastify, options) {
     { schema: getProjectComponentsStatsSchema },
     (request, reply) => {
       const projectId = request.params.projectId;
+      const { includeDeleted } = request.query;
       try {
-        const result = projectService.getComponentsStatsById(projectId);
+        const result = projectService.getComponentsStatsById(
+          projectId,
+          includeDeleted,
+        );
         reply.send(result);
       } catch (err) {
         console.error("Failed to fetch project components statistics:", err);
@@ -122,6 +127,26 @@ export default async function (fastify, options) {
             .send({ error: "Project not found or no valid fields to update" });
         } else {
           reply.code(500).send({ error: "Failed to update project" });
+        }
+      }
+    },
+  );
+
+  // DELETE /projects/:projectId - Soft delete project and cascade soft-delete components
+  fastify.delete(
+    "/:projectId",
+    { schema: deleteProjectSchema },
+    (request, reply) => {
+      const projectId = request.params.projectId;
+      try {
+        const result = projectService.delete(projectId);
+        reply.send(result);
+      } catch (err) {
+        console.error("Failed to delete project:", err);
+        if (err.message === "Project not found") {
+          reply.code(404).send({ error: "Project not found" });
+        } else {
+          reply.code(500).send({ error: "Failed to delete project" });
         }
       }
     },

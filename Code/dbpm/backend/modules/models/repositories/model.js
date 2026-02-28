@@ -65,7 +65,7 @@ class ModelRepository extends BaseSqlRepository {
     return result?.latest_version_number ?? null;
   }
 
-  findById(modelId) {
+  findById(modelId, includeDeleted = false) {
     const stmt = db.prepare(`
       SELECT
         m.*,
@@ -78,7 +78,7 @@ class ModelRepository extends BaseSqlRepository {
           LIMIT 1
         ) AS document_id
       FROM models m
-      WHERE m.id = ?
+      WHERE m.id = ? ${includeDeleted ? "" : "AND m.deleted_at IS NULL"}
     `);
     const result = stmt.get(modelId);
     return result ? mapProjectModelRow(result) : null;
@@ -102,6 +102,20 @@ class ModelRepository extends BaseSqlRepository {
     `);
     const results = stmt.all(projectId);
     return results.map(mapProjectModelRow);
+  }
+
+  findIdsByDocumentId(documentId, includeDeleted = false) {
+    const stmt = db.prepare(`
+      SELECT DISTINCT m.id
+      FROM models m
+      JOIN model_versions mv ON mv.model_id = m.id
+      JOIN traces t ON t.model_version_id = mv.id
+      JOIN document_versions dv ON dv.id = t.document_version_id
+      WHERE dv.document_id = ? ${includeDeleted ? "" : "AND m.deleted_at IS NULL"}
+      ORDER BY m.created_at ASC
+    `);
+    const rows = stmt.all(documentId);
+    return rows.map((row) => row.id).filter(Boolean);
   }
 
   findVersionsByModelIds(modelIds) {
@@ -151,14 +165,21 @@ class ModelRepository extends BaseSqlRepository {
     return this.attachVersions(models);
   }
 
-  findByIdWithVersions(modelId) {
-    const model = this.findById(modelId);
+  findByIdWithVersions(modelId, includeDeleted = false) {
+    const model = this.findById(modelId, includeDeleted);
+    if (!model) {
+      return null;
+    }
     const [modelWithVersions] = this.attachVersions([model]);
     return modelWithVersions;
   }
 
   softDelete(modelId) {
-    const stmt = db.prepare("UPDATE models SET deleted_at = ? WHERE id = ?");
+    const stmt = db.prepare(`
+      UPDATE models
+      SET deleted_at = ?
+      WHERE id = ? AND deleted_at IS NULL
+    `);
     return stmt.run(new Date().toISOString(), modelId);
   }
 

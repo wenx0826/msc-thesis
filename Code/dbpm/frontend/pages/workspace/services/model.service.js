@@ -333,10 +333,19 @@ export default {
   },
 
   async deleteModel(modelId) {
-    modelsAPI.deleteModelById(modelId);
-    if (modelId === workspaceStore.getEditingModelId()) {
+    if (!modelId) {
+      return;
+    }
+    await modelsAPI.deleteModelById(modelId);
+    const isEditingModel = modelId === workspaceStore.getEditingModelId();
+
+    modelsStore.delete(modelId);
+    documentViewerStore.removeTracesByModelId(modelId);
+    projectGraphStore.removeModelNodeAndEdge(modelId);
+    workspaceStore.setModelPopoverParams(null);
+
+    if (isEditingModel) {
       workspaceService.clearModelDisplay();
     }
-    const documentId = modelsStore.getModelDocumentIdById(modelId);
   },
 };

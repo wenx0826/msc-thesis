@@ -43,9 +43,17 @@ export default {
     );
     return handleTextResponse(res, "Failed to fetch document content");
   },
-  async getTracesByVersionId(versionId) {
+  async getTracesByVersionId(
+    versionId,
+    { includeDeletedModels = false } = {},
+  ) {
+    const params = new URLSearchParams();
+    if (includeDeletedModels) {
+      params.set("includeDeletedModels", "true");
+    }
+    const query = params.toString();
     const response = await fetch(
-      `${baseURL}/documents/versions/${versionId}/traces`,
+      `${baseURL}/documents/versions/${versionId}/traces${query ? `?${query}` : ""}`,
     );
     if (!response.ok) throw new Error("Failed to fetch document traces");
     return await response.json();

@@ -29,9 +29,11 @@ export default async function (fastify, options) {
       } catch (err) {
         console.error("Failed to create model version:", err);
         if (
-          ["Model not found", "Source model version not found"].includes(
-            err.message,
-          )
+          [
+            "Model not found",
+            "Model deleted",
+            "Source model version not found",
+          ].includes(err.message)
         ) {
           reply.code(404).send({ error: err.message });
           return;
@@ -58,6 +60,10 @@ export default async function (fastify, options) {
         reply.send(updatedModel);
       } catch (err) {
         console.error("Failed to update model metadata:", err);
+        if (["Model not found", "Model deleted"].includes(err.message)) {
+          reply.code(404).send({ error: err.message });
+          return;
+        }
         reply.code(500).send({ error: "Failed to update model metadata" });
       }
     },
@@ -135,6 +141,10 @@ export default async function (fastify, options) {
       reply.send({ message: "Model content updated" });
     } catch (err) {
       console.error("Failed to update model:", err);
+      if (["Model not found", "Model deleted"].includes(err.message)) {
+        reply.code(404).send({ error: err.message });
+        return;
+      }
       reply.code(500).send({ error: "Failed to update model" });
     }
   });

@@ -369,6 +369,7 @@ function setModelItemCurrent(modelId, isCurrent) {
 
 const removeModelItem = (modelId) => {
   $(`.model-grid-item[data-model-id="${modelId}"]`).remove();
+  $(`.model-list-item[data-model-id="${modelId}"]`).remove();
 };
 // #endregion
 

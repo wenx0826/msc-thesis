@@ -43,23 +43,34 @@ export default {
     }
     return project;
   },
-  getComponentsById(projectId) {
+  getComponentsById(projectId, includeDeleted = false) {
     const project = projectRepo.findById(projectId);
     if (!project) {
       throw new Error("Project not found");
     }
-    const documentsMeta = documentService.getByProjectId(projectId);
-    const modelsMeta = modelService.getByProjectId(projectId);
+    const includeDeletedRecords = includeDeleted === true;
+    const documentsMeta = documentService.getByProjectId(
+      projectId,
+      includeDeletedRecords,
+    );
+    const modelsMeta = modelService.getByProjectId(
+      projectId,
+      includeDeletedRecords,
+    );
     return { documentsMeta, modelsMeta };
   },
 
-  getComponentsStatsById(projectId) {
+  getComponentsStatsById(projectId, includeDeleted = true) {
     const project = projectRepo.findById(projectId);
     if (!project) {
       throw new Error("Project not found");
     }
-    const documents = documentService.getByProjectId(projectId, true);
-    const models = modelService.getByProjectId(projectId, true);
+    const includeDeletedRecords = includeDeleted !== false;
+    const documents = documentService.getByProjectId(
+      projectId,
+      includeDeletedRecords,
+    );
+    const models = modelService.getByProjectId(projectId, includeDeletedRecords);
     return { documents, models };
   },
 
@@ -78,5 +89,33 @@ export default {
       throw new Error("Project not found or no valid fields to update");
     }
     return project;
+  },
+  delete(projectId) {
+    const project = projectRepo.findById(projectId);
+    if (!project) {
+      throw new Error("Project not found");
+    }
+    if (project.deletedAt) {
+      return { message: "Project deleted" };
+    }
+
+    const activeDocuments = documentService.getByProjectId(projectId, false);
+    for (const document of activeDocuments) {
+      documentService.deleteDocument(document.id);
+    }
+
+    const remainingModels = modelService.getByProjectId(projectId, false);
+    for (const model of remainingModels) {
+      modelService.deleteModel(model.id);
+    }
+
+    projectRepo.softDelete(projectId);
+
+    logService.logEvent(projectId, "project_deleted", {
+      id: projectId,
+      name: project.name,
+    });
+
+    return { message: "Project deleted" };
   },
 };

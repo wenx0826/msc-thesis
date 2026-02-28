@@ -4,6 +4,7 @@ import {
   documentsStore,
   documentViewerStore,
   projectGraphStore,
+  modelsStore,
 } from "../store/index.js";
 import workspaceService from "./workspace.service.js";
 import { getFileContentInHTML } from "../utils/file.js";
@@ -49,14 +50,44 @@ export default {
     documentsStore.update(docId, { name: newDoc.name });
   },
   async deleteDocument(documentId) {
-    await documentsAPI.delete(documentId);
-    documentsStore.removeDocument(documentId);
-    projectGraphStore.removeDocumentNode(documentId);
-    // If the deleted document is currently active, clear the selection
-    const viewedDocumentId = workspaceStore.getViewedDocumentId();
-    if (viewedDocumentId === documentId) {
-      workspaceService.clearDocumentSelection();
+    if (!documentId) {
+      return null;
     }
+
+    const relatedModelIds = modelsStore
+      .getList()
+      .filter(
+        (model) =>
+          String(model?.documentId ?? "") === String(documentId),
+      )
+      .map((model) => model.id);
+
+    const result = await documentsAPI.delete(documentId);
+
+    relatedModelIds.forEach((modelId) => {
+      modelsStore.delete(modelId);
+      documentViewerStore.removeTracesByModelId(modelId);
+      projectGraphStore.removeModelNodeAndEdge(modelId);
+    });
+
+    const isViewedDocumentDeleted =
+      workspaceStore.getViewedDocumentId() === documentId;
+    const isEditingModelDeleted = relatedModelIds.includes(
+      workspaceStore.getEditingModelId(),
+    );
+
+    documentsStore.delete(documentId);
+    projectGraphStore.removeDocumentNodeAndEdges(documentId);
+
+    if (isEditingModelDeleted) {
+      workspaceService.clearModelDisplay();
+    }
+
+    if (isViewedDocumentDeleted) {
+      workspaceService.clearDocumentDisplay();
+    }
+
+    return result;
   },
   async uploadNewVersion(documentId, file) {
     const filename = file.name;

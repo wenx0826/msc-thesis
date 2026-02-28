@@ -66,9 +66,13 @@ export default async function (fastify, options) {
     { schema: getTracesSchema },
     (request, reply) => {
       const { versionId } = request.params;
+      const { includeDeletedModels } = request.query;
       console.log("Fetching traces for document version ID:", versionId);
       try {
-        const traces = documentService.getTraces(versionId);
+        const traces = documentService.getTraces(
+          versionId,
+          includeDeletedModels === true,
+        );
         reply.send(traces);
       } catch (err) {
         console.error("Failed to fetch traces:", err);

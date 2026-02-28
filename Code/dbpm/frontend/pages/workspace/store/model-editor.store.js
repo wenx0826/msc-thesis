@@ -23,7 +23,7 @@ class ModelEditorStore extends Store {
 
   getDocumentId() {
     const modelId = this.getModelId();
-    return modelsStore.getModelDocumentIdById(modelId);
+    return modelsStore.getModelDocumentId(modelId);
   }
 
   getSerializedRpstData() {

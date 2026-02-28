@@ -230,8 +230,8 @@ ui-bar {
   top: 0;
   left: 0;
   transform: translate(-50%, 0);
-  display: inline-flex;
-  align-items: center;
+  /* display: inline-flex;
+  align-items: center; */
   gap: 10px;
   padding: 6px 10px;
   border: 1px solid var(--x-ui-border-color);

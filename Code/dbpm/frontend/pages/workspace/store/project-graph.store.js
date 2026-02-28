@@ -28,6 +28,7 @@ function toCyEdge(source, target, relation) {
   return {
     group: "edges",
     data: {
+      id: `${relation}_${source || "unknown"}_${target || "unknown"}`,
       source,
       target,
       relation,
@@ -86,6 +87,68 @@ class ProjectGraphStore extends Store {
       operation: "add",
       value: [modelNode, edge],
     });
+  }
+
+  removeModelNodeAndEdge(modelId) {
+    if (!modelId) {
+      return [];
+    }
+
+    const removed = this.state.elements.filter((element) => {
+      const data = element?.data || {};
+      if (element.group === "nodes") {
+        return data.type === "model" && data.id === modelId;
+      }
+      if (element.group === "edges") {
+        return data.target === modelId;
+      }
+      return false;
+    });
+
+    if (removed.length === 0) {
+      return [];
+    }
+
+    this.state.elements = this.state.elements.filter(
+      (element) => !removed.includes(element),
+    );
+    this.notify({
+      key: "elements",
+      operation: "delete",
+      value: removed,
+    });
+    return removed;
+  }
+
+  removeDocumentNodeAndEdges(documentId) {
+    if (!documentId) {
+      return [];
+    }
+
+    const removed = this.state.elements.filter((element) => {
+      const data = element?.data || {};
+      if (element.group === "nodes") {
+        return data.type === "document" && data.id === documentId;
+      }
+      if (element.group === "edges") {
+        return data.source === documentId || data.target === documentId;
+      }
+      return false;
+    });
+
+    if (removed.length === 0) {
+      return [];
+    }
+
+    this.state.elements = this.state.elements.filter(
+      (element) => !removed.includes(element),
+    );
+    this.notify({
+      key: "elements",
+      operation: "delete",
+      value: removed,
+    });
+    return removed;
   }
 }
 

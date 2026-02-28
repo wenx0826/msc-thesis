@@ -82,6 +82,14 @@ function uploadNewVersion(docId) {
   $documentVersionInput.one("change", (e) => onVersionInputChange(e, docId));
 }
 
+async function deleteDocument(docId) {
+  try {
+    await documentService.deleteDocument(docId);
+  } catch (err) {
+    console.error("Failed to delete document:", err);
+  }
+}
+
 createUI({
   setup: () => {
     const documentNameEditor = initInlineEditor({
@@ -117,7 +125,7 @@ createUI({
         },
         {
           label: "Delete Document",
-          function_call: () => {},
+          function_call: deleteDocument,
           text_icon: undefined,
           type: undefined,
           params: [docId],

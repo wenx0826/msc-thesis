@@ -87,7 +87,18 @@ function downloadProjectLog(projectId) {
   document.body.removeChild(link);
 }
 
-function deleteProject(projectId) {}
+async function deleteProject(projectId) {
+  try {
+    await projectsAPI.delete(projectId);
+    const table = $projectsTable.DataTable();
+    const $row = getProjectRow(projectId);
+    if ($row.length) {
+      table.row($row).remove().draw(false);
+    }
+  } catch (err) {
+    console.error("Failed to delete project:", err);
+  }
+}
 // #endregion
 
 createUI({

@@ -236,6 +236,18 @@ createUI({
                 ...cyLayoutOptions,
               }).run();
               break;
+            case "delete":
+              (Array.isArray(value) ? value : [value]).forEach((element) => {
+                const elementId = element?.data?.id;
+                if (!elementId) {
+                  return;
+                }
+                cy.remove(cy.getElementById(elementId));
+              });
+              cy.layout({
+                ...cyLayoutOptions,
+              }).run();
+              break;
             default:
               break;
           }

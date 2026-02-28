@@ -64,6 +64,18 @@ export default {
     modelEditorStore.setModel(null);
     documentViewerStore.setActiveModelTrace(null);
   },
+  clearDocumentDisplay() {
+    workspaceStore.setViewedDocument({
+      id: null,
+      versionId: null,
+    });
+    documentViewerStore.clear();
+    workspaceStore.setModelPopoverParams(null);
+    this.clearModelDisplay();
+  },
+  clearDocumentSelection() {
+    this.clearDocumentDisplay();
+  },
   toggleModelDisplay(id, versionId) {
     if (!id) {
       this.clearModelDisplay();

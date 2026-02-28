@@ -4,6 +4,7 @@ import storageRepo from "./repositories/storage.js";
 import logService from "../logs/service.js";
 import { countWords } from "../../utils/fileHelper.js";
 import traceService from "../traces/service.js";
+import modelRepo from "../models/repositories/model.js";
 export default {
   create({ projectId, filename, content }) {
     try {
@@ -111,8 +112,8 @@ export default {
     return storageRepo.read(versionId);
   },
 
-  getTraces(versionId) {
-    return traceService.getByDocumentVersionId(versionId);
+  getTraces(versionId, includeDeletedModels = false) {
+    return traceService.getByDocumentVersionId(versionId, includeDeletedModels);
   },
 
   deleteDocument(docId) {
@@ -120,6 +121,35 @@ export default {
     if (!doc) {
       throw new Error("Document not found");
     }
+    if (doc.deletedAt) {
+      return { message: "Document deleted" };
+    }
+
+    const relatedModelIds = modelRepo.findIdsByDocumentId(docId, false);
+    for (const modelId of relatedModelIds) {
+      const model = modelRepo.findById(modelId, true);
+      if (!model || model.deletedAt) {
+        continue;
+      }
+      const result = modelRepo.softDelete(modelId);
+      if (result.changes > 0) {
+        logService.logEvent(model.projectId, "model_deleted", {
+          id: modelId,
+          name: model.name,
+          source: "document_deleted_cascade",
+          sourceDocumentId: docId,
+        });
+      }
+    }
+
+    const documentDeleteResult = documentRepo.softDelete(docId);
+    if (documentDeleteResult.changes > 0) {
+      logService.logEvent(doc.projectId, "document_deleted", {
+        id: doc.id,
+        name: doc.name,
+      });
+    }
+
     return { message: "Document deleted" };
   },
 };
