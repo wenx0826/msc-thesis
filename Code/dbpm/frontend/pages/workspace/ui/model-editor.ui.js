@@ -93,12 +93,6 @@ function saveActiveModel(type) {
   syncActiveModelGraphInList();
 }
 
-function clearModelViewer() {
-  $modelActionBar.prop("disabled", true);
-  $("#graphcanvas").empty();
-  $datDetails.empty();
-}
-
 function clearModelEditor() {
   $modelActionBar.prop("disabled", true);
   $("#graphcanvas").empty();

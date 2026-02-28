@@ -1,9 +1,14 @@
 import { createUI } from "../../../shared/utils/ui.js";
 import { modelsStore, workspaceStore } from "../store/index.js";
-import { workspaceService } from "../services/index.js";
+import { modelService, workspaceService } from "../services/index.js";
 import { modelsAPI } from "../../../api/index.js";
 import { endpointLoader } from "../workflow/wf_endpoints/endpoint-loader.js";
-import { createTemplateElement } from "../../../shared/utils/dom.js";
+import {
+  createMenu,
+  createTemplateElement,
+} from "../../../shared/utils/dom.js";
+import initInlineEditor from "../../../shared/widgets/inline-editor.js";
+import { createModelActionsMenu } from "./model-actions-menu.ui.js";
 
 const PREVIEW_THEME_PATH =
   "pages/workspace/workflow/wf_themes/preset_customized/theme.js";
@@ -16,7 +21,6 @@ const $modelsPanel = $("#modelsPanel");
 const $viewSwitch = $("#modelsViewSwitch");
 const $modelsGrid = $("#modelsGrid");
 const $modelsList = $("#modelsList");
-const $createVersionButton = $("#createModelVersionButton");
 
 // #region DOM Actions
 function onViewSwitch(event) {
@@ -25,7 +29,7 @@ function onViewSwitch(event) {
 }
 
 function onModelItemClick(event) {
-  const modelId = event.currentTarget.dataset.modelId;
+  const modelId = $(event.currentTarget).data("modelId");
   workspaceService.toggleModelDisplay(modelId);
 }
 // #endregion
@@ -270,7 +274,8 @@ async function renderModel(model) {
   //
   const modelId = model?.id;
   const isCurrent = modelId == workspaceStore.getEditingModel()?.id;
-  const versionName = modelsStore.getLatestVersionName(modelId) || "No Versions";
+  const versionName =
+    modelsStore.getLatestVersionName(modelId) || "No Versions";
 
   // Grid view
   const gridId = `modelGrid_${modelId}`;
@@ -349,7 +354,8 @@ function findModelListItem(modelId) {
 function updateModelItem(model) {
   const modelId = model.id;
   const modelName = model.name;
-  const versionName = modelsStore.getLatestVersionName(modelId) || "No Versions";
+  const versionName =
+    modelsStore.getLatestVersionName(modelId) || "No Versions";
   getModelItem(modelId)
     .attr("data-model-version-id", model.latestVersionId || "")
     .find("[data-ref='modelName']")
@@ -368,11 +374,35 @@ const removeModelItem = (modelId) => {
 
 // UI Initialization
 createUI({
-  setup: () => {},
-  bindListeners: () => {
+  setup: () => {
+    const modelNameEditor = initInlineEditor({
+      $scope: $modelsPanel,
+      onSave: (newValue, $view) => {
+        const modelId = $view.closest("[data-model-id]").data("modelId");
+        return modelService.renameModel(modelId, newValue);
+      },
+    });
+    return { modelNameEditor };
+  },
+  bindListeners: ({ modelNameEditor }) => {
     $viewSwitch.on("click", ".switch-btn", onViewSwitch);
-    $modelsGrid.on("click", ".model-grid-item", onModelItemClick);
-    $modelsList.on("click", ".model-list-item", onModelItemClick);
+
+    $modelsPanel.on("mousedown", "[data-model-id]", onModelItemClick);
+
+    $modelsPanel.on("mousedown", ".more-actions-btn", (e) => {
+      e.stopPropagation();
+      const $item = $(e.currentTarget).closest(
+        ".model-grid-item, .model-list-item",
+      );
+      const modelId = $item.data("modelId");
+      const $modelNameView = $item.find("[data-ref='modelName']").first();
+      const menuItems = createModelActionsMenu(e, {
+        modelId,
+        modelNameEditor,
+        $modelNameView,
+      });
+      // createMenu(e, menuItems);
+    });
   },
   subscribeStores: () => {
     modelsStore.subscribe(async (state, { key, operation, value }) => {

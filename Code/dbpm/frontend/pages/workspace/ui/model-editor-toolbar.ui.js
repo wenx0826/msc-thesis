@@ -3,7 +3,7 @@ import { default as setModelNameEditor } from "../../../shared/widgets/inline-ed
 import initVersionSelector from "../../../shared/widgets/version-selector.js";
 import { modelsStore, workspaceStore } from "../store/index.js";
 import { modelService, workspaceService } from "../services/index.js";
-
+import { createModelActionsMenu } from "./model-actions-menu.ui.js";
 const $modelName = $("#editingModelName");
 const $actionsGroup = $("#editingModelActionsGroup");
 const $versionSelect = $("#modelVersionSelect");
@@ -86,13 +86,11 @@ createUI({
         $createVersionButton.prop("disabled", false);
       }
     });
-    $moreActionsButton.on("click", () => {
+    $moreActionsButton.on("mousedown", (e) => {
+      console.log("More actions button clicked");
       const { id: modelId, versionId } = workspaceStore.getEditingModel() || {};
-      if (!modelId || !versionId) {
-        alert("No model version is currently selected.");
-        return;
-      } else {
-      }
+      createModelActionsMenu(e, { modelId, versionId });
+      // showContextMenu($moreActionsButton, menuItems);
     });
   },
   subscribeStores: ({ versionSelector }) => {
@@ -121,6 +119,25 @@ createUI({
           updateCreateVersionButton(isLatestVersion);
           break;
         }
+        default:
+          break;
+      }
+    });
+    modelsStore.subscribe((state, { key, operation, value }) => {
+      switch (key) {
+        case "entitiesById":
+          switch (operation) {
+            case "update": {
+              const editingModelId = workspaceStore.getEditingModelId();
+              if (value.id === editingModelId) {
+                setModelNameText(value.name);
+              }
+              break;
+            }
+            default:
+              break;
+          }
+          break;
         default:
           break;
       }

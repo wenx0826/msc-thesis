@@ -1,14 +1,16 @@
-import { default as setModelNameEditor } from "../../../shared/widgets/inline-editor.js";
-import { modelsStore, workspaceStore } from "../store/index.js";
-import { modelService, workspaceService } from "../services/index.js";
-import {
-  getProjectWorkspaceURL,
-  getProjectStatsURL,
-  getProjectLogURL,
-  getModelURL,
-} from "../../../shared/utils/url.js";
+import { modelsStore } from "../store/index.js";
+import { modelService } from "../services/index.js";
+import { getModelURL } from "../../../shared/utils/url.js";
+import { createMenu } from "../../../shared/utils/dom.js";
 function deleteModel(modelId) {
   modelService.deleteModel(modelId);
+}
+
+function renameModel(modelNameEditor, $modelNameView) {
+  if (!modelNameEditor || !$modelNameView?.length) {
+    return;
+  }
+  setTimeout(() => modelNameEditor.startEdit($modelNameView), 0);
 }
 
 function exportTestSet(modelId) {
@@ -38,34 +40,51 @@ function exportTestSet(modelId) {
 function viewXMLData(versionId) {
   window.open(getModelURL(versionId), "_blank");
 }
+export const createViewXMLDataMenuItem = (versionId) => ({
+  label: "View XML Data",
+  function_call: viewXMLData,
+  text_icon: undefined,
+  type: undefined,
+  params: [versionId],
+});
 
-const createModelActionsMenu = (e, { modelId, versionId }) => {
+export const createModelActionsMenu = (
+  e,
+  { modelId, versionId, modelNameEditor, $modelNameView },
+) => {
   if (!versionId) {
     versionId = modelsStore.getLatestVersionId(modelId);
   }
+
+  const canRename = !!modelNameEditor && !!$modelNameView?.length;
   const menu = {};
-  menu[""] = [
-    {
-      label: "Rename Document",
-      function_call: renameDocument,
+  menu[""] = [];
+
+  if (canRename) {
+    menu[""].push({
+      label: "Rename Model",
+      function_call: renameModel,
       text_icon: undefined,
       type: undefined,
-      params: [docId],
-    },
+      params: [modelNameEditor, $modelNameView],
+    });
+  }
+
+  menu[""].push(
     {
-      label: "Upload New Version",
-      function_call: uploadNewVersion,
+      label: "View XML Data",
+      function_call: viewXMLData,
       text_icon: undefined,
       type: undefined,
-      params: [docId],
+      params: [versionId],
     },
     {
       label: "Delete Model",
-      function_call: () => {},
+      function_call: deleteModel,
       text_icon: undefined,
       type: undefined,
-      params: [docId],
+      params: [modelId],
     },
-  ];
-  return menu;
+  );
+  createMenu(e, menu);
 };

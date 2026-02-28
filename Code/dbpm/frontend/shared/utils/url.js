@@ -19,7 +19,7 @@ export function getDocumentURL(versionId) {
   return `data/documents/${versionId}.html`;
 }
 export function getModelURL(versionId) {
-  return `data/models/${versionId}.html`;
+  return `data/models/${versionId}.xml`;
 }
 
 export function getModelGraphRenderURL(modelVersionId) {
