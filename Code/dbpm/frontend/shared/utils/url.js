@@ -15,8 +15,11 @@ export function getProjectLogURL(projectId) {
   return `data/logs/${projectId}.yaml`;
 }
 
-export function getDocumentURL(documentId) {
-  return `data/documents/${documentId}.html`;
+export function getDocumentURL(versionId) {
+  return `data/documents/${versionId}.html`;
+}
+export function getModelURL(versionId) {
+  return `data/models/${versionId}.html`;
 }
 
 export function getModelGraphRenderURL(modelVersionId) {

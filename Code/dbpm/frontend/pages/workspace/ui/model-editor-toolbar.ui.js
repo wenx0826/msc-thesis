@@ -8,7 +8,7 @@ const $modelName = $("#editingModelName");
 const $actionsGroup = $("#editingModelActionsGroup");
 const $versionSelect = $("#modelVersionSelect");
 const $createVersionButton = $("#createModelVersionButton");
-
+const $moreActionsButton = $("#editingModelMoreActionsButton");
 function updateCreateVersionButton(isSelectedVersionLatest) {
   if (isSelectedVersionLatest) {
     $createVersionButton
@@ -28,6 +28,7 @@ function setModelNameText(name) {
 }
 
 function resetToolbar(versionSelector) {
+  setActionsGroupDisabled(true);
   setModelNameText("");
   versionSelector.update({ versions: [], selectedId: null });
   updateCreateVersionButton(true);
@@ -54,7 +55,9 @@ createUI({
         modelService.renameModel(editingModelId, name);
       },
     });
-
+    // const getActionsMenuItems = (modelId, versionId) => {
+    //   const isLatestVersion = modelsStore.isLatestVersion(modelId, versionId);
+    //   return [
     return { versionSelector };
   },
   bindListeners: () => {
@@ -81,6 +84,14 @@ createUI({
         alert("Failed to create model version.");
       } finally {
         $createVersionButton.prop("disabled", false);
+      }
+    });
+    $moreActionsButton.on("click", () => {
+      const { id: modelId, versionId } = workspaceStore.getEditingModel() || {};
+      if (!modelId || !versionId) {
+        alert("No model version is currently selected.");
+        return;
+      } else {
       }
     });
   },

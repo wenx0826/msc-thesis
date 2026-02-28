@@ -4,31 +4,13 @@ import {
   getProjectStatsURL,
   getProjectLogURL,
 } from "../../../shared/utils/url.js";
+import { createMenu } from "../../../shared/utils/dom.js";
 import initInlineEditor from "../../../shared/widgets/inline-editor.js";
 import { projectsAPI } from "../../../api/index.js";
 
 const $projectsTable = $("#projectsTable");
 
-function viewProjectStats(projectId) {
-  window.location.href = getProjectStatsURL(projectId);
-}
-function viewProjectLog(projectId) {
-  window.open(getProjectLogURL(projectId), "_blank");
-}
-function downloadProjectLog(projectId, projectName) {
-  const url = getProjectLogURL(projectId);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = `${projectName}.yaml`;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-}
-function renameProject(projectNameEditor, $view) {
-  setTimeout(() => projectNameEditor.startEdit($view), 0);
-}
-function deleteProject(projectId) {}
-
+// #regin DOM Manipulation and Rendering
 async function renderProjectsTable() {
   try {
     const projects = await projectsAPI.list();
@@ -82,33 +64,48 @@ async function renderProjectsTable() {
     console.error("Failed to initialize Projects UI:", err);
   }
 }
+function getProjectRow(projectId) {
+  return $projectsTable.find(`tr[data-project-id='${projectId}']`);
+}
+// #endregion
+
+// #region Actions
+function viewProjectStats(projectId) {
+  window.location.href = getProjectStatsURL(projectId);
+}
+function viewProjectLog(projectId) {
+  window.open(getProjectLogURL(projectId), "_blank");
+}
+function downloadProjectLog(projectId) {
+  const projectName = getProjectRow(projectId).find("td:first-child").text();
+  const url = getProjectLogURL(projectId);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `${projectName}.yaml`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+function deleteProject(projectId) {}
+// #endregion
 
 createUI({
   setup: () => {
+    renderProjectsTable();
     const projectNameEditor = initInlineEditor({
       $scope: $projectsTable,
       onSave: (name, $view) => {
-        console.log("Saving project name:", name);
         const projectId = $view.closest("tr").data("projectId");
         projectsAPI.update(projectId, { name });
       },
     });
-    renderProjectsTable();
-    return { projectNameEditor };
-  },
-  bindListeners: ({ projectNameEditor }) => {
-    $projectsTable.on("mousedown", "td:first-child", (e) => {
-      const $td = $(e.currentTarget);
-      const projectId = $td.closest("tr").data("projectId");
-      window.location.href = getProjectWorkspaceURL(projectId);
-    });
-
-    $projectsTable.on("click", "td:last-child", (e) => {
-      // const $td = ;
-      const $tr = $(e.currentTarget).parent();
-      const projectId = $tr.data("projectId");
-      const $projectNameView = $tr.find(".inline-editor__view");
-      const projectName = $projectNameView.text();
+    function renameProject(projectId) {
+      const $projectRow = getProjectRow(projectId);
+      const $projectNameView = $projectRow.find(".inline-editor__view");
+      setTimeout(() => projectNameEditor.startEdit($projectNameView), 0);
+    }
+    function getActionsMenu(projectId) {
       const menu = {};
       menu[""] = [
         {
@@ -130,14 +127,14 @@ createUI({
           function_call: downloadProjectLog,
           text_icon: undefined,
           type: undefined,
-          params: [projectId, projectName],
+          params: [projectId],
         },
         {
           label: "Rename Project",
           function_call: renameProject,
           text_icon: undefined,
           type: undefined,
-          params: [projectNameEditor, $projectNameView],
+          params: [projectId],
         },
 
         {
@@ -148,7 +145,20 @@ createUI({
           params: [projectId],
         },
       ];
-      new CustomMenu(e).contextmenu(menu);
+      return menu;
+    }
+    return { getActionsMenu };
+  },
+  bindListeners: ({ getActionsMenu }) => {
+    $projectsTable.on("mousedown", "td:first-child", (e) => {
+      const projectId = $(e.currentTarget).closest("tr").data("projectId");
+      window.location.href = getProjectWorkspaceURL(projectId);
+    });
+
+    $projectsTable.on("click", "td:last-child", (e) => {
+      const projectId = $(e.currentTarget).closest("tr").data("projectId");
+      const menu = getActionsMenu(projectId);
+      createMenu(e, menu);
     });
   },
 });

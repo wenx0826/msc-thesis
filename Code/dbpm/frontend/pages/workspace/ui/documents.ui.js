@@ -1,7 +1,10 @@
 import { createUI } from "../../../shared/utils/ui.js";
 import { workspaceStore, documentsStore } from "../store/index.js";
 import { workspaceService, documentService } from "../services/index.js";
-import { createTemplateElement } from "../../../shared/utils/dom.js";
+import {
+  createTemplateElement,
+  createMenu,
+} from "../../../shared/utils/dom.js";
 import initInlineEditor from "../../../shared/widgets/inline-editor.js";
 
 // #region DOM References
@@ -70,7 +73,7 @@ function onDocItemActionsBtnClick(event, getActionsMenu) {
   const $documentItem = $(event.currentTarget).closest("li");
   const documentId = $documentItem.data("docId");
   const menu = getActionsMenu(documentId);
-  new CustomMenu(event).contextmenu(menu);
+  createMenu(event, menu);
 }
 // #endregion
 
