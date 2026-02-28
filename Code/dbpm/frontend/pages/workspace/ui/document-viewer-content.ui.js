@@ -38,6 +38,65 @@ function getNumericCssPx($element, property) {
   return Number.parseFloat($element.css(property)) || 0;
 }
 
+function getDocumentHorizontalBounds() {
+  const viewerElement = $viewerWrap[0];
+  const contentElement = $documentContent[0];
+  if (!viewerElement || !contentElement) return null;
+
+  const viewerRect = viewerElement.getBoundingClientRect();
+  const contentRect = contentElement.getBoundingClientRect();
+  const contentStyle = window.getComputedStyle(contentElement);
+  const contentPaddingLeft =
+    Number.parseFloat(contentStyle.paddingLeft) || 0;
+  const contentPaddingRight =
+    Number.parseFloat(contentStyle.paddingRight) || 0;
+
+  return {
+    minLeft:
+      contentRect.left -
+      viewerRect.left +
+      viewerElement.scrollLeft +
+      contentPaddingLeft,
+    maxRight:
+      contentRect.right -
+      viewerRect.left +
+      viewerElement.scrollLeft -
+      contentPaddingRight,
+  };
+}
+
+function clampModelTagHorizontalPosition($tag) {
+  if (!$tag || $tag.length === 0) return;
+
+  const bounds = getDocumentHorizontalBounds();
+  if (!bounds) return;
+
+  const { minLeft, maxRight } = bounds;
+  const availableWidth = Math.max(0, maxRight - minLeft);
+  const computedTagStyle = window.getComputedStyle($tag[0]);
+  const configuredMaxWidth = Number.parseFloat(computedTagStyle.maxWidth);
+
+  if (availableWidth === 0) {
+    $tag.css({ left: `${minLeft}px`, "max-width": "0px" });
+    return;
+  }
+
+  if (Number.isFinite(configuredMaxWidth)) {
+    $tag.css("max-width", `${Math.min(configuredMaxWidth, availableWidth)}px`);
+  } else {
+    $tag.css("max-width", `${availableWidth}px`);
+  }
+
+  const currentLeft = getNumericCssPx($tag, "left");
+  const tagWidth = $tag.outerWidth() || 0;
+  const maxLeft = Math.max(minLeft, maxRight - tagWidth);
+  const clampedLeft = Math.min(Math.max(currentLeft, minLeft), maxLeft);
+
+  if (clampedLeft !== currentLeft) {
+    $tag.css("left", `${clampedLeft}px`);
+  }
+}
+
 function setHandleSelectionData($handle, selection) {
   const { selectionId, modelId, traceId } = selection;
   $handle.attr("data-selectionid", selectionId);
@@ -594,6 +653,7 @@ const renderSelection = (
       isCurrent: modelId == workspaceStore.getEditingModelId(),
     });
     $modelTagsLayer.append($tag);
+    clampModelTagHorizontalPosition($tag);
   }
   const $interactionWrap = createSelectionWrap({
     templateId: SELECTION_WRAP_TEMPLATE_ID,
