@@ -10,14 +10,10 @@ import { endpointLoader } from "../workflow/wf_endpoints/endpoint-loader.js";
 import { Constants } from "../../../constants.js";
 
 const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
-// Header bar
-const $exportTestsetButton = $("#exportTestsetButton");
-// Graph and details
-const $deleteModelButton = $("#deleteModelButton");
+
 const $datDetails = $("#dat_details");
 // Action bars and buttons
-const $modelActionBar = $("#modelActionBar");
-
+const $graphCanvas = $("#graphcanvas");
 // disable all controls inside
 
 // enable all controls inside
@@ -33,7 +29,7 @@ const CALL_TYPE_SELECTOR = `#dat_details select[data-relaxngui-path=" > call > p
 const CALL_SUBPROCESS_MODEL_SELECTOR = `#dat_details select[data-relaxngui-path=" > call > parameters > dbpm_subprocess_model"]`;
 
 function syncActiveModelGraphInList() {
-  var gc = $("#graphcanvas").clone();
+  var gc = $graphCanvas.clone();
   var start = parseInt(gc.attr("width"));
   $("#graphgrid > svg:not(#graphcanvas)").each((i, ele) => {
     const gr = $X(
@@ -94,8 +90,7 @@ function saveActiveModel(type) {
 }
 
 function clearModelEditor() {
-  $modelActionBar.prop("disabled", true);
-  $("#graphcanvas").empty();
+  $graphCanvas.empty();
   $datDetails.empty();
 }
 
@@ -112,7 +107,7 @@ async function showWFGraph(data) {
       graphrealization.illustrator.get_symbol = endpointLoader._boundGetSymbol;
       graphrealization.illustrator.get_properties =
         endpointLoader._boundGetProperties;
-      graphrealization.set_svg_container($("#graphcanvas"));
+      graphrealization.set_svg_container($graphCanvas);
       graphrealization.set_label_container($("#graphgrid"));
       graphrealization.set_description($(data), true);
       graphrealization.notify = function (svgid) {
@@ -121,7 +116,7 @@ async function showWFGraph(data) {
         manifestation.events.click(svgid);
         format_instance_pos();
         if (manifestation.selected() == "unknown") {
-          $("#dat_details").empty();
+          $datDetails.empty();
         }
         console.log(
           "Graph realization notify!! - saving active model with updated graph",
@@ -145,7 +140,7 @@ const showActiveModel = async (model) => {
       graphrealization.illustrator.get_symbol = endpointLoader._boundGetSymbol;
       graphrealization.illustrator.get_properties =
         endpointLoader._boundGetProperties;
-      graphrealization.set_svg_container($("#graphcanvas"));
+      graphrealization.set_svg_container($graphCanvas);
       graphrealization.set_label_container($("#graphgrid"));
       graphrealization.set_description($(model.data), true);
       graphrealization.notify = function (svgid) {
@@ -156,7 +151,7 @@ const showActiveModel = async (model) => {
         manifestation.events.click(svgid);
         format_instance_pos();
         if (manifestation.selected() == "unknown") {
-          $("#dat_details").empty();
+          $datDetails.empty();
         }
         // saveActiveModel(MODEL_UPDATE_TYPE.MANUAL_UPDATE_GRAPH_CHANGED);
         // console.log("Saving model 222");
@@ -501,15 +496,15 @@ createUI({
     });
 
     $revertPrevModelButton.on("click", () => {
-      $("#graphcanvas").empty();
+      $graphCanvas.empty();
       $("#generatedModelActionBar").css("visibility", "hidden");
     });
 
-    $("#activeModelContainer").click(function (e) {
+    $("#editingModelContainer").click(function (e) {
       $("#graphgrid .selected").removeClass("selected");
       localStorage.removeItem("marked");
       localStorage.removeItem("marked_from");
-      $("#dat_details").empty();
+      $datDetails.empty();
     });
 
     $(document)
