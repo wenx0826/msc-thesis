@@ -21,6 +21,31 @@ function selectionsToText(selections) {
     .join(" ");
 }
 
+function pickLatestTracesByModelVersionId(traces) {
+  const tracesByModelVersionId = new Map();
+
+  for (const trace of traces || []) {
+    const modelVersionId = trace?.modelVersionId;
+    if (!modelVersionId) {
+      continue;
+    }
+
+    const existingTrace = tracesByModelVersionId.get(modelVersionId);
+    if (!existingTrace) {
+      tracesByModelVersionId.set(modelVersionId, trace);
+      continue;
+    }
+
+    const existingCreatedAt = existingTrace.createdAt || "";
+    const currentCreatedAt = trace.createdAt || "";
+    if (currentCreatedAt >= existingCreatedAt) {
+      tracesByModelVersionId.set(modelVersionId, trace);
+    }
+  }
+
+  return [...tracesByModelVersionId.values()];
+}
+
 function enrichModelData(modelData, documentVersionId, selections) {
   if (!documentVersionId) {
     return modelData;
@@ -308,5 +333,100 @@ export default {
     });
 
     return { message: "Model deleted" };
+  },
+  deleteModelsByDocumentId(documentId, { source } = {}) {
+    if (!documentId) {
+      return { deletedModelIds: [], deletedCount: 0 };
+    }
+
+    const deletedModelIds = [];
+    const relatedModelIds = modelRepo.findIdsByDocumentId(documentId, false);
+    for (const modelId of relatedModelIds) {
+      const model = modelRepo.findById(modelId, true);
+      if (!model || model.deletedAt) {
+        continue;
+      }
+
+      const result = modelRepo.softDelete(modelId);
+      if (result.changes === 0) {
+        continue;
+      }
+
+      deletedModelIds.push(modelId);
+      const projectId = model.projectId || modelRepo.getProjectIdByModelId(modelId);
+      logService.logEvent(projectId, "model_deleted", {
+        id: modelId,
+        name: model.name,
+        ...(source ? { source } : {}),
+        sourceDocumentId: documentId,
+      });
+    }
+
+    return { deletedModelIds, deletedCount: deletedModelIds.length };
+  },
+  rewriteModelXmlByDocumentVersion(documentVersionId) {
+    const documentInfo =
+      documentVersionRepo.findDocumentInfoByVersionId(documentVersionId);
+    if (!documentInfo) {
+      return { updated: 0, failed: 0, skipped: 0 };
+    }
+
+    const traces = traceService.getByDocumentVersionId(documentVersionId, true);
+    const latestTraces = pickLatestTracesByModelVersionId(traces);
+
+    let updated = 0;
+    let failed = 0;
+    let skipped = 0;
+    for (const trace of latestTraces) {
+      const modelVersionId = trace?.modelVersionId;
+      if (!modelVersionId) {
+        skipped += 1;
+        continue;
+      }
+
+      try {
+        const modelData = storageRepo.read(modelVersionId);
+        if (!modelData) {
+          skipped += 1;
+          continue;
+        }
+
+        const enrichedModelData = injectDbpmMeta(modelData, {
+          ...documentInfo,
+          selectedText: selectionsToText(trace?.selections),
+        });
+        storageRepo.write(modelVersionId, enrichedModelData);
+        updated += 1;
+      } catch (error) {
+        failed += 1;
+        console.error("Failed to rewrite model XML for document update", {
+          documentVersionId,
+          modelVersionId,
+          error: error?.message || String(error),
+        });
+      }
+    }
+
+    return { updated, failed, skipped };
+  },
+  scheduleModelXmlRewriteByDocumentVersion(documentVersionId) {
+    if (!documentVersionId) {
+      return;
+    }
+
+    setImmediate(() => {
+      try {
+        const result = this.rewriteModelXmlByDocumentVersion(documentVersionId);
+        console.log("Background model XML rewrite completed", {
+          documentVersionId,
+          ...result,
+        });
+      } catch (error) {
+        console.error("Background model XML rewrite failed", {
+          documentVersionId,
+          error: error?.message || String(error),
+        });
+      }
+    });
   },
 };

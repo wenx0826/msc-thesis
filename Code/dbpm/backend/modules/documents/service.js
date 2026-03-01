@@ -4,7 +4,7 @@ import storageRepo from "./repositories/storage.js";
 import logService from "../logs/service.js";
 import { countWords } from "../../utils/fileHelper.js";
 import traceService from "../traces/service.js";
-import modelRepo from "../models/repositories/model.js";
+import modelService from "../models/service.js";
 export default {
   create({ projectId, filename, content }) {
     try {
@@ -85,6 +85,7 @@ export default {
           versionId: createdVersion.id,
         },
       );
+      modelService.scheduleModelXmlRewriteByDocumentVersion(versionId);
       return createdVersion;
     } catch (err) {
       // Cleanup on failure
@@ -125,22 +126,9 @@ export default {
       return { message: "Document deleted" };
     }
 
-    const relatedModelIds = modelRepo.findIdsByDocumentId(docId, false);
-    for (const modelId of relatedModelIds) {
-      const model = modelRepo.findById(modelId, true);
-      if (!model || model.deletedAt) {
-        continue;
-      }
-      const result = modelRepo.softDelete(modelId);
-      if (result.changes > 0) {
-        logService.logEvent(model.projectId, "model_deleted", {
-          id: modelId,
-          name: model.name,
-          source: "document_deleted_cascade",
-          sourceDocumentId: docId,
-        });
-      }
-    }
+    modelService.deleteModelsByDocumentId(docId, {
+      source: "document_deleted_cascade",
+    });
 
     const documentDeleteResult = documentRepo.softDelete(docId);
     if (documentDeleteResult.changes > 0) {
