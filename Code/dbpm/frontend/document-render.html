@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Doc-Based Process Modeller</title>
+  <script type="text/javascript" src="https://cpee.org/js_libs/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cpee.org/js_libs/jquery.browser.js"></script>
+  <script type="text/javascript" charset="utf8"
+    src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css" />
+  <script type="module" src="pages/document-viewer/init.js"></script>
+  <script type="text/javascript" src="https://cpee.org/js_libs/uidash.js" defer></script>
+  <link rel="stylesheet" href="js_libs_backup/uidash.css" type="text/css" />
+  <script type="text/javascript" src="https://cpee.org/js_libs/custommenu.js" defer></script>
+  <link rel="stylesheet" href="https://cpee.org/js_libs/custommenu.css" type="text/css" />
+  <link rel="stylesheet" href="assets/global.css" type="text/css" />
+  <link rel="stylesheet" href="assets/document-viewer.css" type="text/css" />
+  <link rel="stylesheet" href="pages/document-viewer/document-render.css" type="text/css" />
+
+</head>
+
+<body>
+  <!-- <header class="render-header">
+    <a class="nav-link" href="index.html">Home</a>
+    <span class="meta" id="versionLabel"></span>
+    <span class="meta" id="summaryLabel"></span>
+  </header>
+  <main id="viewerWrap" aria-live="polite">
+    <div id="selectionsVisualLayer"></div>
+    <div id="modelTagsLayer"></div>
+    <article id="documentContent"></article>
+  </main>
+  <div id="statusBanner" class="status status--hidden"></div> -->
+  <ui-rest class="main">
+    <ui-content>
+      <ui-area id="viewerWrap">
+        <ui-area id="selectionsVisualLayer"></ui-area>
+        <!-- <ui-area id="temporarySelectionsLayer"></ui-area> -->
+        <ui-area id="documentContent"></ui-area>
+        <ui-area id="interactionLayer">
+          <div id="modelTagsLayer"></div>
+          <!-- <div id="activeModelTags"></div> -->
+        </ui-area>
+        <!-- <template id="selectionWrapTemplate">
+          <div class="selection-wrap"></div>
+        </template>
+        <template id="selectionRangeRectTemplate">
+          <div class="range-rect"></div>
+        </template> -->
+        <template id="modelTagTemplate">
+          <span class="tag-span"></span>
+        </template>
+      </ui-area>
+    </ui-content>
+  </ui-rest>
+
+</body>
+
+</html>

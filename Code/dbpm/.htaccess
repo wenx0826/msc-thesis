@@ -1,7 +1,0 @@
-RewriteEngine On
-
-# Proxy backend requests to local Node server
-RewriteRule ^backend/(.*)$ http://127.0.0.1:8484/$1 [P,L]
-
-# Ensure redirects from backend are rewritten
-ProxyPassReverse /~ga94hor/dbpm/backend/ http://127.0.0.1:8484/

@@ -2,8 +2,8 @@ import { createUI } from "../../../shared/utils/ui.js";
 import { projectsAPI } from "../../../api/index.js";
 import {
   getProjectIdFromURL,
-  getDocumentURL,
-  getModelGraphRenderURL,
+  getDocumentViewerURL,
+  getWorkflowViewerURL,
 } from "../../../shared/utils/url.js";
 import { createTemplateElement } from "../../../shared/utils/dom.js";
 import { formatNumber } from "../../../shared/utils/number.js";
@@ -35,7 +35,10 @@ async function renderDocumentsList(documents) {
     $documentItem.find("[data-ref='modelsCount']").text(docModels.length);
     $documentItem
       .find("[data-ref='documentLink']")
-      .attr("href", latestVersion?.id ? getDocumentURL(latestVersion.id) : "#");
+      .attr(
+        "href",
+        latestVersion?.id ? getDocumentViewerURL(latestVersion.id) : "#",
+      );
     $documentsList.append($documentItem);
     // renderDocumentModels(doc.id, $documentItem);
     const $modelsGrid = $documentItem.find("[data-ref='modelsGrid']");
@@ -55,7 +58,7 @@ async function renderDocumentsList(documents) {
         .text(formatNumber(latestModelVersion?.selectedWordsCount ?? 0));
       $modelItem
         .find("[data-ref='modelLink']")
-        .attr("href", getModelGraphRenderURL(modelVersionId))
+        .attr("href", getWorkflowViewerURL(modelVersionId))
         .text("View Model");
       $modelsGrid.append($modelItem);
     });
