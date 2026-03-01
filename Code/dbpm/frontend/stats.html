@@ -41,16 +41,22 @@
     </div>
   </ui-bar>
   <!-- <a href="index.html" class="back-link">← Back to Projects</a> -->
-  <ui-rest style="z-index: 2" class="main">
+  <ui-rest style="z-index: 2" class="main" data-current-scope="all">
     <div class="page-rail">
       <section class="kpis" aria-label="Key statistics">
         <div class="kpi">
-          <div class="kpiTitle">All Documents</div>
+          <div class="kpiTitle">
+            <span class="kpi-title-all">All Documents</span>
+            <span class="kpi-title-active">Documents</span>
+          </div>
           <div class="kpiValue" id="kpiDocs">—</div>
           <div class="kpiMeta" id="kpiDocsMeta"></div>
         </div>
         <div class="kpi">
-          <div class="kpiTitle">All Models</div>
+          <div class="kpiTitle">
+            <span class="kpi-title-all">All Models</span>
+            <span class="kpi-title-active">Models</span>
+          </div>
           <div class="kpiValue" id="kpiModels">—</div>
           <div class="kpiMeta" id="kpiModelsMeta"></div>
         </div>
@@ -78,7 +84,10 @@
               </div>
               <ul class="document-info">
                 <li>words: <span data-ref="wordsCount"></span></li>
-                <li>models: <span data-ref="modelsCount"></span></li>
+                <li>
+                  models: <span data-ref="modelsCount"></span>
+                  <span class="models-stats" data-ref="modelsStats"></span>
+                </li>
                 <li><a data-ref="documentLink" target="_blank">View Document</a></li>
               </ul>
             </ui-tab>

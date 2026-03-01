@@ -60,6 +60,24 @@
   flex-wrap: wrap;
 }
 
+.kpi-title-active {
+  display: none;
+}
+
+.main[data-current-scope="active"] .kpi-title-all {
+  display: none;
+}
+
+.main[data-current-scope="active"] .kpi-title-active {
+  display: inline;
+}
+
+.main[data-current-scope="active"] .status-pill,
+.main[data-current-scope="active"] .models-stats,
+.main[data-current-scope="active"] .kpiMeta {
+  display: none;
+}
+
 .pill {
   display: inline-flex;
   align-items: center;
@@ -126,6 +144,10 @@
 .restore-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.models-stats {
+  color: var(--x-ui-text-muted-color);
 }
 
 /* Section label */
