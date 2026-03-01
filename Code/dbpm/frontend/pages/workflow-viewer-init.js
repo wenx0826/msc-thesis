@@ -37,25 +37,6 @@
     $label.children().not($svg).remove();
   }
 
-  function parseDescriptionElement(descriptionXml) {
-    const parsed = window.$.parseXML(descriptionXml);
-    const parseError = parsed.getElementsByTagName("parsererror")[0];
-    if (parseError) {
-      throw new Error(parseError.textContent || "Invalid model XML");
-    }
-    if (
-      parsed.documentElement &&
-      parsed.documentElement.nodeName === "description"
-    ) {
-      return parsed.documentElement;
-    }
-    const description = parsed.getElementsByTagName("description")[0];
-    if (!description) {
-      throw new Error("Model XML does not contain a description element");
-    }
-    return description;
-  }
-
   function updateEndpointData(endpointSymbols, endpointProperties) {
     const nextSymbols = endpointSymbols || {};
     const nextProperties = endpointProperties || {};
@@ -141,9 +122,8 @@
       updateEndpointData(endpointSymbols, endpointProperties);
       const adaptor = await ensurePreviewAdaptor(themePath);
 
-      const descriptionElement = parseDescriptionElement(descriptionXml);
       clearPreviewRenderContainers(true);
-      adaptor.set_description(window.$(descriptionElement), true);
+      adaptor.set_description(window.$(descriptionXml), true);
 
       const svgNode = window.document.querySelector(PREVIEW_CANVAS_SELECTOR);
       if (!svgNode) {
@@ -186,7 +166,7 @@
     );
   }
 
-  async function fetchModelDescriptionXml(modelVersionId) {
+  async function fetchModelXml(modelVersionId) {
     const encodedVersionId = encodeURIComponent(modelVersionId);
     const response = await fetch(
       `${window.location.origin}/models/versions/${encodedVersionId}/data`,
@@ -194,9 +174,7 @@
     if (!response.ok) {
       throw new Error(`Failed to fetch model version ${modelVersionId}`);
     }
-    const modelXml = await response.text();
-    const description = parseDescriptionElement(modelXml);
-    return new window.XMLSerializer().serializeToString(description);
+    return await response.text();
   }
 
   async function loadEndpointPreviewData() {
@@ -236,7 +214,7 @@
     setStandaloneStatus("Loading model graph...");
     try {
       const [descriptionXml, endpointPayload] = await Promise.all([
-        fetchModelDescriptionXml(modelVersionId),
+        fetchModelXml(modelVersionId),
         loadEndpointPreviewData(),
       ]);
       const previewThemeUrl = new URL(

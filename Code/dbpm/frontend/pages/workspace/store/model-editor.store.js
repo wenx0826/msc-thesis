@@ -57,10 +57,7 @@ class ModelEditorStore extends Store {
     this.notify({ key: "error", newValue: error });
   }
   setData(data) {
-    const parsedData = $.parseXML(
-      `<description>${data}</description>`,
-    ).documentElement;
-
+    const parsedData = $.parseXML(data).documentElement;
     this.state.data = parsedData;
     this.notify({
       key: "data",

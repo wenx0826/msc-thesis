@@ -6,7 +6,7 @@ export default {
   path: "models",
 
   async generateSampleModel() {
-    const templatesFolder = "/pages/workspace/sample_models/";
+    const templatesFolder = "/modules/workflow/templates/";
 
     async function fetchTemplatesList() {
       try {
@@ -45,7 +45,7 @@ export default {
       //   "==========Fetched Subprocess.xml with text========",
       //   await resp.text(),
       // );
-      if (!resp.ok) throw err;
+      // if (!resp.ok) throw err;
       return '<description xmlns="http://cpee.org/ns/description/1.0"/>';
     }
   },

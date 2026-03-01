@@ -142,7 +142,7 @@ const showActiveModel = async (model) => {
         endpointLoader._boundGetProperties;
       graphrealization.set_svg_container($graphCanvas);
       graphrealization.set_label_container($("#graphgrid"));
-      graphrealization.set_description($(model.data), true);
+      graphrealization.set_description($(model?.data), true);
       graphrealization.notify = function (svgid) {
         console.log("Graph realization notify for svgid:", svgid);
         console.log("Saving model 111");

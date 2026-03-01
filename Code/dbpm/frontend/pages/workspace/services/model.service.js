@@ -251,6 +251,7 @@ export default {
     modelEditorStore.setData(data);
   },
   async updateActiveModel(type) {
+    console.log("here???");
     const model = modelEditorStore.getModel();
     const modelId = workspaceStore.getEditingModelId();
 

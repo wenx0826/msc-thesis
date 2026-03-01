@@ -238,6 +238,8 @@
   },
   "active": "1f57c41513d47a3d",
   "lastOpenFiles": [
+    "Code/dbpm/data/models/8f7fae6c-bc29-49f8-9a20-5dc35cbd81b6.xml",
+    "Code/dbpm/data/database.sqlite-journal",
     "Code/dbpm/frontend/modules/document/selection.js",
     "Code/dbpm/frontend/modules/document/file.js",
     "Code/dbpm/frontend/modules/document/document-viewer.css",
@@ -247,8 +249,6 @@
     "Code/dbpm/frontend/modules/document-viewer/viewer/init.js",
     "Code/dbpm/frontend/modules/document-viewer/viewer",
     "Code/dbpm/frontend/modules/document-viewer/document-viewer.css",
-    "Code/dbpm/frontend/modules/document-viewer",
-    "Code/dbpm/frontend/modules/workflow/templates/instantiate/Take_X.xml",
     "Code/dbpm/frontend/modules/workflow/themes/preset_customized/symbols/wait_for_signal.svg",
     "Code/dbpm/frontend/modules/workflow/themes/preset_customized/symbols/terminate.svg",
     "Code/dbpm/frontend/modules/workflow/themes/preset_customized/symbols/stop.svg",
