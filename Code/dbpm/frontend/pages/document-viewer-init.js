@@ -1,6 +1,6 @@
-import { documentsAPI } from "../../api/index.js";
-import { createTemplateElement } from "../../shared/utils/dom.js";
-import { deserializeRange } from "../workspace/utils/selection.js";
+import { documentsAPI } from "../api/index.js";
+import { createTemplateElement } from "../shared/utils/dom.js";
+import { deserializeRange } from "../modules/document/selection.js";
 
 const DEFAULT_SELECTION_COLOR = "#d4e1f1";
 const MODEL_TAG_TEMPLATE_ID = "modelTagTemplate";

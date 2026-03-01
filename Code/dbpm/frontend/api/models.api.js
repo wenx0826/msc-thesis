@@ -151,6 +151,12 @@ export default {
     });
     return handleResponse(response, "Failed to delete model");
   },
+  async restoreModelById(id) {
+    const response = await fetch(`${baseURL}/${this.path}/${id}/restore`, {
+      method: "PUT",
+    });
+    return handleResponse(response, "Failed to restore model");
+  },
 
   // Sub-API for accessing all records (including soft-deleted)
 };

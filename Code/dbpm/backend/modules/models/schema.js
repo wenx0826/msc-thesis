@@ -241,3 +241,25 @@ export const updateVersionSchema = {
     200: {},
   },
 };
+
+export const restoreModelSchema = {
+  params: {
+    type: "object",
+    required: ["id"],
+    properties: {
+      id: { type: "string" },
+    },
+  },
+  response: {
+    200: {
+      type: "object",
+      properties: {
+        id: { type: "string" },
+        name: { type: "string" },
+        latestVersionId: { type: "string" },
+        createdAt: { type: "string" },
+        deletedAt: { type: ["string", "null"] },
+      },
+    },
+  },
+};

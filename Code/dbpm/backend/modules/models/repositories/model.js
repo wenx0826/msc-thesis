@@ -183,6 +183,15 @@ class ModelRepository extends BaseSqlRepository {
     return stmt.run(new Date().toISOString(), modelId);
   }
 
+  restore(modelId) {
+    const stmt = db.prepare(`
+      UPDATE models
+      SET deleted_at = NULL
+      WHERE id = ? AND deleted_at IS NOT NULL
+    `);
+    return stmt.run(modelId);
+  }
+
   addStatUpdate(modelId, timestamp, type, words) {
     const stmt = db.prepare(
       "INSERT INTO model_stat_updates (model_id, created_at, type, words) VALUES (?, ?, ?, ?)",

@@ -5,6 +5,7 @@ import {
   updateMetaSchema,
   getModelSchema,
   getVersionDataSchema,
+  restoreModelSchema,
 } from "./schema.js";
 
 export default async function (fastify, options) {
@@ -97,6 +98,22 @@ export default async function (fastify, options) {
       }
     },
   );
+
+  // PUT /models/:id/restore - Restore a soft-deleted model
+  fastify.put("/:id/restore", { schema: restoreModelSchema }, (request, reply) => {
+    const modelId = request.params.id;
+    try {
+      const result = modelService.restoreModel(modelId);
+      reply.send(result);
+    } catch (err) {
+      console.error("Failed to restore model:", err);
+      if (err.message === "Model not found") {
+        reply.code(404).send({ error: "Model not found" });
+      } else {
+        reply.code(500).send({ error: "Failed to restore model" });
+      }
+    }
+  });
   // GET /models/:id - Get model by ID
   fastify.get("/:id", { schema: getModelSchema }, (request, reply) => {
     const modelId = request.params.id;

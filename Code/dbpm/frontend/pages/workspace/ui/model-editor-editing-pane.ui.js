@@ -6,7 +6,7 @@ import {
   workspaceStore,
 } from "../store/index.js";
 import { modelService, workspaceService } from "../services/index.js";
-import { endpointLoader } from "../workflow/wf_endpoints/endpoint-loader.js";
+import { endpointLoader } from "../../../modules/workflow/endpoints/endpoint-loader.js";
 import { Constants } from "../../../constants.js";
 
 const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
@@ -102,7 +102,7 @@ async function showWFGraph(data) {
   await endpointLoader.init();
   save["endpoints_cache"] = endpointLoader._cache;
   save["graph_adaptor"] = new WfAdaptor(
-    "pages/workspace/workflow/wf_themes/preset_customized/theme.js",
+    "modules/workflow/themes/preset_customized/theme.js",
     function (graphrealization) {
       graphrealization.illustrator.get_symbol = endpointLoader._boundGetSymbol;
       graphrealization.illustrator.get_properties =
@@ -135,7 +135,7 @@ const showActiveModel = async (model) => {
   await endpointLoader.init();
   save["endpoints_cache"] = endpointLoader._cache;
   save["graph_adaptor"] = new WfAdaptor(
-    "pages/workspace/workflow/wf_themes/preset_customized/theme.js",
+    "modules/workflow/themes/preset_customized/theme.js",
     function (graphrealization) {
       graphrealization.illustrator.get_symbol = endpointLoader._boundGetSymbol;
       graphrealization.illustrator.get_properties =

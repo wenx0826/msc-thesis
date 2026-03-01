@@ -137,3 +137,22 @@ export const getTracesSchema = {
     },
   },
 };
+
+export const restoreDocumentSchema = {
+  params: {
+    type: "object",
+    required: ["id"],
+    properties: {
+      id: { type: "string" },
+    },
+  },
+  response: {
+    200: {
+      type: "object",
+      properties: {
+        ...documentMetaProperties,
+        deletedAt: { type: ["string", "null"] },
+      },
+    },
+  },
+};

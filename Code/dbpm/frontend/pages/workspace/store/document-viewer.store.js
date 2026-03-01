@@ -3,7 +3,7 @@ import {
   deserializeRange,
   serializeRange,
   getSortedSelectionsByRange,
-} from "../utils/selection.js";
+} from "../../../modules/document/selection.js";
 
 function hydrateSelections(selections) {
   if (!Array.isArray(selections)) {

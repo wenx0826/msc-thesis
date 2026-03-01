@@ -62,7 +62,15 @@
           <ui-tabbar>
             <ui-tab class="switch"></ui-tab>
             <ui-tab class="" style="flex: 1">
-              <h3><span class="document-name" data-ref="documentName"></span></h3>
+              <div class="entity-title">
+                <div class="entity-title-main">
+                  <h3><span class="document-name" data-ref="documentName"></span></h3>
+                  <span class="pill status-pill" data-ref="documentStatusPill"></span>
+                </div>
+                <button type="button" class="restore-btn" data-ref="restoreDocumentButton" hidden>
+                  Restore
+                </button>
+              </div>
               <div class="field">
                 <label for="docVersionSelect">Version:</label>
                 <span data-ref="documentVersion"></span>
@@ -86,7 +94,15 @@
 
       <template id="modelGridTemplate">
         <li data-model-id="">
-          <h4><span class="model-name" data-ref="modelName"></span></h4>
+          <div class="entity-title">
+            <div class="entity-title-main">
+              <h4><span class="model-name" data-ref="modelName"></span></h4>
+              <span class="pill status-pill" data-ref="modelStatusPill"></span>
+            </div>
+            <button type="button" class="restore-btn" data-ref="restoreModelButton" hidden>
+              Restore
+            </button>
+          </div>
           <ul class="model-info">
             <li>version: <span data-ref="modelVersion"></span></li>
             <li> words: <span data-ref="selectedWordsCount"></span></li>

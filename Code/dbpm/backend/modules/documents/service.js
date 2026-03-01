@@ -140,4 +140,23 @@ export default {
 
     return { message: "Document deleted" };
   },
+  restoreDocument(docId) {
+    const doc = documentRepo.findById(docId);
+    if (!doc) {
+      throw new Error("Document not found");
+    }
+    if (!doc.deletedAt) {
+      return documentRepo.findByIdWithVersions(docId);
+    }
+
+    const result = documentRepo.restore(docId);
+    if (result.changes > 0) {
+      logService.logEvent(doc.projectId, "document_restored", {
+        id: doc.id,
+        name: doc.name,
+      });
+    }
+
+    return documentRepo.findByIdWithVersions(docId);
+  },
 };

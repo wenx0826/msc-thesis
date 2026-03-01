@@ -7,7 +7,7 @@ import {
   modelsStore,
 } from "../store/index.js";
 import workspaceService from "./workspace.service.js";
-import { getFileContentInHTML } from "../utils/file.js";
+import { getFileContentInHTML } from "../../../modules/document/file.js";
 
 export default {
   async uploadDocuments(files) {

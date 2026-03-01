@@ -4,6 +4,7 @@ import {
   createVersionSchema,
   getDocumentContentSchema,
   getTracesSchema,
+  restoreDocumentSchema,
   updateMetaSchema,
 } from "./schema.js";
 
@@ -125,6 +126,26 @@ export default async function (fastify, options) {
           reply.code(404).send({ error: "Document not found" });
         } else {
           reply.code(500).send({ error: "Failed to delete document" });
+        }
+      }
+    },
+  );
+
+  // PUT /documents/:id/restore - Restore a soft-deleted document
+  fastify.put(
+    "/:id/restore",
+    { schema: restoreDocumentSchema },
+    (request, reply) => {
+      const { id } = request.params;
+      try {
+        const result = documentService.restoreDocument(id);
+        reply.send(result);
+      } catch (err) {
+        console.error("Failed to restore document:", err);
+        if (err.message === "Document not found") {
+          reply.code(404).send({ error: "Document not found" });
+        } else {
+          reply.code(500).send({ error: "Failed to restore document" });
         }
       }
     },

@@ -18,7 +18,7 @@ export const endpointLoader = {
   },
 
   async _doInit() {
-    const basePath = "/pages/workspace/workflow/wf_endpoints/";
+    const basePath = "/modules/workflow/endpoints/";
 
     // Initialize cache for all endpoints with null values
     this._cache = {};

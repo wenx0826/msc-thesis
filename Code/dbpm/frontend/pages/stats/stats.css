@@ -81,6 +81,52 @@
   color: var(--danger);
   border-color: #f0d5da;
 }
+.pill.active {
+  color: #2d6a45;
+  border-color: #cce6d8;
+}
+
+.entity-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 6px;
+}
+
+.entity-title-main {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.entity-title-main > h3,
+.entity-title-main > h4 {
+  display: inline-block;
+  margin: 0;
+}
+
+.restore-btn {
+  margin-left: auto;
+  font-size: 12px;
+  line-height: 1;
+  border: 1px solid var(--x-ui-border-color);
+  border-radius: 6px;
+  background: var(--x-ui-content-light-background);
+  color: var(--x-ui-text-color);
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.restore-btn:hover {
+  background: var(--x-ui-content-hover-background);
+}
+
+.restore-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 
 /* Section label */
 .sectionLabel {

@@ -28,6 +28,12 @@ export default {
     });
     return handleResponse(response, "Failed to delete document");
   },
+  async restore(id) {
+    const response = await fetch(`${baseURL}/${this.path}/${id}/restore`, {
+      method: "PUT",
+    });
+    return handleResponse(response, "Failed to restore document");
+  },
   // Document Version
   async createVersion(params) {
     const response = await fetch(`${baseURL}/${this.path}/versions`, {

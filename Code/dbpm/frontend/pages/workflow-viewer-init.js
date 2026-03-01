@@ -2,8 +2,8 @@
   const PREVIEW_LABEL_SELECTOR = "#modelGridSmall";
   const PREVIEW_CANVAS_SELECTOR = "#modelCanvasSmall";
   const PREVIEW_THEME_PATH =
-    "pages/workspace/workflow/wf_themes/preset_customized/theme.js";
-  const ENDPOINTS_BASE_PATH = "/pages/workspace/workflow/wf_endpoints/";
+    "modules/workflow/themes/preset_customized/theme.js";
+  const ENDPOINTS_BASE_PATH = "/modules/workflow/endpoints/";
   const ENDPOINT_NAMES = ["subprocess"];
 
   let previewRenderQueue = Promise.resolve();

@@ -334,6 +334,27 @@ export default {
 
     return { message: "Model deleted" };
   },
+  restoreModel(modelId) {
+    const model = modelRepo.findById(modelId, true);
+    if (!model) {
+      throw new Error("Model not found");
+    }
+    if (!model.deletedAt) {
+      return modelRepo.findByIdWithVersions(modelId, true);
+    }
+
+    const result = modelRepo.restore(modelId);
+    if (result.changes > 0) {
+      const projectId =
+        model.projectId || modelRepo.getProjectIdByModelId(modelId);
+      logService.logEvent(projectId, "model_restored", {
+        id: model.id,
+        name: model.name,
+      });
+    }
+
+    return modelRepo.findByIdWithVersions(modelId, true);
+  },
   deleteModelsByDocumentId(documentId, { source } = {}) {
     if (!documentId) {
       return { deletedModelIds: [], deletedCount: 0 };

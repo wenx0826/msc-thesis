@@ -21,9 +21,14 @@ export function getDocumentURL(versionId) {
 
 export function getDocumentViewerURL(versionId) {
   if (!versionId) {
-    return "document-render.html";
+    return "document-viewer.html";
   }
-  return `document-render.html?version_id=${versionId}`;
+  return `document-viewer.html?version_id=${versionId}`;
+}
+
+// Backward compatibility for existing imports.
+export function getDocumentRenderURL(versionId) {
+  return getDocumentViewerURL(versionId);
 }
 export function getModelURL(versionId) {
   return `data/models/${versionId}.xml`;

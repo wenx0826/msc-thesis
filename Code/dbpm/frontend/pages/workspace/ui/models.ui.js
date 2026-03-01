@@ -2,7 +2,7 @@ import { createUI } from "../../../shared/utils/ui.js";
 import { modelsStore, workspaceStore } from "../store/index.js";
 import { modelService, workspaceService } from "../services/index.js";
 import { modelsAPI } from "../../../api/index.js";
-import { endpointLoader } from "../workflow/wf_endpoints/endpoint-loader.js";
+import { endpointLoader } from "../../../modules/workflow/endpoints/endpoint-loader.js";
 import {
   createMenu,
   createTemplateElement,
@@ -11,7 +11,7 @@ import initInlineEditor from "../../../shared/widgets/inline-editor.js";
 import { createModelActionsMenu } from "./model-actions-menu.ui.js";
 
 const PREVIEW_THEME_PATH =
-  "pages/workspace/workflow/wf_themes/preset_customized/theme.js";
+  "modules/workflow/themes/preset_customized/theme.js";
 const PREVIEW_IFRAME_ID = "wfPreviewRendererIframe";
 let previewRenderQueue = Promise.resolve();
 let previewRendererWindow = null;

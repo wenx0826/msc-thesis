@@ -134,6 +134,15 @@ class DocumentRepository extends BaseSqlRepository {
     `);
     return stmt.run(new Date().toISOString(), documentId);
   }
+
+  restore(documentId) {
+    const stmt = db.prepare(`
+      UPDATE documents
+      SET deleted_at = NULL
+      WHERE id = ? AND deleted_at IS NOT NULL
+    `);
+    return stmt.run(documentId);
+  }
 }
 
 export default new DocumentRepository();
