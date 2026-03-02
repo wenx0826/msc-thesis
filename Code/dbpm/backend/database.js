@@ -93,7 +93,7 @@ function initializeSchema() {
       FOREIGN KEY (model_version_id) REFERENCES model_versions(id)
     )
   `);
-  // Model stat updates table
+  // Model update events table
   db.exec(`
     CREATE TABLE IF NOT EXISTS model_update_events (
       id TEXT PRIMARY KEY,
@@ -101,7 +101,6 @@ function initializeSchema() {
       type TEXT NOT NULL,
       details TEXT,
       created_at TEXT NOT NULL DEFAULT current_timestamp,
-      deleted_at TEXT,
       FOREIGN KEY (model_version_id) REFERENCES model_versions(id)
     )
   `);

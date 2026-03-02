@@ -54,7 +54,7 @@ createUI({
   },
   bindListeners: () => {
     $addSelectionsButton.on("click", () => {
-      modelService.updateActiveModel(
+      modelService.updateEditingVersion(
         MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
       );
     });

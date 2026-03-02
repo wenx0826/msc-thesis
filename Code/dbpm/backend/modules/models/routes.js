@@ -5,6 +5,7 @@ import {
   updateMetaSchema,
   getModelSchema,
   getVersionDataSchema,
+  updateVersionSchema,
   restoreModelSchema,
 } from "./schema.js";
 
@@ -100,20 +101,24 @@ export default async function (fastify, options) {
   );
 
   // PUT /models/:id/restore - Restore a soft-deleted model
-  fastify.put("/:id/restore", { schema: restoreModelSchema }, (request, reply) => {
-    const modelId = request.params.id;
-    try {
-      const result = modelService.restoreModel(modelId);
-      reply.send(result);
-    } catch (err) {
-      console.error("Failed to restore model:", err);
-      if (err.message === "Model not found") {
-        reply.code(404).send({ error: "Model not found" });
-      } else {
-        reply.code(500).send({ error: "Failed to restore model" });
+  fastify.put(
+    "/:id/restore",
+    { schema: restoreModelSchema },
+    (request, reply) => {
+      const modelId = request.params.id;
+      try {
+        const result = modelService.restoreModel(modelId);
+        reply.send(result);
+      } catch (err) {
+        console.error("Failed to restore model:", err);
+        if (err.message === "Model not found") {
+          reply.code(404).send({ error: "Model not found" });
+        } else {
+          reply.code(500).send({ error: "Failed to restore model" });
+        }
       }
-    }
-  });
+    },
+  );
   // GET /models/:id - Get model by ID
   fastify.get("/:id", { schema: getModelSchema }, (request, reply) => {
     const modelId = request.params.id;
@@ -147,22 +152,25 @@ export default async function (fastify, options) {
     },
   );
 
-  // PUT /models/:id - Update model
-  fastify.put("/:id", (request, reply) => {
-    const modelId = request.params.id;
-    const { modelData, trace, type } = request.body;
-    console.log("Updating model for ID:", modelId);
-    console.log("Update payload:", { modelData, trace, type });
-    try {
-      modelService.updateModel({ modelId, modelData, trace, type });
-      reply.send({ message: "Model content updated" });
-    } catch (err) {
-      console.error("Failed to update model:", err);
-      if (["Model not found", "Model deleted"].includes(err.message)) {
-        reply.code(404).send({ error: err.message });
-        return;
+  // PUT /models/versions/:versionId - Update model
+  fastify.put(
+    "/versions/:versionId",
+    { schema: updateVersionSchema },
+    (request, reply) => {
+      const versionId = request.params.versionId;
+      const { modelData, trace, type } = request.body;
+      console.log("Update payload:", { modelData, trace, type });
+      try {
+        modelService.updateVersion({ versionId, ...request.body });
+        reply.send({ message: "Model content updated" });
+      } catch (err) {
+        console.error("Failed to update model:", err);
+        if (["Model not found", "Model deleted"].includes(err.message)) {
+          reply.code(404).send({ error: err.message });
+          return;
+        }
+        reply.code(500).send({ error: "Failed to update model" });
       }
-      reply.code(500).send({ error: "Failed to update model" });
-    }
-  });
+    },
+  );
 }

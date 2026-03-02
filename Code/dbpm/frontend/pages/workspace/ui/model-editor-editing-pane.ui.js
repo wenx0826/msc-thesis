@@ -28,65 +28,8 @@ const $viewModelDataLink = $("#viewModelDataLink");
 const CALL_TYPE_SELECTOR = `#dat_details select[data-relaxngui-path=" > call > parameters > dbpm_type"]`;
 const CALL_SUBPROCESS_MODEL_SELECTOR = `#dat_details select[data-relaxngui-path=" > call > parameters > dbpm_subprocess_model"]`;
 
-function syncActiveModelGraphInList() {
-  var gc = $graphCanvas.clone();
-  var start = parseInt(gc.attr("width"));
-  $("#graphgrid > svg:not(#graphcanvas)").each((i, ele) => {
-    const gr = $X(
-      '<g transform="translate(' +
-        start +
-        ')" xmlns="http://www.w3.org/2000/svg"></g>',
-    );
-    start = start + parseInt(ele.getAttribute("width"));
-    $("g", ele).each((j, g) => {
-      gr.append($(g).clone());
-    });
-    gc.append(gr);
-  });
-  gc.find(".selected").removeClass("selected");
-  var varreps = {};
-  $(window.document.styleSheets).each(function (i, x) {
-    if (
-      x &&
-      x.href &&
-      x.ownerNode.attributes.getNamedItem("data-include-export")
-    ) {
-      $(x.cssRules).each(function (j, y) {
-        if (y.selectorText == ":root") {
-          $(y.style).each(function (k, z) {
-            varreps["var\\(" + z + "\\)"] = getComputedStyle(
-              document.documentElement,
-            )
-              .getPropertyValue(z)
-              .toString();
-          });
-        }
-        var loc = $(gc).find(y.selectorText.replace(/svg /g, ""));
-        var cst = y.style.cssText;
-        for (k in varreps) {
-          cst = cst.replace(new RegExp(k, "g"), varreps[k]);
-        }
-        loc.each(function (k, loco) {
-          var sty =
-            $(loco).attr("style") == undefined ? "" : $(loco).attr("style");
-          $(loco).attr("style", cst + sty);
-        });
-      });
-      var loc = $(gc).find("text.super");
-      loc.attr("style", loc.attr("style") + " display: none; ");
-    }
-  });
-  gc.attr("width", start + 1);
-  gc.find(".duration");
-  gc.removeAttr("id");
-  modelsStore.updateModelById(workspaceStore.getEditingModelId(), {
-    svg: gc[0].outerHTML,
-  });
-}
-
 function saveActiveModel(type) {
-  modelService.updateActiveModel(type);
-  syncActiveModelGraphInList();
+  modelService.updateEditingVersion(type);
 }
 
 function clearModelEditor() {
@@ -121,7 +64,9 @@ async function showWFGraph(data) {
         console.log(
           "Graph realization notify!! - saving active model with updated graph",
         );
-        modelService.saveModel(MODEL_UPDATE_TYPE.MANUAL_UPDATE_GRAPH_CHANGED);
+        modelService.updateEditingVersion(
+          MODEL_UPDATE_TYPE.MANUAL_UPDATE_GRAPH_CHANGED,
+        );
         // saveActiveModel(MODEL_UPDATE_TYPE.MANUAL_UPDATE_GRAPH_CHANGED);
       };
     },
@@ -491,8 +436,7 @@ createUI({
 
     $keepNewModelButton.on("click", async () => {
       $regeneratedModelActionBar.hide();
-      modelService.updateActiveModel();
-      syncActiveModelGraphInList();
+      modelService.updateEditingVersion();
     });
 
     $revertPrevModelButton.on("click", () => {

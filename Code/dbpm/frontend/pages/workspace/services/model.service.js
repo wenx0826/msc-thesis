@@ -15,8 +15,7 @@ import { endpointLoader } from "../../../modules/workflow/endpoints/endpoint-loa
 const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
 const MODEL_GENERATION_TARGET = Constants.MODEL_GENERATION_TARGET;
 const EMPTY_MODEL = Constants.EMPTY_MODEL;
-const PREVIEW_THEME_PATH =
-  "modules/workflow/themes/preset_customized/theme.js";
+const PREVIEW_THEME_PATH = "modules/workflow/themes/preset_customized/theme.js";
 const PREVIEW_IFRAME_ID = "wfPreviewRendererIframe";
 
 let previewRenderQueue = Promise.resolve();
@@ -28,6 +27,111 @@ function queuePreviewRender(task) {
   const run = previewRenderQueue.then(task);
   previewRenderQueue = run.catch(() => {});
   return run;
+}
+
+function scopeSvgIds(svgEl, prefix) {
+  const idEls = [];
+  if (svgEl.getAttribute && svgEl.getAttribute("id")) {
+    idEls.push(svgEl);
+  }
+  svgEl.querySelectorAll("[id]").forEach((el) => idEls.push(el));
+
+  const idMap = new Map();
+  idEls.forEach((el) => {
+    const oldId = el.getAttribute("id");
+    if (!oldId || oldId.startsWith(`${prefix}_`)) {
+      return;
+    }
+    const newId = `${prefix}_${oldId}`;
+    idMap.set(oldId, newId);
+    el.setAttribute("id", newId);
+  });
+
+  if (idMap.size === 0) return;
+
+  const escaped = [...idMap.keys()].map((key) =>
+    key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+  );
+  const urlRe = new RegExp(`url\\(#(${escaped.join("|")})\\)`, "g");
+  const hrefRe = new RegExp(`^#(${escaped.join("|")})$`);
+  const urlAttrs = [
+    "clip-path",
+    "mask",
+    "fill",
+    "stroke",
+    "filter",
+    "marker-end",
+    "marker-start",
+    "marker-mid",
+  ];
+  const all = [svgEl, ...svgEl.querySelectorAll("*")];
+  all.forEach((el) => {
+    urlAttrs.forEach((attr) => {
+      const value = el.getAttribute(attr);
+      if (value && urlRe.lastIndex !== undefined) urlRe.lastIndex = 0;
+      if (value && urlRe.test(value)) {
+        urlRe.lastIndex = 0;
+        el.setAttribute(
+          attr,
+          value.replace(urlRe, (_, id) => `url(#${idMap.get(id)})`),
+        );
+      }
+    });
+
+    ["href", "xlink:href"].forEach((attr) => {
+      const value = el.getAttribute(attr);
+      if (value && hrefRe.test(value)) {
+        const oldId = value.slice(1);
+        if (idMap.has(oldId)) {
+          el.setAttribute(attr, `#${idMap.get(oldId)}`);
+        }
+      }
+    });
+
+    const inlineStyle = el.getAttribute("style");
+    if (inlineStyle && urlRe.lastIndex !== undefined) urlRe.lastIndex = 0;
+    if (inlineStyle && urlRe.test(inlineStyle)) {
+      urlRe.lastIndex = 0;
+      el.setAttribute(
+        "style",
+        inlineStyle.replace(urlRe, (_, id) => `url(#${idMap.get(id)})`),
+      );
+    }
+  });
+
+  svgEl.querySelectorAll("style").forEach((styleEl) => {
+    const cssText = styleEl.textContent || "";
+    if (!cssText) return;
+    urlRe.lastIndex = 0;
+    if (!urlRe.test(cssText)) return;
+    urlRe.lastIndex = 0;
+    styleEl.textContent = cssText.replace(
+      urlRe,
+      (_, id) => `url(#${idMap.get(id)})`,
+    );
+  });
+}
+
+function scopeSvgMarkupForModel(svgMarkup, modelId) {
+  // Temporarily disabled: scopeSvgIds feature.
+  return svgMarkup;
+
+  // if (!svgMarkup || !modelId) {
+  //   return svgMarkup;
+  // }
+  //
+  // try {
+  //   const svgDoc = $.parseXML(svgMarkup);
+  //   const svgEl = svgDoc?.documentElement;
+  //   if (!svgEl) {
+  //     return svgMarkup;
+  //   }
+  //   scopeSvgIds(svgEl, `m${modelId}`);
+  //   return new XMLSerializer().serializeToString(svgEl);
+  // } catch (error) {
+  //   console.error("Failed to scope SVG markup:", error);
+  //   return svgMarkup;
+  // }
 }
 
 function serializeEndpointSymbols(cache) {
@@ -125,7 +229,10 @@ async function renderModelSvg(modelXml) {
   const endpointProperties = collectEndpointProperties(endpointLoader._cache);
 
   return queuePreviewRender(async () => {
-    const previewThemeUrl = new URL(PREVIEW_THEME_PATH, document.baseURI).toString();
+    const previewThemeUrl = new URL(
+      PREVIEW_THEME_PATH,
+      document.baseURI,
+    ).toString();
     const rendererWindow = await ensurePreviewRendererWindow();
     return rendererWindow.renderGraphPreview({
       themePath: previewThemeUrl,
@@ -134,6 +241,37 @@ async function renderModelSvg(modelXml) {
       endpointProperties,
     });
   });
+}
+
+async function cacheVersionWithRenderedSvg({ versionId, modelId, dataXml }) {
+  modelsStore.addCachedVersion(versionId, {
+    modelId,
+    dataXml,
+    svg: null,
+    status: "loading",
+    error: null,
+  });
+
+  try {
+    const renderedSvg = await renderModelSvg(dataXml);
+    const svg = scopeSvgMarkupForModel(renderedSvg, modelId);
+    return modelsStore.addCachedVersion(versionId, {
+      modelId,
+      dataXml,
+      svg,
+      status: "ready",
+      error: null,
+    });
+  } catch (error) {
+    modelsStore.addCachedVersion(versionId, {
+      modelId,
+      dataXml,
+      svg: null,
+      status: "error",
+      error: error?.message || String(error),
+    });
+    throw error;
+  }
 }
 
 export default {
@@ -146,11 +284,25 @@ export default {
     }
 
     const current = modelsStore.getCachedModelByVersionId(versionId) || {};
-    const hasData = typeof current.dataXml === "string" && current.dataXml.length > 0;
+    const hasData =
+      typeof current.dataXml === "string" && current.dataXml.length > 0;
     const hasSvg = typeof current.svg === "string" && current.svg.length > 0;
+    const effectiveModelId = modelId || current.modelId || null;
+
+    // Temporarily disabled: scopeSvgIds feature.
+    // if (!force && needSvg && hasSvg && effectiveModelId) {
+    //   const scopedSvg = scopeSvgMarkupForModel(current.svg, effectiveModelId);
+    //   if (scopedSvg && scopedSvg !== current.svg) {
+    //     modelsStore.addCachedVersion(versionId, {
+    //       modelId: effectiveModelId,
+    //       svg: scopedSvg,
+    //     });
+    //   }
+    // }
+
     if (!force && (!needData || hasData) && (!needSvg || hasSvg)) {
       return modelsStore.addCachedVersion(versionId, {
-        ...(modelId ? { modelId } : {}),
+        ...(effectiveModelId ? { modelId: effectiveModelId } : {}),
       });
     }
 
@@ -181,7 +333,9 @@ export default {
               `Missing dataXml for version ${versionId} while generating SVG`,
             );
           }
-          const svg = await renderModelSvg(dataXml);
+          const renderedSvg = await renderModelSvg(dataXml);
+          const scopedModelId = modelId || cacheEntry.modelId || null;
+          const svg = scopeSvgMarkupForModel(renderedSvg, scopedModelId);
           cacheEntry = modelsStore.addCachedVersion(versionId, { svg });
         }
 
@@ -384,6 +538,27 @@ export default {
     projectGraphStore.addModelNodeAndEdge(createdModelMeta);
     // return { modelMeta: createdModelMeta, trace: normalizedTrace };
   },
+  async renameModel(modelId, newName) {
+    console.log(`Renaming model ${modelId} to "${newName}"`);
+    const updatedModel = await modelsAPI.updateMeta(modelId, { name: newName });
+    modelsStore.update(modelId, { name: updatedModel.name });
+  },
+  async deleteModel(modelId) {
+    if (!modelId) {
+      return;
+    }
+    await modelsAPI.deleteModelById(modelId);
+    const isEditingModel = modelId === workspaceStore.getEditingModelId();
+
+    modelsStore.delete(modelId);
+    documentViewerStore.removeTracesByModelId(modelId);
+    projectGraphStore.removeModelNodeAndEdge(modelId);
+    workspaceStore.setModelPopoverParams(null);
+
+    if (isEditingModel) {
+      workspaceService.clearModelDisplay();
+    }
+  },
   async createModelVersion(modelId, sourceVersionId) {
     const sourceVersion = modelsStore.getVersion(modelId, sourceVersionId);
     const isSelectedVersionLatest = modelsStore.isLatestVersion(
@@ -445,22 +620,23 @@ export default {
       modelId,
     });
     if (!cached?.dataXml) {
-      throw new Error(`Failed to resolve cached model XML for version ${versionId}`);
+      throw new Error(
+        `Failed to resolve cached model XML for version ${versionId}`,
+      );
     }
 
-    console.log("Loaded model data for versionId", versionId, "(service cache)");
+    console.log(
+      "Loaded model data for versionId",
+      versionId,
+      "(service cache)",
+    );
     modelEditorStore.setData(cached.dataXml);
   },
-  async updateActiveModel(type) {
-    console.log("here???");
-    const model = modelEditorStore.getModel();
-    const modelId = workspaceStore.getEditingModelId();
+  async updateEditingVersion(type) {
+    const { id: modelId, versionId: modelVersionId } =
+      workspaceStore.getEditingModel();
 
-    if (model?.updateType) {
-      type = model.updateType;
-      delete model.updateType;
-    }
-    if ([MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS].includes(type)) {
+    if (type === MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS) {
       const selectedText = documentViewerStore.getSelectedText();
       modelEditorStore.updateModelDbpmTextSelections(selectedText);
     }
@@ -471,21 +647,25 @@ export default {
       type === MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS
         ? documentViewerStore.getSerializedNewActiveModelTrace()
         : null;
-    console.log("Updating active model TRACE:", trace);
-    const res = await modelsAPI.updateModel(modelId, {
+    await modelsAPI.updateVersion(modelVersionId, {
       modelData,
       trace,
       type,
     });
-    const editingVersionId = workspaceStore.getEditingModel()?.versionId;
-    if (editingVersionId) {
-      modelsStore.addCachedVersion(editingVersionId, {
+
+    try {
+      await cacheVersionWithRenderedSvg({
+        versionId: modelVersionId,
         modelId,
         dataXml: modelData,
-        svg: null,
-        status: "ready",
       });
+    } catch (error) {
+      console.error(
+        `Failed to regenerate SVG cache for model version ${modelVersionId}:`,
+        error,
+      );
     }
+
     if (
       [
         MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
@@ -496,75 +676,11 @@ export default {
       documentViewerStore.updateTrace(trace);
     }
   },
-  async saveModel(type) {
-    const model = modelEditorStore.getModel();
-    const modelVersionId = workspaceStore.getEditingModel().versionId;
 
-    // if (model.updateType) {
-    //   type = model.updateType;
-    //   delete model.updateType;
-    // }
-    if ([MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS].includes(type)) {
-      const selectedText = documentViewerStore.getSelectedText();
-      modelEditorStore.updateModelDbpmTextSelections(selectedText);
-    }
-    const modelData = modelEditorStore.getSerializedData();
-
-    const trace =
-      type === MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS ||
-      type === MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS
-        ? documentViewerStore.getSerializedNewActiveModelTrace()
-        : null;
-    console.log("Updating active model TRACE:", trace);
-    const res = await modelsAPI.updateVersion(modelVersionId, {
-      modelData,
-      trace,
-      type,
-    });
-    if (modelVersionId) {
-      modelsStore.addCachedVersion(modelVersionId, {
-        modelId: workspaceStore.getEditingModelId(),
-        dataXml: modelData,
-        svg: null,
-        status: "ready",
-      });
-    }
-    if (
-      [
-        MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
-        MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS,
-      ].includes(type)
-    ) {
-      documentViewerStore.setTemporarySelections([]);
-      documentViewerStore.updateTrace(trace);
-    }
-  },
-  async renameModel(modelId, newName) {
-    console.log(`Renaming model ${modelId} to "${newName}"`);
-    const updatedModel = await modelsAPI.updateMeta(modelId, { name: newName });
-    modelsStore.update(modelId, { name: updatedModel.name });
-  },
   async updateActiveModelTrace() {
     const updatedTrace = documentViewerStore.getSerializedActiveModelTrace();
     modelsAPI.traces
       .updateTrace(updatedTrace)
       .then(() => documentViewerStore.updateTrace(updatedTrace));
-  },
-
-  async deleteModel(modelId) {
-    if (!modelId) {
-      return;
-    }
-    await modelsAPI.deleteModelById(modelId);
-    const isEditingModel = modelId === workspaceStore.getEditingModelId();
-
-    modelsStore.delete(modelId);
-    documentViewerStore.removeTracesByModelId(modelId);
-    projectGraphStore.removeModelNodeAndEdge(modelId);
-    workspaceStore.setModelPopoverParams(null);
-
-    if (isEditingModel) {
-      workspaceService.clearModelDisplay();
-    }
   },
 };

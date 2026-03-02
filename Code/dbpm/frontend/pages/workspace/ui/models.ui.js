@@ -31,11 +31,18 @@ function onModelItemClick(event) {
  * model SVGs live in the same document.
  */
 function scopeSvgIds(svgEl, prefix) {
-  // Collect every element inside the SVG that carries an id
-  const idEls = svgEl.querySelectorAll("[id]");
+  // Collect every element inside the SVG (including root) that carries an id.
+  const idEls = [];
+  if (svgEl.getAttribute && svgEl.getAttribute("id")) {
+    idEls.push(svgEl);
+  }
+  svgEl.querySelectorAll("[id]").forEach((el) => idEls.push(el));
   const idMap = new Map();
   idEls.forEach((el) => {
     const oldId = el.getAttribute("id");
+    if (!oldId || oldId.startsWith(`${prefix}_`)) {
+      return;
+    }
     const newId = `${prefix}_${oldId}`;
     idMap.set(oldId, newId);
     el.setAttribute("id", newId);
@@ -51,7 +58,7 @@ function scopeSvgIds(svgEl, prefix) {
   const hrefRe = new RegExp(`^#(${escaped.join("|")})$`);
 
   // Walk every element and patch relevant attributes
-  const all = svgEl.querySelectorAll("*");
+  const all = [svgEl, ...svgEl.querySelectorAll("*")];
   const urlAttrs = [
     "clip-path",
     "mask",
@@ -82,6 +89,29 @@ function scopeSvgIds(svgEl, prefix) {
         if (idMap.has(oldId)) el.setAttribute(attr, `#${idMap.get(oldId)}`);
       }
     });
+
+    // Inline styles can also contain url(#id) references.
+    const inlineStyle = el.getAttribute("style");
+    if (inlineStyle && urlRe.lastIndex !== undefined) urlRe.lastIndex = 0;
+    if (inlineStyle && urlRe.test(inlineStyle)) {
+      urlRe.lastIndex = 0;
+      el.setAttribute(
+        "style",
+        inlineStyle.replace(urlRe, (_, id) => `url(#${idMap.get(id)})`),
+      );
+    }
+  });
+
+  svgEl.querySelectorAll("style").forEach((styleEl) => {
+    const cssText = styleEl.textContent || "";
+    if (!cssText) return;
+    urlRe.lastIndex = 0;
+    if (!urlRe.test(cssText)) return;
+    urlRe.lastIndex = 0;
+    styleEl.textContent = cssText.replace(
+      urlRe,
+      (_, id) => `url(#${idMap.get(id)})`,
+    );
   });
 }
 
@@ -122,15 +152,50 @@ function prepareSvgForList(svgEl, modelId) {
   }
 
   // 2. scope ids to prevent clashes between multiple SVGs in the page
-  scopeSvgIds(svgEl, `m${modelId}`);
+  // Temporarily disabled: scopeSvgIds feature.
+  // scopeSvgIds(svgEl, `m${modelId}`);
 }
 
-async function getModelSvg(versionId) {
+async function getModelSvg(versionId, modelId) {
   const cached = await modelService.ensureVersionCached(versionId, {
     needData: true,
     needSvg: true,
+    modelId,
   });
   return cached?.svg || null;
+}
+
+function resolveModelIdByVersionId(versionId) {
+  if (!versionId) {
+    return null;
+  }
+  for (const model of modelsStore.getList()) {
+    if (model?.latestVersionId === versionId) {
+      return model.id;
+    }
+    if ((model?.versions || []).some((version) => version?.id === versionId)) {
+      return model.id;
+    }
+  }
+  return null;
+}
+
+function toSvgElement(svgSource) {
+  if (!svgSource) {
+    return null;
+  }
+  if (typeof svgSource === "string") {
+    try {
+      return $.parseXML(svgSource).documentElement;
+    } catch (error) {
+      console.error("Failed to parse SVG source:", error);
+      return null;
+    }
+  }
+  if (svgSource instanceof Element) {
+    return svgSource.cloneNode(true);
+  }
+  return null;
 }
 
 async function renderModel(model) {
@@ -156,13 +221,11 @@ async function renderModel(model) {
   $modelsGrid.append($gridItem);
   console.log("Received SVG for model ID", modelId);
   try {
-    const outputFrame = await getModelSvg(model.latestVersionId);
+    const outputFrame = await getModelSvg(model.latestVersionId, modelId);
     if (!outputFrame) {
       throw new Error(`No cached SVG available for version ${model.latestVersionId}`);
     }
-    model.svg = $.parseXML(outputFrame).documentElement;
-    prepareSvgForList(model.svg, modelId);
-    $gridDiv.append(model.svg);
+    updateModelInList({ modelId, svg: outputFrame });
   } catch (err) {
     console.error("Error getting model SVG for model ID", modelId, ":", err);
     // return;
@@ -181,17 +244,16 @@ async function renderModel(model) {
   $modelsList.append($listItem);
 }
 
-function updateModelInList(model) {
-  const modelId = model?.meta?.id;
-  const modelVersionId = model?.latestVersionId;
-  var gridId = `modelGrid_${modelVersionId}`;
-  const $gridDiv = $(`#${gridId}`);
+function updateModelInList({ modelId, svg }) {
+  const $gridDiv = $(`#modelGrid_${modelId}`);
+  if ($gridDiv.length === 0) {
+    return;
+  }
   $gridDiv.empty();
 
-  const svgEl = $X(model.svg);
+  const svgEl = toSvgElement(svg);
   if (!svgEl) return;
   prepareSvgForList(svgEl, modelId);
-  model.svg = svgEl;
 
   $gridDiv.append(svgEl);
 }
@@ -309,6 +371,22 @@ createUI({
             }
           }
           break;
+        case "cachedVersionsById": {
+          if (!value?.versionId || !value?.svg) {
+            break;
+          }
+          const modelId =
+            value.modelId || resolveModelIdByVersionId(value.versionId);
+          if (!modelId) {
+            break;
+          }
+          const model = modelsStore.getEntity(modelId);
+          if (!model || model.latestVersionId !== value.versionId) {
+            break;
+          }
+          updateModelInList({ modelId, svg: value.svg });
+          break;
+        }
         default:
           break;
       }

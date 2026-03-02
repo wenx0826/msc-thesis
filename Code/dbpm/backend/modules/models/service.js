@@ -1,4 +1,5 @@
 import modelRepo from "./repositories/model.js";
+import modelUpdateEventRepo from "./repositories/updateEvent.js";
 import versionRepo from "./repositories/version.js";
 import storageRepo from "./repositories/storage.js";
 import traceRepo from "../traces/repository.js";
@@ -229,22 +230,7 @@ export default {
   getByProjectId(projectId, includeDeleted = false) {
     return modelRepo.findByProjectIdWithVersions(projectId, includeDeleted);
   },
-  updateModel({ modelId, modelData, trace, type }) {
-    const model = modelRepo.findById(modelId);
-    if (!model) {
-      throw new Error("Model not found");
-    }
-    if (!model.latestVersionId) {
-      throw new Error("Model has no versions");
-    }
 
-    return this.updateVersion({
-      versionId: model.latestVersionId,
-      modelData,
-      trace,
-      type,
-    });
-  },
   updateVersion({ versionId, modelData, trace, type }) {
     const version = versionRepo.findById(versionId);
     if (!version) {
@@ -255,7 +241,8 @@ export default {
     if (!model) {
       throw new Error("Model not found");
     }
-    const projectId = model.projectId || modelRepo.getProjectIdByModelId(modelId);
+    const projectId =
+      model.projectId || modelRepo.getProjectIdByModelId(modelId);
 
     // Update model status
     // modelRepo.updateStatus(modelId, "updated");
@@ -296,8 +283,16 @@ export default {
     );
     storageRepo.write(versionId, enrichedModelData);
 
-    // Add stat update
-    modelRepo.addStatUpdate(modelId, new Date().toISOString(), type, words);
+    // Store model update event for this version.
+    const details = {
+      modelId,
+      ...(typeof words === "number" ? { words } : {}),
+    };
+    modelUpdateEventRepo.add({
+      modelVersionId: versionId,
+      type,
+      details: Object.keys(details).length > 0 ? details : null,
+    });
 
     // Log the event
     logService.logEvent(projectId, `model_updated_${type}`, {
@@ -323,7 +318,8 @@ export default {
       return { message: "Model deleted" };
     }
 
-    const projectId = model.projectId || modelRepo.getProjectIdByModelId(modelId);
+    const projectId =
+      model.projectId || modelRepo.getProjectIdByModelId(modelId);
 
     // Log the event
     logService.logEvent(projectId, "model_deleted", {
@@ -373,7 +369,8 @@ export default {
       }
 
       deletedModelIds.push(modelId);
-      const projectId = model.projectId || modelRepo.getProjectIdByModelId(modelId);
+      const projectId =
+        model.projectId || modelRepo.getProjectIdByModelId(modelId);
       logService.logEvent(projectId, "model_deleted", {
         id: modelId,
         name: model.name,

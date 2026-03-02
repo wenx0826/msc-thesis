@@ -37,7 +37,9 @@ function getSelectedSelectionColor() {
   ) {
     const selection = documentViewerStore
       .getTemporarySelections()
-      .find((item) => String(item.id) === String(selectedSelection.selectionId));
+      .find(
+        (item) => String(item.id) === String(selectedSelection.selectionId),
+      );
     return selection?.color || null;
   }
 
@@ -63,7 +65,9 @@ function getSelectedSelectionColor() {
 
 function syncSelectedSelectionColorInput() {
   const hasSelectedSelection = !!documentViewerStore.getSelectedSelection();
-  $selectedSelectionColorForm.find("input").prop("disabled", !hasSelectedSelection);
+  $selectedSelectionColorForm
+    .find("input")
+    .prop("disabled", !hasSelectedSelection);
 
   if (!hasSelectedSelection) {
     return;
@@ -151,7 +155,7 @@ createUI({
       } else {
         // todo change it to rerender after trace update
         documentViewerStore.removeActiveModelTraceSelectionById(selectionId);
-        modelService.updateActiveModel(
+        modelService.updateEditingVersion(
           MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
         );
       }

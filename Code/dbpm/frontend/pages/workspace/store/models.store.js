@@ -9,6 +9,11 @@ class ModelsStore extends VersionedEntityStore {
     });
   }
 
+  init(entities) {
+    this.state.cachedVersionsById = {};
+    return super.init(entities);
+  }
+
   // updateModelById(modelId, updates) {
   //   const value = this.getEntity(modelId);
   //   if (!value) {
@@ -37,19 +42,27 @@ class ModelsStore extends VersionedEntityStore {
     return !!this.state.cachedVersionsById[versionId];
   }
   addCachedVersion(versionId, value) {
-    this.state.cachedVersionsById[versionId] = {
-      ...(this.state.cachedVersionsById[versionId] || {}),
+    if (!versionId) return null;
+    const oldValue = this.state.cachedVersionsById[versionId] || null;
+    const operation = oldValue ? "update" : "add";
+    const newValue = {
+      ...(oldValue || {}),
       ...value,
     };
-    return this.state.cachedVersionsById[versionId];
+    this.state.cachedVersionsById[versionId] = newValue;
+    this.notify({
+      key: "cachedVersionsById",
+      operation,
+      value: {
+        versionId,
+        ...newValue,
+      },
+      oldValue: oldValue ? { versionId, ...oldValue } : null,
+    });
+    return newValue;
   }
   setCachedVersionData(versionId, value) {
-    if (!versionId) return null;
-    this.state.cachedVersionsById[versionId] = {
-      ...(this.state.cachedVersionsById[versionId] || {}),
-      ...value,
-    };
-    return this.state.cachedVersionsById[versionId];
+    return this.addCachedVersion(versionId, value);
   }
 
   getCachedModelByVersionId(versionId) {

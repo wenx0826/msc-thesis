@@ -109,6 +109,10 @@ export default {
     });
     return handleResponse(response, "Failed to create model version");
   },
+  async getModelById(id) {
+    const response = await fetch(`${baseURL}/${this.path}/${id}`);
+    return handleResponse(response, "Failed to fetch model");
+  },
   async updateMeta(modelId, params) {
     const response = await fetch(`${baseURL}/${this.path}/${modelId}/meta`, {
       method: "PUT",
@@ -120,12 +124,6 @@ export default {
     }
     return await response.json();
   },
-
-  async getModelById(id) {
-    const response = await fetch(`${baseURL}/${this.path}/${id}`);
-    return handleResponse(response, "Failed to fetch model");
-  },
-
   async getDataByVersionId(versionId) {
     const response = await fetch(
       `${baseURL}/${this.path}/versions/${versionId}/data`,

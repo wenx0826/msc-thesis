@@ -192,12 +192,6 @@ class ModelRepository extends BaseSqlRepository {
     return stmt.run(modelId);
   }
 
-  addStatUpdate(modelId, timestamp, type, words) {
-    const stmt = db.prepare(
-      "INSERT INTO model_stat_updates (model_id, created_at, type, words) VALUES (?, ?, ?, ?)",
-    );
-    return stmt.run(modelId, timestamp, type, words);
-  }
 }
 
 export default new ModelRepository();
