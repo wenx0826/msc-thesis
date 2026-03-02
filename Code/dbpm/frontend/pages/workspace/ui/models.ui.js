@@ -1,21 +1,12 @@
 import { createUI } from "../../../shared/utils/ui.js";
 import { modelsStore, workspaceStore } from "../store/index.js";
 import { modelService, workspaceService } from "../services/index.js";
-import { modelsAPI } from "../../../api/index.js";
-import { endpointLoader } from "../../../modules/workflow/endpoints/endpoint-loader.js";
 import {
   createMenu,
   createTemplateElement,
 } from "../../../shared/utils/dom.js";
 import initInlineEditor from "../../../shared/widgets/inline-editor.js";
 import { createModelActionsMenu } from "./model-actions-menu.ui.js";
-
-const PREVIEW_THEME_PATH =
-  "modules/workflow/themes/preset_customized/theme.js";
-const PREVIEW_IFRAME_ID = "wfPreviewRendererIframe";
-let previewRenderQueue = Promise.resolve();
-let previewRendererWindow = null;
-let previewRendererWindowPromise = null;
 
 const $modelsPanel = $("#modelsPanel");
 const $viewSwitch = $("#modelsViewSwitch");
@@ -134,140 +125,12 @@ function prepareSvgForList(svgEl, modelId) {
   scopeSvgIds(svgEl, `m${modelId}`);
 }
 
-function queuePreviewRender(task) {
-  const run = previewRenderQueue.then(task);
-  previewRenderQueue = run.catch(() => {});
-  return run;
-}
-
-function serializeEndpointSymbols(cache) {
-  const symbols = {};
-  for (const [endpoint, data] of Object.entries(cache || {})) {
-    if (data?.symbol) {
-      symbols[endpoint] = new XMLSerializer().serializeToString(data.symbol);
-    }
-  }
-  return symbols;
-}
-
-function collectEndpointProperties(cache) {
-  const properties = {};
-  for (const [endpoint, data] of Object.entries(cache || {})) {
-    if (data?.properties) {
-      properties[endpoint] = data.properties;
-    }
-  }
-  return properties;
-}
-
-function ensurePreviewRendererWindow() {
-  if (
-    previewRendererWindow &&
-    typeof previewRendererWindow.renderGraphPreview === "function"
-  ) {
-    return Promise.resolve(previewRendererWindow);
-  }
-  if (previewRendererWindowPromise) return previewRendererWindowPromise;
-
-  previewRendererWindowPromise = new Promise((resolve, reject) => {
-    const iframe = document.getElementById(PREVIEW_IFRAME_ID);
-    if (!iframe) {
-      reject(
-        new Error(
-          `Preview renderer iframe #${PREVIEW_IFRAME_ID} not found in workspace.html`,
-        ),
-      );
-      return;
-    }
-
-    const cleanup = () => {
-      iframe.removeEventListener("load", onLoad);
-      iframe.removeEventListener("error", onError);
-    };
-    const onError = () => {
-      cleanup();
-      reject(new Error("Failed to initialize preview renderer iframe"));
-    };
-    const onLoad = () => {
-      cleanup();
-      const rendererWindow = iframe.contentWindow;
-      if (
-        !rendererWindow ||
-        typeof rendererWindow.renderGraphPreview !== "function"
-      ) {
-        reject(new Error("Preview renderer iframe API is not available"));
-        return;
-      }
-      previewRendererWindow = rendererWindow;
-      resolve(rendererWindow);
-    };
-
-    iframe.addEventListener("load", onLoad);
-    iframe.addEventListener("error", onError);
-
-    if (
-      iframe.contentWindow &&
-      typeof iframe.contentWindow.renderGraphPreview === "function"
-    ) {
-      onLoad();
-      return;
-    }
-    if (iframe.contentDocument?.readyState === "complete") {
-      onError();
-      return;
-    }
-  }).catch((err) => {
-    previewRendererWindow = null;
-    previewRendererWindowPromise = null;
-    throw err;
+async function getModelSvg(versionId) {
+  const cached = await modelService.ensureVersionCached(versionId, {
+    needData: true,
+    needSvg: true,
   });
-
-  return previewRendererWindowPromise;
-}
-
-function getDescriptionElement(modelData) {
-  const parsed = $.parseXML(modelData);
-  const parseError = parsed.getElementsByTagName("parsererror")[0];
-  if (parseError) {
-    throw new Error(parseError.textContent || "Invalid model XML");
-  }
-  if (parsed.documentElement?.nodeName === "description") {
-    return parsed.documentElement;
-  }
-  const description = $("description", parsed)[0];
-  if (!description) {
-    throw new Error("Model XML does not contain a description element");
-  }
-  return description;
-}
-
-function renderDescriptionToSvg(descriptionElement) {
-  return queuePreviewRender(async () => {
-    const descriptionText = new XMLSerializer().serializeToString(
-      descriptionElement,
-    );
-    const endpointSymbols = serializeEndpointSymbols(endpointLoader._cache);
-    const endpointProperties = collectEndpointProperties(endpointLoader._cache);
-    const previewThemeUrl = new URL(
-      PREVIEW_THEME_PATH,
-      document.baseURI,
-    ).toString();
-
-    const rendererWindow = await ensurePreviewRendererWindow();
-    return rendererWindow.renderGraphPreview({
-      themePath: previewThemeUrl,
-      descriptionXml: descriptionText,
-      endpointSymbols,
-      endpointProperties,
-    });
-  });
-}
-
-async function getModelSvg(modelId) {
-  await endpointLoader.init();
-  const modelData = await modelsAPI.getDataByVersionId(modelId);
-  const descriptionElement = getDescriptionElement(modelData);
-  return renderDescriptionToSvg(descriptionElement);
+  return cached?.svg || null;
 }
 
 async function renderModel(model) {
@@ -294,6 +157,9 @@ async function renderModel(model) {
   console.log("Received SVG for model ID", modelId);
   try {
     const outputFrame = await getModelSvg(model.latestVersionId);
+    if (!outputFrame) {
+      throw new Error(`No cached SVG available for version ${model.latestVersionId}`);
+    }
     model.svg = $.parseXML(outputFrame).documentElement;
     prepareSvgForList(model.svg, modelId);
     $gridDiv.append(model.svg);

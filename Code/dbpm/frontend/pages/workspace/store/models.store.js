@@ -43,7 +43,7 @@ class ModelsStore extends VersionedEntityStore {
     };
     return this.state.cachedVersionsById[versionId];
   }
-  setCachedVersionData(versionId) {
+  setCachedVersionData(versionId, value) {
     if (!versionId) return null;
     this.state.cachedVersionsById[versionId] = {
       ...(this.state.cachedVersionsById[versionId] || {}),

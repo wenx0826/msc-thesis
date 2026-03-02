@@ -123,7 +123,12 @@
       const adaptor = await ensurePreviewAdaptor(themePath);
 
       clearPreviewRenderContainers(true);
-      adaptor.set_description(window.$(descriptionXml), true);
+      const parsedXml = window.$.parseXML(descriptionXml);
+      const parseError = parsedXml.getElementsByTagName("parsererror")[0];
+      if (parseError) {
+        throw new Error(parseError.textContent || "Invalid model XML");
+      }
+      adaptor.set_description(window.$(parsedXml.documentElement), true);
 
       const svgNode = window.document.querySelector(PREVIEW_CANVAS_SELECTOR);
       if (!svgNode) {
@@ -174,6 +179,19 @@
     if (!response.ok) {
       throw new Error(`Failed to fetch model version ${modelVersionId}`);
     }
+
+    const contentType = (response.headers.get("content-type") || "").toLowerCase();
+    if (contentType.includes("application/json")) {
+      const payload = await response.json();
+      if (typeof payload === "string") {
+        return payload;
+      }
+      if (typeof payload?.data === "string") {
+        return payload.data;
+      }
+      throw new Error("Model version payload is not XML text");
+    }
+
     return await response.text();
   }
 

@@ -697,11 +697,12 @@ createUI({
 
     workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
       switch (key) {
-        case "editingModel":
+        case "editingModel": {
           if (!newValue?.id) {
             clearModelEditor();
           }
           break;
+        }
         default:
           break;
       }
