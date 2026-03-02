@@ -838,8 +838,12 @@ const onSelectionHandleDragEnd = () => {
   $viewerWrap.removeClass("selection-handle-dragging");
   $(document).off(".selectionHandleDrag");
   updateSelectionHandlesPosition();
-  if (didUpdate && scope === "model" && isActiveTraceUpdate) {
-    modelService.updateActiveModelTrace();
+  if (didUpdate && scope === "model") {
+    if (isActiveTraceUpdate) {
+      modelService.updateActiveModelTrace();
+    } else if (traceId) {
+      modelService.updateTraceTextById(traceId);
+    }
   }
 };
 
@@ -1003,6 +1007,9 @@ createUI({
             switch (operation) {
               case "init":
                 rerenderOverlayLayers();
+                modelService.maybeAlertNoSelectionOnLoadedEditingModel(
+                  "ui_traces_init",
+                );
                 break;
               case "add":
                 renderTrace(value);
@@ -1101,6 +1108,11 @@ createUI({
             setModelTagCurrent(newModelId, true);
             setModelSelectionWrapCurrent(newModelId, true);
           }
+          setTimeout(() => {
+            modelService.maybeAlertNoSelectionOnLoadedEditingModel(
+              "ui_editing_model",
+            );
+          }, 0);
           break;
         default:
           break;

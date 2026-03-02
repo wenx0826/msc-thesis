@@ -1,14 +1,11 @@
 import { createUI } from "../../../shared/utils/ui.js";
 import initVersionSelector from "../../../shared/widgets/version-selector.js";
-import { Constants } from "../../../constants.js";
 import {
   documentsStore,
   documentViewerStore,
   workspaceStore,
 } from "../store/index.js";
 import { modelService, workspaceService } from "../services/index.js";
-
-const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
 const $versionFilename = $("#versionFilename");
 const $versionSelect = $("#docVersionSelect");
 const $selectionColorForm = $("#selectionColorForm");
@@ -135,11 +132,27 @@ createUI({
           newColor,
         );
       } else {
-        documentViewerStore.updateActiveModelTraceSelectionColor(
-          selectedSelection.selectionId,
-          newColor,
-        );
-        modelService.updateActiveModelTrace();
+        const updatedTrace = documentViewerStore.updateTraceSelectionColor({
+          selectionId: selectedSelection.selectionId,
+          traceId: selectedSelection.traceId,
+          modelId: selectedSelection.modelId,
+          color: newColor,
+        });
+        if (!updatedTrace?.id) {
+          return;
+        }
+
+        const activeTrace = documentViewerStore.getDisplayedModelTrace();
+        const isActiveTraceUpdate =
+          selectedSelection.traceId === undefined ||
+          selectedSelection.traceId === null ||
+          (activeTrace &&
+            String(activeTrace.id) === String(selectedSelection.traceId));
+        if (isActiveTraceUpdate) {
+          modelService.updateActiveModelTrace();
+        } else {
+          modelService.updateTraceById(updatedTrace.id);
+        }
       }
     });
 
@@ -153,11 +166,24 @@ createUI({
       if (!modelId) {
         documentViewerStore.removeTemporarySelection(selectionId);
       } else {
-        // todo change it to rerender after trace update
-        documentViewerStore.removeActiveModelTraceSelectionById(selectionId);
-        modelService.updateEditingVersion(
-          MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
-        );
+        const updatedTrace = documentViewerStore.removeTraceSelection({
+          selectionId,
+          traceId: selectedSelection.traceId,
+          modelId: selectedSelection.modelId,
+        });
+        if (!updatedTrace?.id) {
+          documentViewerStore.setSelectedSelection(null);
+          return;
+        }
+
+        const activeTrace = documentViewerStore.getDisplayedModelTrace();
+        const isActiveTraceUpdate =
+          activeTrace && String(activeTrace.id) === String(updatedTrace.id);
+        if (isActiveTraceUpdate) {
+          modelService.updateActiveModelTrace();
+        } else {
+          modelService.updateTraceTextById(updatedTrace.id);
+        }
       }
       documentViewerStore.setSelectedSelection(null);
     });

@@ -1,8 +1,9 @@
 // Model Service - Handles model generation and updates
-import { modelsAPI } from "../../../api/index.js";
+import { modelsAPI, tracesAPI } from "../../../api/index.js";
 import {
   workspaceStore,
   modelsStore,
+  documentsStore,
   documentViewerStore,
   modelEditorStore,
   projectGraphStore,
@@ -10,6 +11,10 @@ import {
 import workspaceService from "./workspace.service.js";
 import { Constants } from "../../../constants.js";
 import { endpointLoader } from "../../../modules/workflow/endpoints/endpoint-loader.js";
+import {
+  injectDbpmData,
+  updateDbpmTextSelections,
+} from "../../../modules/workflow/utils/dbpm-model-xml.js";
 
 // Import constants
 const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
@@ -22,6 +27,10 @@ let previewRenderQueue = Promise.resolve();
 let previewRendererWindow = null;
 let previewRendererWindowPromise = null;
 const cachePromisesByVersionId = new Map();
+let lastNoSelectionLoadAlert = {
+  versionId: null,
+  at: 0,
+};
 
 function queuePreviewRender(task) {
   const run = previewRenderQueue.then(task);
@@ -154,6 +163,245 @@ function collectEndpointProperties(cache) {
   return properties;
 }
 
+function selectionsToText(selections) {
+  if (!Array.isArray(selections)) {
+    return "";
+  }
+  return selections
+    .map((selection) =>
+      typeof selection?.text === "string" ? selection.text.trim() : "",
+    )
+    .filter(Boolean)
+    .join(" ");
+}
+
+function normalizeSelectionRange(range) {
+  if (range === undefined || range === null) {
+    return null;
+  }
+  if (typeof range === "string") {
+    return range;
+  }
+  try {
+    return JSON.stringify(range);
+  } catch (error) {
+    return String(range);
+  }
+}
+
+function buildSelectionsSignature(selections, mapper) {
+  const normalizedSelections = Array.isArray(selections) ? selections : [];
+  return JSON.stringify(normalizedSelections.map(mapper));
+}
+
+function classifyTraceSelectionChange({ previousSelections, currentSelections }) {
+  const previousTextSignature = buildSelectionsSignature(
+    previousSelections,
+    (selection) => ({
+      id:
+        selection?.id === undefined || selection?.id === null
+          ? null
+          : String(selection.id),
+      range: normalizeSelectionRange(selection?.range),
+      text: typeof selection?.text === "string" ? selection.text : "",
+    }),
+  );
+  const currentTextSignature = buildSelectionsSignature(
+    currentSelections,
+    (selection) => ({
+      id:
+        selection?.id === undefined || selection?.id === null
+          ? null
+          : String(selection.id),
+      range: normalizeSelectionRange(selection?.range),
+      text: typeof selection?.text === "string" ? selection.text : "",
+    }),
+  );
+  if (previousTextSignature !== currentTextSignature) {
+    return "text_changed";
+  }
+
+  const previousColorSignature = buildSelectionsSignature(
+    previousSelections,
+    (selection) => ({
+      id:
+        selection?.id === undefined || selection?.id === null
+          ? null
+          : String(selection.id),
+      color: typeof selection?.color === "string" ? selection.color : "",
+    }),
+  );
+  const currentColorSignature = buildSelectionsSignature(
+    currentSelections,
+    (selection) => ({
+      id:
+        selection?.id === undefined || selection?.id === null
+          ? null
+          : String(selection.id),
+      color: typeof selection?.color === "string" ? selection.color : "",
+    }),
+  );
+  if (previousColorSignature !== currentColorSignature) {
+    return "color_only";
+  }
+
+  return "no_change";
+}
+
+function getTraceUpdatePayload(serializedTrace) {
+  const payload = {
+    selections: Array.isArray(serializedTrace?.selections)
+      ? serializedTrace.selections
+      : [],
+  };
+  if (typeof serializedTrace?.id === "string") {
+    payload.id = serializedTrace.id;
+  }
+  if (typeof serializedTrace?.documentVersionId === "string") {
+    payload.documentVersionId = serializedTrace.documentVersionId;
+  }
+  if (typeof serializedTrace?.modelVersionId === "string") {
+    payload.modelVersionId = serializedTrace.modelVersionId;
+  }
+  return payload;
+}
+
+function notifyTraceUpdateTriggered({
+  source,
+  traceId = null,
+  modelVersionId = null,
+  changeType = null,
+  selectionCount = null,
+}) {
+  const detail = {
+    source,
+    traceId,
+    modelVersionId,
+    changeType,
+    selectionCount,
+    triggeredAt: new Date().toISOString(),
+  };
+  console.log("[DBPM] Trace update triggered", detail);
+
+  if (typeof window !== "undefined" && typeof window.dispatchEvent === "function") {
+    window.dispatchEvent(
+      new CustomEvent("dbpm:trace-update-triggered", {
+        detail,
+      }),
+    );
+  }
+}
+
+function resolveTraceDocumentMeta(trace = {}) {
+  const viewedDocument = workspaceStore.getViewedDocument() || {};
+  const modelId =
+    (typeof trace?.modelId === "string" && trace.modelId) ||
+    workspaceStore.getEditingModelId() ||
+    null;
+  const documentIdCandidate =
+    (typeof trace?.documentId === "string" && trace.documentId) ||
+    (modelId ? modelsStore.getModelDocumentId(modelId) : null) ||
+    viewedDocument.id;
+  const documentVersionIdCandidate =
+    (typeof trace?.documentVersionId === "string" && trace.documentVersionId) ||
+    viewedDocument.versionId;
+  const documentId =
+    typeof documentIdCandidate === "string" && documentIdCandidate
+      ? documentIdCandidate
+      : null;
+  const documentVersionId =
+    typeof documentVersionIdCandidate === "string" && documentVersionIdCandidate
+      ? documentVersionIdCandidate
+      : null;
+  const documentVersionName =
+    documentId && documentVersionId
+      ? documentsStore.getVersion(documentId, documentVersionId)?.name || ""
+      : null;
+
+  const meta = {};
+  if (documentId) {
+    meta.documentId = documentId;
+  }
+  if (documentVersionId) {
+    meta.documentVersionId = documentVersionId;
+  }
+  if (typeof documentVersionName === "string") {
+    meta.documentVersionName = documentVersionName;
+  }
+  return meta;
+}
+
+function alertNoSelectionsIfNeeded(selectionCount, source) {
+  if (selectionCount !== 0) {
+    return;
+  }
+  const message =
+    "There is no selected text related with this model.";
+  console.warn(`[DBPM] ${message}`, { source });
+  if (typeof window !== "undefined" && typeof window.alert === "function") {
+    // Defer blocking alert so UI can paint selection removal first.
+    if (typeof window.requestAnimationFrame === "function") {
+      window.requestAnimationFrame(() => {
+        setTimeout(() => window.alert(message), 0);
+      });
+    } else {
+      setTimeout(() => window.alert(message), 0);
+    }
+  }
+}
+
+function alertNoSelectionsOnModelVersionLoadIfNeeded(source) {
+  const { id: editingModelId, versionId: modelVersionId } =
+    workspaceStore.getEditingModel() || {};
+  if (!editingModelId || !modelVersionId) {
+    return;
+  }
+
+  const modelDocumentId = modelsStore.getModelDocumentId(editingModelId);
+  const viewedDocumentId = workspaceStore.getViewedDocumentId();
+  if (
+    modelDocumentId &&
+    viewedDocumentId &&
+    String(modelDocumentId) !== String(viewedDocumentId)
+  ) {
+    return;
+  }
+
+  const trace = (documentViewerStore.getTraces() || []).find(
+    (item) => String(item?.modelVersionId || "") === String(modelVersionId),
+  );
+  const selectionCount = Array.isArray(trace?.selections)
+    ? trace.selections.length
+    : 0;
+  if (selectionCount > 0) {
+    return;
+  }
+
+  const now = Date.now();
+  const currentVersionId = String(modelVersionId);
+  if (
+    lastNoSelectionLoadAlert.versionId === currentVersionId &&
+    now - lastNoSelectionLoadAlert.at < 1200
+  ) {
+    return;
+  }
+  lastNoSelectionLoadAlert = {
+    versionId: currentVersionId,
+    at: now,
+  };
+
+  const message =
+    "No selected text is related with this model. Please make sure it is linked properly with the document.";
+  console.warn(`[DBPM] ${message}`, {
+    source,
+    modelVersionId: currentVersionId,
+    traceId: trace?.id || null,
+  });
+  if (typeof window !== "undefined" && typeof window.alert === "function") {
+    setTimeout(() => window.alert(message), 0);
+  }
+}
+
 function ensurePreviewRendererWindow() {
   if (
     previewRendererWindow &&
@@ -271,6 +519,33 @@ async function cacheVersionWithRenderedSvg({ versionId, modelId, dataXml }) {
       error: error?.message || String(error),
     });
     throw error;
+  }
+}
+
+async function updateModelVersionAndCache({
+  modelId,
+  modelVersionId,
+  modelData,
+  trace,
+  type,
+}) {
+  await modelsAPI.updateVersion(modelVersionId, {
+    modelData,
+    trace,
+    type,
+  });
+
+  try {
+    await cacheVersionWithRenderedSvg({
+      versionId: modelVersionId,
+      modelId,
+      dataXml: modelData,
+    });
+  } catch (error) {
+    console.error(
+      `Failed to regenerate SVG cache for model version ${modelVersionId}:`,
+      error,
+    );
   }
 }
 
@@ -451,85 +726,49 @@ export default {
     return model;
   },
 
-  injectDbpmData(xmlString, eleDbpmInfo) {
-    const parser = new DOMParser();
-    const data = parser.parseFromString(xmlString, "application/xml");
-
-    const parseError = data.getElementsByTagName("parsererror")[0];
-    if (parseError) {
-      throw new Error("Invalid XML: " + parseError.textContent);
-    }
-
-    const newDoc = document.implementation.createDocument(
-      "",
-      "description",
-      null,
-    );
-    const root = newDoc.documentElement;
-
-    const importedDbpmInfo = newDoc.importNode(
-      eleDbpmInfo.documentElement,
-      true,
-    );
-    root.appendChild(importedDbpmInfo);
-
-    const importedOriginal = newDoc.importNode(data.documentElement, true);
-    root.appendChild(importedOriginal);
-    return $(root).serializePrettyXML();
-  },
-
-  updateDbpmTextSelections(modelData, selectedText) {
-    const parser = new DOMParser();
-    const data = parser.parseFromString(modelData, "application/xml");
-
-    const dbpmInfo = $("dbpm\\:info", data)[0];
-    if (!dbpmInfo) {
-      console.warn("No dbpm:info found in model data.");
-    }
-    const documentInfo = $("dbpm\\:document_info", dbpmInfo)[0];
-    if (!documentInfo) {
-      console.warn("No dbpm:document_info found in model data.");
-    }
-    let textSelections = $("dbpm\\:text_selections", documentInfo)[0];
-    if (!textSelections) {
-      textSelections = data.createElementNS(
-        "https://example.com/dbpm",
-        "dbpm:text_selections",
-      );
-      documentInfo.appendChild(textSelections);
-    }
-    textSelections.textContent = selectedText;
-    return $(data.documentElement).serializePrettyXML();
-  },
-
   async createModelAndTrace(modelData) {
     const { id: documentId, versionId: documentVersionId } =
       workspaceStore.getViewedDocument() || {};
+    const selections = documentViewerStore.getSerializedTemporarySelections();
+    const documentVersionName =
+      documentId && documentVersionId
+        ? documentsStore.getVersion(documentId, documentVersionId)?.name || ""
+        : "";
+    const preparedModelData = injectDbpmData(modelData, {
+      documentId: documentId || "",
+      documentVersionId,
+      documentVersionName,
+      selectedText: selectionsToText(selections),
+    });
 
+    console.log(
+      "Prepared model data with injected DBPM info:",
+      preparedModelData,
+    );
     const trace = {
       documentVersionId,
-      selections: documentViewerStore.getSerializedTemporarySelections(),
+      selections,
     };
     const { modelMeta: createdModelMeta, trace: createdTrace } =
       await modelsAPI.createModelAndTrace({
         projectId: workspaceStore.getProjectId(),
-        modelData,
+        modelData: preparedModelData,
         trace,
       });
 
     modelsStore.add(createdModelMeta);
-    modelEditorStore.setModel({
-      ...createdModelMeta,
-      data: modelData,
-    });
+    // modelEditorStore.setModel({
+    //   ...createdModelMeta,
+    //   data: modelData,
+    // });
     workspaceStore.setEditingModel({
       id: createdModelMeta.id,
       versionId: createdModelMeta.latestVersionId,
     });
-    modelEditorStore.setData(modelData);
+    modelEditorStore.setData(preparedModelData);
     modelsStore.addCachedVersion(createdModelMeta.latestVersionId, {
       modelId: createdModelMeta.id,
-      dataXml: modelData,
+      dataXml: preparedModelData,
       status: "ready",
     });
     documentViewerStore.setTemporarySelections([]);
@@ -631,40 +870,50 @@ export default {
       "(service cache)",
     );
     modelEditorStore.setData(cached.dataXml);
+    alertNoSelectionsOnModelVersionLoadIfNeeded("load_model_version");
+  },
+  maybeAlertNoSelectionOnLoadedEditingModel(source = "manual_check") {
+    alertNoSelectionsOnModelVersionLoadIfNeeded(source);
   },
   async updateEditingVersion(type) {
     const { id: modelId, versionId: modelVersionId } =
       workspaceStore.getEditingModel();
-
-    if (type === MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS) {
-      const selectedText = documentViewerStore.getSelectedText();
-      modelEditorStore.updateModelDbpmTextSelections(selectedText);
-    }
-    const modelData = modelEditorStore.getSerializedData();
 
     const trace =
       type === MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS ||
       type === MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS
         ? documentViewerStore.getSerializedNewActiveModelTrace()
         : null;
-    await modelsAPI.updateVersion(modelVersionId, {
+
+    if (type === MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS) {
+      const selectedText = selectionsToText(trace?.selections || []);
+      const documentMeta = resolveTraceDocumentMeta(trace || {});
+      modelEditorStore.updateModelDbpmTextSelections(selectedText, documentMeta);
+      alertNoSelectionsIfNeeded(
+        Array.isArray(trace?.selections) ? trace.selections.length : 0,
+        "updateEditingVersion",
+      );
+    }
+    const modelData = modelEditorStore.getSerializedData();
+
+    if (trace?.id) {
+      notifyTraceUpdateTriggered({
+        source: "updateEditingVersion",
+        traceId: trace.id,
+        modelVersionId,
+        changeType: type,
+        selectionCount: Array.isArray(trace.selections)
+          ? trace.selections.length
+          : 0,
+      });
+    }
+    await updateModelVersionAndCache({
+      modelId,
+      modelVersionId,
       modelData,
       trace,
       type,
     });
-
-    try {
-      await cacheVersionWithRenderedSvg({
-        versionId: modelVersionId,
-        modelId,
-        dataXml: modelData,
-      });
-    } catch (error) {
-      console.error(
-        `Failed to regenerate SVG cache for model version ${modelVersionId}:`,
-        error,
-      );
-    }
 
     if (
       [
@@ -677,10 +926,158 @@ export default {
     }
   },
 
+  async updateTraceById(traceId) {
+    if (!traceId) {
+      return;
+    }
+
+    const serializedTrace = documentViewerStore.getSerializedTraceById(traceId);
+    if (!serializedTrace?.id) {
+      return;
+    }
+
+    try {
+      notifyTraceUpdateTriggered({
+        source: "updateTraceById",
+        traceId: serializedTrace.id,
+        modelVersionId: serializedTrace.modelVersionId || null,
+        changeType: "trace_update",
+        selectionCount: Array.isArray(serializedTrace.selections)
+          ? serializedTrace.selections.length
+          : 0,
+      });
+      await tracesAPI.updateTrace(getTraceUpdatePayload(serializedTrace));
+      const activeTrace = documentViewerStore.getDisplayedModelTrace();
+      if (activeTrace && String(activeTrace.id) === String(traceId)) {
+        documentViewerStore.syncOriginalActiveModelSerializedSelectionsWithActiveTrace();
+      }
+    } catch (error) {
+      console.error(`Failed to update trace ${traceId}:`, error);
+    }
+  },
+
+  async updateTraceTextById(traceId) {
+    if (!traceId) {
+      return;
+    }
+
+    const serializedTrace = documentViewerStore.getSerializedTraceById(traceId);
+    if (!serializedTrace?.id) {
+      return;
+    }
+
+    const modelVersionId = serializedTrace.modelVersionId;
+    if (!modelVersionId) {
+      await this.updateTraceById(traceId);
+      return;
+    }
+
+    try {
+      const currentModelData = await modelsAPI.getDataByVersionId(modelVersionId);
+      const updatedModelData = updateDbpmTextSelections(
+        currentModelData,
+        selectionsToText(serializedTrace.selections),
+        resolveTraceDocumentMeta(serializedTrace),
+      );
+      alertNoSelectionsIfNeeded(
+        Array.isArray(serializedTrace.selections)
+          ? serializedTrace.selections.length
+          : 0,
+        "updateTraceTextById",
+      );
+      notifyTraceUpdateTriggered({
+        source: "updateTraceTextById",
+        traceId: serializedTrace.id,
+        modelVersionId,
+        changeType: MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
+        selectionCount: Array.isArray(serializedTrace.selections)
+          ? serializedTrace.selections.length
+          : 0,
+      });
+      await modelsAPI.updateVersion(modelVersionId, {
+        modelData: updatedModelData,
+        trace: serializedTrace,
+        type: MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
+      });
+
+      modelsStore.addCachedVersion(modelVersionId, {
+        ...(serializedTrace.modelId ? { modelId: serializedTrace.modelId } : {}),
+        dataXml: updatedModelData,
+        status: "ready",
+        error: null,
+      });
+
+      const editingModelVersionId = workspaceStore.getEditingModel()?.versionId;
+      if (
+        editingModelVersionId &&
+        String(editingModelVersionId) === String(modelVersionId)
+      ) {
+        modelEditorStore.setData(updatedModelData);
+      }
+
+      const activeTrace = documentViewerStore.getDisplayedModelTrace();
+      if (activeTrace && String(activeTrace.id) === String(traceId)) {
+        documentViewerStore.syncOriginalActiveModelSerializedSelectionsWithActiveTrace();
+      }
+    } catch (error) {
+      console.error(`Failed to update trace text for trace ${traceId}:`, error);
+    }
+  },
+
   async updateActiveModelTrace() {
     const updatedTrace = documentViewerStore.getSerializedActiveModelTrace();
-    modelsAPI.traces
-      .updateTrace(updatedTrace)
-      .then(() => documentViewerStore.updateTrace(updatedTrace));
+    if (!updatedTrace?.id) {
+      return;
+    }
+
+    const previousSelections =
+      documentViewerStore.getOriginalActiveModelSerializedSelections();
+    const currentSelections = Array.isArray(updatedTrace.selections)
+      ? updatedTrace.selections
+      : [];
+    const changeType = classifyTraceSelectionChange({
+      previousSelections,
+      currentSelections,
+    });
+    if (changeType === "no_change") {
+      return;
+    }
+
+    try {
+      notifyTraceUpdateTriggered({
+        source: "updateActiveModelTrace",
+        traceId: updatedTrace.id,
+        modelVersionId: updatedTrace.modelVersionId || null,
+        changeType,
+        selectionCount: currentSelections.length,
+      });
+      if (changeType === "text_changed") {
+        const { id: modelId, versionId: modelVersionId } =
+          workspaceStore.getEditingModel() || {};
+        if (!modelId || !modelVersionId) {
+          console.warn(
+            "Skipping active trace text update: no active editing model version.",
+          );
+          return;
+        }
+
+        modelEditorStore.updateModelDbpmTextSelections(selectionsToText(currentSelections), resolveTraceDocumentMeta(updatedTrace));
+        alertNoSelectionsIfNeeded(currentSelections.length, "updateActiveModelTrace");
+        const modelData = modelEditorStore.getSerializedData();
+        await updateModelVersionAndCache({
+          modelId,
+          modelVersionId,
+          modelData,
+          trace: updatedTrace,
+          type: MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
+        });
+        documentViewerStore.updateTrace(updatedTrace);
+      } else {
+        await tracesAPI.updateTrace(getTraceUpdatePayload(updatedTrace));
+        documentViewerStore.syncOriginalActiveModelSerializedSelectionsWithActiveTrace();
+      }
+    } catch (error) {
+      console.error("Failed to update active model trace:", error);
+    }
   },
 };

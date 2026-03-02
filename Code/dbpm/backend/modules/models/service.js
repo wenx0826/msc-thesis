@@ -75,12 +75,6 @@ export default {
       (acc, sel) => acc + countWords(sel?.text ?? ""),
       0,
     );
-    const enrichedModelData = enrichModelData(
-      modelData,
-      trace.documentVersionId,
-      selections,
-    );
-
     try {
       const createdModel = modelRepo.create({ projectId, name: modelName });
       const latestVersionNumber = modelRepo.allocateLatestVersionNumber(
@@ -96,8 +90,8 @@ export default {
         selectedWordsCount,
       });
 
-      // Persist model XML for this version.
-      storageRepo.write(createdModelVersion.id, enrichedModelData);
+      // Persist model XML exactly as received from the client.
+      storageRepo.write(createdModelVersion.id, modelData);
       modelRepo.updateById(createdModel.id, {
         latestVersionId: createdModelVersion.id,
       });
@@ -111,7 +105,7 @@ export default {
       logService.logEvent(projectId, "model_generated", {
         id: createdModel.id,
         name: modelName,
-        data: enrichedModelData,
+        data: modelData,
       });
 
       return {

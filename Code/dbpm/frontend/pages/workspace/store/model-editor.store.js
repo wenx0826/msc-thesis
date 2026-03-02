@@ -1,6 +1,7 @@
 import { Store } from "../../../shared/utils/store.js";
 import { modelsAPI } from "../../../api/index.js";
 import modelsStore from "./models.store.js";
+import { updateDbpmTextSelectionsInXmlNode } from "../../../modules/workflow/utils/dbpm-model-xml.js";
 
 class ModelEditorStore extends Store {
   constructor() {
@@ -64,31 +65,31 @@ class ModelEditorStore extends Store {
       newValue: parsedData,
     });
   }
-  setModel(newValue) {
-    const currentModel = this.getModel();
-    let oldValue = null;
-    if (currentModel) {
-      oldValue = { ...currentModel };
-      oldValue.data = new DOMParser().parseFromString(
-        $(currentModel.data).serializePrettyXML(),
-        "application/xml",
-      ).documentElement;
-    }
-    this.state.model = newValue;
-    if (newValue) {
-      let data = new DOMParser().parseFromString(
-        newValue.data,
-        "application/xml",
-      );
-      if (data.documentElement.nodeName != "description") {
-        data = $("description", data)[0];
-      } else {
-        data = data.documentElement;
-      }
-      newValue.data = data;
-    }
-    this.notify({ key: "model", oldValue, newValue });
-  }
+  // setModel(newValue) {
+  //   const currentModel = this.getModel();
+  //   let oldValue = null;
+  //   if (currentModel) {
+  //     oldValue = { ...currentModel };
+  //     oldValue.data = new DOMParser().parseFromString(
+  //       $(currentModel.data).serializePrettyXML(),
+  //       "application/xml",
+  //     ).documentElement;
+  //   }
+  //   this.state.model = newValue;
+  //   if (newValue) {
+  //     let data = new DOMParser().parseFromString(
+  //       newValue.data,
+  //       "application/xml",
+  //     );
+  //     if (data.documentElement.nodeName != "description") {
+  //       data = $("description", data)[0];
+  //     } else {
+  //       data = data.documentElement;
+  //     }
+  //     newValue.data = data;
+  //   }
+  //   this.notify({ key: "model", oldValue, newValue });
+  // }
 
   async setModelById(modelId) {
     if (modelId) {
@@ -101,28 +102,13 @@ class ModelEditorStore extends Store {
     }
   }
 
-  updateModelDbpmTextSelections(selectedText) {
-    const model = this.getModel();
-    if (model) {
-      const data = model.data;
-      const dbpmInfo = $("dbpm\\:info", data)[0];
-      if (!dbpmInfo) {
-        console.warn("No dbpm:info found in model data.");
-      }
-      const documentInfo = $("dbpm\\:document_info", dbpmInfo)[0];
-      if (!documentInfo) {
-        console.warn("No dbpm:document_info found in model data.");
-      }
-      let textSelections = $("dbpm\\:text_selections", documentInfo)[0];
-      if (!textSelections) {
-        textSelections = data.createElementNS(
-          "https://example.com/dbpm",
-          "dbpm:text_selections",
-        );
-        documentInfo.appendChild(textSelections);
-      }
-      textSelections.textContent = selectedText;
+  updateModelDbpmTextSelections(selectedText, meta = {}) {
+    const data = this.state.data || this.getModel()?.data;
+    if (!data) {
+      return;
     }
+
+    updateDbpmTextSelectionsInXmlNode(data, selectedText, meta);
   }
 }
 

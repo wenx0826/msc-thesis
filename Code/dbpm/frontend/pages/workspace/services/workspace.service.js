@@ -109,7 +109,7 @@ export default {
     if (currDisplayedDocumentId !== currModelDocumentId) {
       this.displayDocument(currModelDocumentId);
     } else {
-      // documentViewerStore.setActiveModelTraceByModelId(id);
+      documentViewerStore.setActiveModelTraceByModelId(id);
     }
 
     //   } else {

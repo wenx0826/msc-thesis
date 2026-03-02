@@ -26,6 +26,13 @@ function hydrateSelections(selections) {
     .filter(Boolean);
 }
 
+function cloneSerializedSelections(selections) {
+  if (!Array.isArray(selections)) {
+    return [];
+  }
+  return JSON.parse(JSON.stringify(selections));
+}
+
 class DocumentViewerStore extends Store {
   constructor() {
     super({
@@ -237,9 +244,39 @@ class DocumentViewerStore extends Store {
     }
   }
 
+  getSerializedTraceById(traceId) {
+    const trace = this.getTraceById(traceId);
+    if (!trace) {
+      return null;
+    }
+    return {
+      ...trace,
+      selections: this.getSerializedSelections(trace.selections || []),
+    };
+  }
+
+  getOriginalActiveModelSerializedSelections() {
+    return cloneSerializedSelections(this.state.originalActiveModelSerializedSelections);
+  }
+
+  setOriginalActiveModelSerializedSelections(selections) {
+    this.state.originalActiveModelSerializedSelections =
+      cloneSerializedSelections(selections);
+  }
+
+  syncOriginalActiveModelSerializedSelectionsWithActiveTrace() {
+    const activeModelTrace = this.getSerializedActiveModelTrace();
+    this.setOriginalActiveModelSerializedSelections(
+      activeModelTrace?.selections || [],
+    );
+  }
+
   setActiveModelTrace(newValue) {
     const oldValue = this.getDisplayedModelTrace();
     this.state.activeModelTrace = newValue;
+    this.setOriginalActiveModelSerializedSelections(
+      newValue?.selections ? this.getSerializedSelections(newValue.selections) : [],
+    );
     this.notify({ key: "activeModelTrace", oldValue, newValue });
   }
 
@@ -254,39 +291,91 @@ class DocumentViewerStore extends Store {
   }
 
   removeActiveModelTraceSelectionById(selectionId) {
-    let value;
-    const activeModelTrace = this.getDisplayedModelTrace();
-    if (activeModelTrace) {
-      const index = activeModelTrace.selections.findIndex(
-        (sel) => this.areIdsEqual(sel.id, selectionId),
-      );
-      if (index !== -1) {
-        value = activeModelTrace.selections[index];
-        activeModelTrace.selections.splice(index, 1);
-      }
+    return this.removeTraceSelection({ selectionId });
+  }
+
+  removeTraceSelection({ selectionId, traceId, modelId }) {
+    let trace = null;
+    if (traceId !== undefined && traceId !== null) {
+      trace = this.getTraceById(traceId);
     }
-    this.notify({
-      key: "activeModelTrace.selections",
-      operation: "remove",
-      value,
-    });
+    if (!trace && modelId !== undefined && modelId !== null) {
+      trace = this.state.traces.find((item) => this.areIdsEqual(item.modelId, modelId));
+    }
+    if (!trace) {
+      trace = this.getDisplayedModelTrace();
+    }
+    if (!trace || !trace.selections) {
+      return null;
+    }
+
+    const index = trace.selections.findIndex((selection) =>
+      this.areIdsEqual(selection.id, selectionId),
+    );
+    if (index === -1) {
+      return null;
+    }
+
+    const [removedSelection] = trace.selections.splice(index, 1);
+    if (this.areIdsEqual(this.state.activeModelTrace?.id, trace.id)) {
+      this.notify({
+        key: "activeModelTrace.selections",
+        operation: "remove",
+        value: removedSelection,
+      });
+    } else {
+      this.notify({
+        key: "traces",
+        operation: "update",
+        value: trace,
+      });
+    }
+
+    return trace;
   }
 
   updateActiveModelTraceSelectionColor(selectionId, color) {
-    const activeModelTrace = this.getDisplayedModelTrace();
-    if (activeModelTrace) {
-      const selection = activeModelTrace.selections.find(
-        (sel) => this.areIdsEqual(sel.id, selectionId),
-      );
-      if (selection && selection.color !== color) {
-        selection.color = color;
-        this.notify({
-          key: "activeModelTrace.selections",
-          operation: "update",
-          value: selection,
-        });
-      }
+    return this.updateTraceSelectionColor({ selectionId, color });
+  }
+
+  updateTraceSelectionColor({ selectionId, traceId, modelId, color }) {
+    let trace = null;
+    if (traceId !== undefined && traceId !== null) {
+      trace = this.getTraceById(traceId);
     }
+    if (!trace && modelId !== undefined && modelId !== null) {
+      trace = this.state.traces.find((item) => this.areIdsEqual(item.modelId, modelId));
+    }
+    if (!trace) {
+      trace = this.getDisplayedModelTrace();
+    }
+    if (!trace || !trace.selections) {
+      return null;
+    }
+
+    const selection = trace.selections.find((sel) =>
+      this.areIdsEqual(sel.id, selectionId),
+    );
+    if (!selection || selection.color === color) {
+      return null;
+    }
+    selection.color = color;
+
+    if (this.areIdsEqual(this.state.activeModelTrace?.id, trace.id)) {
+      this.notify({
+        key: "activeModelTrace.selections",
+        operation: "update",
+        value: selection,
+      });
+    } else {
+      this.notify({
+        key: "traces",
+        operation: "update",
+        value: trace,
+      });
+    }
+
+    return trace;
   }
 
   updateActiveModelTraceSelectionRange(selectionId, range) {

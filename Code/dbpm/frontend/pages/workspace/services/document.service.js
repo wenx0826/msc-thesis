@@ -116,6 +116,10 @@ export default {
           .then((traces) => {
             console.log("Loaded traces for version", versionId, traces);
             documentViewerStore.setTraces(traces);
+            const editingModelId = workspaceStore.getEditingModelId();
+            if (editingModelId) {
+              documentViewerStore.setActiveModelTraceByModelId(editingModelId);
+            }
             // resolve();
           })
           .catch((error) => {

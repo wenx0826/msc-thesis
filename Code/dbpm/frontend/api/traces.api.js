@@ -23,10 +23,20 @@ export default {
   },
 
   async updateTrace(updatedTrace) {
-    const response = await fetch(`${baseURL}/${this.path}/${updatedTrace.id}`, {
+    const { id, ...updates } = updatedTrace || {};
+    if (!id) {
+      throw new Error("Missing trace id for update");
+    }
+    console.log("[DBPM] updateTrace request", {
+      traceId: id,
+      selectionCount: Array.isArray(updates?.selections)
+        ? updates.selections.length
+        : null,
+    });
+    const response = await fetch(`${baseURL}/${this.path}/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updatedTrace),
+      body: JSON.stringify(updates),
     });
     return handleResponse(response, "Failed to update trace");
   },
