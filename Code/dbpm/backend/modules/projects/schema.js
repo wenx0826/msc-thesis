@@ -227,10 +227,84 @@ export const getProjectComponentsStatsSchema = {
                     name: { type: "string" },
                     selectedWordsCount: { type: "number" },
                     createdAt: { type: "string" },
+                    updatesStats: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          type: { type: "string" },
+                          count: { type: "number" },
+                        },
+                      },
+                    },
                   },
                 },
               },
               documentId: { type: "string" },
+              updatesStats: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    type: { type: "string" },
+                    count: { type: "number" },
+                  },
+                },
+              },
+            },
+          },
+        },
+        modelUpdateEventsSummary: {
+          type: "object",
+          properties: {
+            totalCount: { type: "number" },
+            byType: {
+              type: "object",
+              additionalProperties: { type: "number" },
+            },
+            byVersionLevel: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  versionNumber: { type: "number" },
+                  totalCount: { type: "number" },
+                  byType: {
+                    type: "object",
+                    additionalProperties: { type: "number" },
+                  },
+                },
+              },
+            },
+            byModel: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  modelId: { type: "string" },
+                  modelName: { type: "string" },
+                  deletedAt: { type: ["string", "null"] },
+                  totalCount: { type: "number" },
+                  byType: {
+                    type: "object",
+                    additionalProperties: { type: "number" },
+                  },
+                  byVersionLevel: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        versionNumber: { type: "number" },
+                        totalCount: { type: "number" },
+                        byType: {
+                          type: "object",
+                          additionalProperties: { type: "number" },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
             },
           },
         },

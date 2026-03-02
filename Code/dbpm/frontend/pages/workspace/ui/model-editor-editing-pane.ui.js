@@ -25,8 +25,10 @@ const $revertPrevModelButton = $("#revertPrevModelButton");
 const $keepNewModelButton = $("#keepNewModelButton");
 
 const $viewModelDataLink = $("#viewModelDataLink");
-const CALL_TYPE_SELECTOR = `#dat_details select[data-relaxngui-path=" > call > parameters > dbpm_type"]`;
+const CALL_TYPE_INPUT_SELECTOR = `select[data-relaxngui-path=" > call > parameters > dbpm_type"]`;
+const CALL_TYPE_SELECTOR = `#dat_details ${CALL_TYPE_INPUT_SELECTOR}`;
 const CALL_SUBPROCESS_MODEL_SELECTOR = `#dat_details select[data-relaxngui-path=" > call > parameters > dbpm_subprocess_model"]`;
+const CALL_ENDPOINT_INPUT_SELECTOR = `#dat_details input[data-relaxngui-path=" > call[endpoint]"]`;
 
 function saveActiveModel(type) {
   modelService.updateEditingVersion(type);
@@ -191,6 +193,25 @@ const renderModelSelect = (modelValue) => {
   }
   setModelSelectVisibility($modelSelect, true);
   $modelSelect.val(modelValue || "");
+};
+
+const syncCallEndpointFromTypeInput = (typeValue) => {
+  const $endpointInput = $(CALL_ENDPOINT_INPUT_SELECTOR);
+  if ($endpointInput.length === 0) {
+    return;
+  }
+  $endpointInput.val(typeValue === "subprocess" ? "subprocess" : "");
+};
+
+const handleCallTypeChangeCapture = (event) => {
+  const target = event.target;
+  if (!(target instanceof HTMLSelectElement)) {
+    return;
+  }
+  if (!target.matches(CALL_TYPE_INPUT_SELECTOR)) {
+    return;
+  }
+  syncCallEndpointFromTypeInput(target.value);
 };
 
 function do_main_work(svgid) {
@@ -426,6 +447,9 @@ createUI({
     window.do_main_work = do_main_work;
   },
   bindListeners: () => {
+    document.removeEventListener("change", handleCallTypeChangeCapture, true);
+    document.addEventListener("change", handleCallTypeChangeCapture, true);
+
     $viewModelDataLink.on("click", (e) => {
       e.preventDefault();
       window.open(
@@ -454,22 +478,13 @@ createUI({
     $(document)
       .off("change.call-type", CALL_TYPE_SELECTOR)
       .on("change.call-type", CALL_TYPE_SELECTOR, function () {
-        const $endpointInput = $(
-          `#dat_details input[data-relaxngui-path=" > call[endpoint]"]`,
-        );
         const $modelSelect = $(CALL_SUBPROCESS_MODEL_SELECTOR);
         const initialModelValue =
           $modelSelect.data("initial-model-value") || "";
         const typeValue = $(this).val();
         if (typeValue === "subprocess") {
-          if ($endpointInput.length > 0) {
-            $endpointInput.val("subprocess");
-          }
           renderModelSelect($modelSelect.val() || initialModelValue);
           return;
-        }
-        if ($endpointInput.length > 0) {
-          $endpointInput.val("");
         }
         $modelSelect.val("");
         setModelSelectVisibility($modelSelect, false);

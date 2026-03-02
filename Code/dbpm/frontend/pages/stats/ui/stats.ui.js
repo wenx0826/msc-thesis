@@ -20,6 +20,31 @@ const $kpiModelsMeta = $("#kpiModelsMeta");
 const $viewSwitch = $("#viewSwitch");
 const $main = $("ui-rest.main");
 
+function formatUpdatesStats(updatesStats, maxItems = 2) {
+  if (!Array.isArray(updatesStats) || updatesStats.length === 0) {
+    return "none";
+  }
+
+  const normalized = updatesStats
+    .map((item) => ({
+      type: typeof item?.type === "string" ? item.type : "unknown",
+      count: Number(item?.count) || 0,
+    }))
+    .filter((item) => item.count > 0)
+    .sort((a, b) => b.count - a.count || a.type.localeCompare(b.type));
+
+  if (!normalized.length) {
+    return "none";
+  }
+
+  const shown = normalized.slice(0, maxItems);
+  const summary = shown
+    .map((item) => `${item.type}: ${formatNumber(item.count)}`)
+    .join(", ");
+  const hiddenCount = normalized.length - shown.length;
+  return hiddenCount > 0 ? `${summary}, +${hiddenCount} more` : summary;
+}
+
 function getDocModels(docId) {
   const visibleModels =
     currentView === "active"
@@ -219,6 +244,16 @@ async function renderDocumentsList(documents) {
       $modelItem
         .find("[data-ref='selectedWordsCount']")
         .text(formatNumber(latestModelVersion?.selectedWordsCount ?? 0));
+      $modelItem
+        .find("[data-ref='modelUpdatesStats']")
+        .text(formatUpdatesStats(model?.updatesStats || model?.updateSummary));
+      $modelItem
+        .find("[data-ref='versionUpdatesStats']")
+        .text(
+          formatUpdatesStats(
+            latestModelVersion?.updatesStats || latestModelVersion?.updateSummary,
+          ),
+        );
       $modelItem
         .find("[data-ref='modelLink']")
         .attr("href", getWorkflowViewerURL(modelVersionId))

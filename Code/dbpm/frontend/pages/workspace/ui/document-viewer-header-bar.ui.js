@@ -180,9 +180,13 @@ createUI({
         const isActiveTraceUpdate =
           activeTrace && String(activeTrace.id) === String(updatedTrace.id);
         if (isActiveTraceUpdate) {
-          modelService.updateActiveModelTrace();
+          modelService.updateActiveModelTrace({
+            alertOnEmptyAfterDeletion: true,
+          });
         } else {
-          modelService.updateTraceTextById(updatedTrace.id);
+          modelService.updateTraceTextById(updatedTrace.id, {
+            alertOnEmptyAfterDeletion: true,
+          });
         }
       }
       documentViewerStore.setSelectedSelection(null);

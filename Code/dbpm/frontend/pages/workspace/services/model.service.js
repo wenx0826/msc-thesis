@@ -370,6 +370,9 @@ function alertNoSelectionsOnModelVersionLoadIfNeeded(source) {
   const trace = (documentViewerStore.getTraces() || []).find(
     (item) => String(item?.modelVersionId || "") === String(modelVersionId),
   );
+  if (!trace) {
+    return;
+  }
   const selectionCount = Array.isArray(trace?.selections)
     ? trace.selections.length
     : 0;
@@ -889,10 +892,6 @@ export default {
       const selectedText = selectionsToText(trace?.selections || []);
       const documentMeta = resolveTraceDocumentMeta(trace || {});
       modelEditorStore.updateModelDbpmTextSelections(selectedText, documentMeta);
-      alertNoSelectionsIfNeeded(
-        Array.isArray(trace?.selections) ? trace.selections.length : 0,
-        "updateEditingVersion",
-      );
     }
     const modelData = modelEditorStore.getSerializedData();
 
@@ -956,7 +955,8 @@ export default {
     }
   },
 
-  async updateTraceTextById(traceId) {
+  async updateTraceTextById(traceId, options = {}) {
+    const { alertOnEmptyAfterDeletion = false } = options;
     if (!traceId) {
       return;
     }
@@ -979,12 +979,14 @@ export default {
         selectionsToText(serializedTrace.selections),
         resolveTraceDocumentMeta(serializedTrace),
       );
-      alertNoSelectionsIfNeeded(
-        Array.isArray(serializedTrace.selections)
-          ? serializedTrace.selections.length
-          : 0,
-        "updateTraceTextById",
-      );
+      if (alertOnEmptyAfterDeletion) {
+        alertNoSelectionsIfNeeded(
+          Array.isArray(serializedTrace.selections)
+            ? serializedTrace.selections.length
+            : 0,
+          "updateTraceTextById",
+        );
+      }
       notifyTraceUpdateTriggered({
         source: "updateTraceTextById",
         traceId: serializedTrace.id,
@@ -1024,7 +1026,8 @@ export default {
     }
   },
 
-  async updateActiveModelTrace() {
+  async updateActiveModelTrace(options = {}) {
+    const { alertOnEmptyAfterDeletion = false } = options;
     const updatedTrace = documentViewerStore.getSerializedActiveModelTrace();
     if (!updatedTrace?.id) {
       return;
@@ -1061,8 +1064,16 @@ export default {
           return;
         }
 
-        modelEditorStore.updateModelDbpmTextSelections(selectionsToText(currentSelections), resolveTraceDocumentMeta(updatedTrace));
-        alertNoSelectionsIfNeeded(currentSelections.length, "updateActiveModelTrace");
+        modelEditorStore.updateModelDbpmTextSelections(
+          selectionsToText(currentSelections),
+          resolveTraceDocumentMeta(updatedTrace),
+        );
+        if (alertOnEmptyAfterDeletion) {
+          alertNoSelectionsIfNeeded(
+            currentSelections.length,
+            "updateActiveModelTrace",
+          );
+        }
         const modelData = modelEditorStore.getSerializedData();
         await updateModelVersionAndCache({
           modelId,

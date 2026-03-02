@@ -82,10 +82,12 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  border: 1px solid var(--line);
+  border: 1px solid var(--x-ui-border-color);
+
+
   background: #fff;
   border-radius: 999px;
-  padding: 3px 8px;
+  padding: 2px 5px;
   font-size: 12px;
   color: var(--muted);
 }
@@ -99,6 +101,7 @@
   color: var(--danger);
   border-color: #f0d5da;
 }
+
 .pill.active {
   color: #2d6a45;
   border-color: #cce6d8;
@@ -119,8 +122,8 @@
   flex-wrap: wrap;
 }
 
-.entity-title-main > h3,
-.entity-title-main > h4 {
+.entity-title-main>h3,
+.entity-title-main>h4 {
   display: inline-block;
   margin: 0;
 }
@@ -150,6 +153,18 @@
   color: var(--x-ui-text-muted-color);
 }
 
+.model-updates-line {
+  flex-basis: 100%;
+  margin-top: 2px;
+  color: var(--x-ui-text-muted-color);
+  font-size: 12px;
+}
+
+[data-ref="modelUpdatesStats"],
+[data-ref="versionUpdatesStats"] {
+  color: var(--x-ui-text-muted-color);
+}
+
 /* Section label */
 .sectionLabel {
   font-size: 12px;
@@ -158,15 +173,15 @@
 }
 
 /* Documents list (semantic UL/LI, reset default styles) */
-ul.document-info > li,
-ul.model-info > li {
+ul.document-info>li,
+ul.model-info>li {
   display: inline;
   /* font-size: 18px; */
 }
 
 /* Add a slash symbol (/) before/behind each list item */
-ul.document-info > li+li:before,
-ul.model-info > li+li:before {
+ul.document-info>li+li:before,
+ul.model-info>li+li:before {
   padding: 8px;
   color: var(--x-ui-text-muted-color);
   content: "|";

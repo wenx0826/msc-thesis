@@ -224,6 +224,169 @@ export default {
   getByProjectId(projectId, includeDeleted = false) {
     return modelRepo.findByProjectIdWithVersions(projectId, includeDeleted);
   },
+  getUpdateEventsSummaryByProjectId(
+    projectId,
+    includeDeleted = true,
+    models = [],
+  ) {
+    const countsByType = modelUpdateEventRepo.countByTypeByProjectId(
+      projectId,
+      includeDeleted,
+    );
+    const countsByModelType = modelUpdateEventRepo.countByTypeByProjectModelId(
+      projectId,
+      includeDeleted,
+    );
+    const countsByModelVersionLevel =
+      modelUpdateEventRepo.countByTypeByProjectModelVersionLevel(
+        projectId,
+        includeDeleted,
+      );
+    const byType = {};
+    let totalCount = 0;
+
+    for (const item of countsByType) {
+      const type = typeof item?.type === "string" ? item.type : "unknown";
+      const count = Number(item?.count) || 0;
+      byType[type] = count;
+      totalCount += count;
+    }
+
+    const modelMap = new Map();
+    const versionLevelMap = new Map();
+
+    function ensureModelSummary(item) {
+      const modelId =
+        typeof item?.modelId === "string" && item.modelId.length > 0
+          ? item.modelId
+          : "unknown";
+
+      if (modelMap.has(modelId)) {
+        return modelMap.get(modelId);
+      }
+
+      const modelSummary = {
+        modelId,
+        modelName:
+          typeof item?.modelName === "string" && item.modelName.length > 0
+            ? item.modelName
+            : "Unnamed Model",
+        deletedAt: item?.modelDeletedAt ?? null,
+        totalCount: 0,
+        byType: {},
+        byVersionLevel: [],
+      };
+      modelMap.set(modelId, modelSummary);
+      return modelSummary;
+    }
+
+    for (const model of Array.isArray(models) ? models : []) {
+      ensureModelSummary({
+        modelId: model?.id,
+        modelName: model?.name,
+        modelDeletedAt: model?.deletedAt ?? null,
+      });
+    }
+
+    for (const item of countsByModelType) {
+      const modelSummary = ensureModelSummary(item);
+      const type = typeof item?.type === "string" ? item.type : "unknown";
+      const count = Number(item?.count) || 0;
+      modelSummary.byType[type] = count;
+      modelSummary.totalCount += count;
+    }
+
+    for (const item of countsByModelVersionLevel) {
+      const modelSummary = ensureModelSummary(item);
+      const type = typeof item?.type === "string" ? item.type : "unknown";
+      const count = Number(item?.count) || 0;
+      const versionNumber = Number(item?.versionNumber) || 0;
+
+      let modelVersionLevel = modelSummary.byVersionLevel.find(
+        (entry) => entry.versionNumber === versionNumber,
+      );
+      if (!modelVersionLevel) {
+        modelVersionLevel = {
+          versionNumber,
+          totalCount: 0,
+          byType: {},
+        };
+        modelSummary.byVersionLevel.push(modelVersionLevel);
+      }
+      modelVersionLevel.byType[type] = count;
+      modelVersionLevel.totalCount += count;
+
+      let projectVersionLevel = versionLevelMap.get(versionNumber);
+      if (!projectVersionLevel) {
+        projectVersionLevel = {
+          versionNumber,
+          totalCount: 0,
+          byType: {},
+        };
+        versionLevelMap.set(versionNumber, projectVersionLevel);
+      }
+      projectVersionLevel.byType[type] =
+        (projectVersionLevel.byType[type] || 0) + count;
+      projectVersionLevel.totalCount += count;
+    }
+
+    for (const summary of modelMap.values()) {
+      summary.byVersionLevel.sort((a, b) => a.versionNumber - b.versionNumber);
+    }
+
+    const byVersionLevel = Array.from(versionLevelMap.values()).sort(
+      (a, b) => a.versionNumber - b.versionNumber,
+    );
+    const byModel = Array.from(modelMap.values());
+
+    return { totalCount, byType, byVersionLevel, byModel };
+  },
+  attachUpdatesStatsToModels(models = [], modelUpdateEventsSummary = null) {
+    const byModel = Array.isArray(modelUpdateEventsSummary?.byModel)
+      ? modelUpdateEventsSummary.byModel
+      : [];
+    const summaryByModelId = new Map(
+      byModel
+        .filter((entry) => typeof entry?.modelId === "string")
+        .map((entry) => [entry.modelId, entry]),
+    );
+
+    const toSummaryArray = (byType = {}) =>
+      Object.entries(byType || {})
+        .map(([type, count]) => ({
+          type,
+          count: Number(count) || 0,
+        }))
+        .sort((a, b) => b.count - a.count || a.type.localeCompare(b.type));
+
+    return (Array.isArray(models) ? models : []).map((model) => {
+      const modelSummary = summaryByModelId.get(model?.id);
+      const byVersionLevel = Array.isArray(modelSummary?.byVersionLevel)
+        ? modelSummary.byVersionLevel
+        : [];
+      const versionSummaryByNumber = new Map(
+        byVersionLevel.map((entry) => [Number(entry.versionNumber) || 0, entry]),
+      );
+
+      const versions = (Array.isArray(model?.versions) ? model.versions : []).map(
+        (version) => {
+          const versionSummary = versionSummaryByNumber.get(
+            Number(version?.versionNumber) || 0,
+          );
+          return {
+            ...version,
+            updatesStats: toSummaryArray(versionSummary?.byType || {}),
+          };
+        },
+      );
+
+      return {
+        ...model,
+        versions,
+        updatesStats: toSummaryArray(modelSummary?.byType || {}),
+      };
+    });
+  },
 
   updateVersion({ versionId, modelData, trace, type }) {
     const version = versionRepo.findById(versionId);

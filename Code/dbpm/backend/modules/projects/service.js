@@ -70,8 +70,21 @@ export default {
       projectId,
       includeDeletedRecords,
     );
-    const models = modelService.getByProjectId(projectId, includeDeletedRecords);
-    return { documents, models };
+    const rawModels = modelService.getByProjectId(
+      projectId,
+      includeDeletedRecords,
+    );
+    const modelUpdateEventsSummary =
+      modelService.getUpdateEventsSummaryByProjectId(
+        projectId,
+        includeDeletedRecords,
+        rawModels,
+      );
+    const models = modelService.attachUpdatesStatsToModels(
+      rawModels,
+      modelUpdateEventsSummary,
+    );
+    return { documents, models, modelUpdateEventsSummary };
   },
 
   allocateLatestModelNumberById(projectId) {
