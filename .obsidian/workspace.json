@@ -79,9 +79,21 @@
               "icon": "lucide-trello",
               "title": "0 - Kanban"
             }
+          },
+          {
+            "id": "7be5ccfe2297c057",
+            "type": "leaf",
+            "state": {
+              "type": "release-notes",
+              "state": {
+                "currentVersion": "1.12.4"
+              },
+              "icon": "lucide-book-up",
+              "title": "Release Notes 1.12.4"
+            }
           }
         ],
-        "currentTab": 4
+        "currentTab": 5
       }
     ],
     "direction": "vertical"
@@ -201,13 +213,12 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "0 - Kanban.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of 0 - Kanban"
+              "title": "Outline"
             }
           },
           {
@@ -242,19 +253,19 @@
       "card-board:CardBoard": false
     }
   },
-  "active": "9b56cfd6d5839b01",
+  "active": "7be5ccfe2297c057",
   "lastOpenFiles": [
-    "Code/dbpm/data/models/cefccce1-d5bb-45ca-b0a7-2e0aae6caa9f.xml",
+    "Code/dbpm/data/models/317f548f-541c-4678-b0a3-6d3084314557.xml",
+    "Code/dbpm/data/models/634ed233-2e5d-40e7-89aa-026ca7005c86.xml",
+    "Code/dbpm/data/models/a5a3bc5e-8dfc-4bb0-9096-a1c1705feca6.xml",
+    "Code/dbpm/data/models/62c8bcd8-435b-46cf-93a5-caacd7747a3a.xml",
+    "Code/dbpm/data/models/a1eec222-e130-42f2-9429-f948972f7cdc.xml",
+    "Code/dbpm/data/models/e2cc1d31-f54d-4f39-8346-0e3ddc6fd284.xml",
     "Code/dbpm/data/database.sqlite-journal",
-    "Code/dbpm/data/documents/da0bc7a6-4f41-46dd-9f95-7100d1b56baf.html",
-    "Code/dbpm/data/logs/26b68408-1304-4613-91b3-5bbf94d8cc5b.yaml",
-    "Code/dbpm_reverted/backend/node_modules/@fastify/static/test/static/deep/path/for/test/purpose/foo.html",
-    "Code/dbpm_reverted/backend/node_modules/@fastify/static/test/static/deep/path/for/test/purpose",
-    "Code/dbpm_reverted/backend/node_modules/@fastify/static/test/static/deep/path/for/test/index.html",
-    "Code/dbpm_reverted/backend/node_modules/@fastify/static/test/static-symbolic-link/origin/subdir/subdir/index.html",
-    "Code/dbpm_reverted/backend/node_modules/@fastify/static/test/static/deep/path/for/test",
-    "Code/dbpm_reverted/backend/node_modules/@fastify/static/test/static/deep/path/for",
-    "Code/dbpm_reverted/backend/node_modules/@fastify/static/test/static-symbolic-link/origin/subdir/subdir",
+    "Code/dbpm/data/documents/eaddd7a3-7825-4cc3-ab35-224cc4b963c8.html",
+    "Code/dbpm/data/documents/6e0a8cf4-5fb6-4d8d-88c3-b85a11b985d0.html",
+    "Code/dbpm/data/logs/09d5f846-ad42-478f-bccb-c2e56e641199.yaml",
+    "Code/dbpm/data/database.sqlite",
     "Code/dbpm_reverted/backend/node_modules/@fastify/static/test/static-encode/[...]/a .md",
     "Code/dbpm_reverted/backend/node_modules/@fastify/static/test/static/shallow/sample.jpg",
     "Code/dbpm_reverted/backend/node_modules/@fastify/static/example/public/images/sample.jpg",

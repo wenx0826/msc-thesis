@@ -2,6 +2,7 @@ import modelRepo from "./repositories/model.js";
 import modelUpdateEventRepo from "./repositories/updateEvent.js";
 import versionRepo from "./repositories/version.js";
 import storageRepo from "./repositories/storage.js";
+import subprocessRepo from "./repositories/subprocess.js";
 import traceRepo from "../traces/repository.js";
 import logService from "../logs/service.js";
 import { countWords } from "../../utils/fileHelper.js";
@@ -64,6 +65,19 @@ function enrichModelData(modelData, documentVersionId, selections) {
   });
 }
 
+function syncLatestModelAlias(modelId, modelVersionId, content) {
+  if (!modelId || !modelVersionId) {
+    return;
+  }
+
+  const model = modelRepo.findById(modelId, true);
+  if (!model || model.latestVersionId !== modelVersionId) {
+    return;
+  }
+
+  storageRepo.writeByModelId(modelId, content);
+}
+
 export default {
   createModelAndTrace({ projectId, modelData, trace }) {
     const latestModelNumber =
@@ -95,6 +109,7 @@ export default {
       modelRepo.updateById(createdModel.id, {
         latestVersionId: createdModelVersion.id,
       });
+      storageRepo.writeByModelId(createdModel.id, modelData);
 
       const createdTrace = traceService.create({
         ...trace,
@@ -162,6 +177,7 @@ export default {
     modelRepo.updateById(modelId, {
       latestVersionId: createdVersion.id,
     });
+    storageRepo.writeByModelId(modelId, sourceModelData);
 
     const copiedTraces = traceService.copyByModelVersionId({
       sourceModelVersionId: sourceVersionId,
@@ -212,8 +228,58 @@ export default {
   getData(versionId) {
     return storageRepo.read(versionId);
   },
+  updateSubprocessLink({ modelVersionId, taskId, subprocessModelId }) {
+    if (!modelVersionId) {
+      throw new Error("Model version not found");
+    }
+    if (!taskId || typeof taskId !== "string") {
+      throw new Error("Task not found");
+    }
+
+    const sourceVersion = versionRepo.findById(modelVersionId);
+    if (!sourceVersion) {
+      throw new Error("Model version not found");
+    }
+
+    const sourceModel = modelRepo.findById(sourceVersion.modelId, true);
+    if (!sourceModel) {
+      throw new Error("Model not found");
+    }
+    if (sourceModel.deletedAt) {
+      throw new Error("Model deleted");
+    }
+
+    const targetModelId =
+      typeof subprocessModelId === "string" ? subprocessModelId.trim() : "";
+
+    if (!targetModelId) {
+      subprocessRepo.softDeleteByModelVersionAndTask(modelVersionId, taskId);
+      return { message: "Subprocess link removed" };
+    }
+    if (targetModelId === sourceVersion.modelId) {
+      throw new Error("Model cannot reference itself as subprocess");
+    }
+
+    const targetModel = modelRepo.findById(targetModelId, true);
+    if (!targetModel) {
+      throw new Error("Subprocess model not found");
+    }
+    if (targetModel.deletedAt) {
+      throw new Error("Subprocess model deleted");
+    }
+
+    subprocessRepo.upsertActive({
+      modelVersionId,
+      taskId,
+      subprocessModelId: targetModelId,
+    });
+    return { message: "Subprocess link updated" };
+  },
   count(includeDeleted = false) {
     return modelRepo.count(includeDeleted);
+  },
+  getLatestSubprocessLinksByProjectId(projectId, includeDeleted = false) {
+    return subprocessRepo.findLatestByProjectId(projectId, includeDeleted);
   },
   getAverageSelectedWordsCount(includeDeleted = false) {
     return modelRepo.getAverageSelectedWordsCount(includeDeleted);
@@ -439,6 +505,7 @@ export default {
       effectiveSelections,
     );
     storageRepo.write(versionId, enrichedModelData);
+    syncLatestModelAlias(modelId, versionId, enrichedModelData);
 
     // Store model update event for this version.
     const details = {
@@ -570,6 +637,12 @@ export default {
           selectedText: selectionsToText(trace?.selections),
         });
         storageRepo.write(modelVersionId, enrichedModelData);
+        const modelVersion = versionRepo.findById(modelVersionId);
+        syncLatestModelAlias(
+          modelVersion?.modelId ?? null,
+          modelVersionId,
+          enrichedModelData,
+        );
         updated += 1;
       } catch (error) {
         failed += 1;

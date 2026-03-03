@@ -44,7 +44,7 @@ export const endpointLoader = {
         .then(([symbolText, properties, schemaText]) => {
           this._cache[endpoint].symbol = $.parseXML(symbolText).documentElement;
           this._cache[endpoint].properties = properties;
-          this._cache[endpoint].schema = $.parseXML(schemaText).documentElement;
+          this._cache[endpoint].schema = $.parseXML(schemaText);
           console.log(
             `[endpoint-loader] Loaded symbol, properties & schema for: ${endpoint}`,
           );

@@ -6,6 +6,7 @@ import {
   getModelSchema,
   getVersionDataSchema,
   updateVersionSchema,
+  updateSubprocessLinkSchema,
   restoreModelSchema,
 } from "./schema.js";
 
@@ -148,6 +149,47 @@ export default async function (fastify, options) {
       } catch (err) {
         console.error("Failed to read model data:", err);
         reply.code(500).send({ error: "Failed to read model data" });
+      }
+    },
+  );
+
+  // PUT /models/versions/:versionId/subprocesses/:taskId - Bind subprocess model for a task in a model version
+  fastify.put(
+    "/versions/:versionId/subprocesses/:taskId",
+    { schema: updateSubprocessLinkSchema },
+    (request, reply) => {
+      const { versionId, taskId } = request.params;
+      const { subprocessModelId } = request.body;
+      try {
+        const result = modelService.updateSubprocessLink({
+          modelVersionId: versionId,
+          taskId,
+          subprocessModelId,
+        });
+        reply.send(result);
+      } catch (err) {
+        console.error("Failed to update subprocess link:", err);
+        if (
+          [
+            "Model version not found",
+            "Model not found",
+            "Model deleted",
+            "Subprocess model not found",
+            "Subprocess model deleted",
+          ].includes(err.message)
+        ) {
+          reply.code(404).send({ error: err.message });
+          return;
+        }
+        if (
+          ["Task not found", "Model cannot reference itself as subprocess"].includes(
+            err.message,
+          )
+        ) {
+          reply.code(400).send({ error: err.message });
+          return;
+        }
+        reply.code(500).send({ error: "Failed to update subprocess link" });
       }
     },
   );

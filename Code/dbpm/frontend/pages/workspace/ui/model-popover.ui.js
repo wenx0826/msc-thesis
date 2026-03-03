@@ -271,6 +271,43 @@ function createScopedPopoverSvg(svgSource, modelId) {
   return svgEl;
 }
 
+function createModelPopoverContent({ modelId, versionId, modelGraph }) {
+  const resolvedVersionId =
+    versionId || modelsStore.getLatestVersionId(modelId) || null;
+  const modelName = modelsStore.getEntityName(modelId) || "Unnamed model";
+  const versionName = resolvedVersionId
+    ? modelsStore.getVersion(modelId, resolvedVersionId)?.name ||
+      resolvedVersionId
+    : modelsStore.getLatestVersionName(modelId) || "No version";
+
+  const container = document.createElement("div");
+  container.className = "model-popover-container";
+  container.dataset.modelId = String(modelId);
+  if (resolvedVersionId) {
+    container.dataset.modelVersionId = String(resolvedVersionId);
+  }
+
+  const header = document.createElement("div");
+  header.className = "model-popover-header";
+
+  const title = document.createElement("span");
+  title.className = "model-popover-title";
+  title.textContent = modelName;
+
+  const version = document.createElement("span");
+  version.className = "model-popover-version";
+  version.textContent = versionName;
+
+  header.append(title, version);
+
+  const body = document.createElement("div");
+  body.className = "model-popover-body";
+  body.append(modelGraph);
+
+  container.append(header, body);
+  return container;
+}
+
 // ✨ NEW: Function to create/recreate tippy instance
 function createTippyInstance() {
   // ✨ NEW: Prevent recreation while already recreating
@@ -305,6 +342,7 @@ function createTippyInstance() {
   tip = tippy(hostEl, {
     trigger: "manual",
     interactive: true, // ⭐ hover 到 popover 不消失
+    theme: "model-popover",
     appendTo: () => document.body,
     arrow: true, // 🔧 CHANGED: Enable arrow for better visual feedback (was false)
     placement: "top", // 🔧 CHANGED: Use "top" as default, flip handles alternatives (was "auto")
@@ -390,6 +428,7 @@ workspaceStore.subscribe((state, { key, newValue }) => {
       if (newValue && newValue.modelId && newValue.anchor) {
         // ✨ FIXED: Also check for anchor to prevent null reference errors
         const modelId = newValue.modelId;
+        const versionId = newValue.versionId || null;
         const modelGraphSource = modelsStore.getModelGraphById(modelId);
         if (!modelGraphSource) {
           console.warn("Model graph not available for popover:", modelId);
@@ -420,7 +459,9 @@ workspaceStore.subscribe((state, { key, newValue }) => {
           }
 
           // ✨ NEW: Set content with fresh instance
-          tip.setContent(modelGraph);
+          tip.setContent(
+            createModelPopoverContent({ modelId, versionId, modelGraph }),
+          );
 
           tip.setProps({
             getReferenceClientRect:

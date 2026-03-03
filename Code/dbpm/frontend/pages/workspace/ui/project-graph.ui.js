@@ -1,5 +1,9 @@
 import { createUI } from "../../../shared/utils/ui.js";
-import { workspaceStore, projectGraphStore } from "../store/index.js";
+import {
+  workspaceStore,
+  projectGraphStore,
+  modelsStore,
+} from "../store/index.js";
 import { workspaceService } from "../services/index.js";
 
 const theme = (() => {
@@ -131,11 +135,29 @@ createUI({
           selector: "edge",
           style: {
             width: 1,
-            "line-color": "#bbb",
-            "target-arrow-color": "#bbb",
+            // "line-color": "#bbb",
+            // "target-arrow-color": "#bbb",
             "curve-style": "bezier",
             "font-size": 9,
             "text-rotation": "autorotate",
+          },
+        },
+        {
+          selector: 'edge[relation="subprocess"]',
+          style: {
+            // width: 1.5,
+            "line-style": "dashed",
+            // "line-color": theme.highlightColor,
+            "target-arrow-shape": "triangle",
+            // "target-arrow-color": theme.highlightColor,
+          },
+        },
+        {
+          selector: 'edge[relation="generated"]',
+          style: {
+            "line-style": "solid",
+            "line-color": "#bbb",
+            "target-arrow-color": "#bbb",
           },
         },
       ],
@@ -164,33 +186,44 @@ createUI({
     cy.on("mouseover", "node", (e) => {
       cy.container().style.cursor = "pointer";
       const node = e.target;
+      console.log("hover node:", node);
+      console.log(
+        "hover node data rendered position:",
+        node.renderedPosition(),
+      );
+      // console.log(node.popperRef());
+      // console.log("hover node position:", node.getNodePosition());
+      // console.log("hover node position:", node.position());
       node.addClass("hovered");
       const nodeType = getNodeType(node);
-      const nodeId = getNodeId(node);
       switch (nodeType) {
         case "document":
           node.addClass("hovered");
           break;
         case "model": {
           node.addClass("hovered");
-          const modelId = node.data("modelId");
-          if (!modelId) {
-            return;
-          }
-          // workspaceService.showModelPopover({
-          //   modelId,
+          const modelId = getNodeId(node);
+          const versionId = modelsStore.getLatestVersionId(modelId) || null;
+          const containerRect = cy.container().getBoundingClientRect();
+          const renderedPosition = node.renderedPosition();
+          const point = {
+            x: containerRect.left + renderedPosition.x,
+            y: containerRect.top + renderedPosition.y,
+          };
 
-          //   anchor: {
-          //     type: "point",
-          //     point: {
-          //       x: evt.originalEvent.clientX,
-          //       y: evt.originalEvent.clientY,
-          //     },
-          //   },
-
-          //   source: "graph-node",
-          // });
-          // break;
+          workspaceStore.setModelPopoverParams(
+            {
+              modelId,
+              versionId,
+              openDelayMs: 0,
+              anchor: {
+                type: "point",
+                point,
+              },
+            },
+            "graph-node",
+          );
+          break;
         }
         default:
           break;

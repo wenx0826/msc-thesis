@@ -57,7 +57,11 @@ export default {
       projectId,
       includeDeletedRecords,
     );
-    return { documentsMeta, modelsMeta };
+    const subprocessLinks = modelService.getLatestSubprocessLinksByProjectId(
+      projectId,
+      includeDeletedRecords,
+    );
+    return { documentsMeta, modelsMeta, subprocessLinks };
   },
 
   getComponentsStatsById(projectId, includeDeleted = true) {

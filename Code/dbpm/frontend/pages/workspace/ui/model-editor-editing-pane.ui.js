@@ -10,12 +10,12 @@ import { endpointLoader } from "../../../modules/workflow/endpoints/endpoint-loa
 import { Constants } from "../../../constants.js";
 
 const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
-
-const $datDetails = $("#dat_details");
-// Action bars and buttons
+// cosnt $graphGrid = $("#graphgrid");
 const $graphCanvas = $("#graphcanvas");
-// disable all controls inside
+const $graphGrid = $graphCanvas.parent();
+const $datDetails = $("#dat_details");
 
+// disable all controls inside
 // enable all controls inside
 
 const $regeneratedModelActionBar = $("#regeneratedModelActionBar");
@@ -24,11 +24,7 @@ const $viewNewModelButton = $("#viewNewModelButton");
 const $revertPrevModelButton = $("#revertPrevModelButton");
 const $keepNewModelButton = $("#keepNewModelButton");
 
-const $viewModelDataLink = $("#viewModelDataLink");
-const CALL_TYPE_INPUT_SELECTOR = `select[data-relaxngui-path=" > call > parameters > dbpm_type"]`;
-const CALL_TYPE_SELECTOR = `#dat_details ${CALL_TYPE_INPUT_SELECTOR}`;
-const CALL_SUBPROCESS_MODEL_SELECTOR = `#dat_details select[data-relaxngui-path=" > call > parameters > dbpm_subprocess_model"]`;
-const CALL_ENDPOINT_INPUT_SELECTOR = `#dat_details input[data-relaxngui-path=" > call[endpoint]"]`;
+const CALL_SUBPROCESS_MODEL_SELECT_SELECTOR = `#dat_details select[data-relaxngui-path=" > call > parameters > dbpm_subprocess_model"]`;
 
 function saveActiveModel(type) {
   modelService.updateEditingVersion(type);
@@ -42,9 +38,6 @@ function clearModelEditor() {
 async function showWFGraph(data) {
   save["state"] = "ready";
   save["graph_theme"] = "preset_customized";
-  // console.log("!!!!!!!!!!! Showing active model:", model);
-  // Initialize endpoints and map to save cache for details.js compatibility - WAIT for completion
-  await endpointLoader.init();
   save["endpoints_cache"] = endpointLoader._cache;
   save["graph_adaptor"] = new WfAdaptor(
     "modules/workflow/themes/preset_customized/theme.js",
@@ -56,7 +49,7 @@ async function showWFGraph(data) {
       graphrealization.set_label_container($("#graphgrid"));
       graphrealization.set_description($(data), true);
       graphrealization.notify = function (svgid) {
-        console.log("Graph realization notify for svgid:", svgid);
+        // console.log("Graph realization notify for svgid:", svgid);
         var g = graphrealization.get_description();
         manifestation.events.click(svgid);
         format_instance_pos();
@@ -78,9 +71,7 @@ async function showWFGraph(data) {
 const showActiveModel = async (model) => {
   save["state"] = "ready";
   save["graph_theme"] = "preset_customized";
-  // Initialize endpoints and map to save cache for details.js compatibility - WAIT for completion
-  await endpointLoader.init();
-  save["endpoints_cache"] = endpointLoader._cache;
+  // save["endpoints_cache"] = endpointLoader._cache;
   save["graph_adaptor"] = new WfAdaptor(
     "modules/workflow/themes/preset_customized/theme.js",
     function (graphrealization) {
@@ -88,12 +79,9 @@ const showActiveModel = async (model) => {
       graphrealization.illustrator.get_properties =
         endpointLoader._boundGetProperties;
       graphrealization.set_svg_container($graphCanvas);
-      graphrealization.set_label_container($("#graphgrid"));
+      graphrealization.set_label_container($graphGrid);
       graphrealization.set_description($(model?.data), true);
       graphrealization.notify = function (svgid) {
-        console.log("Graph realization notify for svgid:", svgid);
-        console.log("Saving model 111");
-
         var g = graphrealization.get_description();
         manifestation.events.click(svgid);
         format_instance_pos();
@@ -123,18 +111,6 @@ const getModelSelectContainer = ($modelSelect) => {
   return $modelSelect.parent().parent();
 };
 
-const setModelSelectVisibility = ($modelSelect, isVisible) => {
-  const $container = getModelSelectContainer($modelSelect);
-  if ($container.length === 0) {
-    return;
-  }
-  if (isVisible) {
-    $container.show();
-  } else {
-    $container.hide();
-  }
-};
-
 const getAvailableSubprocessModels = () => {
   const availableModels = [];
   for (const model of modelsStore.getList() || []) {
@@ -155,12 +131,9 @@ const getAvailableSubprocessModels = () => {
   return availableModels;
 };
 
-const renderModelSelect = (modelValue) => {
-  const $modelSelect = $(CALL_SUBPROCESS_MODEL_SELECTOR);
-  if ($modelSelect.length === 0) {
-    return;
-  }
-  const editingModelId = modelEditorStore.getModelId();
+const renderModelSelect = (initialModelId = "") => {
+  const $modelSelect = $(CALL_SUBPROCESS_MODEL_SELECT_SELECTOR);
+  const editingModelId = workspaceStore.getEditingModel().id;
   const modelsByDocumentId = new Map();
   for (const {
     documentId,
@@ -191,31 +164,11 @@ const renderModelSelect = (modelValue) => {
       }
     }
   }
-  setModelSelectVisibility($modelSelect, true);
-  $modelSelect.val(modelValue || "");
-};
-
-const syncCallEndpointFromTypeInput = (typeValue) => {
-  const $endpointInput = $(CALL_ENDPOINT_INPUT_SELECTOR);
-  if ($endpointInput.length === 0) {
-    return;
-  }
-  $endpointInput.val(typeValue === "subprocess" ? "subprocess" : "");
-};
-
-const handleCallTypeChangeCapture = (event) => {
-  const target = event.target;
-  if (!(target instanceof HTMLSelectElement)) {
-    return;
-  }
-  if (!target.matches(CALL_TYPE_INPUT_SELECTOR)) {
-    return;
-  }
-  syncCallEndpointFromTypeInput(target.value);
+  setModelSelectVisibility(true);
+  $modelSelect.val(initialModelId);
 };
 
 function do_main_work(svgid) {
-  //{{{
   var desc = save["details_target"].model;
   var node = desc.get_node_by_svg_id(svgid);
   var orignode = save["graph_adaptor"].illustrator
@@ -256,31 +209,6 @@ function do_main_work(svgid) {
     nnew = $(save["details"].save().documentElement);
   }
   nnew.attr("svg-id", svgid);
-
-  const endpoint = nnew.attr("endpoint");
-  const nnewArguments = nnew.children("parameters").children("arguments");
-  const nnewArgBehavior = nnewArguments.children("behavior");
-  const nnewArgUrl = nnewArguments.children("url");
-  const nnDbpmSubprocessModel = nnew
-    .children("parameters")
-    .children("dbpm_subprocess_model");
-  if (endpoint === "subprocess") {
-    var subprocessModelId = nnew
-      .children("parameters")
-      .children("dbpm_subprocess_model")
-      .text();
-    if (subprocessModelId) {
-      nnewArgBehavior.text("wait_for_running");
-      nnewArgUrl.text(
-        window.location.origin + "/data/models/" + subprocessModelId + ".xml",
-      );
-    } else {
-      nnewArguments.remove();
-    }
-  } else {
-    nnDbpmSubprocessModel.remove();
-    nnewArguments.remove();
-  }
 
   if ($("*[svg-id]", node).length > 0) {
     nnew.append(
@@ -327,67 +255,19 @@ function do_main_work(svgid) {
     var newtype =
       newnode.attr("element-type") + "_" + newnode.attr("element-endpoint");
     var g = graphrealization.get_description();
-    console.log("????? g=", g);
-
-    // WORKAROUND: get_description() fails due to nodeType issue in wfadaptor
-    // Use direct serialization instead
-    // if (!g) {
-    //   console.warn(
-    //     "get_description() returned null, using direct serialization workaround",
-    //   );
-    //   try {
-    //     var descRoot = desc.get_node_by_svg_id("description");
-    //     if (descRoot && descRoot.length > 0) {
-    //       // Clone and remove svg attributes
-    //       var serxml = descRoot.clone(true);
-    //       serxml.removeAttr("svg-id");
-    //       serxml.removeAttr("svg-type");
-    //       serxml.removeAttr("svg-subtype");
-    //       serxml.removeAttr("svg-label");
-    //       $("*[svg-id]", serxml).each(function () {
-    //         $(this).removeAttr("svg-id");
-    //         $(this).removeAttr("svg-type");
-    //         $(this).removeAttr("svg-subtype");
-    //         $(this).removeAttr("svg-label");
-    //       });
-    //       g = serxml.serializeXML();
-    //       console.log(
-    //         "Direct serialization workaround SUCCEEDED, g=",
-    //         g ? g.substring(0, 200) + "..." : "NULL",
-    //       );
-    //     }
-    //   } catch (e) {
-    //     console.error("Direct serialization workaround FAILED:", e);
-    //   }
-    // }
-
+    //todo Bug here
     if (g) {
       save["graph"] = $X(g);
       save["graph"].removeAttr("svg-id");
       save["graph"].removeAttr("svg-type");
       save["graph"].removeAttr("svg-subtype");
       save["graph"].removeAttr("svg-label");
-
-      console.log(
-        "save['graph'] after cleaning:",
-        save["graph"].serializePrettyXML
-          ? save["graph"].serializePrettyXML().substring(0, 500)
-          : new XMLSerializer()
-              .serializeToString(save["graph"][0])
-              .substring(0, 500),
-      );
-    } else {
-      console.error(
-        "get_description() returned null - description may be invalid",
-      );
     }
-
-    console.log("herer???", newtype, origtype);
     if (newtype != origtype) {
-      // console.log("herer???", newtype, origtype);
       manifestation.update_details(svgid);
       do_main_work(svgid);
     } else {
+      saveActiveModel(MODEL_UPDATE_TYPE.MANUAL_UPDATE_GRAPH_PROPERTIES_ONLY);
       // $.ajax({
       //   type: "PUT",
       //   url: url + "/properties/description/",
@@ -398,66 +278,108 @@ function do_main_work(svgid) {
       //   },
       //   data: desc.get_description(),
       // });
-      // format_instance_pos();
-
+      format_instance_pos();
       // document.dispatchEvent(graph_changed);
-
       ////////////////////////////
       // holy shit, f***in papercut. When blur/focusout from within relaxngui,
       // click on original target after graph was updated. tsvgid has to be
       // saved in mousedown because blur/focusout is between mousedown and click.
       ////////////////////////////
       if (save["details_target"].svgid != save["details_target"].tsvgid) {
-        console.log(">>>???????????? here triggered?");
         manifestation.adaptor.illustrator
           .get_label_by_svg_id(save["details_target"].tsvgid)
           .trigger("click");
       }
-
-      console.log(
-        "333333333_ Details Save: node=",
-        node,
-        "endpoint=",
-        node.attr("endpoint"),
-        node.children("parameters").children("dbpm_type").text(),
-      );
-
-      // Update the active model store with the cleaned graph
-      if (save["graph"]) {
-        console.log("Updating activeModel store with cleaned graph");
-        Store.activeModel.state.model.data = save["graph"][0];
-        console.log("Store updated. Verifying...");
-        const storeData = Store.activeModel.getSerializedData();
-        console.log(
-          "Store serialized data (first 500 chars):",
-          storeData.substring(0, 500),
-        );
-      }
-
-      // manifestation.adaptor.illustrator
-      //   .get_label_by_svg_id(save["details_target"].tsvgid)
-      //   .trigger("click");
-      saveActiveModel(MODEL_UPDATE_TYPE.MANUAL_UPDATE_GRAPH_PROPERTIES_ONLY);
     }
   });
 }
+const setModelSelectVisibility = (isVisible) => {
+  $(CALL_SUBPROCESS_MODEL_SELECT_SELECTOR)
+    .parent()
+    .toggleClass("hidden", !isVisible);
+};
+function syncCallEndpoint(typeValue) {
+  const INPUT_SELECTOR = `#dat_details input[data-relaxngui-path=" > call[endpoint]"]`;
+  $(INPUT_SELECTOR).val(typeValue === "subprocess" ? "subprocess" : "");
+}
+function syncCallSubprocessArguments(modelId) {
+  const ARGUMENTS_SELECTOR = `#dat_details div[data-relaxngui-path=" > call > parameters > arguments[data-main]"]`;
+  const BEHAVIOR_INPUT_SELECTOR = `${ARGUMENTS_SELECTOR} input[data-relaxngui-path=" > call > parameters > arguments > behavior"]`;
+  const URL_INPUT_SELECTOR = `${ARGUMENTS_SELECTOR} input[data-relaxngui-path=" > call > parameters > arguments > url"]`;
+  $(BEHAVIOR_INPUT_SELECTOR).val(modelId ? "wait_for_running" : "");
+  $(URL_INPUT_SELECTOR).val(
+    modelId ? window.location.origin + "/data/models/" + modelId + ".xml" : "",
+  );
+}
+function getActiveCallTaskId() {
+  const CALL_ID_INPUT_SELECTOR =
+    '#dat_details input[data-relaxngui-path=" > call[id]"]';
+  const taskIdFromInput = ($(CALL_ID_INPUT_SELECTOR).val() || "").toString().trim();
+  if (taskIdFromInput) {
+    return taskIdFromInput;
+  }
+
+  const taskIdFromDetailsTarget =
+    save?.details_target?.svgid || save?.details_target?.tsvgid || "";
+  return typeof taskIdFromDetailsTarget === "string"
+    ? taskIdFromDetailsTarget.trim()
+    : "";
+}
+function onCallClicked(e) {
+  const $node = $(e.detail?.node);
+  const endpoint = ($node.attr("endpoint") || "").trim();
+
+  const isSubprocess = endpoint === "subprocess";
+  // const $modelSelect = $(CALL_SUBPROCESS_MODEL_SELECT_SELECTOR);
+  // $modelSelect.data("initial-model-value", modelId);
+  if (isSubprocess) {
+    const modelId = $node
+      .children("parameters")
+      .children("dbpm_subprocess_model")
+      .text()
+      .trim();
+    renderModelSelect(modelId);
+  } else {
+    setModelSelectVisibility(false);
+  }
+}
+
+function onCallTypeChange(typeValue) {
+  syncCallEndpoint(typeValue);
+  if (typeValue === "subprocess") {
+    renderModelSelect();
+    return;
+  }
+  syncCallSubprocessArguments("");
+  modelService.updateSubprocessLink(getActiveCallTaskId(), null).catch((error) => {
+    console.error("Failed to remove subprocess model link:", error);
+  });
+}
+
+async function onCallSubprocessModelChange(modelId) {
+  syncCallSubprocessArguments(modelId);
+  try {
+    await modelService.updateSubprocessLink(getActiveCallTaskId(), modelId);
+  } catch (error) {
+    console.error("Failed to bind subprocess model link:", error);
+  }
+}
 
 createUI({
-  setup: () => {
+  setup: async () => {
     window.do_main_work = do_main_work;
+    await endpointLoader.init();
+    save["endpoints_cache"] = endpointLoader._cache;
+    window.onDBPMCallTypeChange = onCallTypeChange;
+    window.onDBPMCallSubprocessModelChange = onCallSubprocessModelChange;
   },
   bindListeners: () => {
-    document.removeEventListener("change", handleCallTypeChangeCapture, true);
-    document.addEventListener("change", handleCallTypeChangeCapture, true);
-
-    $viewModelDataLink.on("click", (e) => {
-      e.preventDefault();
-      window.open(
-        "/data/models/" + workspaceStore.getEditingModelId() + ".xml",
-        "_blank",
-      );
+    $graphGrid.parent().click(function (e) {
+      $graphGrid.find(".selected").removeClass("selected");
+      localStorage.removeItem("marked");
+      localStorage.removeItem("marked_from");
+      $datDetails.empty();
     });
-
     $keepNewModelButton.on("click", async () => {
       $regeneratedModelActionBar.hide();
       modelService.updateEditingVersion();
@@ -468,74 +390,7 @@ createUI({
       $("#generatedModelActionBar").css("visibility", "hidden");
     });
 
-    $("#editingModelPane").click(function (e) {
-      $("#graphgrid .selected").removeClass("selected");
-      localStorage.removeItem("marked");
-      localStorage.removeItem("marked_from");
-      $datDetails.empty();
-    });
-
-    $(document)
-      .off("change.call-type", CALL_TYPE_SELECTOR)
-      .on("change.call-type", CALL_TYPE_SELECTOR, function () {
-        const $modelSelect = $(CALL_SUBPROCESS_MODEL_SELECTOR);
-        const initialModelValue =
-          $modelSelect.data("initial-model-value") || "";
-        const typeValue = $(this).val();
-        if (typeValue === "subprocess") {
-          renderModelSelect($modelSelect.val() || initialModelValue);
-          return;
-        }
-        $modelSelect.val("");
-        setModelSelectVisibility($modelSelect, false);
-      });
-    $(document).on("wf:call-clicked", function (e) {
-      console.log(`Event Listener 'wf:call-clicked' listened`);
-      const nodeData = e.detail?.node || e.detail?.nn;
-      if (!nodeData) {
-        return;
-      }
-      const $node = $(nodeData);
-      const endpoint = ($node.attr("endpoint") || "").trim();
-      const type = $node
-        .children("parameters")
-        .children("dbpm_type")
-        .text()
-        .trim();
-      const $argumentsDiv = $(
-        `#dat_details div[data-relaxngui-path=" > call > parameters > arguments[data-main]"]`,
-      );
-      $argumentsDiv.css({ visibility: "hidden", height: "0px" });
-      const modelValue = $node
-        .children("parameters")
-        .children("dbpm_subprocess_model")
-        .text()
-        .trim();
-
-      const $endpointInput = $(
-        `#dat_details input[data-relaxngui-path=" > call[endpoint]"]`,
-      );
-      // if ($endpointInput.length > 0) {
-      //   $endpointInput.parent().css({ visibility: "hidden", height: "0px" });
-      // }
-      const isSubprocess = endpoint === "subprocess" || type === "subprocess";
-      const $typeSelect = $(CALL_TYPE_SELECTOR);
-      $typeSelect.val(isSubprocess ? "subprocess" : "task");
-      const $modelSelect = $(CALL_SUBPROCESS_MODEL_SELECTOR);
-      $modelSelect.data("initial-model-value", modelValue);
-      if (isSubprocess) {
-        if ($endpointInput.length > 0) {
-          $endpointInput.val("subprocess");
-        }
-        renderModelSelect(modelValue);
-      } else {
-        if ($endpointInput.length > 0) {
-          $endpointInput.val("");
-        }
-        $modelSelect.val("");
-        setModelSelectVisibility($modelSelect, false);
-      }
-    });
+    $(document).on("wf:call-clicked", onCallClicked);
     $(document).on("wf:subprocess-dblclicked", function (e) {
       console.log(`Event Listener 'wf:subprocess-dblclicked' listened`);
       const $node = $(e.detail.node);
@@ -548,20 +403,20 @@ createUI({
       }
     });
     $(document).on("wf:subprocess-hovered", function (e) {
-      console.log(`Event Listener 'wf:subprocess-hovered' listened`);
       const $node = $(e.detail.node);
       const modelId = $node
         .children("parameters")
         .children("dbpm_subprocess_model")
         .text();
+      const versionId = modelsStore.getLatestVersionId(modelId) || null;
       const svgId = $node.attr("id");
       const $element = $(`#graphcanvas [element-id="${svgId}"]`);
-      console.log("Hovered subprocess svgId:", svgId, "modelId:", modelId);
 
       // ✨ NEW: Pass source identifier to prevent conflicts
       workspaceStore.setModelPopoverParams(
         {
           modelId,
+          versionId,
           anchor: { type: "element", element: $element[0] },
         },
         "subprocess-node",
@@ -657,7 +512,7 @@ createUI({
     workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
       switch (key) {
         case "editingModel": {
-          if (!newValue?.id) {
+          if (!newValue.id) {
             clearModelEditor();
           }
           break;

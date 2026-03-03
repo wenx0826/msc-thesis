@@ -23,16 +23,16 @@
         <value>#deddda</value>
       </choice>
     </element>
-    <element name="dbpm_type" rngui:label="Type">
+    <element name="dbpm_type" rngui:label="Type" rngui:onchange="window.onDBPMCallTypeChange(current_element.val())">
       <choice>
         <value>task</value>
         <value>subprocess</value>
       </choice>
     </element>
-    <element name="dbpm_subprocess_model" rngui:label="Subprocess Model">
+    <element name="dbpm_subprocess_model" rngui:label="Subprocess Model" rngui:onchange="window.onDBPMCallSubprocessModelChange(current_element.val())">
       <choice>
       </choice>
-    </element>
+    </element> 
     <element name="arguments" rngui:header="Arguments">
     </element>
   </element>

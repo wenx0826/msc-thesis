@@ -143,6 +143,19 @@ export default {
     return handleResponse(response, "Failed to update model and trace");
   },
 
+  async updateSubprocessLink(versionId, taskId, subprocessModelId) {
+    const encodedTaskId = encodeURIComponent(taskId);
+    const response = await fetch(
+      `${baseURL}/${this.path}/versions/${versionId}/subprocesses/${encodedTaskId}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ subprocessModelId }),
+      },
+    );
+    return handleResponse(response, "Failed to update subprocess link");
+  },
+
   async deleteModelById(id) {
     const response = await fetch(`${baseURL}/${this.path}/${id}`, {
       method: "DELETE",

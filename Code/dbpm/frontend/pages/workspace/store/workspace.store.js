@@ -125,6 +125,7 @@ class WorkspaceStore extends Store {
     // ✨ NEW: If same model, just update anchor position without delay
     if (oldModelId === newModelId && newModelId) {
       this.state.modelPopover.modelId = newValue.modelId;
+      this.state.modelPopover.versionId = newValue.versionId || null;
       this.state.modelPopover.anchor = newValue.anchor;
       this.state.modelPopover.hoverSource = source;
       this.notify({
@@ -137,11 +138,16 @@ class WorkspaceStore extends Store {
 
     // ✨ NEW: Debounce opening (200ms delay) to prevent popover from appearing too quickly
     if (newValue) {
+      const openDelayMs =
+        Number.isFinite(newValue.openDelayMs) && newValue.openDelayMs >= 0
+          ? newValue.openDelayMs
+          : 200;
       // Track the current hover source immediately so quick mouseleave can cancel pending open.
       this.state.modelPopover.hoverSource = source;
       this.state.modelPopover.anchor = newValue.anchor;
       this.state.modelPopover.openTimer = setTimeout(() => {
         this.state.modelPopover.modelId = newValue.modelId;
+        this.state.modelPopover.versionId = newValue.versionId || null;
         this.state.modelPopover.anchor = newValue.anchor;
         this.state.modelPopover.hoverSource = source;
         const newState = this.state.modelPopover;
@@ -151,10 +157,11 @@ class WorkspaceStore extends Store {
           newValue: newState,
         });
         this.state.modelPopover.openTimer = null;
-      }, 200);
+      }, openDelayMs);
     } else {
       // Close immediately when newValue is null
       this.state.modelPopover.modelId = null;
+      this.state.modelPopover.versionId = null;
       this.state.modelPopover.anchor = null;
       this.state.modelPopover.hoverSource = null;
       this.notify({
@@ -198,6 +205,7 @@ class WorkspaceStore extends Store {
     this.cancelOpenModelPopover();
     this.cancelCloseModelPopover();
     if (!hasVisiblePopover) {
+      this.state.modelPopover.versionId = null;
       this.state.modelPopover.anchor = null;
       this.state.modelPopover.hoverSource = null;
       return;

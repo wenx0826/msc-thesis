@@ -242,6 +242,32 @@ export const updateVersionSchema = {
   },
 };
 
+export const updateSubprocessLinkSchema = {
+  params: {
+    type: "object",
+    properties: {
+      versionId: { type: "string" },
+      taskId: { type: "string" },
+    },
+    required: ["versionId", "taskId"],
+  },
+  body: {
+    type: "object",
+    properties: {
+      subprocessModelId: { type: ["string", "null"] },
+    },
+    required: ["subprocessModelId"],
+  },
+  response: {
+    200: {
+      type: "object",
+      properties: {
+        message: { type: "string" },
+      },
+    },
+  },
+};
+
 export const restoreModelSchema = {
   params: {
     type: "object",

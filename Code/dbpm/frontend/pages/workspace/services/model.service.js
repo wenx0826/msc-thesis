@@ -878,6 +878,38 @@ export default {
   maybeAlertNoSelectionOnLoadedEditingModel(source = "manual_check") {
     alertNoSelectionsOnModelVersionLoadIfNeeded(source);
   },
+  async updateSubprocessLink(taskId, subprocessModelId) {
+    const { id: modelId, versionId: modelVersionId } =
+      workspaceStore.getEditingModel() || {};
+    if (!modelVersionId || !taskId || !modelId) {
+      return;
+    }
+
+    const normalizedSubprocessModelId =
+      typeof subprocessModelId === "string" && subprocessModelId.trim().length > 0
+        ? subprocessModelId.trim()
+        : null;
+
+    await modelsAPI.updateSubprocessLink(
+      modelVersionId,
+      taskId,
+      normalizedSubprocessModelId,
+    );
+
+    if (!modelsStore.isLatestVersion(modelId, modelVersionId)) {
+      return;
+    }
+
+    if (normalizedSubprocessModelId) {
+      projectGraphStore.upsertSubprocessEdge({
+        modelId,
+        subprocessModelId: normalizedSubprocessModelId,
+        taskId,
+      });
+      return;
+    }
+    projectGraphStore.removeSubprocessEdge(modelId, taskId);
+  },
   async updateEditingVersion(type) {
     const { id: modelId, versionId: modelVersionId } =
       workspaceStore.getEditingModel();

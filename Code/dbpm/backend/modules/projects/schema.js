@@ -157,6 +157,18 @@ export const getProjectComponentsSchema = {
             },
           },
         },
+        subprocessLinks: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              modelVersionId: { type: "string" },
+              modelId: { type: "string" },
+              taskId: { type: "string" },
+              subprocessModelId: { type: "string" },
+            },
+          },
+        },
       },
     },
   },

@@ -31,8 +31,8 @@
   <!-- <script type="text/javascript" src="https://cpee.org/flow/js/wfadaptor.js"></script> -->
   <link rel="stylesheet" href="https://cpee.org/flow/css/wfadaptor.css" type="text/css" />
   <link rel="stylesheet" href="https://cpee.org/flow/css/wfadaptor.css" type="text/css" />
-  <!-- <script type="text/javascript" src="https://cpee.org/flow/themes/base.js"></script> -->
-  <script type="text/javascript" src="modules/workflow/themes/base_new.js"></script>
+  <script type="text/javascript" src="https://cpee.org/flow/themes/base.js"></script>
+  <!-- <script type="text/javascript" src="modules/workflow/themes/base_new.js"></script> -->
   <script type="text/javascript" src="modules/workflow/themes/base_customized.js" type="module"></script>
 
   <!-- <script type="text/javascript" src="js_cpee/extended_columns.js"></script> -->
@@ -221,8 +221,6 @@
               <template id="modelTagTemplate">
                 <span class="tag-span"></span>
               </template>
-
-
             </ui-area>
           </ui-content>
           <ui-divider></ui-divider>
@@ -240,7 +238,7 @@
         </ui-rest>
       </ui-rest>
       <ui-resizehandle id="columnResizehandle1" data-direction="vertical"></ui-resizehandle>
-      <ui-rest class="pane pane--middle panel">
+      <ui-rest class="pane pane--center panel">
         <ui-rest style="flex: 1 1 0; min-height: 100px">
           <ui-bar>
             <!-- <div id="activeModelNameEditor" class="inline-editor"> -->
@@ -254,33 +252,29 @@
             </fieldset>
           </ui-bar>
           <ui-divider></ui-divider>
-          <!-- <div>
-          <a id=" savetestsetfile" href="" download=""></a>
-          <a id="savesvgfile" href="" download=""></a>
-          <button title='a testset includes various settings, subscriptions and a model'
-            name="savetestsetfile">save<br>testset</button>
-          <button title='the SVG contains the graphical repesentation of the CPEE tree as you see it on the screen'
-            name="savesvgfile">save svg<br>graph</button> -->
-          <ui-content id="editingModelPane">
-            <ui-area id="graphgrid">
-              <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink"
-                id="graphcanvas" width="1" height="1" style="display: block"></svg>
-            </ui-area>
-          </ui-content>
-          <div id="dat_details"></div>
-          <div id="relaxngworker" class="hidden"></div>
-          <ui-bar id="regeneratedModelActionBar" class="hidden">
-            <div class="right action-group">
-              <button id="viewPrevModelButton">Previous</button>
-              <button id="viewNewModelButton">New</button>
-              <button id="revertPrevModelButton" title="Cancel changes">
-                Cancel
-              </button>
-              <button id="keepNewModelButton" title="Keep the new version">
-                Keep
-              </button>
-            </div>
-          </ui-bar>
+          <ui-rest>
+            <ui-content id="modelling">
+              <ui-area id="graphgrid">
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink"
+                  id="graphcanvas" width="1" height="1" style="display: block"></svg>
+              </ui-area>
+            </ui-content>
+            <div id="modelErrorMessage"></div>
+            <div id="dat_details"></div>
+            <div id="relaxngworker" class="hidden"></div>
+            <ui-bar id="regeneratedModelActionBar" class="hidden">
+              <div class="right action-group">
+                <button id="viewPrevModelButton">Previous</button>
+                <button id="viewNewModelButton">New</button>
+                <button id="revertPrevModelButton" title="Cancel changes">
+                  Cancel
+                </button>
+                <button id="keepNewModelButton" title="Keep the new version">
+                  Keep
+                </button>
+              </div>
+            </ui-bar>
+          </ui-rest>
         </ui-rest>
         <ui-resizehandle data-direction="horizontal" data-style="transparent"></ui-resizehandle>
         <ui-rest style="flex: 0.25 1 0; min-height: 100px" id="promptPane" class="hidden">
@@ -314,11 +308,10 @@
             <button class="right more-actions-btn"></button>
           </ui-bar>
           <ui-bar>
-            <!-- <div class="right"> -->
+            <!-- <div class="right">  -->
             <div class="field">
               <label for="documentsSelect">Documents:</label>
               <select name="documentsSelect" id="documentsSelect">
-
               </select>
             </div>
             <!-- </div> -->

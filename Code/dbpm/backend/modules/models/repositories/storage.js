@@ -7,8 +7,18 @@ export default {
   getFilePath(versionId) {
     return fileURLToPath(new URL(`${versionId}.xml`, modelsDirUrl));
   },
+
+  getModelFilePath(modelId) {
+    return fileURLToPath(new URL(`${modelId}.xml`, modelsDirUrl));
+  },
+
   write(versionId, content) {
     const filePath = this.getFilePath(versionId);
+    write(filePath, content);
+  },
+
+  writeByModelId(modelId, content) {
+    const filePath = this.getModelFilePath(modelId);
     write(filePath, content);
   },
 

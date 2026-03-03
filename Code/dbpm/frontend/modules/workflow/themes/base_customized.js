@@ -25,10 +25,10 @@ function checkSubprocess(call) {
   return false;
 }
 
-function dispatchEvent(event, node) {
+function dispatchEvent(event, detail) {
   document.dispatchEvent(
     new CustomEvent(event, {
-      detail: { node },
+      detail,
     }),
   );
 }
@@ -42,7 +42,7 @@ function CustomizedWFAdaptorManifestationBase(...args) {
     var node = getNode.call(inst, svgid);
     const isCall = checkCall(node);
     if (isCall) {
-      dispatchEvent("wf:call-clicked", node);
+      dispatchEvent("wf:call-clicked", { node });
     }
   };
 
@@ -56,7 +56,7 @@ function CustomizedWFAdaptorManifestationBase(...args) {
       const node = getNode.call(inst, svgid);
       const isSubprocess = checkSubprocess(node);
       if (isSubprocess) {
-        dispatchEvent("wf:subprocess-hovered", node);
+        dispatchEvent("wf:subprocess-hovered", { node });
       }
     };
 
@@ -65,7 +65,7 @@ function CustomizedWFAdaptorManifestationBase(...args) {
       const node = getNode.call(inst, svgid);
       const isSubprocess = checkSubprocess(node);
       if (isSubprocess) {
-        dispatchEvent("wf:subprocess-unhovered", node);
+        dispatchEvent("wf:subprocess-unhovered", { node });
       }
     };
 

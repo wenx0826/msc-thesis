@@ -83,8 +83,6 @@
   align-items: center;
   gap: 6px;
   border: 1px solid var(--x-ui-border-color);
-
-
   background: #fff;
   border-radius: 999px;
   padding: 2px 5px;
@@ -99,12 +97,12 @@
 
 .pill.deleted {
   color: var(--danger);
-  border-color: #f0d5da;
+  /* border-color: #f0d5da; */
 }
 
 .pill.active {
   color: #2d6a45;
-  border-color: #cce6d8;
+  /* border-color: #cce6d8; */
 }
 
 .entity-title {

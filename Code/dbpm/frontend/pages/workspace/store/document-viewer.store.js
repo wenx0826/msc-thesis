@@ -119,6 +119,7 @@ class DocumentViewerStore extends Store {
       ? {
           selectionId: newValue.selectionId,
           modelId: newValue.modelId,
+          modelVersionId: newValue.modelVersionId,
           traceId: newValue.traceId,
           scope: newValue.scope,
         }
@@ -127,6 +128,7 @@ class DocumentViewerStore extends Store {
     const isSameSelection =
       oldValue?.selectionId === normalizedValue?.selectionId &&
       oldValue?.modelId === normalizedValue?.modelId &&
+      oldValue?.modelVersionId === normalizedValue?.modelVersionId &&
       oldValue?.traceId === normalizedValue?.traceId &&
       oldValue?.scope === normalizedValue?.scope;
     if (isSameSelection) {

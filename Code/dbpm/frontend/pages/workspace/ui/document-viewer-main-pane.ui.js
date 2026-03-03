@@ -99,12 +99,17 @@ function clampModelTagHorizontalPosition($tag) {
 }
 
 function setHandleSelectionData($handle, selection) {
-  const { selectionId, modelId, traceId } = selection;
+  const { selectionId, modelId, modelVersionId, traceId } = selection;
   $handle.attr("data-selection-id", selectionId);
   if (modelId !== undefined && modelId !== null) {
     $handle.attr("data-model-id", modelId);
   } else {
     $handle.removeAttr("data-model-id");
+  }
+  if (modelVersionId !== undefined && modelVersionId !== null) {
+    $handle.attr("data-model-version-id", modelVersionId);
+  } else {
+    $handle.removeAttr("data-model-version-id");
   }
   if (traceId !== undefined && traceId !== null) {
     $handle.attr("data-trace-id", traceId);
@@ -116,7 +121,9 @@ function setHandleSelectionData($handle, selection) {
 function hideSelectionHandles() {
   $selectionHandlesLayer
     .find(".selection-handle")
-    .removeAttr("data-selection-id data-model-id data-trace-id")
+    .removeAttr(
+      "data-selection-id data-model-id data-model-version-id data-trace-id",
+    )
     .hide();
 }
 
@@ -194,7 +201,7 @@ function updateSelectedSelectionToolbarPosition() {
 
 function getInteractionWrapsBySelection(selection) {
   if (!selection) return $();
-  const { selectionId, modelId, traceId } = selection;
+  const { selectionId, modelId, modelVersionId, traceId } = selection;
   const resolvedScope = resolveSelectionScope(selection);
   let $wraps = $selectionsInteractionLayer.find(
     `.selection-wrap[data-selection-id="${selectionId}"]`,
@@ -207,6 +214,12 @@ function getInteractionWrapsBySelection(selection) {
   } else if (modelId !== undefined && modelId !== null) {
     $wraps = $wraps.filter(
       (_, element) => $(element).attr("data-model-id") === String(modelId),
+    );
+  }
+  if (modelVersionId !== undefined && modelVersionId !== null) {
+    $wraps = $wraps.filter(
+      (_, element) =>
+        $(element).attr("data-model-version-id") === String(modelVersionId),
     );
   }
   if (traceId !== undefined && traceId !== null) {
@@ -406,6 +419,7 @@ function createSelectionWrap({
   templateId,
   selectionId,
   modelId,
+  modelVersionId,
   traceId,
   top,
   left,
@@ -418,6 +432,9 @@ function createSelectionWrap({
     .css({ top, left, width, height });
   if (modelId !== undefined && modelId !== null) {
     $wrap.attr("data-model-id", modelId);
+  }
+  if (modelVersionId !== undefined && modelVersionId !== null) {
+    $wrap.attr("data-model-version-id", modelVersionId);
   }
   if (traceId !== undefined && traceId !== null) {
     $wrap.attr("data-trace-id", traceId);
@@ -445,6 +462,7 @@ function createInteractionRect({
   height,
   selectionId,
   modelId,
+  modelVersionId,
   traceId,
 }) {
   const $rect = createTemplateElement(SELECTION_RECT_TEMPLATE_ID)
@@ -459,6 +477,9 @@ function createInteractionRect({
   if (modelId !== undefined && modelId !== null) {
     $rect.attr("data-model-id", modelId);
   }
+  if (modelVersionId !== undefined && modelVersionId !== null) {
+    $rect.attr("data-model-version-id", modelVersionId);
+  }
   if (traceId !== undefined && traceId !== null) {
     $rect.attr("data-trace-id", traceId);
   }
@@ -467,6 +488,7 @@ function createInteractionRect({
 
 function createModelTag({
   modelId,
+  modelVersionId,
   selectionId,
   modelName,
   top,
@@ -475,6 +497,7 @@ function createModelTag({
 }) {
   const $tag = createTemplateElement(MODEL_TAG_TEMPLATE_ID)
     .attr("data-model-id", modelId)
+    .attr("data-model-version-id", modelVersionId || "")
     .attr("data-selection-id", selectionId)
     .text(modelName)
     .css({ top, left });
@@ -630,13 +653,22 @@ const onSelectionSelect = (event) => {
     $target.attr("data-selection-id") || $selectionWrap.attr("data-selection-id");
   const modelId =
     $target.attr("data-model-id") || $selectionWrap.attr("data-model-id");
+  const modelVersionId =
+    $target.attr("data-model-version-id") ||
+    $selectionWrap.attr("data-model-version-id");
   const traceId =
     $target.attr("data-trace-id") || $selectionWrap.attr("data-trace-id");
   const scope =
     $target.is("[data-model-id]") || $selectionWrap.is("[data-model-id]")
       ? "model"
       : "temporary";
-  setSelectedSelection({ selectionId, modelId, traceId, scope });
+  setSelectedSelection({
+    selectionId,
+    modelId,
+    modelVersionId,
+    traceId,
+    scope,
+  });
 
   // $deleteSelectionButton
   //   .show()
@@ -670,6 +702,10 @@ const renderSelection = (
     editingModelId !== undefined &&
     editingModelId !== null &&
     String(modelId) === String(editingModelId);
+  const resolvedModelVersionId =
+    modelId !== undefined && modelId !== null
+      ? modelVersionId || modelsStore.getLatestVersionId(modelId) || null
+      : null;
 
   const eleViewerWrap = $viewerWrap[0];
   const eleViewerWrapRect = eleViewerWrap.getBoundingClientRect();
@@ -691,6 +727,7 @@ const renderSelection = (
     templateId: SELECTION_WRAP_TEMPLATE_ID,
     selectionId,
     modelId,
+    modelVersionId: resolvedModelVersionId,
     top: wrapTop,
     left: wrapLeft,
     width: wrapWidth,
@@ -718,6 +755,7 @@ const renderSelection = (
 
     const $tag = createModelTag({
       modelId,
+      modelVersionId: resolvedModelVersionId,
       selectionId,
       modelName: `${modelName}`,
       top: `${lastRect.top - eleViewerWrapRect.top + eleViewerWrap.scrollTop - 11}px`,
@@ -731,6 +769,7 @@ const renderSelection = (
     templateId: SELECTION_WRAP_TEMPLATE_ID,
     selectionId,
     modelId,
+    modelVersionId: resolvedModelVersionId,
     traceId,
     top: wrapTop,
     left: wrapLeft,
@@ -747,6 +786,7 @@ const renderSelection = (
       height: `${Math.max(rect.height - 4, 1)}px`,
       selectionId,
       modelId,
+      modelVersionId: resolvedModelVersionId,
       traceId,
     });
     $interactionWrap.append($interactionRect);
@@ -770,6 +810,7 @@ const onSelectionHandleDragStart = (event) => {
   const selectionMeta = {
     selectionId,
     modelId: $handle.attr("data-model-id"),
+    modelVersionId: $handle.attr("data-model-version-id"),
     traceId: $handle.attr("data-trace-id"),
     scope: $handle.attr("data-model-id") ? "model" : "temporary",
   };
@@ -960,12 +1001,14 @@ createUI({
       // const $target = $(event.currentTarget); // OLD: Unused
       const element = event.currentTarget;
       const modelId = element.dataset.modelId;
+      const versionId = element.dataset.modelVersionId || null;
       console.log("Hovering over model tag:", modelId);
 
       // ✨ NEW: Pass source identifier to prevent conflicts with other hover sources
       workspaceStore.setModelPopoverParams(
         {
           modelId,
+          versionId,
           anchor: {
             type: "element",
             element,

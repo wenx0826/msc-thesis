@@ -13,12 +13,16 @@ import {
 export default {
   async loadWorkspace(projectId) {
     let viewedDocument = undefined;
-    const { documentsMeta, modelsMeta } =
+    const { documentsMeta, modelsMeta, subprocessLinks = [] } =
       await projectsAPI.getComponents(projectId);
-    console.log("Loaded workspace components:", { documentsMeta, modelsMeta });
+    console.log("Loaded workspace components:", {
+      documentsMeta,
+      modelsMeta,
+      subprocessLinks,
+    });
     documentsStore.init(documentsMeta);
     modelsStore.init(modelsMeta);
-    projectGraphStore.init(documentsMeta, modelsMeta);
+    projectGraphStore.init(documentsMeta, modelsMeta, subprocessLinks);
 
     if (documentsMeta.length > 0) {
       const docMeta = documentsMeta.at(-1);
@@ -61,7 +65,7 @@ export default {
       id: null,
       versionId: null,
     });
-    modelEditorStore.setModel(null);
+    modelEditorStore.setData(null);
     documentViewerStore.setActiveModelTrace(null);
   },
   clearDocumentDisplay() {

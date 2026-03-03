@@ -108,13 +108,14 @@ function initializeSchema() {
   //
   db.exec(`
     CREATE TABLE IF NOT EXISTS model_subprocesses (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id TEXT PRIMARY KEY,
       model_version_id TEXT NOT NULL,
       task_id TEXT NOT NULL,
-      subprocess_model_version_id TEXT NOT NULL,
+      subprocess_model_id TEXT NOT NULL,
       created_at TEXT NOT NULL DEFAULT current_timestamp,
       deleted_at TEXT,
-      FOREIGN KEY (model_version_id) REFERENCES model_versions(id)
+      FOREIGN KEY (model_version_id) REFERENCES model_versions(id),
+      FOREIGN KEY (subprocess_model_id) REFERENCES models(id)
     )
   `);
 
@@ -139,6 +140,15 @@ function initializeSchema() {
   );
   db.exec(
     `CREATE INDEX IF NOT EXISTS idx_model_update_events_model_version_id ON model_update_events(model_version_id)`,
+  );
+  db.exec(
+    `CREATE INDEX IF NOT EXISTS idx_model_subprocesses_model_version_id ON model_subprocesses(model_version_id)`,
+  );
+  db.exec(
+    `CREATE INDEX IF NOT EXISTS idx_model_subprocesses_subprocess_model_id ON model_subprocesses(subprocess_model_id)`,
+  );
+  db.exec(
+    `CREATE INDEX IF NOT EXISTS idx_model_subprocesses_model_version_task_id ON model_subprocesses(model_version_id, task_id)`,
   );
 }
 
