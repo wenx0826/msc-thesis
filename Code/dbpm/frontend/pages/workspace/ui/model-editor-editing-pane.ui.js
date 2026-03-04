@@ -14,6 +14,7 @@ const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
 const $graphCanvas = $("#graphcanvas");
 const $graphGrid = $graphCanvas.parent();
 const $datDetails = $("#dat_details");
+const $modelErrorMessage = $("#modelErrorMessage");
 
 // disable all controls inside
 // enable all controls inside
@@ -26,6 +27,22 @@ const $keepNewModelButton = $("#keepNewModelButton");
 
 let regenerationPreviewState = null;
 let isApplyingRegenerationView = false;
+let isRegenerationDecisionClickLocked = false;
+let regenerationActionBarHintTimeoutId = null;
+let regenerationDecisionAlertTimeoutId = null;
+
+const REGENERATION_LOCKED_POINTER_EVENTS = [
+  "pointerdown",
+  "pointerup",
+  "mousedown",
+  "mouseup",
+  "click",
+  "dblclick",
+  "contextmenu",
+  "touchstart",
+  "touchend",
+];
+const REGENERATION_ACTION_BAR_HINT_CLASS = "regeneration-click-hint";
 
 const CALL_SUBPROCESS_MODEL_SELECT_SELECTOR = `#dat_details select[data-relaxngui-path=" > call > parameters > dbpm_subprocess_model"]`;
 
@@ -38,11 +55,124 @@ function clearModelEditor() {
   $datDetails.empty();
 }
 
+function renderModelErrors(errors = []) {
+  const normalizedErrors = Array.isArray(errors)
+    ? errors.filter((error) => typeof error?.message === "string")
+    : [];
+
+  $modelErrorMessage.empty();
+  $modelErrorMessage.toggleClass("is-visible", normalizedErrors.length > 0);
+  if (!normalizedErrors.length) {
+    return;
+  }
+
+  const $list = $("<ul>").addClass("model-error-list");
+  normalizedErrors.forEach((error) => {
+    $("<li>")
+      .addClass("model-error-item")
+      .text(error.message)
+      .appendTo($list);
+  });
+  $modelErrorMessage.append($list);
+}
+
 function isRegenerationUpdateType(updateType) {
   return [
     MODEL_UPDATE_TYPE.REGENERATION_BY_PROMPT,
     MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS,
   ].includes(updateType);
+}
+
+function setRegenerationDecisionClickLock(isLocked) {
+  const shouldLock = Boolean(isLocked);
+  isRegenerationDecisionClickLocked = shouldLock;
+  if (!shouldLock) {
+    $regeneratedModelActionBar.removeClass(REGENERATION_ACTION_BAR_HINT_CLASS);
+    if (regenerationActionBarHintTimeoutId) {
+      clearTimeout(regenerationActionBarHintTimeoutId);
+      regenerationActionBarHintTimeoutId = null;
+    }
+    if (regenerationDecisionAlertTimeoutId) {
+      clearTimeout(regenerationDecisionAlertTimeoutId);
+      regenerationDecisionAlertTimeoutId = null;
+    }
+  }
+}
+
+function showRegenerationActionBarHint() {
+  if (!$regeneratedModelActionBar.length) {
+    return;
+  }
+
+  $regeneratedModelActionBar.removeClass(REGENERATION_ACTION_BAR_HINT_CLASS);
+  // restart transition if user clicks outside repeatedly
+  void $regeneratedModelActionBar.get(0)?.offsetWidth;
+  $regeneratedModelActionBar.addClass(REGENERATION_ACTION_BAR_HINT_CLASS);
+
+  if (regenerationActionBarHintTimeoutId) {
+    clearTimeout(regenerationActionBarHintTimeoutId);
+  }
+  regenerationActionBarHintTimeoutId = setTimeout(() => {
+    $regeneratedModelActionBar.removeClass(REGENERATION_ACTION_BAR_HINT_CLASS);
+    regenerationActionBarHintTimeoutId = null;
+  }, 900);
+}
+
+function scheduleRegenerationDecisionAlert() {
+  if (regenerationDecisionAlertTimeoutId || !isRegenerationDecisionClickLocked) {
+    return;
+  }
+
+  const showAlert = () => {
+    regenerationDecisionAlertTimeoutId = null;
+    if (!isRegenerationDecisionClickLocked) {
+      return;
+    }
+    alert("Please use the regeneration action bar to continue.");
+  };
+
+  const scheduleAfterPaint = () => {
+    regenerationDecisionAlertTimeoutId = setTimeout(showAlert, 0);
+  };
+
+  if (
+    typeof window !== "undefined" &&
+    typeof window.requestAnimationFrame === "function"
+  ) {
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(scheduleAfterPaint);
+    });
+    return;
+  }
+
+  scheduleAfterPaint();
+}
+
+function shouldAllowEventDuringRegenerationDecision(eventTarget) {
+  if (!eventTarget || !$regeneratedModelActionBar.length) {
+    return false;
+  }
+  const actionBarElement = $regeneratedModelActionBar.get(0);
+  return actionBarElement?.contains(eventTarget) ?? false;
+}
+
+function onRegenerationDecisionPointerEvent(event) {
+  if (!isRegenerationDecisionClickLocked) {
+    return;
+  }
+
+  if (shouldAllowEventDuringRegenerationDecision(event.target)) {
+    return;
+  }
+
+  if (event.type === "click") {
+    showRegenerationActionBarHint();
+    scheduleRegenerationDecisionAlert();
+  }
+
+  event.preventDefault();
+  event.stopPropagation();
+  event.stopImmediatePropagation();
 }
 
 function serializeXmlNode(node) {
@@ -82,6 +212,7 @@ function applyRegenerationActionBar(updateType) {
   const preview = regenerationPreviewState;
   if (!isRegenerationUpdateType(updateType) || !preview) {
     $regeneratedModelActionBar.hide();
+    setRegenerationDecisionClickLock(false);
     return;
   }
 
@@ -91,6 +222,7 @@ function applyRegenerationActionBar(updateType) {
   $revertPrevModelButton.prop("disabled", false);
   $keepNewModelButton.prop("disabled", false);
   $regeneratedModelActionBar.show();
+  setRegenerationDecisionClickLock(true);
 }
 
 async function showWFGraph(data) {
@@ -431,8 +563,17 @@ createUI({
     window.onDBPMCallTypeChange = onCallTypeChange;
     window.onDBPMCallSubprocessModelChange = onCallSubprocessModelChange;
     applyRegenerationActionBar(modelEditorStore.getLatestUpdateType());
+    renderModelErrors(modelEditorStore.getErrors());
   },
   bindListeners: () => {
+    REGENERATION_LOCKED_POINTER_EVENTS.forEach((eventName) => {
+      document.addEventListener(
+        eventName,
+        onRegenerationDecisionPointerEvent,
+        true,
+      );
+    });
+
     $graphGrid.parent().click(function (e) {
       $graphGrid.find(".selected").removeClass("selected");
       localStorage.removeItem("marked");
@@ -580,6 +721,9 @@ createUI({
             regenerationPreviewState = null;
           }
           applyRegenerationActionBar(newValue);
+          break;
+        case "errors":
+          renderModelErrors(newValue);
           break;
         default:
           break;

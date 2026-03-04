@@ -25,6 +25,11 @@ const PREVIEW_IFRAME_ID = "wfPreviewRendererIframe";
 const CPEE_DESCRIPTION_NS = "http://cpee.org/ns/description/1.0";
 const DBPM_NS = "https://example.com/dbpm";
 const XMLNS_NS = "http://www.w3.org/2000/xmlns/";
+const NO_LINKED_SELECTIONS_ERROR_CODE = "no-linked-selections";
+const NO_LINKED_SELECTIONS_ON_UPDATE_MESSAGE =
+  "There is no selected text related with this model.";
+const NO_LINKED_SELECTIONS_ON_LOAD_MESSAGE =
+  "No selected text is related with this model. Please make sure it is linked properly with the document.";
 
 let previewRenderQueue = Promise.resolve();
 let previewRendererWindow = null;
@@ -483,29 +488,46 @@ function resolveTraceDocumentMeta(trace = {}) {
   return meta;
 }
 
-function alertNoSelectionsIfNeeded(selectionCount, source) {
-  if (selectionCount !== 0) {
-    return;
-  }
-  const message =
-    "There is no selected text related with this model.";
-  console.warn(`[DBPM] ${message}`, { source });
-  if (typeof window !== "undefined" && typeof window.alert === "function") {
-    // Defer blocking alert so UI can paint selection removal first.
-    if (typeof window.requestAnimationFrame === "function") {
-      window.requestAnimationFrame(() => {
-        setTimeout(() => window.alert(message), 0);
-      });
-    } else {
-      setTimeout(() => window.alert(message), 0);
-    }
-  }
+function clearNoLinkedSelectionsError() {
+  modelEditorStore.clearErrorsByCode(NO_LINKED_SELECTIONS_ERROR_CODE);
 }
 
-function alertNoSelectionsOnModelVersionLoadIfNeeded(source) {
+function upsertNoLinkedSelectionsError({
+  message,
+  source,
+  modelVersionId = null,
+  traceId = null,
+}) {
+  const editingModelId = workspaceStore.getEditingModelId();
+  modelEditorStore.addError({
+    id: NO_LINKED_SELECTIONS_ERROR_CODE,
+    code: NO_LINKED_SELECTIONS_ERROR_CODE,
+    message,
+    source,
+    modelId: editingModelId || null,
+    modelVersionId:
+      modelVersionId === undefined || modelVersionId === null
+        ? null
+        : String(modelVersionId),
+    traceId: traceId === undefined || traceId === null ? null : String(traceId),
+  });
+}
+
+function syncNoSelectionsErrorIfNeeded(selectionCount, source) {
+  if (selectionCount !== 0) {
+    clearNoLinkedSelectionsError();
+    return;
+  }
+  const message = NO_LINKED_SELECTIONS_ON_UPDATE_MESSAGE;
+  console.warn(`[DBPM] ${message}`, { source });
+  upsertNoLinkedSelectionsError({ message, source });
+}
+
+function syncNoSelectionsOnModelVersionLoadIfNeeded(source) {
   const { id: editingModelId, versionId: modelVersionId } =
     workspaceStore.getEditingModel() || {};
   if (!editingModelId || !modelVersionId) {
+    clearNoLinkedSelectionsError();
     return;
   }
 
@@ -516,6 +538,7 @@ function alertNoSelectionsOnModelVersionLoadIfNeeded(source) {
     viewedDocumentId &&
     String(modelDocumentId) !== String(viewedDocumentId)
   ) {
+    clearNoLinkedSelectionsError();
     return;
   }
 
@@ -523,12 +546,14 @@ function alertNoSelectionsOnModelVersionLoadIfNeeded(source) {
     (item) => String(item?.modelVersionId || "") === String(modelVersionId),
   );
   if (!trace) {
+    clearNoLinkedSelectionsError();
     return;
   }
   const selectionCount = Array.isArray(trace?.selections)
     ? trace.selections.length
     : 0;
   if (selectionCount > 0) {
+    clearNoLinkedSelectionsError();
     return;
   }
 
@@ -545,16 +570,18 @@ function alertNoSelectionsOnModelVersionLoadIfNeeded(source) {
     at: now,
   };
 
-  const message =
-    "No selected text is related with this model. Please make sure it is linked properly with the document.";
+  const message = NO_LINKED_SELECTIONS_ON_LOAD_MESSAGE;
   console.warn(`[DBPM] ${message}`, {
     source,
     modelVersionId: currentVersionId,
     traceId: trace?.id || null,
   });
-  if (typeof window !== "undefined" && typeof window.alert === "function") {
-    setTimeout(() => window.alert(message), 0);
-  }
+  upsertNoLinkedSelectionsError({
+    message,
+    source,
+    modelVersionId: currentVersionId,
+    traceId: trace?.id || null,
+  });
 }
 
 function ensurePreviewRendererWindow() {
@@ -1043,10 +1070,10 @@ export default {
     modelEditorStore.setData(cached.dataXml, {
       updateType: null,
     });
-    alertNoSelectionsOnModelVersionLoadIfNeeded("load_model_version");
+    syncNoSelectionsOnModelVersionLoadIfNeeded("load_model_version");
   },
   maybeAlertNoSelectionOnLoadedEditingModel(source = "manual_check") {
-    alertNoSelectionsOnModelVersionLoadIfNeeded(source);
+    syncNoSelectionsOnModelVersionLoadIfNeeded(source);
   },
   async updateSubprocessLink(taskId, subprocessModelId) {
     const { id: modelId, versionId: modelVersionId } =
@@ -1181,11 +1208,12 @@ export default {
         selectionsToText(serializedTrace.selections),
         resolveTraceDocumentMeta(serializedTrace),
       );
-      if (alertOnEmptyAfterDeletion) {
-        alertNoSelectionsIfNeeded(
-          Array.isArray(serializedTrace.selections)
-            ? serializedTrace.selections.length
-            : 0,
+      const selectionCount = Array.isArray(serializedTrace.selections)
+        ? serializedTrace.selections.length
+        : 0;
+      if (alertOnEmptyAfterDeletion || selectionCount > 0) {
+        syncNoSelectionsErrorIfNeeded(
+          selectionCount,
           "updateTraceTextById",
         );
       }
@@ -1194,9 +1222,7 @@ export default {
         traceId: serializedTrace.id,
         modelVersionId,
         changeType: MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
-        selectionCount: Array.isArray(serializedTrace.selections)
-          ? serializedTrace.selections.length
-          : 0,
+        selectionCount,
       });
       await modelsAPI.updateVersion(modelVersionId, {
         modelData: updatedModelData,
@@ -1272,8 +1298,8 @@ export default {
           selectionsToText(currentSelections),
           resolveTraceDocumentMeta(updatedTrace),
         );
-        if (alertOnEmptyAfterDeletion) {
-          alertNoSelectionsIfNeeded(
+        if (alertOnEmptyAfterDeletion || currentSelections.length > 0) {
+          syncNoSelectionsErrorIfNeeded(
             currentSelections.length,
             "updateActiveModelTrace",
           );

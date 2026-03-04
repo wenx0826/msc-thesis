@@ -413,6 +413,29 @@ text.duration {
   border-right: 1em solid white; */
 }
 
+#modelErrorMessage {
+  display: none;
+  margin: 8px 10px 0;
+  padding: 8px 10px;
+  border: 1px solid #f5c2c2;
+  border-radius: 8px;
+  background: #fff5f5;
+  color: #842029;
+}
+
+#modelErrorMessage.is-visible {
+  display: block;
+}
+
+#modelErrorMessage .model-error-list {
+  margin: 0;
+  padding-left: 18px;
+}
+
+#modelErrorMessage .model-error-item + .model-error-item {
+  margin-top: 4px;
+}
+
 #dat_details:empty {
   border-top: 0;
 }
@@ -436,6 +459,33 @@ text.duration {
   padding: 0;
 }
 
+#regeneratedModelActionBar {
+  /* border: 0 none; */
+  border-top: 1px solid var(--x-ui-border-color);
+  background-color: var(--x-ui-content-light-background);
+  position: relative;
+  transition:
+    box-shadow 0.18s ease,
+    border-color 0.18s ease,
+    background-color 0.18s ease;
+  /* border-top: 1em solid white;
+  border-bottom: 1em solid white;
+  width: inherit;
+  border-right: 1em solid white; */
+}
+
+#regeneratedModelActionBar.regeneration-click-hint {
+  z-index: 6;
+  border-top-color: #1d4ed8;
+  background: linear-gradient(180deg, #eff6ff 0%, #dbeafe 100%);
+  box-shadow:
+    0 0 0 2px rgba(29, 78, 216, 0.35),
+    0 -8px 20px rgba(37, 99, 235, 0.16);
+}
+
+#regeneratedModelActionBar.regeneration-click-hint button {
+  font-weight: 600;
+}
 
 #promptPane {
   /* display: flex;
