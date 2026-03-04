@@ -65,7 +65,9 @@ export default {
       id: null,
       versionId: null,
     });
-    modelEditorStore.setData(null);
+    modelEditorStore.setData(null, {
+      updateType: null,
+    });
     documentViewerStore.setActiveModelTrace(null);
   },
   clearDocumentDisplay() {
@@ -97,16 +99,7 @@ export default {
     }
     workspaceStore.setEditingModel({ id, versionId });
     modelService.loadVersion(versionId);
-    // modelEditorStore.setModelById(modelId);
-    // documentViewerStore.setActiveModelTraceByModelId(modelId);
     workspaceStore.setModelPopoverParams(null);
-    // if (currActiveModelId === id) {
-    //   id = null;
-    //   this.clearModelDisplay();
-    //   return;
-    // }
-    // workspaceStore.setActiveModelId(model.id);
-    // modelEditorStore.setModelById(model.id);
 
     const currDisplayedDocumentId = workspaceStore.getViewedDocumentId();
     const currModelDocumentId = modelsStore.getModelDocumentId(id);
@@ -115,11 +108,5 @@ export default {
     } else {
       documentViewerStore.setActiveModelTraceByModelId(id);
     }
-
-    //   } else {
-    //     documentViewerStore.setActiveModelTraceByModelId(model.id);
-    //   }
-    //   workspaceStore.setModelPopoverParams(null);
-    // }
   },
 };

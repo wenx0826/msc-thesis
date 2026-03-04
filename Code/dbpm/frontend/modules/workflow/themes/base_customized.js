@@ -73,7 +73,7 @@ function CustomizedWFAdaptorManifestationBase(...args) {
       const node = getNode.call(inst, svgid);
       const isSubprocess = checkSubprocess(node);
       if (isSubprocess) {
-        dispatchEvent("wf:subprocess-dblclicked", node);
+        dispatchEvent("wf:subprocess-dblclicked", { node });
       }
     };
   }

@@ -24,6 +24,9 @@ const $viewNewModelButton = $("#viewNewModelButton");
 const $revertPrevModelButton = $("#revertPrevModelButton");
 const $keepNewModelButton = $("#keepNewModelButton");
 
+let regenerationPreviewState = null;
+let isApplyingRegenerationView = false;
+
 const CALL_SUBPROCESS_MODEL_SELECT_SELECTOR = `#dat_details select[data-relaxngui-path=" > call > parameters > dbpm_subprocess_model"]`;
 
 function saveActiveModel(type) {
@@ -33,6 +36,61 @@ function saveActiveModel(type) {
 function clearModelEditor() {
   $graphCanvas.empty();
   $datDetails.empty();
+}
+
+function isRegenerationUpdateType(updateType) {
+  return [
+    MODEL_UPDATE_TYPE.REGENERATION_BY_PROMPT,
+    MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS,
+  ].includes(updateType);
+}
+
+function serializeXmlNode(node) {
+  if (!node) {
+    return null;
+  }
+  return new XMLSerializer().serializeToString(node);
+}
+
+function setRegenerationPreviewView(view) {
+  if (!regenerationPreviewState) {
+    return;
+  }
+  const normalizedView = view === "previous" ? "previous" : "regenerated";
+  if (regenerationPreviewState.view === normalizedView) {
+    return;
+  }
+
+  const nextDataXml =
+    normalizedView === "previous"
+      ? regenerationPreviewState.previousDataXml
+      : regenerationPreviewState.regeneratedDataXml;
+  if (!nextDataXml) {
+    return;
+  }
+
+  regenerationPreviewState = {
+    ...regenerationPreviewState,
+    view: normalizedView,
+  };
+  isApplyingRegenerationView = true;
+  modelEditorStore.setData(nextDataXml);
+  isApplyingRegenerationView = false;
+}
+
+function applyRegenerationActionBar(updateType) {
+  const preview = regenerationPreviewState;
+  if (!isRegenerationUpdateType(updateType) || !preview) {
+    $regeneratedModelActionBar.hide();
+    return;
+  }
+
+  const isViewingPrevious = preview.view === "previous";
+  $viewPrevModelButton.prop("disabled", isViewingPrevious);
+  $viewNewModelButton.prop("disabled", !isViewingPrevious);
+  $revertPrevModelButton.prop("disabled", false);
+  $keepNewModelButton.prop("disabled", false);
+  $regeneratedModelActionBar.show();
 }
 
 async function showWFGraph(data) {
@@ -372,6 +430,7 @@ createUI({
     save["endpoints_cache"] = endpointLoader._cache;
     window.onDBPMCallTypeChange = onCallTypeChange;
     window.onDBPMCallSubprocessModelChange = onCallSubprocessModelChange;
+    applyRegenerationActionBar(modelEditorStore.getLatestUpdateType());
   },
   bindListeners: () => {
     $graphGrid.parent().click(function (e) {
@@ -380,14 +439,46 @@ createUI({
       localStorage.removeItem("marked_from");
       $datDetails.empty();
     });
+    $viewPrevModelButton.on("click", () => {
+      setRegenerationPreviewView("previous");
+      applyRegenerationActionBar(modelEditorStore.getLatestUpdateType());
+    });
+
+    $viewNewModelButton.on("click", () => {
+      setRegenerationPreviewView("regenerated");
+      applyRegenerationActionBar(modelEditorStore.getLatestUpdateType());
+    });
+
     $keepNewModelButton.on("click", async () => {
-      $regeneratedModelActionBar.hide();
-      modelService.updateEditingVersion();
+      const preview = regenerationPreviewState;
+      if (!preview) {
+        return;
+      }
+      if (preview.view !== "regenerated") {
+        setRegenerationPreviewView("regenerated");
+      }
+      try {
+        await modelService.updateEditingVersion(preview.updateType);
+        modelEditorStore.setLatestUpdateType(null);
+        regenerationPreviewState = null;
+      } catch (error) {
+        console.error("Failed to keep regenerated model:", error);
+        alert("Failed to keep regenerated model.");
+      }
     });
 
     $revertPrevModelButton.on("click", () => {
-      $graphCanvas.empty();
-      $("#generatedModelActionBar").css("visibility", "hidden");
+      const preview = regenerationPreviewState;
+      if (!preview?.previousDataXml) {
+        modelEditorStore.setLatestUpdateType(null);
+        regenerationPreviewState = null;
+        return;
+      }
+      isApplyingRegenerationView = true;
+      modelEditorStore.setData(preview.previousDataXml);
+      isApplyingRegenerationView = false;
+      modelEditorStore.setLatestUpdateType(null);
+      regenerationPreviewState = null;
     });
 
     $(document).on("wf:call-clicked", onCallClicked);
@@ -452,58 +543,44 @@ createUI({
   subscribeStores: () => {
     modelEditorStore.subscribe((state, { key, oldValue, newValue }) => {
       switch (key) {
-        case "data":
+        case "data": {
+          if (!isApplyingRegenerationView) {
+            const updateType = modelEditorStore.getLatestUpdateType();
+            if (
+              isRegenerationUpdateType(updateType) &&
+              oldValue &&
+              newValue
+            ) {
+              const previousDataXml = serializeXmlNode(oldValue);
+              const regeneratedDataXml = serializeXmlNode(newValue);
+              if (previousDataXml && regeneratedDataXml) {
+                regenerationPreviewState = {
+                  updateType,
+                  previousDataXml,
+                  regeneratedDataXml,
+                  view: "regenerated",
+                };
+              }
+            } else if (!isRegenerationUpdateType(updateType)) {
+              regenerationPreviewState = null;
+            }
+          }
+
           if (newValue) {
             showWFGraph(newValue);
           } else {
             clearModelEditor();
           }
+
+          applyRegenerationActionBar(modelEditorStore.getLatestUpdateType());
           break;
-        // case "model":
-        //   if (newValue) {
-        //     $editingModelName.text(newValue.name ? newValue.name : "");
-        //     $modelActionBar.prop("disabled", false);
-        //     $datDetails.empty();
-        //     showActiveModel(newValue);
-        //     const newModelId = newValue.id;
-        //     if (newModelId) {
-        //       $promptPane.show();
-        //     }
-        //     const modelUpdateType = newValue.updateType;
-        //     if (
-        //       [
-        //         MODEL_UPDATE_TYPE.REGENERATION_BY_PROMPT,
-        //         MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS,
-        //       ].includes(modelUpdateType)
-        //     ) {
-        //       $viewPrevModelButton.prop("disabled", false);
-        //       $viewNewModelButton.prop("disabled", true);
-        //       $revertPrevModelButton.prop("disabled", true);
-        //       $keepNewModelButton.prop("disabled", false);
-        //       $regeneratedModelActionBar.show();
-        //       $viewPrevModelButton.on("click", () => {
-        //         showActiveModel(oldValue);
-        //         $viewPrevModelButton.prop("disabled", true);
-        //         $viewNewModelButton.prop("disabled", false);
-        //         $revertPrevModelButton.prop("disabled", false);
-        //         $keepNewModelButton.prop("disabled", true);
-        //       });
-        //       $viewNewModelButton.on("click", () => {
-        //         showActiveModel(newValue);
-        //         $viewPrevModelButton.prop("disabled", false);
-        //         $viewNewModelButton.prop("disabled", true);
-        //         $revertPrevModelButton.prop("disabled", true);
-        //         $keepNewModelButton.prop("disabled", false);
-        //       });
-        //       $revertPrevModelButton.on("click", () => {
-        //         showActiveModel(oldValue);
-        //         $regeneratedModelActionBar.hide();
-        //       });
-        //     }
-        //   } else {
-        //     clearModelViewer();
-        //   }
-        //   break;
+        }
+        case "latestUpdateType":
+          if (!isRegenerationUpdateType(newValue)) {
+            regenerationPreviewState = null;
+          }
+          applyRegenerationActionBar(newValue);
+          break;
         default:
           break;
       }
@@ -514,6 +591,8 @@ createUI({
         case "editingModel": {
           if (!newValue.id) {
             clearModelEditor();
+            regenerationPreviewState = null;
+            applyRegenerationActionBar(modelEditorStore.getLatestUpdateType());
           }
           break;
         }

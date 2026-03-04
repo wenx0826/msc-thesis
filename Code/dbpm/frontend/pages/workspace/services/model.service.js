@@ -22,6 +22,9 @@ const MODEL_GENERATION_TARGET = Constants.MODEL_GENERATION_TARGET;
 const EMPTY_MODEL = Constants.EMPTY_MODEL;
 const PREVIEW_THEME_PATH = "modules/workflow/themes/preset_customized/theme.js";
 const PREVIEW_IFRAME_ID = "wfPreviewRendererIframe";
+const CPEE_DESCRIPTION_NS = "http://cpee.org/ns/description/1.0";
+const DBPM_NS = "https://example.com/dbpm";
+const XMLNS_NS = "http://www.w3.org/2000/xmlns/";
 
 let previewRenderQueue = Promise.resolve();
 let previewRendererWindow = null;
@@ -173,6 +176,155 @@ function selectionsToText(selections) {
     )
     .filter(Boolean)
     .join(" ");
+}
+
+function parseXmlDocument(xmlString) {
+  if (typeof xmlString !== "string" || !xmlString.trim()) {
+    return null;
+  }
+  const parsed = new DOMParser().parseFromString(xmlString, "application/xml");
+  if (parsed.getElementsByTagName("parsererror")[0]) {
+    return null;
+  }
+  return parsed;
+}
+
+function ensureDescriptionNamespace(node) {
+  if (!node || node.localName !== "description") {
+    return;
+  }
+  if (!node.namespaceURI && !node.getAttribute("xmlns")) {
+    node.setAttributeNS(XMLNS_NS, "xmlns", CPEE_DESCRIPTION_NS);
+  }
+}
+
+function getDirectDescriptionChildren(node) {
+  return Array.from(node?.children || []).filter(
+    (child) => child.localName === "description",
+  );
+}
+
+function resolveGeneratedProcessDescription(generatedRoot) {
+  if (!generatedRoot) {
+    return null;
+  }
+
+  if (
+    generatedRoot.localName === "description" &&
+    generatedRoot.namespaceURI === CPEE_DESCRIPTION_NS
+  ) {
+    return generatedRoot;
+  }
+
+  if (
+    generatedRoot.localName === "description" &&
+    generatedRoot.namespaceURI !== CPEE_DESCRIPTION_NS
+  ) {
+    const directDescriptions = getDirectDescriptionChildren(generatedRoot);
+    if (directDescriptions.length > 0) {
+      const directProcessDescription =
+        directDescriptions.find(
+          (node) => node.namespaceURI === CPEE_DESCRIPTION_NS,
+        ) ||
+        directDescriptions.find((node) => node.namespaceURI !== DBPM_NS) ||
+        directDescriptions[0];
+      ensureDescriptionNamespace(directProcessDescription);
+      return directProcessDescription;
+    }
+  }
+
+  const cpeeDescription = generatedRoot.getElementsByTagNameNS(
+    CPEE_DESCRIPTION_NS,
+    "description",
+  )[0];
+  if (cpeeDescription) {
+    return cpeeDescription;
+  }
+
+  if (
+    generatedRoot.localName === "description" &&
+    generatedRoot.namespaceURI !== DBPM_NS
+  ) {
+    ensureDescriptionNamespace(generatedRoot);
+    return generatedRoot;
+  }
+
+  const wrappedDoc = document.implementation.createDocument(
+    CPEE_DESCRIPTION_NS,
+    "description",
+    null,
+  );
+  wrappedDoc.documentElement.appendChild(
+    wrappedDoc.importNode(generatedRoot, true),
+  );
+  return wrappedDoc.documentElement;
+}
+
+function findProcessDescriptionInWrapper(wrapperRoot) {
+  if (!wrapperRoot) {
+    return null;
+  }
+
+  const directChildren = Array.from(wrapperRoot.children || []);
+  const namespaced = directChildren.find(
+    (node) =>
+      node.localName === "description" &&
+      node.namespaceURI === CPEE_DESCRIPTION_NS,
+  );
+  if (namespaced) {
+    return namespaced;
+  }
+
+  return (
+    directChildren.find(
+      (node) => node.localName === "description" && node.namespaceURI !== DBPM_NS,
+    ) || null
+  );
+}
+
+function composeRegeneratedModelData({
+  currentModelData,
+  generatedModelData,
+}) {
+  const generatedDoc = parseXmlDocument(generatedModelData);
+  if (!generatedDoc?.documentElement) {
+    return generatedModelData;
+  }
+  const generatedDescription = resolveGeneratedProcessDescription(
+    generatedDoc.documentElement,
+  );
+  if (!generatedDescription) {
+    return generatedModelData;
+  }
+
+  const currentDoc = parseXmlDocument(currentModelData);
+  const currentRoot = currentDoc?.documentElement;
+  const isCurrentWrappedRoot =
+    currentRoot?.localName === "description" &&
+    currentRoot?.namespaceURI !== CPEE_DESCRIPTION_NS;
+
+  if (!isCurrentWrappedRoot) {
+    const standaloneDoc = document.implementation.createDocument(
+      null,
+      "description",
+      null,
+    );
+    standaloneDoc.documentElement.setAttributeNS(XMLNS_NS, "xmlns:dbpm", DBPM_NS);
+    const imported = standaloneDoc.importNode(generatedDescription, true);
+    ensureDescriptionNamespace(imported);
+    standaloneDoc.documentElement.appendChild(imported);
+    return $(standaloneDoc.documentElement).serializePrettyXML();
+  }
+
+  const imported = currentDoc.importNode(generatedDescription, true);
+  ensureDescriptionNamespace(imported);
+  const existingDescription = findProcessDescriptionInWrapper(currentRoot);
+  if (existingDescription) {
+    currentRoot.replaceChild(imported, existingDescription);
+  } else {
+    currentRoot.appendChild(imported);
+  }
+  return $(currentRoot).serializePrettyXML();
 }
 
 function normalizeSelectionRange(range) {
@@ -651,50 +803,52 @@ export default {
   },
 
   async generateModelByPrompt(userInput) {
-    const model = { ...modelEditorStore.getModel() };
-    model.updateType = MODEL_UPDATE_TYPE.REGENERATION_BY_PROMPT;
-    const rpstXml = modelEditorStore.getSerializedRpstData();
-    console.log("Current RPST XML:", rpstXml);
-
-    if (rpstXml) {
-      const generatedModel = await this.generateModel(userInput, rpstXml);
-
-      const data = model.data;
-      const doc = data.ownerDocument;
-
-      const dbpmInfo = doc.getElementsByTagNameNS(
-        "https://example.com/dbpm",
-        "info",
-      )[0];
-      if (dbpmInfo) {
-        const newTag = doc.createElementNS(
-          "https://example.com/dbpm",
-          "dbpm:prompt",
-        );
-        newTag.textContent = userInput;
-        dbpmInfo.appendChild(newTag);
-      } else {
-        console.warn("No dbpm:info found in model data.");
-      }
-
-      let currentRpst = $("description", data)[0];
-      const generatedModelDoc = new DOMParser().parseFromString(
-        generatedModel,
-        "application/xml",
+    const { id: editingModelId, versionId: editingModelVersionId } =
+      workspaceStore.getEditingModel() || {};
+    if (!editingModelId || !editingModelVersionId) {
+      console.warn(
+        "No active editing model found for prompt regeneration; aborting.",
       );
-      currentRpst.parentNode.replaceChild(
-        doc.importNode(generatedModelDoc.documentElement, true),
-        currentRpst,
-      );
-      model.data = $(doc.documentElement).serializePrettyXML();
-      console.log("=======Updated model data:=====", model.data);
+      return null;
     }
 
-    modelEditorStore.setModel(model);
+    const rpstXml = modelEditorStore.getSerializedRpstData();
+    if (!rpstXml) {
+      console.warn("Failed to resolve current model XML for prompt regeneration.");
+      return null;
+    }
+
+    const generatedModel = await this.generateModel(userInput, rpstXml);
+    if (!generatedModel) {
+      console.warn("Model generation returned an empty result.");
+      return null;
+    }
+
+    const previousModelData = modelEditorStore.getSerializedData();
+    if (!previousModelData) {
+      console.warn("No current model data found for prompt regeneration preview.");
+      return null;
+    }
+
+    const regeneratedModelData = composeRegeneratedModelData({
+      currentModelData: previousModelData,
+      generatedModelData: generatedModel,
+    });
+
+    modelEditorStore.setData(regeneratedModelData, {
+      updateType: MODEL_UPDATE_TYPE.REGENERATION_BY_PROMPT,
+    });
+
     modelsAPI.logs.createLogEntry({
       event: "model_regenerated_by_prompt",
-      data: { modelId: model.id },
+      data: { modelId: editingModelId },
     });
+
+    return {
+      id: editingModelId,
+      versionId: editingModelVersionId,
+      data: generatedModel,
+    };
   },
 
   async generateModelBySelections(target) {
@@ -714,19 +868,35 @@ export default {
       return this.createModelAndTrace(generatedModel);
     }
 
-    const currentModel = modelEditorStore.getModel();
-    if (!currentModel) {
+    const { id: editingModelId, versionId: editingModelVersionId } =
+      workspaceStore.getEditingModel() || {};
+    if (!editingModelId || !editingModelVersionId) {
       console.warn(
-        "No active editing model found for regeneration; creating a new model instead.",
+        "No active editing model/version found for regeneration; creating a new model instead.",
       );
       return this.createModelAndTrace(generatedModel);
     }
 
-    const model = { ...currentModel };
-    model.updateType = MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS;
-    model.data = generatedModel;
-    modelEditorStore.setModel(model);
-    return model;
+    const previousModelData = modelEditorStore.getSerializedData();
+    if (!previousModelData) {
+      console.warn("No current model data found for regeneration preview.");
+      return null;
+    }
+
+    const regeneratedModelData = composeRegeneratedModelData({
+      currentModelData: previousModelData,
+      generatedModelData: generatedModel,
+    });
+
+    modelEditorStore.setData(regeneratedModelData, {
+      updateType: MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS,
+    });
+
+    return {
+      id: editingModelId,
+      versionId: editingModelVersionId,
+      data: generatedModel,
+    };
   },
 
   async createModelAndTrace(modelData) {
@@ -760,15 +930,13 @@ export default {
       });
 
     modelsStore.add(createdModelMeta);
-    // modelEditorStore.setModel({
-    //   ...createdModelMeta,
-    //   data: modelData,
-    // });
     workspaceStore.setEditingModel({
       id: createdModelMeta.id,
       versionId: createdModelMeta.latestVersionId,
     });
-    modelEditorStore.setData(preparedModelData);
+    modelEditorStore.setData(preparedModelData, {
+      updateType: null,
+    });
     modelsStore.addCachedVersion(createdModelMeta.latestVersionId, {
       modelId: createdModelMeta.id,
       dataXml: preparedModelData,
@@ -872,7 +1040,9 @@ export default {
       versionId,
       "(service cache)",
     );
-    modelEditorStore.setData(cached.dataXml);
+    modelEditorStore.setData(cached.dataXml, {
+      updateType: null,
+    });
     alertNoSelectionsOnModelVersionLoadIfNeeded("load_model_version");
   },
   maybeAlertNoSelectionOnLoadedEditingModel(source = "manual_check") {
@@ -1046,7 +1216,9 @@ export default {
         editingModelVersionId &&
         String(editingModelVersionId) === String(modelVersionId)
       ) {
-        modelEditorStore.setData(updatedModelData);
+        modelEditorStore.setData(updatedModelData, {
+          updateType: null,
+        });
       }
 
       const activeTrace = documentViewerStore.getDisplayedModelTrace();
