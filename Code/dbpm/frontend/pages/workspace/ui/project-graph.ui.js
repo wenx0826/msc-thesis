@@ -51,7 +51,7 @@ createUI({
         {
           selector: "node",
           style: {
-            // label: "data(label)",
+            label: "data(label)",
             // "text-valign": "center",
             // "text-halign": "center",
             // "font-size": 12,
@@ -71,7 +71,6 @@ createUI({
         {
           selector: 'node[type="document"]',
           style: {
-            label: "data(label)",
             width: 20,
             height: 20,
             "text-valign": "bottom",
@@ -95,7 +94,6 @@ createUI({
         {
           selector: 'node[type="model"]',
           style: {
-            label: "data(label)",
             width: 12,
             height: 12,
             color: theme.modelTagText,
@@ -146,7 +144,8 @@ createUI({
           selector: 'edge[relation="subprocess"]',
           style: {
             // width: 1.5,
-            "line-style": "dashed",
+            "curve-style": "bezier",
+            // "line-style": "dashed",
             // "line-color": theme.highlightColor,
             "target-arrow-shape": "triangle",
             // "target-arrow-color": theme.highlightColor,
@@ -205,10 +204,17 @@ createUI({
           const modelId = getNodeId(node);
           const versionId = modelsStore.getLatestVersionId(modelId) || null;
           const containerRect = cy.container().getBoundingClientRect();
-          const renderedPosition = node.renderedPosition();
-          const point = {
-            x: containerRect.left + renderedPosition.x,
-            y: containerRect.top + renderedPosition.y,
+          const nodeBox = node.renderedBoundingBox({
+            includeLabels: false,
+            includeOverlays: false,
+          });
+          const rect = {
+            top: containerRect.top + nodeBox.y1,
+            bottom: containerRect.top + nodeBox.y2,
+            left: containerRect.left + nodeBox.x1,
+            right: containerRect.left + nodeBox.x2,
+            width: Math.max(0, nodeBox.w ?? nodeBox.x2 - nodeBox.x1),
+            height: Math.max(0, nodeBox.h ?? nodeBox.y2 - nodeBox.y1),
           };
 
           workspaceStore.setModelPopoverParams(
@@ -217,8 +223,8 @@ createUI({
               versionId,
               openDelayMs: 0,
               anchor: {
-                type: "point",
-                point,
+                type: "rect",
+                rect,
               },
             },
             "graph-node",

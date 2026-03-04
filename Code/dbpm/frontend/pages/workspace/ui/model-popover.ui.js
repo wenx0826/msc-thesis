@@ -308,6 +308,52 @@ function createModelPopoverContent({ modelId, versionId, modelGraph }) {
   return container;
 }
 
+function resolvePopoverPlacement(modelPopoverState) {
+  switch (modelPopoverState?.hoverSource) {
+    case "document-tag":
+    case "graph-node":
+      return "top";
+    case "subprocess-node":
+      return "left";
+    default:
+      return "top";
+  }
+}
+
+function getReferenceClientRect(anchor) {
+  if (anchor.type === "element") {
+    return () => anchor.element.getBoundingClientRect();
+  }
+
+  if (anchor.type === "rect" && anchor.rect) {
+    return () => {
+      const top = Number(anchor.rect.top) || 0;
+      const bottom = Number(anchor.rect.bottom) || top;
+      const left = Number(anchor.rect.left) || 0;
+      const right = Number(anchor.rect.right) || left;
+      const width = Number(anchor.rect.width);
+      const height = Number(anchor.rect.height);
+      return {
+        top,
+        bottom,
+        left,
+        right,
+        width: Number.isFinite(width) ? width : Math.max(0, right - left),
+        height: Number.isFinite(height) ? height : Math.max(0, bottom - top),
+      };
+    };
+  }
+
+  return () => ({
+    width: 0,
+    height: 0,
+    top: anchor.point.y,
+    bottom: anchor.point.y,
+    left: anchor.point.x,
+    right: anchor.point.x,
+  });
+}
+
 // ✨ NEW: Function to create/recreate tippy instance
 function createTippyInstance() {
   // ✨ NEW: Prevent recreation while already recreating
@@ -344,7 +390,7 @@ function createTippyInstance() {
     interactive: true, // ⭐ hover 到 popover 不消失
     theme: "model-popover",
     appendTo: () => document.body,
-    arrow: true, // 🔧 CHANGED: Enable arrow for better visual feedback (was false)
+    arrow: false, // 🔧 CHANGED: Use clean card style without arrow
     placement: "top", // 🔧 CHANGED: Use "top" as default, flip handles alternatives (was "auto")
     hideOnClick: false,
     interactiveBorder: 20, // 🔧 IMPROVED: Increased from 12 to 20 for easier mouse movement
@@ -463,18 +509,10 @@ workspaceStore.subscribe((state, { key, newValue }) => {
             createModelPopoverContent({ modelId, versionId, modelGraph }),
           );
 
+          const placement = resolvePopoverPlacement(newValue);
           tip.setProps({
-            getReferenceClientRect:
-              anchor.type === "element"
-                ? () => anchor.element.getBoundingClientRect()
-                : () => ({
-                    width: 0,
-                    height: 0,
-                    top: anchor.point.y,
-                    bottom: anchor.point.y,
-                    left: anchor.point.x,
-                    right: anchor.point.x,
-                  }),
+            placement,
+            getReferenceClientRect: getReferenceClientRect(anchor),
           });
           tip.show();
         } catch (error) {

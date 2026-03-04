@@ -187,19 +187,10 @@ class WorkspaceStore extends Store {
     }
   }
 
-  // 🔧 IMPROVED: Added source tracking to prevent different hover sources from interfering
-  requestCloseModelPopover(source = "unknown") {
+  requestCloseModelPopover(_source = "unknown") {
     const hasPendingOpen = !!this.state.modelPopover.openTimer;
     const hasVisiblePopover = !!this.state.modelPopover.modelId;
     if (!hasPendingOpen && !hasVisiblePopover) {
-      return;
-    }
-    // ✨ NEW: Only close if request comes from the same source that opened it
-    // Allow the popover itself to request close after pointer leaves it.
-    if (
-      source !== "popover" &&
-      this.state.modelPopover.hoverSource !== source
-    ) {
       return;
     }
     this.cancelOpenModelPopover();
