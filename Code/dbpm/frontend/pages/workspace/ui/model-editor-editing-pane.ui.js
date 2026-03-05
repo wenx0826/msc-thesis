@@ -14,6 +14,9 @@ const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
 const $graphCanvas = $("#graphcanvas");
 const $graphGrid = $graphCanvas.parent();
 const $datDetails = $("#dat_details");
+const $modelStatusMessage = $("#modelStatusMessage");
+const $modelStatusMessageText = $("#modelStatusMessageText");
+const $modelStatusMessageClose = $("#modelStatusMessageClose");
 const $modelErrorMessage = $("#modelErrorMessage");
 
 // disable all controls inside
@@ -30,6 +33,7 @@ let isApplyingRegenerationView = false;
 let isRegenerationDecisionClickLocked = false;
 let regenerationActionBarHintTimeoutId = null;
 let regenerationDecisionAlertTimeoutId = null;
+let modelStatusMessageAutoCloseTimerId = null;
 
 const REGENERATION_LOCKED_POINTER_EVENTS = [
   "pointerdown",
@@ -68,12 +72,52 @@ function renderModelErrors(errors = []) {
 
   const $list = $("<ul>").addClass("model-error-list");
   normalizedErrors.forEach((error) => {
-    $("<li>")
-      .addClass("model-error-item")
-      .text(error.message)
-      .appendTo($list);
+    $("<li>").addClass("model-error-item").text(error.message).appendTo($list);
   });
   $modelErrorMessage.append($list);
+}
+
+function clearModelStatusMessageAutoCloseTimer() {
+  if (!modelStatusMessageAutoCloseTimerId) {
+    return;
+  }
+  clearTimeout(modelStatusMessageAutoCloseTimerId);
+  modelStatusMessageAutoCloseTimerId = null;
+}
+
+function renderModelStatusMessage(statusMessage = null) {
+  const text =
+    typeof statusMessage?.text === "string" ? statusMessage.text.trim() : "";
+  const type = statusMessage?.type === "error" ? "error" : "info";
+  const closable = statusMessage?.closable !== false;
+  const autoCloseMs =
+    Number.isFinite(statusMessage?.autoCloseMs) && statusMessage.autoCloseMs > 0
+      ? Math.floor(statusMessage.autoCloseMs)
+      : 0;
+
+  clearModelStatusMessageAutoCloseTimer();
+
+  if (!text) {
+    $modelStatusMessageText.text("");
+    $modelStatusMessage.removeClass("is-visible is-info is-error is-closable");
+    $modelStatusMessage.addClass("hidden");
+    return;
+  }
+
+  $modelStatusMessageText.text(text);
+  $modelStatusMessage
+    .removeClass("is-info is-error")
+    .removeClass("hidden")
+    .addClass("is-visible")
+    .addClass(type === "error" ? "is-error" : "is-info")
+    .toggleClass("is-closable", closable);
+
+  if (autoCloseMs > 0) {
+    modelStatusMessageAutoCloseTimerId = setTimeout(() => {
+      modelStatusMessageAutoCloseTimerId = null;
+      modelEditorStore.clearStatusMessage();
+    }, autoCloseMs);
+  }
 }
 
 function isRegenerationUpdateType(updateType) {
@@ -119,7 +163,10 @@ function showRegenerationActionBarHint() {
 }
 
 function scheduleRegenerationDecisionAlert() {
-  if (regenerationDecisionAlertTimeoutId || !isRegenerationDecisionClickLocked) {
+  if (
+    regenerationDecisionAlertTimeoutId ||
+    !isRegenerationDecisionClickLocked
+  ) {
     return;
   }
 
@@ -504,7 +551,9 @@ function syncCallSubprocessArguments(modelId) {
 function getActiveCallTaskId() {
   const CALL_ID_INPUT_SELECTOR =
     '#dat_details input[data-relaxngui-path=" > call[id]"]';
-  const taskIdFromInput = ($(CALL_ID_INPUT_SELECTOR).val() || "").toString().trim();
+  const taskIdFromInput = ($(CALL_ID_INPUT_SELECTOR).val() || "")
+    .toString()
+    .trim();
   if (taskIdFromInput) {
     return taskIdFromInput;
   }
@@ -541,9 +590,11 @@ function onCallTypeChange(typeValue) {
     return;
   }
   syncCallSubprocessArguments("");
-  modelService.updateSubprocessLink(getActiveCallTaskId(), null).catch((error) => {
-    console.error("Failed to remove subprocess model link:", error);
-  });
+  modelService
+    .updateSubprocessLink(getActiveCallTaskId(), null)
+    .catch((error) => {
+      console.error("Failed to remove subprocess model link:", error);
+    });
 }
 
 async function onCallSubprocessModelChange(modelId) {
@@ -563,7 +614,8 @@ createUI({
     window.onDBPMCallTypeChange = onCallTypeChange;
     window.onDBPMCallSubprocessModelChange = onCallSubprocessModelChange;
     applyRegenerationActionBar(modelEditorStore.getLatestUpdateType());
-    renderModelErrors(modelEditorStore.getErrors());
+    // renderModelStatusMessage(modelEditorStore.getStatusMessage());
+    // renderModelErrors(modelEditorStore.getErrors());
   },
   bindListeners: () => {
     REGENERATION_LOCKED_POINTER_EVENTS.forEach((eventName) => {
@@ -572,6 +624,10 @@ createUI({
         onRegenerationDecisionPointerEvent,
         true,
       );
+    });
+
+    $modelStatusMessageClose.on("click", () => {
+      modelEditorStore.clearStatusMessage();
     });
 
     $graphGrid.parent().click(function (e) {
@@ -687,11 +743,7 @@ createUI({
         case "data": {
           if (!isApplyingRegenerationView) {
             const updateType = modelEditorStore.getLatestUpdateType();
-            if (
-              isRegenerationUpdateType(updateType) &&
-              oldValue &&
-              newValue
-            ) {
+            if (isRegenerationUpdateType(updateType) && oldValue && newValue) {
               const previousDataXml = serializeXmlNode(oldValue);
               const regeneratedDataXml = serializeXmlNode(newValue);
               if (previousDataXml && regeneratedDataXml) {
@@ -724,6 +776,9 @@ createUI({
           break;
         case "errors":
           renderModelErrors(newValue);
+          break;
+        case "statusMessage":
+          renderModelStatusMessage(newValue);
           break;
         default:
           break;

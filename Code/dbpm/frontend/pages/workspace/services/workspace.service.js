@@ -65,6 +65,7 @@ export default {
       id: null,
       versionId: null,
     });
+    modelEditorStore.clearStatusMessage();
     modelEditorStore.clearErrors();
     modelEditorStore.setData(null, {
       updateType: null,

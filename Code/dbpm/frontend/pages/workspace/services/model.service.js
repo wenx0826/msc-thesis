@@ -30,6 +30,9 @@ const NO_LINKED_SELECTIONS_ON_UPDATE_MESSAGE =
   "There is no selected text related with this model.";
 const NO_LINKED_SELECTIONS_ON_LOAD_MESSAGE =
   "No selected text is related with this model. Please make sure it is linked properly with the document.";
+const MODEL_GENERATION_IN_PROGRESS_MESSAGE = "Generating new model...";
+const MODEL_GENERATION_ERROR_MESSAGE =
+  "Sorry, an error occurred while generating the model. Please start from scratch or retry.";
 
 let previewRenderQueue = Promise.resolve();
 let previewRendererWindow = null;
@@ -584,6 +587,24 @@ function syncNoSelectionsOnModelVersionLoadIfNeeded(source) {
   });
 }
 
+function showModelGenerationInProgressMessage() {
+  modelEditorStore.setStatusMessage({
+    type: "info",
+    text: MODEL_GENERATION_IN_PROGRESS_MESSAGE,
+    closable: false,
+    autoCloseMs: 0,
+  });
+}
+
+function showModelGenerationErrorMessage() {
+  modelEditorStore.setStatusMessage({
+    type: "error",
+    text: MODEL_GENERATION_ERROR_MESSAGE,
+    closable: true,
+    autoCloseMs: 0,
+  });
+}
+
 function ensurePreviewRendererWindow() {
   if (
     previewRendererWindow &&
@@ -845,85 +866,109 @@ export default {
       return null;
     }
 
-    const generatedModel = await this.generateModel(userInput, rpstXml);
-    if (!generatedModel) {
-      console.warn("Model generation returned an empty result.");
+    showModelGenerationInProgressMessage();
+    let hasError = false;
+    try {
+      const generatedModel = await this.generateModel(userInput, rpstXml);
+      if (!generatedModel) {
+        throw new Error("Model generation returned an empty result.");
+      }
+
+      const previousModelData = modelEditorStore.getSerializedData();
+      if (!previousModelData) {
+        throw new Error(
+          "No current model data found for prompt regeneration preview.",
+        );
+      }
+
+      const regeneratedModelData = composeRegeneratedModelData({
+        currentModelData: previousModelData,
+        generatedModelData: generatedModel,
+      });
+
+      modelEditorStore.setData(regeneratedModelData, {
+        updateType: MODEL_UPDATE_TYPE.REGENERATION_BY_PROMPT,
+      });
+
+      modelsAPI.logs.createLogEntry({
+        event: "model_regenerated_by_prompt",
+        data: { modelId: editingModelId },
+      });
+
+      return {
+        id: editingModelId,
+        versionId: editingModelVersionId,
+        data: generatedModel,
+      };
+    } catch (error) {
+      hasError = true;
+      console.error("Failed to regenerate model by prompt:", error);
+      showModelGenerationErrorMessage();
       return null;
+    } finally {
+      if (!hasError) {
+        modelEditorStore.clearStatusMessage();
+      }
     }
-
-    const previousModelData = modelEditorStore.getSerializedData();
-    if (!previousModelData) {
-      console.warn("No current model data found for prompt regeneration preview.");
-      return null;
-    }
-
-    const regeneratedModelData = composeRegeneratedModelData({
-      currentModelData: previousModelData,
-      generatedModelData: generatedModel,
-    });
-
-    modelEditorStore.setData(regeneratedModelData, {
-      updateType: MODEL_UPDATE_TYPE.REGENERATION_BY_PROMPT,
-    });
-
-    modelsAPI.logs.createLogEntry({
-      event: "model_regenerated_by_prompt",
-      data: { modelId: editingModelId },
-    });
-
-    return {
-      id: editingModelId,
-      versionId: editingModelVersionId,
-      data: generatedModel,
-    };
   },
 
   async generateModelBySelections(target) {
-    const selectedText = documentViewerStore.getSelectedText();
-    const generatedModel = await this.generateModel(selectedText, EMPTY_MODEL);
-    if (!generatedModel) {
-      console.warn("Model generation returned an empty result.");
+    showModelGenerationInProgressMessage();
+    let hasError = false;
+    try {
+      const selectedText = documentViewerStore.getSelectedText();
+      const generatedModel = await this.generateModel(selectedText, EMPTY_MODEL);
+      if (!generatedModel) {
+        throw new Error("Model generation returned an empty result.");
+      }
+
+      const normalizedTarget =
+        target === MODEL_GENERATION_TARGET.EDITING_MODEL
+          ? MODEL_GENERATION_TARGET.EDITING_MODEL
+          : MODEL_GENERATION_TARGET.NEW_MODEL;
+
+      if (normalizedTarget === MODEL_GENERATION_TARGET.NEW_MODEL) {
+        return await this.createModelAndTrace(generatedModel);
+      }
+
+      const { id: editingModelId, versionId: editingModelVersionId } =
+        workspaceStore.getEditingModel() || {};
+      if (!editingModelId || !editingModelVersionId) {
+        console.warn(
+          "No active editing model/version found for regeneration; creating a new model instead.",
+        );
+        return await this.createModelAndTrace(generatedModel);
+      }
+
+      const previousModelData = modelEditorStore.getSerializedData();
+      if (!previousModelData) {
+        throw new Error("No current model data found for regeneration preview.");
+      }
+
+      const regeneratedModelData = composeRegeneratedModelData({
+        currentModelData: previousModelData,
+        generatedModelData: generatedModel,
+      });
+
+      modelEditorStore.setData(regeneratedModelData, {
+        updateType: MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS,
+      });
+
+      return {
+        id: editingModelId,
+        versionId: editingModelVersionId,
+        data: generatedModel,
+      };
+    } catch (error) {
+      hasError = true;
+      console.error("Failed to generate model by selections:", error);
+      showModelGenerationErrorMessage();
       return null;
+    } finally {
+      if (!hasError) {
+        modelEditorStore.clearStatusMessage();
+      }
     }
-
-    const normalizedTarget =
-      target === MODEL_GENERATION_TARGET.EDITING_MODEL
-        ? MODEL_GENERATION_TARGET.EDITING_MODEL
-        : MODEL_GENERATION_TARGET.NEW_MODEL;
-
-    if (normalizedTarget === MODEL_GENERATION_TARGET.NEW_MODEL) {
-      return this.createModelAndTrace(generatedModel);
-    }
-
-    const { id: editingModelId, versionId: editingModelVersionId } =
-      workspaceStore.getEditingModel() || {};
-    if (!editingModelId || !editingModelVersionId) {
-      console.warn(
-        "No active editing model/version found for regeneration; creating a new model instead.",
-      );
-      return this.createModelAndTrace(generatedModel);
-    }
-
-    const previousModelData = modelEditorStore.getSerializedData();
-    if (!previousModelData) {
-      console.warn("No current model data found for regeneration preview.");
-      return null;
-    }
-
-    const regeneratedModelData = composeRegeneratedModelData({
-      currentModelData: previousModelData,
-      generatedModelData: generatedModel,
-    });
-
-    modelEditorStore.setData(regeneratedModelData, {
-      updateType: MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS,
-    });
-
-    return {
-      id: editingModelId,
-      versionId: editingModelVersionId,
-      data: generatedModel,
-    };
   },
 
   async createModelAndTrace(modelData) {

@@ -11,3 +11,4 @@ For modularization, she marks a task as a subprocess and links it to another mod
 
 At any point, she opens the statistics page to review active/deleted counts, words, versions, and model-update summaries, and opens/downloads YAML logs for audit. She can also open read-only document and workflow viewers via direct links.  
 The session ends with a fully versioned, traceable, and auditable process modeling state grounded in source documents.
+

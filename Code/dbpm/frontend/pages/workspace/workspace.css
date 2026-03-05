@@ -413,6 +413,54 @@ text.duration {
   border-right: 1em solid white; */
 }
 
+#modelStatusMessage {
+  display: flex;
+  /* margin: 8px 10px 0; */
+  padding: 8px 10px;
+  /* border: 1px solid transparent;
+  border-radius: 8px; */
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background-color: var(--x-ui-background-color);
+  /* background-color: ; */
+}
+
+#modelStatusMessage.is-visible {}
+
+#modelStatusMessage.is-info {
+  color: var(--x-ui-text-muted-color);
+  /* background: #eef6ff;
+  border-color: #bfdcff;
+  color: #1f4f8a; */
+}
+
+#modelStatusMessage.is-error {
+  background: #fff5f5;
+  border-color: #f5c2c2;
+  color: #842029;
+  border-bottom: 1px solid var(--x-ui-border-color);
+}
+
+#modelStatusMessageText {
+  flex: 1 1 auto;
+}
+
+#modelStatusMessageClose {
+  display: none;
+  flex: 0 0 auto;
+  min-width: 26px;
+  line-height: 1;
+  font-weight: 600;
+  padding: 2px 8px;
+}
+
+#modelStatusMessage.is-closable #modelStatusMessageClose {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 #modelErrorMessage {
   display: none;
   margin: 8px 10px 0;
@@ -432,7 +480,7 @@ text.duration {
   padding-left: 18px;
 }
 
-#modelErrorMessage .model-error-item + .model-error-item {
+#modelErrorMessage .model-error-item+.model-error-item {
   margin-top: 4px;
 }
 
@@ -472,6 +520,14 @@ text.duration {
   border-bottom: 1em solid white;
   width: inherit;
   border-right: 1em solid white; */
+}
+
+#regeneratedModelActionBar button {
+  /* padding: 6px 12px;
+  border: 1px solid var(--x-ui-border-color);
+  border-radius: 0.5em; */
+  background-color: var(--x-ui-background-color);
+  /* cursor: pointer; */
 }
 
 #regeneratedModelActionBar.regeneration-click-hint {
@@ -560,5 +616,6 @@ text.duration {
 .model-grid-item.is-current {
   border: 2px solid var(--wfadaptor-highlight);
 }
+
 
 /* ---------------- models pane ----------------*/

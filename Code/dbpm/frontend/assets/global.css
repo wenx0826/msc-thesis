@@ -207,6 +207,11 @@ ui-bar>.center {
   text-align: center;
 }
 
+button.btn-primary {
+  background: #222 !important;
+  color: #fff;
+}
+
 button.action-btn {
   display: inline-flex;
   align-items: center;

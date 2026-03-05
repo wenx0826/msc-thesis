@@ -129,12 +129,39 @@ function findProcessDescriptionNode(rootNode) {
   return $("description", rootNode)[0] || null;
 }
 
+function normalizeStatusMessage(message) {
+  if (!message || typeof message !== "object") {
+    return null;
+  }
+
+  const text =
+    typeof message.text === "string" ? message.text.trim() : "";
+  if (!text) {
+    return null;
+  }
+
+  const type = message.type === "error" ? "error" : "info";
+  const closable = message.closable !== false;
+  const autoCloseMs =
+    Number.isFinite(message.autoCloseMs) && message.autoCloseMs > 0
+      ? Math.floor(message.autoCloseMs)
+      : 0;
+
+  return {
+    type,
+    text,
+    closable,
+    autoCloseMs,
+  };
+}
+
 class ModelEditorStore extends Store {
   constructor() {
     super({
       status: null, // 'loading', 'ready', 'error', 'generating'
       error: null,
       errors: [],
+      statusMessage: null,
       data: null,
       latestUpdateType: null, // 'initial_load', 'regeneration_by_prompt', 'regeneration_by_selection', 'update_by_selection'
     });
@@ -171,6 +198,39 @@ class ModelEditorStore extends Store {
   setError(error) {
     this.state.error = error;
     this.notify({ key: "error", newValue: error });
+  }
+
+  getStatusMessage() {
+    const message = this.state.statusMessage;
+    if (!message) {
+      return null;
+    }
+    return { ...message };
+  }
+
+  setStatusMessage(message) {
+    const oldValue = this.getStatusMessage();
+    const normalizedMessage = normalizeStatusMessage(message);
+
+    const isSameMessage =
+      oldValue?.type === normalizedMessage?.type &&
+      oldValue?.text === normalizedMessage?.text &&
+      oldValue?.closable === normalizedMessage?.closable &&
+      oldValue?.autoCloseMs === normalizedMessage?.autoCloseMs;
+    if (isSameMessage) {
+      return;
+    }
+
+    this.state.statusMessage = normalizedMessage;
+    this.notify({
+      key: "statusMessage",
+      oldValue,
+      newValue: this.getStatusMessage(),
+    });
+  }
+
+  clearStatusMessage() {
+    this.setStatusMessage(null);
   }
 
   getErrors() {

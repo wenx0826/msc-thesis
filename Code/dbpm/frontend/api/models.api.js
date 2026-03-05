@@ -1,8 +1,16 @@
 import { baseURL, handleResponse, handleTextResponse } from "./base.js";
 import { Constants } from "../constants.js";
 
+const CREATE_MODEL_SIMULATED_NETWORK_DELAY_MS = 10 * 1000;
+
+function delay(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
 export default {
-  LLMDisabled: true,
+  LLMDisabled: false,
   path: "models",
 
   async generateSampleModel() {
@@ -94,6 +102,9 @@ export default {
   },
 
   async createModelAndTrace(params) {
+    if (CREATE_MODEL_SIMULATED_NETWORK_DELAY_MS > 0) {
+      await delay(CREATE_MODEL_SIMULATED_NETWORK_DELAY_MS);
+    }
     const response = await fetch(`${baseURL}/${this.path}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

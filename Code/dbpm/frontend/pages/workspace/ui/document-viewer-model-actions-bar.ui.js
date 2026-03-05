@@ -61,6 +61,7 @@ createUI({
 
     $generateModelButton.on("click", (event) => {
       const target = resolveGenerationTargetFromButton(event.currentTarget);
+      documentViewerStore.setHasSelectionChanged(false);
       modelService.generateModelBySelections(target);
     });
   },
