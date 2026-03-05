@@ -12,6 +12,7 @@ const $modelsPanel = $("#modelsPanel");
 const $viewSwitch = $("#modelsViewSwitch");
 const $modelsGrid = $("#modelsGrid");
 const $modelsList = $("#modelsList");
+const MODELS_LIST_HOVER_SOURCE = "models-list";
 
 // #region DOM Actions
 function onViewSwitch(event) {
@@ -22,6 +23,30 @@ function onViewSwitch(event) {
 function onModelItemClick(event) {
   const modelId = $(event.currentTarget).data("modelId");
   workspaceService.toggleModelDisplay(modelId);
+}
+
+function onModelListItemMouseEnter(event) {
+  const element = event.currentTarget;
+  const modelId = element?.dataset?.modelId;
+  if (!modelId) {
+    return;
+  }
+
+  workspaceStore.setModelPopoverParams(
+    {
+      modelId,
+      versionId: element.dataset.modelVersionId || null,
+      anchor: {
+        type: "element",
+        element,
+      },
+    },
+    MODELS_LIST_HOVER_SOURCE,
+  );
+}
+
+function onModelListItemMouseLeave() {
+  workspaceStore.requestCloseModelPopover(MODELS_LIST_HOVER_SOURCE);
 }
 // #endregion
 
@@ -317,6 +342,16 @@ createUI({
     $viewSwitch.on("click", ".switch-btn", onViewSwitch);
 
     $modelsPanel.on("mousedown", "[data-model-id]", onModelItemClick);
+    $modelsList.on(
+      "mouseenter",
+      ".model-list-item",
+      onModelListItemMouseEnter,
+    );
+    $modelsList.on(
+      "mouseleave",
+      ".model-list-item",
+      onModelListItemMouseLeave,
+    );
 
     $modelsPanel.on("mousedown", ".more-actions-btn", (e) => {
       e.stopPropagation();

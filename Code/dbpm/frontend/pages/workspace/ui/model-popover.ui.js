@@ -99,6 +99,7 @@ import { modelsStore, workspaceStore } from "../store/index.js";
  *    - 'graph-node': Cytoscape graph nodes (projectGraph.ui.js)
  *    - 'document-tag': Model tags in document viewer (displayedDocument.ui.js)
  *    - 'subprocess-node': Subprocess nodes in workflow (activeModel.ui.js)
+ *    - 'models-list': Rows in the right-side models list (models.ui.js)
  *    - 'popover': The popover itself (prevents closing when hovering popover)
  *
  * 3. TIPPY INSTANCE LIFECYCLE:
@@ -310,6 +311,8 @@ function createModelPopoverContent({ modelId, versionId, modelGraph }) {
 
 function resolvePopoverPlacement(modelPopoverState) {
   switch (modelPopoverState?.hoverSource) {
+    case "models-list":
+      return "left";
     case "document-tag":
     case "graph-node":
       return "top";
