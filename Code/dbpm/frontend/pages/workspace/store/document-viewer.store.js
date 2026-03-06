@@ -5,6 +5,24 @@ import {
   getSortedSelectionsByRange,
 } from "../../../modules/document/selection.js";
 
+function generateSelectionId() {
+  if (
+    globalThis.crypto &&
+    typeof globalThis.crypto.randomUUID === "function"
+  ) {
+    return globalThis.crypto.randomUUID();
+  }
+  return `selection_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+}
+
+function resolveSelectionId(selection) {
+  const id = selection?.id ?? selection?.selectionId ?? null;
+  if (id !== undefined && id !== null && String(id) !== "") {
+    return id;
+  }
+  return generateSelectionId();
+}
+
 function hydrateSelections(selections) {
   if (!Array.isArray(selections)) {
     return [];
@@ -20,6 +38,7 @@ function hydrateSelections(selections) {
       }
       return {
         ...selection,
+        id: resolveSelectionId(selection),
         range,
       };
     })
@@ -460,11 +479,15 @@ class DocumentViewerStore extends Store {
   }
 
   addTemporarySelection(selection) {
-    this.state.temporarySelections.push(selection);
+    const normalizedSelection = {
+      ...selection,
+      id: resolveSelectionId(selection),
+    };
+    this.state.temporarySelections.push(normalizedSelection);
     this.notify({
       key: "temporarySelections",
       operation: "add",
-      value: selection,
+      value: normalizedSelection,
     });
     this.computeSelectionChanged();
   }

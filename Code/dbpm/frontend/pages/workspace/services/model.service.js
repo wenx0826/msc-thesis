@@ -1435,6 +1435,7 @@ export default {
       dataXml: preparedModelData,
       status: "ready",
     });
+    documentViewerStore.setSelectedSelection(null);
     documentViewerStore.setTemporarySelections([]);
     documentViewerStore.setHasSelectionChanged(false);
     documentViewerStore.addTrace(createdTrace);
@@ -1662,6 +1663,7 @@ export default {
         MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS,
       ].includes(type)
     ) {
+      documentViewerStore.setSelectedSelection(null);
       documentViewerStore.setTemporarySelections([]);
       documentViewerStore.updateTrace(trace);
     }

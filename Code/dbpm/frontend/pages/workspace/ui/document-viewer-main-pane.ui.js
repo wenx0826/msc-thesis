@@ -130,7 +130,8 @@ function hideSelectionHandles() {
 function hideSelectedSelectionToolbar() {
   $selectedSelectionToolbar
     .removeClass("is-visible")
-    .attr("aria-hidden", "true");
+    .attr("aria-hidden", "true")
+    .css("pointer-events", "none");
 }
 
 function updateSelectedSelectionToolbarPosition() {
@@ -195,6 +196,7 @@ function updateSelectedSelectionToolbarPosition() {
   $selectedSelectionToolbar.css({
     left: `${left}px`,
     top: `${top}px`,
+    "pointer-events": "auto",
   });
   $selectedSelectionToolbar.addClass("is-visible").attr("aria-hidden", "false");
 }
@@ -635,7 +637,12 @@ const onSelectedSelectionOutsideMouseDown = (event) => {
 
   const isInsideSelectedSelectionToolbar =
     $(event.target).closest("#selectedSelectionToolbar").length > 0;
-  if (isInsideSelectedSelectionToolbar) {
+  const isInsideSelectionInteraction =
+    $(event.target).closest(
+      "#selectionsInteractionLayer, #selectionHandlesLayer",
+    ).length > 0;
+
+  if (isInsideSelectedSelectionToolbar || isInsideSelectionInteraction) {
     return;
   }
 
@@ -662,6 +669,9 @@ const onSelectionSelect = (event) => {
     $target.is("[data-model-id]") || $selectionWrap.is("[data-model-id]")
       ? "model"
       : "temporary";
+  if (selectionId === undefined || selectionId === null || selectionId === "") {
+    return;
+  }
   setSelectedSelection({
     selectionId,
     modelId,
@@ -687,11 +697,15 @@ const onSelectionSelect = (event) => {
 };
 
 const renderSelection = (
-  { range, color, id: selectionId, traceId },
+  { range, color, id: selectionId, selectionId: fallbackSelectionId, traceId },
   modelId,
   modelVersionId,
 ) => {
   if (!range) {
+    return;
+  }
+  const resolvedSelectionId = selectionId ?? fallbackSelectionId;
+  if (resolvedSelectionId === undefined || resolvedSelectionId === null) {
     return;
   }
 
@@ -725,7 +739,7 @@ const renderSelection = (
 
   const $highlightWrap = createSelectionWrap({
     templateId: SELECTION_WRAP_TEMPLATE_ID,
-    selectionId,
+    selectionId: resolvedSelectionId,
     modelId,
     modelVersionId: resolvedModelVersionId,
     top: wrapTop,
@@ -756,7 +770,7 @@ const renderSelection = (
     const $tag = createModelTag({
       modelId,
       modelVersionId: resolvedModelVersionId,
-      selectionId,
+      selectionId: resolvedSelectionId,
       modelName: `${modelName}`,
       top: `${lastRect.top - eleViewerWrapRect.top + eleViewerWrap.scrollTop - 11}px`,
       left: `${lastRect.right - eleViewerWrapRect.left + eleViewerWrap.scrollLeft - 11}px`,
@@ -767,7 +781,7 @@ const renderSelection = (
   }
   const $interactionWrap = createSelectionWrap({
     templateId: SELECTION_WRAP_TEMPLATE_ID,
-    selectionId,
+    selectionId: resolvedSelectionId,
     modelId,
     modelVersionId: resolvedModelVersionId,
     traceId,
@@ -784,7 +798,7 @@ const renderSelection = (
       left: `${rect.left - selectionRectLeft}px`,
       width: `${rect.width}px`,
       height: `${Math.max(rect.height - 4, 1)}px`,
-      selectionId,
+      selectionId: resolvedSelectionId,
       modelId,
       modelVersionId: resolvedModelVersionId,
       traceId,
@@ -794,7 +808,10 @@ const renderSelection = (
 
   $interactionWrap.appendTo($selectionsInteractionLayer);
   const selectedSelection = getSelectedSelection();
-  if (selectedSelection && selectedSelection.selectionId === selectionId) {
+  if (
+    selectedSelection &&
+    String(selectedSelection.selectionId) === String(resolvedSelectionId)
+  ) {
     getInteractionWrapsBySelection(selectedSelection).addClass("selected");
     updateSelectionHandlesPosition();
   }
@@ -970,6 +987,7 @@ const handleTextSelection = () => {
 createUI({
   setup: () => {
     hideSelectionHandles();
+    hideSelectedSelectionToolbar();
     return {};
   },
   bindListeners: () => {
