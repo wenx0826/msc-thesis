@@ -66,7 +66,6 @@ export default {
       versionId: null,
     });
     modelEditorStore.clearStatusMessage();
-    modelEditorStore.clearErrors();
     modelEditorStore.setData(null, {
       updateType: null,
     });
@@ -100,7 +99,6 @@ export default {
       return;
     }
     workspaceStore.setEditingModel({ id, versionId });
-    modelService.syncCachedErrorsForActiveEditingModel();
     modelService.loadVersion(versionId);
     workspaceStore.setModelPopoverParams(null);
 

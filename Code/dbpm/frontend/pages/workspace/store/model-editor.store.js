@@ -135,7 +135,6 @@ class ModelEditorStore extends Store {
     super({
       status: null, // 'loading', 'ready', 'error', 'generating'
       error: null,
-      errors: [],
       statusMessage: null,
       data: null,
       latestUpdateType: null, // 'initial_load', 'regeneration_by_prompt', 'regeneration_by_selection', 'update_by_selection'
@@ -195,98 +194,6 @@ class ModelEditorStore extends Store {
 
   clearStatusMessage() {
     this.setStatusMessage(null);
-  }
-
-  getErrors() {
-    return Array.isArray(this.state.errors) ? [...this.state.errors] : [];
-  }
-
-  setErrors(errors) {
-    const oldValue = this.getErrors();
-    const nextErrors = Array.isArray(errors) ? errors.filter(Boolean) : [];
-    this.state.errors = nextErrors;
-    this.notify({
-      key: "errors",
-      oldValue,
-      newValue: this.getErrors(),
-    });
-  }
-
-  addError(error) {
-    const message =
-      typeof error?.message === "string" ? error.message.trim() : "";
-    if (!message) {
-      return;
-    }
-
-    const code =
-      typeof error?.code === "string" && error.code.trim()
-        ? error.code.trim()
-        : "unknown";
-    const id =
-      typeof error?.id === "string" && error.id.trim() ? error.id.trim() : code;
-    const normalizedError = {
-      id,
-      code,
-      message,
-      source:
-        typeof error?.source === "string" && error.source.trim()
-          ? error.source.trim()
-          : null,
-      modelId:
-        typeof error?.modelId === "string" && error.modelId.trim()
-          ? error.modelId.trim()
-          : null,
-      modelVersionId:
-        typeof error?.modelVersionId === "string" && error.modelVersionId.trim()
-          ? error.modelVersionId.trim()
-          : null,
-      traceId:
-        typeof error?.traceId === "string" && error.traceId.trim()
-          ? error.traceId.trim()
-          : null,
-      createdAt: error?.createdAt || Date.now(),
-    };
-
-    const errors = this.getErrors();
-    const existingIndex = errors.findIndex(
-      (item) => item?.id === normalizedError.id,
-    );
-    if (existingIndex >= 0) {
-      const nextErrors = [...errors];
-      nextErrors[existingIndex] = {
-        ...nextErrors[existingIndex],
-        ...normalizedError,
-      };
-      this.setErrors(nextErrors);
-      return;
-    }
-    this.setErrors([...errors, normalizedError]);
-  }
-
-  removeError(id) {
-    if (typeof id !== "string" || !id.trim()) {
-      return;
-    }
-    const normalizedId = id.trim();
-    const errors = this.getErrors();
-    this.setErrors(errors.filter((error) => error?.id !== normalizedId));
-  }
-
-  clearErrors() {
-    if (!this.state.errors?.length) {
-      return;
-    }
-    this.setErrors([]);
-  }
-
-  clearErrorsByCode(code) {
-    if (typeof code !== "string" || !code.trim()) {
-      return;
-    }
-    const normalizedCode = code.trim();
-    const errors = this.getErrors();
-    this.setErrors(errors.filter((error) => error?.code !== normalizedCode));
   }
 
   getLatestUpdateType() {

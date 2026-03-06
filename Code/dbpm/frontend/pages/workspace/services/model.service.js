@@ -707,17 +707,6 @@ function resolveModelVersionIdFromErrorContext({
   return editingModelVersionId ? String(editingModelVersionId) : null;
 }
 
-function syncModelEditorErrorsFromCachedActiveVersion() {
-  const editingModelVersionId = workspaceStore.getEditingModel()?.versionId;
-  if (!editingModelVersionId) {
-    modelEditorStore.clearErrors();
-    return;
-  }
-  modelEditorStore.setErrors(
-    modelsStore.getCachedVersionErrors(String(editingModelVersionId)),
-  );
-}
-
 function clearNoLinkedSelectionsError(context = {}) {
   const targetModelVersionId = resolveModelVersionIdFromErrorContext(context);
   if (targetModelVersionId) {
@@ -725,15 +714,6 @@ function clearNoLinkedSelectionsError(context = {}) {
       targetModelVersionId,
       NO_LINKED_SELECTIONS_ERROR_CODE,
     );
-  }
-
-  if (
-    isNoSelectionsContextCurrentDisplay({
-      ...context,
-      modelVersionId: targetModelVersionId || context?.modelVersionId || null,
-    })
-  ) {
-    syncModelEditorErrorsFromCachedActiveVersion();
   }
 }
 
@@ -750,9 +730,6 @@ function upsertNoLinkedSelectionsError({
     traceId,
   });
   if (!resolvedModelVersionId) {
-    if (isNoSelectionsContextCurrentDisplay({ modelId, modelVersionId, traceId })) {
-      syncModelEditorErrorsFromCachedActiveVersion();
-    }
     return;
   }
 
@@ -773,16 +750,6 @@ function upsertNoLinkedSelectionsError({
     modelVersionId: resolvedModelVersionId,
     traceId: traceId === undefined || traceId === null ? null : String(traceId),
   });
-
-  if (
-    isNoSelectionsContextCurrentDisplay({
-      modelId: resolvedModelId || null,
-      modelVersionId: resolvedModelVersionId,
-      traceId,
-    })
-  ) {
-    syncModelEditorErrorsFromCachedActiveVersion();
-  }
 }
 
 function isNoSelectionsContextCurrentDisplay({
@@ -1460,7 +1427,6 @@ export default {
       id: createdModelMeta.id,
       versionId: createdModelMeta.latestVersionId,
     });
-    this.syncCachedErrorsForActiveEditingModel();
     modelEditorStore.setData(preparedModelData, {
       updateType: null,
     });
@@ -1571,11 +1537,7 @@ export default {
       updateType: null,
     });
     this.applyDeferredRegenerationPreviewForActiveEditingModel();
-    this.syncCachedErrorsForActiveEditingModel();
     syncNoSelectionsOnModelVersionLoadIfNeeded("load_model_version");
-  },
-  syncCachedErrorsForActiveEditingModel() {
-    syncModelEditorErrorsFromCachedActiveVersion();
   },
   maybeAlertNoSelectionOnLoadedEditingModel(source = "manual_check") {
     syncNoSelectionsOnModelVersionLoadIfNeeded(source);
@@ -1655,6 +1617,17 @@ export default {
       type === MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS
         ? documentViewerStore.getSerializedNewActiveModelTrace()
         : null;
+    const selectionCount = Array.isArray(trace?.selections)
+      ? trace.selections.length
+      : 0;
+
+    if (trace?.id && selectionCount > 0) {
+      syncNoSelectionsErrorIfNeeded(selectionCount, "updateEditingVersion", {
+        modelId,
+        modelVersionId,
+        traceId: trace.id,
+      });
+    }
 
     if (type === MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS) {
       const selectedText = selectionsToText(trace?.selections || []);
@@ -1672,9 +1645,7 @@ export default {
         traceId: trace.id,
         modelVersionId,
         changeType: type,
-        selectionCount: Array.isArray(trace.selections)
-          ? trace.selections.length
-          : 0,
+        selectionCount,
       });
     }
     await updateModelVersionAndCache({
@@ -1743,6 +1714,17 @@ export default {
       return;
     }
 
+    const selectionCount = Array.isArray(serializedTrace.selections)
+      ? serializedTrace.selections.length
+      : 0;
+    if (alertOnEmptyAfterDeletion || selectionCount > 0) {
+      syncNoSelectionsErrorIfNeeded(selectionCount, "updateTraceTextById", {
+        modelId: serializedTrace.modelId || null,
+        modelVersionId: serializedTrace.modelVersionId || null,
+        traceId: serializedTrace.id || null,
+      });
+    }
+
     try {
       const currentModelData =
         await modelsAPI.getDataByVersionId(modelVersionId);
@@ -1751,16 +1733,6 @@ export default {
         selectionsToText(serializedTrace.selections),
         resolveTraceDocumentMeta(serializedTrace),
       );
-      const selectionCount = Array.isArray(serializedTrace.selections)
-        ? serializedTrace.selections.length
-        : 0;
-      if (alertOnEmptyAfterDeletion || selectionCount > 0) {
-        syncNoSelectionsErrorIfNeeded(selectionCount, "updateTraceTextById", {
-          modelId: serializedTrace.modelId || null,
-          modelVersionId: serializedTrace.modelVersionId || null,
-          traceId: serializedTrace.id || null,
-        });
-      }
       notifyTraceUpdateTriggered({
         source: "updateTraceTextById",
         traceId: serializedTrace.id,

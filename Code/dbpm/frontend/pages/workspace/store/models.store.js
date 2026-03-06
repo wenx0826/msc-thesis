@@ -1,50 +1,5 @@
 import { VersionedEntityStore } from "./versioned-entity.store.js";
 
-function normalizeCachedVersionError(error) {
-  const message =
-    typeof error?.message === "string" ? error.message.trim() : "";
-  if (!message) {
-    return null;
-  }
-
-  const code =
-    typeof error?.code === "string" && error.code.trim()
-      ? error.code.trim()
-      : "unknown";
-  const id =
-    typeof error?.id === "string" && error.id.trim() ? error.id.trim() : code;
-
-  return {
-    id,
-    code,
-    message,
-    source:
-      typeof error?.source === "string" && error.source.trim()
-        ? error.source.trim()
-        : null,
-    modelId:
-      typeof error?.modelId === "string" && error.modelId.trim()
-        ? error.modelId.trim()
-        : null,
-    modelVersionId:
-      typeof error?.modelVersionId === "string" && error.modelVersionId.trim()
-        ? error.modelVersionId.trim()
-        : null,
-    traceId:
-      typeof error?.traceId === "string" && error.traceId.trim()
-        ? error.traceId.trim()
-        : null,
-    createdAt: error?.createdAt || Date.now(),
-  };
-}
-
-function normalizeCachedVersionErrorList(errors) {
-  if (!Array.isArray(errors)) {
-    return [];
-  }
-  return errors.map(normalizeCachedVersionError).filter(Boolean);
-}
-
 class ModelsStore extends VersionedEntityStore {
   constructor() {
     super({
@@ -55,8 +10,8 @@ class ModelsStore extends VersionedEntityStore {
   }
 
   init(entities) {
+    super.init(entities);
     this.state.cachedVersionsById = {};
-    return super.init(entities);
   }
 
   // updateModelById(modelId, updates) {
@@ -87,7 +42,6 @@ class ModelsStore extends VersionedEntityStore {
     return !!this.state.cachedVersionsById[versionId];
   }
   addCachedVersion(versionId, value) {
-    if (!versionId) return null;
     const oldValue = this.state.cachedVersionsById[versionId] || null;
     const operation = oldValue ? "update" : "add";
     const newValue = {
@@ -115,92 +69,51 @@ class ModelsStore extends VersionedEntityStore {
   }
 
   getCachedVersionErrors(versionId) {
-    const normalizedVersionId =
-      versionId === undefined || versionId === null ? null : String(versionId);
-    if (!normalizedVersionId) {
-      return [];
-    }
-    const cacheEntry =
-      this.getCachedModelByVersionId(normalizedVersionId) || {};
-    return normalizeCachedVersionErrorList(cacheEntry.errorList);
+    const cacheEntry = this.getCachedModelByVersionId(versionId) || {};
+    return Array.isArray(cacheEntry.errors) ? [...cacheEntry.errors] : [];
   }
 
   setCachedVersionErrors(versionId, errors) {
-    const normalizedVersionId =
-      versionId === undefined || versionId === null ? null : String(versionId);
-    if (!normalizedVersionId) {
-      return [];
-    }
-    const nextErrors = normalizeCachedVersionErrorList(errors);
-    const existingEntry = this.getCachedModelByVersionId(normalizedVersionId);
+    const nextErrors = Array.isArray(errors) ? [...errors] : [];
+    const existingEntry = this.getCachedModelByVersionId(versionId);
     if (!existingEntry && nextErrors.length === 0) {
       return [];
     }
-    this.addCachedVersion(normalizedVersionId, {
-      errorList: nextErrors,
+    this.addCachedVersion(versionId, {
+      errors: nextErrors,
     });
     return [...nextErrors];
   }
 
   upsertCachedVersionError(versionId, error) {
-    const normalizedVersionId =
-      versionId === undefined || versionId === null ? null : String(versionId);
-    if (!normalizedVersionId) {
-      return [];
-    }
-    const normalizedError = normalizeCachedVersionError(error);
-    if (!normalizedError) {
-      return this.getCachedVersionErrors(normalizedVersionId);
-    }
-
-    const errors = this.getCachedVersionErrors(normalizedVersionId);
-    const existingIndex = errors.findIndex(
-      (item) => item?.id === normalizedError.id,
-    );
+    const errors = this.getCachedVersionErrors(versionId);
+    const existingIndex = errors.findIndex((item) => item.id === error.id);
     if (existingIndex >= 0) {
       errors[existingIndex] = {
         ...errors[existingIndex],
-        ...normalizedError,
+        ...error,
       };
     } else {
-      errors.push(normalizedError);
+      errors.push(error);
     }
-    return this.setCachedVersionErrors(normalizedVersionId, errors);
+    return this.setCachedVersionErrors(versionId, errors);
   }
 
   clearCachedVersionErrors(versionId) {
-    const normalizedVersionId =
-      versionId === undefined || versionId === null ? null : String(versionId);
-    if (!normalizedVersionId) {
-      return [];
-    }
-    return this.setCachedVersionErrors(normalizedVersionId, []);
+    return this.setCachedVersionErrors(versionId, []);
   }
 
   clearCachedVersionErrorsByCode(versionId, code) {
-    const normalizedVersionId =
-      versionId === undefined || versionId === null ? null : String(versionId);
-    if (!normalizedVersionId || typeof code !== "string" || !code.trim()) {
-      return this.getCachedVersionErrors(normalizedVersionId);
-    }
-    const normalizedCode = code.trim();
-    const errors = this.getCachedVersionErrors(normalizedVersionId).filter(
-      (error) => error?.code !== normalizedCode,
+    const errors = this.getCachedVersionErrors(versionId).filter(
+      (error) => error.code !== code,
     );
-    return this.setCachedVersionErrors(normalizedVersionId, errors);
+    return this.setCachedVersionErrors(versionId, errors);
   }
 
   getModelIdByVersionId(versionId) {
-    const normalizedVersionId =
-      versionId === undefined || versionId === null ? null : String(versionId);
-    if (!normalizedVersionId) {
-      return null;
-    }
     return (
       this.getList().find((model) =>
-        (model.versions || []).some(
-          (version) => String(version?.id || "") === normalizedVersionId,
-        ),
+        (model.versions || []).some((version) => version?.id === versionId),
       )?.id || null
     );
   }

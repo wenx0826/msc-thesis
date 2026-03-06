@@ -260,9 +260,14 @@
                   id="graphcanvas" width="1" height="1" style="display: block"></svg>
               </ui-area>
             </ui-content>
-            <div id="modelErrorMessage"></div>
+
             <div id="dat_details"></div>
             <div id="relaxngworker" class="hidden"></div>
+            <ul id="modelErrorList">
+              <template id="modelErrorItemTemplate">
+                <li class="model-error-item"></li>
+              </template>
+            </ul>
             <div id="modelStatusMessage" class="hidden">
               <span id="modelStatusMessageText"></span>
               <button id="modelStatusMessageClose" type="button" aria-label="Close status message">x</button>

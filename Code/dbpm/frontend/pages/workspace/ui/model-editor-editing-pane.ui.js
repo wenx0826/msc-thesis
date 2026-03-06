@@ -1,4 +1,5 @@
 import { createUI } from "../../../shared/utils/ui.js";
+import { createTemplateElement } from "../../../shared/utils/dom.js";
 import {
   modelEditorStore,
   documentsStore,
@@ -17,7 +18,7 @@ const $datDetails = $("#dat_details");
 const $modelStatusMessage = $("#modelStatusMessage");
 const $modelStatusMessageText = $("#modelStatusMessageText");
 const $modelStatusMessageClose = $("#modelStatusMessageClose");
-const $modelErrorMessage = $("#modelErrorMessage");
+const $modelErrorList = $("#modelErrorList");
 
 // disable all controls inside
 // enable all controls inside
@@ -49,6 +50,7 @@ const REGENERATION_LOCKED_POINTER_EVENTS = [
 const REGENERATION_ACTION_BAR_HINT_CLASS = "regeneration-click-hint";
 
 const CALL_SUBPROCESS_MODEL_SELECT_SELECTOR = `#dat_details select[data-relaxngui-path=" > call > parameters > dbpm_subprocess_model"]`;
+const MODEL_ERROR_ITEM_TEMPLATE_ID = "modelErrorItemTemplate";
 
 function saveActiveModel(type) {
   modelService.updateEditingVersion(type);
@@ -59,22 +61,30 @@ function clearModelEditor() {
   $datDetails.empty();
 }
 
-function renderModelErrors(errors = []) {
-  const normalizedErrors = Array.isArray(errors)
-    ? errors.filter((error) => typeof error?.message === "string")
-    : [];
-
-  $modelErrorMessage.empty();
-  $modelErrorMessage.toggleClass("is-visible", normalizedErrors.length > 0);
-  if (!normalizedErrors.length) {
+function renderModelErrorList(errors = []) {
+  $modelErrorList.children(".model-error-item").remove();
+  $modelErrorList.toggleClass("is-visible", errors.length > 0);
+  if (!errors.length) {
     return;
   }
 
-  const $list = $("<ul>").addClass("model-error-list");
-  normalizedErrors.forEach((error) => {
-    $("<li>").addClass("model-error-item").text(error.message).appendTo($list);
+  errors.forEach((error) => {
+    createTemplateElement(MODEL_ERROR_ITEM_TEMPLATE_ID)
+      .text(error.message)
+      .appendTo($modelErrorList);
   });
-  $modelErrorMessage.append($list);
+}
+
+function getActiveEditingModelCachedErrors() {
+  const editingModelVersionId = workspaceStore.getEditingModel()?.versionId;
+  if (!editingModelVersionId) {
+    return [];
+  }
+  return modelsStore.getCachedVersionErrors(String(editingModelVersionId));
+}
+
+function renderActiveEditingModelCachedErrors() {
+  renderModelErrorList(getActiveEditingModelCachedErrors());
 }
 
 function clearModelStatusMessageAutoCloseTimer() {
@@ -145,7 +155,9 @@ function getEditingModelContext() {
   };
 }
 
-function isRegenerationPreviewContextCurrent(preview = regenerationPreviewState) {
+function isRegenerationPreviewContextCurrent(
+  preview = regenerationPreviewState,
+) {
   if (!preview?.modelId || !preview?.modelVersionId) {
     return false;
   }
@@ -294,7 +306,11 @@ function setRegenerationPreviewView(view) {
 function applyRegenerationActionBar(updateType) {
   const preview = regenerationPreviewState;
   const hasCurrentPreviewContext = isRegenerationPreviewContextCurrent(preview);
-  if (!isRegenerationUpdateType(updateType) || !preview || !hasCurrentPreviewContext) {
+  if (
+    !isRegenerationUpdateType(updateType) ||
+    !preview ||
+    !hasCurrentPreviewContext
+  ) {
     if (preview && !hasCurrentPreviewContext) {
       regenerationPreviewState = null;
     }
@@ -653,9 +669,9 @@ createUI({
     save["endpoints_cache"] = endpointLoader._cache;
     window.onDBPMCallTypeChange = onCallTypeChange;
     window.onDBPMCallSubprocessModelChange = onCallSubprocessModelChange;
-    applyRegenerationActionBar(modelEditorStore.getLatestUpdateType());
+    // applyRegenerationActionBar(modelEditorStore.getLatestUpdateType());
+    // renderActiveEditingModelCachedErrors();
     // renderModelStatusMessage(modelEditorStore.getStatusMessage());
-    // renderModelErrors(modelEditorStore.getErrors());
   },
   bindListeners: () => {
     REGENERATION_LOCKED_POINTER_EVENTS.forEach((eventName) => {
@@ -827,15 +843,32 @@ createUI({
           }
           applyRegenerationActionBar(newValue);
           break;
-        case "errors":
-          renderModelErrors(newValue);
-          break;
         case "statusMessage":
           renderModelStatusMessage(newValue);
           break;
         default:
           break;
       }
+    });
+
+    modelsStore.subscribe((state, { key, value }) => {
+      if (key !== "cachedVersionsById") {
+        return;
+      }
+
+      const editingModelVersionId = normalizeComparableId(
+        workspaceStore.getEditingModel()?.versionId,
+      );
+      if (!editingModelVersionId) {
+        return;
+      }
+
+      const changedVersionId = normalizeComparableId(value?.versionId);
+      if (changedVersionId !== editingModelVersionId) {
+        return;
+      }
+
+      renderActiveEditingModelCachedErrors();
     });
 
     workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
@@ -858,6 +891,7 @@ createUI({
           if (!newValue.id) {
             clearModelEditor();
           }
+          renderActiveEditingModelCachedErrors();
           applyRegenerationActionBar(modelEditorStore.getLatestUpdateType());
           break;
         }

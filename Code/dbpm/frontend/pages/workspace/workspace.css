@@ -489,26 +489,28 @@ text.duration {
   justify-content: center;
 }
 
-#modelErrorMessage {
-  display: none;
+#modelErrorList {
+  /* display: none;
   margin: 8px 10px 0;
-  padding: 8px 10px;
+  padding: 8px 10px 8px 26px;
   border: 1px solid #f5c2c2;
   border-radius: 8px;
-  background: #fff5f5;
+  background: #fff5f5; */
   color: #842029;
+  /* list-style: disc; */
 }
 
-#modelErrorMessage.is-visible {
+#modelErrorList.is-visible {
   display: block;
 }
 
-#modelErrorMessage .model-error-list {
-  margin: 0;
-  padding-left: 18px;
-}
+/* #modelErrorList .model-error-item {
+  border: 0;
+  background: transparent;
+  padding: 0;
+} */
 
-#modelErrorMessage .model-error-item+.model-error-item {
+#modelErrorList .model-error-item+.model-error-item {
   margin-top: 4px;
 }
 
