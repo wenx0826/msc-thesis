@@ -12,6 +12,29 @@
   let endpointSymbolXmlByName = {};
   let endpointSymbolByName = {};
   let endpointPropertiesByName = {};
+  let previewFontsReadyPromise = null;
+
+  function ensurePreviewFontsReady() {
+    if (previewFontsReadyPromise) {
+      return previewFontsReadyPromise;
+    }
+
+    const fonts = window.document?.fonts;
+    if (!fonts || typeof fonts.load !== "function") {
+      previewFontsReadyPromise = Promise.resolve();
+      return previewFontsReadyPromise;
+    }
+
+    const waitWithTimeout = Promise.race([
+      Promise.allSettled([fonts.load("14px adawaita-sans"), fonts.ready]),
+      new Promise((resolve) => {
+        window.setTimeout(resolve, 1500);
+      }),
+    ]);
+
+    previewFontsReadyPromise = waitWithTimeout.then(() => undefined);
+    return previewFontsReadyPromise;
+  }
 
   function getContainers() {
     if (!window.$) {
@@ -119,6 +142,7 @@
         throw new Error("WfAdaptor is not available in graph renderer iframe");
       }
 
+      await ensurePreviewFontsReady();
       updateEndpointData(endpointSymbols, endpointProperties);
       const adaptor = await ensurePreviewAdaptor(themePath);
 

@@ -1,5 +1,6 @@
 import { createUI } from "../../../shared/utils/ui.js";
 import { modelsStore, workspaceStore } from "../store/index.js";
+import { scopeSvgIds } from "../../../modules/model/utils/svg-scope.js";
 
 /**
  * ==================================================================================
@@ -161,88 +162,34 @@ let tip = null;
 let isRecreating = false; // ✨ NEW: Prevent multiple simultaneous recreations
 let popoverScopeCounter = 0;
 
-function scopeSvgIds(svgEl, prefix) {
-  const idEls = [];
-  if (svgEl.getAttribute && svgEl.getAttribute("id")) {
-    idEls.push(svgEl);
+function prepareSvgForPopover(svgEl) {
+  const svgW = parseFloat(svgEl.getAttribute("width")) || 0;
+  const svgH = parseFloat(svgEl.getAttribute("height")) || 0;
+  const viewBoxAttr = svgEl.getAttribute("viewBox");
+  const viewBoxParts = viewBoxAttr
+    ? viewBoxAttr
+        .trim()
+        .split(/[\s,]+/)
+        .map((v) => parseFloat(v))
+    : [];
+  const viewBoxW = viewBoxParts.length === 4 ? viewBoxParts[2] : 0;
+
+  const intrinsicWidth = svgW > 0 ? svgW : viewBoxW;
+
+  if (svgW > 0 && svgH > 0 && !svgEl.getAttribute("viewBox")) {
+    svgEl.setAttribute("viewBox", `0 0 ${svgW} ${svgH}`);
   }
-  svgEl.querySelectorAll("[id]").forEach((el) => idEls.push(el));
+  svgEl.setAttribute("width", "100%");
+  svgEl.removeAttribute("height");
+  svgEl.style.display = "block";
+  svgEl.style.width = "100%";
+  svgEl.style.height = "auto";
 
-  const idMap = new Map();
-  idEls.forEach((el) => {
-    const oldId = el.getAttribute("id");
-    if (!oldId || oldId.startsWith(`${prefix}_`)) {
-      return;
-    }
-    const newId = `${prefix}_${oldId}`;
-    idMap.set(oldId, newId);
-    el.setAttribute("id", newId);
-  });
-
-  if (idMap.size === 0) return;
-
-  const escaped = [...idMap.keys()].map((key) =>
-    key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
-  );
-  const urlRe = new RegExp(`url\\(#(${escaped.join("|")})\\)`, "g");
-  const hrefRe = new RegExp(`^#(${escaped.join("|")})$`);
-
-  const urlAttrs = [
-    "clip-path",
-    "mask",
-    "fill",
-    "stroke",
-    "filter",
-    "marker-end",
-    "marker-start",
-    "marker-mid",
-  ];
-  const all = [svgEl, ...svgEl.querySelectorAll("*")];
-  all.forEach((el) => {
-    urlAttrs.forEach((attr) => {
-      const value = el.getAttribute(attr);
-      if (value && urlRe.lastIndex !== undefined) urlRe.lastIndex = 0;
-      if (value && urlRe.test(value)) {
-        urlRe.lastIndex = 0;
-        el.setAttribute(
-          attr,
-          value.replace(urlRe, (_, id) => `url(#${idMap.get(id)})`),
-        );
-      }
-    });
-
-    ["href", "xlink:href"].forEach((attr) => {
-      const value = el.getAttribute(attr);
-      if (value && hrefRe.test(value)) {
-        const oldId = value.slice(1);
-        if (idMap.has(oldId)) {
-          el.setAttribute(attr, `#${idMap.get(oldId)}`);
-        }
-      }
-    });
-
-    const inlineStyle = el.getAttribute("style");
-    if (inlineStyle && urlRe.lastIndex !== undefined) urlRe.lastIndex = 0;
-    if (inlineStyle && urlRe.test(inlineStyle)) {
-      urlRe.lastIndex = 0;
-      el.setAttribute(
-        "style",
-        inlineStyle.replace(urlRe, (_, id) => `url(#${idMap.get(id)})`),
-      );
-    }
-  });
-
-  svgEl.querySelectorAll("style").forEach((styleEl) => {
-    const cssText = styleEl.textContent || "";
-    if (!cssText) return;
-    urlRe.lastIndex = 0;
-    if (!urlRe.test(cssText)) return;
-    urlRe.lastIndex = 0;
-    styleEl.textContent = cssText.replace(
-      urlRe,
-      (_, id) => `url(#${idMap.get(id)})`,
-    );
-  });
+  if (intrinsicWidth > 0) {
+    svgEl.style.maxWidth = `${intrinsicWidth}px`;
+  } else {
+    svgEl.style.removeProperty("max-width");
+  }
 }
 
 function createScopedPopoverSvg(svgSource, modelId) {
@@ -266,9 +213,9 @@ function createScopedPopoverSvg(svgSource, modelId) {
     return null;
   }
 
+  prepareSvgForPopover(svgEl);
   popoverScopeCounter += 1;
-  // Temporarily disabled: scopeSvgIds feature.
-  // scopeSvgIds(svgEl, `popover_m${modelId}_${popoverScopeCounter}`);
+  scopeSvgIds(svgEl, `popover_m${modelId}_${popoverScopeCounter}`);
   return svgEl;
 }
 

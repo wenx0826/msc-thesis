@@ -6,6 +6,7 @@ import {
   createTemplateElement,
 } from "../../../shared/utils/dom.js";
 import initInlineEditor from "../../../shared/widgets/inline-editor.js";
+import { scopeSvgIds } from "../../../modules/model/utils/svg-scope.js";
 import { createModelActionsMenu } from "./model-actions-menu.ui.js";
 
 const $modelsPanel = $("#modelsPanel");
@@ -51,96 +52,6 @@ function onModelListItemMouseLeave() {
 // #endregion
 
 /**
- * Make all internal SVG id/url(#...) references unique by prefixing them
- * with a model-specific string.  This prevents collisions when multiple
- * model SVGs live in the same document.
- */
-function scopeSvgIds(svgEl, prefix) {
-  // Collect every element inside the SVG (including root) that carries an id.
-  const idEls = [];
-  if (svgEl.getAttribute && svgEl.getAttribute("id")) {
-    idEls.push(svgEl);
-  }
-  svgEl.querySelectorAll("[id]").forEach((el) => idEls.push(el));
-  const idMap = new Map();
-  idEls.forEach((el) => {
-    const oldId = el.getAttribute("id");
-    if (!oldId || oldId.startsWith(`${prefix}_`)) {
-      return;
-    }
-    const newId = `${prefix}_${oldId}`;
-    idMap.set(oldId, newId);
-    el.setAttribute("id", newId);
-  });
-
-  if (idMap.size === 0) return;
-
-  // Build a single regex that matches url(#oldId) or just #oldId in href
-  const escaped = [...idMap.keys()].map((k) =>
-    k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
-  );
-  const urlRe = new RegExp(`url\\(#(${escaped.join("|")})\\)`, "g");
-  const hrefRe = new RegExp(`^#(${escaped.join("|")})$`);
-
-  // Walk every element and patch relevant attributes
-  const all = [svgEl, ...svgEl.querySelectorAll("*")];
-  const urlAttrs = [
-    "clip-path",
-    "mask",
-    "fill",
-    "stroke",
-    "filter",
-    "marker-end",
-    "marker-start",
-    "marker-mid",
-  ];
-  all.forEach((el) => {
-    urlAttrs.forEach((attr) => {
-      const v = el.getAttribute(attr);
-      if (v && urlRe.lastIndex !== undefined) urlRe.lastIndex = 0;
-      if (v && urlRe.test(v)) {
-        urlRe.lastIndex = 0;
-        el.setAttribute(
-          attr,
-          v.replace(urlRe, (_, id) => `url(#${idMap.get(id)})`),
-        );
-      }
-    });
-    // xlink:href or href (for <use> etc.)
-    ["href", "xlink:href"].forEach((attr) => {
-      const v = el.getAttribute(attr);
-      if (v && hrefRe.test(v)) {
-        const oldId = v.slice(1);
-        if (idMap.has(oldId)) el.setAttribute(attr, `#${idMap.get(oldId)}`);
-      }
-    });
-
-    // Inline styles can also contain url(#id) references.
-    const inlineStyle = el.getAttribute("style");
-    if (inlineStyle && urlRe.lastIndex !== undefined) urlRe.lastIndex = 0;
-    if (inlineStyle && urlRe.test(inlineStyle)) {
-      urlRe.lastIndex = 0;
-      el.setAttribute(
-        "style",
-        inlineStyle.replace(urlRe, (_, id) => `url(#${idMap.get(id)})`),
-      );
-    }
-  });
-
-  svgEl.querySelectorAll("style").forEach((styleEl) => {
-    const cssText = styleEl.textContent || "";
-    if (!cssText) return;
-    urlRe.lastIndex = 0;
-    if (!urlRe.test(cssText)) return;
-    urlRe.lastIndex = 0;
-    styleEl.textContent = cssText.replace(
-      urlRe,
-      (_, id) => `url(#${idMap.get(id)})`,
-    );
-  });
-}
-
-/**
  * Prepare an SVG element for display in the model list:
  * – add viewBox so it scales to fit container width
  * – scope internal ids to avoid cross-SVG collisions
@@ -177,8 +88,7 @@ function prepareSvgForList(svgEl, modelId) {
   }
 
   // 2. scope ids to prevent clashes between multiple SVGs in the page
-  // Temporarily disabled: scopeSvgIds feature.
-  // scopeSvgIds(svgEl, `m${modelId}`);
+  scopeSvgIds(svgEl, `list_m${modelId}`);
 }
 
 async function getModelSvg(versionId, modelId) {

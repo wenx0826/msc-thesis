@@ -225,109 +225,10 @@ function queuePreviewRender(task) {
   return run;
 }
 
-function scopeSvgIds(svgEl, prefix) {
-  const idEls = [];
-  if (svgEl.getAttribute && svgEl.getAttribute("id")) {
-    idEls.push(svgEl);
-  }
-  svgEl.querySelectorAll("[id]").forEach((el) => idEls.push(el));
-
-  const idMap = new Map();
-  idEls.forEach((el) => {
-    const oldId = el.getAttribute("id");
-    if (!oldId || oldId.startsWith(`${prefix}_`)) {
-      return;
-    }
-    const newId = `${prefix}_${oldId}`;
-    idMap.set(oldId, newId);
-    el.setAttribute("id", newId);
-  });
-
-  if (idMap.size === 0) return;
-
-  const escaped = [...idMap.keys()].map((key) =>
-    key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
-  );
-  const urlRe = new RegExp(`url\\(#(${escaped.join("|")})\\)`, "g");
-  const hrefRe = new RegExp(`^#(${escaped.join("|")})$`);
-  const urlAttrs = [
-    "clip-path",
-    "mask",
-    "fill",
-    "stroke",
-    "filter",
-    "marker-end",
-    "marker-start",
-    "marker-mid",
-  ];
-  const all = [svgEl, ...svgEl.querySelectorAll("*")];
-  all.forEach((el) => {
-    urlAttrs.forEach((attr) => {
-      const value = el.getAttribute(attr);
-      if (value && urlRe.lastIndex !== undefined) urlRe.lastIndex = 0;
-      if (value && urlRe.test(value)) {
-        urlRe.lastIndex = 0;
-        el.setAttribute(
-          attr,
-          value.replace(urlRe, (_, id) => `url(#${idMap.get(id)})`),
-        );
-      }
-    });
-
-    ["href", "xlink:href"].forEach((attr) => {
-      const value = el.getAttribute(attr);
-      if (value && hrefRe.test(value)) {
-        const oldId = value.slice(1);
-        if (idMap.has(oldId)) {
-          el.setAttribute(attr, `#${idMap.get(oldId)}`);
-        }
-      }
-    });
-
-    const inlineStyle = el.getAttribute("style");
-    if (inlineStyle && urlRe.lastIndex !== undefined) urlRe.lastIndex = 0;
-    if (inlineStyle && urlRe.test(inlineStyle)) {
-      urlRe.lastIndex = 0;
-      el.setAttribute(
-        "style",
-        inlineStyle.replace(urlRe, (_, id) => `url(#${idMap.get(id)})`),
-      );
-    }
-  });
-
-  svgEl.querySelectorAll("style").forEach((styleEl) => {
-    const cssText = styleEl.textContent || "";
-    if (!cssText) return;
-    urlRe.lastIndex = 0;
-    if (!urlRe.test(cssText)) return;
-    urlRe.lastIndex = 0;
-    styleEl.textContent = cssText.replace(
-      urlRe,
-      (_, id) => `url(#${idMap.get(id)})`,
-    );
-  });
-}
-
 function scopeSvgMarkupForModel(svgMarkup, modelId) {
-  // Temporarily disabled: scopeSvgIds feature.
+  // Keep cached/editor SVG canonical (raw ids like a1, a2) because editor interactions rely on them.
+  // Scoping is applied only at list/popover display time.
   return svgMarkup;
-
-  // if (!svgMarkup || !modelId) {
-  //   return svgMarkup;
-  // }
-  //
-  // try {
-  //   const svgDoc = $.parseXML(svgMarkup);
-  //   const svgEl = svgDoc?.documentElement;
-  //   if (!svgEl) {
-  //     return svgMarkup;
-  //   }
-  //   scopeSvgIds(svgEl, `m${modelId}`);
-  //   return new XMLSerializer().serializeToString(svgEl);
-  // } catch (error) {
-  //   console.error("Failed to scope SVG markup:", error);
-  //   return svgMarkup;
-  // }
 }
 
 function serializeEndpointSymbols(cache) {
@@ -1087,7 +988,7 @@ export default {
     const hasSvg = typeof current.svg === "string" && current.svg.length > 0;
     const effectiveModelId = modelId || current.modelId || null;
 
-    // Temporarily disabled: scopeSvgIds feature.
+    // Intentionally keep cache-level SVG unscoped so editor IDs remain canonical.
     // if (!force && needSvg && hasSvg && effectiveModelId) {
     //   const scopedSvg = scopeSvgMarkupForModel(current.svg, effectiveModelId);
     //   if (scopedSvg && scopedSvg !== current.svg) {
