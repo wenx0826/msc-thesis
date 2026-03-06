@@ -2,6 +2,7 @@ import { baseURL, handleResponse, handleTextResponse } from "./base.js";
 import { Constants } from "../constants.js";
 
 const CREATE_MODEL_SIMULATED_NETWORK_DELAY_MS = 10 * 1000;
+const GENERATE_MODEL_SIMULATED_NETWORK_DELAY_MS = 10 * 1000;
 
 function delay(ms) {
   return new Promise((resolve) => {
@@ -10,7 +11,7 @@ function delay(ms) {
 }
 
 export default {
-  LLMDisabled: false,
+  LLMDisabled: true,
   path: "models",
 
   async generateSampleModel() {
@@ -83,6 +84,10 @@ export default {
   },
 
   async generateModel(params) {
+    if (GENERATE_MODEL_SIMULATED_NETWORK_DELAY_MS > 0) {
+      await delay(GENERATE_MODEL_SIMULATED_NETWORK_DELAY_MS);
+    }
+
     let generatedModel = null;
     try {
       if (this.LLMDisabled) {

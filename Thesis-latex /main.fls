@@ -1,8 +1,8 @@
-PWD /Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Thesis-latex 
+PWD /Users/owxwo/Documents/MSc Thesis - Document-Based Process Model Explorer/Thesis-latex 
 INPUT /usr/local/texlive/2025/texmf.cnf
 INPUT /usr/local/texlive/2025/texmf-dist/web2c/texmf.cnf
 INPUT /usr/local/texlive/2025/texmf-var/web2c/pdftex/pdflatex.fmt
-INPUT /Users/owxwo/Documents/‼️ MSc Thesis - Document-Based Process Model Explorer/Thesis-latex /main.tex
+INPUT /Users/owxwo/Documents/MSc Thesis - Document-Based Process Model Explorer/Thesis-latex /main.tex
 OUTPUT main.log
 INPUT ./tum-book.cls
 INPUT tum-book.cls
@@ -664,6 +664,14 @@ INPUT ./tum-resources/images/Universitaet_Flaggen.jpg
 INPUT ./tum-resources/images/Universitaet_Flaggen.jpg
 INPUT ./tum-resources/images/Universitaet_Flaggen.jpg
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntx-Regular-tlf-t1.tfm
+INPUT ./tum-resources/images/Universitaet_Flaggen.jpg
+INPUT ./tum-resources/images/Universitaet_Flaggen.jpg
+INPUT ./tum-resources/images/Universitaet_Flaggen.jpg
+INPUT ./tum-resources/images/Universitaet_Flaggen.jpg
+INPUT ./tum-resources/images/Universitaet_Flaggen.jpg
+INPUT ./tum-resources/images/Universitaet_Flaggen.jpg
+INPUT ./tum-resources/images/Universitaet_Flaggen.jpg
+INPUT ./tum-resources/images/Universitaet_Flaggen.jpg
 INPUT ./chapters/04_Implementaion.tex
 INPUT ./chapters/04_Implementaion.tex
 INPUT ./chapters/04_Implementaion.tex

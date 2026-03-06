@@ -100,6 +100,7 @@ export default {
       return;
     }
     workspaceStore.setEditingModel({ id, versionId });
+    modelService.syncCachedErrorsForActiveEditingModel();
     modelService.loadVersion(versionId);
     workspaceStore.setModelPopoverParams(null);
 

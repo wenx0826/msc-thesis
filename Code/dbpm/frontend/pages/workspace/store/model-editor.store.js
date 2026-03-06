@@ -63,7 +63,8 @@ function normalizeEditorDataRoot(rootNode) {
   if (isWrapperDescriptionNode(rootNode)) {
     const processDescription = getDescriptionChildren(rootNode).find(
       (node) =>
-        node.namespaceURI === CPEE_DESCRIPTION_NS || node.namespaceURI !== DBPM_NS,
+        node.namespaceURI === CPEE_DESCRIPTION_NS ||
+        node.namespaceURI !== DBPM_NS,
     );
     if (processDescription) {
       ensureCpeeDescriptionNamespace(processDescription);
@@ -129,32 +130,6 @@ function findProcessDescriptionNode(rootNode) {
   return $("description", rootNode)[0] || null;
 }
 
-function normalizeStatusMessage(message) {
-  if (!message || typeof message !== "object") {
-    return null;
-  }
-
-  const text =
-    typeof message.text === "string" ? message.text.trim() : "";
-  if (!text) {
-    return null;
-  }
-
-  const type = message.type === "error" ? "error" : "info";
-  const closable = message.closable !== false;
-  const autoCloseMs =
-    Number.isFinite(message.autoCloseMs) && message.autoCloseMs > 0
-      ? Math.floor(message.autoCloseMs)
-      : 0;
-
-  return {
-    type,
-    text,
-    closable,
-    autoCloseMs,
-  };
-}
-
 class ModelEditorStore extends Store {
   constructor() {
     super({
@@ -210,18 +185,7 @@ class ModelEditorStore extends Store {
 
   setStatusMessage(message) {
     const oldValue = this.getStatusMessage();
-    const normalizedMessage = normalizeStatusMessage(message);
-
-    const isSameMessage =
-      oldValue?.type === normalizedMessage?.type &&
-      oldValue?.text === normalizedMessage?.text &&
-      oldValue?.closable === normalizedMessage?.closable &&
-      oldValue?.autoCloseMs === normalizedMessage?.autoCloseMs;
-    if (isSameMessage) {
-      return;
-    }
-
-    this.state.statusMessage = normalizedMessage;
+    this.state.statusMessage = message;
     this.notify({
       key: "statusMessage",
       oldValue,
@@ -239,9 +203,7 @@ class ModelEditorStore extends Store {
 
   setErrors(errors) {
     const oldValue = this.getErrors();
-    const nextErrors = Array.isArray(errors)
-      ? errors.filter(Boolean)
-      : [];
+    const nextErrors = Array.isArray(errors) ? errors.filter(Boolean) : [];
     this.state.errors = nextErrors;
     this.notify({
       key: "errors",
@@ -251,7 +213,8 @@ class ModelEditorStore extends Store {
   }
 
   addError(error) {
-    const message = typeof error?.message === "string" ? error.message.trim() : "";
+    const message =
+      typeof error?.message === "string" ? error.message.trim() : "";
     if (!message) {
       return;
     }
@@ -261,9 +224,7 @@ class ModelEditorStore extends Store {
         ? error.code.trim()
         : "unknown";
     const id =
-      typeof error?.id === "string" && error.id.trim()
-        ? error.id.trim()
-        : code;
+      typeof error?.id === "string" && error.id.trim() ? error.id.trim() : code;
     const normalizedError = {
       id,
       code,

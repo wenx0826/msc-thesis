@@ -86,8 +86,10 @@ function clearModelStatusMessageAutoCloseTimer() {
 }
 
 function renderModelStatusMessage(statusMessage = null) {
-  const text =
-    typeof statusMessage?.text === "string" ? statusMessage.text.trim() : "";
+  const contentHtml =
+    typeof statusMessage?.contentHtml === "string"
+      ? statusMessage.contentHtml.trim()
+      : "";
   const type = statusMessage?.type === "error" ? "error" : "info";
   const closable = statusMessage?.closable !== false;
   const autoCloseMs =
@@ -97,14 +99,15 @@ function renderModelStatusMessage(statusMessage = null) {
 
   clearModelStatusMessageAutoCloseTimer();
 
-  if (!text) {
-    $modelStatusMessageText.text("");
+  if (!contentHtml) {
+    $modelStatusMessageText.empty();
     $modelStatusMessage.removeClass("is-visible is-info is-error is-closable");
     $modelStatusMessage.addClass("hidden");
     return;
   }
 
-  $modelStatusMessageText.text(text);
+  $modelStatusMessageText.empty();
+  $modelStatusMessageText.html(contentHtml);
   $modelStatusMessage
     .removeClass("is-info is-error")
     .removeClass("hidden")
@@ -125,6 +128,35 @@ function isRegenerationUpdateType(updateType) {
     MODEL_UPDATE_TYPE.REGENERATION_BY_PROMPT,
     MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS,
   ].includes(updateType);
+}
+
+function normalizeComparableId(value) {
+  if (value === undefined || value === null) {
+    return "";
+  }
+  return String(value);
+}
+
+function getEditingModelContext() {
+  const { id, versionId } = workspaceStore.getEditingModel() || {};
+  return {
+    modelId: id || null,
+    modelVersionId: versionId || null,
+  };
+}
+
+function isRegenerationPreviewContextCurrent(preview = regenerationPreviewState) {
+  if (!preview?.modelId || !preview?.modelVersionId) {
+    return false;
+  }
+
+  const currentContext = getEditingModelContext();
+  return (
+    normalizeComparableId(currentContext.modelId) ===
+      normalizeComparableId(preview.modelId) &&
+    normalizeComparableId(currentContext.modelVersionId) ===
+      normalizeComparableId(preview.modelVersionId)
+  );
 }
 
 function setRegenerationDecisionClickLock(isLocked) {
@@ -233,6 +265,10 @@ function setRegenerationPreviewView(view) {
   if (!regenerationPreviewState) {
     return;
   }
+  if (!isRegenerationPreviewContextCurrent(regenerationPreviewState)) {
+    regenerationPreviewState = null;
+    return;
+  }
   const normalizedView = view === "previous" ? "previous" : "regenerated";
   if (regenerationPreviewState.view === normalizedView) {
     return;
@@ -257,7 +293,11 @@ function setRegenerationPreviewView(view) {
 
 function applyRegenerationActionBar(updateType) {
   const preview = regenerationPreviewState;
-  if (!isRegenerationUpdateType(updateType) || !preview) {
+  const hasCurrentPreviewContext = isRegenerationPreviewContextCurrent(preview);
+  if (!isRegenerationUpdateType(updateType) || !preview || !hasCurrentPreviewContext) {
+    if (preview && !hasCurrentPreviewContext) {
+      regenerationPreviewState = null;
+    }
     $regeneratedModelActionBar.hide();
     setRegenerationDecisionClickLock(false);
     return;
@@ -648,14 +688,19 @@ createUI({
 
     $keepNewModelButton.on("click", async () => {
       const preview = regenerationPreviewState;
-      if (!preview) {
+      if (!preview || !isRegenerationPreviewContextCurrent(preview)) {
+        modelEditorStore.setLatestUpdateType(null);
+        regenerationPreviewState = null;
         return;
       }
       if (preview.view !== "regenerated") {
         setRegenerationPreviewView("regenerated");
       }
       try {
-        await modelService.updateEditingVersion(preview.updateType);
+        await modelService.updateEditingVersion(preview.updateType, {
+          expectedModelId: preview.modelId,
+          expectedModelVersionId: preview.modelVersionId,
+        });
         modelEditorStore.setLatestUpdateType(null);
         regenerationPreviewState = null;
       } catch (error) {
@@ -666,7 +711,12 @@ createUI({
 
     $revertPrevModelButton.on("click", () => {
       const preview = regenerationPreviewState;
-      if (!preview?.previousDataXml) {
+      if (!preview || !isRegenerationPreviewContextCurrent(preview)) {
+        modelEditorStore.setLatestUpdateType(null);
+        regenerationPreviewState = null;
+        return;
+      }
+      if (!preview.previousDataXml) {
         modelEditorStore.setLatestUpdateType(null);
         regenerationPreviewState = null;
         return;
@@ -747,8 +797,11 @@ createUI({
               const previousDataXml = serializeXmlNode(oldValue);
               const regeneratedDataXml = serializeXmlNode(newValue);
               if (previousDataXml && regeneratedDataXml) {
+                const editingModelContext = getEditingModelContext();
                 regenerationPreviewState = {
                   updateType,
+                  modelId: editingModelContext.modelId,
+                  modelVersionId: editingModelContext.modelVersionId,
                   previousDataXml,
                   regeneratedDataXml,
                   view: "regenerated",
@@ -788,11 +841,24 @@ createUI({
     workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
       switch (key) {
         case "editingModel": {
+          const hasEditingModelChanged =
+            normalizeComparableId(oldValue?.id) !==
+              normalizeComparableId(newValue?.id) ||
+            normalizeComparableId(oldValue?.versionId) !==
+              normalizeComparableId(newValue?.versionId);
+
+          if (hasEditingModelChanged) {
+            regenerationPreviewState = null;
+            const latestUpdateType = modelEditorStore.getLatestUpdateType();
+            if (isRegenerationUpdateType(latestUpdateType)) {
+              modelEditorStore.setLatestUpdateType(null);
+            }
+          }
+
           if (!newValue.id) {
             clearModelEditor();
-            regenerationPreviewState = null;
-            applyRegenerationActionBar(modelEditorStore.getLatestUpdateType());
           }
+          applyRegenerationActionBar(modelEditorStore.getLatestUpdateType());
           break;
         }
         default:

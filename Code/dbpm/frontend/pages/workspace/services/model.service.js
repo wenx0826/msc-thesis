@@ -1,5 +1,5 @@
 // Model Service - Handles model generation and updates
-import { modelsAPI, tracesAPI } from "../../../api/index.js";
+import { modelsAPI, tracesAPI, logsAPI } from "../../../api/index.js";
 import {
   workspaceStore,
   modelsStore,
@@ -30,7 +30,14 @@ const NO_LINKED_SELECTIONS_ON_UPDATE_MESSAGE =
   "There is no selected text related with this model.";
 const NO_LINKED_SELECTIONS_ON_LOAD_MESSAGE =
   "No selected text is related with this model. Please make sure it is linked properly with the document.";
-const MODEL_GENERATION_IN_PROGRESS_MESSAGE = "Generating new model...";
+const MODEL_GENERATION_IN_PROGRESS_MESSAGE =
+  "Generating new model<span class='loading-dots'></span>";
+const MODEL_REGENERATION_IN_PROGRESS_MESSAGE =
+  "Regenerating model<span class='loading-dots'></span>";
+const MODEL_REGENERATION_BY_PROMPT_IN_PROGRESS_MESSAGE =
+  "Regenerating model by prompt<span class='loading-dots'></span>";
+const MODEL_REGENERATION_READY_MESSAGE_SUFFIX = ". Switch back to review.";
+const MODEL_REGENERATION_FAILED_MESSAGE_SUFFIX = ". Please retry.";
 const MODEL_GENERATION_ERROR_MESSAGE =
   "Sorry, an error occurred while generating the model. Please start from scratch or retry.";
 
@@ -38,10 +45,179 @@ let previewRenderQueue = Promise.resolve();
 let previewRendererWindow = null;
 let previewRendererWindowPromise = null;
 const cachePromisesByVersionId = new Map();
+const pendingGenerationRequestsById = new Map();
+const deferredRegenerationPreviewsByVersionId = new Map();
+let generationRequestSequence = 0;
 let lastNoSelectionLoadAlert = {
   versionId: null,
   at: 0,
 };
+
+function normalizeComparableId(value) {
+  if (value === undefined || value === null) {
+    return "";
+  }
+  return String(value);
+}
+
+function getEditingModelContext() {
+  const { id, versionId } = workspaceStore.getEditingModel() || {};
+  return {
+    modelId: id || null,
+    modelVersionId: versionId || null,
+  };
+}
+
+function isSameEditingModelContext(left, right) {
+  if (!left || !right) {
+    return false;
+  }
+
+  return (
+    normalizeComparableId(left.modelId) === normalizeComparableId(right.modelId) &&
+    normalizeComparableId(left.modelVersionId) ===
+      normalizeComparableId(right.modelVersionId)
+  );
+}
+
+function isEditingModelContextActive(context) {
+  return isSameEditingModelContext(context, getEditingModelContext());
+}
+
+function getModelDisplayLabel(modelId) {
+  const modelName = modelId ? modelsStore.getEntityName(modelId) : null;
+  return modelName || modelId || "model";
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, (match) => {
+    switch (match) {
+      case "&":
+        return "&amp;";
+      case "<":
+        return "&lt;";
+      case ">":
+        return "&gt;";
+      case '"':
+        return "&quot;";
+      case "'":
+        return "&#39;";
+      default:
+        return match;
+    }
+  });
+}
+
+function resolveInProgressMessageByRequestType(requestType) {
+  switch (requestType) {
+    case "regeneration_prompt":
+      return MODEL_REGENERATION_BY_PROMPT_IN_PROGRESS_MESSAGE;
+    case "regeneration_selections":
+      return MODEL_REGENERATION_IN_PROGRESS_MESSAGE;
+    default:
+      return MODEL_GENERATION_IN_PROGRESS_MESSAGE;
+  }
+}
+
+function getLatestPendingGenerationRequest() {
+  let latestRequest = null;
+  for (const request of pendingGenerationRequestsById.values()) {
+    if (!latestRequest || request.sequence > latestRequest.sequence) {
+      latestRequest = request;
+    }
+  }
+  return latestRequest;
+}
+
+function renderPendingGenerationStatusMessageIfAny() {
+  const latestPendingRequest = getLatestPendingGenerationRequest();
+  if (!latestPendingRequest) {
+    return false;
+  }
+  showModelGenerationInProgressMessage(
+    resolveInProgressMessageByRequestType(latestPendingRequest.type),
+  );
+  return true;
+}
+
+function beginPendingGenerationRequest({
+  type,
+  modelId = null,
+  modelVersionId = null,
+}) {
+  generationRequestSequence += 1;
+  const requestId = `generation_${generationRequestSequence}`;
+  pendingGenerationRequestsById.set(requestId, {
+    id: requestId,
+    sequence: generationRequestSequence,
+    type,
+    modelId,
+    modelVersionId,
+    createdAt: Date.now(),
+  });
+  renderPendingGenerationStatusMessageIfAny();
+  return requestId;
+}
+
+function endPendingGenerationRequest(requestId) {
+  if (!requestId) {
+    return;
+  }
+  pendingGenerationRequestsById.delete(requestId);
+}
+
+function storeDeferredRegenerationPreview(preview) {
+  const modelVersionKey = normalizeComparableId(preview?.modelVersionId);
+  if (!modelVersionKey) {
+    return;
+  }
+  deferredRegenerationPreviewsByVersionId.set(modelVersionKey, {
+    ...preview,
+    createdAt: Date.now(),
+  });
+}
+
+function consumeDeferredRegenerationPreview({ modelId, modelVersionId }) {
+  const modelVersionKey = normalizeComparableId(modelVersionId);
+  if (!modelVersionKey) {
+    return null;
+  }
+
+  const preview = deferredRegenerationPreviewsByVersionId.get(modelVersionKey);
+  if (!preview) {
+    return null;
+  }
+
+  if (
+    modelId &&
+    normalizeComparableId(preview.modelId) !== normalizeComparableId(modelId)
+  ) {
+    return null;
+  }
+
+  deferredRegenerationPreviewsByVersionId.delete(modelVersionKey);
+  return preview;
+}
+
+function showDeferredRegenerationReadyMessage(modelId) {
+  const modelLabel = escapeHtml(getModelDisplayLabel(modelId));
+  modelEditorStore.setStatusMessage({
+    type: "info",
+    contentHtml: `Regeneration ready for ${modelLabel}${MODEL_REGENERATION_READY_MESSAGE_SUFFIX}`,
+    closable: true,
+    autoCloseMs: 8000,
+  });
+}
+
+function showDeferredRegenerationErrorMessage(modelId) {
+  const modelLabel = escapeHtml(getModelDisplayLabel(modelId));
+  modelEditorStore.setStatusMessage({
+    type: "error",
+    contentHtml: `Regeneration failed for ${modelLabel}${MODEL_REGENERATION_FAILED_MESSAGE_SUFFIX}`,
+    closable: true,
+    autoCloseMs: 8000,
+  });
+}
 
 function queuePreviewRender(task) {
   const run = previewRenderQueue.then(task);
@@ -285,15 +461,13 @@ function findProcessDescriptionInWrapper(wrapperRoot) {
 
   return (
     directChildren.find(
-      (node) => node.localName === "description" && node.namespaceURI !== DBPM_NS,
+      (node) =>
+        node.localName === "description" && node.namespaceURI !== DBPM_NS,
     ) || null
   );
 }
 
-function composeRegeneratedModelData({
-  currentModelData,
-  generatedModelData,
-}) {
+function composeRegeneratedModelData({ currentModelData, generatedModelData }) {
   const generatedDoc = parseXmlDocument(generatedModelData);
   if (!generatedDoc?.documentElement) {
     return generatedModelData;
@@ -317,7 +491,11 @@ function composeRegeneratedModelData({
       "description",
       null,
     );
-    standaloneDoc.documentElement.setAttributeNS(XMLNS_NS, "xmlns:dbpm", DBPM_NS);
+    standaloneDoc.documentElement.setAttributeNS(
+      XMLNS_NS,
+      "xmlns:dbpm",
+      DBPM_NS,
+    );
     const imported = standaloneDoc.importNode(generatedDescription, true);
     ensureDescriptionNamespace(imported);
     standaloneDoc.documentElement.appendChild(imported);
@@ -354,7 +532,10 @@ function buildSelectionsSignature(selections, mapper) {
   return JSON.stringify(normalizedSelections.map(mapper));
 }
 
-function classifyTraceSelectionChange({ previousSelections, currentSelections }) {
+function classifyTraceSelectionChange({
+  previousSelections,
+  currentSelections,
+}) {
   const previousTextSignature = buildSelectionsSignature(
     previousSelections,
     (selection) => ({
@@ -443,7 +624,10 @@ function notifyTraceUpdateTriggered({
   };
   console.log("[DBPM] Trace update triggered", detail);
 
-  if (typeof window !== "undefined" && typeof window.dispatchEvent === "function") {
+  if (
+    typeof window !== "undefined" &&
+    typeof window.dispatchEvent === "function"
+  ) {
     window.dispatchEvent(
       new CustomEvent("dbpm:trace-update-triggered", {
         detail,
@@ -491,39 +675,197 @@ function resolveTraceDocumentMeta(trace = {}) {
   return meta;
 }
 
-function clearNoLinkedSelectionsError() {
-  modelEditorStore.clearErrorsByCode(NO_LINKED_SELECTIONS_ERROR_CODE);
+function resolveModelVersionIdFromErrorContext({
+  modelId = null,
+  modelVersionId = null,
+  traceId = null,
+} = {}) {
+  if (modelVersionId !== undefined && modelVersionId !== null) {
+    return String(modelVersionId);
+  }
+
+  const traces = documentViewerStore.getTraces() || [];
+  if (traceId !== undefined && traceId !== null) {
+    const trace = traces.find(
+      (item) => String(item?.id || "") === String(traceId),
+    );
+    if (trace?.modelVersionId) {
+      return String(trace.modelVersionId);
+    }
+  }
+
+  if (modelId !== undefined && modelId !== null) {
+    const trace = traces.find(
+      (item) => String(item?.modelId || "") === String(modelId),
+    );
+    if (trace?.modelVersionId) {
+      return String(trace.modelVersionId);
+    }
+  }
+
+  const editingModelVersionId = workspaceStore.getEditingModel()?.versionId;
+  return editingModelVersionId ? String(editingModelVersionId) : null;
+}
+
+function syncModelEditorErrorsFromCachedActiveVersion() {
+  const editingModelVersionId = workspaceStore.getEditingModel()?.versionId;
+  if (!editingModelVersionId) {
+    modelEditorStore.clearErrors();
+    return;
+  }
+  modelEditorStore.setErrors(
+    modelsStore.getCachedVersionErrors(String(editingModelVersionId)),
+  );
+}
+
+function clearNoLinkedSelectionsError(context = {}) {
+  const targetModelVersionId = resolveModelVersionIdFromErrorContext(context);
+  if (targetModelVersionId) {
+    modelsStore.clearCachedVersionErrorsByCode(
+      targetModelVersionId,
+      NO_LINKED_SELECTIONS_ERROR_CODE,
+    );
+  }
+
+  if (
+    isNoSelectionsContextCurrentDisplay({
+      ...context,
+      modelVersionId: targetModelVersionId || context?.modelVersionId || null,
+    })
+  ) {
+    syncModelEditorErrorsFromCachedActiveVersion();
+  }
 }
 
 function upsertNoLinkedSelectionsError({
   message,
   source,
+  modelId = null,
   modelVersionId = null,
   traceId = null,
 }) {
-  const editingModelId = workspaceStore.getEditingModelId();
-  modelEditorStore.addError({
+  const resolvedModelVersionId = resolveModelVersionIdFromErrorContext({
+    modelId,
+    modelVersionId,
+    traceId,
+  });
+  if (!resolvedModelVersionId) {
+    if (isNoSelectionsContextCurrentDisplay({ modelId, modelVersionId, traceId })) {
+      syncModelEditorErrorsFromCachedActiveVersion();
+    }
+    return;
+  }
+
+  const resolvedModelId =
+    modelId !== undefined && modelId !== null
+      ? String(modelId)
+      : modelsStore.getModelIdByVersionId(resolvedModelVersionId);
+
+  modelsStore.upsertCachedVersionError(resolvedModelVersionId, {
     id: NO_LINKED_SELECTIONS_ERROR_CODE,
     code: NO_LINKED_SELECTIONS_ERROR_CODE,
     message,
     source,
-    modelId: editingModelId || null,
-    modelVersionId:
-      modelVersionId === undefined || modelVersionId === null
+    modelId:
+      resolvedModelId === undefined || resolvedModelId === null
         ? null
-        : String(modelVersionId),
+        : String(resolvedModelId),
+    modelVersionId: resolvedModelVersionId,
     traceId: traceId === undefined || traceId === null ? null : String(traceId),
   });
+
+  if (
+    isNoSelectionsContextCurrentDisplay({
+      modelId: resolvedModelId || null,
+      modelVersionId: resolvedModelVersionId,
+      traceId,
+    })
+  ) {
+    syncModelEditorErrorsFromCachedActiveVersion();
+  }
 }
 
-function syncNoSelectionsErrorIfNeeded(selectionCount, source) {
+function isNoSelectionsContextCurrentDisplay({
+  modelId = null,
+  modelVersionId = null,
+  traceId = null,
+} = {}) {
+  const hasExplicitContext = [modelId, modelVersionId, traceId].some(
+    (value) => value !== undefined && value !== null,
+  );
+  if (!hasExplicitContext) {
+    return true;
+  }
+
+  const activeTrace = documentViewerStore.getDisplayedModelTrace();
+  if (activeTrace) {
+    if (
+      traceId !== undefined &&
+      traceId !== null &&
+      String(activeTrace.id || "") === String(traceId)
+    ) {
+      return true;
+    }
+    if (
+      modelVersionId !== undefined &&
+      modelVersionId !== null &&
+      String(activeTrace.modelVersionId || "") === String(modelVersionId)
+    ) {
+      return true;
+    }
+    if (
+      modelId !== undefined &&
+      modelId !== null &&
+      String(activeTrace.modelId || "") === String(modelId)
+    ) {
+      return true;
+    }
+  }
+
+  const editingModel = workspaceStore.getEditingModel() || {};
+  if (
+    modelVersionId !== undefined &&
+    modelVersionId !== null &&
+    String(editingModel.versionId || "") === String(modelVersionId)
+  ) {
+    return true;
+  }
+  if (
+    modelId !== undefined &&
+    modelId !== null &&
+    String(editingModel.id || "") === String(modelId)
+  ) {
+    return true;
+  }
+  return false;
+}
+
+function syncNoSelectionsErrorIfNeeded(
+  selectionCount,
+  source,
+  context = {},
+) {
+  const resolvedModelVersionId = resolveModelVersionIdFromErrorContext(context);
+  const resolvedContext = {
+    ...context,
+    modelVersionId: resolvedModelVersionId || context?.modelVersionId || null,
+  };
+
   if (selectionCount !== 0) {
-    clearNoLinkedSelectionsError();
+    clearNoLinkedSelectionsError(resolvedContext);
     return;
   }
   const message = NO_LINKED_SELECTIONS_ON_UPDATE_MESSAGE;
-  console.warn(`[DBPM] ${message}`, { source });
-  upsertNoLinkedSelectionsError({ message, source });
+  if (isNoSelectionsContextCurrentDisplay(resolvedContext)) {
+    console.warn(`[DBPM] ${message}`, { source });
+  }
+  upsertNoLinkedSelectionsError({
+    message,
+    source,
+    modelId: context?.modelId || null,
+    modelVersionId: resolvedContext.modelVersionId,
+    traceId: context?.traceId || null,
+  });
 }
 
 function syncNoSelectionsOnModelVersionLoadIfNeeded(source) {
@@ -541,7 +883,10 @@ function syncNoSelectionsOnModelVersionLoadIfNeeded(source) {
     viewedDocumentId &&
     String(modelDocumentId) !== String(viewedDocumentId)
   ) {
-    clearNoLinkedSelectionsError();
+    clearNoLinkedSelectionsError({
+      modelId: editingModelId,
+      modelVersionId,
+    });
     return;
   }
 
@@ -549,14 +894,21 @@ function syncNoSelectionsOnModelVersionLoadIfNeeded(source) {
     (item) => String(item?.modelVersionId || "") === String(modelVersionId),
   );
   if (!trace) {
-    clearNoLinkedSelectionsError();
+    clearNoLinkedSelectionsError({
+      modelId: editingModelId,
+      modelVersionId,
+    });
     return;
   }
   const selectionCount = Array.isArray(trace?.selections)
     ? trace.selections.length
     : 0;
   if (selectionCount > 0) {
-    clearNoLinkedSelectionsError();
+    clearNoLinkedSelectionsError({
+      modelId: editingModelId,
+      modelVersionId,
+      traceId: trace?.id || null,
+    });
     return;
   }
 
@@ -582,15 +934,16 @@ function syncNoSelectionsOnModelVersionLoadIfNeeded(source) {
   upsertNoLinkedSelectionsError({
     message,
     source,
+    modelId: editingModelId || null,
     modelVersionId: currentVersionId,
     traceId: trace?.id || null,
   });
 }
 
-function showModelGenerationInProgressMessage() {
+function showModelGenerationInProgressMessage(contentHtml) {
   modelEditorStore.setStatusMessage({
     type: "info",
-    text: MODEL_GENERATION_IN_PROGRESS_MESSAGE,
+    contentHtml: contentHtml || MODEL_GENERATION_IN_PROGRESS_MESSAGE,
     closable: false,
     autoCloseMs: 0,
   });
@@ -599,7 +952,7 @@ function showModelGenerationInProgressMessage() {
 function showModelGenerationErrorMessage() {
   modelEditorStore.setStatusMessage({
     type: "error",
-    text: MODEL_GENERATION_ERROR_MESSAGE,
+    contentHtml: MODEL_GENERATION_ERROR_MESSAGE,
     closable: true,
     autoCloseMs: 0,
   });
@@ -849,10 +1202,27 @@ export default {
       return;
     }
   },
+  applyDeferredRegenerationPreviewForActiveEditingModel() {
+    const activeContext = getEditingModelContext();
+    if (!activeContext.modelId || !activeContext.modelVersionId) {
+      return false;
+    }
+
+    const deferredPreview = consumeDeferredRegenerationPreview(activeContext);
+    if (!deferredPreview?.regeneratedDataXml) {
+      return false;
+    }
+
+    modelEditorStore.setData(deferredPreview.regeneratedDataXml, {
+      updateType: deferredPreview.updateType,
+    });
+    return true;
+  },
 
   async generateModelByPrompt(userInput) {
-    const { id: editingModelId, versionId: editingModelVersionId } =
-      workspaceStore.getEditingModel() || {};
+    const regenerationContext = getEditingModelContext();
+    const { modelId: editingModelId, modelVersionId: editingModelVersionId } =
+      regenerationContext;
     if (!editingModelId || !editingModelVersionId) {
       console.warn(
         "No active editing model found for prompt regeneration; aborting.",
@@ -862,23 +1232,32 @@ export default {
 
     const rpstXml = modelEditorStore.getSerializedRpstData();
     if (!rpstXml) {
-      console.warn("Failed to resolve current model XML for prompt regeneration.");
+      console.warn(
+        "Failed to resolve current model XML for prompt regeneration.",
+      );
       return null;
     }
 
-    showModelGenerationInProgressMessage();
+    const previousModelData = modelEditorStore.getSerializedData();
+    if (!previousModelData) {
+      console.warn(
+        "No current model data found for prompt regeneration preview.",
+      );
+      return null;
+    }
+
+    const requestId = beginPendingGenerationRequest({
+      type: "regeneration_prompt",
+      modelId: editingModelId,
+      modelVersionId: editingModelVersionId,
+    });
     let hasError = false;
+    let hasAppliedToActiveModel = false;
+    let hasDeferredPreview = false;
     try {
       const generatedModel = await this.generateModel(userInput, rpstXml);
       if (!generatedModel) {
         throw new Error("Model generation returned an empty result.");
-      }
-
-      const previousModelData = modelEditorStore.getSerializedData();
-      if (!previousModelData) {
-        throw new Error(
-          "No current model data found for prompt regeneration preview.",
-        );
       }
 
       const regeneratedModelData = composeRegeneratedModelData({
@@ -886,11 +1265,25 @@ export default {
         generatedModelData: generatedModel,
       });
 
-      modelEditorStore.setData(regeneratedModelData, {
+      const preview = {
+        modelId: editingModelId,
+        modelVersionId: editingModelVersionId,
         updateType: MODEL_UPDATE_TYPE.REGENERATION_BY_PROMPT,
-      });
+        previousDataXml: previousModelData,
+        regeneratedDataXml: regeneratedModelData,
+      };
+      if (isEditingModelContextActive(regenerationContext)) {
+        modelEditorStore.setData(preview.regeneratedDataXml, {
+          updateType: preview.updateType,
+        });
+        hasAppliedToActiveModel = true;
+      } else {
+        storeDeferredRegenerationPreview(preview);
+        hasDeferredPreview = true;
+        showDeferredRegenerationReadyMessage(editingModelId);
+      }
 
-      modelsAPI.logs.createLogEntry({
+      logsAPI.createLogEntry({
         event: "model_regenerated_by_prompt",
         data: { modelId: editingModelId },
       });
@@ -903,46 +1296,75 @@ export default {
     } catch (error) {
       hasError = true;
       console.error("Failed to regenerate model by prompt:", error);
-      showModelGenerationErrorMessage();
+      if (isEditingModelContextActive(regenerationContext)) {
+        showModelGenerationErrorMessage();
+      } else {
+        showDeferredRegenerationErrorMessage(editingModelId);
+      }
       return null;
     } finally {
-      if (!hasError) {
+      endPendingGenerationRequest(requestId);
+
+      const hasAnyPending = renderPendingGenerationStatusMessageIfAny();
+      if (hasAnyPending || hasDeferredPreview || hasError) {
+        return;
+      }
+      if (hasAppliedToActiveModel) {
         modelEditorStore.clearStatusMessage();
       }
     }
   },
 
   async generateModelBySelections(target) {
-    showModelGenerationInProgressMessage();
+    const normalizedTarget =
+      target === MODEL_GENERATION_TARGET.EDITING_MODEL
+        ? MODEL_GENERATION_TARGET.EDITING_MODEL
+        : MODEL_GENERATION_TARGET.NEW_MODEL;
+    const regenerationContext =
+      normalizedTarget === MODEL_GENERATION_TARGET.EDITING_MODEL
+        ? getEditingModelContext()
+        : null;
+    const hasEditingContextAtStart =
+      !!regenerationContext?.modelId && !!regenerationContext?.modelVersionId;
+    const previousModelData = hasEditingContextAtStart
+      ? modelEditorStore.getSerializedData()
+      : null;
+
+    if (hasEditingContextAtStart && !previousModelData) {
+      console.warn("No current model data found for regeneration preview.");
+      return null;
+    }
+
+    const requestId = beginPendingGenerationRequest({
+      type:
+        normalizedTarget === MODEL_GENERATION_TARGET.EDITING_MODEL
+          ? "regeneration_selections"
+          : "new_model",
+      modelId: regenerationContext?.modelId || null,
+      modelVersionId: regenerationContext?.modelVersionId || null,
+    });
     let hasError = false;
+    let hasAppliedToActiveModel = false;
+    let hasDeferredPreview = false;
     try {
       const selectedText = documentViewerStore.getSelectedText();
-      const generatedModel = await this.generateModel(selectedText, EMPTY_MODEL);
+      const generatedModel = await this.generateModel(
+        selectedText,
+        EMPTY_MODEL,
+      );
       if (!generatedModel) {
         throw new Error("Model generation returned an empty result.");
       }
-
-      const normalizedTarget =
-        target === MODEL_GENERATION_TARGET.EDITING_MODEL
-          ? MODEL_GENERATION_TARGET.EDITING_MODEL
-          : MODEL_GENERATION_TARGET.NEW_MODEL;
 
       if (normalizedTarget === MODEL_GENERATION_TARGET.NEW_MODEL) {
         return await this.createModelAndTrace(generatedModel);
       }
 
-      const { id: editingModelId, versionId: editingModelVersionId } =
-        workspaceStore.getEditingModel() || {};
-      if (!editingModelId || !editingModelVersionId) {
+      if (!hasEditingContextAtStart) {
         console.warn(
           "No active editing model/version found for regeneration; creating a new model instead.",
         );
         return await this.createModelAndTrace(generatedModel);
-      }
-
-      const previousModelData = modelEditorStore.getSerializedData();
-      if (!previousModelData) {
-        throw new Error("No current model data found for regeneration preview.");
       }
 
       const regeneratedModelData = composeRegeneratedModelData({
@@ -950,22 +1372,54 @@ export default {
         generatedModelData: generatedModel,
       });
 
-      modelEditorStore.setData(regeneratedModelData, {
+      const preview = {
+        modelId: regenerationContext.modelId,
+        modelVersionId: regenerationContext.modelVersionId,
         updateType: MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS,
-      });
+        previousDataXml: previousModelData,
+        regeneratedDataXml: regeneratedModelData,
+      };
+      if (isEditingModelContextActive(regenerationContext)) {
+        modelEditorStore.setData(preview.regeneratedDataXml, {
+          updateType: preview.updateType,
+        });
+        hasAppliedToActiveModel = true;
+      } else {
+        storeDeferredRegenerationPreview(preview);
+        hasDeferredPreview = true;
+        showDeferredRegenerationReadyMessage(regenerationContext.modelId);
+      }
 
       return {
-        id: editingModelId,
-        versionId: editingModelVersionId,
+        id: regenerationContext.modelId,
+        versionId: regenerationContext.modelVersionId,
         data: generatedModel,
       };
     } catch (error) {
       hasError = true;
       console.error("Failed to generate model by selections:", error);
-      showModelGenerationErrorMessage();
+      if (
+        normalizedTarget === MODEL_GENERATION_TARGET.NEW_MODEL ||
+        !hasEditingContextAtStart ||
+        isEditingModelContextActive(regenerationContext)
+      ) {
+        showModelGenerationErrorMessage();
+      } else {
+        showDeferredRegenerationErrorMessage(regenerationContext.modelId);
+      }
       return null;
     } finally {
-      if (!hasError) {
+      endPendingGenerationRequest(requestId);
+
+      const hasAnyPending = renderPendingGenerationStatusMessageIfAny();
+      if (hasAnyPending || hasDeferredPreview || hasError) {
+        return;
+      }
+      if (
+        normalizedTarget === MODEL_GENERATION_TARGET.NEW_MODEL ||
+        !hasEditingContextAtStart ||
+        hasAppliedToActiveModel
+      ) {
         modelEditorStore.clearStatusMessage();
       }
     }
@@ -1006,6 +1460,7 @@ export default {
       id: createdModelMeta.id,
       versionId: createdModelMeta.latestVersionId,
     });
+    this.syncCachedErrorsForActiveEditingModel();
     modelEditorStore.setData(preparedModelData, {
       updateType: null,
     });
@@ -1115,7 +1570,12 @@ export default {
     modelEditorStore.setData(cached.dataXml, {
       updateType: null,
     });
+    this.applyDeferredRegenerationPreviewForActiveEditingModel();
+    this.syncCachedErrorsForActiveEditingModel();
     syncNoSelectionsOnModelVersionLoadIfNeeded("load_model_version");
+  },
+  syncCachedErrorsForActiveEditingModel() {
+    syncModelEditorErrorsFromCachedActiveVersion();
   },
   maybeAlertNoSelectionOnLoadedEditingModel(source = "manual_check") {
     syncNoSelectionsOnModelVersionLoadIfNeeded(source);
@@ -1128,7 +1588,8 @@ export default {
     }
 
     const normalizedSubprocessModelId =
-      typeof subprocessModelId === "string" && subprocessModelId.trim().length > 0
+      typeof subprocessModelId === "string" &&
+      subprocessModelId.trim().length > 0
         ? subprocessModelId.trim()
         : null;
 
@@ -1152,9 +1613,42 @@ export default {
     }
     projectGraphStore.removeSubprocessEdge(modelId, taskId);
   },
-  async updateEditingVersion(type) {
+  async updateEditingVersion(type, options = {}) {
+    const { expectedModelId = null, expectedModelVersionId = null } = options;
     const { id: modelId, versionId: modelVersionId } =
       workspaceStore.getEditingModel();
+    if (!modelId || !modelVersionId) {
+      console.warn(
+        "Skipping updateEditingVersion: no active editing model/version.",
+      );
+      return null;
+    }
+
+    if (
+      expectedModelId &&
+      normalizeComparableId(expectedModelId) !== normalizeComparableId(modelId)
+    ) {
+      console.warn("Skipping updateEditingVersion due to model mismatch.", {
+        expectedModelId,
+        modelId,
+      });
+      return null;
+    }
+
+    if (
+      expectedModelVersionId &&
+      normalizeComparableId(expectedModelVersionId) !==
+        normalizeComparableId(modelVersionId)
+    ) {
+      console.warn(
+        "Skipping updateEditingVersion due to model version mismatch.",
+        {
+          expectedModelVersionId,
+          modelVersionId,
+        },
+      );
+      return null;
+    }
 
     const trace =
       type === MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS ||
@@ -1165,7 +1659,10 @@ export default {
     if (type === MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS) {
       const selectedText = selectionsToText(trace?.selections || []);
       const documentMeta = resolveTraceDocumentMeta(trace || {});
-      modelEditorStore.updateModelDbpmTextSelections(selectedText, documentMeta);
+      modelEditorStore.updateModelDbpmTextSelections(
+        selectedText,
+        documentMeta,
+      );
     }
     const modelData = modelEditorStore.getSerializedData();
 
@@ -1247,7 +1744,8 @@ export default {
     }
 
     try {
-      const currentModelData = await modelsAPI.getDataByVersionId(modelVersionId);
+      const currentModelData =
+        await modelsAPI.getDataByVersionId(modelVersionId);
       const updatedModelData = updateDbpmTextSelections(
         currentModelData,
         selectionsToText(serializedTrace.selections),
@@ -1257,10 +1755,11 @@ export default {
         ? serializedTrace.selections.length
         : 0;
       if (alertOnEmptyAfterDeletion || selectionCount > 0) {
-        syncNoSelectionsErrorIfNeeded(
-          selectionCount,
-          "updateTraceTextById",
-        );
+        syncNoSelectionsErrorIfNeeded(selectionCount, "updateTraceTextById", {
+          modelId: serializedTrace.modelId || null,
+          modelVersionId: serializedTrace.modelVersionId || null,
+          traceId: serializedTrace.id || null,
+        });
       }
       notifyTraceUpdateTriggered({
         source: "updateTraceTextById",
@@ -1276,7 +1775,9 @@ export default {
       });
 
       modelsStore.addCachedVersion(modelVersionId, {
-        ...(serializedTrace.modelId ? { modelId: serializedTrace.modelId } : {}),
+        ...(serializedTrace.modelId
+          ? { modelId: serializedTrace.modelId }
+          : {}),
         dataXml: updatedModelData,
         status: "ready",
         error: null,
@@ -1347,6 +1848,11 @@ export default {
           syncNoSelectionsErrorIfNeeded(
             currentSelections.length,
             "updateActiveModelTrace",
+            {
+              modelId: updatedTrace.modelId || null,
+              modelVersionId: updatedTrace.modelVersionId || null,
+              traceId: updatedTrace.id || null,
+            },
           );
         }
         const modelData = modelEditorStore.getSerializedData();
