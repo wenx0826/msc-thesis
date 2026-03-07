@@ -340,6 +340,40 @@ li.list-item:hover {
   flex: 0
 }
 
+.bulk-actions-bar {
+  border-top: 1px solid var(--x-ui-border-color);
+  border-bottom: 1px solid var(--x-ui-border-color);
+  background-color: var(--x-ui-content-light-background);
+}
+
+.bulk-actions-bar__count {
+  font-size: 12px;
+  color: var(--x-ui-text-muted-color);
+}
+
+/* .item-select-checkbox {
+  margin: 0;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  cursor: pointer;
+} */
+
+#documentsPanel .item-select-checkbox,
+#modelsPanel .item-select-checkbox {
+  display: none;
+}
+
+#documentsPanel[data-bulk-mode="true"] .bulk-actions-bar,
+#modelsPanel[data-bulk-mode="true"] .bulk-actions-bar {
+  display: flex;
+}
+
+#documentsPanel[data-bulk-mode="true"] .item-select-checkbox,
+#modelsPanel[data-bulk-mode="true"] .item-select-checkbox {
+  display: inline-flex;
+}
+
 /*--- document list pane ---*/
 #documentsList {
   /* max-width: 100%; */
@@ -389,10 +423,10 @@ li.list-item .inline-editor__view {
 }
 
 li.list-item.is-current {
-  /* font-weight: bold; */
   font-weight: 600;
   background-color: var(--x-ui-content-highlighted-background);
 }
+
 
 /* li:hover {
     cursor: pointer;
@@ -552,14 +586,6 @@ text.duration {
   border-right: 1em solid white; */
 }
 
-#regeneratedModelActionBar button {
-  /* padding: 6px 12px;
-  border: 1px solid var(--x-ui-border-color);
-  border-radius: 0.5em; */
-  background-color: var(--x-ui-background-color);
-  /* cursor: pointer; */
-}
-
 #regeneratedModelActionBar.regeneration-click-hint {
   z-index: 6;
   border-top-color: #1d4ed8;
@@ -645,6 +671,5 @@ text.duration {
 .model-grid-item.is-current {
   border: 2px solid var(--wfadaptor-highlight);
 }
-
 
 /* ---------------- models pane ----------------*/

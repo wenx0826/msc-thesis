@@ -12,6 +12,12 @@ const $documentsCount = $("#documentsCount");
 const $documentsInput = $("#documentsInput");
 const $documentVersionInput = $("#documentVersionInput");
 const $documentsList = $("#documentsList");
+const $documentsPanel = $("#documentsPanel");
+const $documentsBulkEditToggleButton = $("#documentsBulkEditToggleButton");
+const $documentsSelectedCount = $("#documentsSelectedCount");
+const $documentsSelectAllButton = $("#documentsSelectAllButton");
+const $documentsClearSelectionButton = $("#documentsClearSelectionButton");
+const $documentsDeleteSelectedButton = $("#documentsDeleteSelectedButton");
 // #endregion
 
 // #region DOM Rendering and Manipulation
@@ -20,13 +26,56 @@ function syncDocumentsCount() {
   $documentsCount.text(count);
 }
 
+function getVisibleDocumentIds() {
+  return $documentsList
+    .find("li[data-doc-id]")
+    .map((_, element) => String(element.dataset.docId || ""))
+    .get()
+    .filter(Boolean);
+}
+
+function syncDocumentsSelectionControls() {
+  const isBulkEditMode = documentsStore.getIsBulkEditMode();
+  const selectedCount = documentsStore.getSelectedCount();
+  const visibleIds = getVisibleDocumentIds();
+  const visibleCount = visibleIds.length;
+  const selectedVisibleCount = visibleIds.filter((id) =>
+    documentsStore.isSelected(id),
+  ).length;
+
+  $documentsSelectedCount.text(`${selectedCount} selected`);
+  if (!isBulkEditMode) {
+    $documentsSelectAllButton.prop("disabled", true);
+    $documentsClearSelectionButton.prop("disabled", true);
+    $documentsDeleteSelectedButton.prop("disabled", true);
+    return;
+  }
+  $documentsSelectAllButton.prop(
+    "disabled",
+    visibleCount === 0 || selectedVisibleCount >= visibleCount,
+  );
+  $documentsClearSelectionButton.prop("disabled", selectedCount === 0);
+  $documentsDeleteSelectedButton.prop("disabled", selectedCount === 0);
+}
+
+function syncDocumentsBulkModeUI() {
+  const isBulkEditMode = documentsStore.getIsBulkEditMode();
+  $documentsPanel.attr("data-bulk-mode", isBulkEditMode ? "true" : "false");
+  $documentsBulkEditToggleButton.text(isBulkEditMode ? "Done" : "Bulk Edit");
+  syncDocumentsSelectionControls();
+}
+
 function addDocumentItem({ id: docId, name }) {
   const $documentItem = createTemplateElement("documentItemTemplate");
   $documentItem.attr("data-doc-id", docId);
   $documentItem.find("[data-ref='documentName']").text(name);
   const versionName = documentsStore.getLatestVersionName(docId);
   $documentItem.find("[data-ref='versionName']").text(versionName);
+  $documentItem
+    .find(".item-select-checkbox")
+    .prop("checked", documentsStore.isSelected(docId));
   $documentsList.append($documentItem);
+  setDocumentItemSelected(docId, documentsStore.isSelected(docId));
 }
 
 function getDocumentItem(docId) {
@@ -43,6 +92,25 @@ function syncDocumentItem(docId, { name, versionName } = {}) {
 function setDocumentItemCurrent(docId, isCurrent) {
   const $documentItem = getDocumentItem(docId);
   $documentItem.toggleClass("is-current", isCurrent);
+}
+
+function setDocumentItemSelected(docId, isSelected) {
+  const $documentItem = getDocumentItem(docId);
+  if ($documentItem.length === 0) {
+    return;
+  }
+  $documentItem.toggleClass("is-selected", isSelected);
+  $documentItem.find(".item-select-checkbox").prop("checked", isSelected);
+}
+
+function syncDocumentSelectionsInView() {
+  $documentsList.find("li[data-doc-id]").each((_, element) => {
+    const docId = element.dataset.docId;
+    if (!docId) {
+      return;
+    }
+    setDocumentItemSelected(docId, documentsStore.isSelected(docId));
+  });
 }
 
 function removeDocumentItem(docId) {
@@ -64,7 +132,17 @@ function onVersionInputChange(event, docId) {
 }
 
 function onDocItemClick(event) {
+  if (
+    $(event.target).closest(".item-select-checkbox, .more-actions-btn").length >
+    0
+  ) {
+    return;
+  }
   const documentId = $(event.currentTarget).data("docId");
+  if (documentsStore.getIsBulkEditMode()) {
+    documentsStore.toggleSelected(documentId);
+    return;
+  }
   workspaceService.displayDocument(documentId);
 }
 
@@ -74,6 +152,55 @@ function onDocItemActionsBtnClick(event, getActionsMenu) {
   const documentId = $documentItem.data("docId");
   const menu = getActionsMenu(documentId);
   createMenu(event, menu);
+}
+
+function onDocumentCheckboxMouseDown(event) {
+  event.stopPropagation();
+}
+
+function onDocumentCheckboxChange(event) {
+  event.stopPropagation();
+  if (!documentsStore.getIsBulkEditMode()) {
+    event.currentTarget.checked = false;
+    return;
+  }
+  const $documentItem = $(event.currentTarget).closest("li[data-doc-id]");
+  const documentId = $documentItem.data("docId");
+  documentsStore.setSelected(documentId, event.currentTarget.checked);
+}
+
+function onSelectAllDocuments() {
+  if (!documentsStore.getIsBulkEditMode()) {
+    return;
+  }
+  documentsStore.selectAllVisible(getVisibleDocumentIds());
+}
+
+function onClearDocumentsSelection() {
+  if (!documentsStore.getIsBulkEditMode()) {
+    return;
+  }
+  documentsStore.clearSelection();
+}
+
+async function onDeleteSelectedDocuments() {
+  if (!documentsStore.getIsBulkEditMode()) {
+    return;
+  }
+  const selectedIds = documentsStore.getSelectedIds();
+  if (selectedIds.length === 0) {
+    return;
+  }
+
+  const { failed = [] } =
+    await documentService.deleteDocumentsBulk(selectedIds);
+  if (failed.length > 0) {
+    console.error("Failed to delete some documents:", failed);
+  }
+}
+
+function onToggleDocumentsBulkEditMode() {
+  documentsStore.toggleBulkEditMode();
 }
 // #endregion
 
@@ -137,30 +264,54 @@ createUI({
   },
   bindListeners: ({ getActionsMenu }) => {
     $documentsInput.on("change", onDocumentsInputChange);
-    $documentsList.on("mousedown", "li", onDocItemClick);
-    $documentsList.on("mousedown", "li > :last-child", (e) =>
+    $documentsList.on("mousedown", "li[data-doc-id]", onDocItemClick);
+    $documentsList.on("mousedown", ".more-actions-btn", (e) =>
       onDocItemActionsBtnClick(e, getActionsMenu),
     );
+    $documentsList.on(
+      "mousedown",
+      ".item-select-checkbox",
+      onDocumentCheckboxMouseDown,
+    );
+    $documentsList.on(
+      "change",
+      ".item-select-checkbox",
+      onDocumentCheckboxChange,
+    );
+    $documentsSelectAllButton.on("click", onSelectAllDocuments);
+    $documentsClearSelectionButton.on("click", onClearDocumentsSelection);
+    $documentsDeleteSelectedButton.on("click", onDeleteSelectedDocuments);
+    $documentsBulkEditToggleButton.on("click", onToggleDocumentsBulkEditMode);
+    syncDocumentsBulkModeUI();
   },
-  subscribeStores: ({}) => {
+  subscribeStores: () => {
     documentsStore.subscribe((state, { key, operation, value }) => {
       switch (key) {
         case "entitiesById":
           switch (operation) {
             case "init":
+              $documentsList.find("li[data-doc-id]").remove();
               value.forEach((doc) => addDocumentItem(doc));
               syncDocumentsCount();
+              syncDocumentSelectionsInView();
+              syncDocumentsSelectionControls();
               break;
             case "add":
               addDocumentItem(value);
               syncDocumentsCount();
+              syncDocumentsSelectionControls();
               break;
             case "update":
               syncDocumentItem(value.id, { name: value.name });
               break;
             case "delete":
-              removeDocumentItem(value.id);
+              if (value?.id) {
+                removeDocumentItem(value.id);
+              }
               syncDocumentsCount();
+              syncDocumentsSelectionControls();
+              break;
+            default:
               break;
           }
           break;
@@ -168,13 +319,22 @@ createUI({
           if (operation === "add") {
             syncDocumentItem(value.documentId, { versionName: value.name });
           }
+          break;
+        case "selectedIds":
+          syncDocumentSelectionsInView();
+          syncDocumentsSelectionControls();
+          break;
+        case "isBulkEditMode":
+          syncDocumentsBulkModeUI();
+          syncDocumentSelectionsInView();
+          break;
         default:
           break;
       }
     });
-    workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
+    workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
       switch (key) {
-        case "viewedDocument":
+        case "viewedDocument": {
           const newDocId = newValue?.id;
           const oldDocId = oldValue?.id;
           if (newDocId === oldDocId) {
@@ -187,6 +347,7 @@ createUI({
             setDocumentItemCurrent(oldDocId, false);
           }
           break;
+        }
         default:
           break;
       }

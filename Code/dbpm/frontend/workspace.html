@@ -85,7 +85,7 @@
   <ui-rest class="main">
     <ui-content>
       <ui-rest class="pane pane--left">
-        <ui-tabbed id="documentsPanel">
+        <ui-tabbed id="documentsPanel" data-bulk-mode="false">
           <ui-tabbar>
             <ui-tab class="switch"></ui-tab>
             <ui-tab class="panel-header" data-tab="documents">
@@ -98,14 +98,25 @@
               <ui-bar>
                 <input type="file" id="documentVersionInput" class="hidden" />
                 <input type="file" id="documentsInput" multiple class="hidden" />
-                <div class="right">
-                  <button onclick="document.getElementById('documentsInput').click()">Upload</button>
+                <div class="right action-group">
+                  <button id="documentsBulkEditToggleButton" type="button">Bulk Edit</button>
+                  <button class="btn-primary"
+                    onclick="document.getElementById('documentsInput').click()">Upload</button>
+                </div>
+              </ui-bar>
+              <ui-bar id="documentsBulkActionsBar" class="bulk-actions-bar hidden">
+                <span id="documentsSelectedCount" class="bulk-actions-bar__count">0 selected</span>
+                <div class="right action-group">
+                  <button id="documentsSelectAllButton" disabled>Select All</button>
+                  <button id="documentsClearSelectionButton" disabled>Clear</button>
+                  <button id="documentsDeleteSelectedButton" disabled>Delete Selected</button>
                 </div>
               </ui-bar>
               <ul id="documentsList">
                 <template id="documentItemTemplate">
                   <li class="list-item" data-doc-id="">
-                    <!-- <input type="checkbox" /> -->
+                    <input type="checkbox" class="item-select-checkbox" data-role="select-document"
+                      aria-label="Select document" />
                     <div class="inline-editor">
                       <span class="document-name inline-editor__view" data-ref="documentName"></span>
                     </div>
@@ -175,7 +186,7 @@
                   <div class="selection-handle hidden" data-side="start"></div>
                   <div class="selection-handle hidden" data-side="end"></div>
                 </div>
-                <ui-bar id="selectedSelectionToolbar" aria-hidden="true">
+                <ui-bar id="selectedSelectionToolbar">
                   <form id="selectedSelectionColorForm" class="relaxngui_color_container">
                     <!-- <div class="relaxngui_color_container"> -->
                     <span class="round">
@@ -230,7 +241,7 @@
               <button id="addSelectionsButton" class="hidden" disabled>
                 Add Selections to Model
               </button>
-              <button id="generateModelButton" data-target="new_model" disabled>
+              <button id="generateModelButton" class="btn-primary" data-target="new_model" disabled>
                 Generate new model
               </button>
             </div>
@@ -253,14 +264,13 @@
           </ui-bar>
           <ui-divider></ui-divider>
           <ui-rest>
-
             <ui-content id="modelling">
               <ui-area id="graphgrid">
                 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink"
-                  id="graphcanvas" width="1" height="1" style="display: block"></svg>
+                  id="graphcanvas" width="1" height="1" style="display: block">
+                </svg>
               </ui-area>
             </ui-content>
-
             <div id="dat_details"></div>
             <div id="relaxngworker" class="hidden"></div>
             <ul id="modelErrorList">
@@ -270,7 +280,7 @@
             </ul>
             <div id="modelStatusMessage" class="hidden">
               <span id="modelStatusMessageText"></span>
-              <button id="modelStatusMessageClose" type="button" aria-label="Close status message">x</button>
+              <button id="modelStatusMessageClose">x</button>
             </div>
             <ui-bar id="regeneratedModelActionBar" class="hidden">
               <div class="right action-group">
@@ -300,7 +310,8 @@
       </ui-rest>
       <ui-resizehandle data-direction="vertical"></ui-resizehandle>
       <ui-rest class="pane pane--right">
-        <ui-rest id="modelsPanel" class="panel" data-current-view="grid" style="flex: 0.68 1 0; min-height: 100px">
+        <ui-rest id="modelsPanel" class="panel" data-current-view="grid" data-bulk-mode="false"
+          style="flex: 0.68 1 0; min-height: 100px">
           <ui-bar class="panel-header">
             <span class="panel-header__title">Models</span>
             <span class="panel-header__subtitle">(<span data-ref="modelsCount"></span>)</span>
@@ -315,7 +326,9 @@
                 ☰
               </button>
             </div>
-            <button class="right more-actions-btn"></button>
+            <div class="right action-group">
+              <button id="modelsBulkEditToggleButton" type="button">Bulk Edit</button>
+            </div>
           </ui-bar>
           <ui-bar>
             <!-- <div class="right">  -->
@@ -326,6 +339,14 @@
             </div>
             <!-- </div> -->
           </ui-bar>
+          <ui-bar id="modelsBulkActionsBar" class="bulk-actions-bar hidden">
+            <span id="modelsSelectedCount" class="bulk-actions-bar__count">0 selected</span>
+            <div class="right action-group">
+              <button id="modelsSelectAllButton" disabled>Select All</button>
+              <button id="modelsClearSelectionButton" disabled>Clear</button>
+              <button id="modelsDeleteSelectedButton" disabled>Delete Selected</button>
+            </div>
+          </ui-bar>
           <ui-rest>
             <ui-content>
               <ui-area>
@@ -333,21 +354,25 @@
                   <template id="modelGridTemplate">
                     <div class="model-grid-item" data-model-id="" data-model-version-id="" data-document-id="">
                       <ui-bar>
-                        <!-- <input type="checkbox" /> -->
+                        <input type="checkbox" class="item-select-checkbox" data-role="select-model"
+                          aria-label="Select model" />
                         <div class="inline-editor">
                           <span class="inline-editor__view" data-ref="modelName"></span>
                         </div>
                         <span class="version-name" data-ref="versionName"></span>
                         <button class="more-actions-btn"></button>
                       </ui-bar>
-                      <div data-ref="modelGrid"></div>
+                      <div data-ref="modelGrid">
+                        <div>Loading<span class="loading-dots"></span></div>
+                      </div>
                     </div>
                   </template>
                 </div>
                 <ul id="modelsList" data-belongs-to-view="list">
                   <template id="modelItemTemplate">
                     <li class="list-item model-list-item" data-model-id="" data-model-version-id="" data-document-id="">
-                      <!-- <input type="checkbox" /> -->
+                      <input type="checkbox" class="item-select-checkbox" data-role="select-model"
+                        aria-label="Select model" />
                       <div class="inline-editor">
                         <span class="inline-editor__view" data-ref="modelName"></span>
                       </div>
@@ -372,7 +397,7 @@
   <div id="modelPopover" class="hidden">
     <div id="modelPopoverContainer"></div>
   </div>
-  <iframe id="wfPreviewRendererIframe" src="workflow-viewer.html" aria-hidden="true" tabindex="-1"
+  <iframe id="wfPreviewRendererIframe" src="workflow-viewer.html"
     style="position: absolute; left: -10000px; top: -10000px; width: 1px; height: 1px; opacity: 0; pointer-events: none;"></iframe>
 </body>
 

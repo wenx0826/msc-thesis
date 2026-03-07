@@ -1,8 +1,8 @@
 import { baseURL, handleResponse, handleTextResponse } from "./base.js";
 import { Constants } from "../constants.js";
 
-const CREATE_MODEL_SIMULATED_NETWORK_DELAY_MS = 10 * 1000;
-const GENERATE_MODEL_SIMULATED_NETWORK_DELAY_MS = 10 * 1000;
+const CREATE_MODEL_SIMULATED_NETWORK_DELAY_MS = 5 * 1000;
+const GENERATE_MODEL_SIMULATED_NETWORK_DELAY_MS = 5 * 1000;
 
 function delay(ms) {
   return new Promise((resolve) => {

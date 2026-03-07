@@ -36,21 +36,14 @@
   color: var(--x-ui-text-muted-color);
 }
 
-/* h1 {
-  font-size: 2.5em;
-  font-weight: 600;
-  color: #111;
-} */
-
 #createProjectButton {
+  background: var(--x-ui-text-color);
   display: inline-flex;
   align-items: center;
   gap: 8px;
-
   padding: 0.5em 1.5em;
   margin-top: 12px;
   margin-bottom: 10px;
-
   border: none;
   border-radius: 0.6em;
   font-size: 1.25em;
@@ -73,14 +66,11 @@
 *[is="x-ui-"] ui-tabbar>ui-tab:not(.inactive)::after {
   content: "";
   position: absolute;
-  /* 覆盖位置 */
   bottom: -2pt;
   left: 0;
   right: 0;
   height: 2pt;
-
   background: var(--x-ui-background-color);
-  /* 关键 */
   z-index: 2;
   pointer-events: none;
 }
@@ -352,7 +342,7 @@ dialog {
   gap: 8px;
 } */
 
-#projectCreationDialog button {
+/* #projectCreationDialog button {
   height: 32px;
   min-width: 74px;
   padding: 0 12px;
@@ -363,33 +353,33 @@ dialog {
   cursor: pointer;
   font-size: 13px;
   font-weight: 600;
-}
+} */
 
-#projectCreationDialog #cancel:hover,
+/* #projectCreationDialog #cancel:hover,
 #projectCreationDialog #save:hover {
   background: var(--x-ui-content-hover-background, #e6e6e6);
-}
+} */
 
-#projectCreationDialog #cancel:active,
+/* #projectCreationDialog #cancel:active,
 #projectCreationDialog #save:active {
   background: var(--x-ui-content-highlight-background, #dddddd);
-}
+} */
 
-#projectCreationDialog #save {
+/* #projectCreationDialog #save {
   background: #222;
   border-color: #222;
   color: #fff;
-}
-
+} */
+/* 
 #projectCreationDialog #save:hover {
   background: #111;
   border-color: #111;
-}
+} */
 
-#projectCreationDialog #save:active {
+/* #projectCreationDialog #save:active {
   background: #000;
   border-color: #000;
-}
+} */
 
 /* ===== Dashboard Content ===== */
 

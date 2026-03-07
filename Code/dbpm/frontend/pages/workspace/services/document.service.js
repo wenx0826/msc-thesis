@@ -89,6 +89,28 @@ export default {
 
     return result;
   },
+  async deleteDocumentsBulk(documentIds = []) {
+    const uniqueIds = [...new Set((documentIds || []).filter(Boolean))];
+    const failed = [];
+    const deletedIds = [];
+
+    for (const documentId of uniqueIds) {
+      try {
+        await this.deleteDocument(documentId);
+        deletedIds.push(documentId);
+      } catch (error) {
+        failed.push({
+          id: documentId,
+          error,
+        });
+      }
+    }
+
+    return {
+      deletedIds,
+      failed,
+    };
+  },
   async uploadNewVersion(documentId, file) {
     const filename = file.name;
     const content = await getFileContentInHTML(file);

@@ -1,10 +1,7 @@
 import { createUI } from "../../../shared/utils/ui.js";
 import { modelsStore, workspaceStore } from "../store/index.js";
 import { modelService, workspaceService } from "../services/index.js";
-import {
-  createMenu,
-  createTemplateElement,
-} from "../../../shared/utils/dom.js";
+import { createTemplateElement } from "../../../shared/utils/dom.js";
 import initInlineEditor from "../../../shared/widgets/inline-editor.js";
 import { scopeSvgIds } from "../../../modules/model/utils/svg-scope.js";
 import { createModelActionsMenu } from "./model-actions-menu.ui.js";
@@ -13,6 +10,11 @@ const $modelsPanel = $("#modelsPanel");
 const $viewSwitch = $("#modelsViewSwitch");
 const $modelsGrid = $("#modelsGrid");
 const $modelsList = $("#modelsList");
+const $modelsBulkEditToggleButton = $("#modelsBulkEditToggleButton");
+const $modelsSelectedCount = $("#modelsSelectedCount");
+const $modelsSelectAllButton = $("#modelsSelectAllButton");
+const $modelsClearSelectionButton = $("#modelsClearSelectionButton");
+const $modelsDeleteSelectedButton = $("#modelsDeleteSelectedButton");
 const MODELS_LIST_HOVER_SOURCE = "models-list";
 
 // #region DOM Actions
@@ -22,8 +24,67 @@ function onViewSwitch(event) {
 }
 
 function onModelItemClick(event) {
+  if (
+    $(event.target).closest(".item-select-checkbox, .more-actions-btn").length >
+    0
+  ) {
+    return;
+  }
   const modelId = $(event.currentTarget).data("modelId");
+  if (modelsStore.getIsBulkEditMode()) {
+    modelsStore.toggleSelected(modelId);
+    return;
+  }
   workspaceService.toggleModelDisplay(modelId);
+}
+
+function onModelCheckboxMouseDown(event) {
+  event.stopPropagation();
+}
+
+function onModelCheckboxChange(event) {
+  event.stopPropagation();
+  if (!modelsStore.getIsBulkEditMode()) {
+    event.currentTarget.checked = false;
+    return;
+  }
+  const modelId = $(event.currentTarget)
+    .closest("[data-model-id]")
+    .data("modelId");
+  modelsStore.setSelected(modelId, event.currentTarget.checked);
+}
+
+function onSelectAllModels() {
+  if (!modelsStore.getIsBulkEditMode()) {
+    return;
+  }
+  modelsStore.selectAllVisible(getVisibleModelIds());
+}
+
+function onClearModelsSelection() {
+  if (!modelsStore.getIsBulkEditMode()) {
+    return;
+  }
+  modelsStore.clearSelection();
+}
+
+async function onDeleteSelectedModels() {
+  if (!modelsStore.getIsBulkEditMode()) {
+    return;
+  }
+  const selectedIds = modelsStore.getSelectedIds();
+  if (selectedIds.length === 0) {
+    return;
+  }
+
+  const { failed = [] } = await modelService.deleteModelsBulk(selectedIds);
+  if (failed.length > 0) {
+    console.error("Failed to delete some models:", failed);
+  }
+}
+
+function onToggleModelsBulkEditMode() {
+  modelsStore.toggleBulkEditMode();
 }
 
 function onModelListItemMouseEnter(event) {
@@ -53,8 +114,8 @@ function onModelListItemMouseLeave() {
 
 /**
  * Prepare an SVG element for display in the model list:
- * – add viewBox so it scales to fit container width
- * – scope internal ids to avoid cross-SVG collisions
+ * - add viewBox so it scales to fit container width
+ * - scope internal ids to avoid cross-SVG collisions
  */
 function prepareSvgForList(svgEl, modelId) {
   // 1. responsive sizing
@@ -134,7 +195,6 @@ function toSvgElement(svgSource) {
 }
 
 async function renderModel(model) {
-  //
   const modelId = model?.id;
   const isCurrent = modelId == workspaceStore.getEditingModel()?.id;
   const versionName =
@@ -158,12 +218,13 @@ async function renderModel(model) {
   try {
     const outputFrame = await getModelSvg(model.latestVersionId, modelId);
     if (!outputFrame) {
-      throw new Error(`No cached SVG available for version ${model.latestVersionId}`);
+      throw new Error(
+        `No cached SVG available for version ${model.latestVersionId}`,
+      );
     }
     updateModelInList({ modelId, svg: outputFrame });
   } catch (err) {
     console.error("Error getting model SVG for model ID", modelId, ":", err);
-    // return;
   }
 
   // List view
@@ -177,6 +238,7 @@ async function renderModel(model) {
     $listItem.addClass("is-current");
   }
   $modelsList.append($listItem);
+  setModelItemSelected(modelId, modelsStore.isSelected(modelId));
 }
 
 function updateModelInList({ modelId, svg }) {
@@ -198,20 +260,66 @@ function setView(view) {
   $viewSwitch.find(".switch-btn").removeClass("is-current");
   $viewSwitch.find(`.switch-btn[data-view="${view}"]`).addClass("is-current");
   $modelsPanel.attr("data-current-view", view);
+  syncModelsSelectionControls();
+}
+
+function getCurrentView() {
+  return $modelsPanel.attr("data-current-view") || "grid";
+}
+
+function getVisibleModelIds() {
+  if (getCurrentView() === "list") {
+    return $modelsList
+      .find(".model-list-item[data-model-id]:visible")
+      .map((_, element) => String(element.dataset.modelId || ""))
+      .get()
+      .filter(Boolean);
+  }
+  return $modelsGrid
+    .find(".model-grid-item[data-model-id]:visible")
+    .map((_, element) => String(element.dataset.modelId || ""))
+    .get()
+    .filter(Boolean);
+}
+
+function syncModelsSelectionControls() {
+  const isBulkEditMode = modelsStore.getIsBulkEditMode();
+  const selectedCount = modelsStore.getSelectedCount();
+  const visibleIds = getVisibleModelIds();
+  const visibleCount = visibleIds.length;
+  const selectedVisibleCount = visibleIds.filter((id) =>
+    modelsStore.isSelected(id),
+  ).length;
+
+  $modelsSelectedCount.text(`${selectedCount} selected`);
+  if (!isBulkEditMode) {
+    $modelsSelectAllButton.prop("disabled", true);
+    $modelsClearSelectionButton.prop("disabled", true);
+    $modelsDeleteSelectedButton.prop("disabled", true);
+    return;
+  }
+  $modelsSelectAllButton.prop(
+    "disabled",
+    visibleCount === 0 || selectedVisibleCount >= visibleCount,
+  );
+  $modelsClearSelectionButton.prop("disabled", selectedCount === 0);
+  $modelsDeleteSelectedButton.prop("disabled", selectedCount === 0);
+}
+
+function syncModelsBulkModeUI() {
+  const isBulkEditMode = modelsStore.getIsBulkEditMode();
+  $modelsPanel.attr("data-bulk-mode", isBulkEditMode ? "true" : "false");
+  $modelsBulkEditToggleButton.text(isBulkEditMode ? "Done" : "Bulk Edit");
+  syncModelsSelectionControls();
 }
 
 function updateModelsCount() {
   const count = modelsStore.getCount();
   $("[data-ref='modelsCount']").text(count);
 }
+
 function getModelItem(modelId) {
   return $modelsPanel.find(`[data-model-id="${modelId}"]`);
-}
-function findModelGridItem(modelId) {
-  return $modelsGrid.find(`.model-grid-item[data-model-id="${modelId}"]`);
-}
-function findModelListItem(modelId) {
-  return $modelsList.find(`.model-list-item[data-model-id="${modelId}"]`);
 }
 
 function updateModelItem(model) {
@@ -228,6 +336,21 @@ function updateModelItem(model) {
 
 function setModelItemCurrent(modelId, isCurrent) {
   getModelItem(modelId).toggleClass("is-current", isCurrent);
+}
+
+function setModelItemSelected(modelId, isSelected) {
+  const $items = getModelItem(modelId);
+  if ($items.length === 0) {
+    return;
+  }
+  $items.toggleClass("is-selected", isSelected);
+  $items.find(".item-select-checkbox").prop("checked", isSelected);
+}
+
+function syncModelSelectionsInView() {
+  for (const model of modelsStore.getList()) {
+    setModelItemSelected(model.id, modelsStore.isSelected(model.id));
+  }
 }
 
 const removeModelItem = (modelId) => {
@@ -252,31 +375,37 @@ createUI({
     $viewSwitch.on("click", ".switch-btn", onViewSwitch);
 
     $modelsPanel.on("mousedown", "[data-model-id]", onModelItemClick);
-    $modelsList.on(
-      "mouseenter",
-      ".model-list-item",
-      onModelListItemMouseEnter,
+    $modelsPanel.on(
+      "mousedown",
+      ".item-select-checkbox",
+      onModelCheckboxMouseDown,
     );
-    $modelsList.on(
-      "mouseleave",
-      ".model-list-item",
-      onModelListItemMouseLeave,
-    );
+    $modelsPanel.on("change", ".item-select-checkbox", onModelCheckboxChange);
+    $modelsList.on("mouseenter", ".model-list-item", onModelListItemMouseEnter);
+    $modelsList.on("mouseleave", ".model-list-item", onModelListItemMouseLeave);
+    $modelsSelectAllButton.on("click", onSelectAllModels);
+    $modelsClearSelectionButton.on("click", onClearModelsSelection);
+    $modelsDeleteSelectedButton.on("click", onDeleteSelectedModels);
+    $modelsBulkEditToggleButton.on("click", onToggleModelsBulkEditMode);
+    syncModelsBulkModeUI();
 
-    $modelsPanel.on("mousedown", ".more-actions-btn", (e) => {
-      e.stopPropagation();
-      const $item = $(e.currentTarget).closest(
-        ".model-grid-item, .model-list-item",
-      );
-      const modelId = $item.data("modelId");
-      const $modelNameView = $item.find("[data-ref='modelName']").first();
-      const menuItems = createModelActionsMenu(e, {
-        modelId,
-        modelNameEditor,
-        $modelNameView,
-      });
-      // createMenu(e, menuItems);
-    });
+    $modelsPanel.on(
+      "mousedown",
+      ".model-grid-item .more-actions-btn, .model-list-item .more-actions-btn",
+      (e) => {
+        e.stopPropagation();
+        const $item = $(e.currentTarget).closest(
+          ".model-grid-item, .model-list-item",
+        );
+        const modelId = $item.data("modelId");
+        const $modelNameView = $item.find("[data-ref='modelName']").first();
+        createModelActionsMenu(e, {
+          modelId,
+          modelNameEditor,
+          $modelNameView,
+        });
+      },
+    );
   },
   subscribeStores: () => {
     modelsStore.subscribe(async (state, { key, operation, value }) => {
@@ -284,22 +413,30 @@ createUI({
         case "entitiesById":
           switch (operation) {
             case "init":
+              $modelsGrid.find(".model-grid-item[data-model-id]").remove();
+              $modelsList.find(".model-list-item[data-model-id]").remove();
               for (const model of value) {
                 await renderModel(model);
               }
               updateModelsCount();
+              syncModelSelectionsInView();
+              syncModelsSelectionControls();
               break;
             case "add":
               await renderModel(value);
               updateModelsCount();
+              syncModelsSelectionControls();
               break;
             case "update":
               updateModelItem(value);
               break;
             case "delete":
-              console.log("Model deleted with ID:", value.id);
-              removeModelItem(value.id);
+              if (value?.id) {
+                console.log("Model deleted with ID:", value.id);
+                removeModelItem(value.id);
+              }
               updateModelsCount();
+              syncModelsSelectionControls();
               break;
             default:
               break;
@@ -315,6 +452,14 @@ createUI({
               updateModelItem(model);
             }
           }
+          break;
+        case "selectedIds":
+          syncModelSelectionsInView();
+          syncModelsSelectionControls();
+          break;
+        case "isBulkEditMode":
+          syncModelsBulkModeUI();
+          syncModelSelectionsInView();
           break;
         case "cachedVersionsById": {
           if (!value?.versionId || !value?.svg) {
@@ -338,7 +483,7 @@ createUI({
     });
     workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
       switch (key) {
-        case "editingModel":
+        case "editingModel": {
           const newModelId = newValue?.id;
           const oldModelId = oldValue?.id;
           if (newModelId === oldModelId) {
@@ -351,6 +496,7 @@ createUI({
             setModelItemCurrent(oldModelId, false);
           }
           break;
+        }
         default:
           break;
       }

@@ -1,7 +1,12 @@
 /* Shared document viewer styles used by workspace and document-viewer pages */
 
 #documentContent {
+  /* Safari can keep inherited -webkit-user-select:none from body unless overridden explicitly. */
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
   user-select: text;
+  -webkit-touch-callout: default;
   cursor: text;
   padding: 0.5em;
   position: relative;
@@ -14,6 +19,10 @@
 
 #documentContent * {
   max-width: 100%;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
 }
 
 #viewerWrap {
@@ -152,7 +161,7 @@
 }
 
 .tag-span.is-current {
-  background-color: var(--wfadaptor-highlight);
+  background: var(--wfadaptor-highlight);
   color: white;
   box-shadow: none;
 }

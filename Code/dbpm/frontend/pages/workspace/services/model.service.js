@@ -1364,6 +1364,28 @@ export default {
       workspaceService.clearModelDisplay();
     }
   },
+  async deleteModelsBulk(modelIds = []) {
+    const uniqueIds = [...new Set((modelIds || []).filter(Boolean))];
+    const deletedIds = [];
+    const failed = [];
+
+    for (const modelId of uniqueIds) {
+      try {
+        await this.deleteModel(modelId);
+        deletedIds.push(modelId);
+      } catch (error) {
+        failed.push({
+          id: modelId,
+          error,
+        });
+      }
+    }
+
+    return {
+      deletedIds,
+      failed,
+    };
+  },
   async createModelVersion(modelId, sourceVersionId) {
     const sourceVersion = modelsStore.getVersion(modelId, sourceVersionId);
     const isSelectedVersionLatest = modelsStore.isLatestVersion(
