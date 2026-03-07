@@ -55,7 +55,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
   <script src="https://unpkg.com/mammoth/mammoth.browser.min.js" defer></script>
   <script src="https://unpkg.com/@popperjs/core@2"></script>
-  <script src="https://unpkg.com/tippy.js@6"></script>
   <!-- DBPM ui-->
   <link rel="stylesheet" href="assets/global.css" type="text/css" />
   <link rel="stylesheet" href="modules/document/document-viewer.css" type="text/css" />
@@ -394,9 +393,7 @@
       </ui-rest>
     </ui-content>
   </ui-rest>
-  <div id="modelPopover" class="hidden">
-    <div id="modelPopoverContainer"></div>
-  </div>
+  <div id="modelPopover" class="hidden" aria-hidden="true"></div>
   <iframe id="wfPreviewRendererIframe" src="workflow-viewer.html"
     style="position: absolute; left: -10000px; top: -10000px; width: 1px; height: 1px; opacity: 0; pointer-events: none;"></iframe>
 </body>

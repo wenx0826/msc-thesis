@@ -185,14 +185,6 @@ createUI({
     cy.on("mouseover", "node", (e) => {
       cy.container().style.cursor = "pointer";
       const node = e.target;
-      console.log("hover node:", node);
-      console.log(
-        "hover node data rendered position:",
-        node.renderedPosition(),
-      );
-      // console.log(node.popperRef());
-      // console.log("hover node position:", node.getNodePosition());
-      // console.log("hover node position:", node.position());
       node.addClass("hovered");
       const nodeType = getNodeType(node);
       switch (nodeType) {
@@ -202,7 +194,6 @@ createUI({
         case "model": {
           node.addClass("hovered");
           const modelId = getNodeId(node);
-          const versionId = modelsStore.getLatestVersionId(modelId) || null;
           const containerRect = cy.container().getBoundingClientRect();
           const nodeBox = node.renderedBoundingBox({
             includeLabels: false,
@@ -217,18 +208,17 @@ createUI({
             height: Math.max(0, nodeBox.h ?? nodeBox.y2 - nodeBox.y1),
           };
 
-          workspaceStore.setModelPopoverParams(
-            {
-              modelId,
-              versionId,
-              openDelayMs: 0,
-              anchor: {
-                type: "rect",
-                rect,
-              },
+          workspaceStore.setModelPopoverParams({
+            target: {
+              id: modelId,
             },
-            "graph-node",
-          );
+            openDelayMs: 0,
+            anchor: {
+              type: "rect",
+              rect,
+            },
+            source: "graph-node",
+          });
           break;
         }
         default:
@@ -249,7 +239,6 @@ createUI({
           // node.removeClass("hovered");
           // workspaceStore.setHoveredModelId(null);
           workspaceStore.requestCloseModelPopover("graph-node");
-          // workspaceStore.requestCloseModelPopover();
           break;
         default:
           break;
@@ -276,39 +265,13 @@ createUI({
               }).run();
               break;
             case "delete":
-              (Array.isArray(value) ? value : [value]).forEach((element) => {
+              value.forEach((element) => {
                 const elementId = element?.data?.id;
                 if (!elementId) {
                   return;
                 }
                 cy.remove(cy.getElementById(elementId));
               });
-              cy.layout({
-                ...cyLayoutOptions,
-              }).run();
-              break;
-            default:
-              break;
-          }
-          break;
-
-        case "elements.documentNode":
-          switch (operation) {
-            case "add":
-              // cy.add(value);
-              // cy.layout({
-              //   ...cyLayoutOptions,
-              // }).run();
-              break;
-            default:
-              break;
-          }
-          break;
-        case "elements.modelNodeAndEdge":
-          switch (operation) {
-            case "add":
-              // cy.add(value.modelNode);
-              // cy.add(value.edge);
               // cy.layout({
               //   ...cyLayoutOptions,
               // }).run();

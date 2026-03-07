@@ -769,19 +769,14 @@ createUI({
       // ✨ NEW: Pass source identifier to prevent conflicts
       workspaceStore.setModelPopoverParams(
         {
-          modelId,
-          versionId,
+          target: {
+            id: modelId,
+            versionId,
+          },
           anchor: { type: "element", element: $element[0] },
+          source: "subprocess-node",
         },
-        "subprocess-node",
       ); // ✨ NEW: Source tracking for conflict prevention
-
-      /* OLD CODE - No source tracking:
-    workspaceStore.setModelPopoverParams({
-      modelId,
-      anchor: { type: "element", element: $element[0] },
-    });
-    */
 
       console.log("Subprocess modelId:", modelId);
       // const modelName = modelsStore.getModelNameById(modelId); // OLD: Commented out unused code
@@ -797,10 +792,6 @@ createUI({
       console.log(`Event Listener 'wf:subprocess-unhovered' listened`);
       // ✨ NEW: Pass source identifier to ensure only the same source can close
       workspaceStore.requestCloseModelPopover("subprocess-node");
-
-      /* OLD CODE - No source tracking:
-    workspaceStore.requestCloseModelPopover();
-    */
     });
   },
   subscribeStores: () => {

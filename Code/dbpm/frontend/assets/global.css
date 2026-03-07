@@ -24,9 +24,9 @@
   /* #d4d4d4;#c8c8c8; #d0d0d0*/
   --x-ui-border-light-color: #e6e6e6;
   /* --x-ui-content-border-color: #ffed00; */
-  --x-ui-content-light-background-color: #f3f3f3;
-  --x-ui-content-hover-background-color: #e6e6e6;
-  --x-ui-content-highlighted-background-color: #99cce660;
+  --x-ui-content-light-background: #f3f3f3;
+  --x-ui-content-hover-background: #e6e6e6;
+  --x-ui-content-highlighted-background: #99cce660;
   /* #dddddd;*/
 
   /* --x-ui-outside-behind-text-color: #333;
@@ -239,11 +239,9 @@ ui-bar>.center {
   border-color: #000;
 }
 
-
 button.more-actions-btn {
   /* width: 100%; */
   border: none;
-
   /* height: 100%; */
   /* width: 1.8rem;
   height: 1.8rem; */

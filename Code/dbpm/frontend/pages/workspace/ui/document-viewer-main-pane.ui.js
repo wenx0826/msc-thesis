@@ -1025,25 +1025,17 @@ createUI({
       // ✨ NEW: Pass source identifier to prevent conflicts with other hover sources
       workspaceStore.setModelPopoverParams(
         {
-          modelId,
-          versionId,
+          target: {
+            id: modelId,
+            versionId,
+          },
           anchor: {
             type: "element",
             element,
           },
+          source: "document-tag",
         },
-        "document-tag",
       ); // ✨ NEW: Source tracking for conflict prevention
-
-      /* OLD CODE - No source tracking:
-    workspaceStore.setModelPopoverParams({
-      modelId,
-      anchor: {
-        type: "element",
-        element,
-      },
-    });
-    */
     });
     $modelTagsLayer.on("mouseleave", ".tag-span", (event) => {
       event.stopPropagation();
@@ -1053,10 +1045,6 @@ createUI({
       );
       // ✨ NEW: Pass source identifier to ensure only the same source can close
       workspaceStore.requestCloseModelPopover("document-tag");
-
-      /* OLD CODE - No source tracking:
-    workspaceStore.requestCloseModelPopover();
-    */
     });
   },
   subscribeStores: () => {

@@ -96,14 +96,16 @@ function onModelListItemMouseEnter(event) {
 
   workspaceStore.setModelPopoverParams(
     {
-      modelId,
-      versionId: element.dataset.modelVersionId || null,
+      target: {
+        id: modelId,
+        versionId: element.dataset.modelVersionId || null,
+      },
       anchor: {
         type: "element",
         element,
       },
+      source: MODELS_LIST_HOVER_SOURCE,
     },
-    MODELS_LIST_HOVER_SOURCE,
   );
 }
 
