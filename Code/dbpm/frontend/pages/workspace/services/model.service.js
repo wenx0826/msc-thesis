@@ -74,7 +74,8 @@ function isSameEditingModelContext(left, right) {
   }
 
   return (
-    normalizeComparableId(left.modelId) === normalizeComparableId(right.modelId) &&
+    normalizeComparableId(left.modelId) ===
+      normalizeComparableId(right.modelId) &&
     normalizeComparableId(left.modelVersionId) ===
       normalizeComparableId(right.modelVersionId)
   );
@@ -708,11 +709,7 @@ function isNoSelectionsContextCurrentDisplay({
   return false;
 }
 
-function syncNoSelectionsErrorIfNeeded(
-  selectionCount,
-  source,
-  context = {},
-) {
+function syncNoSelectionsErrorIfNeeded(selectionCount, source, context = {}) {
   const resolvedModelVersionId = resolveModelVersionIdFromErrorContext(context);
   const resolvedContext = {
     ...context,
@@ -1344,7 +1341,6 @@ export default {
     // return { modelMeta: createdModelMeta, trace: normalizedTrace };
   },
   async renameModel(modelId, newName) {
-    console.log(`Renaming model ${modelId} to "${newName}"`);
     const updatedModel = await modelsAPI.updateMeta(modelId, { name: newName });
     modelsStore.update(modelId, { name: updatedModel.name });
   },
@@ -1386,6 +1382,7 @@ export default {
       failed,
     };
   },
+  // Model versioning
   async createModelVersion(modelId, sourceVersionId) {
     const sourceVersion = modelsStore.getVersion(modelId, sourceVersionId);
     const isSelectedVersionLatest = modelsStore.isLatestVersion(

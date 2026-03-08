@@ -147,6 +147,7 @@ export const getProjectComponentsSchema = {
                   type: "object",
                   properties: {
                     id: { type: "string" },
+                    modelId: { type: "string" },
                     versionNumber: { type: "number" },
                     name: { type: "string" },
                     createdAt: { type: "string" },

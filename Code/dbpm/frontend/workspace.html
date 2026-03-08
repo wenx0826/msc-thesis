@@ -393,7 +393,17 @@
       </ui-rest>
     </ui-content>
   </ui-rest>
-  <div id="modelPopover" class="hidden" aria-hidden="true"></div>
+  <ui-rest id="modelPopover" class="hidden">
+    <ui-bar>
+      <span id="modelPopoverName" class="model-popover-title"></span>
+      <span id="modelPopoverVersionName" class="version-name"></span>
+    </ui-bar>
+    <ui-rest>
+      <ui-content>
+        <ui-area id="modelPopoverGrid"></ui-area>
+      </ui-content>
+    </ui-rest>
+  </ui-rest>
   <iframe id="wfPreviewRendererIframe" src="workflow-viewer.html"
     style="position: absolute; left: -10000px; top: -10000px; width: 1px; height: 1px; opacity: 0; pointer-events: none;"></iframe>
 </body>

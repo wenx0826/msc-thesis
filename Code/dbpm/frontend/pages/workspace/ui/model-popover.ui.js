@@ -3,6 +3,9 @@ import { scopeSvgIds } from "../../../modules/model/utils/svg-scope.js";
 
 const $modelPopover = $("#modelPopover");
 const hostEl = $modelPopover[0];
+const $popoverTitle = $("#modelPopoverName");
+const $popoverVersion = $("#modelPopoverVersionName");
+const $popoverBody = $("#modelPopoverGrid");
 const createPopper = window.Popper?.createPopper;
 
 const INTERACTIVE_PADDING = 20;
@@ -13,6 +16,7 @@ let popperInstance = null;
 let popoverScopeCounter = 0;
 let isPopoverVisible = false;
 let pointerBridgeAttached = false;
+let wasPointerInsideInteractiveZone = false;
 
 let currentReferenceClientRect = () => ({
   width: 0,
@@ -85,41 +89,34 @@ function createScopedPopoverSvg(svgSource, modelId) {
   return svgEl;
 }
 
-function createModelPopoverContent({ modelId, versionId, modelGraph }) {
+function updateModelPopoverContent({ modelId, versionId, modelGraph }) {
+  if (
+    !hostEl ||
+    !$popoverTitle.length ||
+    !$popoverVersion.length ||
+    !$popoverBody.length
+  ) {
+    throw new Error("Model popover inner elements are missing from DOM");
+  }
+
   const resolvedVersionId =
-    versionId || modelsStore.getLatestVersionId(modelId) || null;
+    versionId ?? modelsStore.getLatestVersionId(modelId) ?? null;
   const modelName = modelsStore.getEntityName(modelId) || "Unnamed model";
   const versionName = resolvedVersionId
     ? modelsStore.getVersion(modelId, resolvedVersionId)?.name ||
       resolvedVersionId
     : modelsStore.getLatestVersionName(modelId) || "No version";
 
-  const container = document.createElement("div");
-  container.className = "model-popover-container";
-  container.dataset.modelId = String(modelId);
+  $modelPopover.attr("data-model-id", String(modelId));
   if (resolvedVersionId) {
-    container.dataset.modelVersionId = String(resolvedVersionId);
+    $modelPopover.attr("data-model-version-id", String(resolvedVersionId));
+  } else {
+    $modelPopover.removeAttr("data-model-version-id");
   }
 
-  const header = document.createElement("div");
-  header.className = "model-popover-header";
-
-  const title = document.createElement("span");
-  title.className = "model-popover-title";
-  title.textContent = modelName;
-
-  const version = document.createElement("span");
-  version.className = "model-popover-version";
-  version.textContent = versionName;
-
-  header.append(title, version);
-
-  const body = document.createElement("div");
-  body.className = "model-popover-body";
-  body.append(modelGraph);
-
-  container.append(header, body);
-  return container;
+  $popoverTitle.text(modelName);
+  $popoverVersion.text(versionName);
+  $popoverBody.empty().append(modelGraph);
 }
 
 function resolvePopoverPlacement(modelPopoverState) {
@@ -240,15 +237,29 @@ function withinInteractivePadding(event, rect, padding) {
   );
 }
 
+function isPointerWithinInteractiveZone(event) {
+  const popoverRect = hostEl.getBoundingClientRect();
+  if (withinInteractivePadding(event, popoverRect, INTERACTIVE_PADDING)) {
+    return true;
+  }
+  const anchorRect = currentReferenceClientRect();
+  return withinInteractivePadding(event, anchorRect, INTERACTIVE_PADDING);
+}
+
 function onPointerBridgeMove(event) {
   if (!isPopoverVisible) {
     return;
   }
-  const rect = hostEl.getBoundingClientRect();
-  if (withinInteractivePadding(event, rect, INTERACTIVE_PADDING)) {
+  if (isPointerWithinInteractiveZone(event)) {
+    wasPointerInsideInteractiveZone = true;
     workspaceStore.cancelCloseModelPopover();
     workspaceStore.cancelOpenModelPopover();
+    return;
   }
+  if (wasPointerInsideInteractiveZone) {
+    workspaceStore.requestCloseModelPopover("pointer-bridge");
+  }
+  wasPointerInsideInteractiveZone = false;
 }
 
 function attachPointerBridge() {
@@ -275,13 +286,11 @@ function showModelPopover({
   placement,
 }) {
   updateVirtualReference(anchor);
-  hostEl.replaceChildren(
-    createModelPopoverContent({ modelId, versionId, modelGraph }),
-  );
-  hostEl.classList.remove("hidden");
-  hostEl.setAttribute("aria-hidden", "false");
+  updateModelPopoverContent({ modelId, versionId, modelGraph });
+  $modelPopover.removeClass("hidden").attr("aria-hidden", "false");
   const instance = ensurePopperInstance(placement);
   isPopoverVisible = true;
+  wasPointerInsideInteractiveZone = false;
   attachPointerBridge();
   instance.update();
 }
@@ -290,18 +299,18 @@ function hideModelPopover() {
   if (!isPopoverVisible) {
     return;
   }
-  hostEl.classList.add("hidden");
-  hostEl.setAttribute("aria-hidden", "true");
+  $modelPopover.addClass("hidden").attr("aria-hidden", "true");
   isPopoverVisible = false;
+  wasPointerInsideInteractiveZone = false;
   detachPointerBridge();
 }
 
-hostEl.addEventListener("mouseenter", () => {
+$modelPopover.on("mouseenter", () => {
   workspaceStore.cancelCloseModelPopover();
   workspaceStore.cancelOpenModelPopover();
 });
 
-hostEl.addEventListener("mouseleave", () => {
+$modelPopover.on("mouseleave", () => {
   workspaceStore.requestCloseModelPopover("popover");
 });
 
@@ -315,6 +324,7 @@ workspaceStore.subscribe((state, { key, newValue }) => {
 
         const modelGraphSource = modelsStore.getModelGraphById(modelId);
         if (!modelGraphSource) {
+          console.warn("Model graph not available for popover:", modelId);
           break;
         }
 

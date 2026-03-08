@@ -113,12 +113,6 @@ export const getTracesSchema = {
       versionId: { type: "string" },
     },
   },
-  querystring: {
-    type: "object",
-    properties: {
-      includeDeletedModels: { type: "boolean" },
-    },
-  },
   response: {
     200: {
       type: "array",

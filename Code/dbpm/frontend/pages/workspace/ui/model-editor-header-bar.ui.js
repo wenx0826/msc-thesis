@@ -42,6 +42,7 @@ createUI({
     const versionSelector = initVersionSelector({
       $select: $versionSelect,
       onSelect: ({ version }) => {
+        console.log("Version selected in header bar:", version);
         workspaceService.toggleModelDisplay(version.modelId, version.id);
       },
     });

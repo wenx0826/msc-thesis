@@ -13,8 +13,11 @@ import {
 export default {
   async loadWorkspace(projectId) {
     let viewedDocument = undefined;
-    const { documentsMeta, modelsMeta, subprocessLinks = [] } =
-      await projectsAPI.getComponents(projectId);
+    const {
+      documentsMeta,
+      modelsMeta,
+      subprocessLinks = [],
+    } = await projectsAPI.getComponents(projectId);
     console.log("Loaded workspace components:", {
       documentsMeta,
       modelsMeta,
@@ -84,6 +87,7 @@ export default {
     this.clearDocumentDisplay();
   },
   toggleModelDisplay(id, versionId) {
+    console.log("Toggling model display:!!!", { id, versionId });
     if (!id) {
       this.clearModelDisplay();
       return;

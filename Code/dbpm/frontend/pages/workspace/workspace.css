@@ -204,38 +204,34 @@ ui-bar {
 
 #modelPopover {
   position: fixed;
-  top: 0;
-  left: 0;
-  max-width: 400px;
+  width: 300px;
+  height: 320px;
   background: #fff;
-  color: #111;
+  /* color: #111; */
   border-radius: 12px;
   box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--x-ui-border-color);
   z-index: 9999;
+  /* display: flex;
+  flex-direction: column; */
+  overflow: hidden;
 }
 
-#modelPopover.hidden {
-  display: none;
-}
 
-.model-popover-container {
-  width: 300px;
-  max-height: 240px;
+/* #modelPopoverGrid {
+  display: block;
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
   overflow: auto;
-}
+} */
 
-.model-popover-header {
-  position: sticky;
-  top: -12px;
-  z-index: 1;
+#modelPopover>ui-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  /* margin: -12px -12px 10px -12px;
-  padding: 8px 12px; */
-  background: #fff;
+  /* background: #fff; */
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
@@ -249,15 +245,15 @@ ui-bar {
   color: #111;
 }
 
-.model-popover-version {
+#modelPopoverVersionName {
   flex-shrink: 0;
   font-size: 11px;
   color: #555;
 }
 
-.model-popover-body>svg {
+/* #modelPopoverGrid>svg {
   display: block;
-}
+} */
 
 
 #textActionBar .action-group {

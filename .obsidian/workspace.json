@@ -127,16 +127,30 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "布局.md",
+                "file": "Gemini DR v0.1.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "布局"
+              "title": "Gemini DR v0.1"
+            }
+          },
+          {
+            "id": "01e0c65c8e358d61",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "DBPM – App Guide/Feature – Generate Model.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Feature – Generate Model"
             }
           }
         ],
-        "currentTab": 8
+        "currentTab": 9
       }
     ],
     "direction": "vertical"
@@ -256,13 +270,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "布局.md",
+                "file": "DBPM – App Guide/Feature – Generate Model.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of 布局"
+              "title": "Outline of Feature – Generate Model"
             }
           },
           {
@@ -297,19 +311,24 @@
       "card-board:CardBoard": false
     }
   },
-  "active": "1391ce42ba35595b",
+  "active": "01e0c65c8e358d61",
   "lastOpenFiles": [
-    "Code/dbpm/data/models/a927720e-63b9-4448-ad95-eca938b387b3.xml",
-    "Code/dbpm/data/models/57a1f5f3-f744-4d1e-98ec-56e323144cac.xml",
-    "Code/dbpm/data/models/db2484c1-794e-4a4e-9326-665ab1f8ee9d.xml",
-    "Code/dbpm/data/models/daeb2051-ccfe-4e91-b7fa-27ba5164fd85.xml",
-    "Code/dbpm/data/documents/9b83eba8-9780-4143-867a-f227a5b1e313.html",
-    "Code/dbpm/data/documents/9557be43-886b-4a0d-b3b0-a9107e029b0c.html",
-    "Code/dbpm/data/documents/040dde6f-0500-40dd-aa6f-74bf0d9c5c14.html",
-    "Code/dbpm/data/documents/50c68235-237d-44bf-abdc-219bb9ac6483.html",
-    "Code/dbpm/data/logs/6218b96c-5d79-413e-bf70-03f61f281eef.yaml",
-    "Code/dbpm/data/models/0b97ed18-23f8-425c-83c2-64b22877fa79.xml",
-    "Code/dbpm/data/models/c25895e1-b329-47b8-bae0-4baaeb03f353.xml",
+    "Code/dbpm/data/models/30e89cca-28f0-46c6-ac90-723e1d130363.xml",
+    "Code/dbpm/data/documents/a123d01d-e2e8-4587-9a00-199d392989f0.html",
+    "Code/dbpm/data/models/fe1d1ffe-39ec-4848-9c7b-13bef4fb5bca.xml",
+    "Code/dbpm/data/models/bb2fc081-679e-42ae-9dd9-a531dc48e384.xml",
+    "Code/dbpm/data/models/276a5379-dea5-4e1d-a745-699207692726.xml",
+    "Code/dbpm/data/database.sqlite-journal",
+    "Code/dbpm/data/documents/d8f1e9d9-9044-4c9c-a2f4-77323cf30ee6.html",
+    "Code/dbpm/data/models/63a71466-52c1-435a-a343-d59fffc876f2.xml",
+    "Code/dbpm/data/models/5a0a574a-85cc-4f7a-9fd5-25e5fae60348.xml",
+    "Code/dbpm/data/models/8ed1e1d3-16b2-40dd-9e4e-3b1b747778dc.xml",
+    "Code/dbpm/data/models/f5b5a2a3-69c2-4e1a-82ee-192f38a81a8e.xml",
+    "DBPM – App Guide/User Guide.md",
+    "DBPM – App Guide/Feature – Generate Model.md",
+    "Gemini DR v0.1.md",
+    "Gemini DR v0.md",
+    "布局.md",
     "01 Introduction/01.6 Structure.md",
     "01 Introduction/01.5 Evaluation.md",
     "01 Introduction/01.4 Methodology.md",
@@ -318,7 +337,6 @@
     "01 Introduction/01.1 Motivation.md",
     "User Story **Workflow Story (End-to-End)**.md",
     "User Guide.md",
-    "布局.md",
     "gemini.md",
     "01.5 Evaluation.md",
     "Code/dbpm_reverted/backend/node_modules/@fastify/static/test/static-encode/[...]/a .md",
@@ -341,10 +359,6 @@
     "Code/dbpm_reverted/backend/node_modules/@fastify/send/node_modules/statuses/HISTORY.md",
     "Code/dbpm_reverted/backend/node_modules/wrap-ansi-cjs/node_modules/strip-ansi/readme.md",
     "Code/dbpm_reverted/backend/node_modules/wrap-ansi-cjs/node_modules/string-width/readme.md",
-    "Code/dbpm_reverted/backend/node_modules/wrap-ansi-cjs/node_modules/emoji-regex/README.md",
-    "Code/dbpm_reverted/backend/node_modules/wrap-ansi-cjs/node_modules/ansi-styles/readme.md",
-    "Code/dbpm_reverted/backend/node_modules/wrap-ansi-cjs/node_modules/ansi-regex/readme.md",
-    "Code/dbpm_reverted/backend/node_modules/strip-ansi-cjs/node_modules/ansi-regex/readme.md",
     "Untitled.canvas"
   ]
 }

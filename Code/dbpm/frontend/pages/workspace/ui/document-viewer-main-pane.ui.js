@@ -47,10 +47,8 @@ function getDocumentHorizontalBounds() {
   const viewerRect = viewerElement.getBoundingClientRect();
   const contentRect = contentElement.getBoundingClientRect();
   const contentStyle = window.getComputedStyle(contentElement);
-  const contentPaddingLeft =
-    Number.parseFloat(contentStyle.paddingLeft) || 0;
-  const contentPaddingRight =
-    Number.parseFloat(contentStyle.paddingRight) || 0;
+  const contentPaddingLeft = Number.parseFloat(contentStyle.paddingLeft) || 0;
+  const contentPaddingRight = Number.parseFloat(contentStyle.paddingRight) || 0;
 
   return {
     minLeft:
@@ -185,8 +183,14 @@ function updateSelectedSelectionToolbarPosition() {
 
   const minLeft = viewerElement.scrollLeft + padding + toolbarWidth / 2;
   const maxLeft =
-    viewerElement.scrollLeft + viewerElement.clientWidth - padding - toolbarWidth / 2;
-  const left = Math.min(Math.max(anchorCenterX, minLeft), Math.max(minLeft, maxLeft));
+    viewerElement.scrollLeft +
+    viewerElement.clientWidth -
+    padding -
+    toolbarWidth / 2;
+  const left = Math.min(
+    Math.max(anchorCenterX, minLeft),
+    Math.max(minLeft, maxLeft),
+  );
 
   const preferredTop = selectionTop - toolbarHeight - padding;
   const minTop = viewerElement.scrollTop + padding;
@@ -657,7 +661,8 @@ const onSelectionSelect = (event) => {
 
   const $selectionWrap = $target.closest(".selection-wrap");
   const selectionId =
-    $target.attr("data-selection-id") || $selectionWrap.attr("data-selection-id");
+    $target.attr("data-selection-id") ||
+    $selectionWrap.attr("data-selection-id");
   const modelId =
     $target.attr("data-model-id") || $selectionWrap.attr("data-model-id");
   const modelVersionId =
@@ -701,11 +706,20 @@ const renderSelection = (
   modelId,
   modelVersionId,
 ) => {
+  console.log(
+    "??? Rendering selection:",
+    selectionId,
+    traceId,
+    modelId,
+    modelVersionId,
+  );
   if (!range) {
+    console.warn("Selection has no range, skipping render:", selectionId);
     return;
   }
   const resolvedSelectionId = selectionId ?? fallbackSelectionId;
   if (resolvedSelectionId === undefined || resolvedSelectionId === null) {
+    console.warn("Selection has no valid ID, skipping render:", selectionId);
     return;
   }
 
@@ -944,6 +958,7 @@ const rerenderTemporarySelectionsLayer = () => {
 };
 
 const renderTrace = ({ id: traceId, selections, modelId, modelVersionId }) => {
+  console.log("Rendering trace:", traceId, selections);
   selections.forEach((selection, index) => {
     renderSelection({ ...selection, traceId }, modelId, modelVersionId);
   });
@@ -954,6 +969,7 @@ const rerenderOverlayLayers = () => {
   clearHighlightLayer();
   clearInteractionLayer();
   const traces = documentViewerStore.getTraces();
+  console.log("Rerendering overlay layers...", traces);
   if (traces.length) {
     traces.forEach((trace) => renderTrace(trace));
   }
@@ -1000,7 +1016,10 @@ createUI({
     $(window).on("resize", rerenderOverlayLayers);
     $(document)
       .off("mousedown.selectedSelectionDismiss")
-      .on("mousedown.selectedSelectionDismiss", onSelectedSelectionOutsideMouseDown);
+      .on(
+        "mousedown.selectedSelectionDismiss",
+        onSelectedSelectionOutsideMouseDown,
+      );
     $selectionsInteractionLayer.on("click", ".range-rect", onSelectionSelect);
     $selectionHandlesLayer.on(
       "mousedown",
@@ -1023,19 +1042,17 @@ createUI({
       console.log("Hovering over model tag:", modelId);
 
       // ✨ NEW: Pass source identifier to prevent conflicts with other hover sources
-      workspaceStore.setModelPopoverParams(
-        {
-          target: {
-            id: modelId,
-            versionId,
-          },
-          anchor: {
-            type: "element",
-            element,
-          },
-          source: "document-tag",
+      workspaceStore.setModelPopoverParams({
+        target: {
+          id: modelId,
+          versionId,
         },
-      ); // ✨ NEW: Source tracking for conflict prevention
+        anchor: {
+          type: "element",
+          element,
+        },
+        source: "document-tag",
+      }); // ✨ NEW: Source tracking for conflict prevention
     });
     $modelTagsLayer.on("mouseleave", ".tag-span", (event) => {
       event.stopPropagation();

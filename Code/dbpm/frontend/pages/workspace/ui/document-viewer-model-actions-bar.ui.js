@@ -41,8 +41,19 @@ function applyEditingModelState(editingModel = {}) {
   $generateModelButton.text("Generate new model");
 }
 
-function applySelectionChangedState(hasSelectionChanged) {
-  const isEnabled = !!hasSelectionChanged;
+function applyActionButtonsState() {
+  const hasEditingModel = workspaceStore.hasEditingModel();
+  const hasSelectionChanged = !!documentViewerStore.getHasSelectionChanged();
+
+  if (hasEditingModel) {
+    // Keep regeneration condition simple: enable when editingModel.id exists.
+    $generateModelButton.prop("disabled", !workspaceStore.getEditingModelId());
+    // Manual "Add Selections" still depends on changed selections.
+    $addSelectionsButton.prop("disabled", !hasSelectionChanged);
+    return;
+  }
+
+  const isEnabled = hasSelectionChanged;
   $generateModelButton.prop("disabled", !isEnabled);
   $addSelectionsButton.prop("disabled", !isEnabled);
 }
@@ -50,7 +61,7 @@ function applySelectionChangedState(hasSelectionChanged) {
 createUI({
   setup: () => {
     applyEditingModelState(workspaceStore.getEditingModel());
-    applySelectionChangedState(documentViewerStore.getHasSelectionChanged());
+    applyActionButtonsState();
   },
   bindListeners: () => {
     $addSelectionsButton.on("click", () => {
@@ -59,24 +70,28 @@ createUI({
       );
     });
 
-    $generateModelButton.on("click", (event) => {
+    $generateModelButton.on("click", async (event) => {
       const target = resolveGenerationTargetFromButton(event.currentTarget);
-      documentViewerStore.setHasSelectionChanged(false);
-      modelService.generateModelBySelections(target);
+      $generateModelButton.prop("disabled", true);
+      try {
+        await modelService.generateModelBySelections(target);
+      } finally {
+        applyActionButtonsState();
+      }
     });
   },
   subscribeStores: () => {
-    documentViewerStore.subscribe((state, { key, newValue }) => {
+    documentViewerStore.subscribe((_, { key }) => {
       switch (key) {
         case "hasSelectionChanged":
-          applySelectionChangedState(newValue);
+          applyActionButtonsState();
           break;
         default:
           break;
       }
     });
 
-    workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
+    workspaceStore.subscribe((_, { key, oldValue, newValue }) => {
       switch (key) {
         case "editingModel": {
           const oldHasEditingModel = !!oldValue?.id;
@@ -85,6 +100,7 @@ createUI({
             break;
           }
           applyEditingModelState(newValue);
+          applyActionButtonsState();
           break;
         }
         default:
