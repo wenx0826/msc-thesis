@@ -3,6 +3,33 @@ import { baseURL, handleResponse } from "./base.js";
 export default {
   path: "traces",
 
+  async getLatestTracesByDocumentVersionId(versionId, options = {}) {
+    const { includeDeletedModels = false } = options;
+    const encodedVersionId = encodeURIComponent(versionId);
+    const params = new URLSearchParams();
+    if (includeDeletedModels) {
+      params.set("includeDeletedModels", "true");
+    }
+    const suffix = params.toString() ? `?${params.toString()}` : "";
+    const response = await fetch(
+      `${baseURL}/${this.path}/document-versions/${encodedVersionId}${suffix}`,
+    );
+    return handleResponse(
+      response,
+      "Failed to fetch latest traces by document version",
+    );
+  },
+
+  async getLatestTraceByModelVersionId(modelVersionId) {
+    const response = await fetch(
+      `${baseURL}/${this.path}/model-versions/${modelVersionId}/latest`,
+    );
+    return handleResponse(
+      response,
+      "Failed to fetch latest trace by model version",
+    );
+  },
+
   async getTracesByDocumentId(docId) {
     const response = await fetch(`${baseURL}/documents/${docId}/${this.path}`);
     if (!response.ok) throw new Error("Failed to fetch traces");

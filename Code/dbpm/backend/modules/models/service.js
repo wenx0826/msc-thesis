@@ -614,7 +614,10 @@ export default {
       return { updated: 0, failed: 0, skipped: 0 };
     }
 
-    const traces = traceService.getByDocumentVersionId(documentVersionId, true);
+    const traces = traceService.getLatestByDocumentVersionId(
+      documentVersionId,
+      true,
+    );
     const latestTraces = pickLatestTracesByModelVersionId(traces);
 
     let updated = 0;

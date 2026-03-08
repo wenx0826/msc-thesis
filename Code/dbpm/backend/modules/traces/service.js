@@ -1,4 +1,3 @@
-import { get } from "http";
 import traceRepo from "./repository.js";
 
 function cloneSelections(selections) {
@@ -29,7 +28,7 @@ export default {
       selections,
     });
   },
-  copyByDocumentVersionId({
+  copyLatestByDocumentVersionId({
     sourceDocumentVersionId,
     targetDocumentVersionId,
   }) {
@@ -41,7 +40,7 @@ export default {
       return [];
     }
 
-    const sourceTraces = traceRepo.findByDocumentVersionId(
+    const sourceTraces = traceRepo.findLatestByDocumentVersionId(
       sourceDocumentVersionId,
       true,
     );
@@ -72,8 +71,14 @@ export default {
   getById(id) {
     return traceRepo.findById(id);
   },
-  getByDocumentVersionId(versionId, includeDeletedModels = false) {
-    return traceRepo.findByDocumentVersionId(versionId, includeDeletedModels);
+  getLatestByDocumentVersionId(versionId, includeDeletedModels = false) {
+    return traceRepo.findLatestByDocumentVersionId(
+      versionId,
+      includeDeletedModels,
+    );
+  },
+  getLatestByModelVersionId(modelVersionId) {
+    return traceRepo.findLatestByModelVersionId(modelVersionId);
   },
   update(id, updates) {
     const updatedTrace = traceRepo.updateById(id, updates);

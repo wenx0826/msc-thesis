@@ -1,4 +1,4 @@
-import { documentsAPI } from "../api/index.js";
+import { documentsAPI, tracesAPI } from "../api/index.js";
 import { createTemplateElement } from "../shared/utils/dom.js";
 import { deserializeRange } from "../modules/document/selection.js";
 
@@ -265,7 +265,9 @@ async function loadReadOnlyDocument() {
   try {
     const [content, traces] = await Promise.all([
       documentsAPI.getContentByVersionId(versionId),
-      documentsAPI.getTracesByVersionId(versionId, { includeDeletedModels }),
+      tracesAPI.getLatestTracesByDocumentVersionId(versionId, {
+        includeDeletedModels,
+      }),
     ]);
 
     $documentContent.empty().append(content || "");

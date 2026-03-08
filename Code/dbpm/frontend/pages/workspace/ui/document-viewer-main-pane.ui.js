@@ -1000,74 +1000,9 @@ const renderTrace = ({ id: traceId, selections, modelId, modelVersionId }) => {
 };
 // const rerenderSelectionsLayer = () => {};
 
-function resolveTraceTimestamp(trace) {
-  const timestamp = Date.parse(trace?.createdAt || "");
-  return Number.isFinite(timestamp) ? timestamp : -1;
-}
-
-function pickDefaultTraceForModel(modelId, modelTraces = []) {
-  if (!Array.isArray(modelTraces) || modelTraces.length === 0) {
-    return null;
-  }
-
-  const latestModelVersionId = modelsStore.getLatestVersionId(modelId);
-  if (latestModelVersionId) {
-    const latestVersionTrace = modelTraces.find(
-      (trace) => String(trace?.modelVersionId || "") === String(latestModelVersionId),
-    );
-    if (latestVersionTrace) {
-      return latestVersionTrace;
-    }
-  }
-
-  return modelTraces.reduce((latestTrace, currentTrace) =>
-    resolveTraceTimestamp(currentTrace) >= resolveTraceTimestamp(latestTrace)
-      ? currentTrace
-      : latestTrace,
-  );
-}
-
 function getRenderableTraces() {
   const traces = documentViewerStore.getTraces();
-  if (!Array.isArray(traces) || traces.length === 0) {
-    return [];
-  }
-
-  const tracesByModelId = new Map();
-  const tracesWithoutModel = [];
-  for (const trace of traces) {
-    const modelId = trace?.modelId;
-    if (!modelId) {
-      tracesWithoutModel.push(trace);
-      continue;
-    }
-
-    const key = String(modelId);
-    const modelTraces = tracesByModelId.get(key) || [];
-    modelTraces.push(trace);
-    tracesByModelId.set(key, modelTraces);
-  }
-
-  const renderableByModel = new Map();
-  for (const [modelId, modelTraces] of tracesByModelId.entries()) {
-    const defaultTrace = pickDefaultTraceForModel(modelId, modelTraces);
-    if (defaultTrace) {
-      renderableByModel.set(String(modelId), defaultTrace);
-    }
-  }
-
-  const editingModelId = workspaceStore.getEditingModelId();
-  if (editingModelId) {
-    const editingKey = String(editingModelId);
-    renderableByModel.delete(editingKey);
-
-    const activeTrace = documentViewerStore.getDisplayedModelTrace();
-    if (activeTrace && String(activeTrace?.modelId || "") === editingKey) {
-      renderableByModel.set(editingKey, activeTrace);
-    }
-  }
-
-  return [...tracesWithoutModel, ...renderableByModel.values()];
+  return Array.isArray(traces) ? traces : [];
 }
 
 const rerenderOverlayLayers = () => {
@@ -1152,7 +1087,8 @@ createUI({
       // const $target = $(event.currentTarget);
       event.stopPropagation();
       const modelId = event.currentTarget.dataset.modelId;
-      workspaceService.toggleModelDisplay(modelId);
+      const modelVersionId = event.currentTarget.dataset.modelVersionId || null;
+      workspaceService.toggleModelDisplay(modelId, modelVersionId, false);
     });
     $modelTagsLayer.on("mouseenter", ".tag-span", (event) => {
       event.stopPropagation();

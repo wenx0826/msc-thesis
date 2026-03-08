@@ -1,4 +1,4 @@
-import { projectsAPI } from "../../../api/index.js";
+import { projectsAPI, tracesAPI } from "../../../api/index.js";
 import documentService from "./document.service.js";
 import modelService from "./model.service.js";
 import {
@@ -17,11 +17,22 @@ function resolveDocumentIsLatest(documentId, versionId) {
   return documentsStore.isLatestVersion(documentId, versionId);
 }
 
-function resolveModelIsLatest(modelId, versionId) {
-  if (!modelId || !versionId) {
+function resolveDocumentIdByVersionId(versionId) {
+  if (!versionId) {
     return null;
   }
-  return modelsStore.isLatestVersion(modelId, versionId);
+  const documents = documentsStore.getList();
+  for (const document of documents) {
+    const versions = Array.isArray(document?.versions) ? document.versions : [];
+    if (
+      versions.some(
+        (version) => String(version?.id || "") === String(versionId),
+      )
+    ) {
+      return document.id;
+    }
+  }
+  return null;
 }
 
 export default {
@@ -57,7 +68,7 @@ export default {
     });
   },
 
-  async displayDocument(id, versionId) {
+  async displayDocument(id, versionId, clearModelOnContextChange = true) {
     if (!id) {
       return;
     }
@@ -69,13 +80,6 @@ export default {
       isLatest: currViewedDocIsLatest,
     } = workspaceStore.getViewedDocument();
     if (currViewedDocId === id && currViewedDocVersionId === versionId) {
-      if (currViewedDocIsLatest !== nextIsLatest) {
-        workspaceStore.setViewedDocument({
-          id,
-          versionId,
-          isLatest: nextIsLatest,
-        });
-      }
       return;
     }
     await documentService.loadVersion(versionId);
@@ -84,14 +88,23 @@ export default {
       versionId,
       isLatest: nextIsLatest,
     });
-    const editingModelId = workspaceStore.getEditingModelId();
-    if (!!editingModelId) {
-      const editingModelDocumentId =
-        modelsStore.getModelDocumentId(editingModelId);
-      if (editingModelDocumentId !== id) {
-        this.toggleModelDisplay(null, null);
-      }
+
+    if (clearModelOnContextChange) {
+      this.clearModelDisplay();
     }
+
+    // const editingModelId = workspaceStore.getEditingModelId();
+    // if (!!editingModelId) {
+    //   const editingModelDocumentId =
+    //     modelsStore.getModelDocumentId(editingModelId);
+    //   const versionChangedWithinSameDocument =
+    //     currViewedDocId === id &&
+    //     String(currViewedDocVersionId || "") !== String(versionId || "");
+
+    //   if (editingModelDocumentId !== id || versionChangedWithinSameDocument) {
+    //     this.clearModelDisplay();
+    //   }
+    // }
   },
   clearModelDisplay() {
     workspaceStore.setEditingModel({
@@ -118,16 +131,19 @@ export default {
   clearDocumentSelection() {
     this.clearDocumentDisplay();
   },
-  toggleModelDisplay(id, versionId) {
-    console.log("Toggling model display:!!!", { id, versionId });
+  async toggleModelDisplay(id, versionId, shouldUpdateViewedDocument = true) {
+    let isLatest;
     if (!id) {
       this.clearModelDisplay();
       return;
     }
     if (!versionId) {
       versionId = modelsStore.getLatestVersionId(id);
+      isLatest = true;
+    } else {
+      isLatest = modelsStore.isLatestVersion(id, versionId);
     }
-    const nextIsLatest = resolveModelIsLatest(id, versionId);
+
     const { id: currEditingModelId, versionId: currEditingModelVersionId } =
       workspaceStore.getEditingModel();
 
@@ -135,20 +151,38 @@ export default {
       this.clearModelDisplay();
       return;
     }
+
     workspaceStore.setEditingModel({
       id,
       versionId,
-      isLatest: nextIsLatest,
+      isLatest,
     });
     modelService.loadVersion(versionId);
     workspaceStore.setModelPopoverParams(null);
 
-    const currDisplayedDocumentId = workspaceStore.getViewedDocumentId();
-    const currModelDocumentId = modelsStore.getModelDocumentId(id);
-    if (currDisplayedDocumentId !== currModelDocumentId) {
-      this.displayDocument(currModelDocumentId);
-    } else {
-      documentViewerStore.setActiveModelTraceByModelVersionId(versionId);
+    if (shouldUpdateViewedDocument) {
+      let targetDocumentId, targetDocumentVersionId;
+      if (isLatest) {
+        targetDocumentId = modelsStore.getModelDocumentId(id) || null;
+      } else {
+        const latestTrace =
+          await tracesAPI.getLatestTraceByModelVersionId(versionId);
+        console.log(
+          "Latest trace for model version",
+          versionId,
+          ":",
+          latestTrace,
+        );
+        targetDocumentId = latestTrace?.documentId;
+        targetDocumentVersionId = latestTrace?.documentVersionId;
+      }
+      this.displayDocument(
+        targetDocumentId,
+        targetDocumentVersionId || null,
+        false,
+      );
     }
+
+    documentViewerStore.setActiveModelTraceByModelVersionId(versionId);
   },
 };

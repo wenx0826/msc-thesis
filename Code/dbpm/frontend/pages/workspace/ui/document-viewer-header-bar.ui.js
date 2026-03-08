@@ -6,6 +6,7 @@ import {
   workspaceStore,
 } from "../store/index.js";
 import { modelService, workspaceService } from "../services/index.js";
+
 const $versionFilename = $("#versionFilename");
 const $documentVersionTag = $("#documentVersionTag");
 const $versionSelect = $("#docVersionSelect");
@@ -235,6 +236,12 @@ createUI({
             setVersionTag($documentVersionTag, null);
             break;
           }
+          console.log(
+            "why!!!!!",
+            id,
+            documentsStore.getVersions(id),
+            versionId,
+          );
           versionSelector.update({
             versions: documentsStore.getVersions(id),
             selectedId: versionId,

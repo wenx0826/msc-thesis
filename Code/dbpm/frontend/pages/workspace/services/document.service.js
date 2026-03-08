@@ -1,4 +1,4 @@
-import { documentsAPI } from "../../../api/index.js";
+import { documentsAPI, tracesAPI } from "../../../api/index.js";
 import {
   workspaceStore,
   documentsStore,
@@ -129,7 +129,7 @@ export default {
     documentViewerStore.clear();
     const [contentResult, tracesResult] = await Promise.allSettled([
       documentsAPI.getContentByVersionId(versionId),
-      documentsAPI.getTracesByVersionId(versionId),
+      tracesAPI.getLatestTracesByDocumentVersionId(versionId),
     ]);
 
     if (contentResult.status !== "fulfilled") {

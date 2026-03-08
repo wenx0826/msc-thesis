@@ -44,16 +44,33 @@ class TracesRepository extends BaseSqlRepository {
     return this.mapRow(row);
   }
 
-  findByDocumentVersionId(documentVersionId, includeDeletedModels = false) {
+  findLatestByDocumentVersionId(
+    documentVersionId,
+    includeDeletedModels = false,
+  ) {
     const stmt = db.prepare(`
-      SELECT t.*, mv.model_id, m.name AS model_name, dv.document_id
-      FROM traces t
-      LEFT JOIN model_versions mv ON t.model_version_id = mv.id
-      LEFT JOIN models m ON mv.model_id = m.id
-      LEFT JOIN document_versions dv ON t.document_version_id = dv.id
-      WHERE t.document_version_id = ?
-      ${includeDeletedModels ? "" : "AND m.deleted_at IS NULL"}
-      ORDER BY t.created_at ASC
+      WITH ranked_traces AS (
+        SELECT
+          t.*,
+          mv.model_id,
+          m.name AS model_name,
+          dv.document_id,
+          ROW_NUMBER() OVER (
+            PARTITION BY mv.model_id
+            ORDER BY mv.version_number DESC, t.created_at DESC, t.id DESC
+          ) AS rank_in_model
+        FROM traces t
+        LEFT JOIN model_versions mv ON t.model_version_id = mv.id
+        LEFT JOIN models m ON mv.model_id = m.id
+        LEFT JOIN document_versions dv ON t.document_version_id = dv.id
+        WHERE t.document_version_id = ?
+        ${includeDeletedModels ? "" : "AND m.deleted_at IS NULL"}
+      )
+      SELECT id, trace_id, document_version_id, model_version_id, selections,
+             is_latest, created_at, model_id, model_name, document_id
+      FROM ranked_traces
+      WHERE rank_in_model = 1
+      ORDER BY created_at ASC
     `);
     const rows = stmt.all(documentVersionId);
     return rows.map((row) => this.mapRow(row));

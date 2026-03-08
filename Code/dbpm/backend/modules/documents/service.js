@@ -3,8 +3,8 @@ import versionRepo from "./repositories/version.js";
 import storageRepo from "./repositories/storage.js";
 import logService from "../logs/service.js";
 import { countWords } from "../../utils/fileHelper.js";
-import traceService from "../traces/service.js";
 import modelService from "../models/service.js";
+import traceService from "../traces/service.js";
 export default {
   create({ projectId, filename, content }) {
     try {
@@ -73,7 +73,7 @@ export default {
         latestVersionId: versionId,
       };
       documentRepo.updateById(documentId, documentUpdates);
-      traceService.copyByDocumentVersionId({
+      traceService.copyLatestByDocumentVersionId({
         sourceDocumentVersionId: sourceVersionId,
         targetDocumentVersionId: versionId,
       });
@@ -112,11 +112,6 @@ export default {
     // }
     return storageRepo.read(versionId);
   },
-
-  getTraces(versionId, includeDeletedModels = false) {
-    return traceService.getByDocumentVersionId(versionId, includeDeletedModels);
-  },
-
   deleteDocument(docId) {
     const doc = documentRepo.findById(docId);
     if (!doc) {

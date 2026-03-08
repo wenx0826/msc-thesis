@@ -1,4 +1,5 @@
 import { modelsStore, workspaceStore } from "../store/index.js";
+import modelService from "../services/model.service.js";
 import { scopeSvgIds } from "../../../modules/model/utils/svg-scope.js";
 
 const $modelPopover = $("#modelPopover");
@@ -17,6 +18,7 @@ let popoverScopeCounter = 0;
 let isPopoverVisible = false;
 let pointerBridgeAttached = false;
 let wasPointerInsideInteractiveZone = false;
+let popoverRequestSequence = 0;
 
 let currentReferenceClientRect = () => ({
   width: 0,
@@ -31,6 +33,106 @@ const virtualReference = {
   getBoundingClientRect: () => currentReferenceClientRect(),
   contextElement: undefined,
 };
+
+function normalizeComparableId(value) {
+  if (value === undefined || value === null) {
+    return "";
+  }
+  return String(value);
+}
+
+function hasSameId(left, right) {
+  return normalizeComparableId(left) === normalizeComparableId(right);
+}
+
+function clonePopoverAnchor(anchor) {
+  if (!anchor || typeof anchor !== "object") {
+    return null;
+  }
+
+  switch (anchor.type) {
+    case "element":
+      return anchor.element
+        ? {
+            type: "element",
+            element: anchor.element,
+          }
+        : null;
+    case "rect":
+      return anchor.rect
+        ? {
+            type: "rect",
+            rect: { ...anchor.rect },
+          }
+        : null;
+    case "point":
+      return anchor.point
+        ? {
+            type: "point",
+            point: { ...anchor.point },
+          }
+        : null;
+    default:
+      return null;
+  }
+}
+
+async function resolvePopoverGraphSource({ modelId, requestedVersionId }) {
+  const latestVersionId = modelsStore.getLatestVersionId(modelId) ?? null;
+  const hasExplicitVersionId =
+    requestedVersionId !== undefined &&
+    requestedVersionId !== null &&
+    requestedVersionId !== "";
+
+  if (!hasExplicitVersionId) {
+    return {
+      versionId: latestVersionId,
+      graphSource: modelsStore.getModelGraphById(modelId),
+    };
+  }
+
+  const resolvedVersionId = requestedVersionId;
+  let cachedVersion = modelsStore.getCachedModelByVersionId(resolvedVersionId);
+
+  if (!cachedVersion?.svg) {
+    try {
+      await modelService.ensureVersionCached(resolvedVersionId, {
+        needData: true,
+        needSvg: true,
+        modelId,
+      });
+    } catch (error) {
+      console.warn(
+        `Failed to cache model version ${resolvedVersionId} for popover:`,
+        error,
+      );
+    }
+    cachedVersion = modelsStore.getCachedModelByVersionId(resolvedVersionId);
+  }
+
+  if (cachedVersion?.svg) {
+    return {
+      versionId: resolvedVersionId,
+      graphSource: cachedVersion.svg,
+    };
+  }
+
+  if (
+    latestVersionId &&
+    !hasSameId(resolvedVersionId, latestVersionId)
+  ) {
+    // Avoid showing the latest graph when a historical version is requested.
+    return {
+      versionId: resolvedVersionId,
+      graphSource: null,
+    };
+  }
+
+  return {
+    versionId: resolvedVersionId,
+    graphSource: modelsStore.getModelGraphById(modelId),
+  };
+}
 
 function prepareSvgForPopover(svgEl) {
   const svgW = parseFloat(svgEl.getAttribute("width")) || 0;
@@ -318,58 +420,80 @@ workspaceStore.subscribe((state, { key, newValue }) => {
   switch (key) {
     case "modelPopover":
       if (newValue && newValue.target?.id && newValue.anchor) {
-        const modelId = newValue.target.id;
-        const versionId =
-          newValue.target.versionId ?? modelsStore.getLatestVersionId(modelId);
-
-        const modelGraphSource = modelsStore.getModelGraphById(modelId);
-        if (!modelGraphSource) {
-          console.warn("Model graph not available for popover:", modelId);
-          break;
-        }
-
-        const modelGraph = createScopedPopoverSvg(modelGraphSource, modelId);
-        if (!modelGraph) {
-          console.warn("Model graph is empty for popover:", modelId);
-          break;
-        }
-
-        const anchor = newValue.anchor;
-        if (
-          anchor.type === "element" &&
-          !document.body.contains(anchor.element)
-        ) {
-          console.warn("Anchor element not in DOM, skipping popover show");
-          break;
-        }
-
-        const placement = resolvePopoverPlacement(newValue);
-        const popoverPayload = {
-          modelId,
-          versionId,
-          modelGraph,
-          anchor,
-          placement,
+        const requestId = ++popoverRequestSequence;
+        const snapshot = {
+          modelId: newValue.target.id,
+          versionId: newValue.target.versionId ?? null,
+          anchor: clonePopoverAnchor(newValue.anchor),
+          hoverSource: newValue.hoverSource || null,
         };
-
-        try {
-          showModelPopover(popoverPayload);
-        } catch (error) {
-          console.warn(
-            "Error showing model popover, recreating popper instance:",
-            error,
-          );
-          try {
-            destroyPopperInstance();
-            showModelPopover(popoverPayload);
-          } catch (retryError) {
-            console.error(
-              "Error showing model popover after popper recreation:",
-              retryError,
-            );
-          }
+        if (!snapshot.anchor) {
+          console.warn("Model popover anchor is invalid, skipping popover show");
+          break;
         }
+
+        void (async () => {
+          const { versionId, graphSource } = await resolvePopoverGraphSource({
+            modelId: snapshot.modelId,
+            requestedVersionId: snapshot.versionId,
+          });
+          if (requestId !== popoverRequestSequence) {
+            return;
+          }
+          if (!graphSource) {
+            console.warn("Model graph not available for popover:", {
+              modelId: snapshot.modelId,
+              versionId,
+            });
+            return;
+          }
+
+          const modelGraph = createScopedPopoverSvg(graphSource, snapshot.modelId);
+          if (!modelGraph) {
+            console.warn("Model graph is empty for popover:", snapshot.modelId);
+            return;
+          }
+
+          const anchor = snapshot.anchor;
+          if (
+            anchor.type === "element" &&
+            (!anchor.element || !document.body.contains(anchor.element))
+          ) {
+            console.warn("Anchor element not in DOM, skipping popover show");
+            return;
+          }
+
+          const placement = resolvePopoverPlacement({
+            hoverSource: snapshot.hoverSource,
+          });
+          const popoverPayload = {
+            modelId: snapshot.modelId,
+            versionId,
+            modelGraph,
+            anchor,
+            placement,
+          };
+
+          try {
+            showModelPopover(popoverPayload);
+          } catch (error) {
+            console.warn(
+              "Error showing model popover, recreating popper instance:",
+              error,
+            );
+            try {
+              destroyPopperInstance();
+              showModelPopover(popoverPayload);
+            } catch (retryError) {
+              console.error(
+                "Error showing model popover after popper recreation:",
+                retryError,
+              );
+            }
+          }
+        })();
       } else {
+        popoverRequestSequence += 1;
         try {
           hideModelPopover();
         } catch (error) {

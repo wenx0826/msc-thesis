@@ -105,33 +105,6 @@ export const getDocumentContentSchema = {
   },
 };
 
-export const getTracesSchema = {
-  params: {
-    type: "object",
-    required: ["versionId"],
-    properties: {
-      versionId: { type: "string" },
-    },
-  },
-  response: {
-    200: {
-      type: "array",
-      items: {
-        type: "object",
-        properties: {
-          id: { type: "string" },
-          documentVersionId: { type: "string" },
-          documentId: { type: "string" },
-          modelVersionId: { type: "string" },
-          modelId: { type: "string" },
-          modelName: { type: ["string", "null"] },
-          selections: { type: "array" },
-        },
-      },
-    },
-  },
-};
-
 export const restoreDocumentSchema = {
   params: {
     type: "object",

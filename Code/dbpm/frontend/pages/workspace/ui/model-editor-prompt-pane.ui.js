@@ -63,13 +63,6 @@ createUI({
         case "editingModel":
           const hasEditingModel = workspaceStore.hasEditingModel();
           const isReadOnly = workspaceStore.isEditingModelReadOnly();
-          console.log(
-            "Editing model changed. hasEditingModel:",
-            hasEditingModel,
-            "isReadOnly:",
-            isReadOnly,
-          );
-          console.log("!!!! visibility:", hasEditingModel && !isReadOnly);
           setPromptPaneVisible(hasEditingModel && !isReadOnly);
           break;
         default:
