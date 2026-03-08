@@ -25,6 +25,15 @@
   user-select: text;
 }
 
+#documentContent.is-historical-version,
+#documentContent.is-historical-version * {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: default;
+}
+
 #viewerWrap {
   position: relative;
   overflow-y: auto;

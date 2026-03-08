@@ -260,6 +260,32 @@ ui-bar {
   align-items: center;
 }
 
+.version-tag {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 6px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  border: 1px solid var(--x-ui-border-color);
+  font-size: 11px;
+  line-height: 1.4;
+  font-weight: 600;
+  color: var(--x-ui-text-muted-color);
+  background-color: var(--x-ui-content-light-background);
+}
+
+.version-tag--latest {
+  color: #0f5132;
+  border-color: #b7dfc5;
+  background-color: #eaf7ef;
+}
+
+.version-tag--historical {
+  color: #5f5a2b;
+  border-color: #ddd7a8;
+  background-color: #f8f5de;
+}
+
 #selectedSelectionToolbar {
   position: absolute;
   top: 0;

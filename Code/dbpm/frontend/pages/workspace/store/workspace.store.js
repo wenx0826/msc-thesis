@@ -11,10 +11,12 @@ class WorkspaceStore extends Store {
       viewedDocument: {
         id: null,
         versionId: null,
+        isLatest: null,
       },
       editingModel: {
         id: null,
         versionId: null,
+        isLatest: null,
       },
       // 🔧 IMPROVED: Consolidated all popover state into one object for better cohesion
       modelPopover: {
@@ -51,16 +53,29 @@ class WorkspaceStore extends Store {
   }
   setViewedDocument(newValue) {
     const oldValue = this.state.viewedDocument;
+    const normalizedValue = newValue
+      ? {
+          id: newValue.id ?? null,
+          versionId: newValue.versionId ?? null,
+          isLatest:
+            typeof newValue.isLatest === "boolean" ? newValue.isLatest : null,
+        }
+      : {
+          id: null,
+          versionId: null,
+          isLatest: null,
+        };
     if (
-      oldValue?.id === newValue?.id &&
-      oldValue?.versionId === newValue?.versionId
+      oldValue?.id === normalizedValue?.id &&
+      oldValue?.versionId === normalizedValue?.versionId &&
+      oldValue?.isLatest === normalizedValue?.isLatest
     )
       return;
-    this.state.viewedDocument = newValue;
+    this.state.viewedDocument = normalizedValue;
     this.notify({
       key: "viewedDocument",
       oldValue,
-      newValue,
+      newValue: normalizedValue,
     });
   }
   getViewedDocument() {
@@ -69,18 +84,39 @@ class WorkspaceStore extends Store {
   getViewedDocumentId() {
     return this.state.viewedDocument.id;
   }
+  hasViewedDocument() {
+    return !!this.getViewedDocumentId();
+  }
+  isViewedDocumentReadOnly() {
+    return this.hasViewedDocument()
+      ? !this.getViewedDocument().isLatest
+      : false;
+  }
   setEditingModel(newValue) {
     const oldValue = this.state.editingModel;
+    const normalizedValue = newValue
+      ? {
+          id: newValue.id ?? null,
+          versionId: newValue.versionId ?? null,
+          isLatest:
+            typeof newValue.isLatest === "boolean" ? newValue.isLatest : null,
+        }
+      : {
+          id: null,
+          versionId: null,
+          isLatest: null,
+        };
     if (
-      oldValue.id === newValue.id &&
-      oldValue.versionId === newValue.versionId
+      oldValue?.id === normalizedValue?.id &&
+      oldValue?.versionId === normalizedValue?.versionId &&
+      oldValue?.isLatest === normalizedValue?.isLatest
     )
       return;
-    this.state.editingModel = newValue;
+    this.state.editingModel = normalizedValue;
     this.notify({
       key: "editingModel",
       oldValue,
-      newValue,
+      newValue: normalizedValue,
     });
   }
   getEditingModel() {
@@ -92,7 +128,9 @@ class WorkspaceStore extends Store {
   hasEditingModel() {
     return !!this.getEditingModelId();
   }
-
+  isEditingModelReadOnly() {
+    return this.hasEditingModel() ? !this.getEditingModel().isLatest : false;
+  }
   setStatus(status) {
     this.state.status = status;
     this.notify({ key: "status", newValue: status });

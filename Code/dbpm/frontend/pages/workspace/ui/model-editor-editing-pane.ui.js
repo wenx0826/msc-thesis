@@ -140,13 +140,6 @@ function isRegenerationUpdateType(updateType) {
   ].includes(updateType);
 }
 
-function normalizeComparableId(value) {
-  if (value === undefined || value === null) {
-    return "";
-  }
-  return String(value);
-}
-
 function getEditingModelContext() {
   const { id, versionId } = workspaceStore.getEditingModel() || {};
   return {
@@ -164,10 +157,8 @@ function isRegenerationPreviewContextCurrent(
 
   const currentContext = getEditingModelContext();
   return (
-    normalizeComparableId(currentContext.modelId) ===
-      normalizeComparableId(preview.modelId) &&
-    normalizeComparableId(currentContext.modelVersionId) ===
-      normalizeComparableId(preview.modelVersionId)
+    currentContext.modelId === preview.modelId &&
+    currentContext.modelVersionId === preview.modelVersionId
   );
 }
 
@@ -329,9 +320,9 @@ function applyRegenerationActionBar(updateType) {
 }
 
 async function showWFGraph(data) {
-  save["state"] = "ready";
+  // save["state"] = getModelEditorSaveState();
   save["graph_theme"] = "preset_customized";
-  save["endpoints_cache"] = endpointLoader._cache;
+  // save["endpoints_cache"] = endpointLoader._cache;
   save["graph_adaptor"] = new WfAdaptor(
     "modules/workflow/themes/preset_customized/theme.js",
     function (graphrealization) {
@@ -361,8 +352,12 @@ async function showWFGraph(data) {
   );
 }
 
+function setReadOnlyState(isReadOnly) {
+  save["state"] = isReadOnly ? "readonly" : "ready";
+}
+
 const showActiveModel = async (model) => {
-  save["state"] = "ready";
+  save["state"] = getModelEditorSaveState();
   save["graph_theme"] = "preset_customized";
   // save["endpoints_cache"] = endpointLoader._cache;
   save["graph_adaptor"] = new WfAdaptor(
@@ -667,8 +662,10 @@ createUI({
     window.do_main_work = do_main_work;
     await endpointLoader.init();
     save["endpoints_cache"] = endpointLoader._cache;
+
     window.onDBPMCallTypeChange = onCallTypeChange;
     window.onDBPMCallSubprocessModelChange = onCallSubprocessModelChange;
+    // applyModelEditorReadOnlyState();
     // applyRegenerationActionBar(modelEditorStore.getLatestUpdateType());
     // renderActiveEditingModelCachedErrors();
     // renderModelStatusMessage(modelEditorStore.getStatusMessage());
@@ -767,16 +764,14 @@ createUI({
       const $element = $(`#graphcanvas [element-id="${svgId}"]`);
 
       // ✨ NEW: Pass source identifier to prevent conflicts
-      workspaceStore.setModelPopoverParams(
-        {
-          target: {
-            id: modelId,
-            versionId,
-          },
-          anchor: { type: "element", element: $element[0] },
-          source: "subprocess-node",
+      workspaceStore.setModelPopoverParams({
+        target: {
+          id: modelId,
+          versionId,
         },
-      ); // ✨ NEW: Source tracking for conflict prevention
+        anchor: { type: "element", element: $element[0] },
+        source: "subprocess-node",
+      }); // ✨ NEW: Source tracking for conflict prevention
 
       console.log("Subprocess modelId:", modelId);
       // const modelName = modelsStore.getModelNameById(modelId); // OLD: Commented out unused code
@@ -847,14 +842,12 @@ createUI({
         return;
       }
 
-      const editingModelVersionId = normalizeComparableId(
-        workspaceStore.getEditingModel()?.versionId,
-      );
+      const editingModelVersionId = workspaceStore.getEditingModel()?.versionId;
       if (!editingModelVersionId) {
         return;
       }
 
-      const changedVersionId = normalizeComparableId(value?.versionId);
+      const changedVersionId = value?.versionId;
       if (changedVersionId !== editingModelVersionId) {
         return;
       }
@@ -864,12 +857,13 @@ createUI({
 
     workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
       switch (key) {
+        case "viewedDocument":
+          // applyModelEditorReadOnlyState();
+          break;
         case "editingModel": {
           const hasEditingModelChanged =
-            normalizeComparableId(oldValue?.id) !==
-              normalizeComparableId(newValue?.id) ||
-            normalizeComparableId(oldValue?.versionId) !==
-              normalizeComparableId(newValue?.versionId);
+            oldValue?.id !== newValue?.id ||
+            oldValue?.versionId !== newValue?.versionId;
 
           if (hasEditingModelChanged) {
             regenerationPreviewState = null;
@@ -879,7 +873,9 @@ createUI({
             }
           }
 
-          if (!newValue.id) {
+          if (workspaceStore.hasEditingModel()) {
+            setReadOnlyState(workspaceStore.isEditingModelReadOnly());
+          } else {
             clearModelEditor();
           }
           renderActiveEditingModelCachedErrors();

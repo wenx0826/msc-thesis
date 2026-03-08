@@ -7,11 +7,27 @@ import {
 } from "../store/index.js";
 import { modelService, workspaceService } from "../services/index.js";
 const $versionFilename = $("#versionFilename");
+const $documentVersionTag = $("#documentVersionTag");
 const $versionSelect = $("#docVersionSelect");
 const $selectionColorForm = $("#selectionColorForm");
 const $selectedSelectionColorForm = $("#selectedSelectionColorForm");
 const $deselectAllSelectionsButton = $("#deselectAllSelectionsButton");
 const $deleteSelectionButton = $("#selectedSelectionDeleteButton");
+
+function setVersionTag($tag, isLatest) {
+  if (typeof isLatest !== "boolean") {
+    $tag
+      .addClass("hidden")
+      .removeClass("version-tag--latest version-tag--historical")
+      .text("");
+    return;
+  }
+
+  $tag
+    .removeClass("hidden version-tag--latest version-tag--historical")
+    .addClass(isLatest ? "version-tag--latest" : "version-tag--historical")
+    .text(isLatest ? "Latest" : "Historical");
+}
 
 function syncNextSelectionColorInput(color) {
   if (!color) return;
@@ -213,8 +229,10 @@ createUI({
     workspaceStore.subscribe((state, { key, newValue }) => {
       switch (key) {
         case "viewedDocument": {
-          const { id, versionId } = newValue || {};
+          const { id, versionId, isLatest } = newValue || {};
           if (!id) {
+            $versionFilename.text("");
+            setVersionTag($documentVersionTag, null);
             break;
           }
           versionSelector.update({
@@ -224,6 +242,11 @@ createUI({
           $versionFilename.text(
             documentsStore.getFileName(id, versionId) || "",
           );
+          const isLatestVersion =
+            typeof isLatest === "boolean"
+              ? isLatest
+              : documentsStore.isLatestVersion(id, versionId);
+          setVersionTag($documentVersionTag, isLatestVersion);
           break;
         }
         case "editingModel":

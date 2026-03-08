@@ -10,6 +10,20 @@ import {
   projectGraphStore,
 } from "../store/index.js";
 
+function resolveDocumentIsLatest(documentId, versionId) {
+  if (!documentId || !versionId) {
+    return null;
+  }
+  return documentsStore.isLatestVersion(documentId, versionId);
+}
+
+function resolveModelIsLatest(modelId, versionId) {
+  if (!modelId || !versionId) {
+    return null;
+  }
+  return modelsStore.isLatestVersion(modelId, versionId);
+}
+
 export default {
   async loadWorkspace(projectId) {
     let viewedDocument = undefined;
@@ -32,6 +46,7 @@ export default {
       viewedDocument = {
         id: docMeta.id,
         versionId: docMeta.latestVersionId,
+        isLatest: true,
       };
       documentService.loadVersion(docMeta.latestVersionId);
     }
@@ -47,13 +62,28 @@ export default {
       return;
     }
     if (!versionId) versionId = documentsStore.getLatestVersionId(id);
-    const { id: currViewedDocId, versionId: currViewedDocVersionId } =
-      workspaceStore.getViewedDocument();
+    const nextIsLatest = resolveDocumentIsLatest(id, versionId);
+    const {
+      id: currViewedDocId,
+      versionId: currViewedDocVersionId,
+      isLatest: currViewedDocIsLatest,
+    } = workspaceStore.getViewedDocument();
     if (currViewedDocId === id && currViewedDocVersionId === versionId) {
+      if (currViewedDocIsLatest !== nextIsLatest) {
+        workspaceStore.setViewedDocument({
+          id,
+          versionId,
+          isLatest: nextIsLatest,
+        });
+      }
       return;
     }
     await documentService.loadVersion(versionId);
-    workspaceStore.setViewedDocument({ id, versionId });
+    workspaceStore.setViewedDocument({
+      id,
+      versionId,
+      isLatest: nextIsLatest,
+    });
     const editingModelId = workspaceStore.getEditingModelId();
     if (!!editingModelId) {
       const editingModelDocumentId =
@@ -67,6 +97,7 @@ export default {
     workspaceStore.setEditingModel({
       id: null,
       versionId: null,
+      isLatest: null,
     });
     modelEditorStore.clearStatusMessage();
     modelEditorStore.setData(null, {
@@ -78,6 +109,7 @@ export default {
     workspaceStore.setViewedDocument({
       id: null,
       versionId: null,
+      isLatest: null,
     });
     documentViewerStore.clear();
     workspaceStore.setModelPopoverParams(null);
@@ -95,6 +127,7 @@ export default {
     if (!versionId) {
       versionId = modelsStore.getLatestVersionId(id);
     }
+    const nextIsLatest = resolveModelIsLatest(id, versionId);
     const { id: currEditingModelId, versionId: currEditingModelVersionId } =
       workspaceStore.getEditingModel();
 
@@ -102,7 +135,11 @@ export default {
       this.clearModelDisplay();
       return;
     }
-    workspaceStore.setEditingModel({ id, versionId });
+    workspaceStore.setEditingModel({
+      id,
+      versionId,
+      isLatest: nextIsLatest,
+    });
     modelService.loadVersion(versionId);
     workspaceStore.setModelPopoverParams(null);
 

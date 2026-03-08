@@ -21,7 +21,8 @@ function resetPrompt() {
   setPromptActionsEnabled(false);
 }
 
-function setPromptVisible(isVisible) {
+function setPromptPaneVisible(isVisible) {
+  console.log("Setting prompt pane visibility to:", isVisible);
   if (isVisible) {
     $promptPane.show();
   } else {
@@ -32,7 +33,7 @@ function setPromptVisible(isVisible) {
 
 createUI({
   setup: () => {
-    setPromptVisible(false);
+    setPromptPaneVisible(false);
   },
   bindListeners: () => {
     $promptInput.on("input", () => {
@@ -57,22 +58,19 @@ createUI({
     });
   },
   subscribeStores: () => {
-    modelEditorStore.subscribe((state, { key, newValue }) => {
-      switch (key) {
-        case "data":
-          setPromptVisible(!!newValue);
-          break;
-        default:
-          break;
-      }
-    });
-
     workspaceStore.subscribe((state, { key, newValue }) => {
       switch (key) {
         case "editingModel":
-          if (!newValue?.id) {
-            setPromptVisible(false);
-          }
+          const hasEditingModel = workspaceStore.hasEditingModel();
+          const isReadOnly = workspaceStore.isEditingModelReadOnly();
+          console.log(
+            "Editing model changed. hasEditingModel:",
+            hasEditingModel,
+            "isReadOnly:",
+            isReadOnly,
+          );
+          console.log("!!!! visibility:", hasEditingModel && !isReadOnly);
+          setPromptPaneVisible(hasEditingModel && !isReadOnly);
           break;
         default:
           break;

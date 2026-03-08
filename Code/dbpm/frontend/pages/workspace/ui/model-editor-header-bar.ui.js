@@ -5,10 +5,27 @@ import { modelsStore, workspaceStore } from "../store/index.js";
 import { modelService, workspaceService } from "../services/index.js";
 import { createModelActionsMenu } from "./model-actions-menu.ui.js";
 const $modelName = $("#editingModelName");
+const $modelVersionTag = $("#editingModelVersionTag");
 const $actionsGroup = $("#editingModelActionsGroup");
 const $versionSelect = $("#modelVersionSelect");
 const $createVersionButton = $("#createModelVersionButton");
 const $moreActionsButton = $("#editingModelMoreActionsButton");
+
+function setVersionTag($tag, isLatest) {
+  if (typeof isLatest !== "boolean") {
+    $tag
+      .addClass("hidden")
+      .removeClass("version-tag--latest version-tag--historical")
+      .text("");
+    return;
+  }
+
+  $tag
+    .removeClass("hidden version-tag--latest version-tag--historical")
+    .addClass(isLatest ? "version-tag--latest" : "version-tag--historical")
+    .text(isLatest ? "Latest" : "Historical");
+}
+
 function updateCreateVersionButton(isSelectedVersionLatest) {
   if (isSelectedVersionLatest) {
     $createVersionButton
@@ -30,6 +47,7 @@ function setModelNameText(name) {
 function resetToolbar(versionSelector) {
   setActionsGroupDisabled(true);
   setModelNameText("");
+  setVersionTag($modelVersionTag, null);
   versionSelector.update({ versions: [], selectedId: null });
   updateCreateVersionButton(true);
 }
@@ -89,7 +107,8 @@ createUI({
     workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
       switch (key) {
         case "editingModel": {
-          const { id: newModelId, versionId: newVersionId } = newValue;
+          const { id: newModelId, versionId: newVersionId, isLatest } =
+            newValue;
           const { id: oldModelId, versionId: oldVersionId } = oldValue;
           if (!newModelId) {
             resetToolbar(versionSelector);
@@ -104,10 +123,11 @@ createUI({
             versions: modelMeta?.versions || [],
             selectedId: newVersionId,
           });
-          const isLatestVersion = modelsStore.isLatestVersion(
-            newModelId,
-            newVersionId,
-          );
+          const isLatestVersion =
+            typeof isLatest === "boolean"
+              ? isLatest
+              : modelsStore.isLatestVersion(newModelId, newVersionId);
+          setVersionTag($modelVersionTag, isLatestVersion);
           updateCreateVersionButton(isLatestVersion);
           break;
         }

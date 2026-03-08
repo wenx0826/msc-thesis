@@ -68,6 +68,14 @@ function getEditingModelContext() {
   };
 }
 
+function isViewingLatestDocumentVersion() {
+  const viewedDocument = workspaceStore.getViewedDocument() || {};
+  if (!viewedDocument?.id || !viewedDocument?.versionId) {
+    return false;
+  }
+  return viewedDocument.isLatest === true;
+}
+
 function isSameEditingModelContext(left, right) {
   if (!left || !right) {
     return false;
@@ -1324,6 +1332,7 @@ export default {
     workspaceStore.setEditingModel({
       id: createdModelMeta.id,
       versionId: createdModelMeta.latestVersionId,
+      isLatest: true,
     });
     modelEditorStore.setData(preparedModelData, {
       updateType: null,
@@ -1393,6 +1402,13 @@ export default {
       return;
     }
 
+    if (!isViewingLatestDocumentVersion()) {
+      console.warn(
+        "Skipping updateSubprocessLink: viewing historical document version.",
+      );
+      return;
+    }
+
     const normalizedSubprocessModelId =
       typeof subprocessModelId === "string" &&
       subprocessModelId.trim().length > 0
@@ -1426,6 +1442,13 @@ export default {
     if (!modelId || !modelVersionId) {
       console.warn(
         "Skipping updateEditingVersion: no active editing model/version.",
+      );
+      return null;
+    }
+
+    if (!isViewingLatestDocumentVersion()) {
+      console.warn(
+        "Skipping updateEditingVersion: viewing historical document version.",
       );
       return null;
     }
@@ -1716,6 +1739,7 @@ export default {
     workspaceStore.setEditingModel({
       id: modelId,
       versionId: createdVersionId,
+      isLatest: true,
     });
     await this.loadVersion(createdVersionId);
     documentViewerStore.removeTracesByModelId(modelId);

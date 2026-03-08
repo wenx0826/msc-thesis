@@ -19,6 +19,38 @@ const SELECTION_RECT_TEMPLATE_ID = "selectionRangeRectTemplate";
 const MODEL_TAG_TEMPLATE_ID = "modelTagTemplate";
 let handleDragState = null;
 
+function isViewingLatestDocumentVersion() {
+  const viewedDocument = workspaceStore.getViewedDocument() || {};
+  if (!viewedDocument?.id || !viewedDocument?.versionId) {
+    return false;
+  }
+  return viewedDocument.isLatest === true;
+}
+
+function syncDocumentReadOnlyState() {
+  const isReadOnly = !isViewingLatestDocumentVersion();
+  $documentContent.toggleClass("is-historical-version", isReadOnly);
+
+  if (!isReadOnly) {
+    return;
+  }
+
+  if (handleDragState) {
+    handleDragState = null;
+    $viewerWrap.removeClass("selection-handle-dragging");
+    $(document).off(".selectionHandleDrag");
+  }
+
+  const selection = window.getSelection();
+  if (selection) {
+    selection.removeAllRanges();
+  }
+  documentViewerStore.setSelectedSelection(null);
+  documentViewerStore.setTemporarySelections([]);
+  hideSelectionHandles();
+  hideSelectedSelectionToolbar();
+}
+
 function getCurrentSelectionColor() {
   return documentViewerStore.getSelectionColor() || "#d4e1f1";
 }
@@ -654,6 +686,9 @@ const onSelectedSelectionOutsideMouseDown = (event) => {
 };
 
 const onSelectionSelect = (event) => {
+  if (!isViewingLatestDocumentVersion()) {
+    return;
+  }
   // console.log("Range selected:", event);
   event.stopPropagation();
   const $target = $(event.currentTarget);
@@ -829,6 +864,9 @@ const renderSelection = (
 };
 
 const onSelectionHandleDragStart = (event) => {
+  if (!isViewingLatestDocumentVersion()) {
+    return;
+  }
   event.preventDefault();
   event.stopPropagation();
   const $handle = $(event.currentTarget);
@@ -1049,6 +1087,13 @@ const rerenderOverlayLayers = () => {
 };
 
 const handleTextSelection = () => {
+  if (!isViewingLatestDocumentVersion()) {
+    const selection = window.getSelection();
+    if (selection) {
+      selection.removeAllRanges();
+    }
+    return;
+  }
   const selection = window.getSelection();
 
   if (!selection.rangeCount) return;
@@ -1067,14 +1112,23 @@ const handleTextSelection = () => {
   selection.removeAllRanges();
 };
 
+const blockDocumentTextEdit = (event) => {
+  if (isViewingLatestDocumentVersion()) {
+    return;
+  }
+  event.preventDefault();
+};
+
 createUI({
   setup: () => {
     hideSelectionHandles();
     hideSelectedSelectionToolbar();
+    syncDocumentReadOnlyState();
     return {};
   },
   bindListeners: () => {
     $documentContent.on("mouseup", handleTextSelection);
+    $documentContent.on("beforeinput paste drop", blockDocumentTextEdit);
     $viewerWrap.on("scroll", rerenderOverlayLayers);
     $("#columnResizehandle1").on("dragcolumnmove", (e) => {
       // e.stopPropagation();
@@ -1227,6 +1281,9 @@ createUI({
 
     workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
       switch (key) {
+        case "viewedDocument":
+          syncDocumentReadOnlyState();
+          break;
         case "editingModel":
           const oldModelId = oldValue?.id;
           const newModelId = newValue?.id;

@@ -136,6 +136,7 @@
             </div> -->
             <div>
               <span class="" id="versionFilename"></span>
+              <span id="documentVersionTag" class="version-tag hidden"></span>
             </div>
             <fieldset id="" class="right action-group">
               <select id="docVersionSelect"></select>
@@ -235,7 +236,7 @@
           </ui-content>
           <ui-divider></ui-divider>
           <!-- Model (Re-)generation Bar -->
-          <ui-bar style="z-index: 3">
+          <ui-bar id="modelActionsBar" style="z-index: 3" class="hidden">
             <div class="right action-group">
               <button id="addSelectionsButton" class="hidden" disabled>
                 Add Selections to Model
@@ -253,6 +254,7 @@
           <ui-bar>
             <!-- <div id="activeModelNameEditor" class="inline-editor"> -->
             <span id="editingModelName" class="inline-editor__view" data-editable="1"></span>
+            <span id="editingModelVersionTag" class="version-tag hidden"></span>
             <fieldset id="editingModelActionsGroup" class="right action-group" disabled>
               <div class="field">
                 <select id="modelVersionSelect"></select>
