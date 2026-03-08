@@ -127,34 +127,34 @@ export default {
   },
   async loadVersion(versionId) {
     documentViewerStore.clear();
-    const contentPromise = documentsAPI.getContentByVersionId(versionId);
-    const tracesPromise = documentsAPI.getTracesByVersionId(versionId);
-    // return new Promise((resolve, reject) => {
-    contentPromise.then(
-      (content) => {
-        documentViewerStore.setContent(content);
-        // this.setStatus(null);
-        tracesPromise
-          .then((traces) => {
-            console.log("Loaded traces for version", versionId, traces);
-            documentViewerStore.setTraces(traces);
-            const editingModelId = workspaceStore.getEditingModelId();
-            if (editingModelId) {
-              documentViewerStore.setActiveModelTraceByModelId(editingModelId);
-            }
-            // resolve();
-          })
-          .catch((error) => {
-            console.log("Error loading traces:", error);
-            // resolve();
-          });
-      },
-      (error) => {
-        documentViewerStore.clear();
-        // this.setStatus("error");
-        // reject(error);
-      },
-    );
-    // });
+    const [contentResult, tracesResult] = await Promise.allSettled([
+      documentsAPI.getContentByVersionId(versionId),
+      documentsAPI.getTracesByVersionId(versionId),
+    ]);
+
+    if (contentResult.status !== "fulfilled") {
+      documentViewerStore.clear();
+      console.log("Error loading document content:", contentResult.reason);
+      return;
+    }
+
+    documentViewerStore.setContent(contentResult.value);
+
+    if (tracesResult.status !== "fulfilled") {
+      console.log("Error loading traces:", tracesResult.reason);
+      return;
+    }
+
+    const traces = Array.isArray(tracesResult.value) ? tracesResult.value : [];
+    console.log("Loaded traces for version", versionId, traces);
+    documentViewerStore.setTraces(traces);
+
+    const { versionId: editingModelVersionId } = workspaceStore.getEditingModel() || {};
+    const preferredModelVersionId = editingModelVersionId || null;
+    if (preferredModelVersionId) {
+      documentViewerStore.setActiveModelTraceByModelVersionId(
+        preferredModelVersionId,
+      );
+    }
   },
 };

@@ -52,7 +52,7 @@ export default {
     if (currViewedDocId === id && currViewedDocVersionId === versionId) {
       return;
     }
-    documentService.loadVersion(versionId);
+    await documentService.loadVersion(versionId);
     workspaceStore.setViewedDocument({ id, versionId });
     const editingModelId = workspaceStore.getEditingModelId();
     if (!!editingModelId) {
@@ -111,7 +111,7 @@ export default {
     if (currDisplayedDocumentId !== currModelDocumentId) {
       this.displayDocument(currModelDocumentId);
     } else {
-      documentViewerStore.setActiveModelTraceByModelId(id);
+      documentViewerStore.setActiveModelTraceByModelVersionId(versionId);
     }
   },
 };

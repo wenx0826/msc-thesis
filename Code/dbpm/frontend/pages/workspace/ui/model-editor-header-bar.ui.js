@@ -71,17 +71,8 @@ createUI({
       }
       $createVersionButton.prop("disabled", true);
       try {
-        const result = await modelService.createModelVersion(
-          modelId,
-          sourceVersionId,
-        );
-        if (result?.meta?.reason === "revert") {
-          console.log(
-            `Created new version by reverting from ${result.meta.sourceVersionLabel}`,
-          );
-        }
+        await modelService.createModelVersion(modelId, sourceVersionId);
       } catch (error) {
-        console.error("Failed to create model version:", error);
         alert("Failed to create model version.");
       } finally {
         $createVersionButton.prop("disabled", false);

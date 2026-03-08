@@ -57,27 +57,17 @@ export default {
       }),
     );
   },
-  copyByModelVersionId({ sourceModelVersionId, targetModelVersionId }) {
-    if (
-      !sourceModelVersionId ||
-      !targetModelVersionId ||
-      sourceModelVersionId === targetModelVersionId
-    ) {
-      return [];
-    }
+  copyLatestByModelVersionId({ sourceModelVersionId, targetModelVersionId }) {
+    const sourceTrace =
+      traceRepo.findLatestByModelVersionId(sourceModelVersionId);
 
-    const sourceTraces = traceRepo.findByModelVersionId(sourceModelVersionId);
-    if (!sourceTraces.length) {
-      return [];
-    }
+    const copiedTrace = this.create({
+      documentVersionId: sourceTrace.documentVersionId,
+      modelVersionId: targetModelVersionId,
+      selections: cloneSelections(sourceTrace.selections),
+    });
 
-    return sourceTraces.map((trace) =>
-      this.create({
-        documentVersionId: trace.documentVersionId,
-        modelVersionId: targetModelVersionId,
-        selections: cloneSelections(trace.selections),
-      }),
-    );
+    return this.getById(copiedTrace.id);
   },
   getById(id) {
     return traceRepo.findById(id);

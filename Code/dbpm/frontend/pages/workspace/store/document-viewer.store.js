@@ -6,10 +6,7 @@ import {
 } from "../../../modules/document/selection.js";
 
 function generateSelectionId() {
-  if (
-    globalThis.crypto &&
-    typeof globalThis.crypto.randomUUID === "function"
-  ) {
+  if (globalThis.crypto && typeof globalThis.crypto.randomUUID === "function") {
     return globalThis.crypto.randomUUID();
   }
   return `selection_${Date.now()}_${Math.random().toString(16).slice(2)}`;
@@ -78,7 +75,12 @@ class DocumentViewerStore extends Store {
   }
 
   areIdsEqual(idA, idB) {
-    if (idA === undefined || idA === null || idB === undefined || idB === null) {
+    if (
+      idA === undefined ||
+      idA === null ||
+      idB === undefined ||
+      idB === null
+    ) {
       return false;
     }
     return String(idA) === String(idB);
@@ -219,8 +221,8 @@ class DocumentViewerStore extends Store {
       return [];
     }
 
-    const removed = this.state.traces.filter(
-      (trace) => this.areIdsEqual(trace?.modelId, modelId),
+    const removed = this.state.traces.filter((trace) =>
+      this.areIdsEqual(trace?.modelId, modelId),
     );
     if (!removed.length) {
       return [];
@@ -244,7 +246,9 @@ class DocumentViewerStore extends Store {
   }
 
   getTraceById(traceId) {
-    return this.state.traces.find((trace) => this.areIdsEqual(trace.id, traceId));
+    return this.state.traces.find((trace) =>
+      this.areIdsEqual(trace.id, traceId),
+    );
   }
 
   getDisplayedModelTrace() {
@@ -252,7 +256,7 @@ class DocumentViewerStore extends Store {
   }
 
   getSerializedActiveModelTrace() {
-    const activeModelTrace = this.getDisplayedModelTrace();
+    const activeModelTrace = this.state.activeModelTrace;
     if (activeModelTrace) {
       return {
         ...activeModelTrace,
@@ -277,7 +281,9 @@ class DocumentViewerStore extends Store {
   }
 
   getOriginalActiveModelSerializedSelections() {
-    return cloneSerializedSelections(this.state.originalActiveModelSerializedSelections);
+    return cloneSerializedSelections(
+      this.state.originalActiveModelSerializedSelections,
+    );
   }
 
   setOriginalActiveModelSerializedSelections(selections) {
@@ -291,12 +297,14 @@ class DocumentViewerStore extends Store {
       activeModelTrace?.selections || [],
     );
   }
-
+  // Active model trace
   setActiveModelTrace(newValue) {
-    const oldValue = this.getDisplayedModelTrace();
+    const oldValue = this.state.activeModelTrace;
     this.state.activeModelTrace = newValue;
     this.setOriginalActiveModelSerializedSelections(
-      newValue?.selections ? this.getSerializedSelections(newValue.selections) : [],
+      newValue?.selections
+        ? this.getSerializedSelections(newValue.selections)
+        : [],
     );
     this.notify({ key: "activeModelTrace", oldValue, newValue });
   }
@@ -306,9 +314,23 @@ class DocumentViewerStore extends Store {
     this.setActiveModelTrace(trace);
   }
 
+  setActiveModelTraceByModelVersionId(modelVersionId) {
+    if (modelVersionId === undefined || modelVersionId === null) {
+      this.setActiveModelTrace(null);
+      return;
+    }
+    const trace = this.state.traces.find((trace) =>
+      this.areIdsEqual(trace?.modelVersionId, modelVersionId),
+    );
+    this.setActiveModelTrace(trace || null);
+  }
+  setActiveModelTraceById(traceId) {
+    const trace = this.getTraceById(traceId);
+    this.setActiveModelTrace(trace);
+  }
   setActiveModelTraceByModelId(modelId) {
     const trace = this.state.traces.find((trace) => trace.modelId == modelId);
-    this.setActiveModelTrace(trace);
+    this.setActiveModelTrace(trace || null);
   }
 
   removeActiveModelTraceSelectionById(selectionId) {
@@ -321,7 +343,9 @@ class DocumentViewerStore extends Store {
       trace = this.getTraceById(traceId);
     }
     if (!trace && modelId !== undefined && modelId !== null) {
-      trace = this.state.traces.find((item) => this.areIdsEqual(item.modelId, modelId));
+      trace = this.state.traces.find((item) =>
+        this.areIdsEqual(item.modelId, modelId),
+      );
     }
     if (!trace) {
       trace = this.getDisplayedModelTrace();
@@ -365,7 +389,9 @@ class DocumentViewerStore extends Store {
       trace = this.getTraceById(traceId);
     }
     if (!trace && modelId !== undefined && modelId !== null) {
-      trace = this.state.traces.find((item) => this.areIdsEqual(item.modelId, modelId));
+      trace = this.state.traces.find((item) =>
+        this.areIdsEqual(item.modelId, modelId),
+      );
     }
     if (!trace) {
       trace = this.getDisplayedModelTrace();
@@ -402,8 +428,8 @@ class DocumentViewerStore extends Store {
   updateActiveModelTraceSelectionRange(selectionId, range) {
     const activeModelTrace = this.getDisplayedModelTrace();
     if (activeModelTrace) {
-      const selection = activeModelTrace.selections.find(
-        (sel) => this.areIdsEqual(sel.id, selectionId),
+      const selection = activeModelTrace.selections.find((sel) =>
+        this.areIdsEqual(sel.id, selectionId),
       );
       if (selection && !this.areRangesEqual(selection.range, range)) {
         selection.range = range.cloneRange();
@@ -424,7 +450,9 @@ class DocumentViewerStore extends Store {
       trace = this.getTraceById(traceId);
     }
     if (!trace && modelId !== undefined && modelId !== null) {
-      trace = this.state.traces.find((item) => this.areIdsEqual(item.modelId, modelId));
+      trace = this.state.traces.find((item) =>
+        this.areIdsEqual(item.modelId, modelId),
+      );
     }
     if (!trace) {
       trace = this.getDisplayedModelTrace();
@@ -456,10 +484,6 @@ class DocumentViewerStore extends Store {
     return true;
   }
 
-  setActiveModelTraceById(traceId) {
-    const trace = this.getTraceById(traceId);
-    this.setActiveModelTrace(trace);
-  }
   // #endregion
 
   // #region temporary selections
@@ -494,8 +518,8 @@ class DocumentViewerStore extends Store {
 
   removeTemporarySelection(selectionId) {
     let value;
-    const index = this.state.temporarySelections.findIndex(
-      (sel) => this.areIdsEqual(sel.id, selectionId),
+    const index = this.state.temporarySelections.findIndex((sel) =>
+      this.areIdsEqual(sel.id, selectionId),
     );
     if (index !== -1) {
       value = this.state.temporarySelections[index];
@@ -506,8 +530,8 @@ class DocumentViewerStore extends Store {
   }
 
   updateTemporarySelectionColor(selectionId, color) {
-    const selection = this.state.temporarySelections.find(
-      (sel) => this.areIdsEqual(sel.id, selectionId),
+    const selection = this.state.temporarySelections.find((sel) =>
+      this.areIdsEqual(sel.id, selectionId),
     );
     if (selection && selection.color !== color) {
       selection.color = color;
@@ -520,8 +544,8 @@ class DocumentViewerStore extends Store {
   }
 
   updateTemporarySelectionRange(selectionId, range) {
-    const selection = this.state.temporarySelections.find(
-      (sel) => this.areIdsEqual(sel.id, selectionId),
+    const selection = this.state.temporarySelections.find((sel) =>
+      this.areIdsEqual(sel.id, selectionId),
     );
     if (selection && !this.areRangesEqual(selection.range, range)) {
       selection.range = range.cloneRange();

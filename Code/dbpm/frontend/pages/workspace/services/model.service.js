@@ -1382,84 +1382,7 @@ export default {
       failed,
     };
   },
-  // Model versioning
-  async createModelVersion(modelId, sourceVersionId) {
-    const sourceVersion = modelsStore.getVersion(modelId, sourceVersionId);
-    const isSelectedVersionLatest = modelsStore.isLatestVersion(
-      modelId,
-      sourceVersionId,
-    );
-    const reason = isSelectedVersionLatest ? "new_version" : "revert";
-    const sourceVersionLabel =
-      sourceVersion?.name ||
-      (typeof sourceVersion?.versionNumber === "number"
-        ? `v${sourceVersion.versionNumber}`
-        : String(sourceVersionId));
 
-    const result = await modelsAPI.createVersion({
-      modelId,
-      sourceVersionId,
-      reason,
-    });
-    const modelMeta = result?.modelMeta || null;
-    const createdVersion =
-      result?.newVersion || result?.version || (result?.id ? result : null);
-
-    if (modelMeta && modelMeta.id === modelId) {
-      modelsStore.update(modelId, modelMeta);
-    } else if (createdVersion?.id) {
-      modelsStore.addVersion(modelId, createdVersion);
-    }
-
-    const createdVersionId =
-      modelMeta?.latestVersionId ||
-      createdVersion?.id ||
-      result?.latestVersionId;
-    if (!createdVersionId) {
-      throw new Error("Failed to resolve created model version");
-    }
-
-    workspaceStore.setEditingModel({
-      id: modelId,
-      versionId: createdVersionId,
-    });
-    await this.loadVersion(createdVersionId);
-
-    return {
-      ...(result || {}),
-      meta: {
-        ...(result?.meta || {}),
-        reason,
-        isSelectedVersionLatest,
-        sourceVersionId,
-        sourceVersionLabel,
-      },
-    };
-  },
-  async loadVersion(versionId) {
-    const { id: modelId } = workspaceStore.getEditingModel() || {};
-    const cached = await this.ensureVersionCached(versionId, {
-      needData: true,
-      needSvg: false,
-      modelId,
-    });
-    if (!cached?.dataXml) {
-      throw new Error(
-        `Failed to resolve cached model XML for version ${versionId}`,
-      );
-    }
-
-    console.log(
-      "Loaded model data for versionId",
-      versionId,
-      "(service cache)",
-    );
-    modelEditorStore.setData(cached.dataXml, {
-      updateType: null,
-    });
-    this.applyDeferredRegenerationPreviewForActiveEditingModel();
-    syncNoSelectionsOnModelVersionLoadIfNeeded("load_model_version");
-  },
   maybeAlertNoSelectionOnLoadedEditingModel(source = "manual_check") {
     syncNoSelectionsOnModelVersionLoadIfNeeded(source);
   },
@@ -1765,5 +1688,76 @@ export default {
     } catch (error) {
       console.error("Failed to update active model trace:", error);
     }
+  },
+  // Model versioning
+  async createModelVersion(modelId, sourceVersionId) {
+    const sourceVersion = modelsStore.getVersion(modelId, sourceVersionId);
+    const isSelectedVersionLatest = modelsStore.isLatestVersion(
+      modelId,
+      sourceVersionId,
+    );
+    const reason = isSelectedVersionLatest ? "new_version" : "revert";
+    const sourceVersionLabel =
+      sourceVersion?.name ||
+      (typeof sourceVersion?.versionNumber === "number"
+        ? `v${sourceVersion.versionNumber}`
+        : String(sourceVersionId));
+
+    const result = await modelsAPI.createVersion({
+      modelId,
+      sourceVersionId,
+      reason,
+    });
+
+    const { versionMeta: version, trace } = result || {};
+    modelsStore.addVersion(modelId, version);
+    const createdVersionId = version?.id || null;
+
+    workspaceStore.setEditingModel({
+      id: modelId,
+      versionId: createdVersionId,
+    });
+    await this.loadVersion(createdVersionId);
+    documentViewerStore.removeTracesByModelId(modelId);
+    console.log(
+      `Created new model version ${createdVersionId} for model ${modelId} based on source version ${sourceVersionId} (${sourceVersionLabel}) with reason: ${reason}`,
+      { trace },
+    );
+    documentViewerStore.addTrace(trace);
+    // documentViewerStore.updateTraceByModelId(modelId, trace);
+    // documentViewerStore.updateTraceModelVersion({
+    //   modelId,
+    //   sourceModelVersionId: sourceVersionId,
+    //   targetModelVersionId: createdVersionId,
+    // });
+
+    // documentViewerStore.setActiveModelTraceByModelVersionId(createdVersionId);
+    // if (!documentViewerStore.getDisplayedModelTrace()) {
+    //   documentViewerStore.setActiveModelTraceByModelId(modelId);
+    // }
+  },
+  async loadVersion(versionId) {
+    const { id: modelId } = workspaceStore.getEditingModel() || {};
+    const cached = await this.ensureVersionCached(versionId, {
+      needData: true,
+      needSvg: false,
+      modelId,
+    });
+    if (!cached?.dataXml) {
+      throw new Error(
+        `Failed to resolve cached model XML for version ${versionId}`,
+      );
+    }
+
+    console.log(
+      "Loaded model data for versionId",
+      versionId,
+      "(service cache)",
+    );
+    modelEditorStore.setData(cached.dataXml, {
+      updateType: null,
+    });
+    this.applyDeferredRegenerationPreviewForActiveEditingModel();
+    syncNoSelectionsOnModelVersionLoadIfNeeded("load_model_version");
   },
 };

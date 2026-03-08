@@ -59,20 +59,6 @@ class TracesRepository extends BaseSqlRepository {
     return rows.map((row) => this.mapRow(row));
   }
 
-  findByModelVersionId(modelVersionId) {
-    const stmt = db.prepare(`
-      SELECT t.*, mv.model_id, m.name AS model_name, dv.document_id
-      FROM traces t
-      LEFT JOIN model_versions mv ON t.model_version_id = mv.id
-      LEFT JOIN models m ON mv.model_id = m.id
-      LEFT JOIN document_versions dv ON t.document_version_id = dv.id
-      WHERE t.model_version_id = ?
-      ORDER BY t.created_at ASC
-    `);
-    const rows = stmt.all(modelVersionId);
-    return rows.map((row) => this.mapRow(row));
-  }
-
   findLatestByModelVersionId(modelVersionId) {
     const stmt = db.prepare(`
       SELECT t.*, mv.model_id, m.name AS model_name, dv.document_id
@@ -81,7 +67,7 @@ class TracesRepository extends BaseSqlRepository {
       LEFT JOIN models m ON mv.model_id = m.id
       LEFT JOIN document_versions dv ON t.document_version_id = dv.id
       WHERE t.model_version_id = ?
-      ORDER BY t.created_at DESC
+      ORDER BY dv.version_number DESC, t.created_at DESC
       LIMIT 1
     `);
     const row = stmt.get(modelVersionId);

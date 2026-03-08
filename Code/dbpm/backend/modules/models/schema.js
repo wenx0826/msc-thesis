@@ -109,7 +109,7 @@ export const createVersionSchema = {
             documentId: { type: "string" },
           },
         },
-        newVersion: {
+        versionMeta: {
           type: "object",
           properties: {
             id: { type: "string" },
@@ -120,7 +120,17 @@ export const createVersionSchema = {
             createdAt: { type: "string" },
           },
         },
-        copiedTracesCount: { type: "number" },
+        trace: {
+          type: "object",
+          properties: {
+            id: { type: "string" },
+            documentId: { type: "string" },
+            documentVersionId: { type: "string" },
+            modelId: { type: "string" },
+            modelVersionId: { type: "string" },
+            selections: { type: "array" },
+          },
+        },
       },
     },
   },

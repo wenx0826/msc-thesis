@@ -179,7 +179,7 @@ export default {
     });
     storageRepo.writeByModelId(modelId, sourceModelData);
 
-    const copiedTraces = traceService.copyByModelVersionId({
+    const createdTrace = traceService.copyLatestByModelVersionId({
       sourceModelVersionId: sourceVersionId,
       targetModelVersionId: createdVersion.id,
     });
@@ -192,14 +192,13 @@ export default {
         sourceVersionId,
         newVersionId: createdVersion.id,
         reason: normalizedReason,
-        copiedTracesCount: copiedTraces.length,
       });
     }
 
     return {
       modelMeta: modelRepo.findByIdWithVersions(modelId),
-      newVersion: createdVersion,
-      copiedTracesCount: copiedTraces.length,
+      versionMeta: createdVersion,
+      trace: createdTrace,
     };
   },
   updateMeta(modelId, updates) {
@@ -431,20 +430,23 @@ export default {
         ? modelSummary.byVersionLevel
         : [];
       const versionSummaryByNumber = new Map(
-        byVersionLevel.map((entry) => [Number(entry.versionNumber) || 0, entry]),
+        byVersionLevel.map((entry) => [
+          Number(entry.versionNumber) || 0,
+          entry,
+        ]),
       );
 
-      const versions = (Array.isArray(model?.versions) ? model.versions : []).map(
-        (version) => {
-          const versionSummary = versionSummaryByNumber.get(
-            Number(version?.versionNumber) || 0,
-          );
-          return {
-            ...version,
-            updatesStats: toSummaryArray(versionSummary?.byType || {}),
-          };
-        },
-      );
+      const versions = (
+        Array.isArray(model?.versions) ? model.versions : []
+      ).map((version) => {
+        const versionSummary = versionSummaryByNumber.get(
+          Number(version?.versionNumber) || 0,
+        );
+        return {
+          ...version,
+          updatesStats: toSummaryArray(versionSummary?.byType || {}),
+        };
+      });
 
       return {
         ...model,
