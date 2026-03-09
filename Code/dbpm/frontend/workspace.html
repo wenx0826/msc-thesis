@@ -253,8 +253,11 @@
         <ui-rest style="flex: 1 1 0; min-height: 100px">
           <ui-bar>
             <!-- <div id="activeModelNameEditor" class="inline-editor"> -->
-            <span id="editingModelName" class="inline-editor__view" data-editable="1"></span>
-            <span id="editingModelVersionTag" class="version-tag hidden"></span>
+            <div class="action-group">
+              <span id="editingModelName" class="inline-editor__view" data-editable="1"></span>
+              <span id="editingModelVersionTag" class="version-tag hidden"></span>
+              <button id="deselectModelButton" disabled>Deselect</button>
+            </div>
             <fieldset id="editingModelActionsGroup" class="right action-group" disabled>
               <div class="field">
                 <select id="modelVersionSelect"></select>
@@ -284,14 +287,19 @@
               <button id="modelStatusMessageClose">x</button>
             </div>
             <ui-bar id="regeneratedModelActionBar" class="hidden">
+              <div class="action-group">
+                <button id="viewOriginalModelButton" disabled>Original</button>
+                <button id="viewRegeneratedModelButton">Regenerated</button>
+              </div>
               <div class="right action-group">
-                <button id="viewPrevModelButton">Previous</button>
-                <button id="viewNewModelButton">New</button>
                 <button id="revertPrevModelButton" title="Cancel changes">
                   Cancel
                 </button>
-                <button id="keepNewModelButton" title="Keep the new version" class="btn-primary">
-                  Keep
+                <button id="replaceModelButton" title="Replace with regenerated model">
+                  Replace
+                </button>
+                <button id="saveNewModelButton" title="Save as new version" class="btn-primary">
+                  Save as new version
                 </button>
               </div>
             </ui-bar>
@@ -304,7 +312,7 @@
           <ui-bar>
             <fieldset class="right action-group" id="promptActionsGroup" disabled>
               <button id="clearPromptButton">Clear</button>
-              <button id="sendPromptButton">Send</button>
+              <button id="sendPromptButton" class="btn-primary">Send</button>
             </fieldset>
           </ui-bar>
         </ui-rest>

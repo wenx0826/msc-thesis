@@ -174,7 +174,7 @@ createUI({
           break;
         }
         case "model": {
-          workspaceService.toggleModelDisplay(id);
+          workspaceService.displayModel(id);
           break;
         }
         default:

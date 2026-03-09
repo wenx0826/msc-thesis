@@ -263,7 +263,6 @@ ui-bar {
 .version-tag {
   display: inline-flex;
   align-items: center;
-  margin-left: 6px;
   padding: 1px 6px;
   border-radius: 999px;
   border: 1px solid var(--x-ui-border-color);
@@ -276,13 +275,13 @@ ui-bar {
 
 .version-tag--latest {
   color: #0f5132;
-  border-color: #b7dfc5;
+  /* border-color: #b7dfc5; */
   background-color: #eaf7ef;
 }
 
 .version-tag--historical {
   color: #5f5a2b;
-  border-color: #ddd7a8;
+  /* border-color: #ddd7a8; */
   background-color: #f8f5de;
 }
 
@@ -586,6 +585,8 @@ text.duration {
 }
 
 #regeneratedModelActionBar {
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
   /* border: 0 none; */
   border-top: 1px solid var(--x-ui-border-color);
   background-color: var(--x-ui-content-light-background);

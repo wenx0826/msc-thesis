@@ -23,31 +23,7 @@ const $modelErrorList = $("#modelErrorList");
 // disable all controls inside
 // enable all controls inside
 
-const $regeneratedModelActionBar = $("#regeneratedModelActionBar");
-const $viewPrevModelButton = $("#viewPrevModelButton");
-const $viewNewModelButton = $("#viewNewModelButton");
-const $revertPrevModelButton = $("#revertPrevModelButton");
-const $keepNewModelButton = $("#keepNewModelButton");
-
-let regenerationPreviewState = null;
-let isApplyingRegenerationView = false;
-let isRegenerationDecisionClickLocked = false;
-let regenerationActionBarHintTimeoutId = null;
-let regenerationDecisionAlertTimeoutId = null;
 let modelStatusMessageAutoCloseTimerId = null;
-
-const REGENERATION_LOCKED_POINTER_EVENTS = [
-  "pointerdown",
-  "pointerup",
-  "mousedown",
-  "mouseup",
-  "click",
-  "dblclick",
-  "contextmenu",
-  "touchstart",
-  "touchend",
-];
-const REGENERATION_ACTION_BAR_HINT_CLASS = "regeneration-click-hint";
 
 const CALL_SUBPROCESS_MODEL_SELECT_SELECTOR = `#dat_details select[data-relaxngui-path=" > call > parameters > dbpm_subprocess_model"]`;
 const MODEL_ERROR_ITEM_TEMPLATE_ID = "modelErrorItemTemplate";
@@ -131,192 +107,6 @@ function renderModelStatusMessage(statusMessage = null) {
       modelEditorStore.clearStatusMessage();
     }, autoCloseMs);
   }
-}
-
-function isRegenerationUpdateType(updateType) {
-  return [
-    MODEL_UPDATE_TYPE.REGENERATION_BY_PROMPT,
-    MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS,
-  ].includes(updateType);
-}
-
-function getEditingModelContext() {
-  const { id, versionId } = workspaceStore.getEditingModel() || {};
-  return {
-    modelId: id || null,
-    modelVersionId: versionId || null,
-  };
-}
-
-function isRegenerationPreviewContextCurrent(
-  preview = regenerationPreviewState,
-) {
-  if (!preview?.modelId || !preview?.modelVersionId) {
-    return false;
-  }
-
-  const currentContext = getEditingModelContext();
-  return (
-    currentContext.modelId === preview.modelId &&
-    currentContext.modelVersionId === preview.modelVersionId
-  );
-}
-
-function setRegenerationDecisionClickLock(isLocked) {
-  const shouldLock = Boolean(isLocked);
-  isRegenerationDecisionClickLocked = shouldLock;
-  if (!shouldLock) {
-    $regeneratedModelActionBar.removeClass(REGENERATION_ACTION_BAR_HINT_CLASS);
-    if (regenerationActionBarHintTimeoutId) {
-      clearTimeout(regenerationActionBarHintTimeoutId);
-      regenerationActionBarHintTimeoutId = null;
-    }
-    if (regenerationDecisionAlertTimeoutId) {
-      clearTimeout(regenerationDecisionAlertTimeoutId);
-      regenerationDecisionAlertTimeoutId = null;
-    }
-  }
-}
-
-function showRegenerationActionBarHint() {
-  if (!$regeneratedModelActionBar.length) {
-    return;
-  }
-
-  $regeneratedModelActionBar.removeClass(REGENERATION_ACTION_BAR_HINT_CLASS);
-  // restart transition if user clicks outside repeatedly
-  void $regeneratedModelActionBar.get(0)?.offsetWidth;
-  $regeneratedModelActionBar.addClass(REGENERATION_ACTION_BAR_HINT_CLASS);
-
-  if (regenerationActionBarHintTimeoutId) {
-    clearTimeout(regenerationActionBarHintTimeoutId);
-  }
-  regenerationActionBarHintTimeoutId = setTimeout(() => {
-    $regeneratedModelActionBar.removeClass(REGENERATION_ACTION_BAR_HINT_CLASS);
-    regenerationActionBarHintTimeoutId = null;
-  }, 900);
-}
-
-function scheduleRegenerationDecisionAlert() {
-  if (
-    regenerationDecisionAlertTimeoutId ||
-    !isRegenerationDecisionClickLocked
-  ) {
-    return;
-  }
-
-  const showAlert = () => {
-    regenerationDecisionAlertTimeoutId = null;
-    if (!isRegenerationDecisionClickLocked) {
-      return;
-    }
-    alert("Please use the regeneration action bar to continue.");
-  };
-
-  const scheduleAfterPaint = () => {
-    regenerationDecisionAlertTimeoutId = setTimeout(showAlert, 0);
-  };
-
-  if (
-    typeof window !== "undefined" &&
-    typeof window.requestAnimationFrame === "function"
-  ) {
-    window.requestAnimationFrame(() => {
-      window.requestAnimationFrame(scheduleAfterPaint);
-    });
-    return;
-  }
-
-  scheduleAfterPaint();
-}
-
-function shouldAllowEventDuringRegenerationDecision(eventTarget) {
-  if (!eventTarget || !$regeneratedModelActionBar.length) {
-    return false;
-  }
-  const actionBarElement = $regeneratedModelActionBar.get(0);
-  return actionBarElement?.contains(eventTarget) ?? false;
-}
-
-function onRegenerationDecisionPointerEvent(event) {
-  if (!isRegenerationDecisionClickLocked) {
-    return;
-  }
-
-  if (shouldAllowEventDuringRegenerationDecision(event.target)) {
-    return;
-  }
-
-  if (event.type === "click") {
-    showRegenerationActionBarHint();
-    scheduleRegenerationDecisionAlert();
-  }
-
-  event.preventDefault();
-  event.stopPropagation();
-  event.stopImmediatePropagation();
-}
-
-function serializeXmlNode(node) {
-  if (!node) {
-    return null;
-  }
-  return new XMLSerializer().serializeToString(node);
-}
-
-function setRegenerationPreviewView(view) {
-  if (!regenerationPreviewState) {
-    return;
-  }
-  if (!isRegenerationPreviewContextCurrent(regenerationPreviewState)) {
-    regenerationPreviewState = null;
-    return;
-  }
-  const normalizedView = view === "previous" ? "previous" : "regenerated";
-  if (regenerationPreviewState.view === normalizedView) {
-    return;
-  }
-
-  const nextDataXml =
-    normalizedView === "previous"
-      ? regenerationPreviewState.previousDataXml
-      : regenerationPreviewState.regeneratedDataXml;
-  if (!nextDataXml) {
-    return;
-  }
-
-  regenerationPreviewState = {
-    ...regenerationPreviewState,
-    view: normalizedView,
-  };
-  isApplyingRegenerationView = true;
-  modelEditorStore.setData(nextDataXml);
-  isApplyingRegenerationView = false;
-}
-
-function applyRegenerationActionBar(updateType) {
-  const preview = regenerationPreviewState;
-  const hasCurrentPreviewContext = isRegenerationPreviewContextCurrent(preview);
-  if (
-    !isRegenerationUpdateType(updateType) ||
-    !preview ||
-    !hasCurrentPreviewContext
-  ) {
-    if (preview && !hasCurrentPreviewContext) {
-      regenerationPreviewState = null;
-    }
-    $regeneratedModelActionBar.hide();
-    setRegenerationDecisionClickLock(false);
-    return;
-  }
-
-  const isViewingPrevious = preview.view === "previous";
-  $viewPrevModelButton.prop("disabled", isViewingPrevious);
-  $viewNewModelButton.prop("disabled", !isViewingPrevious);
-  $revertPrevModelButton.prop("disabled", false);
-  $keepNewModelButton.prop("disabled", false);
-  $regeneratedModelActionBar.show();
-  setRegenerationDecisionClickLock(true);
 }
 
 async function showWFGraph(data) {
@@ -666,19 +456,10 @@ createUI({
     window.onDBPMCallTypeChange = onCallTypeChange;
     window.onDBPMCallSubprocessModelChange = onCallSubprocessModelChange;
     // applyModelEditorReadOnlyState();
-    // applyRegenerationActionBar(modelEditorStore.getLatestUpdateType());
     // renderActiveEditingModelCachedErrors();
     // renderModelStatusMessage(modelEditorStore.getStatusMessage());
   },
   bindListeners: () => {
-    REGENERATION_LOCKED_POINTER_EVENTS.forEach((eventName) => {
-      document.addEventListener(
-        eventName,
-        onRegenerationDecisionPointerEvent,
-        true,
-      );
-    });
-
     $modelStatusMessageClose.on("click", () => {
       modelEditorStore.clearStatusMessage();
     });
@@ -688,57 +469,6 @@ createUI({
       localStorage.removeItem("marked");
       localStorage.removeItem("marked_from");
       $datDetails.empty();
-    });
-    $viewPrevModelButton.on("click", () => {
-      setRegenerationPreviewView("previous");
-      applyRegenerationActionBar(modelEditorStore.getLatestUpdateType());
-    });
-
-    $viewNewModelButton.on("click", () => {
-      setRegenerationPreviewView("regenerated");
-      applyRegenerationActionBar(modelEditorStore.getLatestUpdateType());
-    });
-
-    $keepNewModelButton.on("click", async () => {
-      const preview = regenerationPreviewState;
-      if (!preview || !isRegenerationPreviewContextCurrent(preview)) {
-        modelEditorStore.setLatestUpdateType(null);
-        regenerationPreviewState = null;
-        return;
-      }
-      if (preview.view !== "regenerated") {
-        setRegenerationPreviewView("regenerated");
-      }
-      try {
-        await modelService.updateEditingVersion(preview.updateType, {
-          expectedModelId: preview.modelId,
-          expectedModelVersionId: preview.modelVersionId,
-        });
-        modelEditorStore.setLatestUpdateType(null);
-        regenerationPreviewState = null;
-      } catch (error) {
-        console.error("Failed to keep regenerated model:", error);
-        alert("Failed to keep regenerated model.");
-      }
-    });
-
-    $revertPrevModelButton.on("click", () => {
-      const preview = regenerationPreviewState;
-      if (!preview || !isRegenerationPreviewContextCurrent(preview)) {
-        modelEditorStore.setLatestUpdateType(null);
-        regenerationPreviewState = null;
-        return;
-      }
-      if (!preview.previousDataXml) {
-        modelEditorStore.setLatestUpdateType(null);
-        regenerationPreviewState = null;
-        return;
-      }
-      isApplyingRegenerationView = true;
-      modelEditorStore.setData(preview.previousDataXml);
-      isApplyingRegenerationView = false;
-      modelEditorStore.setLatestUpdateType(null);
-      regenerationPreviewState = null;
     });
 
     $(document).on("wf:call-clicked", onCallClicked);
@@ -750,7 +480,7 @@ createUI({
         .children("dbpm_subprocess_model")
         .text();
       if (modelId) {
-        workspaceService.toggleModelDisplay(modelId);
+        workspaceService.displayModel(modelId);
       }
     });
     $(document).on("wf:subprocess-hovered", function (e) {
@@ -790,45 +520,16 @@ createUI({
     });
   },
   subscribeStores: () => {
-    modelEditorStore.subscribe((state, { key, oldValue, newValue }) => {
+    modelEditorStore.subscribe((_, { key, newValue }) => {
       switch (key) {
         case "data": {
-          if (!isApplyingRegenerationView) {
-            const updateType = modelEditorStore.getLatestUpdateType();
-            if (isRegenerationUpdateType(updateType) && oldValue && newValue) {
-              const previousDataXml = serializeXmlNode(oldValue);
-              const regeneratedDataXml = serializeXmlNode(newValue);
-              if (previousDataXml && regeneratedDataXml) {
-                const editingModelContext = getEditingModelContext();
-                regenerationPreviewState = {
-                  updateType,
-                  modelId: editingModelContext.modelId,
-                  modelVersionId: editingModelContext.modelVersionId,
-                  previousDataXml,
-                  regeneratedDataXml,
-                  view: "regenerated",
-                };
-              }
-            } else if (!isRegenerationUpdateType(updateType)) {
-              regenerationPreviewState = null;
-            }
-          }
-
           if (newValue) {
             showWFGraph(newValue);
           } else {
             clearModelEditor();
           }
-
-          applyRegenerationActionBar(modelEditorStore.getLatestUpdateType());
           break;
         }
-        case "latestUpdateType":
-          if (!isRegenerationUpdateType(newValue)) {
-            regenerationPreviewState = null;
-          }
-          applyRegenerationActionBar(newValue);
-          break;
         case "statusMessage":
           renderModelStatusMessage(newValue);
           break;
@@ -837,7 +538,7 @@ createUI({
       }
     });
 
-    modelsStore.subscribe((state, { key, value }) => {
+    modelsStore.subscribe((_, { key, value }) => {
       if (key !== "cachedVersionsById") {
         return;
       }
@@ -855,33 +556,19 @@ createUI({
       renderActiveEditingModelCachedErrors();
     });
 
-    workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
+    workspaceStore.subscribe((_, { key }) => {
       switch (key) {
         case "viewedDocument":
           // applyModelEditorReadOnlyState();
           break;
-        case "editingModel": {
-          const hasEditingModelChanged =
-            oldValue?.id !== newValue?.id ||
-            oldValue?.versionId !== newValue?.versionId;
-
-          if (hasEditingModelChanged) {
-            regenerationPreviewState = null;
-            const latestUpdateType = modelEditorStore.getLatestUpdateType();
-            if (isRegenerationUpdateType(latestUpdateType)) {
-              modelEditorStore.setLatestUpdateType(null);
-            }
-          }
-
+        case "editingModel":
           if (workspaceStore.hasEditingModel()) {
             setReadOnlyState(workspaceStore.isEditingModelReadOnly());
           } else {
             clearModelEditor();
           }
           renderActiveEditingModelCachedErrors();
-          applyRegenerationActionBar(modelEditorStore.getLatestUpdateType());
           break;
-        }
         default:
           break;
       }

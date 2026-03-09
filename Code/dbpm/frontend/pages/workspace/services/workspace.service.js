@@ -132,6 +132,27 @@ export default {
     this.clearDocumentDisplay();
   },
   async toggleModelDisplay(id, versionId, shouldUpdateViewedDocument = true) {
+    if (!id) {
+      this.clearModelDisplay();
+      return;
+    }
+
+    const resolvedVersionId = versionId || modelsStore.getLatestVersionId(id);
+    const { id: currEditingModelId, versionId: currEditingModelVersionId } =
+      workspaceStore.getEditingModel();
+
+    const isSameModelVersion =
+      currEditingModelId === id &&
+      currEditingModelVersionId === resolvedVersionId;
+
+    if (isSameModelVersion) {
+      this.clearModelDisplay();
+      return;
+    }
+
+    await this.displayModel(id, resolvedVersionId, shouldUpdateViewedDocument);
+  },
+  async displayModel(id, versionId, shouldUpdateViewedDocument = true) {
     let isLatest;
     if (!id) {
       this.clearModelDisplay();
@@ -148,7 +169,6 @@ export default {
       workspaceStore.getEditingModel();
 
     if (currEditingModelId === id && currEditingModelVersionId === versionId) {
-      this.clearModelDisplay();
       return;
     }
 
@@ -160,6 +180,7 @@ export default {
     modelService.loadVersion(versionId);
     workspaceStore.setModelPopoverParams(null);
 
+    let resolvedHistoricalTrace = null;
     if (shouldUpdateViewedDocument) {
       let targetDocumentId, targetDocumentVersionId;
       if (isLatest) {
@@ -167,22 +188,22 @@ export default {
       } else {
         const latestTrace =
           await tracesAPI.getLatestTraceByModelVersionId(versionId);
-        console.log(
-          "Latest trace for model version",
-          versionId,
-          ":",
-          latestTrace,
-        );
+        resolvedHistoricalTrace = latestTrace || null;
         targetDocumentId = latestTrace?.documentId;
         targetDocumentVersionId = latestTrace?.documentVersionId;
       }
-      this.displayDocument(
+      await this.displayDocument(
         targetDocumentId,
         targetDocumentVersionId || null,
         false,
       );
     }
-
-    documentViewerStore.setActiveModelTraceByModelVersionId(versionId);
+    if (resolvedHistoricalTrace) {
+      documentViewerStore.setActiveModelTraceBySerializedTrace(
+        resolvedHistoricalTrace,
+      );
+    } else {
+      documentViewerStore.setActiveModelTraceByModelVersionId(versionId);
+    }
   },
 };

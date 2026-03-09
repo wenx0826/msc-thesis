@@ -6,6 +6,7 @@ import { modelService, workspaceService } from "../services/index.js";
 import { createModelActionsMenu } from "./model-actions-menu.ui.js";
 const $modelName = $("#editingModelName");
 const $modelVersionTag = $("#editingModelVersionTag");
+const $deselectButton = $("#deselectModelButton");
 const $actionsGroup = $("#editingModelActionsGroup");
 const $versionSelect = $("#modelVersionSelect");
 const $createVersionButton = $("#createModelVersionButton");
@@ -45,26 +46,30 @@ function setModelNameText(name) {
 }
 
 function resetToolbar(versionSelector) {
+  setDeselectButtonDisabled(true);
   setActionsGroupDisabled(true);
   setModelNameText("");
   setVersionTag($modelVersionTag, null);
   versionSelector.update({ versions: [], selectedId: null });
   updateCreateVersionButton(true);
 }
+
+function setDeselectButtonDisabled(isDisabled) {
+  $deselectButton.prop("disabled", isDisabled);
+}
 function setActionsGroupDisabled(isDisabled) {
   $actionsGroup.prop("disabled", isDisabled);
 }
+
 createUI({
   setup: () => {
-    setActionsGroupDisabled(true);
     const versionSelector = initVersionSelector({
       $select: $versionSelect,
       onSelect: ({ version }) => {
-        console.log("Version selected in header bar:", version);
-        workspaceService.toggleModelDisplay(version.modelId, version.id);
+        workspaceService.displayModel(version.modelId, version.id);
       },
     });
-    updateCreateVersionButton(true);
+    // updateCreateVersionButton(true);
     setModelNameEditor({
       $scope: $modelName.parent(),
       trigger: "click",
@@ -80,6 +85,9 @@ createUI({
     return { versionSelector };
   },
   bindListeners: () => {
+    $deselectButton.on("click", () => {
+      workspaceService.clearModelDisplay();
+    });
     $createVersionButton.on("click", async () => {
       const { id: modelId, versionId: sourceVersionId } =
         workspaceStore.getEditingModel() || {};
@@ -107,13 +115,17 @@ createUI({
     workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
       switch (key) {
         case "editingModel": {
-          const { id: newModelId, versionId: newVersionId, isLatest } =
-            newValue;
+          const {
+            id: newModelId,
+            versionId: newVersionId,
+            isLatest,
+          } = newValue;
           const { id: oldModelId, versionId: oldVersionId } = oldValue;
           if (!newModelId) {
             resetToolbar(versionSelector);
             break;
           }
+          setDeselectButtonDisabled(false);
           setActionsGroupDisabled(false);
           const modelMeta = modelsStore.getEntity(newModelId);
           if (newModelId !== oldModelId) {
@@ -123,12 +135,9 @@ createUI({
             versions: modelMeta?.versions || [],
             selectedId: newVersionId,
           });
-          const isLatestVersion =
-            typeof isLatest === "boolean"
-              ? isLatest
-              : modelsStore.isLatestVersion(newModelId, newVersionId);
-          setVersionTag($modelVersionTag, isLatestVersion);
-          updateCreateVersionButton(isLatestVersion);
+          setVersionTag($modelVersionTag, isLatest);
+          updateCreateVersionButton(isLatest);
+
           break;
         }
         default:

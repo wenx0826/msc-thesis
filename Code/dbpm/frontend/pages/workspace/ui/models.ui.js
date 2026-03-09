@@ -35,7 +35,7 @@ function onModelItemClick(event) {
     modelsStore.toggleSelected(modelId);
     return;
   }
-  workspaceService.toggleModelDisplay(modelId);
+  workspaceService.displayModel(modelId);
 }
 
 function onModelCheckboxMouseDown(event) {

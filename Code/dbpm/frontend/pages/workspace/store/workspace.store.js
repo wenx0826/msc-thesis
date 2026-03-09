@@ -173,23 +173,10 @@ class WorkspaceStore extends Store {
     const newModelId = normalizedValue?.target?.id;
     const editingModelId = this.getEditingModelId();
 
-    if (normalizedValue && !normalizedValue.target?.id) {
-      console.error("setModelPopoverParams requires target.id");
-      return;
-    }
-
-    // Don't show popover for the currently active model
-    if (newModelId === editingModelId) {
-      this.state.modelPopover.target = null;
-      this.state.modelPopover.anchor = null;
-      this.state.modelPopover.hoverSource = null;
-      this.notify({
-        key: "modelPopover",
-        oldValue,
-        newValue: this.state.modelPopover,
-      });
-      return;
-    }
+    // if (normalizedValue && !normalizedValue.target?.id) {
+    //   console.error("setModelPopoverParams requires target.id");
+    //   return;
+    // }
 
     // ✨ NEW: If same model, just update anchor position without delay
     if (oldModelId === newModelId && newModelId) {

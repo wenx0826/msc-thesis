@@ -1,5 +1,6 @@
 import { createUI } from "../../../shared/utils/ui.js";
 import {
+  documentsStore,
   documentViewerStore,
   modelsStore,
   workspaceStore,
@@ -18,6 +19,27 @@ const SELECTION_WRAP_TEMPLATE_ID = "selectionWrapTemplate";
 const SELECTION_RECT_TEMPLATE_ID = "selectionRangeRectTemplate";
 const MODEL_TAG_TEMPLATE_ID = "modelTagTemplate";
 let handleDragState = null;
+let suppressTagPopoverOpen = false;
+let suppressTagPopoverOpenTimer = null;
+
+function suppressTagPopoverForClickWindow() {
+  suppressTagPopoverOpen = true;
+  if (suppressTagPopoverOpenTimer) {
+    clearTimeout(suppressTagPopoverOpenTimer);
+  }
+  suppressTagPopoverOpenTimer = setTimeout(() => {
+    suppressTagPopoverOpen = false;
+    suppressTagPopoverOpenTimer = null;
+  }, 400);
+}
+
+function releaseTagPopoverSuppression() {
+  suppressTagPopoverOpen = false;
+  if (suppressTagPopoverOpenTimer) {
+    clearTimeout(suppressTagPopoverOpenTimer);
+    suppressTagPopoverOpenTimer = null;
+  }
+}
 
 function isViewingLatestDocumentVersion() {
   const viewedDocument = workspaceStore.getViewedDocument() || {};
@@ -379,6 +401,84 @@ function getSelectionByMeta(selectionMeta) {
   );
 }
 
+function isTraceSelectable(trace) {
+  if (!trace) {
+    return false;
+  }
+  const modelId = trace.modelId ?? null;
+  const modelVersionId = trace.modelVersionId ?? null;
+  const viewedDocument = workspaceStore.getViewedDocument() || {};
+  const documentId = trace.documentId ?? viewedDocument.id ?? null;
+  const documentVersionId =
+    trace.documentVersionId ?? viewedDocument.versionId ?? null;
+  if (!modelId || !modelVersionId || !documentId || !documentVersionId) {
+    return false;
+  }
+  return (
+    documentsStore.isLatestVersion(documentId, documentVersionId) &&
+    modelsStore.isLatestVersion(modelId, modelVersionId)
+  );
+}
+
+function resolveTraceBySelectionMeta(selectionMeta) {
+  if (!selectionMeta) {
+    return null;
+  }
+  const traceId =
+    selectionMeta.traceId !== undefined && selectionMeta.traceId !== null
+      ? String(selectionMeta.traceId)
+      : null;
+  const modelId =
+    selectionMeta.modelId !== undefined && selectionMeta.modelId !== null
+      ? String(selectionMeta.modelId)
+      : null;
+  const modelVersionId =
+    selectionMeta.modelVersionId !== undefined &&
+    selectionMeta.modelVersionId !== null
+      ? String(selectionMeta.modelVersionId)
+      : null;
+
+  let trace = null;
+  if (traceId) {
+    trace = documentViewerStore.getTraceById(traceId);
+  }
+
+  const activeTrace = documentViewerStore.getDisplayedModelTrace();
+  if (!trace && activeTrace && traceId && String(activeTrace.id || "") === traceId) {
+    trace = activeTrace;
+  }
+
+  if (!trace && modelId && modelVersionId) {
+    trace = (documentViewerStore.getTraces() || []).find(
+      (item) =>
+        String(item?.modelId || "") === modelId &&
+        String(item?.modelVersionId || "") === modelVersionId,
+    );
+  }
+
+  if (
+    !trace &&
+    activeTrace &&
+    modelId &&
+    modelVersionId &&
+    String(activeTrace.modelId || "") === modelId &&
+    String(activeTrace.modelVersionId || "") === modelVersionId
+  ) {
+    trace = activeTrace;
+  }
+
+  return trace || null;
+}
+
+function isSelectionMetaSelectable(selectionMeta) {
+  const scope = resolveSelectionScope(selectionMeta);
+  if (scope !== "model") {
+    return isViewingLatestDocumentVersion();
+  }
+  const trace = resolveTraceBySelectionMeta(selectionMeta);
+  return isTraceSelectable(trace);
+}
+
 function updateSelectionRangeByMeta(selectionMeta, nextRange) {
   const scope = resolveSelectionScope(selectionMeta);
   if (scope === "temporary") {
@@ -464,6 +564,7 @@ function createSelectionWrap({
   width,
   height,
   isCurrent = false,
+  showReadonlyBound = false,
 }) {
   const $wrap = createTemplateElement(templateId)
     .attr("data-selection-id", selectionId)
@@ -479,6 +580,9 @@ function createSelectionWrap({
   }
   if (isCurrent) {
     $wrap.addClass("is-current");
+  }
+  if (showReadonlyBound) {
+    $wrap.addClass("is-readonly-trace");
   }
   return $wrap;
 }
@@ -532,6 +636,7 @@ function createModelTag({
   top,
   left,
   isCurrent,
+  showReadonlyBound = false,
 }) {
   const $tag = createTemplateElement(MODEL_TAG_TEMPLATE_ID)
     .attr("data-model-id", modelId)
@@ -541,6 +646,9 @@ function createModelTag({
     .css({ top, left });
   if (isCurrent) {
     $tag.addClass("is-current");
+  }
+  if (showReadonlyBound) {
+    $tag.addClass("is-readonly-trace is-readonly");
   }
   return $tag;
 }
@@ -712,13 +820,17 @@ const onSelectionSelect = (event) => {
   if (selectionId === undefined || selectionId === null || selectionId === "") {
     return;
   }
-  setSelectedSelection({
+  const selectionMeta = {
     selectionId,
     modelId,
     modelVersionId,
     traceId,
     scope,
-  });
+  };
+  if (!isSelectionMetaSelectable(selectionMeta)) {
+    return;
+  }
+  setSelectedSelection(selectionMeta);
 
   // $deleteSelectionButton
   //   .show()
@@ -740,6 +852,7 @@ const renderSelection = (
   { range, color, id: selectionId, selectionId: fallbackSelectionId, traceId },
   modelId,
   modelVersionId,
+  { isTraceSelectable: selectable = true } = {},
 ) => {
   if (!range) {
     console.warn("Selection has no range, skipping render:", selectionId);
@@ -751,13 +864,23 @@ const renderSelection = (
     return;
   }
 
-  const editingModelId = workspaceStore.getEditingModelId();
+  const editingModel = workspaceStore.getEditingModel() || {};
+  const editingModelId = editingModel.id ?? null;
+  const editingModelVersionId = editingModel.versionId ?? null;
   const isEditingModel =
     modelId !== undefined &&
     modelId !== null &&
     editingModelId !== undefined &&
     editingModelId !== null &&
     String(modelId) === String(editingModelId);
+  const isDisplayedModelVersion =
+    isEditingModel &&
+    modelVersionId !== undefined &&
+    modelVersionId !== null &&
+    editingModelVersionId !== undefined &&
+    editingModelVersionId !== null &&
+    String(modelVersionId) === String(editingModelVersionId);
+  const shouldShowReadonlyBound = !selectable && isDisplayedModelVersion;
   // const latestModelVersionId =
   //   modelId !== undefined && modelId !== null
   //     ? modelsStore.getLatestVersionId(modelId) || null
@@ -788,11 +911,13 @@ const renderSelection = (
     selectionId: resolvedSelectionId,
     modelId,
     modelVersionId,
+    traceId,
     top: wrapTop,
     left: wrapLeft,
     width: wrapWidth,
     height: wrapHeight,
-    isCurrent: isEditingModel,
+    isCurrent: isDisplayedModelVersion,
+    showReadonlyBound: shouldShowReadonlyBound,
   });
 
   for (const rect of rects) {
@@ -820,7 +945,8 @@ const renderSelection = (
       modelName: `${modelName}`,
       top: `${lastRect.top - eleViewerWrapRect.top + eleViewerWrap.scrollTop - 11}px`,
       left: `${lastRect.right - eleViewerWrapRect.left + eleViewerWrap.scrollLeft - 11}px`,
-      isCurrent: isEditingModel,
+      isCurrent: isDisplayedModelVersion,
+      showReadonlyBound: shouldShowReadonlyBound,
     });
     $modelTagsLayer.append($tag);
     clampModelTagHorizontalPosition($tag);
@@ -835,7 +961,8 @@ const renderSelection = (
     left: wrapLeft,
     width: wrapWidth,
     height: wrapHeight,
-    isCurrent: isEditingModel,
+    isCurrent: isDisplayedModelVersion,
+    showReadonlyBound: shouldShowReadonlyBound,
   });
 
   for (const rect of rects) {
@@ -880,6 +1007,9 @@ const onSelectionHandleDragStart = (event) => {
     traceId: $handle.attr("data-trace-id"),
     scope: $handle.attr("data-model-id") ? "model" : "temporary",
   };
+  if (!isSelectionMetaSelectable(selectionMeta)) {
+    return;
+  }
   const selection = getSelectionByMeta(selectionMeta);
   if (!selection || !selection.range) return;
 
@@ -968,20 +1098,30 @@ function unhighlightModelSelections(modelId) {
   updateSelectionHandlesPosition();
 }
 
-function setModelTagCurrent(modelId, isCurrent) {
-  if (modelId === undefined || modelId === null) return;
-  $modelTagsLayer
-    .find(`.tag-span[data-model-id="${modelId}"]`)
-    .toggleClass("is-current", isCurrent);
+function setModelTagCurrent(modelId, modelVersionId, isCurrent) {
+  if (modelId === undefined || modelId === null) {
+    return;
+  }
+  const selector =
+    modelVersionId === undefined || modelVersionId === null
+      ? `.tag-span[data-model-id="${modelId}"]`
+      : `.tag-span[data-model-id="${modelId}"][data-model-version-id="${modelVersionId}"]`;
+  $modelTagsLayer.find(selector).toggleClass("is-current", isCurrent);
 }
 
-function setModelSelectionWrapCurrent(modelId, isCurrent) {
-  if (modelId === undefined || modelId === null) return;
+function setModelSelectionWrapCurrent(modelId, modelVersionId, isCurrent) {
+  if (modelId === undefined || modelId === null) {
+    return;
+  }
+  const selector =
+    modelVersionId === undefined || modelVersionId === null
+      ? `.selection-wrap[data-model-id="${modelId}"]`
+      : `.selection-wrap[data-model-id="${modelId}"][data-model-version-id="${modelVersionId}"]`;
   $selectionsVisualLayer
-    .find(`.selection-wrap[data-model-id="${modelId}"]`)
+    .find(selector)
     .toggleClass("is-current", isCurrent);
   $selectionsInteractionLayer
-    .find(`.selection-wrap[data-model-id="${modelId}"]`)
+    .find(selector)
     .toggleClass("is-current", isCurrent);
 }
 
@@ -992,17 +1132,46 @@ const rerenderTemporarySelectionsLayer = () => {
   // }
 };
 
-const renderTrace = ({ id: traceId, selections, modelId, modelVersionId }) => {
+const renderTrace = ({
+  id: traceId,
+  selections,
+  modelId,
+  modelVersionId,
+  documentId,
+  documentVersionId,
+}) => {
+  const selectable = isTraceSelectable({
+    id: traceId,
+    modelId,
+    modelVersionId,
+    documentId,
+    documentVersionId,
+  });
   console.log("Rendering trace:", traceId, selections);
-  selections.forEach((selection, index) => {
-    renderSelection({ ...selection, traceId }, modelId, modelVersionId);
+  selections.forEach((selection) => {
+    renderSelection({ ...selection, traceId }, modelId, modelVersionId, {
+      isTraceSelectable: selectable,
+    });
   });
 };
 // const rerenderSelectionsLayer = () => {};
 
 function getRenderableTraces() {
-  const traces = documentViewerStore.getTraces();
-  return Array.isArray(traces) ? traces : [];
+  const baseTraces = documentViewerStore.getTraces();
+  const traces = Array.isArray(baseTraces) ? baseTraces : [];
+  const activeTrace = documentViewerStore.getDisplayedModelTrace();
+  if (!activeTrace?.id) {
+    return traces;
+  }
+
+  const hasActiveTraceInBaseLayer = traces.some(
+    (trace) => String(trace?.id || "") === String(activeTrace.id || ""),
+  );
+  if (hasActiveTraceInBaseLayer) {
+    return traces;
+  }
+
+  return [...traces, activeTrace];
 }
 
 const rerenderOverlayLayers = () => {
@@ -1012,6 +1181,10 @@ const rerenderOverlayLayers = () => {
   console.log("Rerendering overlay layers...", traces);
   if (traces.length) {
     traces.forEach((trace) => renderTrace(trace));
+  }
+  const selectedSelection = getSelectedSelection();
+  if (selectedSelection && !isSelectionMetaSelectable(selectedSelection)) {
+    setSelectedSelection(null);
   }
   const temporarySelections = documentViewerStore.getTemporarySelections();
   temporarySelections.forEach((selection) => {
@@ -1086,12 +1259,17 @@ createUI({
     $modelTagsLayer.on("click", ".tag-span", (event) => {
       // const $target = $(event.currentTarget);
       event.stopPropagation();
+      suppressTagPopoverForClickWindow();
+      workspaceStore.setModelPopoverParams(null);
       const modelId = event.currentTarget.dataset.modelId;
       const modelVersionId = event.currentTarget.dataset.modelVersionId || null;
       workspaceService.toggleModelDisplay(modelId, modelVersionId, false);
     });
     $modelTagsLayer.on("mouseenter", ".tag-span", (event) => {
       event.stopPropagation();
+      if (suppressTagPopoverOpen) {
+        return;
+      }
       // const $target = $(event.currentTarget); // OLD: Unused
       const element = event.currentTarget;
       const modelId = element.dataset.modelId;
@@ -1113,6 +1291,7 @@ createUI({
     });
     $modelTagsLayer.on("mouseleave", ".tag-span", (event) => {
       event.stopPropagation();
+      releaseTagPopoverSuppression();
       console.log(
         "Mouse leaving model tag:",
         event.currentTarget.dataset.modelId,
@@ -1144,10 +1323,22 @@ createUI({
             break;
           case "activeModelTrace.selections":
             switch (operation) {
-              case "update":
+              case "update": {
                 removeRenderedSelection(value);
-                renderSelection(value, workspaceStore.getEditingModelId());
+                const activeTrace = documentViewerStore.getDisplayedModelTrace();
+                renderSelection(
+                  {
+                    ...value,
+                    traceId: activeTrace?.id || value?.traceId || null,
+                  },
+                  activeTrace?.modelId || workspaceStore.getEditingModelId() || null,
+                  activeTrace?.modelVersionId || null,
+                  {
+                    isTraceSelectable: isTraceSelectable(activeTrace),
+                  },
+                );
                 break;
+              }
               case "remove":
                 removeRenderedSelection(value);
                 break;
@@ -1222,14 +1413,16 @@ createUI({
           break;
         case "editingModel":
           const oldModelId = oldValue?.id;
+          const oldModelVersionId = oldValue?.versionId;
           const newModelId = newValue?.id;
+          const newModelVersionId = newValue?.versionId;
           if (oldModelId) {
-            setModelTagCurrent(oldModelId, false);
-            setModelSelectionWrapCurrent(oldModelId, false);
+            setModelTagCurrent(oldModelId, oldModelVersionId, false);
+            setModelSelectionWrapCurrent(oldModelId, oldModelVersionId, false);
           }
           if (newModelId) {
-            setModelTagCurrent(newModelId, true);
-            setModelSelectionWrapCurrent(newModelId, true);
+            setModelTagCurrent(newModelId, newModelVersionId, true);
+            setModelSelectionWrapCurrent(newModelId, newModelVersionId, true);
           }
           setTimeout(() => {
             modelService.maybeAlertNoSelectionOnLoadedEditingModel(
