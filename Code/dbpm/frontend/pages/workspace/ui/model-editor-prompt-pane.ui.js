@@ -8,6 +8,10 @@ const $promptActionsGroup = $("#promptActionsGroup");
 const $sendPromptButton = $("#sendPromptButton");
 const $clearPromptButton = $("#clearPromptButton");
 
+function getPromptText() {
+  return String($promptInput.val() ?? "").trim();
+}
+
 function setPromptActionsEnabled(isEnabled) {
   if (isEnabled) {
     $promptActionsGroup.removeAttr("disabled");
@@ -17,7 +21,7 @@ function setPromptActionsEnabled(isEnabled) {
 }
 
 function resetPrompt() {
-  $promptInput.empty();
+  $promptInput.val("");
   setPromptActionsEnabled(false);
 }
 
@@ -37,8 +41,8 @@ createUI({
   },
   bindListeners: () => {
     $promptInput.on("input", () => {
-      const promptText = $promptInput.text();
-      setPromptActionsEnabled(!!promptText && promptText.trim() !== "");
+      const promptText = getPromptText();
+      setPromptActionsEnabled(!!promptText);
     });
 
     $clearPromptButton.on("mousedown", (event) => {
@@ -48,8 +52,8 @@ createUI({
     });
 
     $sendPromptButton.on("click", () => {
-      const promptText = $promptInput.text();
-      if (!promptText || promptText.trim() === "") {
+      const promptText = getPromptText();
+      if (!promptText) {
         alert("Please enter a prompt.");
         return;
       }
