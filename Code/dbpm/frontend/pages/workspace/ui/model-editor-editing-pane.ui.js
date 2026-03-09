@@ -561,14 +561,16 @@ createUI({
         case "viewedDocument":
           // applyModelEditorReadOnlyState();
           break;
-        case "editingModel":
-          if (workspaceStore.hasEditingModel()) {
+        case "editingModel": {
+          const hasEditingModel = workspaceStore.hasEditingModel();
+          if (hasEditingModel) {
             setReadOnlyState(workspaceStore.isEditingModelReadOnly());
           } else {
             clearModelEditor();
           }
           renderActiveEditingModelCachedErrors();
           break;
+        }
         default:
           break;
       }

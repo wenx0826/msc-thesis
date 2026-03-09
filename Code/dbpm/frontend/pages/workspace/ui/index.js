@@ -1,4 +1,5 @@
 import "./header.js";
+import "./workspace.ui.js";
 import "./documents.ui.js";
 import "./document-viewer-header-bar.ui.js";
 import "./document-viewer-main-pane.ui.js";

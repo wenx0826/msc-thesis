@@ -1,77 +1,48 @@
 import { createUI } from "../../../shared/utils/ui.js";
-import { modelEditorStore, workspaceStore } from "../store/index.js";
 import { modelService } from "../services/index.js";
 
-const $promptPane = $("#promptPane");
 const $promptInput = $("#promptInput");
 const $promptActionsGroup = $("#promptActionsGroup");
 const $sendPromptButton = $("#sendPromptButton");
 const $clearPromptButton = $("#clearPromptButton");
 
+function getPromptInput() {
+  return $promptInput.val();
+}
+
 function getPromptText() {
-  return String($promptInput.val() ?? "").trim();
+  return getPromptInput().trim();
 }
 
-function setPromptActionsEnabled(isEnabled) {
-  if (isEnabled) {
-    $promptActionsGroup.removeAttr("disabled");
-  } else {
-    $promptActionsGroup.attr("disabled", "disabled");
-  }
+function syncPromptActionState() {
+  $promptActionsGroup.prop("disabled", !getPromptInput());
+  $sendPromptButton.prop("disabled", !getPromptText());
 }
 
-function resetPrompt() {
+function clearPromptInput() {
   $promptInput.val("");
-  setPromptActionsEnabled(false);
-}
-
-function setPromptPaneVisible(isVisible) {
-  console.log("Setting prompt pane visibility to:", isVisible);
-  if (isVisible) {
-    $promptPane.show();
-  } else {
-    $promptPane.hide();
-    resetPrompt();
-  }
+  $promptActionsGroup.prop("disabled", true);
 }
 
 createUI({
   setup: () => {
-    setPromptPaneVisible(false);
+    syncPromptActionState();
   },
   bindListeners: () => {
     $promptInput.on("input", () => {
-      const promptText = getPromptText();
-      setPromptActionsEnabled(!!promptText);
+      syncPromptActionState();
     });
 
-    $clearPromptButton.on("mousedown", (event) => {
-      event.preventDefault();
-      console.log("Clearing prompt input");
-      resetPrompt();
+    $clearPromptButton.on("mousedown", (e) => {
+      e.preventDefault(); // Prevent losing focus on the input
+      clearPromptInput();
     });
 
     $sendPromptButton.on("click", () => {
       const promptText = getPromptText();
-      if (!promptText) {
-        alert("Please enter a prompt.");
-        return;
-      }
-      resetPrompt();
       modelService.generateModelByPrompt(promptText);
+      clearPromptInput();
     });
   },
-  subscribeStores: () => {
-    workspaceStore.subscribe((state, { key, newValue }) => {
-      switch (key) {
-        case "editingModel":
-          const hasEditingModel = workspaceStore.hasEditingModel();
-          const isReadOnly = workspaceStore.isEditingModelReadOnly();
-          setPromptPaneVisible(hasEditingModel && !isReadOnly);
-          break;
-        default:
-          break;
-      }
-    });
-  },
+  subscribeStores: () => {},
 });

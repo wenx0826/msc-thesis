@@ -58,7 +58,7 @@
   <!-- DBPM ui-->
   <link rel="stylesheet" href="assets/global.css" type="text/css" />
   <link rel="stylesheet" href="modules/document/document-viewer.css" type="text/css" />
-  <link rel="stylesheet" href="pages/workspace/workspace.css" type="text/css" />
+  <link rel="stylesheet" href="pages/workspace/css/index.css" type="text/css" />
 </head>
 
 <body is="x-ui-">
@@ -127,7 +127,7 @@
             </ui-area>
           </ui-content>
         </ui-tabbed>
-        <ui-rest id="documentViewer" class="panel">
+        <ui-rest id="documentViewerPanel" class="panel" data-state="none">
           <!-- Text Action Bar -->
           <ui-bar id="textActionBar">
             <!-- <div class="field">
@@ -249,7 +249,7 @@
         </ui-rest>
       </ui-rest>
       <ui-resizehandle id="columnResizehandle1" data-direction="vertical"></ui-resizehandle>
-      <ui-rest class="pane pane--center panel">
+      <ui-rest id="modelEditorPanel" class="pane pane--center panel" data-state="none">
         <ui-rest style="flex: 1 1 0; min-height: 100px">
           <ui-bar>
             <!-- <div id="activeModelNameEditor" class="inline-editor"> -->
@@ -273,6 +273,9 @@
                 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink"
                   id="graphcanvas" width="1" height="1" style="display: block">
                 </svg>
+                <div id="modelEditorEmptyState" aria-live="polite">
+                  No model selected..
+                </div>
               </ui-area>
             </ui-content>
             <div id="dat_details"></div>
@@ -306,7 +309,7 @@
           </ui-rest>
         </ui-rest>
         <ui-resizehandle data-direction="horizontal" data-style="transparent"></ui-resizehandle>
-        <ui-rest style="flex: 0.25 1 0; min-height: 100px" id="promptPane" class="hidden">
+        <ui-rest style="flex: 0.25 1 0; min-height: 100px" id="promptPane">
           <textarea id="promptInput" placeholder="Enter your prompt here to refine the model..."></textarea>
           <ui-bar>
             <fieldset class="right action-group" id="promptActionsGroup" disabled>
