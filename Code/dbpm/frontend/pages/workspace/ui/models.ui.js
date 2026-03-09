@@ -94,19 +94,17 @@ function onModelListItemMouseEnter(event) {
     return;
   }
 
-  workspaceStore.setModelPopoverParams(
-    {
-      target: {
-        id: modelId,
-        versionId: element.dataset.modelVersionId || null,
-      },
-      anchor: {
-        type: "element",
-        element,
-      },
-      source: MODELS_LIST_HOVER_SOURCE,
+  workspaceStore.setModelPopoverParams({
+    target: {
+      id: modelId,
+      versionId: element.dataset.modelVersionId || null,
     },
-  );
+    anchor: {
+      type: "element",
+      element,
+    },
+    source: MODELS_LIST_HOVER_SOURCE,
+  });
 }
 
 function onModelListItemMouseLeave() {
@@ -312,7 +310,7 @@ function syncModelsBulkModeUI() {
   const isBulkEditMode = modelsStore.getIsBulkEditMode();
   const hasModels = modelsStore.getCount() > 0;
   $modelsPanel.attr("data-bulk-mode", isBulkEditMode ? "true" : "false");
-  $modelsBulkEditToggleButton.text(isBulkEditMode ? "Done" : "Bulk Edit");
+  $modelsBulkEditToggleButton.text(isBulkEditMode ? "Done" : "Bulk edit");
   $modelsBulkEditToggleButton.prop("disabled", !hasModels && !isBulkEditMode);
   syncModelsSelectionControls();
 }

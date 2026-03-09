@@ -68,7 +68,7 @@ function syncDocumentsBulkModeUI() {
   const isBulkEditMode = documentsStore.getIsBulkEditMode();
   const hasDocuments = documentsStore.getCount() > 0;
   $documentsPanel.attr("data-bulk-mode", isBulkEditMode ? "true" : "false");
-  $documentsBulkEditToggleButton.text(isBulkEditMode ? "Done" : "Bulk Edit");
+  $documentsBulkEditToggleButton.text(isBulkEditMode ? "Done" : "Bulk edit");
   $documentsBulkEditToggleButton.prop(
     "disabled",
     !hasDocuments && !isBulkEditMode,

@@ -106,9 +106,9 @@
               <ui-bar id="documentsBulkActionsBar" class="bulk-actions-bar hidden">
                 <span id="documentsSelectedCount" class="bulk-actions-bar__count">0 selected</span>
                 <div class="right action-group">
-                  <button id="documentsSelectAllButton" disabled>Select All</button>
-                  <button id="documentsClearSelectionButton" disabled>Clear</button>
-                  <button id="documentsDeleteSelectedButton" disabled>Delete Selected</button>
+                  <button id="documentsSelectAllButton" disabled>Select all</button>
+                  <button id="documentsClearSelectionButton" class="btn-text" disabled>Clear</button>
+                  <button id="documentsDeleteSelectedButton" disabled>Delete selected</button>
                 </div>
               </ui-bar>
               <ul id="documentsList">
@@ -168,7 +168,7 @@
                   <label for="selectionColor7" style="background-color: #deddda"></label>
                 </span>
               </form>
-              <button id="deselectAllSelectionsButton">
+              <button id="deselectAllSelectionsButton" class="btn-text">
                 Deselect all
               </button>
             </fieldset>
@@ -270,7 +270,7 @@
                 <select id="modelVersionSelect"></select>
               </div>
               <button id="createModelVersionButton">+ New version</button>
-              <button id="deselectModelButton">Deselect</button>
+              <button id="deselectModelButton" class="btn-text">Deselect</button>
               <button id="editingModelMoreActionsButton" class="more-actions-btn"></button>
             </fieldset>
 
@@ -304,7 +304,7 @@
                 <button id="viewRegeneratedModelButton">Regenerated</button>
               </div>
               <div class="right action-group">
-                <button id="revertPrevModelButton" title="Cancel changes">
+                <button id="revertPrevModelButton" title="Cancel changes" class="btn-text">
                   Cancel
                 </button>
                 <button id="replaceModelButton" title="Replace with regenerated model">
@@ -322,7 +322,7 @@
           <textarea id="promptInput" placeholder="Enter prompt to refine the model..."></textarea>
           <ui-bar>
             <fieldset class="right action-group" id="promptActionsGroup" disabled>
-              <button id="clearPromptButton">Clear</button>
+              <button id="clearPromptButton" class="btn-text">Clear</button>
               <button id="sendPromptButton" class="btn-primary">Send</button>
             </fieldset>
           </ui-bar>
@@ -363,7 +363,7 @@
             <span id="modelsSelectedCount" class="bulk-actions-bar__count">0 selected</span>
             <div class="right action-group">
               <button id="modelsSelectAllButton" disabled>Select All</button>
-              <button id="modelsClearSelectionButton" disabled>Clear</button>
+              <button id="modelsClearSelectionButton" class="btn-text" disabled>Clear</button>
               <button id="modelsDeleteSelectedButton" disabled>Delete Selected</button>
             </div>
           </ui-bar>

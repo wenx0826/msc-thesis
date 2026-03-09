@@ -36,7 +36,7 @@ function updateCreateVersionButton(isSelectedVersionLatest) {
     return;
   }
   $createVersionButton
-    .text("Revert to this version")
+    .text("Restore version")
     .attr("title", "Create a new version by copying this selected version")
     .attr("data-action", "revert");
 }

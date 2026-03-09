@@ -92,6 +92,10 @@
   box-sizing: content-box;
 }
 
+#documentViewerPanel[data-state="historical"] #selectionColorForm {
+  display: none;
+}
+
 #deselectAllSelectionsButton,
 #selectedSelectionDeleteButton {
   white-space: nowrap;

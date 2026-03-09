@@ -239,14 +239,12 @@ ui-bar>.center {
   border-color: #000;
 }
 
-*[is=x-ui-] button.btn-ghost,
 *[is=x-ui-] button.btn-text {
   border: none;
   background: transparent;
   color: inherit;
 }
 
-*[is=x-ui-] button.btn-ghost:not(:disabled):hover,
 *[is=x-ui-] button.btn-text:not(:disabled):hover {
   background: var(--x-ui-content-hover-background);
 }
