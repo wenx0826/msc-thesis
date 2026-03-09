@@ -78,15 +78,6 @@ function getSelectedSelectionColor() {
 }
 
 function syncSelectedSelectionColorInput() {
-  const hasSelectedSelection = !!documentViewerStore.getSelectedSelection();
-  $selectedSelectionColorForm
-    .find("input")
-    .prop("disabled", !hasSelectedSelection);
-
-  if (!hasSelectedSelection) {
-    return;
-  }
-
   const color = getSelectedSelectionColor();
   if (!color) {
     return;
@@ -98,19 +89,6 @@ function syncSelectedSelectionColorInput() {
   }
 }
 
-function syncToolbarButtonStates() {
-  const hasTemporarySelections =
-    documentViewerStore.getTemporarySelections().length > 0;
-  const hasSelectedSelection = !!documentViewerStore.getSelectedSelection();
-  const hasEditingModel = workspaceStore.hasEditingModel();
-
-  const hasAnySelectionStateToClear =
-    hasTemporarySelections || hasSelectedSelection || hasEditingModel;
-
-  $deselectAllSelectionsButton.prop("disabled", !hasAnySelectionStateToClear);
-  $deleteSelectionButton.prop("disabled", !hasSelectedSelection);
-}
-
 createUI({
   setup: () => {
     const versionSelector = initVersionSelector({
@@ -120,7 +98,6 @@ createUI({
       },
     });
 
-    syncToolbarButtonStates();
     syncNextSelectionColorInput(documentViewerStore.getSelectionColor());
     syncSelectedSelectionColorInput();
 
@@ -236,12 +213,6 @@ createUI({
             setVersionTag($documentVersionTag, null);
             break;
           }
-          console.log(
-            "why!!!!!",
-            id,
-            documentsStore.getVersions(id),
-            versionId,
-          );
           versionSelector.update({
             versions: documentsStore.getVersions(id),
             selectedId: versionId,
@@ -256,9 +227,6 @@ createUI({
           setVersionTag($documentVersionTag, isLatestVersion);
           break;
         }
-        case "editingModel":
-          syncToolbarButtonStates();
-          break;
         default:
           break;
       }
@@ -270,11 +238,9 @@ createUI({
           syncNextSelectionColorInput(newValue);
           break;
         case "selectedSelection":
-          syncToolbarButtonStates();
           syncSelectedSelectionColorInput();
           break;
         case "temporarySelections":
-          syncToolbarButtonStates();
           syncSelectedSelectionColorInput();
           break;
         case "activeModelTrace.selections":

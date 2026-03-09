@@ -25,6 +25,25 @@
   display: flex;
 }
 
+#modelEditorHeaderTitle {
+  display: none;
+}
+
+#modelEditorPanel[data-state="none"] #modelEditorHeaderTitle {
+  display: inline-flex;
+  align-items: center;
+}
+
+#modelEditorPanel[data-state="none"] #editingModelName,
+#modelEditorPanel[data-state="none"] #editingModelVersionTag {
+  display: none;
+}
+
+#modelEditorPanel[data-state="none"] #deselectModelButton,
+#modelEditorPanel[data-state="none"] #editingModelActionsGroup {
+  display: none;
+}
+
 text.duration {
   visibility: hidden;
 }

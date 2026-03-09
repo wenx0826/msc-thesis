@@ -7,10 +7,10 @@ import { createModelActionsMenu } from "./model-actions-menu.ui.js";
 const $modelName = $("#editingModelName");
 const $modelVersionTag = $("#editingModelVersionTag");
 const $deselectButton = $("#deselectModelButton");
-const $actionsGroup = $("#editingModelActionsGroup");
 const $versionSelect = $("#modelVersionSelect");
 const $createVersionButton = $("#createModelVersionButton");
 const $moreActionsButton = $("#editingModelMoreActionsButton");
+let isCreatingModelVersion = false;
 
 function setVersionTag($tag, isLatest) {
   if (typeof isLatest !== "boolean") {
@@ -46,19 +46,10 @@ function setModelNameText(name) {
 }
 
 function resetToolbar(versionSelector) {
-  setDeselectButtonDisabled(true);
-  setActionsGroupDisabled(true);
   setModelNameText("");
   setVersionTag($modelVersionTag, null);
   versionSelector.update({ versions: [], selectedId: null });
   updateCreateVersionButton(true);
-}
-
-function setDeselectButtonDisabled(isDisabled) {
-  $deselectButton.prop("disabled", isDisabled);
-}
-function setActionsGroupDisabled(isDisabled) {
-  $actionsGroup.prop("disabled", isDisabled);
 }
 
 createUI({
@@ -89,19 +80,22 @@ createUI({
       workspaceService.clearModelDisplay();
     });
     $createVersionButton.on("click", async () => {
+      if (isCreatingModelVersion) {
+        return;
+      }
       const { id: modelId, versionId: sourceVersionId } =
         workspaceStore.getEditingModel() || {};
       if (!modelId || !sourceVersionId) {
         alert("No model version is currently selected.");
         return;
       }
-      $createVersionButton.prop("disabled", true);
+      isCreatingModelVersion = true;
       try {
         await modelService.createModelVersion(modelId, sourceVersionId);
       } catch (error) {
         alert("Failed to create model version.");
       } finally {
-        $createVersionButton.prop("disabled", false);
+        isCreatingModelVersion = false;
       }
     });
     $moreActionsButton.on("mousedown", (e) => {
@@ -125,8 +119,6 @@ createUI({
             resetToolbar(versionSelector);
             break;
           }
-          setDeselectButtonDisabled(false);
-          setActionsGroupDisabled(false);
           const modelMeta = modelsStore.getEntity(newModelId);
           if (newModelId !== oldModelId) {
             setModelNameText(modelMeta.name);

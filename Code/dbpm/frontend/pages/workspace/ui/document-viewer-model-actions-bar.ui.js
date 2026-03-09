@@ -8,12 +8,9 @@ const MODEL_GENERATION_TARGET = Constants.MODEL_GENERATION_TARGET;
 const MODEL_GENERATION_TARGET_VALUES = new Set(
   Object.values(MODEL_GENERATION_TARGET),
 );
-const $actionBar = $("#modelActionsBar");
 const $addSelectionsButton = $("#addSelectionsButton");
 const $generateModelButton = $("#generateModelButton");
-function setActionBarVisible(isVisible) {
-  isVisible ? $actionBar.show() : $actionBar.hide();
-}
+
 function resolveGenerationTargetFromButton(element) {
   const target = element?.dataset?.target;
   if (MODEL_GENERATION_TARGET_VALUES.has(target)) {
@@ -95,12 +92,6 @@ createUI({
 
     workspaceStore.subscribe((_, { key, oldValue, newValue }) => {
       switch (key) {
-        case "viewedDocument":
-          // applyModelEditorReadOnlyState();
-          const hasViewedDocument = workspaceStore.hasViewedDocument();
-          const isReadOnly = workspaceStore.isViewedDocumentReadOnly();
-          setActionBarVisible(hasViewedDocument && !isReadOnly);
-          break;
         case "editingModel": {
           const oldHasEditingModel = !!oldValue?.id;
           const newHasEditingModel = !!newValue?.id;

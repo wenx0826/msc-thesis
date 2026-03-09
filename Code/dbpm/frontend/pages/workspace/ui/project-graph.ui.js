@@ -35,6 +35,10 @@ function setNodeCurrent(cy, nodeId, isCurrent) {
   const node = cy.getElementById(nodeId);
   node.toggleClass("is-current", isCurrent);
 }
+function syncGraphEmptyState(cy) {
+  const isEmpty = cy.elements().length === 0;
+  cy.container().setAttribute("data-empty", isEmpty ? "true" : "false");
+}
 
 createUI({
   setup: () => {
@@ -161,6 +165,7 @@ createUI({
         },
       ],
     });
+    syncGraphEmptyState(cy);
     return { cy };
   },
   bindListeners: ({ cy }) => {
@@ -251,18 +256,21 @@ createUI({
         case "elements":
           switch (operation) {
             case "init":
+              cy.elements().remove();
               if (value.length) {
                 cy.add(value);
                 cy.layout({
                   ...cyLayoutOptions,
                 }).run();
               }
+              syncGraphEmptyState(cy);
               break;
             case "add":
               cy.add(value);
               cy.layout({
                 ...cyLayoutOptions,
               }).run();
+              syncGraphEmptyState(cy);
               break;
             case "delete":
               value.forEach((element) => {
@@ -275,6 +283,7 @@ createUI({
               // cy.layout({
               //   ...cyLayoutOptions,
               // }).run();
+              syncGraphEmptyState(cy);
               break;
             default:
               break;

@@ -147,6 +147,27 @@ ui-bar {
   overflow: hidden;
 }
 
+#cy {
+  position: relative;
+}
+
+#projectGraphEmptyState {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  color: var(--x-ui-text-muted-color);
+  font-size: 15px;
+  font-weight: 500;
+  pointer-events: none;
+  z-index: 4;
+}
+
+#cy[data-empty="true"] #projectGraphEmptyState {
+  display: flex;
+}
+
 .panel-header {
   display: flex;
   align-items: center;

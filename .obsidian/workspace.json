@@ -313,6 +313,7 @@
   },
   "active": "01e0c65c8e358d61",
   "lastOpenFiles": [
+    "Code/dbpm/data/documents/713d7b86-69dc-41a2-b0a8-20075aa9eb45.html",
     "Code/dbpm/frontend/pages/workspace/css/model-editor-panel.css",
     "Code/dbpm/frontend/pages/workspace/css/document-viewer-panel.css",
     "Code/dbpm/frontend/pages/workspace/css/index.css",
@@ -323,7 +324,6 @@
     "Code/dbpm/data/models/8adcf030-22c7-4da6-9ea5-25b874a66f1b.xml",
     "Code/dbpm/data/database.sqlite-journal",
     "Code/dbpm/data/models/eb7c3aab-55f6-4655-85c2-8fd75fdb666a.xml",
-    "Code/dbpm/frontend/pages/workspace/ui/model-editor-regenerated-actions-bar.ui.js",
     "DBPM – App Guide/User Guide.md",
     "DBPM – App Guide/Feature – Generate Model.md",
     "Gemini DR v0.1.md",

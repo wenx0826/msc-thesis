@@ -98,7 +98,7 @@
                 <input type="file" id="documentVersionInput" class="hidden" />
                 <input type="file" id="documentsInput" multiple class="hidden" />
                 <div class="right action-group">
-                  <button id="documentsBulkEditToggleButton" type="button">Bulk Edit</button>
+                  <button id="documentsBulkEditToggleButton" type="button">Bulk edit</button>
                   <button class="btn-primary"
                     onclick="document.getElementById('documentsInput').click()">Upload</button>
                 </div>
@@ -135,10 +135,11 @@
               <input type="text" id="textSearchInput" placeholder="Type to search..." />
             </div> -->
             <div>
+              <span id="documentViewerHeaderTitle" class="panel-header__title">Document Viewer</span>
               <span class="" id="versionFilename"></span>
               <span id="documentVersionTag" class="version-tag hidden"></span>
             </div>
-            <fieldset id="" class="right action-group">
+            <fieldset id="documentViewerActionsGroup" class="right action-group">
               <select id="docVersionSelect"></select>
               <form id="selectionColorForm" class="relaxngui_color_container">
                 <span class="round">
@@ -167,8 +168,8 @@
                   <label for="selectionColor7" style="background-color: #deddda"></label>
                 </span>
               </form>
-              <button id="deselectAllSelectionsButton" disabled>
-                Deselect All
+              <button id="deselectAllSelectionsButton">
+                Deselect all
               </button>
             </fieldset>
           </ui-bar>
@@ -179,6 +180,9 @@
               <ui-area id="selectionsVisualLayer"></ui-area>
               <!-- <ui-area id="temporarySelectionsLayer"></ui-area> -->
               <ui-area id="documentContent"></ui-area>
+              <div id="documentViewerEmptyState" aria-live="polite">
+                No document selected
+              </div>
               <ui-area id="interactionLayer">
                 <div id="selectionsInteractionLayer"></div>
                 <div id="modelTagsLayer"></div>
@@ -217,7 +221,7 @@
                     </span>
                     <!-- </div> -->
                   </form>
-                  <button id="selectedSelectionDeleteButton" disabled>
+                  <button id="selectedSelectionDeleteButton">
                     Delete selection
                   </button>
                 </ui-bar>
@@ -236,10 +240,10 @@
           </ui-content>
           <ui-divider></ui-divider>
           <!-- Model (Re-)generation Bar -->
-          <ui-bar id="modelActionsBar" style="z-index: 3" class="hidden">
+          <ui-bar id="modelActionsBar" style="z-index: 3">
             <div class="right action-group">
               <button id="addSelectionsButton" class="hidden" disabled>
-                Add Selections to Model
+                Add selections to model
               </button>
               <button id="generateModelButton" class="btn-primary" data-target="new_model" disabled>
                 Generate new model
@@ -252,19 +256,24 @@
       <ui-rest id="modelEditorPanel" class="pane pane--center panel" data-state="none">
         <ui-rest style="flex: 1 1 0; min-height: 100px">
           <ui-bar>
+            <span id="modelEditorHeaderTitle" class="panel-header__title">Model Editor</span>
+
+            <!-- <span class="panel-header__title">Models</span>> -->
             <!-- <div id="activeModelNameEditor" class="inline-editor"> -->
             <div class="action-group">
               <span id="editingModelName" class="inline-editor__view" data-editable="1"></span>
               <span id="editingModelVersionTag" class="version-tag hidden"></span>
-              <button id="deselectModelButton" disabled>Deselect</button>
+
             </div>
-            <fieldset id="editingModelActionsGroup" class="right action-group" disabled>
+            <fieldset id="editingModelActionsGroup" class="right action-group">
               <div class="field">
                 <select id="modelVersionSelect"></select>
               </div>
               <button id="createModelVersionButton">+ New version</button>
+              <button id="deselectModelButton">Deselect</button>
               <button id="editingModelMoreActionsButton" class="more-actions-btn"></button>
             </fieldset>
+
           </ui-bar>
           <ui-divider></ui-divider>
           <ui-rest>
@@ -274,7 +283,7 @@
                   id="graphcanvas" width="1" height="1" style="display: block">
                 </svg>
                 <div id="modelEditorEmptyState" aria-live="polite">
-                  No model selected..
+                  No model selected
                 </div>
               </ui-area>
             </ui-content>
@@ -310,7 +319,7 @@
         </ui-rest>
         <ui-resizehandle data-direction="horizontal" data-style="transparent"></ui-resizehandle>
         <ui-rest style="flex: 0.25 1 0; min-height: 100px" id="promptPane">
-          <textarea id="promptInput" placeholder="Enter your prompt here to refine the model..."></textarea>
+          <textarea id="promptInput" placeholder="Enter prompt to refine the model..."></textarea>
           <ui-bar>
             <fieldset class="right action-group" id="promptActionsGroup" disabled>
               <button id="clearPromptButton">Clear</button>
@@ -338,7 +347,7 @@
               </button>
             </div>
             <div class="right action-group">
-              <button id="modelsBulkEditToggleButton" type="button">Bulk Edit</button>
+              <button id="modelsBulkEditToggleButton" type="button">Bulk edit</button>
             </div>
           </ui-bar>
           <ui-bar>
@@ -399,7 +408,9 @@
         <ui-resizehandle data-direction="horizontal" data-style="dots"></ui-resizehandle>
         <ui-rest class="panel" style="flex: 0.32 1 0; min-height: 100px">
           <ui-content>
-            <ui-area id="cy"> </ui-area>
+            <ui-area id="cy" data-empty="true">
+              <div id="projectGraphEmptyState">No graph yet</div>
+            </ui-area>
           </ui-content>
         </ui-rest>
       </ui-rest>

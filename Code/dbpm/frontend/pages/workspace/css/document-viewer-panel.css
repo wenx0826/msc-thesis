@@ -3,6 +3,50 @@
   align-items: center;
 }
 
+#documentViewerHeaderTitle {
+  display: none;
+}
+
+#documentViewerPanel[data-state="none"] #documentViewerHeaderTitle {
+  display: inline-flex;
+  align-items: center;
+}
+
+#documentViewerPanel[data-state="none"] #versionFilename,
+#documentViewerPanel[data-state="none"] #documentVersionTag,
+#documentViewerPanel[data-state="none"] #documentViewerActionsGroup {
+  display: none;
+}
+
+#documentViewerPanel[data-state="none"] #selectedSelectionToolbar {
+  display: none;
+}
+
+#modelActionsBar {
+  display: none;
+}
+
+#documentViewerPanel[data-state="latest"] #modelActionsBar {
+  display: flex;
+}
+
+#documentViewerEmptyState {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  color: var(--x-ui-text-muted-color);
+  font-size: 15px;
+  font-weight: 500;
+  pointer-events: none;
+  z-index: 4;
+}
+
+#documentViewerPanel[data-state="none"] #documentViewerEmptyState {
+  display: flex;
+}
+
 #selectedSelectionToolbar {
   position: absolute;
   top: 0;

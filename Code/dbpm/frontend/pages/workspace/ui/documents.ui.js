@@ -23,7 +23,13 @@ const $documentsDeleteSelectedButton = $("#documentsDeleteSelectedButton");
 // #region DOM Rendering and Manipulation
 function syncDocumentsCount() {
   const count = documentsStore.getCount();
+  const isBulkEditMode = documentsStore.getIsBulkEditMode();
+  const hasDocuments = count > 0;
   $documentsCount.text(count);
+  $documentsBulkEditToggleButton.prop(
+    "disabled",
+    !hasDocuments && !isBulkEditMode,
+  );
 }
 
 function getVisibleDocumentIds() {
@@ -60,8 +66,13 @@ function syncDocumentsSelectionControls() {
 
 function syncDocumentsBulkModeUI() {
   const isBulkEditMode = documentsStore.getIsBulkEditMode();
+  const hasDocuments = documentsStore.getCount() > 0;
   $documentsPanel.attr("data-bulk-mode", isBulkEditMode ? "true" : "false");
   $documentsBulkEditToggleButton.text(isBulkEditMode ? "Done" : "Bulk Edit");
+  $documentsBulkEditToggleButton.prop(
+    "disabled",
+    !hasDocuments && !isBulkEditMode,
+  );
   syncDocumentsSelectionControls();
 }
 

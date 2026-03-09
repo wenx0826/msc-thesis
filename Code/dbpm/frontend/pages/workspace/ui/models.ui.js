@@ -310,14 +310,19 @@ function syncModelsSelectionControls() {
 
 function syncModelsBulkModeUI() {
   const isBulkEditMode = modelsStore.getIsBulkEditMode();
+  const hasModels = modelsStore.getCount() > 0;
   $modelsPanel.attr("data-bulk-mode", isBulkEditMode ? "true" : "false");
   $modelsBulkEditToggleButton.text(isBulkEditMode ? "Done" : "Bulk Edit");
+  $modelsBulkEditToggleButton.prop("disabled", !hasModels && !isBulkEditMode);
   syncModelsSelectionControls();
 }
 
 function updateModelsCount() {
   const count = modelsStore.getCount();
+  const isBulkEditMode = modelsStore.getIsBulkEditMode();
+  const hasModels = count > 0;
   $("[data-ref='modelsCount']").text(count);
+  $modelsBulkEditToggleButton.prop("disabled", !hasModels && !isBulkEditMode);
 }
 
 function getModelItem(modelId) {
