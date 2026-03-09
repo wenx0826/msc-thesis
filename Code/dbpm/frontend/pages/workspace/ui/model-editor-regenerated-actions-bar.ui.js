@@ -8,8 +8,9 @@ const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
 const $regeneratedModelActionBar = $("#regeneratedModelActionBar");
 const $viewOriginalModelButton = $("#viewOriginalModelButton");
 const $viewRegeneratedModelButton = $("#viewRegeneratedModelButton");
-const $revertPrevModelButton = $("#revertPrevModelButton");
+const $revertOriginalModelButton = $("#revertPrevModelButton");
 const $replaceModelButton = $("#replaceModelButton");
+const $saveNewModelButton = $("#saveNewModelButton");
 
 let regenerationPreviewState = null;
 let isApplyingRegenerationView = false;
@@ -160,14 +161,14 @@ function setRegenerationPreviewView(view) {
     regenerationPreviewState = null;
     return;
   }
-  const normalizedView = view === "previous" ? "previous" : "regenerated";
+  const normalizedView = view === "original" ? "original" : "regenerated";
   if (regenerationPreviewState.view === normalizedView) {
     return;
   }
 
   const nextDataXml =
-    normalizedView === "previous"
-      ? regenerationPreviewState.previousDataXml
+    normalizedView === "original"
+      ? regenerationPreviewState.originalDataXml
       : regenerationPreviewState.regeneratedDataXml;
   if (!nextDataXml) {
     return;
@@ -198,11 +199,12 @@ function applyRegenerationActionBar(updateType) {
     return;
   }
 
-  const isViewingPrevious = preview.view === "previous";
-  $viewOriginalModelButton.prop("disabled", isViewingPrevious);
-  $viewRegeneratedModelButton.prop("disabled", !isViewingPrevious);
-  $revertPrevModelButton.prop("disabled", false);
-  $replaceModelButton.prop("disabled", false);
+  const isViewingOriginal = preview.view === "original";
+  $viewOriginalModelButton.prop("disabled", isViewingOriginal);
+  $viewRegeneratedModelButton.prop("disabled", !isViewingOriginal);
+  $revertOriginalModelButton.prop("disabled", false);
+  $replaceModelButton.prop("disabled", isViewingOriginal);
+  $saveNewModelButton.prop("disabled", isViewingOriginal);
   $regeneratedModelActionBar.show();
   setRegenerationDecisionClickLock(true);
 }
@@ -221,7 +223,7 @@ createUI({
     });
 
     $viewOriginalModelButton.on("click", () => {
-      setRegenerationPreviewView("previous");
+      setRegenerationPreviewView("original");
       applyRegenerationActionBar(modelEditorStore.getLatestUpdateType());
     });
 
@@ -253,20 +255,69 @@ createUI({
       }
     });
 
-    $revertPrevModelButton.on("click", () => {
+    $saveNewModelButton.on("click", async () => {
       const preview = regenerationPreviewState;
       if (!preview || !isRegenerationPreviewContextCurrent(preview)) {
         modelEditorStore.setLatestUpdateType(null);
         regenerationPreviewState = null;
         return;
       }
-      if (!preview.previousDataXml) {
+
+      const {
+        modelId,
+        modelVersionId,
+        regeneratedDataXml,
+        updateType: regenerationUpdateType,
+      } = preview;
+      if (!modelId || !modelVersionId || !regeneratedDataXml) {
+        modelEditorStore.setLatestUpdateType(null);
+        regenerationPreviewState = null;
+        return;
+      }
+
+      $saveNewModelButton.prop("disabled", true);
+      try {
+        await modelService.createModelVersion(modelId, modelVersionId);
+        const { id: createdModelId, versionId: createdVersionId } =
+          workspaceStore.getEditingModel() || {};
+        if (!createdModelId || !createdVersionId) {
+          throw new Error("Failed to resolve created model version.");
+        }
+
+        modelEditorStore.setData(regeneratedDataXml, {
+          updateType: null,
+        });
+
+        await modelService.updateEditingVersion(regenerationUpdateType, {
+          expectedModelId: createdModelId,
+          expectedModelVersionId: createdVersionId,
+        });
+
+        modelEditorStore.setLatestUpdateType(null);
+        regenerationPreviewState = null;
+        applyRegenerationActionBar(modelEditorStore.getLatestUpdateType());
+      } catch (error) {
+        console.error("Failed to save regenerated model as a new version:", error);
+        alert("Failed to save regenerated model as a new version.");
+      } finally {
+        $saveNewModelButton.prop("disabled", false);
+      }
+    });
+
+    $revertOriginalModelButton.on("click", () => {
+      const preview = regenerationPreviewState;
+      if (!preview || !isRegenerationPreviewContextCurrent(preview)) {
+        modelEditorStore.setLatestUpdateType(null);
+        regenerationPreviewState = null;
+        return;
+      }
+      if (!preview.originalDataXml) {
         modelEditorStore.setLatestUpdateType(null);
         regenerationPreviewState = null;
         return;
       }
       isApplyingRegenerationView = true;
-      modelEditorStore.setData(preview.previousDataXml);
+      modelEditorStore.setData(preview.originalDataXml);
       isApplyingRegenerationView = false;
       modelEditorStore.setLatestUpdateType(null);
       regenerationPreviewState = null;
@@ -279,15 +330,15 @@ createUI({
           if (!isApplyingRegenerationView) {
             const updateType = modelEditorStore.getLatestUpdateType();
             if (isRegenerationUpdateType(updateType) && oldValue && newValue) {
-              const previousDataXml = serializeXmlNode(oldValue);
+              const originalDataXml = serializeXmlNode(oldValue);
               const regeneratedDataXml = serializeXmlNode(newValue);
-              if (previousDataXml && regeneratedDataXml) {
+              if (originalDataXml && regeneratedDataXml) {
                 const editingModelContext = getEditingModelContext();
                 regenerationPreviewState = {
                   updateType,
                   modelId: editingModelContext.modelId,
                   modelVersionId: editingModelContext.modelVersionId,
-                  previousDataXml,
+                  originalDataXml,
                   regeneratedDataXml,
                   view: "regenerated",
                 };

@@ -1111,8 +1111,8 @@ export default {
       return null;
     }
 
-    const previousModelData = modelEditorStore.getSerializedData();
-    if (!previousModelData) {
+    const originalModelData = modelEditorStore.getSerializedData();
+    if (!originalModelData) {
       console.warn(
         "No current model data found for prompt regeneration preview.",
       );
@@ -1134,7 +1134,7 @@ export default {
       }
 
       const regeneratedModelData = composeRegeneratedModelData({
-        currentModelData: previousModelData,
+        currentModelData: originalModelData,
         generatedModelData: generatedModel,
       });
 
@@ -1142,7 +1142,7 @@ export default {
         modelId: editingModelId,
         modelVersionId: editingModelVersionId,
         updateType: MODEL_UPDATE_TYPE.REGENERATION_BY_PROMPT,
-        previousDataXml: previousModelData,
+        originalDataXml: originalModelData,
         regeneratedDataXml: regeneratedModelData,
       };
       if (isEditingModelContextActive(regenerationContext)) {
@@ -1199,11 +1199,11 @@ export default {
         : null;
     const hasEditingContextAtStart =
       !!regenerationContext?.modelId && !!regenerationContext?.modelVersionId;
-    const previousModelData = hasEditingContextAtStart
+    const originalModelData = hasEditingContextAtStart
       ? modelEditorStore.getSerializedData()
       : null;
 
-    if (hasEditingContextAtStart && !previousModelData) {
+    if (hasEditingContextAtStart && !originalModelData) {
       console.warn("No current model data found for regeneration preview.");
       return null;
     }
@@ -1241,7 +1241,7 @@ export default {
       }
 
       const regeneratedModelData = composeRegeneratedModelData({
-        currentModelData: previousModelData,
+        currentModelData: originalModelData,
         generatedModelData: generatedModel,
       });
 
@@ -1249,7 +1249,7 @@ export default {
         modelId: regenerationContext.modelId,
         modelVersionId: regenerationContext.modelVersionId,
         updateType: MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS,
-        previousDataXml: previousModelData,
+        originalDataXml: originalModelData,
         regeneratedDataXml: regeneratedModelData,
       };
       if (isEditingModelContextActive(regenerationContext)) {
