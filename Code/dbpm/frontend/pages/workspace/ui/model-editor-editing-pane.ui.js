@@ -473,7 +473,7 @@ createUI({
 
     $(document).on("wf:call-clicked", onCallClicked);
     $(document).on("wf:subprocess-dblclicked", function (e) {
-      console.log(`Event Listener 'wf:subprocess-dblclicked' listened`);
+      // console.log(`Event Listener 'wf:subprocess-dblclicked' listened`);
       const $node = $(e.detail.node);
       const modelId = $node
         .children("parameters")
@@ -503,7 +503,7 @@ createUI({
         source: "subprocess-node",
       }); // ✨ NEW: Source tracking for conflict prevention
 
-      console.log("Subprocess modelId:", modelId);
+      // console.log("Subprocess modelId:", modelId);
       // const modelName = modelsStore.getModelNameById(modelId); // OLD: Commented out unused code
       // const modelGraph = $(modelsStore.getModelGraphById(modelId)).clone();
       // const modelId = $node
@@ -524,6 +524,7 @@ createUI({
       switch (key) {
         case "data": {
           if (newValue) {
+            $datDetails.empty();
             showWFGraph(newValue);
           } else {
             clearModelEditor();
@@ -552,7 +553,6 @@ createUI({
       if (changedVersionId !== editingModelVersionId) {
         return;
       }
-
       renderActiveEditingModelCachedErrors();
     });
 

@@ -414,6 +414,26 @@ li.list-item.is-current {
   display: none;
 }
 
+#modelsDocumentFilterBar .field {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+}
+
+#modelsDocumentFilterBar .field > label {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+#modelsDocumentFilterBar #documentsSelect {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+}
+
 .model-grid-item {
   border: 1.5px solid var(--x-ui-border-color);
   /* padding: 0.5em; */

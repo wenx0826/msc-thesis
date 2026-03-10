@@ -1,5 +1,5 @@
 import { createUI } from "../../../shared/utils/ui.js";
-import { modelsStore, workspaceStore } from "../store/index.js";
+import { modelsStore, workspaceStore, documentsStore } from "../store/index.js";
 import { modelService, workspaceService } from "../services/index.js";
 import { createTemplateElement } from "../../../shared/utils/dom.js";
 import initInlineEditor from "../../../shared/widgets/inline-editor.js";
@@ -15,7 +15,90 @@ const $modelsSelectedCount = $("#modelsSelectedCount");
 const $modelsSelectAllButton = $("#modelsSelectAllButton");
 const $modelsClearSelectionButton = $("#modelsClearSelectionButton");
 const $modelsDeleteSelectedButton = $("#modelsDeleteSelectedButton");
+const $documentsSelect = $("#documentsSelect");
 const MODELS_LIST_HOVER_SOURCE = "models-list";
+const ALL_DOCUMENTS_FILTER_VALUE = "__all__";
+let selectedDocumentFilterId = ALL_DOCUMENTS_FILTER_VALUE;
+
+function normalizeComparableId(value) {
+  if (value === undefined || value === null) {
+    return "";
+  }
+  return String(value);
+}
+
+function getSelectedDocumentFilterId() {
+  return selectedDocumentFilterId || ALL_DOCUMENTS_FILTER_VALUE;
+}
+
+function shouldModelBeVisible(documentId) {
+  const selectedDocumentId = getSelectedDocumentFilterId();
+  if (selectedDocumentId === ALL_DOCUMENTS_FILTER_VALUE) {
+    return true;
+  }
+  return normalizeComparableId(documentId) === selectedDocumentId;
+}
+
+function getFilteredModelsCount() {
+  return modelsStore
+    .getList()
+    .filter((model) => shouldModelBeVisible(model?.documentId)).length;
+}
+
+function syncModelPopoverWithFilteredVisibility() {
+  const popoverModelId = $("#modelPopover").attr("data-model-id");
+  if (!popoverModelId) {
+    return;
+  }
+  const hasVisibleItem =
+    $modelsPanel.find(`[data-model-id="${popoverModelId}"]:visible`).length > 0;
+  if (!hasVisibleItem) {
+    workspaceStore.requestCloseModelPopover("models-filter");
+  }
+}
+
+function applyModelsDocumentFilter() {
+  const setVisibility = (_, element) => {
+    const shouldShow = shouldModelBeVisible(element?.dataset?.documentId);
+    element.style.display = shouldShow ? "" : "none";
+  };
+  $modelsGrid.find(".model-grid-item[data-model-id]").each(setVisibility);
+  $modelsList.find(".model-list-item[data-model-id]").each(setVisibility);
+  syncModelPopoverWithFilteredVisibility();
+}
+
+function syncDocumentsFilterOptions() {
+  const documents = documentsStore.getList() || [];
+  const currentFilter = getSelectedDocumentFilterId();
+  const hasCurrentDocument = documents.some(
+    (doc) => normalizeComparableId(doc?.id) === currentFilter,
+  );
+  const nextFilter =
+    currentFilter === ALL_DOCUMENTS_FILTER_VALUE || hasCurrentDocument
+      ? currentFilter
+      : ALL_DOCUMENTS_FILTER_VALUE;
+  selectedDocumentFilterId = nextFilter;
+
+  $documentsSelect.empty();
+  $("<option>")
+    .val(ALL_DOCUMENTS_FILTER_VALUE)
+    .text("All documents")
+    .appendTo($documentsSelect);
+
+  for (const { id, name } of documents) {
+    if (!id) {
+      continue;
+    }
+    $("<option>").val(id).text(name || id).appendTo($documentsSelect);
+  }
+
+  $documentsSelect.val(selectedDocumentFilterId);
+  if ($documentsSelect.val() === null) {
+    selectedDocumentFilterId = ALL_DOCUMENTS_FILTER_VALUE;
+    $documentsSelect.val(ALL_DOCUMENTS_FILTER_VALUE);
+  }
+  $documentsSelect.prop("disabled", documents.length === 0);
+}
 
 // #region DOM Actions
 function onViewSwitch(event) {
@@ -109,6 +192,14 @@ function onModelListItemMouseEnter(event) {
 
 function onModelListItemMouseLeave() {
   workspaceStore.requestCloseModelPopover(MODELS_LIST_HOVER_SOURCE);
+}
+
+function onDocumentFilterChange(event) {
+  const nextValue = $(event.currentTarget).val();
+  selectedDocumentFilterId = nextValue || ALL_DOCUMENTS_FILTER_VALUE;
+  applyModelsDocumentFilter();
+  updateModelsCount();
+  syncModelsSelectionControls();
 }
 // #endregion
 
@@ -316,10 +407,15 @@ function syncModelsBulkModeUI() {
 }
 
 function updateModelsCount() {
-  const count = modelsStore.getCount();
+  const totalCount = modelsStore.getCount();
+  const filteredCount = getFilteredModelsCount();
+  const countLabel =
+    getSelectedDocumentFilterId() === ALL_DOCUMENTS_FILTER_VALUE
+      ? `${totalCount}`
+      : `${filteredCount}/${totalCount}`;
   const isBulkEditMode = modelsStore.getIsBulkEditMode();
-  const hasModels = count > 0;
-  $("[data-ref='modelsCount']").text(count);
+  const hasModels = totalCount > 0;
+  $("[data-ref='modelsCount']").text(countLabel);
   $modelsBulkEditToggleButton.prop("disabled", !hasModels && !isBulkEditMode);
 }
 
@@ -334,6 +430,7 @@ function updateModelItem(model) {
     modelsStore.getLatestVersionName(modelId) || "No Versions";
   getModelItem(modelId)
     .attr("data-model-version-id", model.latestVersionId || "")
+    .attr("data-document-id", model.documentId || "")
     .find("[data-ref='modelName']")
     .text(modelName);
   getModelItem(modelId).find("[data-ref='versionName']").text(versionName);
@@ -374,6 +471,9 @@ createUI({
         return modelService.renameModel(modelId, newValue);
       },
     });
+    syncDocumentsFilterOptions();
+    applyModelsDocumentFilter();
+    updateModelsCount();
     return { modelNameEditor };
   },
   bindListeners: ({ modelNameEditor }) => {
@@ -392,6 +492,7 @@ createUI({
     $modelsClearSelectionButton.on("click", onClearModelsSelection);
     $modelsDeleteSelectedButton.on("click", onDeleteSelectedModels);
     $modelsBulkEditToggleButton.on("click", onToggleModelsBulkEditMode);
+    $documentsSelect.on("change", onDocumentFilterChange);
     syncModelsBulkModeUI();
 
     $modelsPanel.on(
@@ -423,23 +524,29 @@ createUI({
               for (const model of value) {
                 await renderModel(model);
               }
+              applyModelsDocumentFilter();
               updateModelsCount();
               syncModelSelectionsInView();
               syncModelsSelectionControls();
               break;
             case "add":
               await renderModel(value);
+              applyModelsDocumentFilter();
               updateModelsCount();
               syncModelsSelectionControls();
               break;
             case "update":
               updateModelItem(value);
+              applyModelsDocumentFilter();
+              updateModelsCount();
+              syncModelsSelectionControls();
               break;
             case "delete":
               if (value?.id) {
                 console.log("Model deleted with ID:", value.id);
                 removeModelItem(value.id);
               }
+              applyModelsDocumentFilter();
               updateModelsCount();
               syncModelsSelectionControls();
               break;
@@ -485,6 +592,18 @@ createUI({
         default:
           break;
       }
+    });
+    documentsStore.subscribe((state, { key, operation }) => {
+      if (key !== "entitiesById") {
+        return;
+      }
+      if (!["init", "add", "update", "delete"].includes(operation)) {
+        return;
+      }
+      syncDocumentsFilterOptions();
+      applyModelsDocumentFilter();
+      updateModelsCount();
+      syncModelsSelectionControls();
     });
     workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
       switch (key) {
