@@ -54,7 +54,7 @@ function getSelectedSelectionColor() {
       .find(
         (item) => String(item.id) === String(selectedSelection.selectionId),
       );
-    return selection?.color || null;
+    return selection?.style?.backgroundColor || null;
   }
 
   let trace = null;
@@ -74,7 +74,7 @@ function getSelectedSelectionColor() {
   const selection = trace.selections.find(
     (item) => String(item.id) === String(selectedSelection.selectionId),
   );
-  return selection?.color || null;
+  return selection?.style?.backgroundColor || null;
 }
 
 function syncSelectedSelectionColorInput() {

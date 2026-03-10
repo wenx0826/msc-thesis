@@ -79,15 +79,13 @@ function initializeSchema() {
     )
   `);
 
-  // Traces table
+  // Document-model links table
   db.exec(`
-    CREATE TABLE IF NOT EXISTS traces (
+    CREATE TABLE IF NOT EXISTS document_model_links (
       id TEXT PRIMARY KEY,
-      trace_id TEXT,
       document_version_id TEXT NOT NULL,
       model_version_id TEXT NOT NULL,
-      selections TEXT NOT NULL,
-      is_latest BOOLEAN NOT NULL DEFAULT 1,
+      selections TEXT NOT NULL CHECK (json_valid(selections)),
       created_at TEXT NOT NULL DEFAULT current_timestamp,
       FOREIGN KEY (document_version_id) REFERENCES document_versions(id),
       FOREIGN KEY (model_version_id) REFERENCES model_versions(id)
@@ -127,7 +125,7 @@ function initializeSchema() {
     `CREATE INDEX IF NOT EXISTS idx_models_project_id ON models(project_id)`,
   );
   db.exec(
-    `CREATE INDEX IF NOT EXISTS idx_traces_document_version_id ON traces(document_version_id)`,
+    `CREATE INDEX IF NOT EXISTS idx_document_model_links_document_version_id ON document_model_links(document_version_id)`,
   );
   db.exec(
     `CREATE UNIQUE INDEX IF NOT EXISTS idx_document_versions_document_id_version_number ON document_versions(document_id, version_number)`,
@@ -136,7 +134,7 @@ function initializeSchema() {
     `CREATE UNIQUE INDEX IF NOT EXISTS idx_model_versions_model_id_version_number ON model_versions(model_id, version_number)`,
   );
   db.exec(
-    `CREATE INDEX IF NOT EXISTS idx_traces_model_version_id ON traces(model_version_id)`,
+    `CREATE INDEX IF NOT EXISTS idx_document_model_links_model_version_id ON document_model_links(model_version_id)`,
   );
   db.exec(
     `CREATE INDEX IF NOT EXISTS idx_model_update_events_model_version_id ON model_update_events(model_version_id)`,

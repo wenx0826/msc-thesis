@@ -16,7 +16,7 @@ const $selectionHandlesLayer = $("#selectionHandlesLayer");
 const $modelTagsLayer = $("#modelTagsLayer");
 const $selectedSelectionToolbar = $("#selectedSelectionToolbar");
 const SELECTION_WRAP_TEMPLATE_ID = "selectionWrapTemplate";
-const SELECTION_RECT_TEMPLATE_ID = "selectionRangeRectTemplate";
+
 const MODEL_TAG_TEMPLATE_ID = "modelTagTemplate";
 let handleDragState = null;
 let suppressTagPopoverOpen = false;
@@ -401,19 +401,12 @@ function getSelectionByMeta(selectionMeta) {
   );
 }
 
-function isTraceSelectable(trace) {
-  if (!trace) {
-    return false;
-  }
-  const modelId = trace.modelId ?? null;
-  const modelVersionId = trace.modelVersionId ?? null;
-  const viewedDocument = workspaceStore.getViewedDocument() || {};
-  const documentId = trace.documentId ?? viewedDocument.id ?? null;
-  const documentVersionId =
-    trace.documentVersionId ?? viewedDocument.versionId ?? null;
-  if (!modelId || !modelVersionId || !documentId || !documentVersionId) {
-    return false;
-  }
+function canEditLinkSelections({
+  documentId,
+  documentVersionId,
+  modelId,
+  modelVersionId,
+} = {}) {
   return (
     documentsStore.isLatestVersion(documentId, documentVersionId) &&
     modelsStore.isLatestVersion(modelId, modelVersionId)
@@ -444,7 +437,12 @@ function resolveTraceBySelectionMeta(selectionMeta) {
   }
 
   const activeTrace = documentViewerStore.getDisplayedModelTrace();
-  if (!trace && activeTrace && traceId && String(activeTrace.id || "") === traceId) {
+  if (
+    !trace &&
+    activeTrace &&
+    traceId &&
+    String(activeTrace.id || "") === traceId
+  ) {
     trace = activeTrace;
   }
 
@@ -476,7 +474,7 @@ function isSelectionMetaSelectable(selectionMeta) {
     return isViewingLatestDocumentVersion();
   }
   const trace = resolveTraceBySelectionMeta(selectionMeta);
-  return isTraceSelectable(trace);
+  return canEditLinkSelections(trace);
 }
 
 function updateSelectionRangeByMeta(selectionMeta, nextRange) {
@@ -587,45 +585,9 @@ function createSelectionWrap({
   return $wrap;
 }
 
-function createSelectionRect({ top, left, width, height, color }) {
-  return createTemplateElement(SELECTION_RECT_TEMPLATE_ID).css({
-    top,
-    left,
-    width,
-    height,
-    backgroundColor: color,
-  });
-}
-
-function createInteractionRect({
-  top,
-  left,
-  width,
-  height,
-  selectionId,
-  modelId,
-  modelVersionId,
-  traceId,
-}) {
-  const $rect = createTemplateElement(SELECTION_RECT_TEMPLATE_ID)
-    .attr("data-selection-id", selectionId)
-    .css({
-      top,
-      left,
-      width,
-      height,
-      backgroundColor: "transparent",
-    });
-  if (modelId !== undefined && modelId !== null) {
-    $rect.attr("data-model-id", modelId);
-  }
-  if (modelVersionId !== undefined && modelVersionId !== null) {
-    $rect.attr("data-model-version-id", modelVersionId);
-  }
-  if (traceId !== undefined && traceId !== null) {
-    $rect.attr("data-trace-id", traceId);
-  }
-  return $rect;
+function createSelectionRect(css) {
+  const SELECTION_RANGE_RECT_TEMPLATE_ID = "selectionRangeRectTemplate";
+  return createTemplateElement(SELECTION_RANGE_RECT_TEMPLATE_ID).css(css);
 }
 
 function createModelTag({
@@ -741,24 +703,7 @@ function removeRenderedTrace({ modelId }) {
   updateSelectionHandlesPosition();
 }
 function removeRenderedSelection({ id: selectionId }) {
-  $selectionsVisualLayer
-    .find(`.selection-wrap[data-selection-id="${selectionId}"]`)
-    .each((index, element) => {
-      const $element = $(element);
-      const elementModelId = $element.attr("data-model-id");
-      if (elementModelId) {
-        $modelTagsLayer
-          .find(
-            `.tag-span[data-model-id="${elementModelId}"][data-selection-id="${selectionId}"]`,
-          )
-          .remove();
-      }
-      $element.remove();
-    });
-
-  $selectionsInteractionLayer
-    .find(`.selection-wrap[data-selection-id="${selectionId}"]`)
-    .remove();
+  $viewerWrap.find(`*[data-selection-id="${selectionId}"]`).remove();
   updateSelectionHandlesPosition();
 }
 
@@ -794,29 +739,16 @@ const onSelectedSelectionOutsideMouseDown = (event) => {
 };
 
 const onSelectionSelect = (event) => {
-  if (!isViewingLatestDocumentVersion()) {
-    return;
-  }
   // console.log("Range selected:", event);
   event.stopPropagation();
   const $target = $(event.currentTarget);
   // $target.addClass("selected");
 
   const $selectionWrap = $target.closest(".selection-wrap");
-  const selectionId =
-    $target.attr("data-selection-id") ||
-    $selectionWrap.attr("data-selection-id");
-  const modelId =
-    $target.attr("data-model-id") || $selectionWrap.attr("data-model-id");
-  const modelVersionId =
-    $target.attr("data-model-version-id") ||
-    $selectionWrap.attr("data-model-version-id");
-  const traceId =
-    $target.attr("data-trace-id") || $selectionWrap.attr("data-trace-id");
-  const scope =
-    $target.is("[data-model-id]") || $selectionWrap.is("[data-model-id]")
-      ? "model"
-      : "temporary";
+  const { selectionId, modelId, modelVersionId, traceId } =
+    $selectionWrap.data();
+
+  const scope = $selectionWrap.is("[data-model-id]") ? "model" : "temporary";
   if (selectionId === undefined || selectionId === null || selectionId === "") {
     return;
   }
@@ -831,35 +763,19 @@ const onSelectionSelect = (event) => {
     return;
   }
   setSelectedSelection(selectionMeta);
-
-  // $deleteSelectionButton
-  //   .show()
-  //   .css({
-  //     top: `${selectionRect.top + window.scrollY - 12}px`,
-  //     left: `${selectionRect.right + window.scrollX - 12}px`,
-  //   })
-  //   .on("click", () => {
-  //     // Remove range from highlightSelections and temporarySelections
-  //     highlightSelections = highlightSelections.filter((r) => r.id !== rangeId);
-  //     temporarySelections = temporarySelections.filter((r) => r.id !== rangeId);
-  //     // Remove the highlight from the UI
-  //     $target.remove();
-  //     $deleteSelectionButton.hide();
-  //   });
 };
 
 const renderSelection = (
-  { range, color, id: selectionId, selectionId: fallbackSelectionId, traceId },
+  { range, style, id: selectionId, traceId },
   modelId,
   modelVersionId,
-  { isTraceSelectable: selectable = true } = {},
+  { selectable = true } = {},
 ) => {
   if (!range) {
     console.warn("Selection has no range, skipping render:", selectionId);
     return;
   }
-  const resolvedSelectionId = selectionId ?? fallbackSelectionId;
-  if (resolvedSelectionId === undefined || resolvedSelectionId === null) {
+  if (selectionId === undefined || selectionId === null) {
     console.warn("Selection has no valid ID, skipping render:", selectionId);
     return;
   }
@@ -867,28 +783,9 @@ const renderSelection = (
   const editingModel = workspaceStore.getEditingModel() || {};
   const editingModelId = editingModel.id ?? null;
   const editingModelVersionId = editingModel.versionId ?? null;
-  const isEditingModel =
-    modelId !== undefined &&
-    modelId !== null &&
-    editingModelId !== undefined &&
-    editingModelId !== null &&
-    String(modelId) === String(editingModelId);
-  const isDisplayedModelVersion =
-    isEditingModel &&
-    modelVersionId !== undefined &&
-    modelVersionId !== null &&
-    editingModelVersionId !== undefined &&
-    editingModelVersionId !== null &&
-    String(modelVersionId) === String(editingModelVersionId);
+  const isEditingModel = modelId === editingModelId;
+  const isDisplayedModelVersion = modelVersionId === editingModelVersionId;
   const shouldShowReadonlyBound = !selectable && isDisplayedModelVersion;
-  // const latestModelVersionId =
-  //   modelId !== undefined && modelId !== null
-  //     ? modelsStore.getLatestVersionId(modelId) || null
-  //     : null;
-  // const resolvedModelVersionId =
-  //   modelId !== undefined && modelId !== null
-  //     ? latestModelVersionId || modelVersionId || null
-  //     : null;
 
   const eleViewerWrap = $viewerWrap[0];
   const eleViewerWrapRect = eleViewerWrap.getBoundingClientRect();
@@ -908,7 +805,7 @@ const renderSelection = (
 
   const $highlightWrap = createSelectionWrap({
     templateId: SELECTION_WRAP_TEMPLATE_ID,
-    selectionId: resolvedSelectionId,
+    selectionId,
     modelId,
     modelVersionId,
     traceId,
@@ -926,7 +823,7 @@ const renderSelection = (
       left: `${rect.left - selectionRectLeft}px`,
       width: `${rect.width}px`,
       height: `${rect.height}px`,
-      color: color || getCurrentSelectionColor(),
+      backgroundColor: style?.backgroundColor || getCurrentSelectionColor(),
     });
     $highlightWrap.append($rectDiv);
   }
@@ -941,7 +838,7 @@ const renderSelection = (
     const $tag = createModelTag({
       modelId,
       modelVersionId,
-      selectionId: resolvedSelectionId,
+      selectionId,
       modelName: `${modelName}`,
       top: `${lastRect.top - eleViewerWrapRect.top + eleViewerWrap.scrollTop - 11}px`,
       left: `${lastRect.right - eleViewerWrapRect.left + eleViewerWrap.scrollLeft - 11}px`,
@@ -953,7 +850,7 @@ const renderSelection = (
   }
   const $interactionWrap = createSelectionWrap({
     templateId: SELECTION_WRAP_TEMPLATE_ID,
-    selectionId: resolvedSelectionId,
+    selectionId,
     modelId,
     modelVersionId,
     traceId,
@@ -964,26 +861,22 @@ const renderSelection = (
     isCurrent: isDisplayedModelVersion,
     showReadonlyBound: shouldShowReadonlyBound,
   });
-
-  for (const rect of rects) {
-    const $interactionRect = createInteractionRect({
-      top: `${rect.top - selectionRectTop + 2}px`,
-      left: `${rect.left - selectionRectLeft}px`,
-      width: `${rect.width}px`,
-      height: `${Math.max(rect.height - 4, 1)}px`,
-      selectionId: resolvedSelectionId,
-      modelId,
-      modelVersionId,
-      traceId,
-    });
-    $interactionWrap.append($interactionRect);
+  if (selectable) {
+    for (const rect of rects) {
+      const $interactionRect = createSelectionRect({
+        top: `${rect.top - selectionRectTop + 2}px`,
+        left: `${rect.left - selectionRectLeft}px`,
+        width: `${rect.width}px`,
+        height: `${Math.max(rect.height - 4, 1)}px`,
+      });
+      $interactionWrap.append($interactionRect);
+    }
   }
-
   $interactionWrap.appendTo($selectionsInteractionLayer);
   const selectedSelection = getSelectedSelection();
   if (
     selectedSelection &&
-    String(selectedSelection.selectionId) === String(resolvedSelectionId)
+    String(selectedSelection.selectionId) === String(selectionId)
   ) {
     getInteractionWrapsBySelection(selectedSelection).addClass("selected");
     updateSelectionHandlesPosition();
@@ -991,9 +884,9 @@ const renderSelection = (
 };
 
 const onSelectionHandleDragStart = (event) => {
-  if (!isViewingLatestDocumentVersion()) {
-    return;
-  }
+  // if (!isViewingLatestDocumentVersion()) {
+  //   return;
+  // }
   event.preventDefault();
   event.stopPropagation();
   const $handle = $(event.currentTarget);
@@ -1117,9 +1010,7 @@ function setModelSelectionWrapCurrent(modelId, modelVersionId, isCurrent) {
     modelVersionId === undefined || modelVersionId === null
       ? `.selection-wrap[data-model-id="${modelId}"]`
       : `.selection-wrap[data-model-id="${modelId}"][data-model-version-id="${modelVersionId}"]`;
-  $selectionsVisualLayer
-    .find(selector)
-    .toggleClass("is-current", isCurrent);
+  $selectionsVisualLayer.find(selector).toggleClass("is-current", isCurrent);
   $selectionsInteractionLayer
     .find(selector)
     .toggleClass("is-current", isCurrent);
@@ -1140,21 +1031,18 @@ const renderTrace = ({
   documentId,
   documentVersionId,
 }) => {
-  const selectable = isTraceSelectable({
-    id: traceId,
-    modelId,
-    modelVersionId,
+  const selectable = canEditLinkSelections({
     documentId,
     documentVersionId,
+    modelId,
+    modelVersionId,
   });
-  console.log("Rendering trace:", traceId, selections);
   selections.forEach((selection) => {
     renderSelection({ ...selection, traceId }, modelId, modelVersionId, {
-      isTraceSelectable: selectable,
+      selectable,
     });
   });
 };
-// const rerenderSelectionsLayer = () => {};
 
 function getRenderableTraces() {
   const baseTraces = documentViewerStore.getTraces();
@@ -1178,7 +1066,7 @@ const rerenderOverlayLayers = () => {
   clearHighlightLayer();
   clearInteractionLayer();
   const traces = getRenderableTraces();
-  console.log("Rerendering overlay layers...", traces);
+  // console.log("Rerendering overlay layers...", traces);
   if (traces.length) {
     traces.forEach((trace) => renderTrace(trace));
   }
@@ -1211,7 +1099,9 @@ const handleTextSelection = () => {
   // $generateModelButton.prop("disabled", false);
   const temporarySelection = {
     id: crypto.randomUUID(),
-    color: getCurrentSelectionColor(),
+    style: {
+      backgroundColor: getCurrentSelectionColor(),
+    },
     range: range.cloneRange(),
   };
   // temporarySelections.push(temporarySelection);
@@ -1274,7 +1164,6 @@ createUI({
       const element = event.currentTarget;
       const modelId = element.dataset.modelId;
       const versionId = element.dataset.modelVersionId || null;
-      console.log("Hovering over model tag:", modelId);
 
       // ✨ NEW: Pass source identifier to prevent conflicts with other hover sources
       workspaceStore.setModelPopoverParams({
@@ -1314,6 +1203,8 @@ createUI({
                 );
                 break;
               case "add":
+                renderTrace(value);
+                break;
               case "update":
                 rerenderOverlayLayers();
                 break;
@@ -1325,16 +1216,19 @@ createUI({
             switch (operation) {
               case "update": {
                 removeRenderedSelection(value);
-                const activeTrace = documentViewerStore.getDisplayedModelTrace();
+                const activeTrace =
+                  documentViewerStore.getDisplayedModelTrace();
                 renderSelection(
                   {
                     ...value,
                     traceId: activeTrace?.id || value?.traceId || null,
                   },
-                  activeTrace?.modelId || workspaceStore.getEditingModelId() || null,
+                  activeTrace?.modelId ||
+                    workspaceStore.getEditingModelId() ||
+                    null,
                   activeTrace?.modelVersionId || null,
                   {
-                    isTraceSelectable: isTraceSelectable(activeTrace),
+                    selectable: canEditLinkSelections(activeTrace),
                   },
                 );
                 break;
@@ -1388,9 +1282,9 @@ createUI({
                 scrollToRange(firstSelection.range);
               }
             }
-            if (oldValue && oldValue.modelId !== newValue?.modelId) {
-              unhighlightModelSelections(oldValue.modelId);
-            }
+            // if (oldValue && oldValue.modelId !== newValue?.modelId) {
+            //   unhighlightModelSelections(oldValue.modelId);
+            // }
             break;
           case "temporarySelections":
             oldValue.forEach((selection) => {

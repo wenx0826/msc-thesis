@@ -13,7 +13,7 @@ function generateSelectionId() {
 }
 
 function resolveSelectionId(selection) {
-  const id = selection?.id ?? selection?.selectionId ?? null;
+  const id = selection?.id ?? null;
   if (id !== undefined && id !== null && String(id) !== "") {
     return id;
   }
@@ -27,15 +27,18 @@ function hydrateSelections(selections) {
 
   return selections
     .map((selection) => {
-      const range = deserializeRange(selection?.range, {
-        text: selection?.text,
-      });
+      const range = deserializeRange(selection?.textPosition);
       if (!range) {
         return null;
       }
       return {
-        ...selection,
         id: resolveSelectionId(selection),
+        textPosition: selection?.textPosition,
+        textQuote: selection?.textQuote,
+        style:
+          selection?.style && typeof selection.style === "object"
+            ? { ...selection.style }
+            : {},
         range,
       };
     })
@@ -84,6 +87,34 @@ class DocumentViewerStore extends Store {
       return false;
     }
     return String(idA) === String(idB);
+  }
+
+  getSelectionBackgroundColor(selection) {
+    const value = selection?.style?.backgroundColor;
+    return typeof value === "string" ? value : null;
+  }
+
+  setSelectionBackgroundColor(selection, backgroundColor) {
+    const style =
+      selection?.style && typeof selection.style === "object"
+        ? selection.style
+        : {};
+    selection.style = {
+      ...style,
+      backgroundColor,
+    };
+  }
+
+  serializeSelection(selection) {
+    const serializedAnchors = serializeRange(selection.range);
+    const currentBackgroundColor = this.getSelectionBackgroundColor(selection);
+    return {
+      id: resolveSelectionId(selection),
+      ...serializedAnchors,
+      style: {
+        backgroundColor: currentBackgroundColor || this.getSelectionColor(),
+      },
+    };
   }
 
   clear() {
@@ -185,7 +216,6 @@ class DocumentViewerStore extends Store {
 
   // #region traces && active trace
   addTrace(trace) {
-    console.log("Adding trace:???", trace);
     trace.selections = hydrateSelections(trace.selections);
     this.state.traces.push(trace);
     this.setActiveModelTrace(trace);
@@ -260,11 +290,9 @@ class DocumentViewerStore extends Store {
     if (activeModelTrace) {
       return {
         ...activeModelTrace,
-        selections: activeModelTrace.selections.map(({ range, ...rest }) => ({
-          ...rest,
-          range: serializeRange(range),
-          text: range.toString(),
-        })),
+        selections: activeModelTrace.selections.map((selection) =>
+          this.serializeSelection(selection),
+        ),
       };
     }
   }
@@ -403,10 +431,10 @@ class DocumentViewerStore extends Store {
     const selection = trace.selections.find((sel) =>
       this.areIdsEqual(sel.id, selectionId),
     );
-    if (!selection || selection.color === color) {
+    if (!selection || this.getSelectionBackgroundColor(selection) === color) {
       return null;
     }
-    selection.color = color;
+    this.setSelectionBackgroundColor(selection, color);
 
     if (this.areIdsEqual(this.state.activeModelTrace?.id, trace.id)) {
       this.notify({
@@ -495,16 +523,20 @@ class DocumentViewerStore extends Store {
     this.state.temporarySelections = getSortedSelectionsByRange(
       this.getTemporarySelections(),
     );
-    return this.state.temporarySelections.map(({ range, ...rest }) => ({
-      ...rest,
-      range: serializeRange(range),
-      text: range.toString(),
-    }));
+    return this.state.temporarySelections.map((selection) =>
+      this.serializeSelection(selection),
+    );
   }
 
   addTemporarySelection(selection) {
     const normalizedSelection = {
       ...selection,
+      style:
+        selection?.style && typeof selection.style === "object"
+          ? { ...selection.style }
+          : {
+              backgroundColor: this.getSelectionColor(),
+            },
       id: resolveSelectionId(selection),
     };
     this.state.temporarySelections.push(normalizedSelection);
@@ -533,8 +565,8 @@ class DocumentViewerStore extends Store {
     const selection = this.state.temporarySelections.find((sel) =>
       this.areIdsEqual(sel.id, selectionId),
     );
-    if (selection && selection.color !== color) {
-      selection.color = color;
+    if (selection && this.getSelectionBackgroundColor(selection) !== color) {
+      this.setSelectionBackgroundColor(selection, color);
       this.notify({
         key: "temporarySelections",
         operation: "update",
@@ -591,11 +623,7 @@ class DocumentViewerStore extends Store {
   }
 
   getSerializedSelections(selections) {
-    return selections.map(({ range, ...rest }) => ({
-      ...rest,
-      range: serializeRange(range),
-      text: range.toString(),
-    }));
+    return selections.map((selection) => this.serializeSelection(selection));
   }
 
   getSerializedNewActiveModelTrace() {

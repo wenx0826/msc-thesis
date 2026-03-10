@@ -11,22 +11,31 @@ function cloneSelections(selections) {
     }
 
     return {
-      ...selection,
-      range:
-        selection.range && typeof selection.range === "object"
-          ? { ...selection.range }
-          : selection.range,
+      id: selection.id,
+      textPosition:
+        selection.textPosition && typeof selection.textPosition === "object"
+          ? { ...selection.textPosition }
+          : selection.textPosition,
+      textQuote:
+        selection.textQuote && typeof selection.textQuote === "object"
+          ? { ...selection.textQuote }
+          : selection.textQuote,
+      style:
+        selection.style && typeof selection.style === "object"
+          ? { ...selection.style }
+          : selection.style,
     };
   });
 }
 
 export default {
   create({ documentVersionId, modelVersionId, selections }) {
-    return traceRepo.create({
+    const createdTrace = traceRepo.create({
       documentVersionId,
       modelVersionId,
       selections,
     });
+    return traceRepo.findById(createdTrace.id);
   },
   copyLatestByDocumentVersionId({
     sourceDocumentVersionId,

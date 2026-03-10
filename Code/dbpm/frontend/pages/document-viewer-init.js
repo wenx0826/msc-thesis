@@ -144,7 +144,7 @@ function createModelTag({ top, left, label, modelId }) {
   return $tag;
 }
 
-function renderSelection(range, color, trace) {
+function renderSelection(range, style, trace) {
   if (!range) return;
 
   const viewerElement = $viewerWrap[0];
@@ -172,7 +172,7 @@ function renderSelection(range, color, trace) {
       left: `${rect.left - rangeRect.left}px`,
       width: `${rect.width}px`,
       height: `${rect.height}px`,
-      color: color || DEFAULT_SELECTION_COLOR,
+      color: style?.backgroundColor || DEFAULT_SELECTION_COLOR,
     });
     $wrap.append($selectionRect);
   }
@@ -205,7 +205,7 @@ function renderAllSelections() {
       continue;
     }
     for (const selection of trace.selections) {
-      renderSelection(selection.range, selection.color, trace);
+      renderSelection(selection.range, selection.style, trace);
     }
   }
 }
@@ -229,12 +229,16 @@ function hydrateTraceSelections(traces) {
     .map((trace) => {
       const hydratedSelections = (trace.selections || [])
         .map((selection) => {
-          const range = deserializeRange(selection?.range, {
-            text: selection?.text,
-          });
+          const range = deserializeRange(selection?.textPosition);
           if (!range) return null;
           return {
-            ...selection,
+            id: selection?.id,
+            textPosition: selection?.textPosition,
+            textQuote: selection?.textQuote,
+            style:
+              selection?.style && typeof selection.style === "object"
+                ? { ...selection.style }
+                : {},
             range,
           };
         })

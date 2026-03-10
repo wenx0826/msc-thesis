@@ -266,7 +266,9 @@ function selectionsToText(selections) {
   }
   return selections
     .map((selection) =>
-      typeof selection?.text === "string" ? selection.text.trim() : "",
+      typeof selection?.textQuote?.exact === "string"
+        ? selection.textQuote.exact.trim()
+        : "",
     )
     .filter(Boolean)
     .join(" ");
@@ -423,17 +425,17 @@ function composeRegeneratedModelData({ currentModelData, generatedModelData }) {
   return $(currentRoot).serializePrettyXML();
 }
 
-function normalizeSelectionRange(range) {
-  if (range === undefined || range === null) {
+function normalizeSelectionTextPosition(textPosition) {
+  if (textPosition === undefined || textPosition === null) {
     return null;
   }
-  if (typeof range === "string") {
-    return range;
+  if (typeof textPosition === "string") {
+    return textPosition;
   }
   try {
-    return JSON.stringify(range);
+    return JSON.stringify(textPosition);
   } catch (error) {
-    return String(range);
+    return String(textPosition);
   }
 }
 
@@ -453,8 +455,11 @@ function classifyTraceSelectionChange({
         selection?.id === undefined || selection?.id === null
           ? null
           : String(selection.id),
-      range: normalizeSelectionRange(selection?.range),
-      text: typeof selection?.text === "string" ? selection.text : "",
+      textPosition: normalizeSelectionTextPosition(selection?.textPosition),
+      textQuoteExact:
+        typeof selection?.textQuote?.exact === "string"
+          ? selection.textQuote.exact
+          : "",
     }),
   );
   const currentTextSignature = buildSelectionsSignature(
@@ -464,8 +469,11 @@ function classifyTraceSelectionChange({
         selection?.id === undefined || selection?.id === null
           ? null
           : String(selection.id),
-      range: normalizeSelectionRange(selection?.range),
-      text: typeof selection?.text === "string" ? selection.text : "",
+      textPosition: normalizeSelectionTextPosition(selection?.textPosition),
+      textQuoteExact:
+        typeof selection?.textQuote?.exact === "string"
+          ? selection.textQuote.exact
+          : "",
     }),
   );
   if (previousTextSignature !== currentTextSignature) {
@@ -479,7 +487,10 @@ function classifyTraceSelectionChange({
         selection?.id === undefined || selection?.id === null
           ? null
           : String(selection.id),
-      color: typeof selection?.color === "string" ? selection.color : "",
+      backgroundColor:
+        typeof selection?.style?.backgroundColor === "string"
+          ? selection.style.backgroundColor
+          : "",
     }),
   );
   const currentColorSignature = buildSelectionsSignature(
@@ -489,7 +500,10 @@ function classifyTraceSelectionChange({
         selection?.id === undefined || selection?.id === null
           ? null
           : String(selection.id),
-      color: typeof selection?.color === "string" ? selection.color : "",
+      backgroundColor:
+        typeof selection?.style?.backgroundColor === "string"
+          ? selection.style.backgroundColor
+          : "",
     }),
   );
   if (previousColorSignature !== currentColorSignature) {
@@ -1313,10 +1327,6 @@ export default {
       selectedText: selectionsToText(selections),
     });
 
-    console.log(
-      "Prepared model data with injected DBPM info:",
-      preparedModelData,
-    );
     const trace = {
       documentVersionId,
       selections,
@@ -1327,7 +1337,6 @@ export default {
         modelData: preparedModelData,
         trace,
       });
-
     modelsStore.add(createdModelMeta);
     workspaceStore.setEditingModel({
       id: createdModelMeta.id,

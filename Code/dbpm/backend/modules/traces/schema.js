@@ -1,3 +1,50 @@
+const textPositionSchema = {
+  type: "object",
+  required: ["start", "end"],
+  additionalProperties: false,
+  properties: {
+    start: { type: "number" },
+    end: { type: "number" },
+  },
+};
+
+const textQuoteSchema = {
+  type: "object",
+  required: ["exact"],
+  additionalProperties: false,
+  properties: {
+    exact: { type: "string" },
+    prefix: { type: "string" },
+    suffix: { type: "string" },
+  },
+};
+
+const selectionStyleSchema = {
+  type: "object",
+  required: ["backgroundColor"],
+  additionalProperties: false,
+  properties: {
+    backgroundColor: { type: "string" },
+  },
+};
+
+const selectionSchema = {
+  type: "object",
+  required: ["id", "textPosition", "textQuote", "style"],
+  additionalProperties: false,
+  properties: {
+    id: { type: "string" },
+    textPosition: textPositionSchema,
+    textQuote: textQuoteSchema,
+    style: selectionStyleSchema,
+  },
+};
+
+const selectionsSchema = {
+  type: "array",
+  items: selectionSchema,
+};
+
 export const updateTraceSchema = {
   params: {
     type: "object",
@@ -13,7 +60,7 @@ export const updateTraceSchema = {
     properties: {
       documentVersionId: { type: "string" },
       modelVersionId: { type: "string" },
-      selections: { type: "array" },
+      selections: selectionsSchema,
     },
   },
 };
@@ -44,7 +91,7 @@ export const getLatestTracesByDocumentVersionSchema = {
           modelVersionId: { type: "string" },
           modelId: { type: "string" },
           modelName: { type: ["string", "null"] },
-          selections: { type: "array" },
+          selections: selectionsSchema,
           createdAt: { type: "string" },
         },
       },
@@ -70,7 +117,7 @@ export const getLatestTraceByModelVersionSchema = {
         modelVersionId: { type: "string" },
         modelId: { type: "string" },
         modelName: { type: ["string", "null"] },
-        selections: { type: "array" },
+        selections: selectionsSchema,
         createdAt: { type: "string" },
       },
     },

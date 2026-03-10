@@ -17,7 +17,9 @@ function selectionsToText(selections) {
   }
   return selections
     .map((selection) =>
-      typeof selection?.text === "string" ? selection.text.trim() : "",
+      typeof selection?.textQuote?.exact === "string"
+        ? selection.textQuote.exact.trim()
+        : "",
     )
     .filter(Boolean)
     .join(" ");
@@ -86,7 +88,7 @@ export default {
 
     const selections = Array.isArray(trace.selections) ? trace.selections : [];
     const selectedWordsCount = selections.reduce(
-      (acc, sel) => acc + countWords(sel?.text ?? ""),
+      (acc, sel) => acc + countWords(sel?.textQuote?.exact ?? ""),
       0,
     );
     try {
@@ -125,7 +127,7 @@ export default {
 
       return {
         modelMeta: modelRepo.findByIdWithVersions(createdModel.id),
-        trace: traceService.getById(createdTrace.id),
+        trace: createdTrace,
       };
     } catch (err) {
       throw err;
@@ -484,7 +486,7 @@ export default {
         ? trace.selections
         : [];
       words = effectiveSelections.reduce(
-        (acc, sel) => acc + countWords(sel?.text ?? ""),
+        (acc, sel) => acc + countWords(sel?.textQuote?.exact ?? ""),
         0,
       );
       const traceIdToUpdate =

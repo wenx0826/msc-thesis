@@ -6,7 +6,7 @@ class TracesRepository extends BaseSqlRepository {
   constructor() {
     super({
       db,
-      tableName: "traces",
+      tableName: "document_model_links",
       requiredCreateColumns: [
         "document_version_id",
         "model_version_id",
@@ -14,10 +14,9 @@ class TracesRepository extends BaseSqlRepository {
       ],
       generatedColumns: {
         id: () => crypto.randomUUID(),
-        trace_id: () => crypto.randomUUID(),
       },
       jsonColumns: ["selections"],
-      nonUpdatableColumns: ["id", "trace_id", "created_at"],
+      nonUpdatableColumns: ["id", "created_at"],
     });
   }
 
@@ -34,7 +33,7 @@ class TracesRepository extends BaseSqlRepository {
   findById(id) {
     const stmt = db.prepare(`
       SELECT t.*, mv.model_id, m.name AS model_name, dv.document_id
-      FROM traces t
+      FROM document_model_links t
       LEFT JOIN model_versions mv ON t.model_version_id = mv.id
       LEFT JOIN models m ON mv.model_id = m.id
       LEFT JOIN document_versions dv ON t.document_version_id = dv.id
@@ -59,15 +58,15 @@ class TracesRepository extends BaseSqlRepository {
             PARTITION BY mv.model_id
             ORDER BY mv.version_number DESC, t.created_at DESC, t.id DESC
           ) AS rank_in_model
-        FROM traces t
+        FROM document_model_links t
         LEFT JOIN model_versions mv ON t.model_version_id = mv.id
         LEFT JOIN models m ON mv.model_id = m.id
         LEFT JOIN document_versions dv ON t.document_version_id = dv.id
         WHERE t.document_version_id = ?
         ${includeDeletedModels ? "" : "AND m.deleted_at IS NULL"}
       )
-      SELECT id, trace_id, document_version_id, model_version_id, selections,
-             is_latest, created_at, model_id, model_name, document_id
+      SELECT id, document_version_id, model_version_id, selections,
+             created_at, model_id, model_name, document_id
       FROM ranked_traces
       WHERE rank_in_model = 1
       ORDER BY created_at ASC
@@ -79,7 +78,7 @@ class TracesRepository extends BaseSqlRepository {
   findLatestByModelVersionId(modelVersionId) {
     const stmt = db.prepare(`
       SELECT t.*, mv.model_id, m.name AS model_name, dv.document_id
-      FROM traces t
+      FROM document_model_links t
       LEFT JOIN model_versions mv ON t.model_version_id = mv.id
       LEFT JOIN models m ON mv.model_id = m.id
       LEFT JOIN document_versions dv ON t.document_version_id = dv.id
@@ -93,7 +92,7 @@ class TracesRepository extends BaseSqlRepository {
 
   updateByModelId(modelVersionId, selections) {
     const stmt = db.prepare(
-      "UPDATE traces SET selections = ? WHERE model_version_id = ?",
+      "UPDATE document_model_links SET selections = ? WHERE model_version_id = ?",
     );
     return stmt.run(JSON.stringify(selections), modelVersionId);
   }

@@ -1,3 +1,50 @@
+const textPositionSchema = {
+  type: "object",
+  required: ["start", "end"],
+  additionalProperties: false,
+  properties: {
+    start: { type: "number" },
+    end: { type: "number" },
+  },
+};
+
+const textQuoteSchema = {
+  type: "object",
+  required: ["exact"],
+  additionalProperties: false,
+  properties: {
+    exact: { type: "string" },
+    prefix: { type: "string" },
+    suffix: { type: "string" },
+  },
+};
+
+const selectionStyleSchema = {
+  type: "object",
+  required: ["backgroundColor"],
+  additionalProperties: false,
+  properties: {
+    backgroundColor: { type: "string" },
+  },
+};
+
+const selectionSchema = {
+  type: "object",
+  required: ["id", "textPosition", "textQuote", "style"],
+  additionalProperties: false,
+  properties: {
+    id: { type: "string" },
+    textPosition: textPositionSchema,
+    textQuote: textQuoteSchema,
+    style: selectionStyleSchema,
+  },
+};
+
+const selectionsSchema = {
+  type: "array",
+  items: selectionSchema,
+};
+
 export const createModelSchema = {
   body: {
     type: "object",
@@ -10,9 +57,7 @@ export const createModelSchema = {
         type: "object",
         properties: {
           documentVersionId: { type: "string" },
-          selections: {
-            type: "array",
-          },
+          selections: selectionsSchema,
         },
         required: ["documentVersionId", "selections"],
       },
@@ -60,9 +105,9 @@ export const createModelSchema = {
             id: { type: "string" },
             documentVersionId: { type: "string" },
             documentId: { type: "string" },
-            documentVersionId: { type: "string" },
             modelId: { type: "string" },
-            selections: { type: "array" },
+            modelVersionId: { type: "string" },
+            selections: selectionsSchema,
           },
         },
       },
@@ -128,7 +173,7 @@ export const createVersionSchema = {
             documentVersionId: { type: "string" },
             modelId: { type: "string" },
             modelVersionId: { type: "string" },
-            selections: { type: "array" },
+            selections: selectionsSchema,
           },
         },
       },
@@ -211,7 +256,7 @@ export const updateModelSchema = {
       trace: {
         type: ["object", "null"],
         properties: {
-          selections: { type: "array" },
+          selections: selectionsSchema,
         },
       },
       type: { type: "string" },
@@ -241,7 +286,7 @@ export const updateVersionSchema = {
       trace: {
         type: ["object", "null"],
         properties: {
-          selections: { type: "array" },
+          selections: selectionsSchema,
         },
       },
     },
