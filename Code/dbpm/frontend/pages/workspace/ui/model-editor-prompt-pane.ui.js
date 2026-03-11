@@ -38,10 +38,13 @@ createUI({
       clearPromptInput();
     });
 
-    $sendPromptButton.on("click", () => {
+    $sendPromptButton.on("click", async () => {
       const promptText = getPromptText();
-      modelService.generateModelByPrompt(promptText);
+      if (!promptText) {
+        return;
+      }
       clearPromptInput();
+      await modelService.generateModelByPrompt(promptText);
     });
   },
   subscribeStores: () => {},

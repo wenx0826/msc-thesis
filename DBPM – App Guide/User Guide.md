@@ -178,12 +178,10 @@ The side-by-side layout allows users to compare textual descriptions and model s
 
 # 5. Generating Models with AI
 
-  
 
 DBPME can automatically generate model elements using AI.
 
   
-
 ### Generating Model Components
 
 1. Highlight a paragraph in the Source Document panel.
@@ -255,7 +253,7 @@ Click on a node to:
 
 ---
 
-# 7. Linking Model Elements to Text (Traceability)
+# 7. Linking Model Elements to Text 
 
   
 

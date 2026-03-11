@@ -138,6 +138,7 @@ class ModelEditorStore extends Store {
       statusMessage: null,
       data: null,
       latestUpdateType: null, // 'initial_load', 'regeneration_by_prompt', 'regeneration_by_selection', 'update_by_selection'
+      isGenerating: false,
     });
   }
 
@@ -210,6 +211,24 @@ class ModelEditorStore extends Store {
       key: "latestUpdateType",
       oldValue,
       newValue: updateType,
+    });
+  }
+
+  getIsGenerating() {
+    return this.state.isGenerating === true;
+  }
+
+  setIsGenerating(isGenerating) {
+    const normalizedValue = isGenerating === true;
+    const oldValue = this.getIsGenerating();
+    if (oldValue === normalizedValue) {
+      return;
+    }
+    this.state.isGenerating = normalizedValue;
+    this.notify({
+      key: "isGenerating",
+      oldValue,
+      newValue: normalizedValue,
     });
   }
 

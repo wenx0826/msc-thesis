@@ -148,9 +148,23 @@
               "icon": "lucide-file",
               "title": "Feature – Generate Model"
             }
+          },
+          {
+            "id": "eb4d5e42033b0b34",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "DBPM – App Guide/User Guide.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "User Guide"
+            }
           }
         ],
-        "currentTab": 9
+        "currentTab": 10
       }
     ],
     "direction": "vertical"
@@ -270,13 +284,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "DBPM – App Guide/Feature – Generate Model.md",
+                "file": "DBPM – App Guide/User Guide.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of Feature – Generate Model"
+              "title": "Outline of User Guide"
             }
           },
           {
@@ -311,21 +325,23 @@
       "card-board:CardBoard": false
     }
   },
-  "active": "01e0c65c8e358d61",
+  "active": "eb4d5e42033b0b34",
   "lastOpenFiles": [
+    "Code/dbpm/data/models/26e087cd-2915-4d08-9a53-20af84b4a7bf.xml",
+    "Code/dbpm/data/models/0143bb29-66de-4141-990a-88fad383a438.xml",
+    "Code/dbpm/data/models/e923b64c-aa4f-4203-ad2e-49d46212a2fe.xml",
+    "Code/dbpm/data/models/5b0a9408-5b88-47ea-aace-49159f27656f.xml",
+    "Code/dbpm/data/models/f8c83f0a-1da7-4439-a387-4bc005042a17.xml",
+    "DBPM – App Guide/Feature – Generate Model.md",
+    "DBPM – App Guide/Feature -- Generate Model/Design Decison.md",
+    "Untitled 2.md",
+    "DBPM – App Guide/Feature -- Generate Model",
+    "Code/dbpm/data/documents/e86aac22-39c3-4f72-bba3-b45fbcbdf548.html",
     "Code/dbpm/data/models/a72ff9ff-0019-4d13-904c-347707ab135a.xml",
     "Code/dbpm/data/models/726039c1-51c7-45a5-9a2a-544693d20b83.xml",
     "Code/dbpm/data/models/6b4e77e7-a512-49c2-9654-101d66deba37.xml",
     "Code/dbpm/data/database.sqlite-journal",
-    "Code/dbpm/data/documents/23916e8b-178a-400e-8a5b-20c0ab856074.html",
-    "Code/dbpm/data/logs/890310b7-a39a-45c8-b22c-6fc458cce948.yaml",
-    "Code/dbpm/data/models/77f25b3e-36e5-4628-809f-0dd1e9411baa.xml",
-    "Code/dbpm/data/models/6c840e20-3217-4c40-b66e-fc546d7bbf10.xml",
-    "Code/dbpm/data/models/0233ebc5-a243-4ca8-8ef3-7798a4ef0e3f.xml",
-    "Code/dbpm/data/models/c8713dde-4595-46da-95fd-b4e4eee4a283.xml",
-    "Code/dbpm/data/documents/39ae1e9f-0c17-4179-89e9-cbcd790da067.html",
     "DBPM – App Guide/User Guide.md",
-    "DBPM – App Guide/Feature – Generate Model.md",
     "Gemini DR v0.1.md",
     "Gemini DR v0.md",
     "布局.md",
@@ -357,8 +373,6 @@
     "Code/dbpm_reverted/backend/node_modules/@fastify/send/node_modules/http-errors/HISTORY.md",
     "Code/dbpm_reverted/backend/node_modules/@fastify/send/node_modules/statuses/README.md",
     "Code/dbpm_reverted/backend/node_modules/@fastify/send/node_modules/statuses/HISTORY.md",
-    "Code/dbpm_reverted/backend/node_modules/wrap-ansi-cjs/node_modules/strip-ansi/readme.md",
-    "Code/dbpm_reverted/backend/node_modules/wrap-ansi-cjs/node_modules/string-width/readme.md",
     "Untitled.canvas"
   ]
 }

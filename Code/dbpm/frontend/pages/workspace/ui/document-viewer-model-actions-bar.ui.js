@@ -1,6 +1,9 @@
 import { createUI } from "../../../shared/utils/ui.js";
 import { Constants } from "../../../constants.js";
-import { documentViewerStore, workspaceStore } from "../store/index.js";
+import {
+  documentViewerStore,
+  workspaceStore,
+} from "../store/index.js";
 import { modelService } from "../services/index.js";
 
 const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
@@ -41,6 +44,14 @@ function applyEditingModelState(editingModel = {}) {
 }
 
 function applyActionButtonsState() {
+  const isDraftMode =
+    workspaceStore.isEditingModelDraft() && modelService.hasPendingNewModelDraft();
+  if (isDraftMode) {
+    $generateModelButton.prop("disabled", true);
+    $addSelectionsButton.prop("disabled", true);
+    return;
+  }
+
   const hasEditingModel = workspaceStore.hasEditingModel();
   const hasSelectionChanged = !!documentViewerStore.getHasSelectionChanged();
 
@@ -95,10 +106,17 @@ createUI({
         case "editingModel": {
           const oldHasEditingModel = !!oldValue?.id;
           const newHasEditingModel = !!newValue?.id;
-          if (oldHasEditingModel === newHasEditingModel) {
+          const oldIsDraft = oldValue?.isDraft === true;
+          const newIsDraft = newValue?.isDraft === true;
+          if (
+            oldHasEditingModel === newHasEditingModel &&
+            oldIsDraft === newIsDraft
+          ) {
             break;
           }
-          applyEditingModelState(newValue);
+          if (oldHasEditingModel !== newHasEditingModel) {
+            applyEditingModelState(newValue);
+          }
           applyActionButtonsState();
           break;
         }

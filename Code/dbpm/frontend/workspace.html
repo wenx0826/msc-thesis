@@ -298,13 +298,23 @@
               <span id="modelStatusMessageText"></span>
               <button id="modelStatusMessageClose">x</button>
             </div>
-            <ui-bar id="regeneratedModelActionBar" class="hidden">
+            <ui-bar id="initialGenerationDraftActionBar">
+              <div class="right action-group">
+                <button id="discardDraftModelButton" title="Discard generated model draft" class="btn-text">
+                  Discard
+                </button>
+                <button id="saveDraftModelButton" title="Create model from generated draft" class="btn-primary">
+                  Save
+                </button>
+              </div>
+            </ui-bar>
+            <ui-bar id="regeneratedModelActionBar">
               <div class="action-group">
                 <button id="viewOriginalModelButton" disabled>Original</button>
                 <button id="viewRegeneratedModelButton">Regenerated</button>
               </div>
               <div class="right action-group">
-                <button id="revertPrevModelButton" title="Cancel changes" class="btn-text">
+                <button id="cancelRegenerationButton" title="Cancel changes" class="btn-text">
                   Cancel
                 </button>
                 <button id="replaceModelButton" title="Replace with regenerated model">

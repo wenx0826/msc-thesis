@@ -5,10 +5,15 @@ import { modelService } from "../services/index.js";
 
 const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
 
+const $initialGenerationDraftActionBar = $("#initialGenerationDraftActionBar");
 const $regeneratedModelActionBar = $("#regeneratedModelActionBar");
+
+const $discardDraftModelButton = $("#discardDraftModelButton");
+const $saveDraftModelButton = $("#saveDraftModelButton");
+
 const $viewOriginalModelButton = $("#viewOriginalModelButton");
 const $viewRegeneratedModelButton = $("#viewRegeneratedModelButton");
-const $revertOriginalModelButton = $("#revertPrevModelButton");
+const $cancelRegenerationButton = $("#cancelRegenerationButton");
 const $replaceModelButton = $("#replaceModelButton");
 const $saveNewModelButton = $("#saveNewModelButton");
 
@@ -34,6 +39,24 @@ function isRegenerationUpdateType(updateType) {
     MODEL_UPDATE_TYPE.REGENERATION_BY_PROMPT,
     MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS,
   ].includes(updateType);
+}
+
+function isInitialGenerationDraftVisible() {
+  return $initialGenerationDraftActionBar.is(":visible");
+}
+
+function isRegenerationDraftVisible() {
+  return $regeneratedModelActionBar.is(":visible");
+}
+
+function getActiveDecisionActionBarElement() {
+  if (isInitialGenerationDraftVisible()) {
+    return $initialGenerationDraftActionBar[0] || null;
+  }
+  if (isRegenerationDraftVisible()) {
+    return $regeneratedModelActionBar[0] || null;
+  }
+  return null;
 }
 
 function getEditingModelContext() {
@@ -62,6 +85,7 @@ function setRegenerationDecisionClickLock(isLocked) {
   const shouldLock = Boolean(isLocked);
   isRegenerationDecisionClickLocked = shouldLock;
   if (!shouldLock) {
+    $initialGenerationDraftActionBar.removeClass(REGENERATION_ACTION_BAR_HINT_CLASS);
     $regeneratedModelActionBar.removeClass(REGENERATION_ACTION_BAR_HINT_CLASS);
     if (regenerationActionBarHintTimeoutId) {
       clearTimeout(regenerationActionBarHintTimeoutId);
@@ -75,16 +99,22 @@ function setRegenerationDecisionClickLock(isLocked) {
 }
 
 function showRegenerationActionBarHint() {
-  $regeneratedModelActionBar.removeClass(REGENERATION_ACTION_BAR_HINT_CLASS);
+  const activeBarElement = getActiveDecisionActionBarElement();
+  if (!activeBarElement) {
+    return;
+  }
+
+  const $activeBar = $(activeBarElement);
+  $activeBar.removeClass(REGENERATION_ACTION_BAR_HINT_CLASS);
   // Restart transition if user clicks outside repeatedly.
-  void $regeneratedModelActionBar.get(0)?.offsetWidth;
-  $regeneratedModelActionBar.addClass(REGENERATION_ACTION_BAR_HINT_CLASS);
+  void $activeBar.get(0)?.offsetWidth;
+  $activeBar.addClass(REGENERATION_ACTION_BAR_HINT_CLASS);
 
   if (regenerationActionBarHintTimeoutId) {
     clearTimeout(regenerationActionBarHintTimeoutId);
   }
   regenerationActionBarHintTimeoutId = setTimeout(() => {
-    $regeneratedModelActionBar.removeClass(REGENERATION_ACTION_BAR_HINT_CLASS);
+    $activeBar.removeClass(REGENERATION_ACTION_BAR_HINT_CLASS);
     regenerationActionBarHintTimeoutId = null;
   }, 900);
 }
@@ -102,7 +132,7 @@ function scheduleRegenerationDecisionAlert() {
     if (!isRegenerationDecisionClickLocked) {
       return;
     }
-    alert("Please use the regeneration action bar to continue.");
+    alert("Please use the action bar to continue.");
   };
 
   const scheduleAfterPaint = () => {
@@ -123,8 +153,8 @@ function scheduleRegenerationDecisionAlert() {
 }
 
 function shouldAllowEventDuringRegenerationDecision(eventTarget) {
-  const actionBarElement = $regeneratedModelActionBar[0];
-  return actionBarElement?.contains(eventTarget) ?? false;
+  const activeBarElement = getActiveDecisionActionBarElement();
+  return activeBarElement?.contains(eventTarget) ?? false;
 }
 
 function onRegenerationDecisionPointerEvent(event) {
@@ -161,6 +191,7 @@ function setRegenerationPreviewView(view) {
     regenerationPreviewState = null;
     return;
   }
+
   const normalizedView = view === "original" ? "original" : "regenerated";
   if (regenerationPreviewState.view === normalizedView) {
     return;
@@ -178,40 +209,35 @@ function setRegenerationPreviewView(view) {
     ...regenerationPreviewState,
     view: normalizedView,
   };
+
   isApplyingRegenerationView = true;
   modelEditorStore.setData(nextDataXml);
   isApplyingRegenerationView = false;
 }
 
-function applyRegenerationActionBar(updateType) {
-  const preview = regenerationPreviewState;
-  const hasCurrentPreviewContext = isRegenerationPreviewContextCurrent(preview);
-  if (
-    !isRegenerationUpdateType(updateType) ||
-    !preview ||
-    !hasCurrentPreviewContext
-  ) {
-    if (preview && !hasCurrentPreviewContext) {
-      regenerationPreviewState = null;
-    }
-    $regeneratedModelActionBar.hide();
-    setRegenerationDecisionClickLock(false);
+function syncRegenerationDraftButtonsState() {
+  if (!isRegenerationDraftVisible() || !regenerationPreviewState) {
     return;
   }
 
-  const isViewingOriginal = preview.view === "original";
+  const isViewingOriginal = regenerationPreviewState.view === "original";
   $viewOriginalModelButton.prop("disabled", isViewingOriginal);
   $viewRegeneratedModelButton.prop("disabled", !isViewingOriginal);
-  $revertOriginalModelButton.prop("disabled", false);
+  $cancelRegenerationButton.prop("disabled", false);
   $replaceModelButton.prop("disabled", isViewingOriginal);
   $saveNewModelButton.prop("disabled", isViewingOriginal);
-  $regeneratedModelActionBar.show();
-  setRegenerationDecisionClickLock(true);
+}
+
+function syncDecisionActionState() {
+  syncRegenerationDraftButtonsState();
+  setRegenerationDecisionClickLock(
+    isInitialGenerationDraftVisible() || isRegenerationDraftVisible(),
+  );
 }
 
 createUI({
   setup: () => {
-    applyRegenerationActionBar(modelEditorStore.getLatestUpdateType());
+    syncDecisionActionState();
   },
   bindListeners: () => {
     REGENERATION_LOCKED_POINTER_EVENTS.forEach((eventName) => {
@@ -224,24 +250,39 @@ createUI({
 
     $viewOriginalModelButton.on("click", () => {
       setRegenerationPreviewView("original");
-      applyRegenerationActionBar(modelEditorStore.getLatestUpdateType());
+      syncDecisionActionState();
     });
 
     $viewRegeneratedModelButton.on("click", () => {
       setRegenerationPreviewView("regenerated");
-      applyRegenerationActionBar(modelEditorStore.getLatestUpdateType());
+      syncDecisionActionState();
+    });
+
+    $cancelRegenerationButton.on("click", () => {
+      const preview = regenerationPreviewState;
+      if (!preview?.originalDataXml) {
+        regenerationPreviewState = null;
+        return;
+      }
+
+      isApplyingRegenerationView = true;
+      modelEditorStore.setData(preview.originalDataXml);
+      isApplyingRegenerationView = false;
+      modelEditorStore.setLatestUpdateType(null);
+      regenerationPreviewState = null;
+      syncDecisionActionState();
     });
 
     $replaceModelButton.on("click", async () => {
       const preview = regenerationPreviewState;
-      if (!preview || !isRegenerationPreviewContextCurrent(preview)) {
-        modelEditorStore.setLatestUpdateType(null);
+      if (!preview) {
         regenerationPreviewState = null;
         return;
       }
       if (preview.view !== "regenerated") {
         setRegenerationPreviewView("regenerated");
       }
+
       try {
         await modelService.updateEditingVersion(preview.updateType, {
           expectedModelId: preview.modelId,
@@ -249,6 +290,7 @@ createUI({
         });
         modelEditorStore.setLatestUpdateType(null);
         regenerationPreviewState = null;
+        syncDecisionActionState();
       } catch (error) {
         console.error("Failed to keep regenerated model:", error);
         alert("Failed to keep regenerated model.");
@@ -257,8 +299,7 @@ createUI({
 
     $saveNewModelButton.on("click", async () => {
       const preview = regenerationPreviewState;
-      if (!preview || !isRegenerationPreviewContextCurrent(preview)) {
-        modelEditorStore.setLatestUpdateType(null);
+      if (!preview) {
         regenerationPreviewState = null;
         return;
       }
@@ -295,7 +336,7 @@ createUI({
 
         modelEditorStore.setLatestUpdateType(null);
         regenerationPreviewState = null;
-        applyRegenerationActionBar(modelEditorStore.getLatestUpdateType());
+        syncDecisionActionState();
       } catch (error) {
         console.error("Failed to save regenerated model as a new version:", error);
         alert("Failed to save regenerated model as a new version.");
@@ -304,23 +345,20 @@ createUI({
       }
     });
 
-    $revertOriginalModelButton.on("click", () => {
-      const preview = regenerationPreviewState;
-      if (!preview || !isRegenerationPreviewContextCurrent(preview)) {
-        modelEditorStore.setLatestUpdateType(null);
-        regenerationPreviewState = null;
-        return;
+    $discardDraftModelButton.on("click", () => {
+      modelService.discardPendingNewModelDraft();
+      syncDecisionActionState();
+    });
+
+    $saveDraftModelButton.on("click", async () => {
+      try {
+        await modelService.commitPendingNewModelDraft();
+      } catch (error) {
+        console.error("Failed to create model from generated draft:", error);
+        alert("Failed to create model from generated draft.");
+      } finally {
+        syncDecisionActionState();
       }
-      if (!preview.originalDataXml) {
-        modelEditorStore.setLatestUpdateType(null);
-        regenerationPreviewState = null;
-        return;
-      }
-      isApplyingRegenerationView = true;
-      modelEditorStore.setData(preview.originalDataXml);
-      isApplyingRegenerationView = false;
-      modelEditorStore.setLatestUpdateType(null);
-      regenerationPreviewState = null;
     });
   },
   subscribeStores: () => {
@@ -348,14 +386,14 @@ createUI({
             }
           }
 
-          applyRegenerationActionBar(modelEditorStore.getLatestUpdateType());
+          syncDecisionActionState();
           break;
         }
         case "latestUpdateType":
           if (!isRegenerationUpdateType(newValue)) {
             regenerationPreviewState = null;
           }
-          applyRegenerationActionBar(newValue);
+          syncDecisionActionState();
           break;
         default:
           break;
@@ -369,7 +407,8 @@ createUI({
 
       const hasEditingModelChanged =
         oldValue?.id !== newValue?.id ||
-        oldValue?.versionId !== newValue?.versionId;
+        oldValue?.versionId !== newValue?.versionId ||
+        oldValue?.isDraft !== newValue?.isDraft;
 
       if (hasEditingModelChanged) {
         regenerationPreviewState = null;
@@ -377,9 +416,14 @@ createUI({
         if (isRegenerationUpdateType(latestUpdateType)) {
           modelEditorStore.setLatestUpdateType(null);
         }
+
+        const hadDraftState = oldValue?.isDraft === true;
+        if (hadDraftState && newValue?.isDraft !== true) {
+          modelService.discardPendingNewModelDraft({ clearEditorData: false });
+        }
       }
 
-      applyRegenerationActionBar(modelEditorStore.getLatestUpdateType());
+      syncDecisionActionState();
     });
   },
 });

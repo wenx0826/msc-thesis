@@ -29,18 +29,23 @@
   display: none;
 }
 
-#modelEditorPanel[data-state="none"] #modelEditorHeaderTitle {
+#modelEditorPanel[data-state="none"] #modelEditorHeaderTitle,
+#modelEditorPanel[data-state="initial_generation_draft"] #modelEditorHeaderTitle {
   display: inline-flex;
   align-items: center;
 }
 
 #modelEditorPanel[data-state="none"] #editingModelName,
-#modelEditorPanel[data-state="none"] #editingModelVersionTag {
+#modelEditorPanel[data-state="none"] #editingModelVersionTag,
+#modelEditorPanel[data-state="initial_generation_draft"] #editingModelName,
+#modelEditorPanel[data-state="initial_generation_draft"] #editingModelVersionTag {
   display: none;
 }
 
 #modelEditorPanel[data-state="none"] #deselectModelButton,
-#modelEditorPanel[data-state="none"] #editingModelActionsGroup {
+#modelEditorPanel[data-state="none"] #editingModelActionsGroup,
+#modelEditorPanel[data-state="initial_generation_draft"] #deselectModelButton,
+#modelEditorPanel[data-state="initial_generation_draft"] #editingModelActionsGroup {
   display: none;
 }
 
@@ -156,7 +161,9 @@ text.duration {
   padding: 0;
 }
 
+#initialGenerationDraftActionBar,
 #regeneratedModelActionBar {
+  display: none;
   padding-top: 0.5em;
   padding-bottom: 0.5em;
   border-top: 1px solid var(--x-ui-border-color);
@@ -168,6 +175,15 @@ text.duration {
     background-color 0.18s ease;
 }
 
+#modelEditorPanel[data-state="initial_generation_draft"] #initialGenerationDraftActionBar {
+  display: flex;
+}
+
+#modelEditorPanel[data-state="regeneration_draft"] #regeneratedModelActionBar {
+  display: flex;
+}
+
+#initialGenerationDraftActionBar.regeneration-click-hint,
 #regeneratedModelActionBar.regeneration-click-hint {
   z-index: 6;
   border-top-color: #1d4ed8;
@@ -177,6 +193,7 @@ text.duration {
     0 -8px 20px rgba(37, 99, 235, 0.16);
 }
 
+#initialGenerationDraftActionBar.regeneration-click-hint button,
 #regeneratedModelActionBar.regeneration-click-hint button {
   font-weight: 600;
 }
@@ -192,6 +209,10 @@ text.duration {
 
 #modelEditorPanel[data-state="latest"] #promptPane {
   display: flex;
+}
+
+#modelEditorPanel[data-state="generating"] #promptPane {
+  display: none;
 }
 
 #promptPane:focus-within {

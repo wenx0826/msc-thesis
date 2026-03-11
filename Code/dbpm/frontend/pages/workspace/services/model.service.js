@@ -47,6 +47,8 @@ let previewRendererWindowPromise = null;
 const cachePromisesByVersionId = new Map();
 const pendingGenerationRequestsById = new Map();
 const deferredRegenerationPreviewsByVersionId = new Map();
+let pendingNewModelDraft = null;
+let pendingNewModelDraftCommitPromise = null;
 let generationRequestSequence = 0;
 let lastNoSelectionLoadAlert = {
   versionId: null,
@@ -149,6 +151,10 @@ function renderPendingGenerationStatusMessageIfAny() {
   return true;
 }
 
+function syncModelEditorGeneratingState() {
+  modelEditorStore.setIsGenerating(pendingGenerationRequestsById.size > 0);
+}
+
 function beginPendingGenerationRequest({
   type,
   modelId = null,
@@ -164,6 +170,7 @@ function beginPendingGenerationRequest({
     modelVersionId,
     createdAt: Date.now(),
   });
+  syncModelEditorGeneratingState();
   renderPendingGenerationStatusMessageIfAny();
   return requestId;
 }
@@ -173,6 +180,7 @@ function endPendingGenerationRequest(requestId) {
     return;
   }
   pendingGenerationRequestsById.delete(requestId);
+  syncModelEditorGeneratingState();
 }
 
 function storeDeferredRegenerationPreview(preview) {
@@ -272,6 +280,82 @@ function selectionsToText(selections) {
     )
     .filter(Boolean)
     .join(" ");
+}
+
+function cloneValue(value, fallback = null) {
+  if (value === undefined) {
+    return fallback;
+  }
+  try {
+    return JSON.parse(JSON.stringify(value));
+  } catch (error) {
+    return fallback;
+  }
+}
+
+function resolveModelCreationContext(creationContext = null) {
+  const normalizedContext =
+    creationContext && typeof creationContext === "object" ? creationContext : {};
+  const viewedDocument = workspaceStore.getViewedDocument() || {};
+  const documentId =
+    normalizedContext.documentId ??
+    viewedDocument.id ??
+    workspaceStore.getViewedDocumentId() ??
+    "";
+  const documentVersionId =
+    normalizedContext.documentVersionId ?? viewedDocument.versionId ?? null;
+  const documentVersionName =
+    normalizedContext.documentVersionName ??
+    (documentId && documentVersionId
+      ? documentsStore.getVersion(documentId, documentVersionId)?.name || ""
+      : "");
+  const contextSelections = Array.isArray(normalizedContext.selections)
+    ? normalizedContext.selections
+    : documentViewerStore.getSerializedTemporarySelections();
+  return {
+    documentId: documentId || "",
+    documentVersionId,
+    documentVersionName,
+    selections: cloneValue(contextSelections, []),
+  };
+}
+
+function prepareModelDataForCreation(modelData, creationContext) {
+  return injectDbpmData(modelData, {
+    documentId: creationContext.documentId || "",
+    documentVersionId: creationContext.documentVersionId,
+    documentVersionName: creationContext.documentVersionName || "",
+    selectedText: selectionsToText(creationContext.selections),
+  });
+}
+
+function setPendingNewModelDraft(nextDraft) {
+  if (!nextDraft) {
+    pendingNewModelDraft = null;
+    return;
+  }
+  const normalizedContext = resolveModelCreationContext(nextDraft.creationContext);
+  pendingNewModelDraft = {
+    modelData: nextDraft.modelData,
+    preparedModelData:
+      nextDraft.preparedModelData ||
+      prepareModelDataForCreation(nextDraft.modelData, normalizedContext),
+    creationContext: normalizedContext,
+    createdAt: Date.now(),
+  };
+}
+
+function getPendingNewModelDraftSnapshot() {
+  if (!pendingNewModelDraft) {
+    return null;
+  }
+  return {
+    ...pendingNewModelDraft,
+    creationContext: {
+      ...pendingNewModelDraft.creationContext,
+      selections: cloneValue(pendingNewModelDraft.creationContext?.selections, []),
+    },
+  };
 }
 
 function parseXmlDocument(xmlString) {
@@ -1117,6 +1201,83 @@ export default {
     });
     return true;
   },
+  hasPendingNewModelDraft() {
+    return !!pendingNewModelDraft;
+  },
+  getPendingNewModelDraft() {
+    return getPendingNewModelDraftSnapshot();
+  },
+  stagePendingNewModelDraft(modelData, options = {}) {
+    if (!modelData) {
+      return null;
+    }
+    const creationContext = resolveModelCreationContext(options.creationContext);
+    const preparedModelData = prepareModelDataForCreation(modelData, creationContext);
+    setPendingNewModelDraft({
+      modelData,
+      preparedModelData,
+      creationContext,
+    });
+    workspaceStore.setEditingModel({
+      id: null,
+      versionId: null,
+      isLatest: null,
+      isDraft: true,
+    });
+    modelEditorStore.setData(preparedModelData, {
+      updateType: null,
+    });
+    return getPendingNewModelDraftSnapshot();
+  },
+  async commitPendingNewModelDraft() {
+    const pendingDraft = getPendingNewModelDraftSnapshot();
+    if (!pendingDraft) {
+      return null;
+    }
+    if (pendingNewModelDraftCommitPromise) {
+      return pendingNewModelDraftCommitPromise;
+    }
+
+    const commitTask = (async () => {
+      const result = await this.createModelAndLink(pendingDraft.modelData, {
+        creationContext: pendingDraft.creationContext,
+        preparedModelData: pendingDraft.preparedModelData,
+      });
+      setPendingNewModelDraft(null);
+      return result;
+    })();
+    pendingNewModelDraftCommitPromise = commitTask;
+    try {
+      return await commitTask;
+    } finally {
+      pendingNewModelDraftCommitPromise = null;
+    }
+  },
+  discardPendingNewModelDraft({ clearEditorData = true } = {}) {
+    if (pendingNewModelDraftCommitPromise) {
+      return false;
+    }
+    const hadPendingDraft = !!pendingNewModelDraft;
+    const isDraftState = workspaceStore.isEditingModelDraft();
+    setPendingNewModelDraft(null);
+    if (isDraftState) {
+      workspaceStore.setEditingModel({
+        id: null,
+        versionId: null,
+        isLatest: null,
+        isDraft: false,
+      });
+    }
+    if (clearEditorData) {
+      modelEditorStore.setData(null, {
+        updateType: null,
+      });
+    } else if (isDraftState) {
+      modelEditorStore.setLatestUpdateType(null);
+    }
+    modelEditorStore.clearStatusMessage();
+    return hadPendingDraft || isDraftState;
+  },
 
   async generateModelByPrompt(userInput) {
     const regenerationContext = getEditingModelContext();
@@ -1233,6 +1394,15 @@ export default {
       console.warn("No current model data found for regeneration preview.");
       return null;
     }
+    if (
+      normalizedTarget === MODEL_GENERATION_TARGET.NEW_MODEL &&
+      this.hasPendingNewModelDraft()
+    ) {
+      console.warn(
+        "A pending new-model draft already exists. Resolve it before generating another.",
+      );
+      return this.getPendingNewModelDraft();
+    }
 
     const requestId = beginPendingGenerationRequest({
       type:
@@ -1256,14 +1426,14 @@ export default {
       }
 
       if (normalizedTarget === MODEL_GENERATION_TARGET.NEW_MODEL) {
-        return await this.createModelAndLink(generatedModel);
+        return this.stagePendingNewModelDraft(generatedModel);
       }
 
       if (!hasEditingContextAtStart) {
         console.warn(
-          "No active editing model/version found for regeneration; creating a new model instead.",
+          "No active editing model/version found for regeneration; staging a new model draft instead.",
         );
-        return await this.createModelAndLink(generatedModel);
+        return this.stagePendingNewModelDraft(generatedModel);
       }
 
       const regeneratedModelData = composeRegeneratedModelData({
@@ -1324,24 +1494,15 @@ export default {
     }
   },
 
-  async createModelAndLink(modelData) {
-    const { id: documentId, versionId: documentVersionId } =
-      workspaceStore.getViewedDocument() || {};
-    const selections = documentViewerStore.getSerializedTemporarySelections();
-    const documentVersionName =
-      documentId && documentVersionId
-        ? documentsStore.getVersion(documentId, documentVersionId)?.name || ""
-        : "";
-    const preparedModelData = injectDbpmData(modelData, {
-      documentId: documentId || "",
-      documentVersionId,
-      documentVersionName,
-      selectedText: selectionsToText(selections),
-    });
+  async createModelAndLink(modelData, options = {}) {
+    const creationContext = resolveModelCreationContext(options.creationContext);
+    const preparedModelData =
+      options.preparedModelData ||
+      prepareModelDataForCreation(modelData, creationContext);
 
     const link = {
-      documentVersionId,
-      selections,
+      documentVersionId: creationContext.documentVersionId,
+      selections: cloneValue(creationContext.selections, []),
     };
     const { modelMeta: createdModelMeta, link: createdLink } =
       await modelsAPI.createModelAndLink({
@@ -1354,6 +1515,7 @@ export default {
       id: createdModelMeta.id,
       versionId: createdModelMeta.latestVersionId,
       isLatest: true,
+      isDraft: false,
     });
     modelEditorStore.setData(preparedModelData, {
       updateType: null,
@@ -1368,7 +1530,11 @@ export default {
     documentViewerStore.setHasSelectionChanged(false);
     documentViewerStore.addTrace(createdLink);
     projectGraphStore.addModelNodeAndEdge(createdModelMeta);
-    // return { modelMeta: createdModelMeta, trace: normalizedTrace };
+    return {
+      modelMeta: createdModelMeta,
+      link: createdLink,
+      preparedModelData,
+    };
   },
   async renameModel(modelId, newName) {
     const updatedModel = await modelsAPI.updateMeta(modelId, { name: newName });
@@ -1761,6 +1927,7 @@ export default {
       id: modelId,
       versionId: createdVersionId,
       isLatest: true,
+      isDraft: false,
     });
     await this.loadVersion(createdVersionId);
     documentViewerStore.removeTracesByModelId(modelId);

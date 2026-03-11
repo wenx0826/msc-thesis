@@ -107,10 +107,12 @@ export default {
     // }
   },
   clearModelDisplay() {
+    modelService.discardPendingNewModelDraft({ clearEditorData: false });
     workspaceStore.setEditingModel({
       id: null,
       versionId: null,
       isLatest: null,
+      isDraft: false,
     });
     modelEditorStore.clearStatusMessage();
     modelEditorStore.setData(null, {
@@ -176,6 +178,7 @@ export default {
       id,
       versionId,
       isLatest,
+      isDraft: false,
     });
     modelService.loadVersion(versionId);
     workspaceStore.setModelPopoverParams(null);

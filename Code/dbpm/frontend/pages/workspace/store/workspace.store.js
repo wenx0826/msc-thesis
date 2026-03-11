@@ -17,6 +17,7 @@ class WorkspaceStore extends Store {
         id: null,
         versionId: null,
         isLatest: null,
+        isDraft: false,
       },
       // 🔧 IMPROVED: Consolidated all popover state into one object for better cohesion
       modelPopover: {
@@ -100,16 +101,19 @@ class WorkspaceStore extends Store {
           versionId: newValue.versionId ?? null,
           isLatest:
             typeof newValue.isLatest === "boolean" ? newValue.isLatest : null,
+          isDraft: newValue.isDraft === true,
         }
       : {
           id: null,
           versionId: null,
           isLatest: null,
+          isDraft: false,
         };
     if (
       oldValue?.id === normalizedValue?.id &&
       oldValue?.versionId === normalizedValue?.versionId &&
-      oldValue?.isLatest === normalizedValue?.isLatest
+      oldValue?.isLatest === normalizedValue?.isLatest &&
+      oldValue?.isDraft === normalizedValue?.isDraft
     )
       return;
     this.state.editingModel = normalizedValue;
@@ -127,6 +131,9 @@ class WorkspaceStore extends Store {
   }
   hasEditingModel() {
     return !!this.getEditingModelId();
+  }
+  isEditingModelDraft() {
+    return this.getEditingModel()?.isDraft === true;
   }
   isEditingModelReadOnly() {
     return this.hasEditingModel() ? !this.getEditingModel().isLatest : false;

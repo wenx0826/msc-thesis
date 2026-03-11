@@ -55,3 +55,4 @@ The generated model appears in the modelling workspace editor, where users can r
 ## Notes
 
 The generated process model serves as an initial representation of the described process. Users can further refine the model by editing or adding additional elements.
+
