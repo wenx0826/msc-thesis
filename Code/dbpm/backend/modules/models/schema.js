@@ -21,22 +21,26 @@ const textQuoteSchema = {
 
 const selectionStyleSchema = {
   type: "object",
-  required: ["backgroundColor"],
   additionalProperties: false,
   properties: {
     backgroundColor: { type: "string" },
   },
 };
+const selectionReviewStatusSchema = {
+  type: "string",
+  enum: ["none", "pending", "notified"],
+};
 
 const selectionSchema = {
   type: "object",
-  required: ["id", "textPosition", "textQuote", "style"],
+  required: ["textPosition", "textQuote"],
   additionalProperties: false,
   properties: {
     id: { type: "string" },
     textPosition: textPositionSchema,
     textQuote: textQuoteSchema,
     style: selectionStyleSchema,
+    reviewStatus: selectionReviewStatusSchema,
   },
 };
 
@@ -53,7 +57,7 @@ export const createModelSchema = {
       modelData: {
         type: "string",
       },
-      trace: {
+      link: {
         type: "object",
         properties: {
           documentVersionId: { type: "string" },
@@ -62,7 +66,7 @@ export const createModelSchema = {
         required: ["documentVersionId", "selections"],
       },
     },
-    required: ["projectId", "modelData", "trace"],
+    required: ["projectId", "modelData", "link"],
   },
   response: {
     200: {
@@ -99,7 +103,7 @@ export const createModelSchema = {
             // data: { type: "string" },
           },
         },
-        trace: {
+        link: {
           type: "object",
           properties: {
             id: { type: "string" },
@@ -165,8 +169,8 @@ export const createVersionSchema = {
             createdAt: { type: "string" },
           },
         },
-        trace: {
-          type: "object",
+        link: {
+          type: ["object", "null"],
           properties: {
             id: { type: "string" },
             documentId: { type: "string" },
@@ -253,9 +257,12 @@ export const updateModelSchema = {
     required: ["modelData"],
     properties: {
       modelData: { type: "string" },
-      trace: {
+      link: {
         type: ["object", "null"],
+        additionalProperties: false,
         properties: {
+          id: { type: "string" },
+          documentVersionId: { type: "string" },
           selections: selectionsSchema,
         },
       },
@@ -283,9 +290,12 @@ export const updateVersionSchema = {
         },
       },
       modelData: { type: "string" },
-      trace: {
+      link: {
         type: ["object", "null"],
+        additionalProperties: false,
         properties: {
+          id: { type: "string" },
+          documentVersionId: { type: "string" },
           selections: selectionsSchema,
         },
       },

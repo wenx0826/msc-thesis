@@ -21,22 +21,26 @@ const textQuoteSchema = {
 
 const selectionStyleSchema = {
   type: "object",
-  required: ["backgroundColor"],
   additionalProperties: false,
   properties: {
     backgroundColor: { type: "string" },
   },
 };
+const selectionReviewStatusSchema = {
+  type: "string",
+  enum: ["none", "pending", "notified"],
+};
 
 const selectionSchema = {
   type: "object",
-  required: ["id", "textPosition", "textQuote", "style"],
+  required: ["textPosition", "textQuote"],
   additionalProperties: false,
   properties: {
     id: { type: "string" },
     textPosition: textPositionSchema,
     textQuote: textQuoteSchema,
     style: selectionStyleSchema,
+    reviewStatus: selectionReviewStatusSchema,
   },
 };
 
@@ -45,7 +49,62 @@ const selectionsSchema = {
   items: selectionSchema,
 };
 
-export const updateTraceSchema = {
+const selectionCreateBodySchema = {
+  type: "object",
+  required: ["textPosition", "textQuote"],
+  additionalProperties: false,
+  properties: {
+    id: { type: "string" },
+    textPosition: textPositionSchema,
+    textQuote: textQuoteSchema,
+    style: selectionStyleSchema,
+    reviewStatus: selectionReviewStatusSchema,
+  },
+};
+
+const selectionUpdateBodySchema = {
+  type: "object",
+  minProperties: 1,
+  additionalProperties: false,
+  properties: {
+    textPosition: {
+      type: "object",
+      additionalProperties: false,
+      properties: {
+        start: { type: "number" },
+        end: { type: "number" },
+      },
+    },
+    textQuote: {
+      type: "object",
+      additionalProperties: false,
+      properties: {
+        exact: { type: "string" },
+        prefix: { type: "string" },
+        suffix: { type: "string" },
+      },
+    },
+    style: {
+      type: "object",
+      additionalProperties: false,
+      properties: {
+        backgroundColor: { type: "string" },
+      },
+    },
+    reviewStatus: selectionReviewStatusSchema,
+  },
+};
+
+const selectionParamsSchema = {
+  type: "object",
+  required: ["linkId", "selectionId"],
+  properties: {
+    linkId: { type: "string" },
+    selectionId: { type: "string" },
+  },
+};
+
+export const updateLinkSchema = {
   params: {
     type: "object",
     required: ["id"],
@@ -55,17 +114,35 @@ export const updateTraceSchema = {
   },
   body: {
     type: "object",
-    minProperties: 1,
     additionalProperties: false,
+    required: ["selections"],
     properties: {
-      documentVersionId: { type: "string" },
-      modelVersionId: { type: "string" },
       selections: selectionsSchema,
     },
   },
 };
 
-export const getLatestTracesByDocumentVersionSchema = {
+export const createSelectionSchema = {
+  params: {
+    type: "object",
+    required: ["linkId"],
+    properties: {
+      linkId: { type: "string" },
+    },
+  },
+  body: selectionCreateBodySchema,
+};
+
+export const updateSelectionSchema = {
+  params: selectionParamsSchema,
+  body: selectionUpdateBodySchema,
+};
+
+export const deleteSelectionSchema = {
+  params: selectionParamsSchema,
+};
+
+export const getLatestLinksByDocumentVersionSchema = {
   params: {
     type: "object",
     required: ["versionId"],
@@ -99,7 +176,7 @@ export const getLatestTracesByDocumentVersionSchema = {
   },
 };
 
-export const getLatestTraceByModelVersionSchema = {
+export const getLatestLinkByModelVersionSchema = {
   params: {
     type: "object",
     required: ["modelVersionId"],

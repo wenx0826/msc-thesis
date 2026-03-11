@@ -4,6 +4,12 @@ import {
   serializeRange,
   getSortedSelectionsByRange,
 } from "../../../modules/document/selection.js";
+const REVIEW_STATUS = {
+  NONE: "none",
+  PENDING: "pending",
+  NOTIFIED: "notified",
+};
+const VALID_REVIEW_STATUSES = new Set(Object.values(REVIEW_STATUS));
 
 function generateSelectionId() {
   if (globalThis.crypto && typeof globalThis.crypto.randomUUID === "function") {
@@ -20,6 +26,13 @@ function resolveSelectionId(selection) {
   return generateSelectionId();
 }
 
+function normalizeReviewStatus(value) {
+  if (VALID_REVIEW_STATUSES.has(value)) {
+    return value;
+  }
+  return undefined;
+}
+
 function hydrateSelections(selections) {
   if (!Array.isArray(selections)) {
     return [];
@@ -31,6 +44,9 @@ function hydrateSelections(selections) {
       if (!range) {
         return null;
       }
+      const normalizedReviewStatus = normalizeReviewStatus(
+        selection?.reviewStatus,
+      );
       return {
         id: resolveSelectionId(selection),
         textPosition: selection?.textPosition,
@@ -39,6 +55,9 @@ function hydrateSelections(selections) {
           selection?.style && typeof selection.style === "object"
             ? { ...selection.style }
             : {},
+        ...(normalizedReviewStatus
+          ? { reviewStatus: normalizedReviewStatus }
+          : {}),
         range,
       };
     })
@@ -108,13 +127,18 @@ class DocumentViewerStore extends Store {
   serializeSelection(selection) {
     const serializedAnchors = serializeRange(selection.range);
     const currentBackgroundColor = this.getSelectionBackgroundColor(selection);
-    return {
+    const serialized = {
       id: resolveSelectionId(selection),
       ...serializedAnchors,
       style: {
         backgroundColor: currentBackgroundColor || this.getSelectionColor(),
       },
     };
+    const normalizedReviewStatus = normalizeReviewStatus(selection?.reviewStatus);
+    if (normalizedReviewStatus) {
+      serialized.reviewStatus = normalizedReviewStatus;
+    }
+    return serialized;
   }
 
   clear() {
@@ -539,6 +563,10 @@ class DocumentViewerStore extends Store {
             },
       id: resolveSelectionId(selection),
     };
+    const normalizedReviewStatus = normalizeReviewStatus(selection?.reviewStatus);
+    if (normalizedReviewStatus) {
+      normalizedSelection.reviewStatus = normalizedReviewStatus;
+    }
     this.state.temporarySelections.push(normalizedSelection);
     this.notify({
       key: "temporarySelections",

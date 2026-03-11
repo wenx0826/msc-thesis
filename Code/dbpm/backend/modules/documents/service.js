@@ -4,7 +4,7 @@ import storageRepo from "./repositories/storage.js";
 import logService from "../logs/service.js";
 import { countWords } from "../../utils/fileHelper.js";
 import modelService from "../models/service.js";
-import traceService from "../traces/service.js";
+import documentModelLinkService from "../document_model_links/service.js";
 export default {
   create({ projectId, filename, content }) {
     try {
@@ -73,7 +73,7 @@ export default {
         latestVersionId: versionId,
       };
       documentRepo.updateById(documentId, documentUpdates);
-      traceService.copyLatestByDocumentVersionId({
+      documentModelLinkService.copyLatestByDocumentVersionId({
         sourceDocumentVersionId: sourceVersionId,
         targetDocumentVersionId: versionId,
       });

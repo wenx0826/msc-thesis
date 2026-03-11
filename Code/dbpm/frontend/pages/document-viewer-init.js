@@ -1,4 +1,4 @@
-import { documentsAPI, tracesAPI } from "../api/index.js";
+import { documentsAPI, documentModelLinksAPI } from "../api/index.js";
 import { createTemplateElement } from "../shared/utils/dom.js";
 import { deserializeRange } from "../modules/document/selection.js";
 
@@ -267,23 +267,23 @@ async function loadReadOnlyDocument() {
   setStatus("Loading document and selections...");
 
   try {
-    const [content, traces] = await Promise.all([
+    const [content, links] = await Promise.all([
       documentsAPI.getContentByVersionId(versionId),
-      tracesAPI.getLatestTracesByDocumentVersionId(versionId, {
+      documentModelLinksAPI.getLatestLinksByDocumentVersionId(versionId, {
         includeDeletedModels,
       }),
     ]);
 
     $documentContent.empty().append(content || "");
-    hydratedTraces = hydrateTraceSelections(traces);
+    hydratedTraces = hydrateTraceSelections(links);
     updateHeader(versionId);
     scheduleRender();
 
-    const unresolvedSelections = (traces || []).reduce((count, trace) => {
-      const traceSelections = Array.isArray(trace?.selections)
-        ? trace.selections.length
+    const unresolvedSelections = (links || []).reduce((count, link) => {
+      const linkSelections = Array.isArray(link?.selections)
+        ? link.selections.length
         : 0;
-      return count + traceSelections;
+      return count + linkSelections;
     }, 0);
     const hydratedSelectionCount = hydratedTraces.reduce(
       (count, trace) => count + trace.selections.length,

@@ -1,5 +1,5 @@
 // Model Service - Handles model generation and updates
-import { modelsAPI, tracesAPI, logsAPI } from "../../../api/index.js";
+import { modelsAPI, documentModelLinksAPI, logsAPI } from "../../../api/index.js";
 import {
   workspaceStore,
   modelsStore,
@@ -491,6 +491,10 @@ function classifyTraceSelectionChange({
         typeof selection?.style?.backgroundColor === "string"
           ? selection.style.backgroundColor
           : "",
+      reviewStatus:
+        typeof selection?.reviewStatus === "string"
+          ? selection.reviewStatus
+          : "none",
     }),
   );
   const currentColorSignature = buildSelectionsSignature(
@@ -504,6 +508,10 @@ function classifyTraceSelectionChange({
         typeof selection?.style?.backgroundColor === "string"
           ? selection.style.backgroundColor
           : "",
+      reviewStatus:
+        typeof selection?.reviewStatus === "string"
+          ? selection.reviewStatus
+          : "none",
     }),
   );
   if (previousColorSignature !== currentColorSignature) {
@@ -514,21 +522,25 @@ function classifyTraceSelectionChange({
 }
 
 function getTraceUpdatePayload(serializedTrace) {
-  const payload = {
+  return {
+    id: serializedTrace?.id,
     selections: Array.isArray(serializedTrace?.selections)
       ? serializedTrace.selections
       : [],
   };
-  if (typeof serializedTrace?.id === "string") {
-    payload.id = serializedTrace.id;
+}
+
+function getModelVersionLinkPayload(serializedTrace) {
+  if (!serializedTrace) {
+    return null;
   }
-  if (typeof serializedTrace?.documentVersionId === "string") {
-    payload.documentVersionId = serializedTrace.documentVersionId;
-  }
-  if (typeof serializedTrace?.modelVersionId === "string") {
-    payload.modelVersionId = serializedTrace.modelVersionId;
-  }
-  return payload;
+  return {
+    id: serializedTrace.id,
+    documentVersionId: serializedTrace.documentVersionId,
+    selections: Array.isArray(serializedTrace.selections)
+      ? serializedTrace.selections
+      : [],
+  };
 }
 
 function notifyTraceUpdateTriggered({
@@ -969,12 +981,12 @@ async function updateModelVersionAndCache({
   modelId,
   modelVersionId,
   modelData,
-  trace,
+  link,
   type,
 }) {
   await modelsAPI.updateVersion(modelVersionId, {
     modelData,
-    trace,
+    link: getModelVersionLinkPayload(link),
     type,
   });
 
@@ -1244,14 +1256,14 @@ export default {
       }
 
       if (normalizedTarget === MODEL_GENERATION_TARGET.NEW_MODEL) {
-        return await this.createModelAndTrace(generatedModel);
+        return await this.createModelAndLink(generatedModel);
       }
 
       if (!hasEditingContextAtStart) {
         console.warn(
           "No active editing model/version found for regeneration; creating a new model instead.",
         );
-        return await this.createModelAndTrace(generatedModel);
+        return await this.createModelAndLink(generatedModel);
       }
 
       const regeneratedModelData = composeRegeneratedModelData({
@@ -1312,7 +1324,7 @@ export default {
     }
   },
 
-  async createModelAndTrace(modelData) {
+  async createModelAndLink(modelData) {
     const { id: documentId, versionId: documentVersionId } =
       workspaceStore.getViewedDocument() || {};
     const selections = documentViewerStore.getSerializedTemporarySelections();
@@ -1327,15 +1339,15 @@ export default {
       selectedText: selectionsToText(selections),
     });
 
-    const trace = {
+    const link = {
       documentVersionId,
       selections,
     };
-    const { modelMeta: createdModelMeta, trace: createdTrace } =
-      await modelsAPI.createModelAndTrace({
+    const { modelMeta: createdModelMeta, link: createdLink } =
+      await modelsAPI.createModelAndLink({
         projectId: workspaceStore.getProjectId(),
         modelData: preparedModelData,
-        trace,
+        link,
       });
     modelsStore.add(createdModelMeta);
     workspaceStore.setEditingModel({
@@ -1354,7 +1366,7 @@ export default {
     documentViewerStore.setSelectedSelection(null);
     documentViewerStore.setTemporarySelections([]);
     documentViewerStore.setHasSelectionChanged(false);
-    documentViewerStore.addTrace(createdTrace);
+    documentViewerStore.addTrace(createdLink);
     projectGraphStore.addModelNodeAndEdge(createdModelMeta);
     // return { modelMeta: createdModelMeta, trace: normalizedTrace };
   },
@@ -1528,7 +1540,7 @@ export default {
       modelId,
       modelVersionId,
       modelData,
-      trace,
+      link: trace,
       type,
     });
 
@@ -1564,7 +1576,7 @@ export default {
           ? serializedTrace.selections.length
           : 0,
       });
-      await tracesAPI.updateTrace(getTraceUpdatePayload(serializedTrace));
+      await documentModelLinksAPI.updateLink(getTraceUpdatePayload(serializedTrace));
       const activeTrace = documentViewerStore.getDisplayedModelTrace();
       if (activeTrace && String(activeTrace.id) === String(traceId)) {
         documentViewerStore.syncOriginalActiveModelSerializedSelectionsWithActiveTrace();
@@ -1619,7 +1631,7 @@ export default {
       });
       await modelsAPI.updateVersion(modelVersionId, {
         modelData: updatedModelData,
-        trace: serializedTrace,
+        link: getModelVersionLinkPayload(serializedTrace),
         type: MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
       });
 
@@ -1709,12 +1721,12 @@ export default {
           modelId,
           modelVersionId,
           modelData,
-          trace: updatedTrace,
+          link: updatedTrace,
           type: MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
         });
         documentViewerStore.updateTrace(updatedTrace);
       } else {
-        await tracesAPI.updateTrace(getTraceUpdatePayload(updatedTrace));
+        await documentModelLinksAPI.updateLink(getTraceUpdatePayload(updatedTrace));
         documentViewerStore.syncOriginalActiveModelSerializedSelectionsWithActiveTrace();
       }
     } catch (error) {
@@ -1741,7 +1753,7 @@ export default {
       reason,
     });
 
-    const { versionMeta: version, trace } = result || {};
+    const { versionMeta: version, link } = result || {};
     modelsStore.addVersion(modelId, version);
     const createdVersionId = version?.id || null;
 
@@ -1754,9 +1766,9 @@ export default {
     documentViewerStore.removeTracesByModelId(modelId);
     console.log(
       `Created new model version ${createdVersionId} for model ${modelId} based on source version ${sourceVersionId} (${sourceVersionLabel}) with reason: ${reason}`,
-      { trace },
+      { link },
     );
-    documentViewerStore.addTrace(trace);
+    documentViewerStore.addTrace(link);
     // documentViewerStore.updateTraceByModelId(modelId, trace);
     // documentViewerStore.updateTraceModelVersion({
     //   modelId,

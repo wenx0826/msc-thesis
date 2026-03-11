@@ -3,11 +3,10 @@ import modelUpdateEventRepo from "./repositories/updateEvent.js";
 import versionRepo from "./repositories/version.js";
 import storageRepo from "./repositories/storage.js";
 import subprocessRepo from "./repositories/subprocess.js";
-import traceRepo from "../traces/repository.js";
 import logService from "../logs/service.js";
 import { countWords } from "../../utils/fileHelper.js";
 import projectsService from "../projects/service.js";
-import traceService from "../traces/service.js";
+import documentModelLinkService from "../document_model_links/service.js";
 import documentVersionRepo from "../documents/repositories/version.js";
 import { injectDbpmMeta } from "./utils/dbpmMetaXml.js";
 
@@ -25,29 +24,29 @@ function selectionsToText(selections) {
     .join(" ");
 }
 
-function pickLatestTracesByModelVersionId(traces) {
-  const tracesByModelVersionId = new Map();
+function pickLatestLinksByModelVersionId(links) {
+  const linksByModelVersionId = new Map();
 
-  for (const trace of traces || []) {
-    const modelVersionId = trace?.modelVersionId;
+  for (const link of links || []) {
+    const modelVersionId = link?.modelVersionId;
     if (!modelVersionId) {
       continue;
     }
 
-    const existingTrace = tracesByModelVersionId.get(modelVersionId);
-    if (!existingTrace) {
-      tracesByModelVersionId.set(modelVersionId, trace);
+    const existingLink = linksByModelVersionId.get(modelVersionId);
+    if (!existingLink) {
+      linksByModelVersionId.set(modelVersionId, link);
       continue;
     }
 
-    const existingCreatedAt = existingTrace.createdAt || "";
-    const currentCreatedAt = trace.createdAt || "";
+    const existingCreatedAt = existingLink.createdAt || "";
+    const currentCreatedAt = link.createdAt || "";
     if (currentCreatedAt >= existingCreatedAt) {
-      tracesByModelVersionId.set(modelVersionId, trace);
+      linksByModelVersionId.set(modelVersionId, link);
     }
   }
 
-  return [...tracesByModelVersionId.values()];
+  return [...linksByModelVersionId.values()];
 }
 
 function enrichModelData(modelData, documentVersionId, selections) {
@@ -81,12 +80,12 @@ function syncLatestModelAlias(modelId, modelVersionId, content) {
 }
 
 export default {
-  createModelAndTrace({ projectId, modelData, trace }) {
+  createModelAndLink({ projectId, modelData, link }) {
     const latestModelNumber =
       projectsService.allocateLatestModelNumberById(projectId);
     const modelName = `Model_${latestModelNumber}`;
 
-    const selections = Array.isArray(trace.selections) ? trace.selections : [];
+    const selections = Array.isArray(link?.selections) ? link.selections : [];
     const selectedWordsCount = selections.reduce(
       (acc, sel) => acc + countWords(sel?.textQuote?.exact ?? ""),
       0,
@@ -113,8 +112,8 @@ export default {
       });
       storageRepo.writeByModelId(createdModel.id, modelData);
 
-      const createdTrace = traceService.create({
-        ...trace,
+      const createdLink = documentModelLinkService.create({
+        ...link,
         modelVersionId: createdModelVersion.id,
       });
 
@@ -127,7 +126,7 @@ export default {
 
       return {
         modelMeta: modelRepo.findByIdWithVersions(createdModel.id),
-        trace: createdTrace,
+        link: createdLink,
       };
     } catch (err) {
       throw err;
@@ -181,7 +180,7 @@ export default {
     });
     storageRepo.writeByModelId(modelId, sourceModelData);
 
-    const createdTrace = traceService.copyLatestByModelVersionId({
+    const createdLink = documentModelLinkService.copyLatestByModelVersionId({
       sourceModelVersionId: sourceVersionId,
       targetModelVersionId: createdVersion.id,
     });
@@ -200,7 +199,7 @@ export default {
     return {
       modelMeta: modelRepo.findByIdWithVersions(modelId),
       versionMeta: createdVersion,
-      trace: createdTrace,
+      link: createdLink,
     };
   },
   updateMeta(modelId, updates) {
@@ -458,7 +457,7 @@ export default {
     });
   },
 
-  updateVersion({ versionId, modelData, trace, type }) {
+  updateVersion({ versionId, modelData, link, type }) {
     const version = versionRepo.findById(versionId);
     if (!version) {
       throw new Error("Model version not found");
@@ -474,32 +473,33 @@ export default {
     // Update model status
     // modelRepo.updateStatus(modelId, "updated");
 
-    const currentTrace = traceRepo.findLatestByModelVersionId(versionId);
-    let documentVersionId = currentTrace?.documentVersionId ?? null;
-    let effectiveSelections = Array.isArray(currentTrace?.selections)
-      ? currentTrace.selections
+    const currentLink =
+      documentModelLinkService.getLatestByModelVersionId(versionId);
+    let documentVersionId = currentLink?.documentVersionId ?? null;
+    let effectiveSelections = Array.isArray(currentLink?.selections)
+      ? currentLink.selections
       : [];
 
     let words = null;
-    if (trace) {
-      effectiveSelections = Array.isArray(trace.selections)
-        ? trace.selections
+    if (link) {
+      effectiveSelections = Array.isArray(link.selections)
+        ? link.selections
         : [];
       words = effectiveSelections.reduce(
         (acc, sel) => acc + countWords(sel?.textQuote?.exact ?? ""),
         0,
       );
-      const traceIdToUpdate =
-        typeof trace.id === "string" ? trace.id : currentTrace?.id;
-      if (traceIdToUpdate) {
-        traceRepo.updateById(traceIdToUpdate, {
+      const linkIdToUpdate =
+        typeof link.id === "string" ? link.id : currentLink?.id;
+      if (linkIdToUpdate) {
+        documentModelLinkService.update(linkIdToUpdate, {
           selections: effectiveSelections,
         });
       }
       documentVersionId =
         documentVersionId ||
-        (typeof trace.documentVersionId === "string"
-          ? trace.documentVersionId
+        (typeof link.documentVersionId === "string"
+          ? link.documentVersionId
           : null);
     }
 
@@ -616,17 +616,17 @@ export default {
       return { updated: 0, failed: 0, skipped: 0 };
     }
 
-    const traces = traceService.getLatestByDocumentVersionId(
+    const links = documentModelLinkService.getLatestByDocumentVersionId(
       documentVersionId,
       true,
     );
-    const latestTraces = pickLatestTracesByModelVersionId(traces);
+    const latestLinks = pickLatestLinksByModelVersionId(links);
 
     let updated = 0;
     let failed = 0;
     let skipped = 0;
-    for (const trace of latestTraces) {
-      const modelVersionId = trace?.modelVersionId;
+    for (const link of latestLinks) {
+      const modelVersionId = link?.modelVersionId;
       if (!modelVersionId) {
         skipped += 1;
         continue;
@@ -641,7 +641,7 @@ export default {
 
         const enrichedModelData = injectDbpmMeta(modelData, {
           ...documentInfo,
-          selectedText: selectionsToText(trace?.selections),
+          selectedText: selectionsToText(link?.selections),
         });
         storageRepo.write(modelVersionId, enrichedModelData);
         const modelVersion = versionRepo.findById(modelVersionId);

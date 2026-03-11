@@ -14,7 +14,7 @@ export default async function (fastify, options) {
   // POST /models - Create a new model
   fastify.post("/", { schema: createModelSchema }, (request, reply) => {
     try {
-      const result = modelService.createModelAndTrace(request.body);
+      const result = modelService.createModelAndLink(request.body);
       reply.send(result);
     } catch (err) {
       console.error("Failed to create model:", err);
@@ -200,8 +200,8 @@ export default async function (fastify, options) {
     { schema: updateVersionSchema },
     (request, reply) => {
       const versionId = request.params.versionId;
-      const { modelData, trace, type } = request.body;
-      console.log("Update payload:", { modelData, trace, type });
+      const { modelData, link, type } = request.body;
+      console.log("Update payload:", { modelData, link, type });
       try {
         modelService.updateVersion({ versionId, ...request.body });
         reply.send({ message: "Model content updated" });

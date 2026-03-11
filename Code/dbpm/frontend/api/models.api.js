@@ -106,10 +106,11 @@ export default {
     return generatedModel;
   },
 
-  async createModelAndTrace(params) {
+  async createModelAndLink(params) {
     if (CREATE_MODEL_SIMULATED_NETWORK_DELAY_MS > 0) {
       await delay(CREATE_MODEL_SIMULATED_NETWORK_DELAY_MS);
     }
+
     const response = await fetch(`${baseURL}/${this.path}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -156,7 +157,7 @@ export default {
         body: JSON.stringify(params),
       },
     );
-    return handleResponse(response, "Failed to update model and trace");
+    return handleResponse(response, "Failed to update model and link");
   },
 
   async updateSubprocessLink(versionId, taskId, subprocessModelId) {

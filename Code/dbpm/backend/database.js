@@ -21,7 +21,7 @@ function initializeSchema() {
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
       latest_model_number INTEGER NOT NULL DEFAULT 0,
-      created_at TEXT NOT NULL DEFAULT current_timestamp,
+      created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
       deleted_at TEXT
     )
   `);
@@ -33,7 +33,7 @@ function initializeSchema() {
       name TEXT NOT NULL,
       latest_version_id TEXT,
       latest_version_number INTEGER NOT NULL DEFAULT 0,
-      created_at TEXT NOT NULL DEFAULT current_timestamp,
+      created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
       deleted_at TEXT,
       FOREIGN KEY (project_id) REFERENCES projects(id),
       FOREIGN KEY (latest_version_id) REFERENCES document_versions(id)
@@ -48,7 +48,7 @@ function initializeSchema() {
       name TEXT NOT NULL,
       filename TEXT NOT NULL,
       words_count INTEGER NOT NULL DEFAULT 0,
-      created_at TEXT NOT NULL DEFAULT current_timestamp,
+      created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
       FOREIGN KEY (document_id) REFERENCES documents(id)
     )
   `);
@@ -60,7 +60,7 @@ function initializeSchema() {
       name TEXT NOT NULL,
       latest_version_id TEXT,
       latest_version_number INTEGER NOT NULL DEFAULT 0,
-      created_at TEXT NOT NULL DEFAULT current_timestamp,
+      created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
       deleted_at TEXT,
       FOREIGN KEY (project_id) REFERENCES projects(id),
       FOREIGN KEY (latest_version_id) REFERENCES model_versions(id)
@@ -74,7 +74,7 @@ function initializeSchema() {
       version_number INTEGER NOT NULL,
       name TEXT NOT NULL,
       selected_words_count INTEGER DEFAULT 0,
-      created_at TEXT NOT NULL DEFAULT current_timestamp,
+      created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
       FOREIGN KEY (model_id) REFERENCES models(id)
     )
   `);
@@ -85,10 +85,43 @@ function initializeSchema() {
       id TEXT PRIMARY KEY,
       document_version_id TEXT NOT NULL,
       model_version_id TEXT NOT NULL,
-      selections TEXT NOT NULL CHECK (json_valid(selections)),
-      created_at TEXT NOT NULL DEFAULT current_timestamp,
+      created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
       FOREIGN KEY (document_version_id) REFERENCES document_versions(id),
       FOREIGN KEY (model_version_id) REFERENCES model_versions(id)
+    )
+  `);
+  // Current selections per link (source of truth, soft deletable)
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS document_model_link_selections (
+      id TEXT PRIMARY KEY,
+      link_id TEXT NOT NULL,
+      start INTEGER NOT NULL,
+      end INTEGER NOT NULL,
+      exact TEXT NOT NULL,
+      prefix TEXT,
+      suffix TEXT,
+      style TEXT NOT NULL CHECK (json_valid(style) AND json_type(style) = 'object'),
+      review_status TEXT NOT NULL DEFAULT 'none'
+        CHECK (review_status IN ('none', 'pending', 'notified')),
+      deleted_at TEXT,
+      created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+      FOREIGN KEY (link_id) REFERENCES document_model_links(id)
+    )
+  `);
+  // Append-only selection history
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS document_model_link_selection_history (
+      id TEXT PRIMARY KEY,
+      selection_id TEXT NOT NULL,
+      type TEXT NOT NULL DEFAULT 'manual' CHECK (type IN ('manual', 'auto_reanchor')),
+      start INTEGER NOT NULL,
+      end INTEGER NOT NULL,
+      exact TEXT NOT NULL,
+      prefix TEXT,
+      suffix TEXT,
+      style TEXT NOT NULL CHECK (json_valid(style) AND json_type(style) = 'object'),
+      created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+      FOREIGN KEY (selection_id) REFERENCES document_model_link_selections(id)
     )
   `);
   // Model update events table
@@ -98,7 +131,7 @@ function initializeSchema() {
       model_version_id TEXT NOT NULL,
       type TEXT NOT NULL,
       details TEXT,
-      created_at TEXT NOT NULL DEFAULT current_timestamp,
+      created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
       FOREIGN KEY (model_version_id) REFERENCES model_versions(id)
     )
   `);
@@ -110,7 +143,7 @@ function initializeSchema() {
       model_version_id TEXT NOT NULL,
       task_id TEXT NOT NULL,
       subprocess_model_id TEXT NOT NULL,
-      created_at TEXT NOT NULL DEFAULT current_timestamp,
+      created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
       deleted_at TEXT,
       FOREIGN KEY (model_version_id) REFERENCES model_versions(id),
       FOREIGN KEY (subprocess_model_id) REFERENCES models(id)
@@ -135,6 +168,18 @@ function initializeSchema() {
   );
   db.exec(
     `CREATE INDEX IF NOT EXISTS idx_document_model_links_model_version_id ON document_model_links(model_version_id)`,
+  );
+  db.exec(
+    `CREATE INDEX IF NOT EXISTS idx_document_model_link_selections_link_id ON document_model_link_selections(link_id)`,
+  );
+  db.exec(
+    `CREATE INDEX IF NOT EXISTS idx_document_model_link_selections_deleted_at ON document_model_link_selections(deleted_at)`,
+  );
+  db.exec(
+    `CREATE INDEX IF NOT EXISTS idx_document_model_link_selection_history_selection_id ON document_model_link_selection_history(selection_id)`,
+  );
+  db.exec(
+    `CREATE INDEX IF NOT EXISTS idx_document_model_link_selection_history_selection_id_created_at_id ON document_model_link_selection_history(selection_id, created_at DESC, id DESC)`,
   );
   db.exec(
     `CREATE INDEX IF NOT EXISTS idx_model_update_events_model_version_id ON model_update_events(model_version_id)`,

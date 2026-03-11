@@ -1,4 +1,4 @@
-import { documentsAPI, tracesAPI } from "../../../api/index.js";
+import { documentsAPI, documentModelLinksAPI } from "../../../api/index.js";
 import {
   workspaceStore,
   documentsStore,
@@ -127,9 +127,9 @@ export default {
   },
   async loadVersion(versionId) {
     documentViewerStore.clear();
-    const [contentResult, tracesResult] = await Promise.allSettled([
+    const [contentResult, linksResult] = await Promise.allSettled([
       documentsAPI.getContentByVersionId(versionId),
-      tracesAPI.getLatestTracesByDocumentVersionId(versionId),
+      documentModelLinksAPI.getLatestLinksByDocumentVersionId(versionId),
     ]);
 
     if (contentResult.status !== "fulfilled") {
@@ -140,14 +140,14 @@ export default {
 
     documentViewerStore.setContent(contentResult.value);
 
-    if (tracesResult.status !== "fulfilled") {
-      console.log("Error loading traces:", tracesResult.reason);
+    if (linksResult.status !== "fulfilled") {
+      console.log("Error loading links:", linksResult.reason);
       return;
     }
 
-    const traces = Array.isArray(tracesResult.value) ? tracesResult.value : [];
-    console.log("Loaded traces for version", versionId, traces);
-    documentViewerStore.setTraces(traces);
+    const links = Array.isArray(linksResult.value) ? linksResult.value : [];
+    console.log("Loaded links for version", versionId, links);
+    documentViewerStore.setTraces(links);
 
     const { versionId: editingModelVersionId } = workspaceStore.getEditingModel() || {};
     const preferredModelVersionId = editingModelVersionId || null;

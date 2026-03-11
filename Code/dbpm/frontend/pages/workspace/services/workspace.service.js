@@ -1,4 +1,4 @@
-import { projectsAPI, tracesAPI } from "../../../api/index.js";
+import { projectsAPI, documentModelLinksAPI } from "../../../api/index.js";
 import documentService from "./document.service.js";
 import modelService from "./model.service.js";
 import {
@@ -180,17 +180,17 @@ export default {
     modelService.loadVersion(versionId);
     workspaceStore.setModelPopoverParams(null);
 
-    let resolvedHistoricalTrace = null;
+    let resolvedHistoricalLink = null;
     if (shouldUpdateViewedDocument) {
       let targetDocumentId, targetDocumentVersionId;
       if (isLatest) {
         targetDocumentId = modelsStore.getModelDocumentId(id) || null;
       } else {
-        const latestTrace =
-          await tracesAPI.getLatestTraceByModelVersionId(versionId);
-        resolvedHistoricalTrace = latestTrace || null;
-        targetDocumentId = latestTrace?.documentId;
-        targetDocumentVersionId = latestTrace?.documentVersionId;
+        const latestLink =
+          await documentModelLinksAPI.getLatestLinkByModelVersionId(versionId);
+        resolvedHistoricalLink = latestLink || null;
+        targetDocumentId = latestLink?.documentId;
+        targetDocumentVersionId = latestLink?.documentVersionId;
       }
       await this.displayDocument(
         targetDocumentId,
@@ -198,9 +198,9 @@ export default {
         false,
       );
     }
-    if (resolvedHistoricalTrace) {
+    if (resolvedHistoricalLink) {
       documentViewerStore.setActiveModelTraceBySerializedTrace(
-        resolvedHistoricalTrace,
+        resolvedHistoricalLink,
       );
     } else {
       documentViewerStore.setActiveModelTraceByModelVersionId(versionId);

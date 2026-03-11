@@ -71,10 +71,10 @@ class ModelRepository extends BaseSqlRepository {
         m.*,
         (
           SELECT dv.document_id
-          FROM document_model_links t
-          JOIN document_versions dv ON dv.id = t.document_version_id
-          WHERE t.model_version_id = m.latest_version_id
-          ORDER BY dv.version_number DESC, t.created_at DESC
+          FROM document_model_links l
+          JOIN document_versions dv ON dv.id = l.document_version_id
+          WHERE l.model_version_id = m.latest_version_id
+          ORDER BY dv.version_number DESC, l.created_at DESC
           LIMIT 1
         ) AS document_id
       FROM models m
@@ -90,10 +90,10 @@ class ModelRepository extends BaseSqlRepository {
         m.*,
         (
           SELECT dv.document_id
-          FROM document_model_links t
-          JOIN document_versions dv ON dv.id = t.document_version_id
-          WHERE t.model_version_id = m.latest_version_id
-          ORDER BY dv.version_number DESC, t.created_at DESC
+          FROM document_model_links l
+          JOIN document_versions dv ON dv.id = l.document_version_id
+          WHERE l.model_version_id = m.latest_version_id
+          ORDER BY dv.version_number DESC, l.created_at DESC
           LIMIT 1
         ) AS document_id
       FROM models m
@@ -109,8 +109,8 @@ class ModelRepository extends BaseSqlRepository {
       SELECT DISTINCT m.id
       FROM models m
       JOIN model_versions mv ON mv.model_id = m.id
-      JOIN document_model_links t ON t.model_version_id = mv.id
-      JOIN document_versions dv ON dv.id = t.document_version_id
+      JOIN document_model_links l ON l.model_version_id = mv.id
+      JOIN document_versions dv ON dv.id = l.document_version_id
       WHERE dv.document_id = ? ${includeDeleted ? "" : "AND m.deleted_at IS NULL"}
       ORDER BY m.created_at ASC
     `);
