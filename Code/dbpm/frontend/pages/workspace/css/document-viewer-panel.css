@@ -7,18 +7,18 @@
   display: none;
 }
 
-#documentViewerPanel[data-state="none"] #documentViewerHeaderTitle {
+#documentViewerPanel[data-view-state="none"] #documentViewerHeaderTitle {
   display: inline-flex;
   align-items: center;
 }
 
-#documentViewerPanel[data-state="none"] #versionFilename,
-#documentViewerPanel[data-state="none"] #documentVersionTag,
-#documentViewerPanel[data-state="none"] #documentViewerActionsGroup {
+#documentViewerPanel[data-view-state="none"] #versionFilename,
+#documentViewerPanel[data-view-state="none"] #documentVersionTag,
+#documentViewerPanel[data-view-state="none"] #documentViewerActionsGroup {
   display: none;
 }
 
-#documentViewerPanel[data-state="none"] #selectedSelectionToolbar {
+#documentViewerPanel[data-view-state="none"] #selectedSelectionToolbar {
   display: none;
 }
 
@@ -26,7 +26,7 @@
   display: none;
 }
 
-#documentViewerPanel[data-state="latest"] #modelActionsBar {
+#documentViewerPanel[data-view-state="latest"] #modelActionsBar {
   display: flex;
 }
 
@@ -43,7 +43,7 @@
   z-index: 4;
 }
 
-#documentViewerPanel[data-state="none"] #documentViewerEmptyState {
+#documentViewerPanel[data-view-state="none"] #documentViewerEmptyState {
   display: flex;
 }
 
@@ -92,7 +92,7 @@
   box-sizing: content-box;
 }
 
-#documentViewerPanel[data-state="historical"] #selectionColorForm {
+#documentViewerPanel[data-view-state="historical"] #selectionColorForm {
   display: none;
 }
 

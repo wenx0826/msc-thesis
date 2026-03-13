@@ -122,6 +122,7 @@ export const getProjectComponentsSchema = {
                     id: { type: "string" },
                     documentId: { type: "string" },
                     versionNumber: { type: "number" },
+                    restoredFrom: { type: ["string", "null"] },
                     name: { type: "string" },
                     filename: { type: "string" },
                     createdAt: { type: "string" },
@@ -149,6 +150,7 @@ export const getProjectComponentsSchema = {
                     id: { type: "string" },
                     modelId: { type: "string" },
                     versionNumber: { type: "number" },
+                    restoredFrom: { type: ["string", "null"] },
                     name: { type: "string" },
                     createdAt: { type: "string" },
                   },
@@ -210,6 +212,7 @@ export const getProjectComponentsStatsSchema = {
                   properties: {
                     id: { type: "string" },
                     versionNumber: { type: "number" },
+                    restoredFrom: { type: ["string", "null"] },
                     name: { type: "string" },
                     filename: { type: "string" },
                     wordsCount: { type: "number" },
@@ -237,6 +240,7 @@ export const getProjectComponentsStatsSchema = {
                   properties: {
                     id: { type: "string" },
                     versionNumber: { type: "number" },
+                    restoredFrom: { type: ["string", "null"] },
                     name: { type: "string" },
                     selectedWordsCount: { type: "number" },
                     createdAt: { type: "string" },

@@ -9,6 +9,7 @@ const documentMetaProperties = {
       properties: {
         id: { type: "string" },
         versionNumber: { type: "number" },
+        restoredFrom: { type: ["string", "null"] },
         name: { type: "string" },
         filename: { type: "string" },
         createdAt: { type: "string" },
@@ -79,6 +80,7 @@ export const createVersionSchema = {
         id: { type: "string" },
         documentId: { type: "string" },
         versionNumber: { type: "number" },
+        restoredFrom: { type: ["string", "null"] },
         name: { type: "string" },
         filename: { type: "string" },
         createdAt: { type: "string" },

@@ -60,10 +60,11 @@ function getActiveDecisionActionBarElement() {
 }
 
 function getEditingModelContext() {
-  const { id, versionId } = workspaceStore.getEditingModel() || {};
+  const { id, versionId, isDraft } = workspaceStore.getEditingModel() || {};
   return {
     modelId: id || null,
     modelVersionId: versionId || null,
+    isDraft: isDraft === true,
   };
 }
 
@@ -75,17 +76,22 @@ function isRegenerationPreviewContextCurrent(
   }
 
   const currentContext = getEditingModelContext();
-  return (
-    currentContext.modelId === preview.modelId &&
-    currentContext.modelVersionId === preview.modelVersionId
-  );
+  if (currentContext.modelId !== preview.modelId) {
+    return false;
+  }
+  if (currentContext.modelVersionId === preview.modelVersionId) {
+    return true;
+  }
+  return currentContext.isDraft && !currentContext.modelVersionId;
 }
 
 function setRegenerationDecisionClickLock(isLocked) {
   const shouldLock = Boolean(isLocked);
   isRegenerationDecisionClickLocked = shouldLock;
   if (!shouldLock) {
-    $initialGenerationDraftActionBar.removeClass(REGENERATION_ACTION_BAR_HINT_CLASS);
+    $initialGenerationDraftActionBar.removeClass(
+      REGENERATION_ACTION_BAR_HINT_CLASS,
+    );
     $regeneratedModelActionBar.removeClass(REGENERATION_ACTION_BAR_HINT_CLASS);
     if (regenerationActionBarHintTimeoutId) {
       clearTimeout(regenerationActionBarHintTimeoutId);
@@ -183,6 +189,25 @@ function serializeXmlNode(node) {
   return new XMLSerializer().serializeToString(node);
 }
 
+function restoreEditingModelAfterRegeneration(preview = regenerationPreviewState) {
+  if (!preview?.modelId || !preview?.modelVersionId) {
+    return;
+  }
+  const currentEditingModel = workspaceStore.getEditingModel() || {};
+  const restoredIsLatest =
+    typeof preview.modelIsLatest === "boolean"
+      ? preview.modelIsLatest
+      : typeof currentEditingModel.isLatest === "boolean"
+        ? currentEditingModel.isLatest
+        : null;
+  workspaceStore.setEditingModel({
+    id: preview.modelId,
+    versionId: preview.modelVersionId,
+    isLatest: restoredIsLatest,
+    isDraft: false,
+  });
+}
+
 function setRegenerationPreviewView(view) {
   if (!regenerationPreviewState) {
     return;
@@ -201,6 +226,8 @@ function setRegenerationPreviewView(view) {
     normalizedView === "original"
       ? regenerationPreviewState.originalDataXml
       : regenerationPreviewState.regeneratedDataXml;
+  const nextUpdateType =
+    normalizedView === "regenerated" ? regenerationPreviewState.updateType : null;
   if (!nextDataXml) {
     return;
   }
@@ -211,7 +238,9 @@ function setRegenerationPreviewView(view) {
   };
 
   isApplyingRegenerationView = true;
-  modelEditorStore.setData(nextDataXml);
+  modelEditorStore.setData(nextDataXml, {
+    updateType: nextUpdateType,
+  });
   isApplyingRegenerationView = false;
 }
 
@@ -265,10 +294,22 @@ createUI({
         return;
       }
 
+      // Record declined regeneration attempt
+      const meta = modelService.getPendingGenerationAttemptMeta();
+      if (meta) {
+        modelService.clearPendingGenerationAttemptMeta();
+        modelService.recordGenerationAttempt({
+          ...meta,
+          outcome: "declined",
+          outcomeModelVersionId: null,
+        });
+      }
+
       isApplyingRegenerationView = true;
       modelEditorStore.setData(preview.originalDataXml);
       isApplyingRegenerationView = false;
       modelEditorStore.setLatestUpdateType(null);
+      restoreEditingModelAfterRegeneration(preview);
       regenerationPreviewState = null;
       syncDecisionActionState();
     });
@@ -279,15 +320,31 @@ createUI({
         regenerationPreviewState = null;
         return;
       }
+      if (!preview.modelId || !preview.modelVersionId) {
+        modelEditorStore.setLatestUpdateType(null);
+        regenerationPreviewState = null;
+        return;
+      }
       if (preview.view !== "regenerated") {
         setRegenerationPreviewView("regenerated");
       }
 
       try {
+        restoreEditingModelAfterRegeneration(preview);
         await modelService.updateEditingVersion(preview.updateType, {
           expectedModelId: preview.modelId,
           expectedModelVersionId: preview.modelVersionId,
         });
+        // Record accepted_replace generation attempt
+        const meta = modelService.getPendingGenerationAttemptMeta();
+        if (meta) {
+          modelService.clearPendingGenerationAttemptMeta();
+          modelService.recordGenerationAttempt({
+            ...meta,
+            outcome: "accepted_replace",
+            outcomeModelVersionId: preview.modelVersionId,
+          });
+        }
         modelEditorStore.setLatestUpdateType(null);
         regenerationPreviewState = null;
         syncDecisionActionState();
@@ -334,11 +391,25 @@ createUI({
           expectedModelVersionId: createdVersionId,
         });
 
+        // Record accepted_new_version generation attempt
+        const meta = modelService.getPendingGenerationAttemptMeta();
+        if (meta) {
+          modelService.clearPendingGenerationAttemptMeta();
+          modelService.recordGenerationAttempt({
+            ...meta,
+            outcome: "accepted_new_version",
+            outcomeModelVersionId: createdVersionId,
+          });
+        }
+
         modelEditorStore.setLatestUpdateType(null);
         regenerationPreviewState = null;
         syncDecisionActionState();
       } catch (error) {
-        console.error("Failed to save regenerated model as a new version:", error);
+        console.error(
+          "Failed to save regenerated model as a new version:",
+          error,
+        );
         alert("Failed to save regenerated model as a new version.");
       } finally {
         $saveNewModelButton.prop("disabled", false);
@@ -372,10 +443,15 @@ createUI({
               const regeneratedDataXml = serializeXmlNode(newValue);
               if (originalDataXml && regeneratedDataXml) {
                 const editingModelContext = getEditingModelContext();
+                const editingModel = workspaceStore.getEditingModel() || {};
                 regenerationPreviewState = {
                   updateType,
                   modelId: editingModelContext.modelId,
                   modelVersionId: editingModelContext.modelVersionId,
+                  modelIsLatest:
+                    typeof editingModel.isLatest === "boolean"
+                      ? editingModel.isLatest
+                      : null,
                   originalDataXml,
                   regeneratedDataXml,
                   view: "regenerated",
@@ -390,7 +466,10 @@ createUI({
           break;
         }
         case "latestUpdateType":
-          if (!isRegenerationUpdateType(newValue)) {
+          if (
+            !isRegenerationUpdateType(newValue) &&
+            !(workspaceStore.hasEditingModel() && workspaceStore.isEditingModelDraft())
+          ) {
             regenerationPreviewState = null;
           }
           syncDecisionActionState();
@@ -409,18 +488,32 @@ createUI({
         oldValue?.id !== newValue?.id ||
         oldValue?.versionId !== newValue?.versionId ||
         oldValue?.isDraft !== newValue?.isDraft;
+      const oldHasVersion =
+        oldValue?.versionId !== null && oldValue?.versionId !== undefined;
+      const newHasVersion =
+        newValue?.versionId !== null && newValue?.versionId !== undefined;
+      const isRegenerationDraftTransition =
+        oldValue?.id &&
+        oldValue?.id === newValue?.id &&
+        ((oldHasVersion && !newHasVersion && newValue?.isDraft === true) ||
+          (!oldHasVersion &&
+            oldValue?.isDraft === true &&
+            newHasVersion &&
+            newValue?.isDraft !== true));
+      const shouldResetRegenerationState =
+        hasEditingModelChanged && !isRegenerationDraftTransition;
 
-      if (hasEditingModelChanged) {
+      if (shouldResetRegenerationState) {
         regenerationPreviewState = null;
         const latestUpdateType = modelEditorStore.getLatestUpdateType();
         if (isRegenerationUpdateType(latestUpdateType)) {
           modelEditorStore.setLatestUpdateType(null);
         }
+      }
 
-        const hadDraftState = oldValue?.isDraft === true;
-        if (hadDraftState && newValue?.isDraft !== true) {
-          modelService.discardPendingNewModelDraft({ clearEditorData: false });
-        }
+      const hadInitialDraftState = oldValue?.isDraft === true && !oldValue?.id;
+      if (hadInitialDraftState && newValue?.isDraft !== true) {
+        modelService.discardPendingNewModelDraft({ clearEditorData: false });
       }
 
       syncDecisionActionState();

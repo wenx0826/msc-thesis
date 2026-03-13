@@ -216,8 +216,10 @@ function onToggleDocumentsBulkEditMode() {
 // #endregion
 
 function uploadNewVersion(docId) {
-  $documentVersionInput.click();
+  $documentVersionInput.off("change");
   $documentVersionInput.one("change", (e) => onVersionInputChange(e, docId));
+  $documentVersionInput.val("");
+  $documentVersionInput.trigger("click");
 }
 
 async function deleteDocument(docId) {

@@ -11,7 +11,7 @@ function delay(ms) {
 }
 
 export default {
-  LLMDisabled: true,
+  LLMDisabled: false,
   path: "models",
 
   async generateSampleModel() {
@@ -184,6 +184,23 @@ export default {
       method: "PUT",
     });
     return handleResponse(response, "Failed to restore model");
+  },
+
+  async recordGenerationAttempt(data) {
+    try {
+      const response = await fetch(
+        `${baseURL}/${this.path}/generation-attempts`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        },
+      );
+      return handleResponse(response, "Failed to record generation attempt");
+    } catch (err) {
+      console.warn("recordGenerationAttempt failed:", err);
+      return null;
+    }
   },
 
   // Sub-API for accessing all records (including soft-deleted)

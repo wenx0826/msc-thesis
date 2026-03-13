@@ -86,8 +86,11 @@ export const createModelSchema = {
                 type: "object",
                 properties: {
                   id: { type: "string" },
+                  modelId: { type: "string" },
                   versionNumber: { type: "number" },
+                  restoredFrom: { type: ["string", "null"] },
                   name: { type: "string" },
+                  selectedWordsCount: { type: "number" },
                   createdAt: { type: "string" },
                 },
               },
@@ -149,6 +152,7 @@ export const createVersionSchema = {
                   id: { type: "string" },
                   modelId: { type: "string" },
                   versionNumber: { type: "number" },
+                  restoredFrom: { type: ["string", "null"] },
                   name: { type: "string" },
                   selectedWordsCount: { type: "number" },
                   createdAt: { type: "string" },
@@ -164,6 +168,7 @@ export const createVersionSchema = {
             id: { type: "string" },
             modelId: { type: "string" },
             versionNumber: { type: "number" },
+            restoredFrom: { type: ["string", "null"] },
             name: { type: "string" },
             selectedWordsCount: { type: "number" },
             createdAt: { type: "string" },
@@ -350,6 +355,49 @@ export const restoreModelSchema = {
         latestVersionId: { type: "string" },
         createdAt: { type: "string" },
         deletedAt: { type: ["string", "null"] },
+      },
+    },
+  },
+};
+
+export const createGenerationAttemptSchema = {
+  body: {
+    type: "object",
+    required: ["projectId", "target", "mode", "outcome"],
+    additionalProperties: false,
+    properties: {
+      projectId: { type: "string" },
+      targetModelVersionId: { type: ["string", "null"] },
+      outcomeModelVersionId: { type: ["string", "null"] },
+      target: { type: "string", enum: ["initial", "regeneration"] },
+      mode: {
+        type: "string",
+        enum: ["selection", "selection_and_prompt", "prompt"],
+      },
+      outcome: {
+        type: "string",
+        enum: [
+          "accepted",
+          "accepted_replace",
+          "accepted_new_version",
+          "declined",
+        ],
+      },
+      prompt: { type: ["string", "null"] },
+      selectedWordsCount: { type: ["integer", "null"] },
+      selectedTextSimilarity: { type: ["number", "null"] },
+    },
+  },
+  response: {
+    200: {
+      type: "object",
+      properties: {
+        id: { type: "string" },
+        projectId: { type: "string" },
+        target: { type: "string" },
+        mode: { type: "string" },
+        outcome: { type: "string" },
+        createdAt: { type: "string" },
       },
     },
   },

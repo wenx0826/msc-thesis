@@ -8,6 +8,7 @@ import {
   updateVersionSchema,
   updateSubprocessLinkSchema,
   restoreModelSchema,
+  createGenerationAttemptSchema,
 } from "./schema.js";
 
 export default async function (fastify, options) {
@@ -182,9 +183,10 @@ export default async function (fastify, options) {
           return;
         }
         if (
-          ["Task not found", "Model cannot reference itself as subprocess"].includes(
-            err.message,
-          )
+          [
+            "Task not found",
+            "Model cannot reference itself as subprocess",
+          ].includes(err.message)
         ) {
           reply.code(400).send({ error: err.message });
           return;
@@ -212,6 +214,21 @@ export default async function (fastify, options) {
           return;
         }
         reply.code(500).send({ error: "Failed to update model" });
+      }
+    },
+  );
+
+  // POST /models/generation-attempts - Record a generation attempt outcome
+  fastify.post(
+    "/generation-attempts",
+    { schema: createGenerationAttemptSchema },
+    (request, reply) => {
+      try {
+        const result = modelService.recordGenerationAttempt(request.body);
+        reply.send(result);
+      } catch (err) {
+        console.error("Failed to record generation attempt:", err);
+        reply.code(500).send({ error: "Failed to record generation attempt" });
       }
     },
   );

@@ -1,5 +1,6 @@
 import modelRepo from "./repositories/model.js";
-import modelUpdateEventRepo from "./repositories/updateEvent.js";
+import modelVersionEventRepo from "./repositories/versionEvent.js";
+import modelGenerationAttemptRepo from "./repositories/generationAttempt.js";
 import versionRepo from "./repositories/version.js";
 import storageRepo from "./repositories/storage.js";
 import subprocessRepo from "./repositories/subprocess.js";
@@ -100,6 +101,7 @@ export default {
       }
       const createdModelVersion = versionRepo.create({
         modelId: createdModel.id,
+        restoredFrom: null,
         versionNumber: latestVersionNumber,
         name: `v${latestVersionNumber}`,
         selectedWordsCount,
@@ -169,6 +171,7 @@ export default {
         : 0;
     const createdVersion = versionRepo.create({
       modelId,
+      restoredFrom: normalizedReason === "revert" ? sourceVersionId : null,
       versionNumber: latestVersionNumber,
       name: `v${latestVersionNumber}`,
       selectedWordsCount,
@@ -183,6 +186,16 @@ export default {
     const createdLink = documentModelLinkService.copyLatestByModelVersionId({
       sourceModelVersionId: sourceVersionId,
       targetModelVersionId: createdVersion.id,
+    });
+
+    // Record the version lifecycle event
+    modelVersionEventRepo.add({
+      modelVersionId: createdVersion.id,
+      type:
+        normalizedReason === "revert"
+          ? "version_reverted"
+          : "version_created_copy",
+      selectedWordsCount: selectedWordsCount ?? null,
     });
 
     const projectId =
@@ -295,16 +308,16 @@ export default {
     includeDeleted = true,
     models = [],
   ) {
-    const countsByType = modelUpdateEventRepo.countByTypeByProjectId(
+    const countsByType = modelVersionEventRepo.countByTypeByProjectId(
       projectId,
       includeDeleted,
     );
-    const countsByModelType = modelUpdateEventRepo.countByTypeByProjectModelId(
+    const countsByModelType = modelVersionEventRepo.countByTypeByProjectModelId(
       projectId,
       includeDeleted,
     );
     const countsByModelVersionLevel =
-      modelUpdateEventRepo.countByTypeByProjectModelVersionLevel(
+      modelVersionEventRepo.countByTypeByProjectModelVersionLevel(
         projectId,
         includeDeleted,
       );
@@ -407,6 +420,34 @@ export default {
 
     return { totalCount, byType, byVersionLevel, byModel };
   },
+  /**
+   * Record a model generation attempt (initial or regeneration, accepted or declined).
+   * Should be called from the generation flow after the user accepts or declines.
+   */
+  recordGenerationAttempt({
+    projectId,
+    targetModelVersionId = null,
+    outcomeModelVersionId = null,
+    target,
+    mode,
+    outcome,
+    prompt = null,
+    selectedWordsCount = null,
+    selectedTextSimilarity = null,
+  }) {
+    return modelGenerationAttemptRepo.add({
+      projectId,
+      targetModelVersionId,
+      outcomeModelVersionId,
+      target,
+      mode,
+      outcome,
+      prompt,
+      selectedWordsCount,
+      selectedTextSimilarity,
+    });
+  },
+
   attachUpdatesStatsToModels(models = [], modelUpdateEventsSummary = null) {
     const byModel = Array.isArray(modelUpdateEventsSummary?.byModel)
       ? modelUpdateEventsSummary.byModel
@@ -511,23 +552,19 @@ export default {
     storageRepo.write(versionId, enrichedModelData);
     syncLatestModelAlias(modelId, versionId, enrichedModelData);
 
-    // Store model update event for this version.
-    const details = {
-      modelId,
-      ...(typeof words === "number" ? { words } : {}),
-    };
-    modelUpdateEventRepo.add({
-      modelVersionId: versionId,
-      type,
-      details: Object.keys(details).length > 0 ? details : null,
-    });
-
-    // Log the event
-    logService.logEvent(projectId, `model_updated_${type}`, {
-      id: modelId,
-      versionId,
-      data: enrichedModelData,
-    });
+    // Record version event for manual edits and lifecycle changes.
+    // Regeneration outcomes are recorded separately via recordGenerationAttempt().
+    const regenerationTypes = [
+      "regeneration_by_selections",
+      "regeneration_by_prompt",
+    ];
+    if (!regenerationTypes.includes(type)) {
+      modelVersionEventRepo.add({
+        modelVersionId: versionId,
+        type,
+        selectedWordsCount: typeof words === "number" ? words : null,
+      });
+    }
 
     return { message: "Model content updated" };
   },

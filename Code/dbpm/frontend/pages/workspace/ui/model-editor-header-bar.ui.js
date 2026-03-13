@@ -57,6 +57,11 @@ createUI({
     const versionSelector = initVersionSelector({
       $select: $versionSelect,
       onSelect: ({ version }) => {
+        console.log(
+          `Version selected: ${version.id}`,
+          version,
+          version.modelId,
+        );
         workspaceService.displayModel(version.modelId, version.id);
       },
     });

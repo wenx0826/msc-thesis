@@ -7,6 +7,10 @@ import {
 } from "../store/index.js";
 import { modelService, workspaceService } from "../services/index.js";
 import { createTemplateElement } from "../../../shared/utils/dom.js";
+import {
+  getRenderableRangeClientRects,
+  getRectsBoundingBox,
+} from "../../../modules/document/selection.js";
 
 const $viewerWrap = $("#viewerWrap");
 const $documentContent = $("#documentContent");
@@ -19,6 +23,7 @@ const SELECTION_WRAP_TEMPLATE_ID = "selectionWrapTemplate";
 
 const MODEL_TAG_TEMPLATE_ID = "modelTagTemplate";
 let handleDragState = null;
+let pendingDocumentTextSelectionCommit = false;
 let suppressTagPopoverOpen = false;
 let suppressTagPopoverOpenTimer = null;
 
@@ -52,6 +57,7 @@ function isViewingLatestDocumentVersion() {
 function syncDocumentReadOnlyState() {
   const isReadOnly = !isViewingLatestDocumentVersion();
   $documentContent.toggleClass("is-historical-version", isReadOnly);
+  pendingDocumentTextSelectionCommit = false;
 
   if (!isReadOnly) {
     return;
@@ -150,33 +156,8 @@ function clampModelTagHorizontalPosition($tag) {
   }
 }
 
-function setHandleSelectionData($handle, selection) {
-  const { selectionId, modelId, modelVersionId, traceId } = selection;
-  $handle.attr("data-selection-id", selectionId);
-  if (modelId !== undefined && modelId !== null) {
-    $handle.attr("data-model-id", modelId);
-  } else {
-    $handle.removeAttr("data-model-id");
-  }
-  if (modelVersionId !== undefined && modelVersionId !== null) {
-    $handle.attr("data-model-version-id", modelVersionId);
-  } else {
-    $handle.removeAttr("data-model-version-id");
-  }
-  if (traceId !== undefined && traceId !== null) {
-    $handle.attr("data-trace-id", traceId);
-  } else {
-    $handle.removeAttr("data-trace-id");
-  }
-}
-
 function hideSelectionHandles() {
-  $selectionHandlesLayer
-    .find(".selection-handle")
-    .removeAttr(
-      "data-selection-id data-model-id data-model-version-id data-trace-id",
-    )
-    .hide();
+  $selectionHandlesLayer.find(".selection-handle").hide();
 }
 
 function hideSelectedSelectionToolbar() {
@@ -314,6 +295,14 @@ function isNodeInsideDocumentContent(node) {
     return $documentContent[0].contains(node.parentElement);
   }
   return $documentContent[0].contains(node);
+}
+
+function isRangeInsideDocumentContent(range) {
+  if (!range) return false;
+  return (
+    isNodeInsideDocumentContent(range.startContainer) &&
+    isNodeInsideDocumentContent(range.endContainer)
+  );
 }
 
 function getCaretPointFromClientPoint(clientX, clientY) {
@@ -543,9 +532,6 @@ function updateSelectionHandlesPosition() {
     '.selection-handle[data-side="end"]',
   );
 
-  setHandleSelectionData($startHandle, selectedSelection);
-  setHandleSelectionData($endHandle, selectedSelection);
-
   $startHandle.css({ top: `${startTop}px`, left: `${startLeft}px` }).show();
   $endHandle.css({ top: `${endTop}px`, left: `${endLeft}px` }).show();
   updateSelectedSelectionToolbarPosition();
@@ -646,8 +632,8 @@ function scrollToSelection(selectionId) {
 }
 
 function scrollToRange(range) {
-  const rects = range.getClientRects();
-  if (!rects || rects.length === 0) return;
+  const rects = getRenderableRangeClientRects(range);
+  if (rects.length === 0) return;
 
   const eleViewerWrap = $viewerWrap[0];
   const eleViewerWrapRect = eleViewerWrap.getBoundingClientRect();
@@ -790,12 +776,15 @@ const renderSelection = (
   const eleViewerWrap = $viewerWrap[0];
   const eleViewerWrapRect = eleViewerWrap.getBoundingClientRect();
 
-  const rects = range.getClientRects();
-  if (!rects || rects.length === 0) {
+  const rects = getRenderableRangeClientRects(range);
+  if (rects.length === 0) {
     return;
   }
 
-  const selectionRect = range.getBoundingClientRect();
+  const selectionRect = getRectsBoundingBox(rects);
+  if (!selectionRect) {
+    return;
+  }
   const selectionRectTop = selectionRect.top;
   const selectionRectLeft = selectionRect.left;
   const wrapTop = `${selectionRectTop - eleViewerWrapRect.top + eleViewerWrap.scrollTop}px`;
@@ -890,16 +879,9 @@ const onSelectionHandleDragStart = (event) => {
   event.preventDefault();
   event.stopPropagation();
   const $handle = $(event.currentTarget);
-  const selectionId = $handle.attr("data-selection-id");
-  if (!selectionId) return;
+  const selectionMeta = getSelectedSelection();
+  if (!selectionMeta) return;
 
-  const selectionMeta = {
-    selectionId,
-    modelId: $handle.attr("data-model-id"),
-    modelVersionId: $handle.attr("data-model-version-id"),
-    traceId: $handle.attr("data-trace-id"),
-    scope: $handle.attr("data-model-id") ? "model" : "temporary",
-  };
   if (!isSelectionMetaSelectable(selectionMeta)) {
     return;
   }
@@ -1095,6 +1077,7 @@ const handleTextSelection = () => {
   if (!selection.rangeCount) return;
   const range = selection.getRangeAt(0);
   if (range.collapsed) return;
+  if (!isRangeInsideDocumentContent(range)) return;
   // if (!content.contains(range.commonAncestorContainer)) return;
   // $generateModelButton.prop("disabled", false);
   const temporarySelection = {
@@ -1108,6 +1091,23 @@ const handleTextSelection = () => {
   documentViewerStore.addTemporarySelection(temporarySelection);
   // renderSelection(temporarySelection);
   selection.removeAllRanges();
+};
+
+const onDocumentTextSelectionStart = (event) => {
+  pendingDocumentTextSelectionCommit =
+    event.button === 0 && isViewingLatestDocumentVersion();
+};
+
+const onDocumentTextSelectionEnd = () => {
+  if (!pendingDocumentTextSelectionCommit) return;
+  pendingDocumentTextSelectionCommit = false;
+  handleTextSelection();
+};
+
+const onDocumentTextSelectionMove = (event) => {
+  if (!pendingDocumentTextSelectionCommit) return;
+  if (event.buttons !== 0) return;
+  onDocumentTextSelectionEnd();
 };
 
 const blockDocumentTextEdit = (event) => {
@@ -1125,7 +1125,18 @@ createUI({
     return {};
   },
   bindListeners: () => {
-    $documentContent.on("mouseup", handleTextSelection);
+    $documentContent.on(
+      "mousedown.documentTextSelectionCommit",
+      onDocumentTextSelectionStart,
+    );
+    $(document).on(
+      "mouseup.documentTextSelectionCommit",
+      onDocumentTextSelectionEnd,
+    );
+    $(document).on(
+      "mousemove.documentTextSelectionCommit",
+      onDocumentTextSelectionMove,
+    );
     $documentContent.on("beforeinput paste drop", blockDocumentTextEdit);
     $viewerWrap.on("scroll", rerenderOverlayLayers);
     $("#columnResizehandle1").on("dragcolumnmove", (e) => {

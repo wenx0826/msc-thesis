@@ -23,6 +23,7 @@ export default {
       }
       const createdVersion = versionRepo.create({
         documentId: createdDocument.id,
+        restoredFrom: null,
         versionNumber: latestVersionNumber,
         name: `v${latestVersionNumber}`,
         filename,
@@ -62,6 +63,7 @@ export default {
       }
       const createdVersion = versionRepo.create({
         documentId,
+        restoredFrom: sourceVersionId,
         versionNumber: latestVersionNumber,
         name: `v${latestVersionNumber}`,
         filename,

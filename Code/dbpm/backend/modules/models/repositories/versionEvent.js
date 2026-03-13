@@ -1,30 +1,29 @@
 import db from "../../../database.js";
 import BaseSqlRepository from "../../shared/repositories/BaseSqlRepository.js";
 
-class ModelUpdateEventRepository extends BaseSqlRepository {
+class ModelVersionEventRepository extends BaseSqlRepository {
   constructor() {
     super({
       db,
-      tableName: "model_update_events",
+      tableName: "model_version_events",
       requiredCreateColumns: ["model_version_id", "type"],
-      jsonColumns: ["details"],
     });
   }
 
-  add({ modelVersionId, type, details = null }) {
-    return this.create({ modelVersionId, type, details });
+  add({ modelVersionId, type, selectedWordsCount = null }) {
+    return this.create({ modelVersionId, type, selectedWordsCount });
   }
 
   countByTypeByProjectId(projectId, includeDeleted = true) {
     const stmt = db.prepare(`
-      SELECT mue.type AS type, COUNT(*) AS count
-      FROM model_update_events mue
-      JOIN model_versions mv ON mv.id = mue.model_version_id
+      SELECT mve.type AS type, COUNT(*) AS count
+      FROM model_version_events mve
+      JOIN model_versions mv ON mv.id = mve.model_version_id
       JOIN models m ON m.id = mv.model_id
       WHERE m.project_id = ?
       ${includeDeleted ? "" : "AND m.deleted_at IS NULL"}
-      GROUP BY mue.type
-      ORDER BY count DESC, mue.type ASC
+      GROUP BY mve.type
+      ORDER BY count DESC, mve.type ASC
     `);
 
     return stmt.all(projectId).map((row) => ({
@@ -39,15 +38,15 @@ class ModelUpdateEventRepository extends BaseSqlRepository {
         m.id AS model_id,
         m.name AS model_name,
         m.deleted_at AS model_deleted_at,
-        mue.type AS type,
+        mve.type AS type,
         COUNT(*) AS count
-      FROM model_update_events mue
-      JOIN model_versions mv ON mv.id = mue.model_version_id
+      FROM model_version_events mve
+      JOIN model_versions mv ON mv.id = mve.model_version_id
       JOIN models m ON m.id = mv.model_id
       WHERE m.project_id = ?
       ${includeDeleted ? "" : "AND m.deleted_at IS NULL"}
-      GROUP BY m.id, m.name, m.deleted_at, mue.type
-      ORDER BY m.created_at ASC, count DESC, mue.type ASC
+      GROUP BY m.id, m.name, m.deleted_at, mve.type
+      ORDER BY m.created_at ASC, count DESC, mve.type ASC
     `);
 
     return stmt.all(projectId).map((row) => ({
@@ -66,15 +65,15 @@ class ModelUpdateEventRepository extends BaseSqlRepository {
         m.name AS model_name,
         m.deleted_at AS model_deleted_at,
         mv.version_number AS version_number,
-        mue.type AS type,
+        mve.type AS type,
         COUNT(*) AS count
-      FROM model_update_events mue
-      JOIN model_versions mv ON mv.id = mue.model_version_id
+      FROM model_version_events mve
+      JOIN model_versions mv ON mv.id = mve.model_version_id
       JOIN models m ON m.id = mv.model_id
       WHERE m.project_id = ?
       ${includeDeleted ? "" : "AND m.deleted_at IS NULL"}
-      GROUP BY m.id, m.name, m.deleted_at, mv.version_number, mue.type
-      ORDER BY m.created_at ASC, mv.version_number ASC, count DESC, mue.type ASC
+      GROUP BY m.id, m.name, m.deleted_at, mv.version_number, mve.type
+      ORDER BY m.created_at ASC, mv.version_number ASC, count DESC, mve.type ASC
     `);
 
     return stmt.all(projectId).map((row) => ({
@@ -88,4 +87,4 @@ class ModelUpdateEventRepository extends BaseSqlRepository {
   }
 }
 
-export default new ModelUpdateEventRepository();
+export default new ModelVersionEventRepository();

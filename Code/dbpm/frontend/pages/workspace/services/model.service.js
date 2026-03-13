@@ -1,5 +1,9 @@
 // Model Service - Handles model generation and updates
-import { modelsAPI, documentModelLinksAPI, logsAPI } from "../../../api/index.js";
+import {
+  modelsAPI,
+  documentModelLinksAPI,
+  logsAPI,
+} from "../../../api/index.js";
 import {
   workspaceStore,
   modelsStore,
@@ -49,6 +53,11 @@ const pendingGenerationRequestsById = new Map();
 const deferredRegenerationPreviewsByVersionId = new Map();
 let pendingNewModelDraft = null;
 let pendingNewModelDraftCommitPromise = null;
+let pendingGenerationAttemptMeta = null;
+
+function countWordsSimple(text) {
+  return (text || "").trim().split(/\s+/).filter(Boolean).length || 0;
+}
 let generationRequestSequence = 0;
 let lastNoSelectionLoadAlert = {
   versionId: null,
@@ -68,6 +77,32 @@ function getEditingModelContext() {
     modelId: id || null,
     modelVersionId: versionId || null,
   };
+}
+
+function resolveEditingModelIsLatest(modelId = null, modelVersionId = null) {
+  const editingModel = workspaceStore.getEditingModel() || {};
+  if (typeof editingModel.isLatest === "boolean") {
+    return editingModel.isLatest;
+  }
+  if (modelId && modelVersionId) {
+    return modelsStore.isLatestVersion(modelId, modelVersionId);
+  }
+  return null;
+}
+
+function setRegenerationDraftEditingModel({
+  modelId = null,
+  modelVersionId = null,
+} = {}) {
+  if (!modelId) {
+    return;
+  }
+  workspaceStore.setEditingModel({
+    id: modelId,
+    versionId: null,
+    isLatest: resolveEditingModelIsLatest(modelId, modelVersionId),
+    isDraft: true,
+  });
 }
 
 function isViewingLatestDocumentVersion() {
@@ -295,7 +330,9 @@ function cloneValue(value, fallback = null) {
 
 function resolveModelCreationContext(creationContext = null) {
   const normalizedContext =
-    creationContext && typeof creationContext === "object" ? creationContext : {};
+    creationContext && typeof creationContext === "object"
+      ? creationContext
+      : {};
   const viewedDocument = workspaceStore.getViewedDocument() || {};
   const documentId =
     normalizedContext.documentId ??
@@ -334,7 +371,9 @@ function setPendingNewModelDraft(nextDraft) {
     pendingNewModelDraft = null;
     return;
   }
-  const normalizedContext = resolveModelCreationContext(nextDraft.creationContext);
+  const normalizedContext = resolveModelCreationContext(
+    nextDraft.creationContext,
+  );
   pendingNewModelDraft = {
     modelData: nextDraft.modelData,
     preparedModelData:
@@ -353,7 +392,10 @@ function getPendingNewModelDraftSnapshot() {
     ...pendingNewModelDraft,
     creationContext: {
       ...pendingNewModelDraft.creationContext,
-      selections: cloneValue(pendingNewModelDraft.creationContext?.selections, []),
+      selections: cloneValue(
+        pendingNewModelDraft.creationContext?.selections,
+        [],
+      ),
     },
   };
 }
@@ -1199,6 +1241,10 @@ export default {
     modelEditorStore.setData(deferredPreview.regeneratedDataXml, {
       updateType: deferredPreview.updateType,
     });
+    setRegenerationDraftEditingModel({
+      modelId: activeContext.modelId,
+      modelVersionId: activeContext.modelVersionId,
+    });
     return true;
   },
   hasPendingNewModelDraft() {
@@ -1207,12 +1253,33 @@ export default {
   getPendingNewModelDraft() {
     return getPendingNewModelDraftSnapshot();
   },
+  async recordGenerationAttempt(data) {
+    try {
+      return await modelsAPI.recordGenerationAttempt(data);
+    } catch (error) {
+      console.warn("Failed to record generation attempt:", error);
+      return null;
+    }
+  },
+  getPendingGenerationAttemptMeta() {
+    return pendingGenerationAttemptMeta
+      ? { ...pendingGenerationAttemptMeta }
+      : null;
+  },
+  clearPendingGenerationAttemptMeta() {
+    pendingGenerationAttemptMeta = null;
+  },
   stagePendingNewModelDraft(modelData, options = {}) {
     if (!modelData) {
       return null;
     }
-    const creationContext = resolveModelCreationContext(options.creationContext);
-    const preparedModelData = prepareModelDataForCreation(modelData, creationContext);
+    const creationContext = resolveModelCreationContext(
+      options.creationContext,
+    );
+    const preparedModelData = prepareModelDataForCreation(
+      modelData,
+      creationContext,
+    );
     setPendingNewModelDraft({
       modelData,
       preparedModelData,
@@ -1243,6 +1310,20 @@ export default {
         creationContext: pendingDraft.creationContext,
         preparedModelData: pendingDraft.preparedModelData,
       });
+      // Record the accepted initial generation attempt
+      const meta = pendingGenerationAttemptMeta;
+      pendingGenerationAttemptMeta = null;
+      if (meta) {
+        modelsAPI
+          .recordGenerationAttempt({
+            ...meta,
+            outcome: "accepted",
+            outcomeModelVersionId: result?.modelMeta?.latestVersionId ?? null,
+          })
+          .catch((e) =>
+            console.warn("Failed to record generation attempt:", e),
+          );
+      }
       setPendingNewModelDraft(null);
       return result;
     })();
@@ -1259,6 +1340,22 @@ export default {
     }
     const hadPendingDraft = !!pendingNewModelDraft;
     const isDraftState = workspaceStore.isEditingModelDraft();
+    // Record declined initial generation attempt
+    if (hadPendingDraft) {
+      const meta = pendingGenerationAttemptMeta;
+      pendingGenerationAttemptMeta = null;
+      if (meta) {
+        modelsAPI
+          .recordGenerationAttempt({
+            ...meta,
+            outcome: "declined",
+            outcomeModelVersionId: null,
+          })
+          .catch((e) =>
+            console.warn("Failed to record generation attempt:", e),
+          );
+      }
+    }
     setPendingNewModelDraft(null);
     if (isDraftState) {
       workspaceStore.setEditingModel({
@@ -1315,6 +1412,15 @@ export default {
     let hasAppliedToActiveModel = false;
     let hasDeferredPreview = false;
     try {
+      pendingGenerationAttemptMeta = {
+        projectId: workspaceStore.getProjectId(),
+        target: "regeneration",
+        mode: "prompt",
+        targetModelVersionId: editingModelVersionId,
+        selectedWordsCount: null,
+        selectedTextSimilarity: null,
+        prompt: userInput || null,
+      };
       const generatedModel = await this.generateModel(userInput, rpstXml);
       if (!generatedModel) {
         throw new Error("Model generation returned an empty result.");
@@ -1336,6 +1442,10 @@ export default {
         modelEditorStore.setData(preview.regeneratedDataXml, {
           updateType: preview.updateType,
         });
+        setRegenerationDraftEditingModel({
+          modelId: editingModelId,
+          modelVersionId: editingModelVersionId,
+        });
         hasAppliedToActiveModel = true;
       } else {
         storeDeferredRegenerationPreview(preview);
@@ -1355,6 +1465,7 @@ export default {
       };
     } catch (error) {
       hasError = true;
+      pendingGenerationAttemptMeta = null;
       console.error("Failed to regenerate model by prompt:", error);
       if (isEditingModelContextActive(regenerationContext)) {
         showModelGenerationErrorMessage();
@@ -1417,6 +1528,19 @@ export default {
     let hasDeferredPreview = false;
     try {
       const selectedText = documentViewerStore.getSelectedText();
+      const selectedWordsCount = countWordsSimple(selectedText) || null;
+      pendingGenerationAttemptMeta = {
+        projectId: workspaceStore.getProjectId(),
+        target:
+          normalizedTarget === MODEL_GENERATION_TARGET.NEW_MODEL
+            ? "initial"
+            : "regeneration",
+        mode: "selection",
+        targetModelVersionId: regenerationContext?.modelVersionId ?? null,
+        selectedWordsCount,
+        selectedTextSimilarity: null, // TODO: compute Jaccard vs stored trace selections
+        prompt: null,
+      };
       const generatedModel = await this.generateModel(
         selectedText,
         EMPTY_MODEL,
@@ -1452,6 +1576,10 @@ export default {
         modelEditorStore.setData(preview.regeneratedDataXml, {
           updateType: preview.updateType,
         });
+        setRegenerationDraftEditingModel({
+          modelId: regenerationContext.modelId,
+          modelVersionId: regenerationContext.modelVersionId,
+        });
         hasAppliedToActiveModel = true;
       } else {
         storeDeferredRegenerationPreview(preview);
@@ -1466,6 +1594,7 @@ export default {
       };
     } catch (error) {
       hasError = true;
+      pendingGenerationAttemptMeta = null;
       console.error("Failed to generate model by selections:", error);
       if (
         normalizedTarget === MODEL_GENERATION_TARGET.NEW_MODEL ||
@@ -1495,7 +1624,9 @@ export default {
   },
 
   async createModelAndLink(modelData, options = {}) {
-    const creationContext = resolveModelCreationContext(options.creationContext);
+    const creationContext = resolveModelCreationContext(
+      options.creationContext,
+    );
     const preparedModelData =
       options.preparedModelData ||
       prepareModelDataForCreation(modelData, creationContext);
@@ -1742,7 +1873,9 @@ export default {
           ? serializedTrace.selections.length
           : 0,
       });
-      await documentModelLinksAPI.updateLink(getTraceUpdatePayload(serializedTrace));
+      await documentModelLinksAPI.updateLink(
+        getTraceUpdatePayload(serializedTrace),
+      );
       const activeTrace = documentViewerStore.getDisplayedModelTrace();
       if (activeTrace && String(activeTrace.id) === String(traceId)) {
         documentViewerStore.syncOriginalActiveModelSerializedSelectionsWithActiveTrace();
@@ -1892,7 +2025,9 @@ export default {
         });
         documentViewerStore.updateTrace(updatedTrace);
       } else {
-        await documentModelLinksAPI.updateLink(getTraceUpdatePayload(updatedTrace));
+        await documentModelLinksAPI.updateLink(
+          getTraceUpdatePayload(updatedTrace),
+        );
         documentViewerStore.syncOriginalActiveModelSerializedSelectionsWithActiveTrace();
       }
     } catch (error) {
@@ -1949,7 +2084,12 @@ export default {
     // }
   },
   async loadVersion(versionId) {
+    console.log(`Loading model version ${versionId}...`);
     const { id: modelId } = workspaceStore.getEditingModel() || {};
+    console.log(
+      `!!!Ensuring model version is cached with data for loading: ${versionId} (service call)`,
+      modelId,
+    );
     const cached = await this.ensureVersionCached(versionId, {
       needData: true,
       needSvg: false,
@@ -1966,6 +2106,7 @@ export default {
       versionId,
       "(service cache)",
     );
+
     modelEditorStore.setData(cached.dataXml, {
       updateType: null,
     });

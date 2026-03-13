@@ -21,7 +21,7 @@
   z-index: 1;
 }
 
-#modelEditorPanel[data-state="none"] #modelEditorEmptyState {
+#modelEditorPanel[data-view-state="none"] #modelEditorEmptyState {
   display: flex;
 }
 
@@ -29,23 +29,23 @@
   display: none;
 }
 
-#modelEditorPanel[data-state="none"] #modelEditorHeaderTitle,
-#modelEditorPanel[data-state="initial_generation_draft"] #modelEditorHeaderTitle {
+#modelEditorPanel[data-view-state="none"] #modelEditorHeaderTitle,
+#modelEditorPanel[data-view-state="draft"] #modelEditorHeaderTitle {
   display: inline-flex;
   align-items: center;
 }
 
-#modelEditorPanel[data-state="none"] #editingModelName,
-#modelEditorPanel[data-state="none"] #editingModelVersionTag,
-#modelEditorPanel[data-state="initial_generation_draft"] #editingModelName,
-#modelEditorPanel[data-state="initial_generation_draft"] #editingModelVersionTag {
+#modelEditorPanel[data-view-state="none"] #editingModelName,
+#modelEditorPanel[data-view-state="none"] #editingModelVersionTag,
+#modelEditorPanel[data-view-state="draft"] #editingModelName,
+#modelEditorPanel[data-view-state="draft"] #editingModelVersionTag {
   display: none;
 }
 
-#modelEditorPanel[data-state="none"] #deselectModelButton,
-#modelEditorPanel[data-state="none"] #editingModelActionsGroup,
-#modelEditorPanel[data-state="initial_generation_draft"] #deselectModelButton,
-#modelEditorPanel[data-state="initial_generation_draft"] #editingModelActionsGroup {
+#modelEditorPanel[data-view-state="none"] #deselectModelButton,
+#modelEditorPanel[data-view-state="none"] #editingModelActionsGroup,
+#modelEditorPanel[data-view-state="draft"] #deselectModelButton,
+#modelEditorPanel[data-view-state="draft"] #editingModelActionsGroup {
   display: none;
 }
 
@@ -175,11 +175,11 @@ text.duration {
     background-color 0.18s ease;
 }
 
-#modelEditorPanel[data-state="initial_generation_draft"] #initialGenerationDraftActionBar {
+#modelEditorPanel[data-pending-draft-type="initial"] #initialGenerationDraftActionBar {
   display: flex;
 }
 
-#modelEditorPanel[data-state="regeneration_draft"] #regeneratedModelActionBar {
+#modelEditorPanel[data-pending-draft-type="regeneration"] #regeneratedModelActionBar {
   display: flex;
 }
 
@@ -207,12 +207,9 @@ text.duration {
   background-color: var(--x-ui-background-color);
 }
 
-#modelEditorPanel[data-state="latest"] #promptPane {
+#modelEditorPanel[data-view-state="latest"]:not([data-pending-draft-type]) #promptPane,
+#modelEditorPanel[data-pending-draft-type="regeneration"] #promptPane {
   display: flex;
-}
-
-#modelEditorPanel[data-state="generating"] #promptPane {
-  display: none;
 }
 
 #promptPane:focus-within {

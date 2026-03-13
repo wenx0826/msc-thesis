@@ -1,6 +1,10 @@
 import { documentsAPI, documentModelLinksAPI } from "../api/index.js";
 import { createTemplateElement } from "../shared/utils/dom.js";
-import { deserializeRange } from "../modules/document/selection.js";
+import {
+  deserializeRange,
+  getRenderableRangeClientRects,
+  getRectsBoundingBox,
+} from "../modules/document/selection.js";
 
 const DEFAULT_SELECTION_COLOR = "#d4e1f1";
 const MODEL_TAG_TEMPLATE_ID = "modelTagTemplate";
@@ -151,10 +155,11 @@ function renderSelection(range, style, trace) {
   if (!viewerElement) return;
 
   const viewerRect = viewerElement.getBoundingClientRect();
-  const rects = Array.from(range.getClientRects() || []);
+  const rects = getRenderableRangeClientRects(range);
   if (rects.length === 0) return;
 
-  const rangeRect = range.getBoundingClientRect();
+  const rangeRect = getRectsBoundingBox(rects);
+  if (!rangeRect) return;
   const wrapTop = `${rangeRect.top - viewerRect.top + viewerElement.scrollTop}px`;
   const wrapLeft = `${rangeRect.left - viewerRect.left + viewerElement.scrollLeft}px`;
   const wrapWidth = `${rangeRect.width}px`;
