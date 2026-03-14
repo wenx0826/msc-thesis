@@ -22,12 +22,28 @@
   display: none;
 }
 
-#modelActionsBar {
+#linkActionsBar {
   display: none;
 }
 
-#documentViewerPanel[data-view-state="latest"] #modelActionsBar {
+#documentViewerPanel[data-view-state="latest"] #linkActionsBar,
+#documentViewerPanel[data-view-state="latest-editing-model"] #linkActionsBar {
   display: flex;
+}
+
+#addSelectionsButton,
+#generateModelButton,
+#regenerateModelButton {
+  display: none;
+}
+
+#documentViewerPanel[data-view-state="latest"] #generateModelButton {
+  display: inline-block;
+}
+
+#documentViewerPanel[data-view-state="latest-editing-model"] #addSelectionsButton,
+#documentViewerPanel[data-view-state="latest-editing-model"] #regenerateModelButton {
+  display: inline-block;
 }
 
 #documentViewerEmptyState {

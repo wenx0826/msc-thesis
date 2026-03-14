@@ -240,13 +240,21 @@
           </ui-content>
           <ui-divider></ui-divider>
           <!-- Model (Re-)generation Bar -->
-          <ui-bar id="modelActionsBar" style="z-index: 3">
+          <ui-bar id="linkActionsBar" style="z-index: 3">
             <div class="right action-group">
-              <button id="addSelectionsButton" class="hidden" disabled>
+              <button id="addSelectionsButton" disabled>
                 Apply changes
               </button>
               <button id="generateModelButton" class="btn-primary" data-target="new_model" disabled>
                 Generate new model
+              </button>
+              <button
+                id="regenerateModelButton"
+                class="btn-primary"
+                data-target="editing_model"
+                disabled
+              >
+                Regenerate model
               </button>
             </div>
           </ui-bar>

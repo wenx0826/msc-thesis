@@ -13,6 +13,8 @@ const MODEL_GENERATION_TARGET_VALUES = new Set(
 );
 const $addSelectionsButton = $("#addSelectionsButton");
 const $generateModelButton = $("#generateModelButton");
+const $regenerateModelButton = $("#regenerateModelButton");
+const $generationButtons = $generateModelButton.add($regenerateModelButton);
 
 function resolveGenerationTargetFromButton(element) {
   const target = element?.dataset?.target;
@@ -26,29 +28,11 @@ function resolveGenerationTargetFromButton(element) {
   return MODEL_GENERATION_TARGET.NEW_MODEL;
 }
 
-function applyEditingModelState(editingModel = {}) {
-  const hasEditingModel = !!editingModel.id;
-  if (hasEditingModel) {
-    $addSelectionsButton.show();
-    $addSelectionsButton.text("Apply changes");
-    $generateModelButton.attr(
-      "data-target",
-      MODEL_GENERATION_TARGET.EDITING_MODEL,
-    );
-    $generateModelButton.text("Regenerate model");
-    return;
-  }
-
-  $addSelectionsButton.hide();
-  $generateModelButton.attr("data-target", MODEL_GENERATION_TARGET.NEW_MODEL);
-  $generateModelButton.text("Generate new model");
-}
-
 function applyActionButtonsState() {
   const isDraftMode =
     workspaceStore.isEditingModelDraft() && modelService.hasPendingNewModelDraft();
   if (isDraftMode) {
-    $generateModelButton.prop("disabled", true);
+    $generationButtons.prop("disabled", true);
     $addSelectionsButton.prop("disabled", true);
     return;
   }
@@ -57,8 +41,9 @@ function applyActionButtonsState() {
   const hasSelectionChanged = !!documentViewerStore.getHasSelectionChanged();
 
   if (hasEditingModel) {
+    $generateModelButton.prop("disabled", true);
     // Keep regeneration condition simple: enable when editingModel.id exists.
-    $generateModelButton.prop("disabled", !workspaceStore.getEditingModelId());
+    $regenerateModelButton.prop("disabled", !workspaceStore.getEditingModelId());
     // Apply stays enabled only for pending text changes or temporary selections.
     $addSelectionsButton.prop("disabled", !hasSelectionChanged);
     return;
@@ -66,12 +51,12 @@ function applyActionButtonsState() {
 
   const isEnabled = hasSelectionChanged;
   $generateModelButton.prop("disabled", !isEnabled);
-  $addSelectionsButton.prop("disabled", !isEnabled);
+  $regenerateModelButton.prop("disabled", true);
+  $addSelectionsButton.prop("disabled", true);
 }
 
 createUI({
   setup: () => {
-    applyEditingModelState(workspaceStore.getEditingModel());
     applyActionButtonsState();
   },
   bindListeners: () => {
@@ -81,9 +66,9 @@ createUI({
       );
     });
 
-    $generateModelButton.on("click", async (event) => {
+    $generationButtons.on("click", async (event) => {
       const target = resolveGenerationTargetFromButton(event.currentTarget);
-      $generateModelButton.prop("disabled", true);
+      $(event.currentTarget).prop("disabled", true);
       try {
         await modelService.generateModelBySelections(target);
       } finally {
@@ -102,22 +87,9 @@ createUI({
       }
     });
 
-    workspaceStore.subscribe((_, { key, oldValue, newValue }) => {
+    workspaceStore.subscribe((_, { key }) => {
       switch (key) {
         case "editingModel": {
-          const oldHasEditingModel = !!oldValue?.id;
-          const newHasEditingModel = !!newValue?.id;
-          const oldIsDraft = oldValue?.isDraft === true;
-          const newIsDraft = newValue?.isDraft === true;
-          if (
-            oldHasEditingModel === newHasEditingModel &&
-            oldIsDraft === newIsDraft
-          ) {
-            break;
-          }
-          if (oldHasEditingModel !== newHasEditingModel) {
-            applyEditingModelState(newValue);
-          }
           applyActionButtonsState();
           break;
         }

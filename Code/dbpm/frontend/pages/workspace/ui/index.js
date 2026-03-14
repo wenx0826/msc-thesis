@@ -3,7 +3,7 @@ import "./workspace.ui.js";
 import "./documents.ui.js";
 import "./document-viewer-header-bar.ui.js";
 import "./document-viewer-main-pane.ui.js";
-import "./document-viewer-model-actions-bar.ui.js";
+import "./document-viewer-link-actions-bar.ui.js";
 import "./model-editor-header-bar.ui.js";
 import "./model-editor-prompt-pane.ui.js";
 import "./model-editor-editing-pane.ui.js";

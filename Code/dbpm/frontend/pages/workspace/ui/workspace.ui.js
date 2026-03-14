@@ -7,6 +7,7 @@ const $modelEditorPanel = $("#modelEditorPanel");
 const DOCUMENT_VIEWER_PANEL_STATE = {
   NONE: "none",
   LATEST: "latest",
+  LATEST_EDITING_MODEL: "latest-editing-model",
   HISTORICAL: "historical",
 };
 
@@ -25,6 +26,12 @@ const MODEL_EDITOR_PENDING_DRAFT_TYPE = {
 function resolveDocumentViewerPanelState() {
   if (!workspaceStore.hasViewedDocument()) {
     return DOCUMENT_VIEWER_PANEL_STATE.NONE;
+  }
+  if (
+    !workspaceStore.isViewedDocumentReadOnly() &&
+    workspaceStore.hasEditingModel()
+  ) {
+    return DOCUMENT_VIEWER_PANEL_STATE.LATEST_EDITING_MODEL;
   }
   return workspaceStore.isViewedDocumentReadOnly()
     ? DOCUMENT_VIEWER_PANEL_STATE.HISTORICAL
@@ -85,6 +92,7 @@ createUI({
           setDocumentViewerPanelState();
           break;
         case "editingModel":
+          setDocumentViewerPanelState();
           setModelEditorPanelState();
           setModelEditorPendingDraftType();
           break;
@@ -92,6 +100,5 @@ createUI({
           break;
       }
     });
-
   },
 });

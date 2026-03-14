@@ -555,12 +555,20 @@ class DocumentViewerStore extends Store {
       this.setEditingModelLink(null);
       return;
     }
+    if (
+      this.areIdsEqual(this.state.editingModelLink?.modelVersionId, modelVersionId)
+    ) {
+      return;
+    }
     const link = this.state.links.find((link) =>
       this.areIdsEqual(link?.modelVersionId, modelVersionId),
     );
     this.setEditingModelLink(link || null);
   }
   setEditingModelLinkById(linkId) {
+    if (this.areIdsEqual(this.state.editingModelLink?.id, linkId)) {
+      return;
+    }
     const link = this.getLinkById(linkId);
     this.setEditingModelLink(link);
   }
