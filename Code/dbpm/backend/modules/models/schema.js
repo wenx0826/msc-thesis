@@ -49,6 +49,27 @@ const selectionsSchema = {
   items: selectionSchema,
 };
 
+const versionUpdateTypeSchema = {
+  type: "string",
+  enum: [
+    "manual_update_selections",
+    "manual_update_graph_properties_only",
+    "manual_update_graph_changed",
+    "regeneration_by_selections",
+    "regeneration_by_prompt",
+  ],
+};
+
+const versionCreateLinkSchema = {
+  type: "object",
+  additionalProperties: false,
+  properties: {
+    documentVersionId: { type: "string" },
+    selections: selectionsSchema,
+  },
+  required: ["documentVersionId", "selections"],
+};
+
 export const createModelSchema = {
   body: {
     type: "object",
@@ -125,12 +146,52 @@ export const createModelSchema = {
 export const createVersionSchema = {
   body: {
     type: "object",
+    additionalProperties: false,
     required: ["modelId", "sourceVersionId"],
     properties: {
+      mode: { type: "string", enum: ["copy", "payload"] },
       modelId: { type: "string" },
       sourceVersionId: { type: "string" },
       reason: { type: "string", enum: ["new_version", "revert"] },
+      type: versionUpdateTypeSchema,
+      modelData: { type: "string" },
+      link: versionCreateLinkSchema,
     },
+    allOf: [
+      {
+        if: {
+          anyOf: [
+            {
+              required: ["mode"],
+              properties: {
+                mode: { const: "payload" },
+              },
+            },
+            { required: ["modelData"] },
+            { required: ["link"] },
+          ],
+        },
+        then: {
+          required: ["modelData", "link"],
+          properties: {
+            reason: { type: "string", enum: ["new_version"] },
+          },
+        },
+      },
+      {
+        if: {
+          required: ["mode"],
+          properties: {
+            mode: { const: "copy" },
+          },
+        },
+        then: {
+          properties: {
+            reason: { type: "string", enum: ["new_version", "revert"] },
+          },
+        },
+      },
+    ],
   },
   response: {
     200: {

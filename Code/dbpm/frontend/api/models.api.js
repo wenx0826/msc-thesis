@@ -11,7 +11,7 @@ function delay(ms) {
 }
 
 export default {
-  LLMDisabled: false,
+  LLMDisabled: true,
   path: "models",
 
   async generateSampleModel() {

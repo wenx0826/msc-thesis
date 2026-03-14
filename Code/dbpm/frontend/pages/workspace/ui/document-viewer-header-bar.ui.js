@@ -57,21 +57,29 @@ function getSelectedSelectionColor() {
     return selection?.style?.backgroundColor || null;
   }
 
-  let trace = null;
+  let link = null;
+  const editingModelLink = documentViewerStore.getDisplayedEditingModelLink();
   if (
-    selectedSelection.traceId !== undefined &&
-    selectedSelection.traceId !== null
+    selectedSelection.linkId !== undefined &&
+    selectedSelection.linkId !== null
   ) {
-    trace = documentViewerStore.getTraceById(selectedSelection.traceId);
+    if (
+      editingModelLink &&
+      String(editingModelLink.id || "") === String(selectedSelection.linkId)
+    ) {
+      link = editingModelLink;
+    } else {
+      link = documentViewerStore.getLinkById(selectedSelection.linkId);
+    }
   }
-  if (!trace) {
-    trace = documentViewerStore.getDisplayedModelTrace();
+  if (!link) {
+    link = editingModelLink;
   }
-  if (!trace?.selections) {
+  if (!link?.selections) {
     return null;
   }
 
-  const selection = trace.selections.find(
+  const selection = link.selections.find(
     (item) => String(item.id) === String(selectedSelection.selectionId),
   );
   return selection?.style?.backgroundColor || null;
@@ -126,26 +134,27 @@ createUI({
           newColor,
         );
       } else {
-        const updatedTrace = documentViewerStore.updateTraceSelectionColor({
+        const updatedLink = documentViewerStore.updateLinkSelectionColor({
           selectionId: selectedSelection.selectionId,
-          traceId: selectedSelection.traceId,
+          linkId: selectedSelection.linkId,
           modelId: selectedSelection.modelId,
           color: newColor,
         });
-        if (!updatedTrace?.id) {
+        if (!updatedLink?.id) {
           return;
         }
 
-        const activeTrace = documentViewerStore.getDisplayedModelTrace();
-        const isActiveTraceUpdate =
-          selectedSelection.traceId === undefined ||
-          selectedSelection.traceId === null ||
-          (activeTrace &&
-            String(activeTrace.id) === String(selectedSelection.traceId));
-        if (isActiveTraceUpdate) {
-          modelService.updateActiveModelTrace();
+        const editingModelLink =
+          documentViewerStore.getDisplayedEditingModelLink();
+        const isEditingModelLinkUpdate =
+          selectedSelection.linkId === undefined ||
+          selectedSelection.linkId === null ||
+          (editingModelLink &&
+            String(editingModelLink.id) === String(selectedSelection.linkId));
+        if (isEditingModelLinkUpdate) {
+          modelService.syncEditingModelLinkStyles();
         } else {
-          modelService.updateTraceById(updatedTrace.id);
+          modelService.updateLinkById(updatedLink.id);
         }
       }
     });
@@ -160,25 +169,23 @@ createUI({
       if (!modelId) {
         documentViewerStore.removeTemporarySelection(selectionId);
       } else {
-        const updatedTrace = documentViewerStore.removeTraceSelection({
+        const updatedLink = documentViewerStore.removeLinkSelection({
           selectionId,
-          traceId: selectedSelection.traceId,
+          linkId: selectedSelection.linkId,
           modelId: selectedSelection.modelId,
         });
-        if (!updatedTrace?.id) {
+        if (!updatedLink?.id) {
           documentViewerStore.setSelectedSelection(null);
           return;
         }
 
-        const activeTrace = documentViewerStore.getDisplayedModelTrace();
-        const isActiveTraceUpdate =
-          activeTrace && String(activeTrace.id) === String(updatedTrace.id);
-        if (isActiveTraceUpdate) {
-          modelService.updateActiveModelTrace({
-            alertOnEmptyAfterDeletion: true,
-          });
-        } else {
-          modelService.updateTraceTextById(updatedTrace.id, {
+        const editingModelLink =
+          documentViewerStore.getDisplayedEditingModelLink();
+        const isEditingModelLinkUpdate =
+          editingModelLink &&
+          String(editingModelLink.id) === String(updatedLink.id);
+        if (!isEditingModelLinkUpdate) {
+          modelService.updateLinkTextById(updatedLink.id, {
             alertOnEmptyAfterDeletion: true,
           });
         }
@@ -243,8 +250,8 @@ createUI({
         case "temporarySelections":
           syncSelectedSelectionColorInput();
           break;
-        case "activeModelTrace.selections":
-        case "activeModelTrace":
+        case "editingModelLink.selections":
+        case "editingModelLink":
           syncSelectedSelectionColorInput();
           break;
         default:

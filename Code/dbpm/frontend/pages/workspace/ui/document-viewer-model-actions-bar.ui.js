@@ -30,6 +30,7 @@ function applyEditingModelState(editingModel = {}) {
   const hasEditingModel = !!editingModel.id;
   if (hasEditingModel) {
     $addSelectionsButton.show();
+    $addSelectionsButton.text("Apply changes");
     $generateModelButton.attr(
       "data-target",
       MODEL_GENERATION_TARGET.EDITING_MODEL,
@@ -58,7 +59,7 @@ function applyActionButtonsState() {
   if (hasEditingModel) {
     // Keep regeneration condition simple: enable when editingModel.id exists.
     $generateModelButton.prop("disabled", !workspaceStore.getEditingModelId());
-    // Manual "Add Selections" still depends on changed selections.
+    // Apply stays enabled only for pending text changes or temporary selections.
     $addSelectionsButton.prop("disabled", !hasSelectionChanged);
     return;
   }

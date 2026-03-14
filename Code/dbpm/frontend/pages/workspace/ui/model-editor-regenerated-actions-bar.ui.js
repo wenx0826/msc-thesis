@@ -375,21 +375,15 @@ createUI({
 
       $saveNewModelButton.prop("disabled", true);
       try {
-        await modelService.createModelVersion(modelId, modelVersionId);
+        await modelService.createModelVersion(modelId, modelVersionId, {
+          modelData: regeneratedDataXml,
+          type: regenerationUpdateType,
+        });
         const { id: createdModelId, versionId: createdVersionId } =
           workspaceStore.getEditingModel() || {};
         if (!createdModelId || !createdVersionId) {
           throw new Error("Failed to resolve created model version.");
         }
-
-        modelEditorStore.setData(regeneratedDataXml, {
-          updateType: null,
-        });
-
-        await modelService.updateEditingVersion(regenerationUpdateType, {
-          expectedModelId: createdModelId,
-          expectedModelVersionId: createdVersionId,
-        });
 
         // Record accepted_new_version generation attempt
         const meta = modelService.getPendingGenerationAttemptMeta();

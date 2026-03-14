@@ -106,6 +106,14 @@
   outline-style: dashed;
 }
 
+#selectionsInteractionLayer .selection-wrap.is-pending-text-change {
+  outline: 2px dashed var(--wfadaptor-highlight);
+}
+
+#selectionsInteractionLayer .selection-wrap.is-pending-text-change.selected {
+  outline: 2px dashed var(--wfadaptor-selected);
+}
+
 #selectionsInteractionLayer .selection-wrap.is-readonly-trace {
   outline: 2px solid var(--x-ui-text-secondary-color);
 }

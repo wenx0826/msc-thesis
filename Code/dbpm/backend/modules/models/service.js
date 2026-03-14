@@ -80,6 +80,100 @@ function syncLatestModelAlias(modelId, modelVersionId, content) {
   storageRepo.writeByModelId(modelId, content);
 }
 
+function countSelectedWords(selections) {
+  return (Array.isArray(selections) ? selections : []).reduce(
+    (acc, sel) => acc + countWords(sel?.textQuote?.exact ?? ""),
+    0,
+  );
+}
+
+function resolveValidatedCreateVersionContext({ modelId, sourceVersionId }) {
+  if (!modelId) {
+    throw new Error("Model not found");
+  }
+  if (!sourceVersionId) {
+    throw new Error("Source model version not found");
+  }
+
+  const model = modelRepo.findById(modelId, true);
+  if (!model) {
+    throw new Error("Model not found");
+  }
+  if (model.deletedAt) {
+    throw new Error("Model deleted");
+  }
+
+  const sourceVersion = versionRepo.findById(sourceVersionId);
+  if (!sourceVersion) {
+    throw new Error("Source model version not found");
+  }
+  if (sourceVersion.modelId !== modelId) {
+    throw new Error("Source version does not belong to the model");
+  }
+
+  return { model, sourceVersion };
+}
+
+function createNextVersionRecord({
+  modelId,
+  sourceVersionId,
+  reason,
+  selectedWordsCount,
+}) {
+  const latestVersionNumber = modelRepo.allocateLatestVersionNumber(modelId);
+  if (!latestVersionNumber) {
+    throw new Error("Failed to allocate model version number");
+  }
+
+  return versionRepo.create({
+    modelId,
+    restoredFrom: reason === "revert" ? sourceVersionId : null,
+    versionNumber: latestVersionNumber,
+    name: `v${latestVersionNumber}`,
+    selectedWordsCount,
+  });
+}
+
+function persistCreatedVersionContent({ modelId, createdVersionId, modelData }) {
+  storageRepo.write(createdVersionId, modelData);
+  modelRepo.updateById(modelId, {
+    latestVersionId: createdVersionId,
+  });
+  storageRepo.writeByModelId(modelId, modelData);
+}
+
+function recordVersionCreation({
+  model,
+  modelId,
+  sourceVersionId,
+  createdVersionId,
+  reason,
+  mode,
+  type = null,
+  selectedWordsCount,
+}) {
+  if (mode === "copy") {
+    modelVersionEventRepo.add({
+      modelVersionId: createdVersionId,
+      type: reason === "revert" ? "version_reverted" : "version_created_copy",
+      selectedWordsCount: selectedWordsCount ?? null,
+    });
+  }
+
+  const projectId =
+    model.projectId || modelRepo.getProjectIdByModelId(modelId);
+  if (projectId) {
+    logService.logEvent(projectId, "model_version_created", {
+      modelId,
+      sourceVersionId,
+      newVersionId: createdVersionId,
+      reason,
+      mode,
+      ...(type ? { type } : {}),
+    });
+  }
+}
+
 export default {
   createModelAndLink({ projectId, modelData, link }) {
     const latestModelNumber =
@@ -134,80 +228,106 @@ export default {
       throw err;
     }
   },
-  createVersion({ modelId, sourceVersionId, reason }) {
-    if (!modelId) {
-      throw new Error("Model not found");
-    }
-    if (!sourceVersionId) {
-      throw new Error("Source model version not found");
-    }
-
-    const model = modelRepo.findById(modelId, true);
-    if (!model) {
-      throw new Error("Model not found");
-    }
-    if (model.deletedAt) {
-      throw new Error("Model deleted");
-    }
-
-    const sourceVersion = versionRepo.findById(sourceVersionId);
-    if (!sourceVersion) {
-      throw new Error("Source model version not found");
-    }
-    if (sourceVersion.modelId !== modelId) {
-      throw new Error("Source version does not belong to the model");
-    }
-
-    const normalizedReason = reason === "revert" ? "revert" : "new_version";
-    const sourceModelData = storageRepo.read(sourceVersionId);
-    const latestVersionNumber = modelRepo.allocateLatestVersionNumber(modelId);
-    if (!latestVersionNumber) {
-      throw new Error("Failed to allocate model version number");
-    }
-
-    const selectedWordsCount =
-      typeof sourceVersion.selectedWordsCount === "number"
-        ? sourceVersion.selectedWordsCount
-        : 0;
-    const createdVersion = versionRepo.create({
+  createVersion({
+    modelId,
+    sourceVersionId,
+    reason,
+    mode = null,
+    type = null,
+    modelData = null,
+    link = null,
+  }) {
+    const { model, sourceVersion } = resolveValidatedCreateVersionContext({
       modelId,
-      restoredFrom: normalizedReason === "revert" ? sourceVersionId : null,
-      versionNumber: latestVersionNumber,
-      name: `v${latestVersionNumber}`,
-      selectedWordsCount,
+      sourceVersionId,
     });
+    const normalizedReason = reason === "revert" ? "revert" : "new_version";
+    const inferredPayloadMode =
+      mode === "payload" ||
+      (typeof modelData === "string" && modelData.trim()) ||
+      !!link;
+    const normalizedMode = inferredPayloadMode ? "payload" : "copy";
 
-    storageRepo.write(createdVersion.id, sourceModelData);
-    modelRepo.updateById(modelId, {
-      latestVersionId: createdVersion.id,
-    });
-    storageRepo.writeByModelId(modelId, sourceModelData);
+    if (normalizedMode === "payload" && normalizedReason !== "new_version") {
+      throw new Error(
+        "Payload version creation only supports reason 'new_version'",
+      );
+    }
 
-    const createdLink = documentModelLinkService.copyLatestByModelVersionId({
-      sourceModelVersionId: sourceVersionId,
-      targetModelVersionId: createdVersion.id,
-    });
+    let selectedWordsCount = 0;
+    let createdVersion = null;
+    let createdLink = null;
 
-    // Record the version lifecycle event
-    modelVersionEventRepo.add({
-      modelVersionId: createdVersion.id,
-      type:
-        normalizedReason === "revert"
-          ? "version_reverted"
-          : "version_created_copy",
-      selectedWordsCount: selectedWordsCount ?? null,
-    });
+    if (normalizedMode === "payload") {
+      if (typeof modelData !== "string" || !modelData.trim()) {
+        throw new Error("Model data is required for payload version creation");
+      }
+      if (!link || typeof link !== "object") {
+        throw new Error("Link is required for payload version creation");
+      }
 
-    const projectId =
-      model.projectId || modelRepo.getProjectIdByModelId(modelId);
-    if (projectId) {
-      logService.logEvent(projectId, "model_version_created", {
+      const selections = Array.isArray(link.selections) ? link.selections : [];
+      selectedWordsCount = countSelectedWords(selections);
+      createdVersion = createNextVersionRecord({
         modelId,
         sourceVersionId,
-        newVersionId: createdVersion.id,
         reason: normalizedReason,
+        selectedWordsCount,
+      });
+
+      const enrichedModelData = enrichModelData(
+        modelData,
+        typeof link.documentVersionId === "string"
+          ? link.documentVersionId
+          : null,
+        selections,
+      );
+      persistCreatedVersionContent({
+        modelId,
+        createdVersionId: createdVersion.id,
+        modelData: enrichedModelData,
+      });
+
+      createdLink = documentModelLinkService.create({
+        documentVersionId: link.documentVersionId,
+        modelVersionId: createdVersion.id,
+        selections,
+      });
+    } else {
+      const sourceModelData = storageRepo.read(sourceVersionId);
+      selectedWordsCount =
+        typeof sourceVersion.selectedWordsCount === "number"
+          ? sourceVersion.selectedWordsCount
+          : 0;
+      createdVersion = createNextVersionRecord({
+        modelId,
+        sourceVersionId,
+        reason: normalizedReason,
+        selectedWordsCount,
+      });
+
+      persistCreatedVersionContent({
+        modelId,
+        createdVersionId: createdVersion.id,
+        modelData: sourceModelData,
+      });
+
+      createdLink = documentModelLinkService.copyLatestByModelVersionId({
+        sourceModelVersionId: sourceVersionId,
+        targetModelVersionId: createdVersion.id,
       });
     }
+
+    recordVersionCreation({
+      model,
+      modelId,
+      sourceVersionId,
+      createdVersionId: createdVersion.id,
+      reason: normalizedReason,
+      mode: normalizedMode,
+      type,
+      selectedWordsCount,
+    });
 
     return {
       modelMeta: modelRepo.findByIdWithVersions(modelId),

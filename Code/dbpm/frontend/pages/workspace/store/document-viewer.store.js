@@ -4,6 +4,11 @@ import {
   serializeRange,
   getSortedSelectionsByRange,
 } from "../../../modules/document/selection.js";
+import {
+  buildStyleSyncedSelections,
+  classifyLinkSelectionChange,
+  derivePendingTextChangedSelectionIds,
+} from "../utils/link-selection-draft.js";
 const REVIEW_STATUS = {
   NONE: "none",
   PENDING: "pending",
@@ -71,15 +76,53 @@ function cloneSerializedSelections(selections) {
   return JSON.parse(JSON.stringify(selections));
 }
 
+function cloneSelectionDraft(selection) {
+  if (!selection || typeof selection !== "object") {
+    return selection;
+  }
+
+  return {
+    ...selection,
+    textQuote:
+      selection?.textQuote && typeof selection.textQuote === "object"
+        ? JSON.parse(JSON.stringify(selection.textQuote))
+        : selection?.textQuote,
+    style:
+      selection?.style && typeof selection.style === "object"
+        ? { ...selection.style }
+        : {},
+    range:
+      selection?.range &&
+      typeof selection.range.cloneRange === "function"
+        ? selection.range.cloneRange()
+        : selection?.range,
+  };
+}
+
+function cloneLinkDraft(link) {
+  if (!link || typeof link !== "object") {
+    return null;
+  }
+
+  return {
+    ...link,
+    selections: Array.isArray(link.selections)
+      ? link.selections.map((selection) => cloneSelectionDraft(selection))
+      : [],
+  };
+}
+
 class DocumentViewerStore extends Store {
   constructor() {
     super({
       status: null,
       content: null,
-      traces: [],
+      links: [],
       hasSelectionChanged: false,
-      activeModelTrace: null,
-      originalActiveModelSerializedSelections: null,
+      editingModelLink: null,
+      editingModelLinkSelectionChangeType: "no_change",
+      pendingEditingModelLinkSelectionIds: [],
+      originalEditingModelSerializedSelections: null,
       temporarySelections: [],
       selectionColor: "#d4e1f1",
       selectedSelection: null,
@@ -134,7 +177,9 @@ class DocumentViewerStore extends Store {
         backgroundColor: currentBackgroundColor || this.getSelectionColor(),
       },
     };
-    const normalizedReviewStatus = normalizeReviewStatus(selection?.reviewStatus);
+    const normalizedReviewStatus = normalizeReviewStatus(
+      selection?.reviewStatus,
+    );
     if (normalizedReviewStatus) {
       serialized.reviewStatus = normalizedReviewStatus;
     }
@@ -143,8 +188,8 @@ class DocumentViewerStore extends Store {
 
   clear() {
     this.setContent(null);
-    this.setTraces([]);
-    this.setActiveModelTrace(null);
+    this.setLinks([]);
+    this.setEditingModelLink(null);
     this.setTemporarySelections([]);
     this.setHasSelectionChanged(false);
     this.setSelectedSelection(null);
@@ -196,7 +241,7 @@ class DocumentViewerStore extends Store {
           selectionId: newValue.selectionId,
           modelId: newValue.modelId,
           modelVersionId: newValue.modelVersionId,
-          traceId: newValue.traceId,
+          linkId: newValue.linkId,
           scope: newValue.scope,
         }
       : null;
@@ -205,7 +250,7 @@ class DocumentViewerStore extends Store {
       oldValue?.selectionId === normalizedValue?.selectionId &&
       oldValue?.modelId === normalizedValue?.modelId &&
       oldValue?.modelVersionId === normalizedValue?.modelVersionId &&
-      oldValue?.traceId === normalizedValue?.traceId &&
+      oldValue?.linkId === normalizedValue?.linkId &&
       oldValue?.scope === normalizedValue?.scope;
     if (isSameSelection) {
       return;
@@ -224,10 +269,9 @@ class DocumentViewerStore extends Store {
   }
 
   computeSelectionChanged() {
-    let hasSelectionChanged = false;
-    if (this.getTemporarySelections().length > 0) {
-      hasSelectionChanged = true;
-    }
+    const hasSelectionChanged =
+      this.getTemporarySelections().length > 0 ||
+      this.hasPendingEditingModelLinkTextChanges();
     this.setHasSelectionChanged(hasSelectionChanged);
   }
 
@@ -238,56 +282,177 @@ class DocumentViewerStore extends Store {
     this.notify({ key: "hasSelectionChanged", oldValue, newValue });
   }
 
-  // #region traces && active trace
-  addTrace(trace) {
-    trace.selections = hydrateSelections(trace.selections);
-    this.state.traces.push(trace);
-    this.setActiveModelTrace(trace);
+  getEditingModelLinkSelectionChangeType() {
+    return this.state.editingModelLinkSelectionChangeType;
   }
 
-  setTraces(traces) {
-    if (traces.length) {
-      traces.forEach((trace) => {
-        trace.selections = hydrateSelections(trace.selections);
+  setEditingModelLinkSelectionChangeType(newValue) {
+    const oldValue = this.state.editingModelLinkSelectionChangeType;
+    if (oldValue === newValue) {
+      return;
+    }
+    this.state.editingModelLinkSelectionChangeType = newValue;
+    this.notify({
+      key: "editingModelLinkSelectionChangeType",
+      oldValue,
+      newValue,
+    });
+  }
+
+  getPendingEditingModelLinkSelectionIds() {
+    return [...this.state.pendingEditingModelLinkSelectionIds];
+  }
+
+  setPendingEditingModelLinkSelectionIds(selectionIds) {
+    const normalizedIds = Array.isArray(selectionIds)
+      ? [...new Set(selectionIds.map((selectionId) => String(selectionId)))]
+      : [];
+    const oldValue = this.getPendingEditingModelLinkSelectionIds();
+    const isSameValue =
+      oldValue.length === normalizedIds.length &&
+      oldValue.every((selectionId, index) => selectionId === normalizedIds[index]);
+    if (isSameValue) {
+      return;
+    }
+    this.state.pendingEditingModelLinkSelectionIds = normalizedIds;
+    this.notify({
+      key: "pendingEditingModelLinkSelectionIds",
+      oldValue,
+      newValue: this.getPendingEditingModelLinkSelectionIds(),
+    });
+  }
+
+  hasPendingEditingModelLinkTextChanges() {
+    return this.getEditingModelLinkSelectionChangeType() === "text_changed";
+  }
+
+  recomputeEditingModelLinkDraftState() {
+    const previousSelections =
+      this.getOriginalEditingModelSerializedSelections() || [];
+    const currentSelections =
+      this.getSerializedEditingModelLink()?.selections || [];
+    const changeType = classifyLinkSelectionChange({
+      previousSelections,
+      currentSelections,
+    });
+    const pendingSelectionIds = derivePendingTextChangedSelectionIds({
+      previousSelections,
+      currentSelections,
+    });
+
+    this.setEditingModelLinkSelectionChangeType(changeType);
+    this.setPendingEditingModelLinkSelectionIds(pendingSelectionIds);
+    this.computeSelectionChanged();
+
+    return {
+      changeType,
+      pendingSelectionIds,
+    };
+  }
+
+  getMatchingEditingModelLink({ linkId, modelId, modelVersionId } = {}) {
+    const editingModelLink = this.getDisplayedEditingModelLink();
+    if (!editingModelLink) {
+      return null;
+    }
+
+    if (
+      linkId !== undefined &&
+      linkId !== null &&
+      this.areIdsEqual(editingModelLink.id, linkId)
+    ) {
+      return editingModelLink;
+    }
+
+    if (
+      modelId !== undefined &&
+      modelId !== null &&
+      this.areIdsEqual(editingModelLink.modelId, modelId)
+    ) {
+      if (
+        modelVersionId === undefined ||
+        modelVersionId === null ||
+        this.areIdsEqual(editingModelLink.modelVersionId, modelVersionId)
+      ) {
+        return editingModelLink;
+      }
+    }
+
+    return null;
+  }
+
+  // #region links && editing model link
+  addLink(link) {
+    link.selections = hydrateSelections(link.selections);
+    this.state.links.push(link);
+    this.setEditingModelLink(link);
+  }
+
+  setLinks(links) {
+    if (links.length) {
+      links.forEach((link) => {
+        link.selections = hydrateSelections(link.selections);
       });
     }
-    this.state.traces = traces;
-    this.notify({ key: "traces", operation: "init" });
+    this.state.links = links;
+    this.notify({ key: "links", operation: "init" });
   }
 
-  updateTrace(serializedTrace) {
-    const index = this.state.traces.findIndex(
-      (trace) => trace.id === serializedTrace.id,
-    );
-    if (index !== -1) {
-      const trace = this.state.traces[index];
-      trace.selections = hydrateSelections(serializedTrace.selections);
-      this.setActiveModelTrace(trace);
+  updateLink(serializedLink) {
+    const updatedStoredLink = this.updateStoredLink(serializedLink);
+    if (!updatedStoredLink) {
+      return null;
     }
+    if (this.areIdsEqual(this.state.editingModelLink?.id, updatedStoredLink.id)) {
+      this.setEditingModelLink(updatedStoredLink);
+    }
+    return updatedStoredLink;
   }
 
-  getTraces() {
-    return this.state.traces;
+  updateStoredLink(serializedLink) {
+    const index = this.state.links.findIndex(
+      (link) => this.areIdsEqual(link.id, serializedLink?.id),
+    );
+    if (index === -1) {
+      return null;
+    }
+
+    const updatedLink = {
+      ...this.state.links[index],
+      ...serializedLink,
+      selections: hydrateSelections(serializedLink?.selections),
+    };
+    this.state.links[index] = updatedLink;
+    this.notify({
+      key: "links",
+      operation: "update",
+      value: updatedLink,
+    });
+    return updatedLink;
   }
 
-  removeTracesByModelId(modelId) {
+  getLinks() {
+    return this.state.links;
+  }
+
+  removeLinksByModelId(modelId) {
     if (modelId === undefined || modelId === null) {
       return [];
     }
 
-    const removed = this.state.traces.filter((trace) =>
-      this.areIdsEqual(trace?.modelId, modelId),
+    const removed = this.state.links.filter((link) =>
+      this.areIdsEqual(link?.modelId, modelId),
     );
     if (!removed.length) {
       return [];
     }
 
-    const traces = this.state.traces.filter(
-      (trace) => !this.areIdsEqual(trace?.modelId, modelId),
+    const links = this.state.links.filter(
+      (link) => !this.areIdsEqual(link?.modelId, modelId),
     );
-    const currentActiveTrace = this.getDisplayedModelTrace();
-    if (this.areIdsEqual(currentActiveTrace?.modelId, modelId)) {
-      this.setActiveModelTrace(null);
+    const currentEditingModelLink = this.getDisplayedEditingModelLink();
+    if (this.areIdsEqual(currentEditingModelLink?.modelId, modelId)) {
+      this.setEditingModelLink(null);
     }
 
     const selectedSelection = this.getSelectedSelection();
@@ -295,164 +460,184 @@ class DocumentViewerStore extends Store {
       this.setSelectedSelection(null);
     }
 
-    this.setTraces(traces);
+    this.setLinks(links);
     return removed;
   }
 
-  getTraceById(traceId) {
-    return this.state.traces.find((trace) =>
-      this.areIdsEqual(trace.id, traceId),
-    );
+  getLinkById(linkId) {
+    return this.state.links.find((link) => this.areIdsEqual(link.id, linkId));
   }
 
-  getDisplayedModelTrace() {
-    return this.state.activeModelTrace;
+  getDisplayedEditingModelLink() {
+    return this.state.editingModelLink;
   }
 
-  getSerializedActiveModelTrace() {
-    const activeModelTrace = this.state.activeModelTrace;
-    if (activeModelTrace) {
+  getSerializedEditingModelLink() {
+    const editingModelLink = this.state.editingModelLink;
+    if (editingModelLink) {
       return {
-        ...activeModelTrace,
-        selections: activeModelTrace.selections.map((selection) =>
+        ...editingModelLink,
+        selections: editingModelLink.selections.map((selection) =>
           this.serializeSelection(selection),
         ),
       };
     }
   }
 
-  getSerializedTraceById(traceId) {
-    const trace = this.getTraceById(traceId);
-    if (!trace) {
+  getSerializedLinkById(linkId) {
+    const link = this.getLinkById(linkId);
+    if (!link) {
       return null;
     }
     return {
-      ...trace,
-      selections: this.getSerializedSelections(trace.selections || []),
+      ...link,
+      selections: this.getSerializedSelections(link.selections || []),
     };
   }
 
-  getOriginalActiveModelSerializedSelections() {
+  getOriginalEditingModelSerializedSelections() {
     return cloneSerializedSelections(
-      this.state.originalActiveModelSerializedSelections,
+      this.state.originalEditingModelSerializedSelections,
     );
   }
 
-  setOriginalActiveModelSerializedSelections(selections) {
-    this.state.originalActiveModelSerializedSelections =
+  setOriginalEditingModelSerializedSelections(selections) {
+    this.state.originalEditingModelSerializedSelections =
       cloneSerializedSelections(selections);
+    this.recomputeEditingModelLinkDraftState();
   }
 
-  syncOriginalActiveModelSerializedSelectionsWithActiveTrace() {
-    const activeModelTrace = this.getSerializedActiveModelTrace();
-    this.setOriginalActiveModelSerializedSelections(
-      activeModelTrace?.selections || [],
+  syncOriginalEditingModelSerializedSelectionsWithEditingModelLink() {
+    const editingModelLink = this.getSerializedEditingModelLink();
+    this.setOriginalEditingModelSerializedSelections(
+      editingModelLink?.selections || [],
     );
   }
-  // Active model trace
-  setActiveModelTrace(newValue) {
-    const oldValue = this.state.activeModelTrace;
-    this.state.activeModelTrace = newValue;
-    this.setOriginalActiveModelSerializedSelections(
-      newValue?.selections
-        ? this.getSerializedSelections(newValue.selections)
-        : [],
-    );
-    this.notify({ key: "activeModelTrace", oldValue, newValue });
-  }
 
-  setActiveModelTraceBySerializedTrace(trace) {
-    trace.selections = hydrateSelections(trace.selections);
-    this.setActiveModelTrace(trace);
-  }
-
-  setActiveModelTraceByModelVersionId(modelVersionId) {
-    if (modelVersionId === undefined || modelVersionId === null) {
-      this.setActiveModelTrace(null);
-      return;
-    }
-    const trace = this.state.traces.find((trace) =>
-      this.areIdsEqual(trace?.modelVersionId, modelVersionId),
-    );
-    this.setActiveModelTrace(trace || null);
-  }
-  setActiveModelTraceById(traceId) {
-    const trace = this.getTraceById(traceId);
-    this.setActiveModelTrace(trace);
-  }
-  setActiveModelTraceByModelId(modelId) {
-    const trace = this.state.traces.find((trace) => trace.modelId == modelId);
-    this.setActiveModelTrace(trace || null);
-  }
-
-  removeActiveModelTraceSelectionById(selectionId) {
-    return this.removeTraceSelection({ selectionId });
-  }
-
-  removeTraceSelection({ selectionId, traceId, modelId }) {
-    let trace = null;
-    if (traceId !== undefined && traceId !== null) {
-      trace = this.getTraceById(traceId);
-    }
-    if (!trace && modelId !== undefined && modelId !== null) {
-      trace = this.state.traces.find((item) =>
-        this.areIdsEqual(item.modelId, modelId),
-      );
-    }
-    if (!trace) {
-      trace = this.getDisplayedModelTrace();
-    }
-    if (!trace || !trace.selections) {
+  getSerializedEditingModelLinkForStyleSync() {
+    const editingModelLink = this.getSerializedEditingModelLink();
+    if (!editingModelLink?.id) {
       return null;
     }
 
-    const index = trace.selections.findIndex((selection) =>
+    const previousSelections =
+      this.getOriginalEditingModelSerializedSelections() || [];
+    return {
+      ...editingModelLink,
+      selections: buildStyleSyncedSelections({
+        previousSelections,
+        currentSelections: editingModelLink.selections || [],
+      }),
+    };
+  }
+
+  // Editing model link
+  setEditingModelLink(newValue) {
+    const oldValue = this.state.editingModelLink;
+    const normalizedValue = cloneLinkDraft(newValue);
+    this.state.editingModelLink = normalizedValue;
+    this.state.originalEditingModelSerializedSelections = cloneSerializedSelections(
+      normalizedValue?.selections
+        ? this.getSerializedSelections(normalizedValue.selections)
+        : [],
+    );
+    this.recomputeEditingModelLinkDraftState();
+    this.notify({ key: "editingModelLink", oldValue, newValue: normalizedValue });
+  }
+
+  setEditingModelLinkBySerializedLink(link) {
+    link.selections = hydrateSelections(link.selections);
+    this.setEditingModelLink(link);
+  }
+
+  setEditingModelLinkByModelVersionId(modelVersionId) {
+    if (modelVersionId === undefined || modelVersionId === null) {
+      this.setEditingModelLink(null);
+      return;
+    }
+    const link = this.state.links.find((link) =>
+      this.areIdsEqual(link?.modelVersionId, modelVersionId),
+    );
+    this.setEditingModelLink(link || null);
+  }
+  setEditingModelLinkById(linkId) {
+    const link = this.getLinkById(linkId);
+    this.setEditingModelLink(link);
+  }
+  setEditingModelLinkByModelId(modelId) {
+    const link = this.state.links.find((link) => link.modelId == modelId);
+    this.setEditingModelLink(link || null);
+  }
+
+  removeEditingModelLinkSelectionById(selectionId) {
+    return this.removeLinkSelection({ selectionId });
+  }
+
+  removeLinkSelection({ selectionId, linkId, modelId }) {
+    let link = this.getMatchingEditingModelLink({ linkId, modelId });
+    if (!link && linkId !== undefined && linkId !== null) {
+      link = this.getLinkById(linkId);
+    }
+    if (!link && modelId !== undefined && modelId !== null) {
+      link = this.state.links.find((item) =>
+        this.areIdsEqual(item.modelId, modelId),
+      );
+    }
+    if (!link) {
+      link = this.getDisplayedEditingModelLink();
+    }
+    if (!link || !link.selections) {
+      return null;
+    }
+
+    const index = link.selections.findIndex((selection) =>
       this.areIdsEqual(selection.id, selectionId),
     );
     if (index === -1) {
       return null;
     }
 
-    const [removedSelection] = trace.selections.splice(index, 1);
-    if (this.areIdsEqual(this.state.activeModelTrace?.id, trace.id)) {
+    const [removedSelection] = link.selections.splice(index, 1);
+    if (this.areIdsEqual(this.state.editingModelLink?.id, link.id)) {
+      this.recomputeEditingModelLinkDraftState();
       this.notify({
-        key: "activeModelTrace.selections",
+        key: "editingModelLink.selections",
         operation: "remove",
         value: removedSelection,
       });
     } else {
       this.notify({
-        key: "traces",
+        key: "links",
         operation: "update",
-        value: trace,
+        value: link,
       });
     }
 
-    return trace;
+    return link;
   }
 
-  updateActiveModelTraceSelectionColor(selectionId, color) {
-    return this.updateTraceSelectionColor({ selectionId, color });
+  updateEditingModelLinkSelectionColor(selectionId, color) {
+    return this.updateLinkSelectionColor({ selectionId, color });
   }
 
-  updateTraceSelectionColor({ selectionId, traceId, modelId, color }) {
-    let trace = null;
-    if (traceId !== undefined && traceId !== null) {
-      trace = this.getTraceById(traceId);
+  updateLinkSelectionColor({ selectionId, linkId, modelId, color }) {
+    let link = this.getMatchingEditingModelLink({ linkId, modelId });
+    if (!link && linkId !== undefined && linkId !== null) {
+      link = this.getLinkById(linkId);
     }
-    if (!trace && modelId !== undefined && modelId !== null) {
-      trace = this.state.traces.find((item) =>
+    if (!link && modelId !== undefined && modelId !== null) {
+      link = this.state.links.find((item) =>
         this.areIdsEqual(item.modelId, modelId),
       );
     }
-    if (!trace) {
-      trace = this.getDisplayedModelTrace();
+    if (!link) {
+      link = this.getDisplayedEditingModelLink();
     }
-    if (!trace || !trace.selections) {
+    if (!link || !link.selections) {
       return null;
     }
 
-    const selection = trace.selections.find((sel) =>
+    const selection = link.selections.find((sel) =>
       this.areIdsEqual(sel.id, selectionId),
     );
     if (!selection || this.getSelectionBackgroundColor(selection) === color) {
@@ -460,33 +645,35 @@ class DocumentViewerStore extends Store {
     }
     this.setSelectionBackgroundColor(selection, color);
 
-    if (this.areIdsEqual(this.state.activeModelTrace?.id, trace.id)) {
+    if (this.areIdsEqual(this.state.editingModelLink?.id, link.id)) {
+      this.recomputeEditingModelLinkDraftState();
       this.notify({
-        key: "activeModelTrace.selections",
+        key: "editingModelLink.selections",
         operation: "update",
         value: selection,
       });
     } else {
       this.notify({
-        key: "traces",
+        key: "links",
         operation: "update",
-        value: trace,
+        value: link,
       });
     }
 
-    return trace;
+    return link;
   }
 
-  updateActiveModelTraceSelectionRange(selectionId, range) {
-    const activeModelTrace = this.getDisplayedModelTrace();
-    if (activeModelTrace) {
-      const selection = activeModelTrace.selections.find((sel) =>
+  updateEditingModelLinkSelectionRange(selectionId, range) {
+    const editingModelLink = this.getDisplayedEditingModelLink();
+    if (editingModelLink) {
+      const selection = editingModelLink.selections.find((sel) =>
         this.areIdsEqual(sel.id, selectionId),
       );
       if (selection && !this.areRangesEqual(selection.range, range)) {
         selection.range = range.cloneRange();
+        this.recomputeEditingModelLinkDraftState();
         this.notify({
-          key: "activeModelTrace.selections",
+          key: "editingModelLink.selections",
           operation: "update",
           value: selection,
         });
@@ -494,24 +681,24 @@ class DocumentViewerStore extends Store {
     }
   }
 
-  updateTraceSelectionRange({ selectionId, traceId, modelId, range }) {
+  updateLinkSelectionRange({ selectionId, linkId, modelId, range }) {
     if (!range) return false;
-    let trace = null;
+    let link = this.getMatchingEditingModelLink({ linkId, modelId });
 
-    if (traceId !== undefined && traceId !== null) {
-      trace = this.getTraceById(traceId);
+    if (!link && linkId !== undefined && linkId !== null) {
+      link = this.getLinkById(linkId);
     }
-    if (!trace && modelId !== undefined && modelId !== null) {
-      trace = this.state.traces.find((item) =>
+    if (!link && modelId !== undefined && modelId !== null) {
+      link = this.state.links.find((item) =>
         this.areIdsEqual(item.modelId, modelId),
       );
     }
-    if (!trace) {
-      trace = this.getDisplayedModelTrace();
+    if (!link) {
+      link = this.getDisplayedEditingModelLink();
     }
-    if (!trace || !trace.selections) return false;
+    if (!link || !link.selections) return false;
 
-    const selection = trace.selections.find((item) =>
+    const selection = link.selections.find((item) =>
       this.areIdsEqual(item.id, selectionId),
     );
     if (!selection || this.areRangesEqual(selection.range, range)) {
@@ -520,17 +707,18 @@ class DocumentViewerStore extends Store {
 
     selection.range = range.cloneRange();
 
-    if (this.areIdsEqual(this.state.activeModelTrace?.id, trace.id)) {
+    if (this.areIdsEqual(this.state.editingModelLink?.id, link.id)) {
+      this.recomputeEditingModelLinkDraftState();
       this.notify({
-        key: "activeModelTrace.selections",
+        key: "editingModelLink.selections",
         operation: "update",
         value: selection,
       });
     } else {
       this.notify({
-        key: "traces",
+        key: "links",
         operation: "update",
-        value: trace,
+        value: link,
       });
     }
     return true;
@@ -563,7 +751,9 @@ class DocumentViewerStore extends Store {
             },
       id: resolveSelectionId(selection),
     };
-    const normalizedReviewStatus = normalizeReviewStatus(selection?.reviewStatus);
+    const normalizedReviewStatus = normalizeReviewStatus(
+      selection?.reviewStatus,
+    );
     if (normalizedReviewStatus) {
       normalizedSelection.reviewStatus = normalizedReviewStatus;
     }
@@ -573,7 +763,7 @@ class DocumentViewerStore extends Store {
       operation: "add",
       value: normalizedSelection,
     });
-    this.computeSelectionChanged();
+    this.recomputeEditingModelLinkDraftState();
   }
 
   removeTemporarySelection(selectionId) {
@@ -586,7 +776,7 @@ class DocumentViewerStore extends Store {
       this.state.temporarySelections.splice(index, 1);
     }
     this.notify({ key: "temporarySelections", operation: "remove", value });
-    this.computeSelectionChanged();
+    this.recomputeEditingModelLinkDraftState();
   }
 
   updateTemporarySelectionColor(selectionId, color) {
@@ -625,6 +815,7 @@ class DocumentViewerStore extends Store {
       oldValue,
       newValue,
     });
+    this.recomputeEditingModelLinkDraftState();
   }
   // #endregion
 
@@ -638,9 +829,9 @@ class DocumentViewerStore extends Store {
 
   getSortedNewSelections() {
     let selections = [...this.getTemporarySelections()];
-    const activeModelTrace = this.getDisplayedModelTrace();
-    if (activeModelTrace) {
-      selections = [...activeModelTrace.selections, ...selections];
+    const editingModelLink = this.getDisplayedEditingModelLink();
+    if (editingModelLink) {
+      selections = [...editingModelLink.selections, ...selections];
     }
     return getSortedSelectionsByRange(selections);
   }
@@ -654,12 +845,12 @@ class DocumentViewerStore extends Store {
     return selections.map((selection) => this.serializeSelection(selection));
   }
 
-  getSerializedNewActiveModelTrace() {
+  getSerializedNewEditingModelLink() {
     const selections = this.getSortedNewSelections();
     const serializedSelections = this.getSerializedSelections(selections);
-    const activeModelTrace = this.getDisplayedModelTrace();
+    const editingModelLink = this.getDisplayedEditingModelLink();
     return Object.assign(
-      { ...activeModelTrace },
+      { ...editingModelLink },
       {
         selections: serializedSelections,
       },

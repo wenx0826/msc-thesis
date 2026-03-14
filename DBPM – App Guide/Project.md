@@ -1,0 +1,25 @@
+- Project management: create, rename, open, and delete projects from the home page.
+- Portfolio dashboard: view total counts for projects, documents, and models, plus average document word counts, document versions, model selected-word counts, and model versions.
+- Project logs: open or download per-project YAML event logs.
+- Document intake: upload multiple documents, including PDF, .doc, .docx, and plain text/HTML content.
+- Document versioning: add new versions to an existing document and switch between latest and historical versions.
+- Document maintenance: rename documents, bulk-select documents, bulk-delete documents, and restore deleted documents from the stats view.
+- Document viewer: display document content with linked text highlights and model tags.
+- Text selection workflow: create temporary selections from document text, recolor selections, resize selections with drag handles, delete selections, and clear all temporary selections.
+- Model generation: generate a new process model from selected document text using the LLM integration.
+- Model regeneration: regenerate an existing model from updated text selections or from a free-text prompt.
+- Regeneration review flow: compare original vs regenerated model, discard regeneration, replace the current version, or save the regeneration as a new version/model outcome.
+- Manual model editing: edit process graphs directly in the embedded workflow editor and persist graph/property changes.
+- Model versioning: switch model versions, create a new version from the latest model, or restore a historical version by copying it into a new latest version.
+- Model management: rename models, delete models, bulk-delete models, and restore deleted models from the stats view.
+- Model browsing: view models in grid/list layouts, filter models by source document, and render SVG previews in the workspace and popovers.
+- XML access: open the raw XML for a model version.
+- Document-model linking: persist links between document selections and model versions, and keep linked selections editable after creation.
+- Cross-version link propagation: copy latest links forward when a new document version or model version is created.
+- Metadata enrichment: inject document/version/selected-text metadata into stored model XML.
+- Subprocess linking: bind a model as a subprocess for a task inside another model, remove subprocess bindings, and navigate to linked subprocesses.
+- Graph visualization: show the project as a graph of documents, generated models, and subprocess relationships.
+- Contextual previews: hover models or subprocess nodes to open preview popovers.
+- Read-only standalone viewers: open a standalone document viewer with highlights/tags and a standalone workflow viewer for a model version.
+- Project statistics: inspect per-project document/model inventories, active vs deleted counts, word counts, selected-word counts, version counts, and update-event summaries per model/version.
+- Audit/analytics capture: record model generation attempts and outcomes such as accepted replacement, accepted new version, or declined.

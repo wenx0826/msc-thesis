@@ -96,7 +96,9 @@ createUI({
       }
       isCreatingModelVersion = true;
       try {
-        await modelService.createModelVersion(modelId, sourceVersionId);
+        await modelService.createModelVersion(modelId, sourceVersionId, {
+          allowSelectionDraftPayload: false,
+        });
       } catch (error) {
         alert("Failed to create model version.");
       } finally {

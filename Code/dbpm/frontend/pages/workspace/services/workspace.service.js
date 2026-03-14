@@ -118,7 +118,7 @@ export default {
     modelEditorStore.setData(null, {
       updateType: null,
     });
-    documentViewerStore.setActiveModelTrace(null);
+    documentViewerStore.setEditingModelLink(null);
   },
   clearDocumentDisplay() {
     workspaceStore.setViewedDocument({
@@ -202,11 +202,11 @@ export default {
       );
     }
     if (resolvedHistoricalLink) {
-      documentViewerStore.setActiveModelTraceBySerializedTrace(
+      documentViewerStore.setEditingModelLinkBySerializedLink(
         resolvedHistoricalLink,
       );
     } else {
-      documentViewerStore.setActiveModelTraceByModelVersionId(versionId);
+      documentViewerStore.setEditingModelLinkByModelVersionId(versionId);
     }
   },
 };

@@ -1,6 +1,10 @@
 import documentModelLinkRepo, { AUTO_REANCHOR_TYPE } from "./repository.js";
 
-function cloneSelections(selections) {
+function prepareSelectionsForCreate(selections) {
+  if (!Array.isArray(selections)) {
+    return [];
+  }
+
   return selections.map((selection) => ({
     textPosition: { ...selection.textPosition },
     textQuote: { ...selection.textQuote },
@@ -11,7 +15,7 @@ function cloneSelections(selections) {
 
 export default {
   create({ documentVersionId, modelVersionId, selections }) {
-    const normalizedSelections = Array.isArray(selections) ? selections : [];
+    const normalizedSelections = prepareSelectionsForCreate(selections);
     return documentModelLinkRepo.createWithSelections({
       documentVersionId,
       modelVersionId,
@@ -43,7 +47,7 @@ export default {
       documentModelLinkRepo.createWithSelections({
         documentVersionId: targetDocumentVersionId,
         modelVersionId: link.modelVersionId,
-        selections: cloneSelections(link.selections),
+        selections: prepareSelectionsForCreate(link.selections),
         type: AUTO_REANCHOR_TYPE,
       }),
     );
@@ -59,7 +63,7 @@ export default {
     const copiedLink = this.create({
       documentVersionId: sourceLink.documentVersionId,
       modelVersionId: targetModelVersionId,
-      selections: cloneSelections(sourceLink.selections),
+      selections: prepareSelectionsForCreate(sourceLink.selections),
     });
 
     return this.getById(copiedLink.id);

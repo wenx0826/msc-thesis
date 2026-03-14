@@ -26,6 +26,7 @@ let handleDragState = null;
 let pendingDocumentTextSelectionCommit = false;
 let suppressTagPopoverOpen = false;
 let suppressTagPopoverOpenTimer = null;
+let suppressNextEditingModelLinkAutoScroll = false;
 
 function suppressTagPopoverForClickWindow() {
   suppressTagPopoverOpen = true;
@@ -242,7 +243,7 @@ function updateSelectedSelectionToolbarPosition() {
 
 function getInteractionWrapsBySelection(selection) {
   if (!selection) return $();
-  const { selectionId, modelId, modelVersionId, traceId } = selection;
+  const { selectionId, modelId, modelVersionId, linkId } = selection;
   const resolvedScope = resolveSelectionScope(selection);
   let $wraps = $selectionsInteractionLayer.find(
     `.selection-wrap[data-selection-id="${selectionId}"]`,
@@ -263,9 +264,9 @@ function getInteractionWrapsBySelection(selection) {
         $(element).attr("data-model-version-id") === String(modelVersionId),
     );
   }
-  if (traceId !== undefined && traceId !== null) {
+  if (linkId !== undefined && linkId !== null) {
     $wraps = $wraps.filter(
-      (_, element) => $(element).attr("data-trace-id") === String(traceId),
+      (_, element) => $(element).attr("data-link-id") === String(linkId),
     );
   }
 
@@ -374,17 +375,25 @@ function getSelectionByMeta(selectionMeta) {
     );
   }
 
-  let trace = null;
-  if (selectionMeta.traceId !== undefined && selectionMeta.traceId !== null) {
-    trace = documentViewerStore.getTraceById(selectionMeta.traceId);
+  let link = null;
+  const editingModelLink = documentViewerStore.getDisplayedEditingModelLink();
+  if (selectionMeta.linkId !== undefined && selectionMeta.linkId !== null) {
+    if (
+      editingModelLink &&
+      String(editingModelLink.id || "") === String(selectionMeta.linkId)
+    ) {
+      link = editingModelLink;
+    } else {
+      link = documentViewerStore.getLinkById(selectionMeta.linkId);
+    }
   }
-  if (!trace) {
-    trace = documentViewerStore.getDisplayedModelTrace();
+  if (!link) {
+    link = editingModelLink;
   }
-  if (!trace || !trace.selections) return null;
+  if (!link || !link.selections) return null;
 
   return (
-    trace.selections.find(
+    link.selections.find(
       (selection) => String(selection.id) === String(selectionMeta.selectionId),
     ) || null
   );
@@ -402,13 +411,13 @@ function canEditLinkSelections({
   );
 }
 
-function resolveTraceBySelectionMeta(selectionMeta) {
+function resolveLinkBySelectionMeta(selectionMeta) {
   if (!selectionMeta) {
     return null;
   }
-  const traceId =
-    selectionMeta.traceId !== undefined && selectionMeta.traceId !== null
-      ? String(selectionMeta.traceId)
+  const linkId =
+    selectionMeta.linkId !== undefined && selectionMeta.linkId !== null
+      ? String(selectionMeta.linkId)
       : null;
   const modelId =
     selectionMeta.modelId !== undefined && selectionMeta.modelId !== null
@@ -420,23 +429,21 @@ function resolveTraceBySelectionMeta(selectionMeta) {
       ? String(selectionMeta.modelVersionId)
       : null;
 
-  let trace = null;
-  if (traceId) {
-    trace = documentViewerStore.getTraceById(traceId);
+  let link = null;
+  const editingModelLink = documentViewerStore.getDisplayedEditingModelLink();
+  if (linkId) {
+    if (
+      editingModelLink &&
+      String(editingModelLink.id || "") === linkId
+    ) {
+      link = editingModelLink;
+    } else {
+      link = documentViewerStore.getLinkById(linkId);
+    }
   }
 
-  const activeTrace = documentViewerStore.getDisplayedModelTrace();
-  if (
-    !trace &&
-    activeTrace &&
-    traceId &&
-    String(activeTrace.id || "") === traceId
-  ) {
-    trace = activeTrace;
-  }
-
-  if (!trace && modelId && modelVersionId) {
-    trace = (documentViewerStore.getTraces() || []).find(
+  if (!link && modelId && modelVersionId) {
+    link = (documentViewerStore.getLinks() || []).find(
       (item) =>
         String(item?.modelId || "") === modelId &&
         String(item?.modelVersionId || "") === modelVersionId,
@@ -444,17 +451,17 @@ function resolveTraceBySelectionMeta(selectionMeta) {
   }
 
   if (
-    !trace &&
-    activeTrace &&
+    !link &&
+    editingModelLink &&
     modelId &&
     modelVersionId &&
-    String(activeTrace.modelId || "") === modelId &&
-    String(activeTrace.modelVersionId || "") === modelVersionId
+    String(editingModelLink.modelId || "") === modelId &&
+    String(editingModelLink.modelVersionId || "") === modelVersionId
   ) {
-    trace = activeTrace;
+    link = editingModelLink;
   }
 
-  return trace || null;
+  return link || null;
 }
 
 function isSelectionMetaSelectable(selectionMeta) {
@@ -462,8 +469,8 @@ function isSelectionMetaSelectable(selectionMeta) {
   if (scope !== "model") {
     return isViewingLatestDocumentVersion();
   }
-  const trace = resolveTraceBySelectionMeta(selectionMeta);
-  return canEditLinkSelections(trace);
+  const link = resolveLinkBySelectionMeta(selectionMeta);
+  return canEditLinkSelections(link);
 }
 
 function updateSelectionRangeByMeta(selectionMeta, nextRange) {
@@ -476,9 +483,9 @@ function updateSelectionRangeByMeta(selectionMeta, nextRange) {
     return;
   }
 
-  documentViewerStore.updateTraceSelectionRange({
+  documentViewerStore.updateLinkSelectionRange({
     selectionId: selectionMeta.selectionId,
-    traceId: selectionMeta.traceId,
+    linkId: selectionMeta.linkId,
     modelId: selectionMeta.modelId,
     range: nextRange,
   });
@@ -542,13 +549,14 @@ function createSelectionWrap({
   selectionId,
   modelId,
   modelVersionId,
-  traceId,
+  linkId,
   top,
   left,
   width,
   height,
   isCurrent = false,
   showReadonlyBound = false,
+  isPendingTextChange = false,
 }) {
   const $wrap = createTemplateElement(templateId)
     .attr("data-selection-id", selectionId)
@@ -559,14 +567,17 @@ function createSelectionWrap({
   if (modelVersionId !== undefined && modelVersionId !== null) {
     $wrap.attr("data-model-version-id", modelVersionId);
   }
-  if (traceId !== undefined && traceId !== null) {
-    $wrap.attr("data-trace-id", traceId);
+  if (linkId !== undefined && linkId !== null) {
+    $wrap.attr("data-link-id", linkId);
   }
   if (isCurrent) {
     $wrap.addClass("is-current");
   }
   if (showReadonlyBound) {
     $wrap.addClass("is-readonly-trace");
+  }
+  if (isPendingTextChange) {
+    $wrap.addClass("is-pending-text-change");
   }
   return $wrap;
 }
@@ -682,7 +693,7 @@ const clearDocumentViewer = () => {
 //     // $temporarySelectionsLayer.empty();
 //   }
 // };
-function removeRenderedTrace({ modelId }) {
+function removeRenderedLink({ modelId }) {
   $selectionsVisualLayer.find(`[data-model-id="${modelId}"]`).remove();
   $selectionsInteractionLayer.find(`[data-model-id="${modelId}"]`).remove();
   $modelTagsLayer.find(`[data-model-id="${modelId}"]`).remove();
@@ -707,6 +718,59 @@ function setSelectedSelection(selection) {
   documentViewerStore.setSelectedSelection(selection);
 }
 
+function consumeEditingModelLinkAutoScrollSuppression() {
+  const shouldSuppress = suppressNextEditingModelLinkAutoScroll;
+  suppressNextEditingModelLinkAutoScroll = false;
+  return shouldSuppress;
+}
+
+async function selectModelForSelection({
+  modelId,
+  modelVersionId,
+  linkId,
+} = {}) {
+  if (modelId === undefined || modelId === null) {
+    return;
+  }
+
+  const resolvedModelVersionId =
+    modelVersionId || modelsStore.getLatestVersionId(modelId);
+  if (!resolvedModelVersionId) {
+    return;
+  }
+
+  const editingModel = workspaceStore.getEditingModel() || {};
+  const isSameModelVersion =
+    String(editingModel.id ?? "") === String(modelId) &&
+    String(editingModel.versionId ?? "") === String(resolvedModelVersionId);
+
+  suppressNextEditingModelLinkAutoScroll = true;
+
+  try {
+    if (!isSameModelVersion) {
+      workspaceStore.setEditingModel({
+        id: modelId,
+        versionId: resolvedModelVersionId,
+        isLatest: modelsStore.isLatestVersion(modelId, resolvedModelVersionId),
+        isDraft: false,
+      });
+      workspaceStore.setModelPopoverParams(null);
+      await modelService.loadVersion(resolvedModelVersionId);
+    }
+
+    if (linkId !== undefined && linkId !== null) {
+      documentViewerStore.setEditingModelLinkById(linkId);
+    } else {
+      documentViewerStore.setEditingModelLinkByModelVersionId(
+        resolvedModelVersionId,
+      );
+    }
+  } catch (error) {
+    suppressNextEditingModelLinkAutoScroll = false;
+    console.error("Failed to select model from document selection:", error);
+  }
+}
+
 const onSelectedSelectionOutsideMouseDown = (event) => {
   if (!getSelectedSelection()) return;
 
@@ -724,14 +788,14 @@ const onSelectedSelectionOutsideMouseDown = (event) => {
   setSelectedSelection(null);
 };
 
-const onSelectionSelect = (event) => {
+const onSelectionSelect = async (event) => {
   // console.log("Range selected:", event);
   event.stopPropagation();
   const $target = $(event.currentTarget);
   // $target.addClass("selected");
 
   const $selectionWrap = $target.closest(".selection-wrap");
-  const { selectionId, modelId, modelVersionId, traceId } =
+  const { selectionId, modelId, modelVersionId, linkId } =
     $selectionWrap.data();
 
   const scope = $selectionWrap.is("[data-model-id]") ? "model" : "temporary";
@@ -742,20 +806,30 @@ const onSelectionSelect = (event) => {
     selectionId,
     modelId,
     modelVersionId,
-    traceId,
+    linkId,
     scope,
   };
   if (!isSelectionMetaSelectable(selectionMeta)) {
     return;
   }
   setSelectedSelection(selectionMeta);
+
+  if (scope !== "model" || modelId === undefined || modelId === null) {
+    return;
+  }
+
+  await selectModelForSelection({
+    modelId,
+    modelVersionId,
+    linkId,
+  });
 };
 
 const renderSelection = (
-  { range, style, id: selectionId, traceId },
+  { range, style, id: selectionId, linkId },
   modelId,
   modelVersionId,
-  { selectable = true } = {},
+  { selectable = true, isPendingTextChange = false } = {},
 ) => {
   if (!range) {
     console.warn("Selection has no range, skipping render:", selectionId);
@@ -797,13 +871,14 @@ const renderSelection = (
     selectionId,
     modelId,
     modelVersionId,
-    traceId,
+    linkId,
     top: wrapTop,
     left: wrapLeft,
     width: wrapWidth,
     height: wrapHeight,
     isCurrent: isDisplayedModelVersion,
     showReadonlyBound: shouldShowReadonlyBound,
+    isPendingTextChange,
   });
 
   for (const rect of rects) {
@@ -842,13 +917,14 @@ const renderSelection = (
     selectionId,
     modelId,
     modelVersionId,
-    traceId,
+    linkId,
     top: wrapTop,
     left: wrapLeft,
     width: wrapWidth,
     height: wrapHeight,
     isCurrent: isDisplayedModelVersion,
     showReadonlyBound: shouldShowReadonlyBound,
+    isPendingTextChange,
   });
   if (selectable) {
     for (const rect of rects) {
@@ -941,20 +1017,19 @@ const onSelectionHandleDragMove = (event) => {
 
 const onSelectionHandleDragEnd = () => {
   if (!handleDragState) return;
-  const { didUpdate, traceId } = handleDragState;
+  const { didUpdate, linkId } = handleDragState;
   const scope = resolveSelectionScope(handleDragState);
-  const activeTrace = documentViewerStore.getDisplayedModelTrace();
-  const isActiveTraceUpdate =
-    !traceId || (activeTrace && String(activeTrace.id) === String(traceId));
+  const editingModelLink = documentViewerStore.getDisplayedEditingModelLink();
+  const isEditingModelLinkUpdate =
+    !linkId ||
+    (editingModelLink && String(editingModelLink.id) === String(linkId));
   handleDragState = null;
   $viewerWrap.removeClass("selection-handle-dragging");
   $(document).off(".selectionHandleDrag");
   updateSelectionHandlesPosition();
   if (didUpdate && scope === "model") {
-    if (isActiveTraceUpdate) {
-      modelService.updateActiveModelTrace();
-    } else if (traceId) {
-      modelService.updateTraceTextById(traceId);
+    if (!isEditingModelLinkUpdate && linkId) {
+      modelService.updateLinkTextById(linkId);
     }
   }
 };
@@ -1005,8 +1080,8 @@ const rerenderTemporarySelectionsLayer = () => {
   // }
 };
 
-const renderTrace = ({
-  id: traceId,
+const renderLink = ({
+  id: linkId,
   selections,
   modelId,
   modelVersionId,
@@ -1019,38 +1094,58 @@ const renderTrace = ({
     modelId,
     modelVersionId,
   });
+  const editingModelLink = documentViewerStore.getDisplayedEditingModelLink();
+  const isEditingModelDraftLink =
+    editingModelLink &&
+    String(editingModelLink.id || "") === String(linkId || "");
+  const pendingSelectionIds = new Set(
+    documentViewerStore.getPendingEditingModelLinkSelectionIds(),
+  );
   selections.forEach((selection) => {
-    renderSelection({ ...selection, traceId }, modelId, modelVersionId, {
-      selectable,
-    });
+    renderSelection(
+      { ...selection, linkId },
+      modelId,
+      modelVersionId,
+      {
+        selectable,
+        isPendingTextChange:
+          isEditingModelDraftLink &&
+          pendingSelectionIds.has(String(selection?.id || "")),
+      },
+    );
   });
 };
 
-function getRenderableTraces() {
-  const baseTraces = documentViewerStore.getTraces();
-  const traces = Array.isArray(baseTraces) ? baseTraces : [];
-  const activeTrace = documentViewerStore.getDisplayedModelTrace();
-  if (!activeTrace?.id) {
-    return traces;
+function getRenderableLinks() {
+  const baseLinks = documentViewerStore.getLinks();
+  const links = Array.isArray(baseLinks) ? baseLinks : [];
+  const editingModelLink = documentViewerStore.getDisplayedEditingModelLink();
+  if (!editingModelLink?.id) {
+    return links;
   }
 
-  const hasActiveTraceInBaseLayer = traces.some(
-    (trace) => String(trace?.id || "") === String(activeTrace.id || ""),
+  const renderableLinks = links.map((link) =>
+    String(link?.id || "") === String(editingModelLink.id || "")
+      ? editingModelLink
+      : link,
   );
-  if (hasActiveTraceInBaseLayer) {
-    return traces;
+  const hasEditingModelLinkInBaseLayer = renderableLinks.some(
+    (link) => String(link?.id || "") === String(editingModelLink.id || ""),
+  );
+  if (hasEditingModelLinkInBaseLayer) {
+    return renderableLinks;
   }
 
-  return [...traces, activeTrace];
+  return [...renderableLinks, editingModelLink];
 }
 
 const rerenderOverlayLayers = () => {
   clearHighlightLayer();
   clearInteractionLayer();
-  const traces = getRenderableTraces();
-  // console.log("Rerendering overlay layers...", traces);
-  if (traces.length) {
-    traces.forEach((trace) => renderTrace(trace));
+  const links = getRenderableLinks();
+  // console.log("Rerendering overlay layers...", links);
+  if (links.length) {
+    links.forEach((link) => renderLink(link));
   }
   const selectedSelection = getSelectedSelection();
   if (selectedSelection && !isSelectionMetaSelectable(selectedSelection)) {
@@ -1205,16 +1300,16 @@ createUI({
       if (operation) {
         const { value } = payload;
         switch (key) {
-          case "traces":
+          case "links":
             switch (operation) {
               case "init":
                 rerenderOverlayLayers();
                 modelService.maybeAlertNoSelectionOnLoadedEditingModel(
-                  "ui_traces_init",
+                  "ui_links_init",
                 );
                 break;
               case "add":
-                renderTrace(value);
+                renderLink(value);
                 break;
               case "update":
                 rerenderOverlayLayers();
@@ -1223,29 +1318,11 @@ createUI({
                 break;
             }
             break;
-          case "activeModelTrace.selections":
+          case "editingModelLink.selections":
             switch (operation) {
-              case "update": {
-                removeRenderedSelection(value);
-                const activeTrace =
-                  documentViewerStore.getDisplayedModelTrace();
-                renderSelection(
-                  {
-                    ...value,
-                    traceId: activeTrace?.id || value?.traceId || null,
-                  },
-                  activeTrace?.modelId ||
-                    workspaceStore.getEditingModelId() ||
-                    null,
-                  activeTrace?.modelVersionId || null,
-                  {
-                    selectable: canEditLinkSelections(activeTrace),
-                  },
-                );
-                break;
-              }
+              case "update":
               case "remove":
-                removeRenderedSelection(value);
+                rerenderOverlayLayers();
                 break;
               default:
                 break;
@@ -1285,8 +1362,11 @@ createUI({
               clearDocumentViewer();
             }
             break;
-          case "activeModelTrace":
+          case "editingModelLink":
             rerenderOverlayLayers();
+            if (consumeEditingModelLinkAutoScrollSuppression()) {
+              break;
+            }
             if (newValue) {
               const firstSelection = newValue.selections?.[0];
               if (firstSelection?.range) {
@@ -1304,6 +1384,9 @@ createUI({
             break;
           case "selectedSelection":
             syncSelectedSelectionUI(oldValue, newValue);
+            break;
+          case "pendingEditingModelLinkSelectionIds":
+            rerenderOverlayLayers();
             break;
           default:
             break;

@@ -66,7 +66,7 @@ export default {
 
     relatedModelIds.forEach((modelId) => {
       modelsStore.delete(modelId);
-      documentViewerStore.removeTracesByModelId(modelId);
+      documentViewerStore.removeLinksByModelId(modelId);
       projectGraphStore.removeModelNodeAndEdge(modelId);
     });
 
@@ -147,12 +147,12 @@ export default {
 
     const links = Array.isArray(linksResult.value) ? linksResult.value : [];
     console.log("Loaded links for version", versionId, links);
-    documentViewerStore.setTraces(links);
+    documentViewerStore.setLinks(links);
 
     const { versionId: editingModelVersionId } = workspaceStore.getEditingModel() || {};
     const preferredModelVersionId = editingModelVersionId || null;
     if (preferredModelVersionId) {
-      documentViewerStore.setActiveModelTraceByModelVersionId(
+      documentViewerStore.setEditingModelLinkByModelVersionId(
         preferredModelVersionId,
       );
     }

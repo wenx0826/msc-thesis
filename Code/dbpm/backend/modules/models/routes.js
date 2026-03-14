@@ -42,7 +42,14 @@ export default async function (fastify, options) {
           reply.code(404).send({ error: err.message });
           return;
         }
-        if (err.message === "Source version does not belong to the model") {
+        if (
+          [
+            "Source version does not belong to the model",
+            "Payload version creation only supports reason 'new_version'",
+            "Model data is required for payload version creation",
+            "Link is required for payload version creation",
+          ].includes(err.message)
+        ) {
           reply.code(400).send({ error: err.message });
           return;
         }

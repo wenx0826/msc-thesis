@@ -14,6 +14,7 @@ import {
 } from "../store/index.js";
 import workspaceService from "./workspace.service.js";
 import { Constants } from "../../../constants.js";
+import { classifyLinkSelectionChange } from "../utils/link-selection-draft.js";
 import { endpointLoader } from "../../../modules/workflow/endpoints/endpoint-loader.js";
 import {
   injectDbpmData,
@@ -551,165 +552,81 @@ function composeRegeneratedModelData({ currentModelData, generatedModelData }) {
   return $(currentRoot).serializePrettyXML();
 }
 
-function normalizeSelectionTextPosition(textPosition) {
-  if (textPosition === undefined || textPosition === null) {
-    return null;
-  }
-  if (typeof textPosition === "string") {
-    return textPosition;
-  }
-  try {
-    return JSON.stringify(textPosition);
-  } catch (error) {
-    return String(textPosition);
-  }
-}
-
-function buildSelectionsSignature(selections, mapper) {
-  const normalizedSelections = Array.isArray(selections) ? selections : [];
-  return JSON.stringify(normalizedSelections.map(mapper));
-}
-
-function classifyTraceSelectionChange({
-  previousSelections,
-  currentSelections,
-}) {
-  const previousTextSignature = buildSelectionsSignature(
-    previousSelections,
-    (selection) => ({
-      id:
-        selection?.id === undefined || selection?.id === null
-          ? null
-          : String(selection.id),
-      textPosition: normalizeSelectionTextPosition(selection?.textPosition),
-      textQuoteExact:
-        typeof selection?.textQuote?.exact === "string"
-          ? selection.textQuote.exact
-          : "",
-    }),
-  );
-  const currentTextSignature = buildSelectionsSignature(
-    currentSelections,
-    (selection) => ({
-      id:
-        selection?.id === undefined || selection?.id === null
-          ? null
-          : String(selection.id),
-      textPosition: normalizeSelectionTextPosition(selection?.textPosition),
-      textQuoteExact:
-        typeof selection?.textQuote?.exact === "string"
-          ? selection.textQuote.exact
-          : "",
-    }),
-  );
-  if (previousTextSignature !== currentTextSignature) {
-    return "text_changed";
-  }
-
-  const previousColorSignature = buildSelectionsSignature(
-    previousSelections,
-    (selection) => ({
-      id:
-        selection?.id === undefined || selection?.id === null
-          ? null
-          : String(selection.id),
-      backgroundColor:
-        typeof selection?.style?.backgroundColor === "string"
-          ? selection.style.backgroundColor
-          : "",
-      reviewStatus:
-        typeof selection?.reviewStatus === "string"
-          ? selection.reviewStatus
-          : "none",
-    }),
-  );
-  const currentColorSignature = buildSelectionsSignature(
-    currentSelections,
-    (selection) => ({
-      id:
-        selection?.id === undefined || selection?.id === null
-          ? null
-          : String(selection.id),
-      backgroundColor:
-        typeof selection?.style?.backgroundColor === "string"
-          ? selection.style.backgroundColor
-          : "",
-      reviewStatus:
-        typeof selection?.reviewStatus === "string"
-          ? selection.reviewStatus
-          : "none",
-    }),
-  );
-  if (previousColorSignature !== currentColorSignature) {
-    return "color_only";
-  }
-
-  return "no_change";
-}
-
-function getTraceUpdatePayload(serializedTrace) {
+function getLinkUpdatePayload(serializedLink) {
   return {
-    id: serializedTrace?.id,
-    selections: Array.isArray(serializedTrace?.selections)
-      ? serializedTrace.selections
+    id: serializedLink?.id,
+    selections: Array.isArray(serializedLink?.selections)
+      ? serializedLink.selections
       : [],
   };
 }
 
-function getModelVersionLinkPayload(serializedTrace) {
-  if (!serializedTrace) {
+function getModelVersionLinkPayload(serializedLink) {
+  if (!serializedLink) {
     return null;
   }
   return {
-    id: serializedTrace.id,
-    documentVersionId: serializedTrace.documentVersionId,
-    selections: Array.isArray(serializedTrace.selections)
-      ? serializedTrace.selections
+    id: serializedLink.id,
+    documentVersionId: serializedLink.documentVersionId,
+    selections: Array.isArray(serializedLink.selections)
+      ? serializedLink.selections
       : [],
   };
 }
 
-function notifyTraceUpdateTriggered({
+function getCreateVersionLinkPayload(serializedLink) {
+  if (!serializedLink) {
+    return null;
+  }
+  return {
+    documentVersionId: serializedLink.documentVersionId,
+    selections: Array.isArray(serializedLink.selections)
+      ? serializedLink.selections
+      : [],
+  };
+}
+
+function notifyLinkUpdateTriggered({
   source,
-  traceId = null,
+  linkId = null,
   modelVersionId = null,
   changeType = null,
   selectionCount = null,
 }) {
   const detail = {
     source,
-    traceId,
+    linkId,
     modelVersionId,
     changeType,
     selectionCount,
     triggeredAt: new Date().toISOString(),
   };
-  console.log("[DBPM] Trace update triggered", detail);
+  console.log("[DBPM] Link update triggered", detail);
 
   if (
     typeof window !== "undefined" &&
     typeof window.dispatchEvent === "function"
   ) {
     window.dispatchEvent(
-      new CustomEvent("dbpm:trace-update-triggered", {
+      new CustomEvent("dbpm:link-update-triggered", {
         detail,
       }),
     );
   }
 }
 
-function resolveTraceDocumentMeta(trace = {}) {
+function resolveLinkDocumentMeta(link = {}) {
   const viewedDocument = workspaceStore.getViewedDocument() || {};
   const modelId =
-    (typeof trace?.modelId === "string" && trace.modelId) ||
+    (typeof link?.modelId === "string" && link.modelId) ||
     workspaceStore.getEditingModelId() ||
     null;
   const documentIdCandidate =
-    (typeof trace?.documentId === "string" && trace.documentId) ||
+    (typeof link?.documentId === "string" && link.documentId) ||
     (modelId ? modelsStore.getModelDocumentId(modelId) : null) ||
     viewedDocument.id;
   const documentVersionIdCandidate =
-    (typeof trace?.documentVersionId === "string" && trace.documentVersionId) ||
+    (typeof link?.documentVersionId === "string" && link.documentVersionId) ||
     viewedDocument.versionId;
   const documentId =
     typeof documentIdCandidate === "string" && documentIdCandidate
@@ -740,28 +657,28 @@ function resolveTraceDocumentMeta(trace = {}) {
 function resolveModelVersionIdFromErrorContext({
   modelId = null,
   modelVersionId = null,
-  traceId = null,
+  linkId = null,
 } = {}) {
   if (modelVersionId !== undefined && modelVersionId !== null) {
     return String(modelVersionId);
   }
 
-  const traces = documentViewerStore.getTraces() || [];
-  if (traceId !== undefined && traceId !== null) {
-    const trace = traces.find(
-      (item) => String(item?.id || "") === String(traceId),
+  const links = documentViewerStore.getLinks() || [];
+  if (linkId !== undefined && linkId !== null) {
+    const link = links.find(
+      (item) => String(item?.id || "") === String(linkId),
     );
-    if (trace?.modelVersionId) {
-      return String(trace.modelVersionId);
+    if (link?.modelVersionId) {
+      return String(link.modelVersionId);
     }
   }
 
   if (modelId !== undefined && modelId !== null) {
-    const trace = traces.find(
+    const link = links.find(
       (item) => String(item?.modelId || "") === String(modelId),
     );
-    if (trace?.modelVersionId) {
-      return String(trace.modelVersionId);
+    if (link?.modelVersionId) {
+      return String(link.modelVersionId);
     }
   }
 
@@ -784,12 +701,12 @@ function upsertNoLinkedSelectionsError({
   source,
   modelId = null,
   modelVersionId = null,
-  traceId = null,
+  linkId = null,
 }) {
   const resolvedModelVersionId = resolveModelVersionIdFromErrorContext({
     modelId,
     modelVersionId,
-    traceId,
+    linkId,
   });
   if (!resolvedModelVersionId) {
     return;
@@ -810,42 +727,42 @@ function upsertNoLinkedSelectionsError({
         ? null
         : String(resolvedModelId),
     modelVersionId: resolvedModelVersionId,
-    traceId: traceId === undefined || traceId === null ? null : String(traceId),
+    linkId: linkId === undefined || linkId === null ? null : String(linkId),
   });
 }
 
 function isNoSelectionsContextCurrentDisplay({
   modelId = null,
   modelVersionId = null,
-  traceId = null,
+  linkId = null,
 } = {}) {
-  const hasExplicitContext = [modelId, modelVersionId, traceId].some(
+  const hasExplicitContext = [modelId, modelVersionId, linkId].some(
     (value) => value !== undefined && value !== null,
   );
   if (!hasExplicitContext) {
     return true;
   }
 
-  const activeTrace = documentViewerStore.getDisplayedModelTrace();
-  if (activeTrace) {
+  const editingModelLink = documentViewerStore.getDisplayedEditingModelLink();
+  if (editingModelLink) {
     if (
-      traceId !== undefined &&
-      traceId !== null &&
-      String(activeTrace.id || "") === String(traceId)
+      linkId !== undefined &&
+      linkId !== null &&
+      String(editingModelLink.id || "") === String(linkId)
     ) {
       return true;
     }
     if (
       modelVersionId !== undefined &&
       modelVersionId !== null &&
-      String(activeTrace.modelVersionId || "") === String(modelVersionId)
+      String(editingModelLink.modelVersionId || "") === String(modelVersionId)
     ) {
       return true;
     }
     if (
       modelId !== undefined &&
       modelId !== null &&
-      String(activeTrace.modelId || "") === String(modelId)
+      String(editingModelLink.modelId || "") === String(modelId)
     ) {
       return true;
     }
@@ -889,7 +806,7 @@ function syncNoSelectionsErrorIfNeeded(selectionCount, source, context = {}) {
     source,
     modelId: context?.modelId || null,
     modelVersionId: resolvedContext.modelVersionId,
-    traceId: context?.traceId || null,
+    linkId: context?.linkId || null,
   });
 }
 
@@ -915,24 +832,24 @@ function syncNoSelectionsOnModelVersionLoadIfNeeded(source) {
     return;
   }
 
-  const trace = (documentViewerStore.getTraces() || []).find(
+  const link = (documentViewerStore.getLinks() || []).find(
     (item) => String(item?.modelVersionId || "") === String(modelVersionId),
   );
-  if (!trace) {
+  if (!link) {
     clearNoLinkedSelectionsError({
       modelId: editingModelId,
       modelVersionId,
     });
     return;
   }
-  const selectionCount = Array.isArray(trace?.selections)
-    ? trace.selections.length
+  const selectionCount = Array.isArray(link?.selections)
+    ? link.selections.length
     : 0;
   if (selectionCount > 0) {
     clearNoLinkedSelectionsError({
       modelId: editingModelId,
       modelVersionId,
-      traceId: trace?.id || null,
+      linkId: link?.id || null,
     });
     return;
   }
@@ -954,14 +871,14 @@ function syncNoSelectionsOnModelVersionLoadIfNeeded(source) {
   console.warn(`[DBPM] ${message}`, {
     source,
     modelVersionId: currentVersionId,
-    traceId: trace?.id || null,
+    linkId: link?.id || null,
   });
   upsertNoLinkedSelectionsError({
     message,
     source,
     modelId: editingModelId || null,
     modelVersionId: currentVersionId,
-    traceId: trace?.id || null,
+    linkId: link?.id || null,
   });
 }
 
@@ -1128,6 +1045,69 @@ async function updateModelVersionAndCache({
       error,
     );
   }
+}
+
+function buildSelectionDraftCreateVersionRequest({
+  modelId,
+  sourceVersionId,
+  type = MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
+}) {
+  if (!documentViewerStore.getHasSelectionChanged()) {
+    return null;
+  }
+
+  const activeEditingContext = getEditingModelContext();
+  const sourceContext = {
+    modelId,
+    modelVersionId: sourceVersionId,
+  };
+  if (!isSameEditingModelContext(activeEditingContext, sourceContext)) {
+    return null;
+  }
+
+  const link = documentViewerStore.getSerializedNewEditingModelLink();
+  if (!link || !Array.isArray(link.selections)) {
+    return null;
+  }
+
+  const currentModelData = modelEditorStore.getSerializedData();
+  if (typeof currentModelData !== "string" || !currentModelData.trim()) {
+    return null;
+  }
+
+  return {
+    mode: "payload",
+    modelId,
+    sourceVersionId,
+    reason: "new_version",
+    type,
+    modelData: currentModelData,
+    link: getCreateVersionLinkPayload(link),
+  };
+}
+
+function buildExplicitCreateVersionRequest({
+  modelId,
+  sourceVersionId,
+  modelData,
+  link = null,
+  type = MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
+}) {
+  const resolvedLink =
+    link || documentViewerStore.getSerializedNewEditingModelLink();
+  const payloadLink = getCreateVersionLinkPayload(resolvedLink);
+  if (!payloadLink?.documentVersionId) {
+    throw new Error("Failed to resolve link payload for version creation.");
+  }
+  return {
+    mode: "payload",
+    modelId,
+    sourceVersionId,
+    reason: "new_version",
+    type,
+    modelData,
+    link: payloadLink,
+  };
 }
 
 export default {
@@ -1538,7 +1518,7 @@ export default {
         mode: "selection",
         targetModelVersionId: regenerationContext?.modelVersionId ?? null,
         selectedWordsCount,
-        selectedTextSimilarity: null, // TODO: compute Jaccard vs stored trace selections
+        selectedTextSimilarity: null, // TODO: compute Jaccard vs stored link selections
         prompt: null,
       };
       const generatedModel = await this.generateModel(
@@ -1659,7 +1639,7 @@ export default {
     documentViewerStore.setSelectedSelection(null);
     documentViewerStore.setTemporarySelections([]);
     documentViewerStore.setHasSelectionChanged(false);
-    documentViewerStore.addTrace(createdLink);
+    documentViewerStore.addLink(createdLink);
     projectGraphStore.addModelNodeAndEdge(createdModelMeta);
     return {
       modelMeta: createdModelMeta,
@@ -1679,7 +1659,7 @@ export default {
     const isEditingModel = modelId === workspaceStore.getEditingModelId();
 
     modelsStore.delete(modelId);
-    documentViewerStore.removeTracesByModelId(modelId);
+    documentViewerStore.removeLinksByModelId(modelId);
     projectGraphStore.removeModelNodeAndEdge(modelId);
     workspaceStore.setModelPopoverParams(null);
 
@@ -1797,26 +1777,26 @@ export default {
       return null;
     }
 
-    const trace =
+    const link =
       type === MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS ||
       type === MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS
-        ? documentViewerStore.getSerializedNewActiveModelTrace()
+        ? documentViewerStore.getSerializedNewEditingModelLink()
         : null;
-    const selectionCount = Array.isArray(trace?.selections)
-      ? trace.selections.length
+    const selectionCount = Array.isArray(link?.selections)
+      ? link.selections.length
       : 0;
 
-    if (trace?.id && selectionCount > 0) {
+    if (link?.id && selectionCount > 0) {
       syncNoSelectionsErrorIfNeeded(selectionCount, "updateEditingVersion", {
         modelId,
         modelVersionId,
-        traceId: trace.id,
+        linkId: link.id,
       });
     }
 
     if (type === MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS) {
-      const selectedText = selectionsToText(trace?.selections || []);
-      const documentMeta = resolveTraceDocumentMeta(trace || {});
+      const selectedText = selectionsToText(link?.selections || []);
+      const documentMeta = resolveLinkDocumentMeta(link || {});
       modelEditorStore.updateModelDbpmTextSelections(
         selectedText,
         documentMeta,
@@ -1824,10 +1804,10 @@ export default {
     }
     const modelData = modelEditorStore.getSerializedData();
 
-    if (trace?.id) {
-      notifyTraceUpdateTriggered({
+    if (link?.id) {
+      notifyLinkUpdateTriggered({
         source: "updateEditingVersion",
-        traceId: trace.id,
+        linkId: link.id,
         modelVersionId,
         changeType: type,
         selectionCount,
@@ -1837,7 +1817,7 @@ export default {
       modelId,
       modelVersionId,
       modelData,
-      link: trace,
+      link: link,
       type,
     });
 
@@ -1849,67 +1829,71 @@ export default {
     ) {
       documentViewerStore.setSelectedSelection(null);
       documentViewerStore.setTemporarySelections([]);
-      documentViewerStore.updateTrace(trace);
+      documentViewerStore.updateLink(link);
     }
   },
 
-  async updateTraceById(traceId) {
-    if (!traceId) {
+  async updateLinkById(linkId) {
+    if (!linkId) {
       return;
     }
 
-    const serializedTrace = documentViewerStore.getSerializedTraceById(traceId);
-    if (!serializedTrace?.id) {
+    const serializedLink = documentViewerStore.getSerializedLinkById(linkId);
+    if (!serializedLink?.id) {
       return;
     }
 
     try {
-      notifyTraceUpdateTriggered({
-        source: "updateTraceById",
-        traceId: serializedTrace.id,
-        modelVersionId: serializedTrace.modelVersionId || null,
-        changeType: "trace_update",
-        selectionCount: Array.isArray(serializedTrace.selections)
-          ? serializedTrace.selections.length
+      notifyLinkUpdateTriggered({
+        source: "updateLinkById",
+        linkId: serializedLink.id,
+        modelVersionId: serializedLink.modelVersionId || null,
+        changeType: "link_update",
+        selectionCount: Array.isArray(serializedLink.selections)
+          ? serializedLink.selections.length
           : 0,
       });
       await documentModelLinksAPI.updateLink(
-        getTraceUpdatePayload(serializedTrace),
+        getLinkUpdatePayload(serializedLink),
       );
-      const activeTrace = documentViewerStore.getDisplayedModelTrace();
-      if (activeTrace && String(activeTrace.id) === String(traceId)) {
-        documentViewerStore.syncOriginalActiveModelSerializedSelectionsWithActiveTrace();
+      const editingModelLink =
+        documentViewerStore.getDisplayedEditingModelLink();
+      if (
+        editingModelLink &&
+        String(editingModelLink.id) === String(linkId)
+      ) {
+        documentViewerStore.syncOriginalEditingModelSerializedSelectionsWithEditingModelLink();
       }
     } catch (error) {
-      console.error(`Failed to update trace ${traceId}:`, error);
+      console.error(`Failed to update link ${linkId}:`, error);
     }
   },
 
-  async updateTraceTextById(traceId, options = {}) {
+  async updateLinkTextById(linkId, options = {}) {
     const { alertOnEmptyAfterDeletion = false } = options;
-    if (!traceId) {
+    if (!linkId) {
       return;
     }
 
-    const serializedTrace = documentViewerStore.getSerializedTraceById(traceId);
-    if (!serializedTrace?.id) {
+    const serializedLink = documentViewerStore.getSerializedLinkById(linkId);
+    if (!serializedLink?.id) {
       return;
     }
 
-    const modelVersionId = serializedTrace.modelVersionId;
+    const modelVersionId = serializedLink.modelVersionId;
     if (!modelVersionId) {
-      await this.updateTraceById(traceId);
+      await this.updateLinkById(linkId);
       return;
     }
 
-    const selectionCount = Array.isArray(serializedTrace.selections)
-      ? serializedTrace.selections.length
+    const selectionCount = Array.isArray(serializedLink.selections)
+      ? serializedLink.selections.length
       : 0;
     if (alertOnEmptyAfterDeletion || selectionCount > 0) {
-      syncNoSelectionsErrorIfNeeded(selectionCount, "updateTraceTextById", {
-        modelId: serializedTrace.modelId || null,
-        modelVersionId: serializedTrace.modelVersionId || null,
-        traceId: serializedTrace.id || null,
+      syncNoSelectionsErrorIfNeeded(selectionCount, "updateLinkTextById", {
+        modelId: serializedLink.modelId || null,
+        modelVersionId: serializedLink.modelVersionId || null,
+        linkId: serializedLink.id || null,
       });
     }
 
@@ -1918,25 +1902,25 @@ export default {
         await modelsAPI.getDataByVersionId(modelVersionId);
       const updatedModelData = updateDbpmTextSelections(
         currentModelData,
-        selectionsToText(serializedTrace.selections),
-        resolveTraceDocumentMeta(serializedTrace),
+        selectionsToText(serializedLink.selections),
+        resolveLinkDocumentMeta(serializedLink),
       );
-      notifyTraceUpdateTriggered({
-        source: "updateTraceTextById",
-        traceId: serializedTrace.id,
+      notifyLinkUpdateTriggered({
+        source: "updateLinkTextById",
+        linkId: serializedLink.id,
         modelVersionId,
         changeType: MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
         selectionCount,
       });
       await modelsAPI.updateVersion(modelVersionId, {
         modelData: updatedModelData,
-        link: getModelVersionLinkPayload(serializedTrace),
+        link: getModelVersionLinkPayload(serializedLink),
         type: MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
       });
 
       modelsStore.addCachedVersion(modelVersionId, {
-        ...(serializedTrace.modelId
-          ? { modelId: serializedTrace.modelId }
+        ...(serializedLink.modelId
+          ? { modelId: serializedLink.modelId }
           : {}),
         dataXml: updatedModelData,
         status: "ready",
@@ -1953,28 +1937,61 @@ export default {
         });
       }
 
-      const activeTrace = documentViewerStore.getDisplayedModelTrace();
-      if (activeTrace && String(activeTrace.id) === String(traceId)) {
-        documentViewerStore.syncOriginalActiveModelSerializedSelectionsWithActiveTrace();
+      const editingModelLink =
+        documentViewerStore.getDisplayedEditingModelLink();
+      if (
+        editingModelLink &&
+        String(editingModelLink.id) === String(linkId)
+      ) {
+        documentViewerStore.syncOriginalEditingModelSerializedSelectionsWithEditingModelLink();
       }
     } catch (error) {
-      console.error(`Failed to update trace text for trace ${traceId}:`, error);
+      console.error(`Failed to update link text for link ${linkId}:`, error);
     }
   },
 
-  async updateActiveModelTrace(options = {}) {
+  async syncEditingModelLinkStyles() {
+    const serializedLink =
+      documentViewerStore.getSerializedEditingModelLinkForStyleSync();
+    if (!serializedLink?.id) {
+      return;
+    }
+
+    try {
+      notifyLinkUpdateTriggered({
+        source: "syncEditingModelLinkStyles",
+        linkId: serializedLink.id,
+        modelVersionId: serializedLink.modelVersionId || null,
+        changeType: "color_only",
+        selectionCount: Array.isArray(serializedLink.selections)
+          ? serializedLink.selections.length
+          : 0,
+      });
+      await documentModelLinksAPI.updateLink(
+        getLinkUpdatePayload(serializedLink),
+      );
+      documentViewerStore.updateStoredLink(serializedLink);
+      documentViewerStore.setOriginalEditingModelSerializedSelections(
+        serializedLink.selections || [],
+      );
+    } catch (error) {
+      console.error("Failed to sync editing model link styles:", error);
+    }
+  },
+
+  async updateEditingModelLink(options = {}) {
     const { alertOnEmptyAfterDeletion = false } = options;
-    const updatedTrace = documentViewerStore.getSerializedActiveModelTrace();
-    if (!updatedTrace?.id) {
+    const updatedLink = documentViewerStore.getSerializedEditingModelLink();
+    if (!updatedLink?.id) {
       return;
     }
 
     const previousSelections =
-      documentViewerStore.getOriginalActiveModelSerializedSelections();
-    const currentSelections = Array.isArray(updatedTrace.selections)
-      ? updatedTrace.selections
+      documentViewerStore.getOriginalEditingModelSerializedSelections();
+    const currentSelections = Array.isArray(updatedLink.selections)
+      ? updatedLink.selections
       : [];
-    const changeType = classifyTraceSelectionChange({
+    const changeType = classifyLinkSelectionChange({
       previousSelections,
       currentSelections,
     });
@@ -1982,60 +1999,64 @@ export default {
       return;
     }
 
+    if (changeType === "color_only") {
+      await this.syncEditingModelLinkStyles();
+      return;
+    }
+
     try {
-      notifyTraceUpdateTriggered({
-        source: "updateActiveModelTrace",
-        traceId: updatedTrace.id,
-        modelVersionId: updatedTrace.modelVersionId || null,
+      notifyLinkUpdateTriggered({
+        source: "updateEditingModelLink",
+        linkId: updatedLink.id,
+        modelVersionId: updatedLink.modelVersionId || null,
         changeType,
         selectionCount: currentSelections.length,
       });
-      if (changeType === "text_changed") {
-        const { id: modelId, versionId: modelVersionId } =
-          workspaceStore.getEditingModel() || {};
-        if (!modelId || !modelVersionId) {
-          console.warn(
-            "Skipping active trace text update: no active editing model version.",
-          );
-          return;
-        }
-
-        modelEditorStore.updateModelDbpmTextSelections(
-          selectionsToText(currentSelections),
-          resolveTraceDocumentMeta(updatedTrace),
+      const { id: modelId, versionId: modelVersionId } =
+        workspaceStore.getEditingModel() || {};
+      if (!modelId || !modelVersionId) {
+        console.warn(
+          "Skipping editing model link text update: no active editing model version.",
         );
-        if (alertOnEmptyAfterDeletion || currentSelections.length > 0) {
-          syncNoSelectionsErrorIfNeeded(
-            currentSelections.length,
-            "updateActiveModelTrace",
-            {
-              modelId: updatedTrace.modelId || null,
-              modelVersionId: updatedTrace.modelVersionId || null,
-              traceId: updatedTrace.id || null,
-            },
-          );
-        }
-        const modelData = modelEditorStore.getSerializedData();
-        await updateModelVersionAndCache({
-          modelId,
-          modelVersionId,
-          modelData,
-          link: updatedTrace,
-          type: MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
-        });
-        documentViewerStore.updateTrace(updatedTrace);
-      } else {
-        await documentModelLinksAPI.updateLink(
-          getTraceUpdatePayload(updatedTrace),
-        );
-        documentViewerStore.syncOriginalActiveModelSerializedSelectionsWithActiveTrace();
+        return;
       }
+
+      modelEditorStore.updateModelDbpmTextSelections(
+        selectionsToText(currentSelections),
+        resolveLinkDocumentMeta(updatedLink),
+      );
+      if (alertOnEmptyAfterDeletion || currentSelections.length > 0) {
+        syncNoSelectionsErrorIfNeeded(
+          currentSelections.length,
+          "updateEditingModelLink",
+          {
+            modelId: updatedLink.modelId || null,
+            modelVersionId: updatedLink.modelVersionId || null,
+            linkId: updatedLink.id || null,
+          },
+        );
+      }
+      const modelData = modelEditorStore.getSerializedData();
+      await updateModelVersionAndCache({
+        modelId,
+        modelVersionId,
+        modelData,
+        link: updatedLink,
+        type: MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
+      });
+      documentViewerStore.updateLink(updatedLink);
     } catch (error) {
-      console.error("Failed to update active model trace:", error);
+      console.error("Failed to update editing model link:", error);
     }
   },
   // Model versioning
-  async createModelVersion(modelId, sourceVersionId) {
+  async createModelVersion(modelId, sourceVersionId, options = {}) {
+    const {
+      modelData = null,
+      link: explicitLink = null,
+      type = null,
+      allowSelectionDraftPayload = false,
+    } = options || {};
     const sourceVersion = modelsStore.getVersion(modelId, sourceVersionId);
     const isSelectedVersionLatest = modelsStore.isLatestVersion(
       modelId,
@@ -2047,12 +2068,37 @@ export default {
       (typeof sourceVersion?.versionNumber === "number"
         ? `v${sourceVersion.versionNumber}`
         : String(sourceVersionId));
+    const explicitCreateRequest =
+      typeof modelData === "string" && modelData.trim()
+        ? buildExplicitCreateVersionRequest({
+            modelId,
+            sourceVersionId,
+            modelData,
+            link: explicitLink,
+            type: type || MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
+          })
+        : null;
+    const selectionDraftCreateRequest =
+      !explicitCreateRequest &&
+      allowSelectionDraftPayload &&
+      reason === "new_version"
+        // Draft selections must only be promoted when the caller explicitly
+        // requests it; header-triggered version copies should stay pure copies.
+        ? buildSelectionDraftCreateVersionRequest({
+            modelId,
+            sourceVersionId,
+            type: MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
+          })
+        : null;
+    const createVersionRequest = explicitCreateRequest ||
+      selectionDraftCreateRequest || {
+        mode: "copy",
+        modelId,
+        sourceVersionId,
+        reason,
+      };
 
-    const result = await modelsAPI.createVersion({
-      modelId,
-      sourceVersionId,
-      reason,
-    });
+    const result = await modelsAPI.createVersion(createVersionRequest);
 
     const { versionMeta: version, link } = result || {};
     modelsStore.addVersion(modelId, version);
@@ -2065,22 +2111,25 @@ export default {
       isDraft: false,
     });
     await this.loadVersion(createdVersionId);
-    documentViewerStore.removeTracesByModelId(modelId);
+    documentViewerStore.removeLinksByModelId(modelId);
     console.log(
-      `Created new model version ${createdVersionId} for model ${modelId} based on source version ${sourceVersionId} (${sourceVersionLabel}) with reason: ${reason}`,
-      { link },
+      `Created new model version ${createdVersionId} for model ${modelId} based on source version ${sourceVersionId} (${sourceVersionLabel})`,
+      {
+        request: createVersionRequest,
+        link,
+      },
     );
-    documentViewerStore.addTrace(link);
-    // documentViewerStore.updateTraceByModelId(modelId, trace);
-    // documentViewerStore.updateTraceModelVersion({
+    documentViewerStore.addLink(link);
+    // documentViewerStore.updateLinkByModelId(modelId, link);
+    // documentViewerStore.updateLinkModelVersion({
     //   modelId,
     //   sourceModelVersionId: sourceVersionId,
     //   targetModelVersionId: createdVersionId,
     // });
 
-    // documentViewerStore.setActiveModelTraceByModelVersionId(createdVersionId);
-    // if (!documentViewerStore.getDisplayedModelTrace()) {
-    //   documentViewerStore.setActiveModelTraceByModelId(modelId);
+    // documentViewerStore.setEditingModelLinkByModelVersionId(createdVersionId);
+    // if (!documentViewerStore.getDisplayedEditingModelLink()) {
+    //   documentViewerStore.setEditingModelLinkByModelId(modelId);
     // }
   },
   async loadVersion(versionId) {
