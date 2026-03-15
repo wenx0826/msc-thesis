@@ -132,6 +132,9 @@ class WorkspaceStore extends Store {
   hasEditingModel() {
     return !!this.getEditingModelId();
   }
+  getModelPopover() {
+    return this.state.modelPopover;
+  }
   isEditingModelDraft() {
     return this.getEditingModel()?.isDraft === true;
   }
@@ -178,7 +181,12 @@ class WorkspaceStore extends Store {
     const oldValue = this.state.modelPopover;
     const oldModelId = oldValue?.target?.id;
     const newModelId = normalizedValue?.target?.id;
-    const editingModelId = this.getEditingModelId();
+    const hasVisiblePopover = !!oldModelId;
+    const isSwitchingVisibleModel =
+      !!normalizedValue &&
+      hasVisiblePopover &&
+      !!newModelId &&
+      oldModelId !== newModelId;
 
     // if (normalizedValue && !normalizedValue.target?.id) {
     //   console.error("setModelPopoverParams requires target.id");
@@ -203,15 +211,13 @@ class WorkspaceStore extends Store {
 
     // ✨ NEW: Debounce opening (200ms delay) to prevent popover from appearing too quickly
     if (normalizedValue) {
-      const openDelayMs =
+      const requestedOpenDelayMs =
         Number.isFinite(normalizedValue.openDelayMs) &&
         normalizedValue.openDelayMs >= 0
           ? normalizedValue.openDelayMs
           : 200;
-      // Track the current hover source immediately so quick mouseleave can cancel pending open.
-      this.state.modelPopover.hoverSource = normalizedValue.source;
-      this.state.modelPopover.anchor = normalizedValue.anchor;
-      this.state.modelPopover.openTimer = setTimeout(() => {
+      const openDelayMs = isSwitchingVisibleModel ? 0 : requestedOpenDelayMs;
+      const applyPopoverTarget = () => {
         this.state.modelPopover.target = {
           id: normalizedValue.target.id,
           versionId: normalizedValue.target.versionId || null,
@@ -224,6 +230,16 @@ class WorkspaceStore extends Store {
           oldValue,
           newValue: newState,
         });
+      };
+      // Track the current hover source immediately so quick mouseleave can cancel pending open.
+      this.state.modelPopover.hoverSource = normalizedValue.source;
+      this.state.modelPopover.anchor = normalizedValue.anchor;
+      if (openDelayMs === 0) {
+        applyPopoverTarget();
+        return;
+      }
+      this.state.modelPopover.openTimer = setTimeout(() => {
+        applyPopoverTarget();
         this.state.modelPopover.openTimer = null;
       }, openDelayMs);
     } else {

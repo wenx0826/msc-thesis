@@ -182,6 +182,7 @@ function onModelListItemMouseEnter(event) {
       id: modelId,
       versionId: element.dataset.modelVersionId || null,
     },
+    openDelayMs: 0,
     anchor: {
       type: "element",
       element,

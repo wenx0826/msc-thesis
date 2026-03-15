@@ -22,13 +22,14 @@ const $selectedSelectionToolbar = $("#selectedSelectionToolbar");
 const SELECTION_WRAP_TEMPLATE_ID = "selectionWrapTemplate";
 
 const MODEL_TAG_TEMPLATE_ID = "modelTagTemplate";
+const DOCUMENT_TAG_POPOVER_SOURCE = "document-tag";
 let handleDragState = null;
 let pendingDocumentTextSelectionCommit = false;
 let suppressTagPopoverOpen = false;
 let suppressTagPopoverOpenTimer = null;
 let suppressNextEditingModelLinkAutoScroll = false;
 
-function suppressTagPopoverForClickWindow() {
+function suppressTagPopoverTemporarily(durationMs = 400) {
   suppressTagPopoverOpen = true;
   if (suppressTagPopoverOpenTimer) {
     clearTimeout(suppressTagPopoverOpenTimer);
@@ -36,7 +37,7 @@ function suppressTagPopoverForClickWindow() {
   suppressTagPopoverOpenTimer = setTimeout(() => {
     suppressTagPopoverOpen = false;
     suppressTagPopoverOpenTimer = null;
-  }, 400);
+  }, durationMs);
 }
 
 function releaseTagPopoverSuppression() {
@@ -45,6 +46,23 @@ function releaseTagPopoverSuppression() {
     clearTimeout(suppressTagPopoverOpenTimer);
     suppressTagPopoverOpenTimer = null;
   }
+}
+
+function shouldCloseDocumentTagPopoverOnScroll() {
+  const modelPopover = workspaceStore.getModelPopover();
+  if (modelPopover?.hoverSource !== DOCUMENT_TAG_POPOVER_SOURCE) {
+    return false;
+  }
+  return !!modelPopover.target?.id || !!modelPopover.openTimer;
+}
+
+function onViewerScroll() {
+  rerenderOverlayLayers();
+  if (!shouldCloseDocumentTagPopoverOnScroll()) {
+    return;
+  }
+  suppressTagPopoverTemporarily();
+  workspaceStore.setModelPopoverParams(null);
 }
 
 function isViewingLatestDocumentVersion() {
@@ -1233,7 +1251,7 @@ createUI({
       onDocumentTextSelectionMove,
     );
     $documentContent.on("beforeinput paste drop", blockDocumentTextEdit);
-    $viewerWrap.on("scroll", rerenderOverlayLayers);
+    $viewerWrap.on("scroll", onViewerScroll);
     $("#columnResizehandle1").on("dragcolumnmove", (e) => {
       // e.stopPropagation();
       rerenderOverlayLayers();
@@ -1255,7 +1273,7 @@ createUI({
     $modelTagsLayer.on("click", ".tag-span", (event) => {
       // const $target = $(event.currentTarget);
       event.stopPropagation();
-      suppressTagPopoverForClickWindow();
+      suppressTagPopoverTemporarily();
       workspaceStore.setModelPopoverParams(null);
       const modelId = event.currentTarget.dataset.modelId;
       const modelVersionId = event.currentTarget.dataset.modelVersionId || null;
@@ -1281,7 +1299,7 @@ createUI({
           type: "element",
           element,
         },
-        source: "document-tag",
+        source: DOCUMENT_TAG_POPOVER_SOURCE,
       }); // ✨ NEW: Source tracking for conflict prevention
     });
     $modelTagsLayer.on("mouseleave", ".tag-span", (event) => {
@@ -1292,7 +1310,7 @@ createUI({
         event.currentTarget.dataset.modelId,
       );
       // ✨ NEW: Pass source identifier to ensure only the same source can close
-      workspaceStore.requestCloseModelPopover("document-tag");
+      workspaceStore.requestCloseModelPopover(DOCUMENT_TAG_POPOVER_SOURCE);
     });
   },
   subscribeStores: () => {
