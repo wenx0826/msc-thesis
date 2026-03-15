@@ -13,7 +13,13 @@ const $versionSelect = $("#docVersionSelect");
 const $selectionColorForm = $("#selectionColorForm");
 const $selectedSelectionColorForm = $("#selectedSelectionColorForm");
 const $deselectAllSelectionsButton = $("#deselectAllSelectionsButton");
+const $copySelectionButton = $("#selectedSelectionCopyButton");
 const $deleteSelectionButton = $("#selectedSelectionDeleteButton");
+const COPY_SELECTION_BUTTON_LABEL = "Copy selection";
+const COPY_SELECTION_SUCCESS_LABEL = "Copied";
+const COPY_SELECTION_ERROR_LABEL = "Copy failed";
+const COPY_SELECTION_FEEDBACK_DURATION_MS = 1600;
+let copySelectionFeedbackTimer = null;
 
 function setVersionTag($tag, isLatest) {
   if (typeof isLatest !== "boolean") {
@@ -39,6 +45,22 @@ function syncNextSelectionColorInput(color) {
 }
 
 function getSelectedSelectionColor() {
+  return getSelectedSelectionEntry()?.style?.backgroundColor || null;
+}
+
+function syncSelectedSelectionColorInput() {
+  const color = getSelectedSelectionColor();
+  if (!color) {
+    return;
+  }
+
+  const $input = $selectedSelectionColorForm.find(`input[value="${color}"]`);
+  if ($input.length) {
+    $input.prop("checked", true);
+  }
+}
+
+function getSelectedSelectionEntry() {
   const selectedSelection = documentViewerStore.getSelectedSelection();
   if (!selectedSelection) {
     return null;
@@ -49,12 +71,13 @@ function getSelectedSelectionColor() {
     selectedSelection.modelId === undefined ||
     selectedSelection.modelId === null
   ) {
-    const selection = documentViewerStore
-      .getTemporarySelections()
-      .find(
-        (item) => String(item.id) === String(selectedSelection.selectionId),
-      );
-    return selection?.style?.backgroundColor || null;
+    return (
+      documentViewerStore
+        .getTemporarySelections()
+        .find(
+          (item) => String(item.id) === String(selectedSelection.selectionId),
+        ) || null
+    );
   }
 
   let link = null;
@@ -79,21 +102,87 @@ function getSelectedSelectionColor() {
     return null;
   }
 
-  const selection = link.selections.find(
-    (item) => String(item.id) === String(selectedSelection.selectionId),
+  return (
+    link.selections.find(
+      (item) => String(item.id) === String(selectedSelection.selectionId),
+    ) || null
   );
-  return selection?.style?.backgroundColor || null;
 }
 
-function syncSelectedSelectionColorInput() {
-  const color = getSelectedSelectionColor();
-  if (!color) {
+function getSelectedSelectionText() {
+  const selection = getSelectedSelectionEntry();
+  if (!selection) {
+    return "";
+  }
+
+  if (selection.range && typeof selection.range.toString === "function") {
+    const rangeText = selection.range.toString();
+    if (rangeText) {
+      return rangeText;
+    }
+  }
+
+  return typeof selection.textQuote?.exact === "string"
+    ? selection.textQuote.exact
+    : "";
+}
+
+async function copyTextToClipboard(text) {
+  if (
+    navigator.clipboard &&
+    typeof navigator.clipboard.writeText === "function" &&
+    window.isSecureContext
+  ) {
+    await navigator.clipboard.writeText(text);
     return;
   }
 
-  const $input = $selectedSelectionColorForm.find(`input[value="${color}"]`);
-  if ($input.length) {
-    $input.prop("checked", true);
+  const activeElement = document.activeElement;
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "");
+  textarea.setAttribute("aria-hidden", "true");
+  textarea.style.position = "fixed";
+  textarea.style.top = "-9999px";
+  textarea.style.left = "-9999px";
+  document.body.appendChild(textarea);
+  textarea.focus();
+  textarea.select();
+
+  const didCopy = document.execCommand("copy");
+  document.body.removeChild(textarea);
+
+  if (activeElement instanceof HTMLElement) {
+    activeElement.focus();
+  }
+
+  if (!didCopy) {
+    throw new Error("Clipboard copy command was rejected");
+  }
+}
+
+function clearCopySelectionFeedback() {
+  if (!copySelectionFeedbackTimer) {
+    return;
+  }
+  clearTimeout(copySelectionFeedbackTimer);
+  copySelectionFeedbackTimer = null;
+}
+
+function showCopySelectionFeedback(label) {
+  clearCopySelectionFeedback();
+  $copySelectionButton.text(label);
+  copySelectionFeedbackTimer = setTimeout(() => {
+    copySelectionFeedbackTimer = null;
+    syncCopySelectionButtonState();
+  }, COPY_SELECTION_FEEDBACK_DURATION_MS);
+}
+
+function syncCopySelectionButtonState() {
+  const hasSelectedText = !!getSelectedSelectionText();
+  $copySelectionButton.prop("disabled", !hasSelectedText);
+  if (!copySelectionFeedbackTimer) {
+    $copySelectionButton.text(COPY_SELECTION_BUTTON_LABEL);
   }
 }
 
@@ -108,6 +197,7 @@ createUI({
 
     syncNextSelectionColorInput(documentViewerStore.getSelectionColor());
     syncSelectedSelectionColorInput();
+    syncCopySelectionButtonState();
 
     return { versionSelector };
   },
@@ -156,6 +246,26 @@ createUI({
         } else {
           modelService.updateLinkById(updatedLink.id);
         }
+      }
+    });
+
+    $copySelectionButton.on("click", async () => {
+      const selectedText = getSelectedSelectionText();
+      if (!selectedText) {
+        syncCopySelectionButtonState();
+        return;
+      }
+
+      $copySelectionButton.prop("disabled", true);
+
+      try {
+        await copyTextToClipboard(selectedText);
+        showCopySelectionFeedback(COPY_SELECTION_SUCCESS_LABEL);
+      } catch (error) {
+        console.error("Failed to copy selected selection text:", error);
+        showCopySelectionFeedback(COPY_SELECTION_ERROR_LABEL);
+      } finally {
+        syncCopySelectionButtonState();
       }
     });
 
@@ -246,13 +356,19 @@ createUI({
           break;
         case "selectedSelection":
           syncSelectedSelectionColorInput();
+          clearCopySelectionFeedback();
+          syncCopySelectionButtonState();
           break;
         case "temporarySelections":
           syncSelectedSelectionColorInput();
+          clearCopySelectionFeedback();
+          syncCopySelectionButtonState();
           break;
         case "editingModelLink.selections":
         case "editingModelLink":
           syncSelectedSelectionColorInput();
+          clearCopySelectionFeedback();
+          syncCopySelectionButtonState();
           break;
         default:
           break;

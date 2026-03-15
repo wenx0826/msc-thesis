@@ -59,6 +59,26 @@ let pendingGenerationAttemptMeta = null;
 function countWordsSimple(text) {
   return (text || "").trim().split(/\s+/).filter(Boolean).length || 0;
 }
+
+function normalizePromptText(value) {
+  return typeof value === "string" ? value.trim() : "";
+}
+
+function composeSelectionGenerationInput(selectedText, additionalPrompt = "") {
+  const normalizedPrompt = normalizePromptText(additionalPrompt);
+  if (!normalizedPrompt) {
+    return selectedText;
+  }
+
+  return [
+    "Selected document text:",
+    selectedText || "",
+    "",
+    "Additional instructions:",
+    normalizedPrompt,
+  ].join("\n");
+}
+
 let generationRequestSequence = 0;
 let lastNoSelectionLoadAlert = {
   versionId: null,
@@ -1466,11 +1486,12 @@ export default {
     }
   },
 
-  async generateModelBySelections(target) {
+  async generateModelBySelections(target, options = {}) {
     const normalizedTarget =
       target === MODEL_GENERATION_TARGET.EDITING_MODEL
         ? MODEL_GENERATION_TARGET.EDITING_MODEL
         : MODEL_GENERATION_TARGET.NEW_MODEL;
+    const additionalPrompt = normalizePromptText(options.additionalPrompt);
     const regenerationContext =
       normalizedTarget === MODEL_GENERATION_TARGET.EDITING_MODEL
         ? getEditingModelContext()
@@ -1509,20 +1530,24 @@ export default {
     try {
       const selectedText = documentViewerStore.getSelectedText();
       const selectedWordsCount = countWordsSimple(selectedText) || null;
+      const generationInput = composeSelectionGenerationInput(
+        selectedText,
+        additionalPrompt,
+      );
       pendingGenerationAttemptMeta = {
         projectId: workspaceStore.getProjectId(),
         target:
           normalizedTarget === MODEL_GENERATION_TARGET.NEW_MODEL
             ? "initial"
             : "regeneration",
-        mode: "selection",
+        mode: additionalPrompt ? "selection_and_prompt" : "selection",
         targetModelVersionId: regenerationContext?.modelVersionId ?? null,
         selectedWordsCount,
         selectedTextSimilarity: null, // TODO: compute Jaccard vs stored link selections
-        prompt: null,
+        prompt: additionalPrompt || null,
       };
       const generatedModel = await this.generateModel(
-        selectedText,
+        generationInput,
         EMPTY_MODEL,
       );
       if (!generatedModel) {

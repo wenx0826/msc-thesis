@@ -221,6 +221,9 @@
                     </span>
                     <!-- </div> -->
                   </form>
+                  <button id="selectedSelectionCopyButton" type="button" title="Copy selected text to clipboard">
+                    Copy selection
+                  </button>
                   <button id="selectedSelectionDeleteButton">
                     Delete selection
                   </button>
@@ -245,17 +248,27 @@
               <button id="addSelectionsButton" disabled>
                 Apply changes
               </button>
-              <button id="generateModelButton" class="btn-primary" data-target="new_model" disabled>
-                Generate new model
-              </button>
-              <button
-                id="regenerateModelButton"
-                class="btn-primary"
-                data-target="editing_model"
-                disabled
-              >
-                Regenerate model
-              </button>
+              <div id="modelGenerationSplitButton" class="split-button">
+                <button
+                  id="modelGenerationPrimaryButton"
+                  class="btn-primary split-button__action"
+                  type="button"
+                  data-target="new_model"
+                  disabled
+                >
+                  <span id="modelGenerationPrimaryLabel">Generate new model</span>
+                </button>
+                <button
+                  id="modelGenerationMenuButton"
+                  class="btn-primary split-button__toggle"
+                  type="button"
+                  aria-haspopup="menu"
+                  title="More generation actions"
+                  disabled
+                >
+                  <span class="split-button__caret" aria-hidden="true"></span>
+                </button>
+              </div>
             </div>
           </ui-bar>
         </ui-rest>
@@ -444,6 +457,34 @@
       </ui-content>
     </ui-rest>
   </ui-rest>
+  <dialog id="modelGenerationPromptDialog">
+    <form id="modelGenerationPromptForm" method="dialog">
+      <h3 id="modelGenerationPromptTitle">Generate New Model with Additional Prompt</h3>
+      <p id="modelGenerationPromptHint">
+        Add extra instructions to guide generation from the selected text.
+      </p>
+      <label for="modelGenerationPromptInput">Additional prompt</label>
+      <textarea
+        id="modelGenerationPromptInput"
+        rows="7"
+        placeholder="Describe the desired flow, constraints, or details to emphasize..."
+      ></textarea>
+      <div class="error" id="modelGenerationPromptError"></div>
+      <ui-bar>
+        <div class="right action-group">
+          <button type="button" id="cancelModelGenerationPromptButton">Cancel</button>
+          <button
+            type="submit"
+            id="submitModelGenerationPromptButton"
+            class="btn-primary"
+            disabled
+          >
+            Generate
+          </button>
+        </div>
+      </ui-bar>
+    </form>
+  </dialog>
   <iframe id="wfPreviewRendererIframe" src="workflow-viewer.html"
     style="position: absolute; left: -10000px; top: -10000px; width: 1px; height: 1px; opacity: 0; pointer-events: none;"></iframe>
 </body>
