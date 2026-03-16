@@ -11,6 +11,8 @@ import documentModelLinkService from "../document_model_links/service.js";
 import documentVersionRepo from "../documents/repositories/version.js";
 import { injectDbpmMeta } from "./utils/dbpmMetaXml.js";
 
+const SELECTION_TEXT_SEPARATOR = "\n";
+
 function selectionsToText(selections) {
   if (!Array.isArray(selections)) {
     return "";
@@ -22,7 +24,7 @@ function selectionsToText(selections) {
         : "",
     )
     .filter(Boolean)
-    .join(" ");
+    .join(SELECTION_TEXT_SEPARATOR);
 }
 
 function pickLatestLinksByModelVersionId(links) {

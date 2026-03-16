@@ -71,10 +71,8 @@ function composeSelectionGenerationInput(selectedText, additionalPrompt = "") {
   }
 
   return [
-    "Selected document text:",
     selectedText || "",
-    "",
-    "Additional instructions:",
+    "**Important** Additional instructions:",
     normalizedPrompt,
   ].join("\n");
 }
@@ -370,11 +368,13 @@ function resolveModelCreationContext(creationContext = null) {
   const contextSelections = Array.isArray(normalizedContext.selections)
     ? normalizedContext.selections
     : documentViewerStore.getSerializedTemporarySelections();
+  const prompt = normalizePromptText(normalizedContext.prompt);
   return {
     documentId: documentId || "",
     documentVersionId,
     documentVersionName,
     selections: cloneValue(contextSelections, []),
+    prompt,
   };
 }
 
@@ -384,6 +384,7 @@ function prepareModelDataForCreation(modelData, creationContext) {
     documentVersionId: creationContext.documentVersionId,
     documentVersionName: creationContext.documentVersionName || "",
     selectedText: selectionsToText(creationContext.selections),
+    prompt: creationContext.prompt || "",
   });
 }
 
@@ -526,7 +527,11 @@ function findProcessDescriptionInWrapper(wrapperRoot) {
   );
 }
 
-function composeRegeneratedModelData({ currentModelData, generatedModelData }) {
+function composeRegeneratedModelData({
+  currentModelData,
+  generatedModelData,
+  selectionUpdate = null,
+}) {
   const generatedDoc = parseXmlDocument(generatedModelData);
   if (!generatedDoc?.documentElement) {
     return generatedModelData;
@@ -558,7 +563,17 @@ function composeRegeneratedModelData({ currentModelData, generatedModelData }) {
     const imported = standaloneDoc.importNode(generatedDescription, true);
     ensureDescriptionNamespace(imported);
     standaloneDoc.documentElement.appendChild(imported);
-    return $(standaloneDoc.documentElement).serializePrettyXML();
+    const serializedStandalone = $(
+      standaloneDoc.documentElement,
+    ).serializePrettyXML();
+    if (!selectionUpdate) {
+      return serializedStandalone;
+    }
+    return updateDbpmTextSelections(
+      serializedStandalone,
+      selectionUpdate.selectedText || "",
+      selectionUpdate.meta || {},
+    );
   }
 
   const imported = currentDoc.importNode(generatedDescription, true);
@@ -569,7 +584,15 @@ function composeRegeneratedModelData({ currentModelData, generatedModelData }) {
   } else {
     currentRoot.appendChild(imported);
   }
-  return $(currentRoot).serializePrettyXML();
+  const serializedCurrent = $(currentRoot).serializePrettyXML();
+  if (!selectionUpdate) {
+    return serializedCurrent;
+  }
+  return updateDbpmTextSelections(
+    serializedCurrent,
+    selectionUpdate.selectedText || "",
+    selectionUpdate.meta || {},
+  );
 }
 
 function getLinkUpdatePayload(serializedLink) {
@@ -1530,6 +1553,10 @@ export default {
     try {
       const selectedText = documentViewerStore.getSelectedText();
       const selectedWordsCount = countWordsSimple(selectedText) || null;
+      const editingLinkForSelections =
+        normalizedTarget === MODEL_GENERATION_TARGET.EDITING_MODEL
+          ? documentViewerStore.getSerializedNewEditingModelLink()
+          : null;
       const generationInput = composeSelectionGenerationInput(
         selectedText,
         additionalPrompt,
@@ -1555,19 +1582,34 @@ export default {
       }
 
       if (normalizedTarget === MODEL_GENERATION_TARGET.NEW_MODEL) {
-        return this.stagePendingNewModelDraft(generatedModel);
+        return this.stagePendingNewModelDraft(generatedModel, {
+          creationContext: {
+            prompt: additionalPrompt,
+          },
+        });
       }
 
       if (!hasEditingContextAtStart) {
         console.warn(
           "No active editing model/version found for regeneration; staging a new model draft instead.",
         );
-        return this.stagePendingNewModelDraft(generatedModel);
+        return this.stagePendingNewModelDraft(generatedModel, {
+          creationContext: {
+            prompt: additionalPrompt,
+          },
+        });
       }
 
       const regeneratedModelData = composeRegeneratedModelData({
         currentModelData: originalModelData,
         generatedModelData: generatedModel,
+        selectionUpdate: {
+          selectedText,
+          meta: {
+            ...resolveLinkDocumentMeta(editingLinkForSelections || {}),
+            prompt: additionalPrompt || null,
+          },
+        },
       });
 
       const preview = {
@@ -1883,10 +1925,7 @@ export default {
       );
       const editingModelLink =
         documentViewerStore.getDisplayedEditingModelLink();
-      if (
-        editingModelLink &&
-        String(editingModelLink.id) === String(linkId)
-      ) {
+      if (editingModelLink && String(editingModelLink.id) === String(linkId)) {
         documentViewerStore.syncOriginalEditingModelSerializedSelectionsWithEditingModelLink();
       }
     } catch (error) {
@@ -1944,9 +1983,7 @@ export default {
       });
 
       modelsStore.addCachedVersion(modelVersionId, {
-        ...(serializedLink.modelId
-          ? { modelId: serializedLink.modelId }
-          : {}),
+        ...(serializedLink.modelId ? { modelId: serializedLink.modelId } : {}),
         dataXml: updatedModelData,
         status: "ready",
         error: null,
@@ -1964,10 +2001,7 @@ export default {
 
       const editingModelLink =
         documentViewerStore.getDisplayedEditingModelLink();
-      if (
-        editingModelLink &&
-        String(editingModelLink.id) === String(linkId)
-      ) {
+      if (editingModelLink && String(editingModelLink.id) === String(linkId)) {
         documentViewerStore.syncOriginalEditingModelSerializedSelectionsWithEditingModelLink();
       }
     } catch (error) {
@@ -2107,9 +2141,9 @@ export default {
       !explicitCreateRequest &&
       allowSelectionDraftPayload &&
       reason === "new_version"
-        // Draft selections must only be promoted when the caller explicitly
-        // requests it; header-triggered version copies should stay pure copies.
-        ? buildSelectionDraftCreateVersionRequest({
+        ? // Draft selections must only be promoted when the caller explicitly
+          // requests it; header-triggered version copies should stay pure copies.
+          buildSelectionDraftCreateVersionRequest({
             modelId,
             sourceVersionId,
             type: MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,

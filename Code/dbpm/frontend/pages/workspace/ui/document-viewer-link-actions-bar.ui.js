@@ -3,6 +3,7 @@ import { createMenu } from "../../../shared/utils/dom.js";
 import { Constants } from "../../../constants.js";
 import {
   documentViewerStore,
+  modelEditorStore,
   workspaceStore,
 } from "../store/index.js";
 import { modelService } from "../services/index.js";
@@ -28,12 +29,17 @@ const $cancelModelGenerationPromptButton = $(
 const $submitModelGenerationPromptButton = $(
   "#submitModelGenerationPromptButton",
 );
-let isSubmittingPromptGeneration = false;
+
+function isGenerationActionBusy() {
+  return modelEditorStore.getIsGenerating();
+}
 
 function getGenerationActionState() {
   const hasEditingModel = workspaceStore.hasEditingModel();
   const hasSelectionChanged = !!documentViewerStore.getHasSelectionChanged();
-  const canGenerateNewModel = hasSelectionChanged;
+  const hasGenerationSelections =
+    documentViewerStore.getSortedNewSelections().length > 0;
+  const canGenerateNewModel = hasGenerationSelections;
   const canRegenerateModel = !!workspaceStore.getEditingModelId();
   const primaryTarget = hasEditingModel
     ? MODEL_GENERATION_TARGET.EDITING_MODEL
@@ -42,6 +48,7 @@ function getGenerationActionState() {
   return {
     hasEditingModel,
     hasSelectionChanged,
+    hasGenerationSelections,
     canGenerateNewModel,
     canRegenerateModel,
     primaryTarget,
@@ -99,7 +106,8 @@ function isGenerationTargetAvailable(target) {
   if (isDraftMode) {
     return false;
   }
-  const { canGenerateNewModel, canRegenerateModel } = getGenerationActionState();
+  const { canGenerateNewModel, canRegenerateModel } =
+    getGenerationActionState();
   return target === MODEL_GENERATION_TARGET.EDITING_MODEL
     ? canRegenerateModel
     : canGenerateNewModel;
@@ -107,28 +115,27 @@ function isGenerationTargetAvailable(target) {
 
 function syncPromptDialogActionState() {
   const hasPrompt = !!getPromptDialogText();
-  const isTargetAvailable = isGenerationTargetAvailable(getPromptDialogTarget());
+  const isTargetAvailable = isGenerationTargetAvailable(
+    getPromptDialogTarget(),
+  );
   $submitModelGenerationPromptButton.prop(
     "disabled",
-    !hasPrompt || isSubmittingPromptGeneration || !isTargetAvailable,
+    !hasPrompt || isGenerationActionBusy() || !isTargetAvailable,
   );
-  $cancelModelGenerationPromptButton.prop(
-    "disabled",
-    isSubmittingPromptGeneration,
-  );
-  $modelGenerationPromptInput.prop("disabled", isSubmittingPromptGeneration);
+  $cancelModelGenerationPromptButton.text("Cancel");
+  $modelGenerationPromptInput.prop("disabled", isGenerationActionBusy());
 }
 
 function resolvePromptDialogCopy(target) {
   if (target === MODEL_GENERATION_TARGET.EDITING_MODEL) {
     return {
-      title: "Regenerate Model with Additional Prompt",
+      title: "Regenerate Model with Instructions",
       hint: "Add extra instructions to guide regeneration from the selected text.",
       submitLabel: "Regenerate",
     };
   }
   return {
-    title: "Generate New Model with Additional Prompt",
+    title: "Generate New Model with Instructions",
     hint: "Add extra instructions to guide generation from the selected text.",
     submitLabel: "Generate",
   };
@@ -149,7 +156,6 @@ function openPromptDialog(target = MODEL_GENERATION_TARGET.NEW_MODEL) {
   $submitModelGenerationPromptButton.text(copy.submitLabel);
   $modelGenerationPromptError.text("");
   $modelGenerationPromptInput.val("");
-  isSubmittingPromptGeneration = false;
   syncPromptDialogActionState();
 
   if (!$modelGenerationPromptDialog[0].open) {
@@ -161,10 +167,14 @@ function openPromptDialog(target = MODEL_GENERATION_TARGET.NEW_MODEL) {
 }
 
 function closePromptDialog() {
-  if (!$modelGenerationPromptDialog.length || isSubmittingPromptGeneration) {
+  if (!$modelGenerationPromptDialog.length) {
     return;
   }
-  $modelGenerationPromptDialog[0].close();
+  const dialog = $modelGenerationPromptDialog[0];
+  if (!dialog.open) {
+    return;
+  }
+  dialog.close();
 }
 
 function disableGenerationControl() {
@@ -173,20 +183,36 @@ function disableGenerationControl() {
 }
 
 function buildGenerationActionsMenu() {
-  const { canGenerateNewModel, canRegenerateModel } = getGenerationActionState();
+  const { primaryTarget, canGenerateNewModel, canRegenerateModel } =
+    getGenerationActionState();
   const menu = { "": [] };
 
-  if (canRegenerateModel) {
-    menu[""].push({
-      label: "Regenerate model",
-      function_call: triggerGenerationAction,
-      text_icon: undefined,
-      type: undefined,
-      params: [MODEL_GENERATION_TARGET.EDITING_MODEL],
-    });
+  if (
+    primaryTarget === MODEL_GENERATION_TARGET.EDITING_MODEL &&
+    canRegenerateModel
+  ) {
+    menu[""].push(
+      {
+        label: "Regenerate model",
+        function_call: triggerGenerationAction,
+        text_icon: undefined,
+        type: undefined,
+        params: [MODEL_GENERATION_TARGET.EDITING_MODEL],
+      },
+      {
+        label: "Regenerate model with instructions...",
+        function_call: openPromptDialog,
+        text_icon: undefined,
+        type: undefined,
+        params: [MODEL_GENERATION_TARGET.EDITING_MODEL],
+      },
+    );
   }
 
-  if (canGenerateNewModel) {
+  if (
+    primaryTarget === MODEL_GENERATION_TARGET.NEW_MODEL &&
+    canGenerateNewModel
+  ) {
     menu[""].push(
       {
         label: "Generate new model",
@@ -196,7 +222,7 @@ function buildGenerationActionsMenu() {
         params: [MODEL_GENERATION_TARGET.NEW_MODEL],
       },
       {
-        label: "Generate new model with additional prompt...",
+        label: "Generate new model with instructions...",
         function_call: openPromptDialog,
         text_icon: undefined,
         type: undefined,
@@ -217,8 +243,9 @@ function triggerGenerationAction(target, options = {}) {
 
 function applyActionButtonsState() {
   const isDraftMode =
-    workspaceStore.isEditingModelDraft() && modelService.hasPendingNewModelDraft();
-  if (isDraftMode) {
+    workspaceStore.isEditingModelDraft() &&
+    modelService.hasPendingNewModelDraft();
+  if (isDraftMode || isGenerationActionBusy()) {
     disableGenerationControl();
     $addSelectionsButton.prop("disabled", true);
     return;
@@ -229,13 +256,13 @@ function applyActionButtonsState() {
     hasSelectionChanged,
     primaryTarget,
     isPrimaryEnabled,
-    hasAnyGenerationAction,
   } = getGenerationActionState();
+  const hasAnyMenuAction = !!buildGenerationActionsMenu();
 
   setPrimaryGenerationAction(primaryTarget);
 
   $modelGenerationPrimaryButton.prop("disabled", !isPrimaryEnabled);
-  $modelGenerationMenuButton.prop("disabled", !hasAnyGenerationAction);
+  $modelGenerationMenuButton.prop("disabled", !hasAnyMenuAction);
 
   if (hasEditingModel) {
     // Apply stays enabled only for pending text changes or temporary selections.
@@ -300,7 +327,7 @@ createUI({
       closePromptDialog();
     });
 
-    $modelGenerationPromptForm.on("submit", async (event) => {
+    $modelGenerationPromptForm.on("submit", (event) => {
       event.preventDefault();
       const promptText = getPromptDialogText();
       if (!promptText) {
@@ -316,41 +343,14 @@ createUI({
         syncPromptDialogActionState();
         return;
       }
-      isSubmittingPromptGeneration = true;
       $modelGenerationPromptError.text("");
-      syncPromptDialogActionState();
-      try {
-        const result = await modelService.generateModelBySelections(target, {
-          additionalPrompt: promptText,
-        });
-        if (result) {
-          $modelGenerationPromptDialog[0].close();
-        } else {
-          $modelGenerationPromptError.text(
-            "Generation failed. Please try again.",
-          );
-        }
-      } catch (error) {
-        console.error("Failed to generate model with additional prompt:", error);
-        $modelGenerationPromptError.text(
-          "Generation failed. Please try again.",
-        );
-      } finally {
-        isSubmittingPromptGeneration = false;
-        syncPromptDialogActionState();
-        applyActionButtonsState();
-      }
+      closePromptDialog();
+      triggerGenerationAction(target, { additionalPrompt: promptText });
     });
 
     $modelGenerationPromptDialog.on("click", (event) => {
       if (event.target === $modelGenerationPromptDialog[0]) {
         closePromptDialog();
-      }
-    });
-
-    $modelGenerationPromptDialog.on("cancel", (event) => {
-      if (isSubmittingPromptGeneration) {
-        event.preventDefault();
       }
     });
   },
@@ -373,6 +373,17 @@ createUI({
           syncPromptDialogActionState();
           break;
         }
+        default:
+          break;
+      }
+    });
+
+    modelEditorStore.subscribe((_, { key }) => {
+      switch (key) {
+        case "isGenerating":
+          applyActionButtonsState();
+          syncPromptDialogActionState();
+          break;
         default:
           break;
       }

@@ -28,6 +28,23 @@ function upsertDbpmTextNode(doc, parent, localName, value) {
   return node;
 }
 
+function removeDbpmChild(parent, localName) {
+  const node = findDbpmChild(parent, localName);
+  if (node) {
+    parent.removeChild(node);
+  }
+}
+
+function setOptionalDbpmTextNode(doc, parent, localName, value) {
+  const normalizedValue =
+    typeof value === "string" ? value : value === null ? null : String(value);
+  if (normalizedValue === null || normalizedValue === "") {
+    removeDbpmChild(parent, localName);
+    return null;
+  }
+  return upsertDbpmTextNode(doc, parent, localName, normalizedValue);
+}
+
 function getPayloadNodes(sourceRoot) {
   if (!sourceRoot) {
     return [];
@@ -148,6 +165,7 @@ export function injectDbpmData(modelData, meta = {}) {
     documentVersionId = "",
     documentVersionName = "",
     selectedText = "",
+    prompt = "",
   } = meta;
 
   const parser = new DOMParser();
@@ -172,7 +190,9 @@ export function injectDbpmData(modelData, meta = {}) {
 
   const dbpmInfoNode = createDbpmElement(wrappedDoc, "info");
   const documentInfoNode = createDbpmElement(wrappedDoc, "document_info");
-  documentInfoNode.appendChild(createDbpmElement(wrappedDoc, "document_id", documentId));
+  documentInfoNode.appendChild(
+    createDbpmElement(wrappedDoc, "document_id", documentId),
+  );
   documentInfoNode.appendChild(
     createDbpmElement(wrappedDoc, "document_version_id", documentVersionId),
   );
@@ -188,6 +208,11 @@ export function injectDbpmData(modelData, meta = {}) {
   documentInfoNode.appendChild(
     createDbpmElement(wrappedDoc, "text_selections", selectedText),
   );
+  if (typeof prompt === "string" && prompt !== "") {
+    documentInfoNode.appendChild(
+      createDbpmElement(wrappedDoc, "prompt", prompt),
+    );
+  }
   dbpmInfoNode.appendChild(documentInfoNode);
   wrapperNode.appendChild(dbpmInfoNode);
 
@@ -217,6 +242,14 @@ export function updateDbpmTextSelections(modelData, selectedText, meta = {}) {
     "text_selections",
     selectedText,
   );
+  if (Object.prototype.hasOwnProperty.call(meta, "prompt")) {
+    setOptionalDbpmTextNode(
+      descriptionNode.ownerDocument,
+      documentInfo,
+      "prompt",
+      meta.prompt,
+    );
+  }
 
   return $(descriptionNode).serializePrettyXML();
 }
@@ -244,4 +277,12 @@ export function updateDbpmTextSelectionsInXmlNode(
     "text_selections",
     selectedText,
   );
+  if (Object.prototype.hasOwnProperty.call(meta, "prompt")) {
+    setOptionalDbpmTextNode(
+      descriptionNode.ownerDocument,
+      documentInfo,
+      "prompt",
+      meta.prompt,
+    );
+  }
 }
