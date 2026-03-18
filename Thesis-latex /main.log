@@ -1,10 +1,10 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.8.1)  5 MAR 2026 11:59
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.8.1)  17 MAR 2026 18:29
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**"/Users/owxwo/Documents/MSc Thesis - Document-Based Process Model Explorer/Thesis-latex /main.tex"
-(/Users/owxwo/Documents/MSc Thesis - Document-Based Process Model Explorer/Thesis-latex /main.tex
+**"/Users/owxwo/Documents/MSc Thesis - Document-Based Process Modeller/Thesis-latex /main.tex"
+(/Users/owxwo/Documents/MSc Thesis - Document-Based Process Modeller/Thesis-latex /main.tex
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
 (./tum-book.cls
@@ -1819,14 +1819,14 @@ Package logreq Info: Writing requests to 'main.run.xml'.
  ) 
 Here is how much of TeX's memory you used:
  51433 strings out of 473190
- 1092245 string characters out of 5715801
+ 1092227 string characters out of 5715801
  2053929 words of memory out of 5000000
  73801 multiletter control sequences out of 15000+600000
  624257 words of font info for 95 fonts, out of 8000000 for 9000
  1143 hyphenation exceptions out of 8191
- 129i,17n,145p,1287b,2929s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 129i,17n,145p,1281b,2929s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2025/texmf-dist/fonts/type1/public/newtx/NewTXMI.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/cm-super/sfrm2074.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/newtx/ztmb.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/newtx/ztmbi.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/newtx/ztmr.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/newtx/ztmri.pfb>
-Output written on main.pdf (10 pages, 755419 bytes).
+Output written on main.pdf (10 pages, 756261 bytes).
 PDF statistics:
  218 PDF objects out of 1000 (max. 8388607)
  168 compressed objects within 2 object streams

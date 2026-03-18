@@ -1,5 +1,6 @@
 import { createUI } from "../../../shared/utils/ui.js";
 import { default as setModelNameEditor } from "../../../shared/widgets/inline-editor.js";
+import setVersionTag from "../../../shared/widgets/version-tag.js";
 import initVersionSelector from "../../../shared/widgets/version-selector.js";
 import { modelsStore, workspaceStore } from "../store/index.js";
 import { modelService, workspaceService } from "../services/index.js";
@@ -9,37 +10,10 @@ const $modelVersionTag = $("#editingModelVersionTag");
 const $deselectButton = $("#deselectModelButton");
 const $versionSelect = $("#modelVersionSelect");
 const $createVersionButton = $("#createModelVersionButton");
+const $restoreVersionButton = $("#restoreModelVersionButton");
+const $versionActionButtons = $createVersionButton.add($restoreVersionButton);
 const $moreActionsButton = $("#editingModelMoreActionsButton");
 let isCreatingModelVersion = false;
-
-function setVersionTag($tag, isLatest) {
-  if (typeof isLatest !== "boolean") {
-    $tag
-      .addClass("hidden")
-      .removeClass("version-tag--latest version-tag--historical")
-      .text("");
-    return;
-  }
-
-  $tag
-    .removeClass("hidden version-tag--latest version-tag--historical")
-    .addClass(isLatest ? "version-tag--latest" : "version-tag--historical")
-    .text(isLatest ? "Latest" : "Historical");
-}
-
-function updateCreateVersionButton(isSelectedVersionLatest) {
-  if (isSelectedVersionLatest) {
-    $createVersionButton
-      .text("+ New version")
-      .attr("title", "Create a version from the current latest version")
-      .attr("data-action", "new_version");
-    return;
-  }
-  $createVersionButton
-    .text("Restore version")
-    .attr("title", "Create a new version by copying this selected version")
-    .attr("data-action", "revert");
-}
 
 function setModelNameText(name) {
   $modelName.text(name || "");
@@ -49,7 +23,6 @@ function resetToolbar(versionSelector) {
   setModelNameText("");
   setVersionTag($modelVersionTag, null);
   versionSelector.update({ versions: [], selectedId: null });
-  updateCreateVersionButton(true);
 }
 
 createUI({
@@ -57,15 +30,9 @@ createUI({
     const versionSelector = initVersionSelector({
       $select: $versionSelect,
       onSelect: ({ version }) => {
-        console.log(
-          `Version selected: ${version.id}`,
-          version,
-          version.modelId,
-        );
         workspaceService.displayModel(version.modelId, version.id);
       },
     });
-    // updateCreateVersionButton(true);
     setModelNameEditor({
       $scope: $modelName.parent(),
       trigger: "click",
@@ -84,7 +51,7 @@ createUI({
     $deselectButton.on("click", () => {
       workspaceService.clearModelDisplay();
     });
-    $createVersionButton.on("click", async () => {
+    $versionActionButtons.on("click", async () => {
       if (isCreatingModelVersion) {
         return;
       }
@@ -95,6 +62,7 @@ createUI({
         return;
       }
       isCreatingModelVersion = true;
+      $versionActionButtons.prop("disabled", true);
       try {
         await modelService.createModelVersion(modelId, sourceVersionId, {
           allowSelectionDraftPayload: false,
@@ -103,6 +71,7 @@ createUI({
         alert("Failed to create model version.");
       } finally {
         isCreatingModelVersion = false;
+        $versionActionButtons.prop("disabled", false);
       }
     });
     $moreActionsButton.on("mousedown", (e) => {
@@ -116,12 +85,19 @@ createUI({
     workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
       switch (key) {
         case "editingModel": {
-          const {
-            id: newModelId,
-            versionId: newVersionId,
-            isLatest,
-          } = newValue;
-          const { id: oldModelId, versionId: oldVersionId } = oldValue;
+          const { id: newModelId, versionId: newVersionId, isDraft } = newValue;
+          const { id: oldModelId } = oldValue;
+
+          if (isDraft) {
+            const modelMeta = newModelId
+              ? modelsStore.getEntity(newModelId)
+              : null;
+            setModelNameText(modelMeta?.name || "");
+            versionSelector.update({ versions: [], selectedId: null });
+            setVersionTag($modelVersionTag, newValue);
+            break;
+          }
+
           if (!newModelId) {
             resetToolbar(versionSelector);
             break;
@@ -134,8 +110,7 @@ createUI({
             versions: modelMeta?.versions || [],
             selectedId: newVersionId,
           });
-          setVersionTag($modelVersionTag, isLatest);
-          updateCreateVersionButton(isLatest);
+          setVersionTag($modelVersionTag, newValue);
 
           break;
         }

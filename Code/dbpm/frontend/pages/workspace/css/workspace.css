@@ -302,6 +302,11 @@ ui-bar {
   background-color: #f8f5de;
 }
 
+.version-tag--draft {
+  color: #1d4ed8;
+  background-color: #dbeafe;
+}
+
 li.list-item:nth-child(odd) {
   background-color: var(--x-ui-content-light-background);
 }

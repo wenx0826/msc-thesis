@@ -1,18 +1,28 @@
 // Base URL and shared utilities for API calls
-function resolveBaseURL() {
-  if (typeof window !== "undefined" && window.location?.origin) {
-    return window.location.origin;
-  }
-  // Node/runtime fallback for scripts/tests importing frontend API modules.
-  if (typeof process !== "undefined" && process.env?.API_BASE_URL) {
-    return process.env.API_BASE_URL;
-  }
-
-  return "http://127.0.0.1:6688";
+function trimTrailingSlash(value) {
+  return value.replace(/\/+$/, "");
 }
 
-// export const baseURL = resolveBaseURL();
-export const baseURL = window.location.origin;
+function resolveBaseURL() {
+  if (typeof globalThis !== "undefined" && globalThis.location?.origin) {
+    const { origin, hostname } = globalThis.location;
+
+    if (hostname === "lehre.bpm.in.tum.de") {
+      return `${trimTrailingSlash(origin)}/ports/6688`;
+    }
+
+    return trimTrailingSlash(origin);
+  }
+
+  // Allow non-browser consumers to inject an absolute API origin when needed.
+  if (typeof process !== "undefined" && process.env?.API_BASE_URL) {
+    return trimTrailingSlash(process.env.API_BASE_URL);
+  }
+
+  return "";
+}
+
+export const baseURL = resolveBaseURL();
 
 export async function handleResponse(response, errorMsg) {
   if (!response.ok) {

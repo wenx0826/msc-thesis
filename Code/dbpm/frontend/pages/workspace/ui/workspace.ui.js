@@ -4,97 +4,92 @@ import { workspaceStore } from "../store/index.js";
 const $documentViewerPanel = $("#documentViewerPanel");
 const $modelEditorPanel = $("#modelEditorPanel");
 
-const DOCUMENT_VIEWER_PANEL_STATE = {
+const DOCUMENT_VIEWER_STATE = {
   NONE: "none",
   LATEST: "latest",
   LATEST_EDITING_MODEL: "latest-editing-model",
   HISTORICAL: "historical",
 };
 
-const MODEL_EDITOR_PANEL_STATE = {
+const MODEL_EDITOR_STATE = {
   NONE: "none",
   LATEST: "latest",
   HISTORICAL: "historical",
   DRAFT: "draft",
 };
 
-const MODEL_EDITOR_PENDING_DRAFT_TYPE = {
+const MODEL_EDITOR_PENDING_DRAFT_ORIGIN = {
   INITIAL: "initial",
   REGENERATION: "regeneration",
 };
 
-function resolveDocumentViewerPanelState() {
+function getDocumentViewerState() {
   if (!workspaceStore.hasViewedDocument()) {
-    return DOCUMENT_VIEWER_PANEL_STATE.NONE;
+    return DOCUMENT_VIEWER_STATE.NONE;
   }
   if (
     !workspaceStore.isViewedDocumentReadOnly() &&
     workspaceStore.hasEditingModel()
   ) {
-    return DOCUMENT_VIEWER_PANEL_STATE.LATEST_EDITING_MODEL;
+    return DOCUMENT_VIEWER_STATE.LATEST_EDITING_MODEL;
   }
   return workspaceStore.isViewedDocumentReadOnly()
-    ? DOCUMENT_VIEWER_PANEL_STATE.HISTORICAL
-    : DOCUMENT_VIEWER_PANEL_STATE.LATEST;
+    ? DOCUMENT_VIEWER_STATE.HISTORICAL
+    : DOCUMENT_VIEWER_STATE.LATEST;
 }
 
-function resolveModelEditorPanelState() {
+function getModelEditorState() {
   if (workspaceStore.isEditingModelDraft()) {
-    return MODEL_EDITOR_PANEL_STATE.DRAFT;
+    return MODEL_EDITOR_STATE.DRAFT;
   }
   if (!workspaceStore.hasEditingModel()) {
-    return MODEL_EDITOR_PANEL_STATE.NONE;
+    return MODEL_EDITOR_STATE.NONE;
   }
   return workspaceStore.isEditingModelReadOnly()
-    ? MODEL_EDITOR_PANEL_STATE.HISTORICAL
-    : MODEL_EDITOR_PANEL_STATE.LATEST;
+    ? MODEL_EDITOR_STATE.HISTORICAL
+    : MODEL_EDITOR_STATE.LATEST;
 }
 
-function resolveModelEditorPendingDraftType() {
+function getModelEditorPendingDraftOrigin() {
   if (!workspaceStore.isEditingModelDraft()) {
     return null;
   }
 
   if (workspaceStore.hasEditingModel()) {
-    return MODEL_EDITOR_PENDING_DRAFT_TYPE.REGENERATION;
+    return MODEL_EDITOR_PENDING_DRAFT_ORIGIN.REGENERATION;
   }
 
-  return MODEL_EDITOR_PENDING_DRAFT_TYPE.INITIAL;
+  return MODEL_EDITOR_PENDING_DRAFT_ORIGIN.INITIAL;
 }
 
-function setDocumentViewerPanelState() {
-  $documentViewerPanel.attr("data-view-state", resolveDocumentViewerPanelState());
+function setDocumentViewerState() {
+  $documentViewerPanel.attr("data-document-state", getDocumentViewerState());
 }
 
-function setModelEditorPanelState() {
-  $modelEditorPanel.attr("data-view-state", resolveModelEditorPanelState());
+function setModelEditorState() {
+  $modelEditorPanel.attr("data-model-state", getModelEditorState());
 }
 
-function setModelEditorPendingDraftType() {
-  const pendingDraftType = resolveModelEditorPendingDraftType();
-  if (pendingDraftType) {
-    $modelEditorPanel.attr("data-pending-draft-type", pendingDraftType);
+function setModelEditorPendingDraftOrigin() {
+  const pendingDraftOrigin = getModelEditorPendingDraftOrigin();
+  if (pendingDraftOrigin) {
+    $modelEditorPanel.attr("data-pending-draft-origin", pendingDraftOrigin);
   } else {
-    $modelEditorPanel.removeAttr("data-pending-draft-type");
+    $modelEditorPanel.removeAttr("data-pending-draft-origin");
   }
 }
 
 createUI({
-  setup: () => {
-    setDocumentViewerPanelState();
-    setModelEditorPanelState();
-    setModelEditorPendingDraftType();
-  },
+  setup: () => {},
   subscribeStores: () => {
     workspaceStore.subscribe((_, { key }) => {
       switch (key) {
         case "viewedDocument":
-          setDocumentViewerPanelState();
+          setDocumentViewerState();
           break;
         case "editingModel":
-          setDocumentViewerPanelState();
-          setModelEditorPanelState();
-          setModelEditorPendingDraftType();
+          setModelEditorState();
+          setModelEditorPendingDraftOrigin();
           break;
         default:
           break;

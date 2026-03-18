@@ -7,28 +7,8 @@
   display: none;
 }
 
-#documentViewerPanel[data-view-state="none"] #documentViewerHeaderTitle {
-  display: inline-flex;
-  align-items: center;
-}
-
-#documentViewerPanel[data-view-state="none"] #versionFilename,
-#documentViewerPanel[data-view-state="none"] #documentVersionTag,
-#documentViewerPanel[data-view-state="none"] #documentViewerActionsGroup {
-  display: none;
-}
-
-#documentViewerPanel[data-view-state="none"] #selectedSelectionToolbar {
-  display: none;
-}
-
 #linkActionsBar {
   display: none;
-}
-
-#documentViewerPanel[data-view-state="latest"] #linkActionsBar,
-#documentViewerPanel[data-view-state="latest-editing-model"] #linkActionsBar {
-  display: flex;
 }
 
 #addSelectionsButton,
@@ -36,13 +16,47 @@
   display: none;
 }
 
-#documentViewerPanel[data-view-state="latest"] #modelGenerationSplitButton,
-#documentViewerPanel[data-view-state="latest-editing-model"] #modelGenerationSplitButton {
-  display: inline-flex;
-}
+#documentViewerPanel {
+  &[data-document-state="none"] {
+    #documentViewerHeaderTitle {
+      display: inline-flex;
+      align-items: center;
+    }
 
-#documentViewerPanel[data-view-state="latest-editing-model"] #addSelectionsButton {
-  display: inline-block;
+    #versionFilename,
+    #documentVersionTag,
+    #documentViewerActionsGroup,
+    #selectedSelectionToolbar {
+      display: none;
+    }
+
+    #documentViewerEmptyState {
+      display: flex;
+    }
+  }
+
+  &[data-document-state="latest"],
+  &[data-document-state="latest-editing-model"] {
+    #linkActionsBar {
+      display: flex;
+    }
+
+    #modelGenerationSplitButton {
+      display: inline-flex;
+    }
+  }
+
+  &[data-document-state="latest-editing-model"] {
+    #addSelectionsButton {
+      display: inline-block;
+    }
+  }
+
+  &[data-document-state="historical"] {
+    #selectionColorForm {
+      display: none;
+    }
+  }
 }
 
 #modelGenerationSplitButton {
@@ -72,12 +86,12 @@
   border-left-color: rgba(255, 255, 255, 0.18);
   padding-left: 0.55em;
   padding-right: 0.55em;
-}
 
-#modelGenerationMenuButton:hover:not(:disabled),
-#modelGenerationMenuButton:focus-visible:not(:disabled) {
-  background: #262626;
-  border-color: #262626;
+  &:hover:not(:disabled),
+  &:focus-visible:not(:disabled) {
+    background: #262626;
+    border-color: #262626;
+  }
 }
 
 .split-button__caret {
@@ -93,10 +107,10 @@
   padding: 0;
   border: 1px solid var(--x-ui-border-color);
   border-radius: 0.75em;
-}
 
-#modelGenerationPromptDialog::backdrop {
-  background: rgba(0, 0, 0, 0.24);
+  &::backdrop {
+    background: rgba(0, 0, 0, 0.24);
+  }
 }
 
 #modelGenerationPromptForm {
@@ -127,30 +141,32 @@
   color: inherit;
   font: inherit;
   line-height: 1.45;
-}
 
-#modelGenerationPromptInput::placeholder {
-  color: var(--x-ui-text-muted-color);
-}
+  &::placeholder {
+    color: var(--x-ui-text-muted-color);
+  }
 
-#modelGenerationPromptInput:focus {
-  outline: none;
-  border-color: #333;
-  /* box-shadow: 0 0 0 3px rgba(51, 51, 51, 0.08); */
+  &:focus {
+    outline: none;
+    border-color: #333;
+    /* box-shadow: 0 0 0 3px rgba(51, 51, 51, 0.08); */
+  }
 }
 
 #modelGenerationPromptError {
   min-height: 1.2em;
   color: #842029;
+
+  &:empty {
+    display: none;
+  }
 }
 
-#modelGenerationPromptError:empty {
-  display: none;
-}
-
-#modelGenerationPromptDialog ui-bar {
-  background: transparent;
-  padding-top: 0.25em;
+#modelGenerationPromptDialog {
+  ui-bar {
+    background: transparent;
+    padding-top: 0.25em;
+  }
 }
 
 #documentViewerEmptyState {
@@ -164,10 +180,6 @@
   font-weight: 500;
   pointer-events: none;
   z-index: 4;
-}
-
-#documentViewerPanel[data-view-state="none"] #documentViewerEmptyState {
-  display: flex;
 }
 
 #selectedSelectionToolbar {
@@ -185,11 +197,11 @@
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.12s ease, visibility 0.12s ease;
-}
 
-#selectedSelectionToolbar.is-visible {
-  opacity: 1;
-  visibility: visible;
+  &.is-visible {
+    opacity: 1;
+    visibility: visible;
+  }
 }
 
 #selectionColorForm,
@@ -199,24 +211,18 @@
   align-items: center;
   gap: 2px;
   height: 100%;
-}
 
-#selectionColorForm .round,
-#selectedSelectionColorForm .round {
-  display: inline-flex;
-  align-items: center;
-  height: 100%;
-}
+  .round {
+    display: inline-flex;
+    align-items: center;
+    height: 100%;
 
-#selectionColorForm .round label,
-#selectedSelectionColorForm .round label {
-  top: 50%;
-  transform: translateY(-50%);
-  box-sizing: content-box;
-}
-
-#documentViewerPanel[data-view-state="historical"] #selectionColorForm {
-  display: none;
+    label {
+      top: 50%;
+      transform: translateY(-50%);
+      box-sizing: content-box;
+    }
+  }
 }
 
 #deselectAllSelectionsButton,

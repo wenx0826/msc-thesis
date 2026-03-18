@@ -1,4 +1,5 @@
 import { createUI } from "../../../shared/utils/ui.js";
+import setVersionTag from "../../../shared/widgets/version-tag.js";
 import initVersionSelector from "../../../shared/widgets/version-selector.js";
 import {
   documentsStore,
@@ -20,21 +21,6 @@ const COPY_SELECTION_SUCCESS_LABEL = "Copied";
 const COPY_SELECTION_ERROR_LABEL = "Copy failed";
 const COPY_SELECTION_FEEDBACK_DURATION_MS = 1600;
 let copySelectionFeedbackTimer = null;
-
-function setVersionTag($tag, isLatest) {
-  if (typeof isLatest !== "boolean") {
-    $tag
-      .addClass("hidden")
-      .removeClass("version-tag--latest version-tag--historical")
-      .text("");
-    return;
-  }
-
-  $tag
-    .removeClass("hidden version-tag--latest version-tag--historical")
-    .addClass(isLatest ? "version-tag--latest" : "version-tag--historical")
-    .text(isLatest ? "Latest" : "Historical");
-}
 
 function syncNextSelectionColorInput(color) {
   if (!color) return;
@@ -341,7 +327,11 @@ createUI({
             typeof isLatest === "boolean"
               ? isLatest
               : documentsStore.isLatestVersion(id, versionId);
-          setVersionTag($documentVersionTag, isLatestVersion);
+          setVersionTag($documentVersionTag, {
+            id,
+            versionId,
+            isLatest: isLatestVersion,
+          });
           break;
         }
         default:

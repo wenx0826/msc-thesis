@@ -27,8 +27,8 @@
   <link rel="stylesheet" href="https://cpee.org/js_libs/relaxngui.css" type="text/css" />
 
   <!-- modelling ui -->
-  <script type="text/javascript" src="js_libs_backup/wfadaptor.js"></script>
-  <!-- <script type="text/javascript" src="https://cpee.org/flow/js/wfadaptor.js"></script> -->
+  <!-- <script type="text/javascript" src="js_libs_backup/wfadaptor.js"></script> -->
+  <script type="text/javascript" src="https://cpee.org/flow/js/wfadaptor.js"></script>
   <link rel="stylesheet" href="https://cpee.org/flow/css/wfadaptor.css" type="text/css" />
   <link rel="stylesheet" href="https://cpee.org/flow/css/wfadaptor.css" type="text/css" />
   <script type="text/javascript" src="https://cpee.org/flow/themes/base.js"></script>
@@ -127,7 +127,7 @@
             </ui-area>
           </ui-content>
         </ui-tabbed>
-        <ui-rest id="documentViewerPanel" class="panel" data-state="none">
+        <ui-rest id="documentViewerPanel" class="panel" data-document-state="none">
           <!-- Text Action Bar -->
           <ui-bar id="textActionBar">
             <!-- <div class="field">
@@ -136,11 +136,11 @@
             </div> -->
             <div>
               <span id="documentViewerHeaderTitle" class="panel-header__title">Document Viewer</span>
-              <!-- <span class="" id="versionFilename"></span> -->
-              <span id="documentVersionTag" class="version-tag hidden"></span>
+              <span id="documentVersionTag" class="version-tag"></span>
+              <select id="docVersionSelect"></select>
             </div>
             <fieldset id="documentViewerActionsGroup" class="right action-group">
-              <select id="docVersionSelect"></select>
+
               <form id="selectionColorForm" class="relaxngui_color_container">
                 <span class="round">
                   <input type="radio" name="selectionColor" value="#d4e1f1" id="selectionColor1" checked />
@@ -180,7 +180,7 @@
               <ui-area id="selectionsVisualLayer"></ui-area>
               <!-- <ui-area id="temporarySelectionsLayer"></ui-area> -->
               <ui-area id="documentContent"></ui-area>
-              <div id="documentViewerEmptyState" aria-live="polite">
+              <div id="documentViewerEmptyState">
                 No document selected
               </div>
               <ui-area id="interactionLayer">
@@ -242,7 +242,6 @@
             </ui-area>
           </ui-content>
           <ui-divider></ui-divider>
-          <!-- Model (Re-)generation Bar -->
           <ui-bar id="linkActionsBar" style="z-index: 3">
             <div class="right action-group">
               <button id="addSelectionsButton" disabled>
@@ -263,22 +262,25 @@
         </ui-rest>
       </ui-rest>
       <ui-resizehandle id="columnResizehandle1" data-direction="vertical"></ui-resizehandle>
-      <ui-rest id="modelEditorPanel" class="pane pane--center panel" data-state="none">
+      <ui-rest id="modelEditorPanel" class="pane pane--center panel" data-model-state="none">
         <ui-rest style="flex: 1 1 0; min-height: 100px">
           <ui-bar>
             <span id="modelEditorHeaderTitle" class="panel-header__title">Model Editor</span>
-            <!-- <span class="panel-header__title">Models</span>> -->
             <!-- <div id="activeModelNameEditor" class="inline-editor"> -->
             <div class="action-group">
               <span id="editingModelName" class="inline-editor__view" data-editable="1"></span>
-              <span id="editingModelVersionTag" class="version-tag hidden"></span>
-
-            </div>
-            <fieldset id="editingModelActionsGroup" class="right action-group">
               <div class="field">
                 <select id="modelVersionSelect"></select>
               </div>
-              <button id="createModelVersionButton">+ New version</button>
+              <span id="editingModelVersionTag" class="version-tag hidden"></span>
+              <button id="createModelVersionButton" title="Create a version from the current latest version">
+                + New version
+              </button>
+              <button id="restoreModelVersionButton" title="Create a new version by copying this selected version">
+                Restore to this version
+              </button>
+            </div>
+            <fieldset id="editingModelActionsGroup" class="right action-group">
               <button id="deselectModelButton" class="btn-text">Deselect</button>
               <button id="editingModelMoreActionsButton" class="more-actions-btn"></button>
             </fieldset>
@@ -286,14 +288,14 @@
           </ui-bar>
           <ui-divider></ui-divider>
           <ui-rest>
+            <div id="modelEditorEmptyState">
+              No model selected
+            </div>
             <ui-content id="modelling">
               <ui-area id="graphgrid">
                 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink"
                   id="graphcanvas" width="1" height="1" style="display: block">
                 </svg>
-                <div id="modelEditorEmptyState" aria-live="polite">
-                  No model selected
-                </div>
               </ui-area>
             </ui-content>
             <div id="dat_details"></div>
