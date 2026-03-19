@@ -75,7 +75,7 @@
         </div>
       </li>
     </ul>
-    <div class="right action-group">
+    <div class="right item-group">
       <span>LLM: gemini 2 Flash</span>
       <a id="logLink" href="" target="_blank">Log</a>
       <a id="statsLink" href="stats.html">Statistics</a>
@@ -97,7 +97,7 @@
               <ui-bar>
                 <input type="file" id="documentVersionInput" class="hidden" />
                 <input type="file" id="documentsInput" multiple class="hidden" />
-                <div class="right action-group">
+                <div class="right item-group">
                   <button id="documentsBulkEditToggleButton" type="button">Bulk edit</button>
                   <button class="btn-primary"
                     onclick="document.getElementById('documentsInput').click()">Upload</button>
@@ -105,7 +105,7 @@
               </ui-bar>
               <ui-bar id="documentsBulkActionsBar" class="bulk-actions-bar hidden">
                 <span id="documentsSelectedCount" class="bulk-actions-bar__count">0 selected</span>
-                <div class="right action-group">
+                <div class="right item-group">
                   <button id="documentsSelectAllButton" disabled>Select all</button>
                   <button id="documentsClearSelectionButton" class="btn-text" disabled>Clear</button>
                   <button id="documentsDeleteSelectedButton" disabled>Delete selected</button>
@@ -128,20 +128,14 @@
           </ui-content>
         </ui-tabbed>
         <ui-rest id="documentViewerPanel" class="panel" data-document-state="none">
-          <!-- Text Action Bar -->
-          <ui-bar id="textActionBar">
-            <!-- <div class="field">
-              <label for="textSearchInput">Search:</label>
-              <input type="text" id="textSearchInput" placeholder="Type to search..." />
-            </div> -->
+          <ui-bar class="panel-header">
             <div>
-              <span id="documentViewerHeaderTitle" class="panel-header__title">Document Viewer</span>
-              <span id="documentVersionTag" class="version-tag"></span>
-              <select id="docVersionSelect"></select>
+              <span id="documentViewerHeaderTitle" class="header-item panel-header__title">Document Viewer</span>
+              <span id="documentVersionTag" class="header-item version-tag"></span>
+              <select id="docVersionSelect" class="header-item"></select>
             </div>
-            <fieldset id="documentViewerActionsGroup" class="right action-group">
-
-              <form id="selectionColorForm" class="relaxngui_color_container">
+            <div class="right item-group">
+              <form id="selectionColorForm" class="header-item relaxngui_color_container">
                 <span class="round">
                   <input type="radio" name="selectionColor" value="#d4e1f1" id="selectionColor1" checked />
                   <label for="selectionColor1" style="background-color: #d4e1f1"></label>
@@ -168,10 +162,10 @@
                   <label for="selectionColor7" style="background-color: #deddda"></label>
                 </span>
               </form>
-              <button id="deselectAllSelectionsButton" class="btn-text">
+              <button id="deselectAllSelectionsButton" class="header-item  btn-text">
                 Deselect all
               </button>
-            </fieldset>
+            </div>
           </ui-bar>
           <ui-divider></ui-divider>
           <!-- Document Content Area -->
@@ -243,8 +237,8 @@
           </ui-content>
           <ui-divider></ui-divider>
           <ui-bar id="linkActionsBar" style="z-index: 3">
-            <div class="right action-group">
-              <button id="addSelectionsButton" disabled>
+            <div class="right item-group">
+              <button id="applyLinkChangesButton" disabled>
                 Apply changes
               </button>
               <div id="modelGenerationSplitButton" class="split-button">
@@ -264,26 +258,26 @@
       <ui-resizehandle id="columnResizehandle1" data-direction="vertical"></ui-resizehandle>
       <ui-rest id="modelEditorPanel" class="pane pane--center panel" data-model-state="none">
         <ui-rest style="flex: 1 1 0; min-height: 100px">
-          <ui-bar>
-            <span id="modelEditorHeaderTitle" class="panel-header__title">Model Editor</span>
+          <ui-bar class="panel-header">
+            <span id="modelEditorHeaderTitle" class="header-item panel-header__title">Model Editor</span>
             <!-- <div id="activeModelNameEditor" class="inline-editor"> -->
-            <div class="action-group">
-              <span id="editingModelName" class="inline-editor__view" data-editable="1"></span>
-              <div class="field">
-                <select id="modelVersionSelect"></select>
-              </div>
-              <span id="editingModelVersionTag" class="version-tag hidden"></span>
-              <button id="createModelVersionButton" title="Create a version from the current latest version">
+            <div class="item-group">
+              <span id="editingModelName" class="header-item inline-editor__view" data-editable="1"></span>
+              <select id="modelVersionSelect" class="header-item"></select>
+              <span id="editingModelVersionTag" class="header-item version-tag hidden"></span>
+              <button id="createModelVersionButton" class="header-item"
+                title="Create a version from the current latest version">
                 + New version
               </button>
-              <button id="restoreModelVersionButton" title="Create a new version by copying this selected version">
+              <button id="restoreModelVersionButton" class="header-item"
+                title="Create a new version by copying this selected version">
                 Restore to this version
               </button>
             </div>
-            <fieldset id="editingModelActionsGroup" class="right action-group">
-              <button id="deselectModelButton" class="btn-text">Deselect</button>
-              <button id="editingModelMoreActionsButton" class="more-actions-btn"></button>
-            </fieldset>
+            <div class="right item-group">
+              <button id="deselectModelButton" class="header-item btn-text">Deselect</button>
+              <button id="editingModelMoreActionsButton" class="header-item more-actions-btn"></button>
+            </div>
 
           </ui-bar>
           <ui-divider></ui-divider>
@@ -310,7 +304,7 @@
               <button id="modelStatusMessageClose">x</button>
             </div>
             <ui-bar id="initialGenerationDraftActionBar">
-              <div class="right action-group">
+              <div class="right item-group">
                 <button id="discardDraftModelButton" title="Discard generated model draft" class="btn-text">
                   Discard
                 </button>
@@ -320,11 +314,11 @@
               </div>
             </ui-bar>
             <ui-bar id="regeneratedModelActionBar">
-              <div class="action-group">
+              <div class="item-group">
                 <button id="viewOriginalModelButton" disabled>Original</button>
                 <button id="viewRegeneratedModelButton">Regenerated</button>
               </div>
-              <div class="right action-group">
+              <div class="right item-group">
                 <button id="cancelRegenerationButton" title="Cancel changes" class="btn-text">
                   Cancel
                 </button>
@@ -339,10 +333,10 @@
           </ui-rest>
         </ui-rest>
         <ui-resizehandle data-direction="horizontal" data-style="transparent"></ui-resizehandle>
-        <ui-rest style="flex: 0.25 1 0; min-height: 100px" id="promptPane">
-          <textarea id="promptInput" placeholder="Enter prompt to refine the model..."></textarea>
+        <ui-rest style="flex: 0.25 1 0; min-height: 100px" id="modelEditPromptPane">
+          <textarea id="modelEditPromptInput" placeholder="Enter prompt to refine the model..."></textarea>
           <ui-bar>
-            <fieldset class="right action-group" id="promptActionsGroup" disabled>
+            <fieldset class="right item-group" id="promptActionsGroup" disabled>
               <button id="clearPromptButton" class="btn-text">Clear</button>
               <button id="sendPromptButton" class="btn-primary">Send</button>
             </fieldset>
@@ -367,7 +361,7 @@
                 ☰
               </button>
             </div>
-            <div class="right action-group">
+            <div class="right item-group">
               <button id="modelsBulkEditToggleButton" type="button">Bulk edit</button>
             </div>
           </ui-bar>
@@ -382,7 +376,7 @@
           </ui-bar>
           <ui-bar id="modelsBulkActionsBar" class="bulk-actions-bar hidden">
             <span id="modelsSelectedCount" class="bulk-actions-bar__count">0 selected</span>
-            <div class="right action-group">
+            <div class="right item-group">
               <button id="modelsSelectAllButton" disabled>Select All</button>
               <button id="modelsClearSelectionButton" class="btn-text" disabled>Clear</button>
               <button id="modelsDeleteSelectedButton" disabled>Delete Selected</button>
@@ -459,7 +453,7 @@
         placeholder="Describe the desired flow, constraints, or details to emphasize..."></textarea>
       <div class="error" id="modelGenerationPromptError"></div>
       <ui-bar>
-        <div class="right action-group">
+        <div class="right item-group">
           <button type="button" id="cancelModelGenerationPromptButton">Cancel</button>
           <button type="submit" id="submitModelGenerationPromptButton" class="btn-primary" disabled>
             Generate

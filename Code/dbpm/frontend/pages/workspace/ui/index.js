@@ -7,7 +7,7 @@ import "./document-viewer-link-actions-bar.ui.js";
 import "./model-editor-header-bar.ui.js";
 import "./model-editor-prompt-pane.ui.js";
 import "./model-editor-editing-pane.ui.js";
-import "./model-editor-regenerated-actions-bar.ui.js";
+import "./model-editor-review-bar.ui.js";
 import "./models.ui.js";
 import "./project-graph.ui.js";
 import "./model-popover.ui.js";

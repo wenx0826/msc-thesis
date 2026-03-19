@@ -1,18 +1,14 @@
 /* --------------------------- Document Viewer Panel ---------------------------*/
-#textActionBar .action-group {
+/* #textActionBar .item-group {
   align-items: center;
-}
+} */
 
-#documentViewerHeaderTitle {
+/* Header element defaults — hidden until a state show rule re-enables them */
+#documentViewerPanel .panel-header .header-item {
   display: none;
 }
 
 #linkActionsBar {
-  display: none;
-}
-
-#addSelectionsButton,
-#modelGenerationSplitButton {
   display: none;
 }
 
@@ -23,43 +19,36 @@
       align-items: center;
     }
 
-    #versionFilename,
-    #documentVersionTag,
-    #documentViewerActionsGroup,
-    #selectedSelectionToolbar {
-      display: none;
-    }
-
     #documentViewerEmptyState {
       display: flex;
     }
   }
 
-  &[data-document-state="latest"],
-  &[data-document-state="latest-editing-model"] {
-    #linkActionsBar {
-      display: flex;
-    }
+  &[data-document-state]:not([data-document-state="none"]) {
 
-    #modelGenerationSplitButton {
+    #documentVersionTag,
+    #docVersionSelect,
+
+    #deselectAllSelectionsButton {
       display: inline-flex;
     }
   }
 
-  &[data-document-state="latest-editing-model"] {
-    #addSelectionsButton {
-      display: inline-block;
+  &[data-document-state="latest"] {
+    #selectionColorForm {
+      display: flex;
     }
   }
 
-  &[data-document-state="historical"] {
-    #selectionColorForm {
-      display: none;
-    }
-  }
 }
 
+body:has(#modelEditorPanel[data-model-state="latest"]) #documentViewerPanel[data-document-state="latest"] #linkActionsBar {
+  display: flex;
+}
+
+
 #modelGenerationSplitButton {
+  display: inline-flex;
   position: relative;
   align-items: stretch;
   gap: 0;

@@ -1,13 +1,13 @@
 import { createUI } from "../../../shared/utils/ui.js";
 import { modelService } from "../services/index.js";
 
-const $promptInput = $("#promptInput");
+const $modelEditPromptInput = $("#modelEditPromptInput");
 const $promptActionsGroup = $("#promptActionsGroup");
 const $sendPromptButton = $("#sendPromptButton");
 const $clearPromptButton = $("#clearPromptButton");
 
 function getPromptInput() {
-  return $promptInput.val();
+  return $modelEditPromptInput.val();
 }
 
 function getPromptText() {
@@ -20,7 +20,7 @@ function syncPromptActionState() {
 }
 
 function clearPromptInput() {
-  $promptInput.val("");
+  $modelEditPromptInput.val("");
   $promptActionsGroup.prop("disabled", true);
 }
 
@@ -29,7 +29,7 @@ createUI({
     syncPromptActionState();
   },
   bindListeners: () => {
-    $promptInput.on("input", () => {
+    $modelEditPromptInput.on("input", () => {
       syncPromptActionState();
     });
 

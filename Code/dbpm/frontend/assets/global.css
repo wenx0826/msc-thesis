@@ -192,15 +192,17 @@ ui-bar fieldset {
 
 ui-bar>.right {
   margin-left: auto;
+  /* align-items: center; */
 }
 
 ui-bar>.center {
   margin: 0 auto;
 }
 
-.action-group {
+.item-group {
   display: flex;
   gap: 0.6em;
+  align-items: center;
 }
 
 .center {
@@ -316,9 +318,6 @@ li {
 
 
 ul.breadcrumb {
-  /* padding: 10px 16px; */
-  /* list-style: none; */
-  /* background-color: #eee; */
   display: flex;
   align-items: center;
 }
@@ -354,3 +353,31 @@ ul.breadcrumb>li+li:before {
 /* ui-behind span {
   cursor: pointer;
 } */
+
+
+.loading-dots::after {
+  content: '';
+  animation: loading-dots 1.5s steps(4, end) infinite;
+}
+
+@keyframes loading-dots {
+  0% {
+    content: '';
+  }
+
+  25% {
+    content: '.';
+  }
+
+  50% {
+    content: '..';
+  }
+
+  75% {
+    content: '...';
+  }
+
+  100% {
+    content: '';
+  }
+}

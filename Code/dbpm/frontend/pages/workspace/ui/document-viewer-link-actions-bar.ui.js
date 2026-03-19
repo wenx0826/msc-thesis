@@ -13,7 +13,7 @@ const MODEL_GENERATION_TARGET = Constants.MODEL_GENERATION_TARGET;
 const MODEL_GENERATION_TARGET_VALUES = new Set(
   Object.values(MODEL_GENERATION_TARGET),
 );
-const $addSelectionsButton = $("#addSelectionsButton");
+const $applyLinkChangesButton = $("#applyLinkChangesButton");
 const $modelGenerationPrimaryButton = $("#modelGenerationPrimaryButton");
 const $modelGenerationPrimaryLabel = $("#modelGenerationPrimaryLabel");
 const $modelGenerationMenuButton = $("#modelGenerationMenuButton");
@@ -247,7 +247,7 @@ function applyActionButtonsState() {
     modelService.hasPendingNewModelDraft();
   if (isDraftMode || isGenerationActionBusy()) {
     disableGenerationControl();
-    $addSelectionsButton.prop("disabled", true);
+    $applyLinkChangesButton.prop("disabled", true);
     return;
   }
 
@@ -266,9 +266,9 @@ function applyActionButtonsState() {
 
   if (hasEditingModel) {
     // Apply stays enabled only for pending text changes or temporary selections.
-    $addSelectionsButton.prop("disabled", !hasSelectionChanged);
+    $applyLinkChangesButton.prop("disabled", !hasSelectionChanged);
   } else {
-    $addSelectionsButton.prop("disabled", true);
+    $applyLinkChangesButton.prop("disabled", true);
   }
 }
 
@@ -286,7 +286,7 @@ createUI({
     applyActionButtonsState();
   },
   bindListeners: () => {
-    $addSelectionsButton.on("click", () => {
+    $applyLinkChangesButton.on("click", () => {
       modelService.updateEditingVersion(
         MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
       );

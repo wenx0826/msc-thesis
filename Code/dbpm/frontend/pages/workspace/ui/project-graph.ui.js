@@ -3,6 +3,7 @@ import {
   workspaceStore,
   projectGraphStore,
   modelsStore,
+  documentsStore,
 } from "../store/index.js";
 import { workspaceService } from "../services/index.js";
 
@@ -34,6 +35,10 @@ function getNodeId(node) {
 function setNodeCurrent(cy, nodeId, isCurrent) {
   const node = cy.getElementById(nodeId);
   node.toggleClass("is-current", isCurrent);
+}
+function setNodeLabel(cy, nodeId, label) {
+  const node = cy.getElementById(nodeId);
+  node.data("label", label);
 }
 function syncGraphEmptyState(cy) {
   const isEmpty = cy.elements().length === 0;
@@ -280,9 +285,6 @@ createUI({
                 }
                 cy.remove(cy.getElementById(elementId));
               });
-              // cy.layout({
-              //   ...cyLayoutOptions,
-              // }).run();
               syncGraphEmptyState(cy);
               break;
             default:
@@ -305,6 +307,36 @@ createUI({
           }
           if (newId) {
             setNodeCurrent(cy, newId, true);
+          }
+          break;
+        default:
+          break;
+      }
+    });
+    documentsStore.subscribe((state, { key, operation, value }) => {
+      switch (key) {
+        case "entitiesById":
+          switch (operation) {
+            case "update":
+              setNodeLabel(cy, value.id, value.name);
+              break;
+            default:
+              break;
+          }
+          break;
+        default:
+          break;
+      }
+    });
+    modelsStore.subscribe((state, { key, operation, value }) => {
+      switch (key) {
+        case "entitiesById":
+          switch (operation) {
+            case "update":
+              setNodeLabel(cy, value.id, value.name);
+              break;
+            default:
+              break;
           }
           break;
         default:

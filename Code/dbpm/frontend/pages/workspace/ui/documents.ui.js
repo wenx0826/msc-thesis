@@ -348,16 +348,16 @@ createUI({
     workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
       switch (key) {
         case "viewedDocument": {
-          const newDocId = newValue?.id;
-          const oldDocId = oldValue?.id;
-          if (newDocId === oldDocId) {
+          const newId = newValue?.id;
+          const oldId = oldValue?.id;
+          if (newId === oldId) {
             break;
           }
-          if (newDocId) {
-            setDocumentItemCurrent(newDocId, true);
+          if (newId) {
+            setDocumentItemCurrent(newId, true);
           }
-          if (oldDocId) {
-            setDocumentItemCurrent(oldDocId, false);
+          if (oldId) {
+            setDocumentItemCurrent(oldId, false);
           }
           break;
         }

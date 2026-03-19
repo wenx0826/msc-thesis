@@ -170,15 +170,22 @@ ui-bar {
 
 .panel-header {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 5px;
-  font-size: 16px;
-  padding: 0.3rem 0.8rem;
+
+  min-height: 32px;
+  padding: 0 0.8rem;
   /* background-color: var(--x-ui-light-back-color); */
 }
 
+/* .panel-header>* {
+  align-self: center;
+} */
+
 .panel-header__title {
   font-weight: 650;
+  font-size: 16px;
 }
 
 .panel-header__subtitle {
@@ -428,7 +435,7 @@ li.list-item.is-current {
   width: 100%;
 }
 
-#modelsDocumentFilterBar .field > label {
+#modelsDocumentFilterBar .field>label {
   flex: 0 0 auto;
   white-space: nowrap;
 }

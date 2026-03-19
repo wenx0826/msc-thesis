@@ -3,7 +3,8 @@
   position: relative;
 }
 
-#modelEditorPanel>ui-rest>ui-bar * {
+/* Header element defaults — hidden until a state show rule re-enables them */
+#modelEditorPanel .panel-header .header-item {
   display: none;
 }
 
@@ -34,7 +35,6 @@
   }
 }
 
-
 #modelEditorEmptyState {
   position: absolute;
   inset: 0;
@@ -62,29 +62,22 @@
 
   }
 
-  &:not([data-model-state="none"]) {
-    #editingModelVersionTag {
-      display: inline-flex;
-      align-items: center;
-    }
-  }
-
-  &[data-model-state="draft"] {
-    &:not([data-pending-draft-origin="regeneration"]) {
-      #modelEditorHeaderTitle {
-        display: inline-flex;
-        align-items: center;
-      }
-    }
-  }
-
   &[data-model-state="latest"],
   &[data-model-state="historical"] {
 
     #editingModelName,
     #deselectModelButton,
-    #editingModelActionsGroup {
+    #editingModelMoreActionsButton {
       display: inline-flex;
+    }
+
+    #modelVersionSelect {
+      display: block;
+    }
+
+    #editingModelVersionTag {
+      display: inline-flex;
+      align-items: center;
     }
   }
 
@@ -93,11 +86,10 @@
       display: inline-flex;
     }
 
-    &:not([data-pending-draft-origin]) {
-      #promptPane {
-        display: flex;
-      }
+    #modelEditPromptPane {
+      display: flex;
     }
+
   }
 
   &[data-model-state="historical"] {
@@ -106,24 +98,34 @@
     }
   }
 
-  &[data-model-state="draft"][data-pending-draft-origin="regeneration"] {
-    #editingModelName {
+  &[data-model-state="initial-draft"] {
+    #modelEditorHeaderTitle {
       display: inline-flex;
+      align-items: center;
     }
-  }
 
-  &[data-pending-draft-origin="initial"] {
     #initialGenerationDraftActionBar {
       display: flex;
     }
   }
 
-  &[data-pending-draft-origin="regeneration"] {
+  &[data-model-state="regeneration-draft"] {
+
+    #editingModelName,
+    #editingModelMoreActionsButton {
+      display: inline-flex;
+    }
+
+    #editingModelVersionTag {
+      display: inline-flex;
+      align-items: center;
+    }
+
     #regeneratedModelActionBar {
       display: flex;
     }
 
-    #promptPane {
+    #modelEditPromptPane {
       display: flex;
     }
   }
@@ -140,7 +142,7 @@
 } */
 
 
-#promptPane {
+#modelEditPromptPane {
   display: none;
   padding: 0.5em;
   padding-bottom: 0;
@@ -158,7 +160,7 @@
   }
 }
 
-#promptInput {
+#modelEditPromptInput {
   width: 100%;
   height: 100%;
   margin: 0;
@@ -234,33 +236,6 @@ text.duration {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-  }
-}
-
-.loading-dots::after {
-  content: '';
-  animation: loading-dots 1.5s steps(4, end) infinite;
-}
-
-@keyframes loading-dots {
-  0% {
-    content: '';
-  }
-
-  25% {
-    content: '.';
-  }
-
-  50% {
-    content: '..';
-  }
-
-  75% {
-    content: '...';
-  }
-
-  100% {
-    content: '';
   }
 }
 
