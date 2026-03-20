@@ -14,7 +14,7 @@ export default {
     const projectId = workspaceStore.getProjectId();
 
     const uploadResults = await Promise.allSettled(
-      Array.from(files).map(async (file) => {
+      files.map(async (file) => {
         const filename = file.name;
         const content = await getFileContentInHTML(file);
         return documentsAPI.create({

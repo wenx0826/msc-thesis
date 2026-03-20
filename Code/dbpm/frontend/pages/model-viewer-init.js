@@ -2,8 +2,8 @@
   const PREVIEW_LABEL_SELECTOR = "#modelGridSmall";
   const PREVIEW_CANVAS_SELECTOR = "#modelCanvasSmall";
   const PREVIEW_THEME_PATH =
-    "modules/workflow/themes/preset_customized/theme.js";
-  const ENDPOINTS_BASE_PATH = "/modules/workflow/endpoints/";
+    "modules/model/themes/preset_customized/theme.js";
+  const ENDPOINTS_BASE_PATH = "/modules/model/endpoints/";
   const ENDPOINT_NAMES = ["subprocess"];
 
   let previewRenderQueue = Promise.resolve();

@@ -3,7 +3,7 @@ import { projectsAPI, documentsAPI, modelsAPI } from "../../../api/index.js";
 import {
   getProjectIdFromURL,
   getDocumentViewerURL,
-  getWorkflowViewerURL,
+  getModelViewerURL,
 } from "../../../shared/utils/url.js";
 import { createTemplateElement } from "../../../shared/utils/dom.js";
 import { formatNumber } from "../../../shared/utils/number.js";
@@ -256,7 +256,7 @@ async function renderDocumentsList(documents) {
         );
       $modelItem
         .find("[data-ref='modelLink']")
-        .attr("href", getWorkflowViewerURL(modelVersionId))
+        .attr("href", getModelViewerURL(modelVersionId))
         .text("View Model");
       $modelsGrid.append($modelItem);
     });

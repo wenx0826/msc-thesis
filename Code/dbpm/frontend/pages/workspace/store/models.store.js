@@ -14,30 +14,6 @@ class ModelsStore extends VersionedEntityStore {
     this.state.cachedVersionsById = {};
   }
 
-  // updateModelById(modelId, updates) {
-  //   const value = this.getEntity(modelId);
-  //   if (!value) {
-  //     return;
-  //   }
-
-  //   Object.assign(value, updates);
-
-  //   if (updates?.meta && typeof updates.meta === "object") {
-  //     Object.assign(value.meta, updates.meta);
-  //   }
-
-  //   if (updates?.name !== undefined) {
-  //     value.meta.name = updates.name;
-  //   }
-  //   if (updates?.latestVersionId !== undefined) {
-  //     value.meta.latestVersionId = updates.latestVersionId;
-  //   }
-  //   if (updates?.documentId !== undefined) {
-  //     value.meta.documentId = updates.documentId;
-  //   }
-
-  //   this.notify({ key: "models", operation: "update", value });
-  // }
   hasCachedVersion(versionId) {
     return !!this.state.cachedVersionsById[versionId];
   }
@@ -53,10 +29,10 @@ class ModelsStore extends VersionedEntityStore {
       key: "cachedVersionsById",
       operation,
       value: {
-        versionId,
+        key: versionId,
         ...newValue,
       },
-      oldValue: oldValue ? { versionId, ...oldValue } : null,
+      oldValue: oldValue ? { key: versionId, ...oldValue } : null,
     });
     return newValue;
   }

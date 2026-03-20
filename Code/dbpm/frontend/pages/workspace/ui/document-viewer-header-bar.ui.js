@@ -307,7 +307,7 @@ createUI({
     });
   },
   subscribeStores: ({ versionSelector }) => {
-    workspaceStore.subscribe((state, { key, newValue }) => {
+    workspaceStore.subscribe(({ key, newValue }) => {
       switch (key) {
         case "viewedDocument": {
           const { id, versionId, isLatest } = newValue || {};
@@ -339,7 +339,7 @@ createUI({
       }
     });
 
-    documentViewerStore.subscribe((state, { key, newValue }) => {
+    documentViewerStore.subscribe(({ key, newValue }) => {
       switch (key) {
         case "selectionColor":
           syncNextSelectionColorInput(newValue);

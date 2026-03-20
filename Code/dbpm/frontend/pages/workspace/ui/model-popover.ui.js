@@ -511,7 +511,7 @@ createUI({
     $modelPopover.on("mouseleave", onModelPopoverMouseLeave);
   },
   subscribeStores: () => {
-    workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
+    workspaceStore.subscribe(({ key, oldValue, newValue }) => {
       switch (key) {
         case "modelPopover":
           handleModelPopoverStateChange(newValue);

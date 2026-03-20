@@ -7,11 +7,10 @@ import {
   workspaceStore,
 } from "../store/index.js";
 import { modelService, workspaceService } from "../services/index.js";
-import { endpointLoader } from "../../../modules/workflow/endpoints/endpoint-loader.js";
+import { endpointLoader } from "../../../modules/model/endpoints/endpoint-loader.js";
 import { Constants } from "../../../constants.js";
 
 const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
-// cosnt $graphGrid = $("#graphgrid");
 const $graphCanvas = $("#graphcanvas");
 const $graphGrid = $graphCanvas.parent();
 const $datDetails = $("#dat_details");
@@ -112,9 +111,8 @@ function renderModelStatusMessage(statusMessage = null) {
 async function showWFGraph(data) {
   // save["state"] = getModelEditorSaveState();
   save["graph_theme"] = "preset_customized";
-  // save["endpoints_cache"] = endpointLoader._cache;
   save["graph_adaptor"] = new WfAdaptor(
-    "modules/workflow/themes/preset_customized/theme.js",
+    "modules/model/themes/preset_customized/theme.js",
     function (graphrealization) {
       graphrealization.illustrator.get_symbol = endpointLoader._boundGetSymbol;
       graphrealization.illustrator.get_properties =
@@ -123,16 +121,12 @@ async function showWFGraph(data) {
       graphrealization.set_label_container($("#graphgrid"));
       graphrealization.set_description($(data), true);
       graphrealization.notify = function (svgid) {
-        // console.log("Graph realization notify for svgid:", svgid);
         var g = graphrealization.get_description();
         manifestation.events.click(svgid);
         format_instance_pos();
         if (manifestation.selected() == "unknown") {
           $datDetails.empty();
         }
-        console.log(
-          "Graph realization notify!! - saving active model with updated graph",
-        );
         modelService.updateEditingVersion(
           MODEL_UPDATE_TYPE.MANUAL_UPDATE_GRAPH_CHANGED,
         );
@@ -151,7 +145,7 @@ const showActiveModel = async (model) => {
   save["graph_theme"] = "preset_customized";
   // save["endpoints_cache"] = endpointLoader._cache;
   save["graph_adaptor"] = new WfAdaptor(
-    "modules/workflow/themes/preset_customized/theme.js",
+    "modules/model/themes/preset_customized/theme.js",
     function (graphrealization) {
       graphrealization.illustrator.get_symbol = endpointLoader._boundGetSymbol;
       graphrealization.illustrator.get_properties =
@@ -408,7 +402,6 @@ function getActiveCallTaskId() {
 function onCallClicked(e) {
   const $node = $(e.detail?.node);
   const endpoint = ($node.attr("endpoint") || "").trim();
-
   const isSubprocess = endpoint === "subprocess";
   // const $modelSelect = $(CALL_SUBPROCESS_MODEL_SELECT_SELECTOR);
   // $modelSelect.data("initial-model-value", modelId);
@@ -455,9 +448,6 @@ createUI({
 
     window.onDBPMCallTypeChange = onCallTypeChange;
     window.onDBPMCallSubprocessModelChange = onCallSubprocessModelChange;
-    // applyModelEditorReadOnlyState();
-    // renderActiveEditingModelCachedErrors();
-    // renderModelStatusMessage(modelEditorStore.getStatusMessage());
   },
   bindListeners: () => {
     $modelStatusMessageClose.on("click", () => {
@@ -493,7 +483,6 @@ createUI({
       const svgId = $node.attr("id");
       const $element = $(`#graphcanvas [element-id="${svgId}"]`);
 
-      // ✨ NEW: Pass source identifier to prevent conflicts
       workspaceStore.setModelPopoverParams({
         target: {
           id: modelId,
@@ -501,26 +490,14 @@ createUI({
         },
         anchor: { type: "element", element: $element[0] },
         source: "subprocess-node",
-      }); // ✨ NEW: Source tracking for conflict prevention
-
-      // console.log("Subprocess modelId:", modelId);
-      // const modelName = modelsStore.getModelNameById(modelId); // OLD: Commented out unused code
-      // const modelGraph = $(modelsStore.getModelGraphById(modelId)).clone();
-      // const modelId = $node
-      //   .children("parameters")
-      //   .children("dbpm_subprocess_model")
-      //   .text();
-      // const modelName = modelsStore.getModelNameById(modelId);
-      // const modelGraph = $(modelsStore.getModelGraphById(modelId)).clone();
+      });
     });
     $(document).on("wf:subprocess-unhovered", function (e) {
-      console.log(`Event Listener 'wf:subprocess-unhovered' listened`);
-      // ✨ NEW: Pass source identifier to ensure only the same source can close
       workspaceStore.requestCloseModelPopover("subprocess-node");
     });
   },
   subscribeStores: () => {
-    modelEditorStore.subscribe((_, { key, newValue }) => {
+    modelEditorStore.subscribe(({ key, newValue }) => {
       switch (key) {
         case "data": {
           if (newValue) {
@@ -539,24 +516,36 @@ createUI({
       }
     });
 
-    modelsStore.subscribe((_, { key, value }) => {
-      if (key !== "cachedVersionsById") {
-        return;
-      }
+    modelsStore.subscribe(({ key, operation, value }) => {
+      switch (key) {
+        case "cachedVersionsById":
+          switch (operation) {
+            case "add":
+            case "update": {
+              const editingModelVersionId =
+                workspaceStore.getEditingModel()?.versionId;
+              if (!editingModelVersionId) {
+                break;
+              }
 
-      const editingModelVersionId = workspaceStore.getEditingModel()?.versionId;
-      if (!editingModelVersionId) {
-        return;
-      }
+              const changedVersionId = value?.key;
+              if (changedVersionId !== editingModelVersionId) {
+                break;
+              }
 
-      const changedVersionId = value?.versionId;
-      if (changedVersionId !== editingModelVersionId) {
-        return;
+              renderActiveEditingModelCachedErrors();
+              break;
+            }
+            default:
+              break;
+          }
+          break;
+        default:
+          break;
       }
-      renderActiveEditingModelCachedErrors();
     });
 
-    workspaceStore.subscribe((_, { key }) => {
+    workspaceStore.subscribe(({ key }) => {
       switch (key) {
         case "viewedDocument":
           // applyModelEditorReadOnlyState();

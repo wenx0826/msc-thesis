@@ -76,8 +76,8 @@
                   ]
                 }
               },
-              "icon": "lucide-trello",
-              "title": "0 - Kanban"
+              "icon": "lucide-ghost",
+              "title": "kanban"
             }
           },
           {
@@ -183,16 +183,30 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "DBPM – App Guide/Project.md",
+                "file": "Video Scripts/Gemini v0 - Intro.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Project"
+              "title": "Gemini v0 - Intro"
+            }
+          },
+          {
+            "id": "e9121e936dc2ec03",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Untitled 1.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Untitled 1"
             }
           }
         ],
-        "currentTab": 12
+        "currentTab": 13
       }
     ],
     "direction": "vertical"
@@ -312,13 +326,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "DBPM – App Guide/Project.md",
+                "file": "Untitled 1.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of Project"
+              "title": "Outline of Untitled 1"
             }
           },
           {
@@ -353,10 +367,15 @@
       "card-board:CardBoard": false
     }
   },
-  "active": "ac476c8c8a1dad08",
+  "active": "e9121e936dc2ec03",
   "lastOpenFiles": [
-    "DBPM – App Guide/Feature – Generate Model.md",
-    "DBPM – App Guide/User Guide.md",
+    "Video Scripts/Gemini v0 - Intro.md",
+    "Untitled 1.md",
+    "App Guide/Feature -- Generate Model/Design Decison.md",
+    "Video Scripts",
+    "App Guide/Feature – Generate Model.md",
+    "App Guide/Project.md",
+    "App Guide/User Guide.md",
     "Code/dbpm/data/models/00c5b44a-3c95-48c3-945d-4c079c58146c.xml",
     "Code/dbpm/data/models/77b78777-c873-4408-9ae0-74e5e2d66f5c.xml",
     "Code/dbpm/data/documents/082b0a17-581f-4c08-968e-1d970fd828d1.html",
@@ -366,7 +385,6 @@
     "Code/dbpm/data/models/5bc6f035-260f-415d-ad1e-ed7e0cf18de5.xml",
     "Code/dbpm/data/database.sqlite-journal",
     "Code/dbpm/data/documents/c04c4412-9deb-4588-85af-271048ea1be9.html",
-    "Data/Order_Processing_Flow_Final_v2.docx",
     "Order Processing/Untitled.md",
     "Untitled.md",
     "MAP.md",
@@ -374,8 +392,6 @@
     "Subprocess.svg",
     "Prop/Gemini DR v0.md",
     "Prop/Gemini v0.1.md",
-    "DBPM – App Guide/Project.md",
-    "DBPM – App Guide/Feature -- Generate Model/Design Decison.md",
     "Prop/Untitled 2.md",
     "Prop/Gemini DR v0.1.md",
     "布局.md",
@@ -399,7 +415,6 @@
     "Code/dbpm_reverted/frontend/modules/workflow/themes/preset_customized/symbols/start_event.svg",
     "Code/dbpm_reverted/frontend/modules/workflow/themes/preset_customized/symbols/start.svg",
     "Code/dbpm_reverted/frontend/modules/workflow/themes/preset_customized/symbols/scripts.svg",
-    "Code/dbpm_reverted/backend/node_modules/@fastify/static/test/static/a .md",
     "Untitled.canvas"
   ]
 }

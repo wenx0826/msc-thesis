@@ -189,7 +189,9 @@ function serializeXmlNode(node) {
   return new XMLSerializer().serializeToString(node);
 }
 
-function restoreEditingModelAfterRegeneration(preview = regenerationPreviewState) {
+function restoreEditingModelAfterRegeneration(
+  preview = regenerationPreviewState,
+) {
   if (!preview?.modelId || !preview?.modelVersionId) {
     return;
   }
@@ -227,7 +229,9 @@ function setRegenerationPreviewView(view) {
       ? regenerationPreviewState.originalDataXml
       : regenerationPreviewState.regeneratedDataXml;
   const nextUpdateType =
-    normalizedView === "regenerated" ? regenerationPreviewState.updateType : null;
+    normalizedView === "regenerated"
+      ? regenerationPreviewState.updateType
+      : null;
   if (!nextDataXml) {
     return;
   }
@@ -427,7 +431,7 @@ createUI({
     });
   },
   subscribeStores: () => {
-    modelEditorStore.subscribe((_, { key, oldValue, newValue }) => {
+    modelEditorStore.subscribe(({ key, oldValue, newValue }) => {
       switch (key) {
         case "data": {
           if (!isApplyingRegenerationView) {
@@ -462,7 +466,10 @@ createUI({
         case "latestUpdateType":
           if (
             !isRegenerationUpdateType(newValue) &&
-            !(workspaceStore.hasEditingModel() && workspaceStore.isEditingModelDraft())
+            !(
+              workspaceStore.hasEditingModel() &&
+              workspaceStore.isEditingModelDraft()
+            )
           ) {
             regenerationPreviewState = null;
           }
@@ -473,7 +480,7 @@ createUI({
       }
     });
 
-    workspaceStore.subscribe((_, { key, oldValue, newValue }) => {
+    workspaceStore.subscribe(({ key, oldValue, newValue }) => {
       if (key !== "editingModel") {
         return;
       }

@@ -355,7 +355,7 @@ createUI({
     });
   },
   subscribeStores: () => {
-    documentViewerStore.subscribe((_, { key }) => {
+    documentViewerStore.subscribe(({ key }) => {
       switch (key) {
         case "hasSelectionChanged":
           applyActionButtonsState();
@@ -366,7 +366,7 @@ createUI({
       }
     });
 
-    workspaceStore.subscribe((_, { key }) => {
+    workspaceStore.subscribe(({ key }) => {
       switch (key) {
         case "editingModel": {
           applyActionButtonsState();
@@ -378,7 +378,7 @@ createUI({
       }
     });
 
-    modelEditorStore.subscribe((_, { key }) => {
+    modelEditorStore.subscribe(({ key }) => {
       switch (key) {
         case "isGenerating":
           applyActionButtonsState();

@@ -34,15 +34,20 @@ export function getModelURL(versionId) {
   return `data/models/${versionId}.xml`;
 }
 
-export function getWorkflowViewerURL(modelVersionId) {
+export function getModelViewerURL(modelVersionId) {
   if (!modelVersionId) {
-    return "workflow-viewer.html";
+    return "model-viewer.html";
   }
   const versionId = encodeURIComponent(modelVersionId);
-  return `workflow-viewer.html?model_version_id=${versionId}`;
+  return `model-viewer.html?model_version_id=${versionId}`;
+}
+
+// Backward compatibility for existing imports.
+export function getWorkflowViewerURL(modelVersionId) {
+  return getModelViewerURL(modelVersionId);
 }
 
 // Backward compatibility for existing imports.
 export function getModelGraphRenderURL(modelVersionId) {
-  return getWorkflowViewerURL(modelVersionId);
+  return getModelViewerURL(modelVersionId);
 }

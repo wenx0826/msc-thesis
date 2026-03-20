@@ -10,6 +10,6 @@ export class Store {
   }
 
   notify(patch) {
-    this.subscribers.forEach((fn) => fn(this.state, patch));
+    this.subscribers.forEach((fn) => fn(patch));
   }
 }

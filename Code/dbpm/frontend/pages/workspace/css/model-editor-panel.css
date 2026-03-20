@@ -1,4 +1,11 @@
 /* --------------------------- Model Editor Panel ---------------------------*/
+
+/* Layout */
+
+
+
+
+
 #modelEditorPanel>ui-rest>ui-rest {
   position: relative;
 }

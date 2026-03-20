@@ -89,7 +89,10 @@ function syncDocumentsFilterOptions() {
     if (!id) {
       continue;
     }
-    $("<option>").val(id).text(name || id).appendTo($documentsSelect);
+    $("<option>")
+      .val(id)
+      .text(name || id)
+      .appendTo($documentsSelect);
   }
 
   $documentsSelect.val(selectedDocumentFilterId);
@@ -100,7 +103,6 @@ function syncDocumentsFilterOptions() {
   $documentsSelect.prop("disabled", documents.length === 0);
 }
 
-// #region DOM Actions
 function onViewSwitch(event) {
   const targetView = event.currentTarget.dataset.view;
   setView(targetView);
@@ -199,16 +201,10 @@ function onDocumentFilterChange(event) {
   const nextValue = $(event.currentTarget).val();
   selectedDocumentFilterId = nextValue || ALL_DOCUMENTS_FILTER_VALUE;
   applyModelsDocumentFilter();
-  updateModelsCount();
+  syncModelsCount();
   syncModelsSelectionControls();
 }
-// #endregion
 
-/**
- * Prepare an SVG element for display in the model list:
- * - add viewBox so it scales to fit container width
- * - scope internal ids to avoid cross-SVG collisions
- */
 function prepareSvgForList(svgEl, modelId) {
   // 1. responsive sizing
   const svgW = parseFloat(svgEl.getAttribute("width")) || 0;
@@ -286,7 +282,7 @@ function toSvgElement(svgSource) {
   return null;
 }
 
-async function renderModel(model) {
+async function addModelItem(model) {
   const modelId = model?.id;
   const isCurrent = modelId == workspaceStore.getEditingModel()?.id;
   const versionName =
@@ -347,7 +343,6 @@ function updateModelInList({ modelId, svg }) {
   $gridDiv.append(svgEl);
 }
 
-// #region DOM Manipulation
 function setView(view) {
   $viewSwitch.find(".switch-btn").removeClass("is-current");
   $viewSwitch.find(`.switch-btn[data-view="${view}"]`).addClass("is-current");
@@ -407,7 +402,7 @@ function syncModelsBulkModeUI() {
   syncModelsSelectionControls();
 }
 
-function updateModelsCount() {
+function syncModelsCount() {
   const totalCount = modelsStore.getCount();
   const filteredCount = getFilteredModelsCount();
   const countLabel =
@@ -424,17 +419,15 @@ function getModelItem(modelId) {
   return $modelsPanel.find(`[data-model-id="${modelId}"]`);
 }
 
-function updateModelItem(model) {
-  const modelId = model.id;
-  const modelName = model.name;
-  const versionName =
-    modelsStore.getLatestVersionName(modelId) || "No Versions";
+function updateModelItemName(modelId, name) {
+  getModelItem(modelId).find("[data-ref='modelName']").text(name);
+}
+
+function updateModelItemVersion({ id, modelId, name: versionName }) {
   getModelItem(modelId)
-    .attr("data-model-version-id", model.latestVersionId || "")
-    .attr("data-document-id", model.documentId || "")
-    .find("[data-ref='modelName']")
-    .text(modelName);
-  getModelItem(modelId).find("[data-ref='versionName']").text(versionName);
+    .attr("data-model-version-id", id)
+    .find("[data-ref='versionName']")
+    .text(versionName);
 }
 
 function setModelItemCurrent(modelId, isCurrent) {
@@ -460,9 +453,7 @@ const removeModelItem = (modelId) => {
   $(`.model-grid-item[data-model-id="${modelId}"]`).remove();
   $(`.model-list-item[data-model-id="${modelId}"]`).remove();
 };
-// #endregion
 
-// UI Initialization
 createUI({
   setup: () => {
     const modelNameEditor = initInlineEditor({
@@ -472,9 +463,6 @@ createUI({
         return modelService.renameModel(modelId, newValue);
       },
     });
-    syncDocumentsFilterOptions();
-    applyModelsDocumentFilter();
-    updateModelsCount();
     return { modelNameEditor };
   },
   bindListeners: ({ modelNameEditor }) => {
@@ -515,40 +503,32 @@ createUI({
     );
   },
   subscribeStores: () => {
-    modelsStore.subscribe(async (state, { key, operation, value }) => {
+    modelsStore.subscribe(async ({ key, operation, value }) => {
       switch (key) {
         case "entitiesById":
           switch (operation) {
             case "init":
-              $modelsGrid.find(".model-grid-item[data-model-id]").remove();
-              $modelsList.find(".model-list-item[data-model-id]").remove();
               for (const model of value) {
-                await renderModel(model);
+                await addModelItem(model);
               }
-              applyModelsDocumentFilter();
-              updateModelsCount();
+              syncModelsCount();
               syncModelSelectionsInView();
               syncModelsSelectionControls();
               break;
             case "add":
-              await renderModel(value);
+              await addModelItem(value);
               applyModelsDocumentFilter();
-              updateModelsCount();
+              syncModelsCount();
               syncModelsSelectionControls();
               break;
             case "update":
-              updateModelItem(value);
-              applyModelsDocumentFilter();
-              updateModelsCount();
+              updateModelItemName(value.id, value.name);
               syncModelsSelectionControls();
               break;
             case "delete":
-              if (value?.id) {
-                console.log("Model deleted with ID:", value.id);
-                removeModelItem(value.id);
-              }
+              removeModelItem(value.id);
               applyModelsDocumentFilter();
-              updateModelsCount();
+              syncModelsCount();
               syncModelsSelectionControls();
               break;
             default:
@@ -556,14 +536,12 @@ createUI({
           }
           break;
         case "entitiesById.versions":
-          if (operation !== "add") {
-            break;
-          }
-          if (value?.modelId) {
-            const model = modelsStore.getEntity(value.modelId);
-            if (model) {
-              updateModelItem(model);
-            }
+          switch (operation) {
+            case "add":
+              updateModelItemVersion(value);
+              break;
+            default:
+              break;
           }
           break;
         case "selectedIds":
@@ -574,52 +552,56 @@ createUI({
           syncModelsBulkModeUI();
           syncModelSelectionsInView();
           break;
-        case "cachedVersionsById": {
-          if (!value?.versionId || !value?.svg) {
-            break;
+        case "cachedVersionsById":
+          switch (operation) {
+            case "add":
+            case "update": {
+              const versionId = value.key;
+              const modelId =
+                value.modelId || resolveModelIdByVersionId(versionId);
+              const latestVersionId = modelsStore.getLatestVersionId(modelId);
+              if (versionId !== latestVersionId) {
+                break;
+              }
+              updateModelInList({ modelId, svg: value.svg });
+              break;
+            }
+            default:
+              break;
           }
-          const modelId =
-            value.modelId || resolveModelIdByVersionId(value.versionId);
-          if (!modelId) {
-            break;
-          }
-          const model = modelsStore.getEntity(modelId);
-          if (!model || model.latestVersionId !== value.versionId) {
-            break;
-          }
-          updateModelInList({ modelId, svg: value.svg });
           break;
-        }
         default:
           break;
       }
     });
-    documentsStore.subscribe((state, { key, operation }) => {
-      if (key !== "entitiesById") {
-        return;
+    documentsStore.subscribe(({ key, operation }) => {
+      switch (key) {
+        case "entitiesById":
+          switch (operation) {
+            case "init":
+            case "add":
+            case "update":
+            case "delete":
+              syncDocumentsFilterOptions();
+              applyModelsDocumentFilter();
+              syncModelsSelectionControls();
+              break;
+            default:
+              break;
+          }
+          break;
+        default:
+          break;
       }
-      if (!["init", "add", "update", "delete"].includes(operation)) {
-        return;
-      }
-      syncDocumentsFilterOptions();
-      applyModelsDocumentFilter();
-      updateModelsCount();
-      syncModelsSelectionControls();
     });
-    workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
+    workspaceStore.subscribe(({ key, oldValue, newValue }) => {
       switch (key) {
         case "editingModel": {
-          const newModelId = newValue?.id;
-          const oldModelId = oldValue?.id;
-          if (newModelId === oldModelId) {
-            break;
-          }
-          if (newModelId) {
-            setModelItemCurrent(newModelId, true);
-          }
-          if (oldModelId) {
-            setModelItemCurrent(oldModelId, false);
-          }
+          const newId = newValue?.id;
+          const oldId = oldValue?.id;
+          if (newId === oldId) break;
+          if (newId) setModelItemCurrent(newId, true);
+          if (oldId) setModelItemCurrent(oldId, false);
           break;
         }
         default:

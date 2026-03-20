@@ -450,10 +450,7 @@ function resolveLinkBySelectionMeta(selectionMeta) {
   let link = null;
   const editingModelLink = documentViewerStore.getDisplayedEditingModelLink();
   if (linkId) {
-    if (
-      editingModelLink &&
-      String(editingModelLink.id || "") === linkId
-    ) {
+    if (editingModelLink && String(editingModelLink.id || "") === linkId) {
       link = editingModelLink;
     } else {
       link = documentViewerStore.getLinkById(linkId);
@@ -1120,17 +1117,12 @@ const renderLink = ({
     documentViewerStore.getPendingEditingModelLinkSelectionIds(),
   );
   selections.forEach((selection) => {
-    renderSelection(
-      { ...selection, linkId },
-      modelId,
-      modelVersionId,
-      {
-        selectable,
-        isPendingTextChange:
-          isEditingModelDraftLink &&
-          pendingSelectionIds.has(String(selection?.id || "")),
-      },
-    );
+    renderSelection({ ...selection, linkId }, modelId, modelVersionId, {
+      selectable,
+      isPendingTextChange:
+        isEditingModelDraftLink &&
+        pendingSelectionIds.has(String(selection?.id || "")),
+    });
   });
 };
 
@@ -1314,7 +1306,7 @@ createUI({
     });
   },
   subscribeStores: () => {
-    documentViewerStore.subscribe((state, { key, operation, ...payload }) => {
+    documentViewerStore.subscribe(({ key, operation, ...payload }) => {
       if (operation) {
         const { value } = payload;
         switch (key) {
@@ -1412,7 +1404,7 @@ createUI({
       }
     });
 
-    workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
+    workspaceStore.subscribe(({ key, oldValue, newValue }) => {
       switch (key) {
         case "viewedDocument":
           syncDocumentReadOnlyState();

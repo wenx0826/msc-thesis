@@ -256,12 +256,11 @@ createUI({
     });
   },
   subscribeStores: ({ cy }) => {
-    projectGraphStore.subscribe((state, { key, operation, value }) => {
+    projectGraphStore.subscribe(({ key, operation, value }) => {
       switch (key) {
         case "elements":
           switch (operation) {
             case "init":
-              cy.elements().remove();
               if (value.length) {
                 cy.add(value);
                 cy.layout({
@@ -296,7 +295,7 @@ createUI({
       }
     });
 
-    workspaceStore.subscribe(async (state, { key, oldValue, newValue }) => {
+    workspaceStore.subscribe(async ({ key, oldValue, newValue }) => {
       switch (key) {
         case "viewedDocument":
         case "editingModel":
@@ -313,7 +312,7 @@ createUI({
           break;
       }
     });
-    documentsStore.subscribe((state, { key, operation, value }) => {
+    documentsStore.subscribe(({ key, operation, value }) => {
       switch (key) {
         case "entitiesById":
           switch (operation) {
@@ -328,7 +327,7 @@ createUI({
           break;
       }
     });
-    modelsStore.subscribe((state, { key, operation, value }) => {
+    modelsStore.subscribe(({ key, operation, value }) => {
       switch (key) {
         case "entitiesById":
           switch (operation) {

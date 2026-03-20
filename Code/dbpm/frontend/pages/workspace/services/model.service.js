@@ -15,18 +15,18 @@ import {
 import workspaceService from "./workspace.service.js";
 import { Constants } from "../../../constants.js";
 import { classifyLinkSelectionChange } from "../utils/link-selection-draft.js";
-import { endpointLoader } from "../../../modules/workflow/endpoints/endpoint-loader.js";
+import { endpointLoader } from "../../../modules/model/endpoints/endpoint-loader.js";
 import {
   injectDbpmData,
   updateDbpmTextSelections,
-} from "../../../modules/workflow/utils/dbpm-model-xml.js";
+} from "../../../modules/model/utils/dbpm-model-xml.js";
 
 // Import constants
 const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
 const MODEL_GENERATION_TARGET = Constants.MODEL_GENERATION_TARGET;
 const EMPTY_MODEL = Constants.EMPTY_MODEL;
-const PREVIEW_THEME_PATH = "modules/workflow/themes/preset_customized/theme.js";
-const PREVIEW_IFRAME_ID = "wfPreviewRendererIframe";
+const PREVIEW_THEME_PATH = "modules/model/themes/preset_customized/theme.js";
+const PREVIEW_IFRAME_ID = "modelPreviewRendererIframe";
 const CPEE_DESCRIPTION_NS = "http://cpee.org/ns/description/1.0";
 const DBPM_NS = "https://example.com/dbpm";
 const XMLNS_NS = "http://www.w3.org/2000/xmlns/";
@@ -83,13 +83,6 @@ let lastNoSelectionLoadAlert = {
   at: 0,
 };
 
-function normalizeComparableId(value) {
-  if (value === undefined || value === null) {
-    return "";
-  }
-  return String(value);
-}
-
 function getEditingModelContext() {
   const { id, versionId } = workspaceStore.getEditingModel() || {};
   return {
@@ -138,10 +131,8 @@ function isSameEditingModelContext(left, right) {
   }
 
   return (
-    normalizeComparableId(left.modelId) ===
-      normalizeComparableId(right.modelId) &&
-    normalizeComparableId(left.modelVersionId) ===
-      normalizeComparableId(right.modelVersionId)
+    left.modelId === right.modelId &&
+    left.modelVersionId === right.modelVersionId
   );
 }
 
@@ -238,7 +229,7 @@ function endPendingGenerationRequest(requestId) {
 }
 
 function storeDeferredRegenerationPreview(preview) {
-  const modelVersionKey = normalizeComparableId(preview?.modelVersionId);
+  const modelVersionKey = preview?.modelVersionId;
   if (!modelVersionKey) {
     return;
   }
@@ -249,7 +240,7 @@ function storeDeferredRegenerationPreview(preview) {
 }
 
 function consumeDeferredRegenerationPreview({ modelId, modelVersionId }) {
-  const modelVersionKey = normalizeComparableId(modelVersionId);
+  const modelVersionKey = modelVersionId;
   if (!modelVersionKey) {
     return null;
   }
@@ -259,10 +250,7 @@ function consumeDeferredRegenerationPreview({ modelId, modelVersionId }) {
     return null;
   }
 
-  if (
-    modelId &&
-    normalizeComparableId(preview.modelId) !== normalizeComparableId(modelId)
-  ) {
+  if (modelId && preview.modelId !== modelId) {
     return null;
   }
 
@@ -644,8 +632,6 @@ function notifyLinkUpdateTriggered({
     selectionCount,
     triggeredAt: new Date().toISOString(),
   };
-  console.log("[DBPM] Link update triggered", detail);
-
   if (
     typeof window !== "undefined" &&
     typeof window.dispatchEvent === "function"
@@ -1803,44 +1789,13 @@ export default {
   async updateEditingVersion(type, options = {}) {
     const { expectedModelId = null, expectedModelVersionId = null } = options;
     const { id: modelId, versionId: modelVersionId } =
-      workspaceStore.getEditingModel();
-    if (!modelId || !modelVersionId) {
-      console.warn(
-        "Skipping updateEditingVersion: no active editing model/version.",
-      );
+      workspaceStore.getEditingModel() || {};
+
+    if (expectedModelId && expectedModelId !== modelId) {
       return null;
     }
 
-    if (!isViewingLatestDocumentVersion()) {
-      console.warn(
-        "Skipping updateEditingVersion: viewing historical document version.",
-      );
-      return null;
-    }
-
-    if (
-      expectedModelId &&
-      normalizeComparableId(expectedModelId) !== normalizeComparableId(modelId)
-    ) {
-      console.warn("Skipping updateEditingVersion due to model mismatch.", {
-        expectedModelId,
-        modelId,
-      });
-      return null;
-    }
-
-    if (
-      expectedModelVersionId &&
-      normalizeComparableId(expectedModelVersionId) !==
-        normalizeComparableId(modelVersionId)
-    ) {
-      console.warn(
-        "Skipping updateEditingVersion due to model version mismatch.",
-        {
-          expectedModelVersionId,
-          modelVersionId,
-        },
-      );
+    if (expectedModelVersionId && expectedModelVersionId !== modelVersionId) {
       return null;
     }
 
@@ -2169,15 +2124,10 @@ export default {
       isLatest: true,
       isDraft: false,
     });
-    await this.loadVersion(createdVersionId);
+    await this.loadVersion(createdVersionId, {
+      needSvg: true,
+    });
     documentViewerStore.removeLinksByModelId(modelId);
-    console.log(
-      `Created new model version ${createdVersionId} for model ${modelId} based on source version ${sourceVersionId} (${sourceVersionLabel})`,
-      {
-        request: createVersionRequest,
-        link,
-      },
-    );
     documentViewerStore.addLink(link);
     // documentViewerStore.updateLinkByModelId(modelId, link);
     // documentViewerStore.updateLinkModelVersion({
@@ -2191,16 +2141,12 @@ export default {
     //   documentViewerStore.setEditingModelLinkByModelId(modelId);
     // }
   },
-  async loadVersion(versionId) {
-    console.log(`Loading model version ${versionId}...`);
+  async loadVersion(versionId, options = {}) {
+    const { needSvg = false } = options || {};
     const { id: modelId } = workspaceStore.getEditingModel() || {};
-    console.log(
-      `!!!Ensuring model version is cached with data for loading: ${versionId} (service call)`,
-      modelId,
-    );
     const cached = await this.ensureVersionCached(versionId, {
       needData: true,
-      needSvg: false,
+      needSvg,
       modelId,
     });
     if (!cached?.dataXml) {
@@ -2208,12 +2154,6 @@ export default {
         `Failed to resolve cached model XML for version ${versionId}`,
       );
     }
-
-    console.log(
-      "Loaded model data for versionId",
-      versionId,
-      "(service cache)",
-    );
 
     modelEditorStore.setData(cached.dataXml, {
       updateType: null,

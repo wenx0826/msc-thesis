@@ -93,7 +93,7 @@ function getDocumentItem(docId) {
   return $documentsList.find(`li[data-doc-id='${docId}']`);
 }
 
-function syncDocumentItem(docId, { name, versionName } = {}) {
+function updateDocumentItem(docId, { name, versionName } = {}) {
   const $documentItem = getDocumentItem(docId);
   if (name) $documentItem.find("[data-ref='documentName']").text(name);
   if (versionName)
@@ -131,8 +131,10 @@ function removeDocumentItem(docId) {
 
 // #region DOM Actions
 function onDocumentsInputChange(event) {
-  const files = event.target.files;
-  if (!files || files.length === 0) return;
+  const input = event.currentTarget;
+  const files = Array.from(input.files || []);
+  if (files.length === 0) return;
+  input.value = "";
   documentService.uploadDocuments(files);
 }
 
@@ -140,6 +142,13 @@ function onVersionInputChange(event, docId) {
   const file = event.target.files[0];
   if (!file) return;
   documentService.uploadNewVersion(docId, file);
+}
+
+function uploadNewVersion(docId) {
+  $documentVersionInput.off("change");
+  $documentVersionInput.one("change", (e) => onVersionInputChange(e, docId));
+  $documentVersionInput.val("");
+  $documentVersionInput.trigger("click");
 }
 
 function onDocItemClick(event) {
@@ -214,13 +223,6 @@ function onToggleDocumentsBulkEditMode() {
   documentsStore.toggleBulkEditMode();
 }
 // #endregion
-
-function uploadNewVersion(docId) {
-  $documentVersionInput.off("change");
-  $documentVersionInput.one("change", (e) => onVersionInputChange(e, docId));
-  $documentVersionInput.val("");
-  $documentVersionInput.trigger("click");
-}
 
 async function deleteDocument(docId) {
   try {
@@ -298,12 +300,11 @@ createUI({
     syncDocumentsBulkModeUI();
   },
   subscribeStores: () => {
-    documentsStore.subscribe((state, { key, operation, value }) => {
+    documentsStore.subscribe(({ key, operation, value }) => {
       switch (key) {
         case "entitiesById":
           switch (operation) {
             case "init":
-              $documentsList.find("li[data-doc-id]").remove();
               value.forEach((doc) => addDocumentItem(doc));
               syncDocumentsCount();
               syncDocumentSelectionsInView();
@@ -315,7 +316,7 @@ createUI({
               syncDocumentsSelectionControls();
               break;
             case "update":
-              syncDocumentItem(value.id, { name: value.name });
+              updateDocumentItem(value.id, { name: value.name });
               break;
             case "delete":
               if (value?.id) {
@@ -330,7 +331,7 @@ createUI({
           break;
         case "entitiesById.versions":
           if (operation === "add") {
-            syncDocumentItem(value.documentId, { versionName: value.name });
+            updateDocumentItem(value.documentId, { versionName: value.name });
           }
           break;
         case "selectedIds":
@@ -345,20 +346,14 @@ createUI({
           break;
       }
     });
-    workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
+    workspaceStore.subscribe(({ key, oldValue, newValue }) => {
       switch (key) {
         case "viewedDocument": {
           const newId = newValue?.id;
           const oldId = oldValue?.id;
-          if (newId === oldId) {
-            break;
-          }
-          if (newId) {
-            setDocumentItemCurrent(newId, true);
-          }
-          if (oldId) {
-            setDocumentItemCurrent(oldId, false);
-          }
+          if (newId === oldId) break;
+          if (newId) setDocumentItemCurrent(newId, true);
+          if (oldId) setDocumentItemCurrent(oldId, false);
           break;
         }
         default:

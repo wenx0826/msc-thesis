@@ -41,24 +41,24 @@ function getModelEditorState() {
     : MODEL_EDITOR_STATE.LATEST;
 }
 
-function setDocumentViewerState() {
+function syncDocumentViewerState() {
   $documentViewerPanel.attr("data-document-state", getDocumentViewerState());
 }
 
-function setModelEditorState() {
+function syncModelEditorState() {
   $modelEditorPanel.attr("data-model-state", getModelEditorState());
 }
 
 createUI({
   setup: () => {},
   subscribeStores: () => {
-    workspaceStore.subscribe((_, { key }) => {
+    workspaceStore.subscribe(({ key }) => {
       switch (key) {
         case "viewedDocument":
-          setDocumentViewerState();
+          syncDocumentViewerState();
           break;
         case "editingModel":
-          setModelEditorState();
+          syncModelEditorState();
           break;
         default:
           break;

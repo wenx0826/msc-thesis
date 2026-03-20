@@ -15,7 +15,7 @@ export default {
   path: "models",
 
   async generateSampleModel() {
-    const templatesFolder = "/modules/workflow/templates/";
+    const templatesFolder = "/modules/model/templates/";
 
     async function fetchTemplatesList() {
       try {

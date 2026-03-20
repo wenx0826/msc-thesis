@@ -82,7 +82,7 @@ createUI({
     });
   },
   subscribeStores: ({ versionSelector }) => {
-    workspaceStore.subscribe((state, { key, oldValue, newValue }) => {
+    workspaceStore.subscribe(({ key, oldValue, newValue }) => {
       switch (key) {
         case "editingModel": {
           const { id: newModelId, versionId: newVersionId, isDraft } = newValue;
@@ -118,7 +118,7 @@ createUI({
           break;
       }
     });
-    modelsStore.subscribe((state, { key, operation, value }) => {
+    modelsStore.subscribe(({ key, operation, value }) => {
       switch (key) {
         case "entitiesById":
           switch (operation) {

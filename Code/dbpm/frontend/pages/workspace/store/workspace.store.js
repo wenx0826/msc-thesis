@@ -27,12 +27,6 @@ class WorkspaceStore extends Store {
         openTimer: null, // ✨ Timer for delayed opening (debounce)
         hoverSource: null, // ✨ Track which UI element triggered hover (prevents conflicts)
       },
-      /* OLD: Separate top-level properties (less organized):
-      modelPopover: null,
-      modelPopoverCloseTimer: null,
-      modelPopoverOpenTimer: null,
-      modelPopoverHoverSource: null,
-      */
     });
   }
   set({ projectId, viewedDocument, editingModel }) {
@@ -145,7 +139,6 @@ class WorkspaceStore extends Store {
     this.state.status = status;
     this.notify({ key: "status", newValue: status });
   }
-
   setHoveredModelId(newValue) {
     const oldValue = this.state.hoveredModelId;
     if (oldValue === newValue) return; // No change

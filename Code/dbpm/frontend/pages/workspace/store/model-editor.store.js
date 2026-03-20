@@ -1,5 +1,5 @@
 import { Store } from "../../../shared/utils/store.js";
-import { updateDbpmTextSelectionsInXmlNode } from "../../../modules/workflow/utils/dbpm-model-xml.js";
+import { updateDbpmTextSelectionsInXmlNode } from "../../../modules/model/utils/dbpm-model-xml.js";
 
 const CPEE_DESCRIPTION_NS = "http://cpee.org/ns/description/1.0";
 const DBPM_NS = "https://example.com/dbpm";
