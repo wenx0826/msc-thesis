@@ -22,12 +22,12 @@ class ModelGenerationAttemptRepository extends BaseSqlRepository {
    * @param {string}  params.projectId
    * @param {string|null}  params.baseModelVersionId    - NULL for new generation
    * @param {string|null}  params.resultModelVersionId  - NULL for declined attempts
-   * @param {'new'|'regeneration'} params.generationType
-   * @param {'selection_only'|'selection_with_prompt'|'prompt_only'} params.generationInputMode
+   * @param {'new'|'regeneration'|'refinement'} params.generationType
+   * @param {'selection_only'|'selection_with_prompt'|'prompt'} params.generationInputMode
    * @param {'accepted_new_model'|'accepted_replace'|'accepted_new_version'|'declined'} params.result
    * @param {string|null}  params.prompt
    * @param {number|null}  params.selectedWordsCount
-   * @param {number|null}  params.selectedTextSimilarity - Jaccard 0.0–1.0, regeneration+selection only
+   * @param {number|null}  params.selectedTextSimilarity - Jaccard 0.0–1.0, regeneration with selections only
    */
   add({
     projectId,

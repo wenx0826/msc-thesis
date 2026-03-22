@@ -430,10 +430,13 @@ export const createGenerationAttemptSchema = {
       projectId: { type: "string" },
       baseModelVersionId: { type: ["string", "null"] },
       resultModelVersionId: { type: ["string", "null"] },
-      generationType: { type: "string", enum: ["new", "regeneration"] },
+      generationType: {
+        type: "string",
+        enum: ["new", "regeneration", "refinement"],
+      },
       generationInputMode: {
         type: "string",
-        enum: ["selection_only", "selection_with_prompt", "prompt_only"],
+        enum: ["selection_only", "selection_with_prompt", "prompt"],
       },
       result: {
         type: "string",

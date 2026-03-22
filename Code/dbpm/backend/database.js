@@ -153,11 +153,15 @@ function initializeSchema() {
       project_id TEXT NOT NULL,
       base_model_version_id TEXT,
       result_model_version_id TEXT,
-      generation_type TEXT NOT NULL CHECK (generation_type IN ('new', 'regeneration')),
+      generation_type TEXT NOT NULL CHECK (generation_type IN (
+        'new',
+        'regeneration',
+        'refinement'
+      )),
       generation_input_mode TEXT NOT NULL CHECK (generation_input_mode IN (
         'selection_only',
         'selection_with_prompt',
-        'prompt_only'
+        'prompt'
       )),
       result TEXT NOT NULL CHECK (result IN (
         'accepted_new_model',
@@ -173,17 +177,30 @@ function initializeSchema() {
       FOREIGN KEY (base_model_version_id) REFERENCES model_versions(id),
       FOREIGN KEY (result_model_version_id) REFERENCES model_versions(id),
       CHECK (NOT (generation_type = 'new' AND result IN ('accepted_replace', 'accepted_new_version'))),
-      CHECK (NOT (generation_type = 'regeneration' AND result = 'accepted_new_model')),
-      CHECK (NOT (generation_type = 'new' AND generation_input_mode = 'prompt_only')),
+      CHECK (NOT (
+        generation_type IN ('regeneration', 'refinement') AND
+        result = 'accepted_new_model'
+      )),
       CHECK (NOT (generation_type = 'new' AND base_model_version_id IS NOT NULL)),
-      CHECK (NOT (generation_type = 'regeneration' AND base_model_version_id IS NULL)),
+      CHECK (NOT (
+        generation_type IN ('regeneration', 'refinement') AND
+        base_model_version_id IS NULL
+      )),
+      CHECK (NOT (
+        generation_type = 'refinement' AND
+        generation_input_mode != 'prompt'
+      )),
+      CHECK (NOT (
+        generation_type IN ('new', 'regeneration') AND
+        generation_input_mode = 'prompt'
+      )),
       CHECK (NOT (generation_input_mode = 'selection_only' AND prompt IS NOT NULL)),
       CHECK (NOT (
-        generation_input_mode IN ('selection_with_prompt', 'prompt_only') AND
+        generation_input_mode IN ('selection_with_prompt', 'prompt') AND
         prompt IS NULL
       )),
-      CHECK (NOT (generation_input_mode = 'prompt_only' AND selected_words_count IS NOT NULL)),
-      CHECK (NOT (generation_input_mode = 'prompt_only' AND selected_text_similarity IS NOT NULL)),
+      CHECK (NOT (generation_type = 'refinement' AND selected_words_count IS NOT NULL)),
+      CHECK (NOT (generation_type = 'refinement' AND selected_text_similarity IS NOT NULL)),
       CHECK (NOT (generation_type = 'new' AND selected_text_similarity IS NOT NULL)),
       CHECK (
         (result = 'declined' AND result_model_version_id IS NULL) OR

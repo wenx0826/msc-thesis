@@ -8,4 +8,4 @@
 - Improvements to payment authorization handling- Retry mechanisms for recoverable transaction failures- Updated notification logic for transaction states</dbpm:text_selections>
 </dbpm:document_info>
   </dbpm:info>
-  <description xmlns="http://cpee.org/ns/description/1.0"/></description>
+  <description xmlns="http://cpee.org/ns/description/1.0" svg-id="description" svg-type="description" svg-subtype="description"/></description>

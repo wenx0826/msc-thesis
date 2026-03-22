@@ -19,6 +19,7 @@ import { endpointLoader } from "../../../modules/model/endpoints/endpoint-loader
 import {
   injectDbpmData,
   updateDbpmTextSelections,
+  updateDbpmPromptOnly,
 } from "../../../modules/model/utils/dbpm-model-xml.js";
 
 // Import constants
@@ -59,25 +60,28 @@ function countWordsSimple(text) {
   return (text || "").trim().split(/\s+/).filter(Boolean).length || 0;
 }
 
-function normalizePromptText(value) {
-  return typeof value === "string" ? value.trim() : "";
-}
-
 function composeSelectionGenerationInput(selectedText, additionalPrompt = "") {
-  const normalizedPrompt = normalizePromptText(additionalPrompt);
-  if (!normalizedPrompt) {
-    return selectedText;
-  }
-
-  return [
-    selectedText || "",
-    "**Important** Additional instructions:",
-    normalizedPrompt,
-  ].join("\n");
+  return additionalPrompt
+    ? [
+        selectedText,
+        "**IMPORTANT** Additional instructions:",
+        additionalPrompt,
+      ].join("\n")
+    : selectedText;
 }
 
-function resolveGenerationAttemptType(isRegeneration = false) {
-  return isRegeneration ? "regeneration" : "new";
+function resolveGenerationAttemptType({
+  isRegeneration = false,
+  hasSelectionInput = false,
+  hasPromptInput = false,
+} = {}) {
+  if (!isRegeneration) {
+    return "new";
+  }
+  if (hasPromptInput && !hasSelectionInput) {
+    return "refinement";
+  }
+  return "regeneration";
 }
 
 function resolveGenerationInputMode({
@@ -88,7 +92,7 @@ function resolveGenerationInputMode({
     return "selection_with_prompt";
   }
   if (hasPromptInput) {
-    return "prompt_only";
+    return "prompt";
   }
   return "selection_only";
 }
@@ -107,16 +111,14 @@ function getEditingModelContext() {
   };
 }
 
-function resolveRegenerationContextFromEditingModel(editingModel = null) {
-  const normalizedEditingModel =
-    editingModel && typeof editingModel === "object" ? editingModel : {};
-  const modelId = normalizedEditingModel.id || null;
-  const modelVersionId =
-    normalizedEditingModel.versionId ||
-    normalizedEditingModel.sourceVersionId ||
-    null;
+function getActiveRegenerationContext() {
+  const modelId = workspaceStore.getEditingModelId();
+  const editingModel = workspaceStore.getEditingModel();
+  const modelVersionId = workspaceStore.isEditingModelRegenerationDraft()
+    ? workspaceStore.getEditingModelSourceVersionId()
+    : workspaceStore.getEditingModelVersionId();
 
-  if (!modelId || !modelVersionId || normalizedEditingModel.isLatest !== true) {
+  if (!modelId || !modelVersionId || editingModel?.isLatest !== true) {
     return null;
   }
 
@@ -124,12 +126,6 @@ function resolveRegenerationContextFromEditingModel(editingModel = null) {
     modelId,
     modelVersionId,
   };
-}
-
-function getActiveRegenerationContext() {
-  return resolveRegenerationContextFromEditingModel(
-    workspaceStore.getEditingModel() || null,
-  );
 }
 
 function resolveEditingModelIsLatest(modelId = null, modelVersionId = null) {
@@ -365,6 +361,19 @@ function selectionsToText(selections) {
     .join(" ");
 }
 
+function selectionsToExactTexts(selections) {
+  if (!Array.isArray(selections)) {
+    return [];
+  }
+  return selections
+    .map((selection) =>
+      typeof selection?.textQuote?.exact === "string"
+        ? selection.textQuote.exact.trim()
+        : "",
+    )
+    .filter(Boolean);
+}
+
 function cloneValue(value, fallback = null) {
   if (value === undefined) {
     return fallback;
@@ -397,7 +406,7 @@ function resolveModelCreationContext(creationContext = null) {
   const contextSelections = Array.isArray(normalizedContext.selections)
     ? normalizedContext.selections
     : documentViewerStore.getSerializedUnlinkedSelections();
-  const prompt = normalizePromptText(normalizedContext.prompt);
+  const prompt = normalizedContext.prompt;
   return {
     documentId: documentId || "",
     documentVersionId,
@@ -408,12 +417,14 @@ function resolveModelCreationContext(creationContext = null) {
 }
 
 function prepareModelDataForCreation(modelData, creationContext) {
+  const prompt = creationContext.prompt || "";
   return injectDbpmData(modelData, {
     documentId: creationContext.documentId || "",
     documentVersionId: creationContext.documentVersionId,
     documentVersionName: creationContext.documentVersionName || "",
-    selectedText: selectionsToText(creationContext.selections),
-    prompt: creationContext.prompt || "",
+    selections: selectionsToExactTexts(creationContext.selections),
+    prompt,
+    promptType: prompt ? "new" : null,
   });
 }
 
@@ -560,6 +571,7 @@ function composeRegeneratedModelData({
   currentModelData,
   generatedModelData,
   selectionUpdate = null,
+  promptUpdate = null,
 }) {
   const generatedDoc = parseXmlDocument(generatedModelData);
   if (!generatedDoc?.documentElement) {
@@ -595,13 +607,20 @@ function composeRegeneratedModelData({
     const serializedStandalone = $(
       standaloneDoc.documentElement,
     ).serializePrettyXML();
-    if (!selectionUpdate) {
+    if (!selectionUpdate && !promptUpdate) {
       return serializedStandalone;
     }
-    return updateDbpmTextSelections(
+    if (selectionUpdate) {
+      return updateDbpmTextSelections(
+        serializedStandalone,
+        selectionUpdate.selections || [],
+        selectionUpdate.meta || {},
+      );
+    }
+    return updateDbpmPromptOnly(
       serializedStandalone,
-      selectionUpdate.selectedText || "",
-      selectionUpdate.meta || {},
+      promptUpdate.prompt,
+      promptUpdate.promptType,
     );
   }
 
@@ -614,13 +633,20 @@ function composeRegeneratedModelData({
     currentRoot.appendChild(imported);
   }
   const serializedCurrent = $(currentRoot).serializePrettyXML();
-  if (!selectionUpdate) {
+  if (!selectionUpdate && !promptUpdate) {
     return serializedCurrent;
   }
-  return updateDbpmTextSelections(
+  if (selectionUpdate) {
+    return updateDbpmTextSelections(
+      serializedCurrent,
+      selectionUpdate.selections || [],
+      selectionUpdate.meta || {},
+    );
+  }
+  return updateDbpmPromptOnly(
     serializedCurrent,
-    selectionUpdate.selectedText || "",
-    selectionUpdate.meta || {},
+    promptUpdate.prompt,
+    promptUpdate.promptType,
   );
 }
 
@@ -1457,7 +1483,11 @@ export default {
       const hasPromptInput = !!userInput;
       pendingGenerationAttemptMeta = {
         projectId: workspaceStore.getProjectId(),
-        generationType: "regeneration",
+        generationType: resolveGenerationAttemptType({
+          isRegeneration: true,
+          hasSelectionInput: false,
+          hasPromptInput,
+        }),
         generationInputMode: resolveGenerationInputMode({
           hasSelectionInput: false,
           hasPromptInput,
@@ -1475,6 +1505,9 @@ export default {
       const regeneratedModelData = composeRegeneratedModelData({
         currentModelData: originalModelData,
         generatedModelData: generatedModel,
+        promptUpdate: userInput
+          ? { prompt: userInput, promptType: "refinement" }
+          : null,
       });
 
       const preview = {
@@ -1532,8 +1565,7 @@ export default {
     }
   },
 
-  async generateModelBySelections(additionalPrompt = "") {
-    additionalPrompt = normalizePromptText(additionalPrompt);
+  async generateModelBySelections(additionalPrompt) {
     const regenerationContext = getActiveRegenerationContext();
     const regenerateEditingModel = !!regenerationContext;
     const originalModelData = regenerateEditingModel
@@ -1562,7 +1594,11 @@ export default {
       );
       pendingGenerationAttemptMeta = {
         projectId: workspaceStore.getProjectId(),
-        generationType: resolveGenerationAttemptType(regenerateEditingModel),
+        generationType: resolveGenerationAttemptType({
+          isRegeneration: regenerateEditingModel,
+          hasSelectionInput,
+          hasPromptInput,
+        }),
         generationInputMode: resolveGenerationInputMode({
           hasSelectionInput,
           hasPromptInput,
@@ -1591,13 +1627,23 @@ export default {
       const regeneratedModelData = composeRegeneratedModelData({
         currentModelData: originalModelData,
         generatedModelData: generatedModel,
-        selectionUpdate: {
-          selectedText,
-          meta: {
-            ...resolveLinkDocumentMeta(editingLinkForSelections || {}),
-            prompt: additionalPrompt || null,
-          },
-        },
+        selectionUpdate: selectedText
+          ? {
+              selections: [selectedText],
+              meta: {
+                ...resolveLinkDocumentMeta(editingLinkForSelections || {}),
+                prompt: additionalPrompt || null,
+                promptType: pendingGenerationAttemptMeta.generationType,
+              },
+            }
+          : null,
+        promptUpdate:
+          !selectedText && additionalPrompt
+            ? {
+                prompt: additionalPrompt,
+                promptType: pendingGenerationAttemptMeta.generationType,
+              }
+            : null,
       });
 
       const preview = {
@@ -1813,10 +1859,10 @@ export default {
     }
 
     if (type === MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS) {
-      const selectedText = selectionsToText(link?.selections || []);
+      const selectionTexts = selectionsToExactTexts(link?.selections || []);
       const documentMeta = resolveLinkDocumentMeta(link || {});
       modelEditorStore.updateModelDbpmTextSelections(
-        selectedText,
+        selectionTexts,
         documentMeta,
       );
     }
@@ -1917,7 +1963,7 @@ export default {
         await modelsAPI.getDataByVersionId(modelVersionId);
       const updatedModelData = updateDbpmTextSelections(
         currentModelData,
-        selectionsToText(serializedLink.selections),
+        selectionsToExactTexts(serializedLink.selections),
         resolveLinkDocumentMeta(serializedLink),
       );
       notifyLinkUpdateTriggered({
@@ -2032,7 +2078,7 @@ export default {
       }
 
       modelEditorStore.updateModelDbpmTextSelections(
-        selectionsToText(currentSelections),
+        selectionsToExactTexts(currentSelections),
         resolveLinkDocumentMeta(updatedLink),
       );
       if (alertOnEmptyAfterDeletion || currentSelections.length > 0) {

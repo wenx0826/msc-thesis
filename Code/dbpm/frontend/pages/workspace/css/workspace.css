@@ -148,7 +148,8 @@ ui-bar {
 }
 
 /* Hidden by default and revealed by panel state rules when needed. */
-.state-controlled {
+
+*[is=x-ui-] .state-controlled {
   display: none;
 }
 

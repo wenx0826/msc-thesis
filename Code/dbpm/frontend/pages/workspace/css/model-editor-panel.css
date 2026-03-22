@@ -96,7 +96,7 @@
 
   &[data-model-state="latest"],
   &[data-model-state="regeneration-draft"] {
-    #modelEditPromptPane {
+    #modelEditorPromptPane {
       display: flex;
     }
   }
@@ -125,7 +125,7 @@
 } */
 
 
-#modelEditPromptPane {
+#modelEditorPromptPane {
   padding: 0.5em;
   padding-bottom: 0;
   border-bottom-left-radius: 0.9em;

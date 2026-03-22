@@ -1,0 +1,33 @@
+generateModelBySelections()  (or generateModelByPrompt())
+  └─ active regenerationContext { modelId, modelVersionId }
+       ├─ originalModelData = modelEditorStore.getSerializedData()
+       │    (the current XML already has <dbpm:info> from its creation)
+       │
+       ├─ generateModel(input) → LLM returns fresh raw process XML
+       │
+       └─ composeRegeneratedModelData({ currentModelData, generatedModelData, selectionUpdate })
+            ├─ extracts the new <description> payload from fresh LLM XML
+            │
+            ├─ if currentModelData has dbpm wrapper:
+            │    replaces the inner <description> inside the existing wrapper
+            │    (preserving all <dbpm:info> metadata from original)
+            │
+            └─ updateDbpmTextSelections(serialized, selectedText, meta)   ← INJECTION UPDATE
+                 • finds existing <dbpm:document_info> via ensureDbpmPath()
+                 • upserts <dbpm:text_selections> ← new selection text
+                 • upserts <dbpm:prompt>          ← new prompt (if any)
+                 • upserts documentVersionId / documentVersionName (if in meta)
+                 • returns updated serialized XML  (regeneratedDataXml)
+
+       → preview = { originalDataXml, regeneratedDataXml, updateType }
+
+       if context still active:
+         modelEditorStore.setData(regeneratedDataXml, { updateType })
+         setRegenerationDraftEditingModel()
+           → editingModel = { id, versionId: null, sourceVersionId }
+           → state = "regeneration-draft"
+         → #regenerationDraftReviewBar becomes visible
+
+  User clicks Replace    → updateEditingVersion()  (saves regeneratedDataXml over existing version)
+  User clicks Save new  → createModelVersion()     (creates new version from regeneratedDataXml)
+  User clicks Cancel    → restores originalDataXml, resets editingModel

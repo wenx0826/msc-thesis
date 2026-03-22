@@ -1,0 +1,30 @@
+generateModelBySelections()
+  └─ no active regenerationContext → new model path
+       ├─ generateModel(input) → LLM returns raw process XML
+       └─ stagePendingNewModelDraft(generatedModel, { creationContext })
+            ├─ resolveModelCreationContext()
+            │    collects: documentId, documentVersionId, documentVersionName,
+            │              selections (from documentViewerStore), prompt
+            │
+            ├─ prepareModelDataForCreation(modelData, creationContext)
+            │    └─ injectDbpmData(modelData, meta)          ← INJECTION
+            │         • parses raw LLM XML
+            │         • creates wrapper <description xmlns:dbpm="...">
+            │         • prepends <dbpm:info>
+            │              <dbpm:document_info>
+            │                <dbpm:document_id>
+            │                <dbpm:document_version_id>
+            │                <dbpm:document_version_name>
+            │                <dbpm:text_selections>
+            │                <dbpm:prompt>              (if present)
+            │         • appends the original process payload nodes
+            │         • returns serialized XML (preparedModelData)
+            │
+            ├─ workspaceStore.editingModel = { id: null }   → state = "new-model-draft"
+            └─ modelEditorStore.setData(preparedModelData)  → renders injected XML
+                 → #newModelDraftReviewBar becomes visible
+
+  User clicks Save → commitPendingNewModelDraft()
+                       └─ createModelAndLink(pendingDraft.preparedModelData)
+                            (already injected, sent as-is to backend)
+  User clicks Discard → discardPendingNewModelDraft() → clears everything

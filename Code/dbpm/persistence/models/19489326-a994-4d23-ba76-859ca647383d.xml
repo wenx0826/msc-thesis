@@ -1,0 +1,14 @@
+<description
+  xmlns:dbpm="https://example.com/dbpm">
+  <dbpm:info>
+    <dbpm:document_info>
+      <dbpm:document_id>60c474d3-657f-42d4-8af4-a395d587d333</dbpm:document_id>
+      <dbpm:document_version_id>1f572e18-24f6-43fb-b065-7406096a416c</dbpm:document_version_id>
+      <dbpm:document_version_name>v1</dbpm:document_version_name>
+      <dbpm:text_selections>
+        <dbpm:selection>hancements to the payment workflow to improve transaction reliability and user feedback during checkout. The update focuses on authorization handling, retry behavior, and consistency of user notifications across different</dbpm:selection>
+      </dbpm:text_selections>
+      <dbpm:prompt type="new">test</dbpm:prompt>
+    </dbpm:document_info>
+  </dbpm:info>
+  <description xmlns="http://cpee.org/ns/description/1.0"/></description>

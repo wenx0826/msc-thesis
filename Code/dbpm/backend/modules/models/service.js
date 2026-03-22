@@ -546,7 +546,7 @@ export default {
     return { totalCount, byType, byVersionLevel, byModel };
   },
   /**
-   * Record a model generation attempt (new or regeneration, accepted or declined).
+   * Record a model generation attempt (new, regeneration, or refinement).
    * Should be called from the generation flow after the user accepts or declines.
    */
   recordGenerationAttempt({

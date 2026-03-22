@@ -264,13 +264,13 @@ class ModelEditorStore extends Store {
     });
   }
 
-  updateModelDbpmTextSelections(selectedText, meta = {}) {
+  updateModelDbpmTextSelections(selections, meta = {}) {
     const data = this.state.data;
     if (!data) {
       return;
     }
 
-    updateDbpmTextSelectionsInXmlNode(data, selectedText, meta);
+    updateDbpmTextSelectionsInXmlNode(data, selections, meta);
   }
 }
 

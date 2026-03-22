@@ -45,6 +45,43 @@ function setOptionalDbpmTextNode(doc, parent, localName, value) {
   return upsertDbpmTextNode(doc, parent, localName, normalizedValue);
 }
 
+function upsertDbpmSelections(doc, parent, selections) {
+  removeDbpmChild(parent, "text_selections");
+  const selectionsNode = createDbpmElement(doc, "text_selections");
+  (Array.isArray(selections) ? selections : []).forEach((text) => {
+    if (typeof text === "string" && text) {
+      selectionsNode.appendChild(createDbpmElement(doc, "selection", text));
+    }
+  });
+  parent.appendChild(selectionsNode);
+  return selectionsNode;
+}
+
+function upsertDbpmPromptNode(doc, parent, prompt, promptType = null) {
+  const normalizedPrompt =
+    typeof prompt === "string"
+      ? prompt
+      : prompt === null
+        ? null
+        : String(prompt);
+  if (normalizedPrompt === null || normalizedPrompt === "") {
+    removeDbpmChild(parent, "prompt");
+    return null;
+  }
+  const promptNode = upsertDbpmTextNode(
+    doc,
+    parent,
+    "prompt",
+    normalizedPrompt,
+  );
+  if (promptType) {
+    promptNode.setAttribute("type", promptType);
+  } else {
+    promptNode.removeAttribute("type");
+  }
+  return promptNode;
+}
+
 function getPayloadNodes(sourceRoot) {
   if (!sourceRoot) {
     return [];
@@ -164,8 +201,9 @@ export function injectDbpmData(modelData, meta = {}) {
     documentId = "",
     documentVersionId = "",
     documentVersionName = "",
-    selectedText = "",
+    selections = [],
     prompt = "",
+    promptType = null,
   } = meta;
 
   const parser = new DOMParser();
@@ -205,13 +243,21 @@ export function injectDbpmData(modelData, meta = {}) {
       ),
     );
   }
-  documentInfoNode.appendChild(
-    createDbpmElement(wrappedDoc, "text_selections", selectedText),
-  );
+  const selectionsNode = createDbpmElement(wrappedDoc, "text_selections");
+  (Array.isArray(selections) ? selections : []).forEach((text) => {
+    if (typeof text === "string" && text) {
+      selectionsNode.appendChild(
+        createDbpmElement(wrappedDoc, "selection", text),
+      );
+    }
+  });
+  documentInfoNode.appendChild(selectionsNode);
   if (typeof prompt === "string" && prompt !== "") {
-    documentInfoNode.appendChild(
-      createDbpmElement(wrappedDoc, "prompt", prompt),
-    );
+    const promptNode = createDbpmElement(wrappedDoc, "prompt", prompt);
+    if (promptType) {
+      promptNode.setAttribute("type", promptType);
+    }
+    documentInfoNode.appendChild(promptNode);
   }
   dbpmInfoNode.appendChild(documentInfoNode);
   wrapperNode.appendChild(dbpmInfoNode);
@@ -221,7 +267,7 @@ export function injectDbpmData(modelData, meta = {}) {
   return $(wrappedDoc.documentElement).serializePrettyXML();
 }
 
-export function updateDbpmTextSelections(modelData, selectedText, meta = {}) {
+export function updateDbpmTextSelections(modelData, selections, meta = {}) {
   if (typeof modelData !== "string" || !modelData.trim()) {
     throw new Error("Model data must be a non-empty XML string.");
   }
@@ -236,18 +282,13 @@ export function updateDbpmTextSelections(modelData, selectedText, meta = {}) {
   const descriptionNode = normalizeToWrappedDescription(parsedData);
   const { documentInfo } = ensureDbpmPath(descriptionNode);
   upsertDbpmDocumentInfo(documentInfo, meta);
-  upsertDbpmTextNode(
-    descriptionNode.ownerDocument,
-    documentInfo,
-    "text_selections",
-    selectedText,
-  );
+  upsertDbpmSelections(descriptionNode.ownerDocument, documentInfo, selections);
   if (Object.prototype.hasOwnProperty.call(meta, "prompt")) {
-    setOptionalDbpmTextNode(
+    upsertDbpmPromptNode(
       descriptionNode.ownerDocument,
       documentInfo,
-      "prompt",
       meta.prompt,
+      meta.promptType,
     );
   }
 
@@ -256,7 +297,7 @@ export function updateDbpmTextSelections(modelData, selectedText, meta = {}) {
 
 export function updateDbpmTextSelectionsInXmlNode(
   rootNode,
-  selectedText,
+  selections,
   meta = {},
 ) {
   if (!rootNode) {
@@ -271,18 +312,36 @@ export function updateDbpmTextSelectionsInXmlNode(
 
   const { documentInfo } = ensureDbpmPath(descriptionNode);
   upsertDbpmDocumentInfo(documentInfo, meta);
-  upsertDbpmTextNode(
-    descriptionNode.ownerDocument,
-    documentInfo,
-    "text_selections",
-    selectedText,
-  );
+  upsertDbpmSelections(descriptionNode.ownerDocument, documentInfo, selections);
   if (Object.prototype.hasOwnProperty.call(meta, "prompt")) {
-    setOptionalDbpmTextNode(
+    upsertDbpmPromptNode(
       descriptionNode.ownerDocument,
       documentInfo,
-      "prompt",
       meta.prompt,
+      meta.promptType,
     );
   }
+}
+
+export function updateDbpmPromptOnly(modelData, prompt, promptType = null) {
+  if (typeof modelData !== "string" || !modelData.trim()) {
+    throw new Error("Model data must be a non-empty XML string.");
+  }
+
+  const parser = new DOMParser();
+  const parsedData = parser.parseFromString(modelData, "application/xml");
+  const parseError = parsedData.getElementsByTagName("parsererror")[0];
+  if (parseError) {
+    throw new Error("Invalid XML: " + parseError.textContent);
+  }
+
+  const descriptionNode = normalizeToWrappedDescription(parsedData);
+  const { documentInfo } = ensureDbpmPath(descriptionNode);
+  upsertDbpmPromptNode(
+    descriptionNode.ownerDocument,
+    documentInfo,
+    prompt,
+    promptType,
+  );
+  return $(descriptionNode).serializePrettyXML();
 }
