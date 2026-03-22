@@ -37,7 +37,7 @@ function resolveDocumentIdByVersionId(versionId) {
 
 export default {
   async loadWorkspace(projectId) {
-    let viewedDocument = undefined;
+    let viewedDocument = null;
     const {
       documentsMeta,
       modelsMeta,
@@ -77,8 +77,7 @@ export default {
     const {
       id: currViewedDocId,
       versionId: currViewedDocVersionId,
-      isLatest: currViewedDocIsLatest,
-    } = workspaceStore.getViewedDocument();
+    } = workspaceStore.getViewedDocument() || {};
     if (currViewedDocId === id && currViewedDocVersionId === versionId) {
       return;
     }
@@ -108,12 +107,7 @@ export default {
   },
   clearModelDisplay() {
     modelService.discardPendingNewModelDraft({ clearEditorData: false });
-    workspaceStore.setEditingModel({
-      id: null,
-      versionId: null,
-      isLatest: null,
-      isDraft: false,
-    });
+    workspaceStore.setEditingModel(null);
     modelEditorStore.clearStatusMessage();
     modelEditorStore.setData(null, {
       updateType: null,
@@ -121,13 +115,9 @@ export default {
     documentViewerStore.setEditingModelLink(null);
   },
   clearDocumentDisplay() {
-    workspaceStore.setViewedDocument({
-      id: null,
-      versionId: null,
-      isLatest: null,
-    });
+    workspaceStore.setViewedDocument(null);
     documentViewerStore.clear();
-    workspaceStore.setModelPopoverParams(null);
+    workspaceStore.setModelPopover(null);
     this.clearModelDisplay();
   },
   clearDocumentSelection() {
@@ -141,7 +131,7 @@ export default {
 
     const resolvedVersionId = versionId || modelsStore.getLatestVersionId(id);
     const { id: currEditingModelId, versionId: currEditingModelVersionId } =
-      workspaceStore.getEditingModel();
+      workspaceStore.getEditingModel() || {};
 
     const isSameModelVersion =
       currEditingModelId === id &&
@@ -168,7 +158,7 @@ export default {
     }
 
     const { id: currEditingModelId, versionId: currEditingModelVersionId } =
-      workspaceStore.getEditingModel();
+      workspaceStore.getEditingModel() || {};
 
     if (currEditingModelId === id && currEditingModelVersionId === versionId) {
       return;
@@ -178,10 +168,9 @@ export default {
       id,
       versionId,
       isLatest,
-      isDraft: false,
     });
     modelService.loadVersion(versionId);
-    workspaceStore.setModelPopoverParams(null);
+    workspaceStore.setModelPopover(null);
 
     let resolvedHistoricalLink = null;
     if (shouldUpdateViewedDocument) {

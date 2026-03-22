@@ -12,5 +12,4 @@ createUI({
     renderProjectLink();
     renderDocumentsList();
   },
-  bindListeners: () => {},
 });

@@ -38,11 +38,12 @@ function resolveVersionTagVariant(state) {
     return null;
   }
 
-  const { id, versionId, isLatest } = state;
+  const { id, versionId, sourceVersionId, isLatest } = state;
   const hasId = !isMissingValue(id);
   const hasVersionId = !isMissingValue(versionId);
+  const hasSourceVersionId = !isMissingValue(sourceVersionId);
 
-  if (!hasId && !hasVersionId) {
+  if (!hasVersionId && (!hasId || hasSourceVersionId)) {
     return "draft";
   }
 

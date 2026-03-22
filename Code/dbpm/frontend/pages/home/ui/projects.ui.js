@@ -9,6 +9,7 @@ import initInlineEditor from "../../../shared/widgets/inline-editor.js";
 import { projectsAPI } from "../../../api/index.js";
 
 const $projectsTable = $("#projectsTable");
+let projectNameEditor;
 
 // #regin DOM Manipulation and Rendering
 async function renderProjectsTable() {
@@ -99,68 +100,68 @@ async function deleteProject(projectId) {
     console.error("Failed to delete project:", err);
   }
 }
+
+function renameProject(projectId) {
+  const $projectRow = getProjectRow(projectId);
+  const $projectNameView = $projectRow.find(".inline-editor__view");
+  setTimeout(() => projectNameEditor.startEdit($projectNameView), 0);
+}
+
+function getActionsMenu(projectId) {
+  const menu = {};
+  menu[""] = [
+    {
+      label: "View statistics",
+      function_call: viewProjectStats,
+      text_icon: undefined,
+      type: undefined,
+      params: [projectId],
+    },
+    {
+      label: "View log",
+      function_call: viewProjectLog,
+      text_icon: undefined,
+      type: undefined,
+      params: [projectId],
+    },
+    {
+      label: "Download log",
+      function_call: downloadProjectLog,
+      text_icon: undefined,
+      type: undefined,
+      params: [projectId],
+    },
+    {
+      label: "Rename project",
+      function_call: renameProject,
+      text_icon: undefined,
+      type: undefined,
+      params: [projectId],
+    },
+    {
+      label: "Delete project",
+      function_call: deleteProject,
+      text_icon: undefined,
+      type: undefined,
+      params: [projectId],
+    },
+  ];
+  return menu;
+}
 // #endregion
 
 createUI({
   setup: () => {
     renderProjectsTable();
-    const projectNameEditor = initInlineEditor({
+    projectNameEditor = initInlineEditor({
       $scope: $projectsTable,
       onSave: (name, $view) => {
         const projectId = $view.closest("tr").data("projectId");
         projectsAPI.update(projectId, { name });
       },
     });
-    function renameProject(projectId) {
-      const $projectRow = getProjectRow(projectId);
-      const $projectNameView = $projectRow.find(".inline-editor__view");
-      setTimeout(() => projectNameEditor.startEdit($projectNameView), 0);
-    }
-    function getActionsMenu(projectId) {
-      const menu = {};
-      menu[""] = [
-        {
-          label: "View Statistics",
-          function_call: viewProjectStats,
-          text_icon: undefined,
-          type: undefined,
-          params: [projectId],
-        },
-        {
-          label: "View Log",
-          function_call: viewProjectLog,
-          text_icon: undefined,
-          type: undefined,
-          params: [projectId],
-        },
-        {
-          label: "Download Log",
-          function_call: downloadProjectLog,
-          text_icon: undefined,
-          type: undefined,
-          params: [projectId],
-        },
-        {
-          label: "Rename Project",
-          function_call: renameProject,
-          text_icon: undefined,
-          type: undefined,
-          params: [projectId],
-        },
-
-        {
-          label: "Delete Project",
-          function_call: deleteProject,
-          text_icon: undefined,
-          type: undefined,
-          params: [projectId],
-        },
-      ];
-      return menu;
-    }
-    return { getActionsMenu };
   },
-  bindListeners: ({ getActionsMenu }) => {
+  bindListeners: () => {
     $projectsTable.on("mousedown", "td:first-child", (e) => {
       const projectId = $(e.currentTarget).closest("tr").data("projectId");
       window.location.href = getProjectWorkspaceURL(projectId);
@@ -169,7 +170,7 @@ createUI({
     $projectsTable.on("click", "td:last-child", (e) => {
       const projectId = $(e.currentTarget).closest("tr").data("projectId");
       const menu = getActionsMenu(projectId);
-      createMenu(e, menu);
+      createMenu(e, menu, { noIcons: true });
     });
   },
 });

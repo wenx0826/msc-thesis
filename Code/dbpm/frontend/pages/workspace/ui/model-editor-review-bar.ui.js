@@ -5,8 +5,8 @@ import { modelService } from "../services/index.js";
 
 const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
 
-const $initialGenerationDraftActionBar = $("#initialGenerationDraftActionBar");
-const $regeneratedModelActionBar = $("#regeneratedModelActionBar");
+const $newModelDraftReviewBar = $("#newModelDraftReviewBar");
+const $regenerationDraftReviewBar = $("#regenerationDraftReviewBar");
 
 const $discardDraftModelButton = $("#discardDraftModelButton");
 const $saveDraftModelButton = $("#saveDraftModelButton");
@@ -41,31 +41,36 @@ function isRegenerationUpdateType(updateType) {
   ].includes(updateType);
 }
 
-function isInitialGenerationDraftVisible() {
-  return $initialGenerationDraftActionBar.is(":visible");
+function isNewModelDraftVisible() {
+  return $newModelDraftReviewBar.is(":visible");
 }
 
 function isRegenerationDraftVisible() {
-  return $regeneratedModelActionBar.is(":visible");
+  return $regenerationDraftReviewBar.is(":visible");
 }
 
 function getActiveDecisionActionBarElement() {
-  if (isInitialGenerationDraftVisible()) {
-    return $initialGenerationDraftActionBar[0] || null;
+  if (isNewModelDraftVisible()) {
+    return $newModelDraftReviewBar[0] || null;
   }
   if (isRegenerationDraftVisible()) {
-    return $regeneratedModelActionBar[0] || null;
+    return $regenerationDraftReviewBar[0] || null;
   }
   return null;
 }
 
 function getEditingModelContext() {
-  const { id, versionId, isDraft } = workspaceStore.getEditingModel() || {};
+  const { id, versionId, sourceVersionId } =
+    workspaceStore.getEditingModel() || {};
   return {
     modelId: id || null,
     modelVersionId: versionId || null,
-    isDraft: isDraft === true,
+    sourceModelVersionId: sourceVersionId || null,
   };
+}
+
+function isNewModelDraftEditingModel(editingModel) {
+  return !!editingModel && !editingModel.id && !editingModel.versionId;
 }
 
 function isRegenerationPreviewContextCurrent(
@@ -79,20 +84,20 @@ function isRegenerationPreviewContextCurrent(
   if (currentContext.modelId !== preview.modelId) {
     return false;
   }
-  if (currentContext.modelVersionId === preview.modelVersionId) {
-    return true;
-  }
-  return currentContext.isDraft && !currentContext.modelVersionId;
+  return (
+    currentContext.modelVersionId === preview.modelVersionId ||
+    currentContext.sourceModelVersionId === preview.modelVersionId
+  );
 }
 
 function setRegenerationDecisionClickLock(isLocked) {
   const shouldLock = Boolean(isLocked);
   isRegenerationDecisionClickLocked = shouldLock;
   if (!shouldLock) {
-    $initialGenerationDraftActionBar.removeClass(
+    $newModelDraftReviewBar.removeClass(
       REGENERATION_ACTION_BAR_HINT_CLASS,
     );
-    $regeneratedModelActionBar.removeClass(REGENERATION_ACTION_BAR_HINT_CLASS);
+    $regenerationDraftReviewBar.removeClass(REGENERATION_ACTION_BAR_HINT_CLASS);
     if (regenerationActionBarHintTimeoutId) {
       clearTimeout(regenerationActionBarHintTimeoutId);
       regenerationActionBarHintTimeoutId = null;
@@ -206,7 +211,6 @@ function restoreEditingModelAfterRegeneration(
     id: preview.modelId,
     versionId: preview.modelVersionId,
     isLatest: restoredIsLatest,
-    isDraft: false,
   });
 }
 
@@ -264,7 +268,7 @@ function syncRegenerationDraftButtonsState() {
 function syncDecisionActionState() {
   syncRegenerationDraftButtonsState();
   setRegenerationDecisionClickLock(
-    isInitialGenerationDraftVisible() || isRegenerationDraftVisible(),
+    isNewModelDraftVisible() || isRegenerationDraftVisible(),
   );
 }
 
@@ -304,8 +308,8 @@ createUI({
         modelService.clearPendingGenerationAttemptMeta();
         modelService.recordGenerationAttempt({
           ...meta,
-          outcome: "declined",
-          outcomeModelVersionId: null,
+          result: "declined",
+          resultModelVersionId: null,
         });
       }
 
@@ -339,14 +343,14 @@ createUI({
           expectedModelId: preview.modelId,
           expectedModelVersionId: preview.modelVersionId,
         });
-        // Record accepted_replace generation attempt
+        // Record accepted-replace regeneration attempt
         const meta = modelService.getPendingGenerationAttemptMeta();
         if (meta) {
           modelService.clearPendingGenerationAttemptMeta();
           modelService.recordGenerationAttempt({
             ...meta,
-            outcome: "accepted_replace",
-            outcomeModelVersionId: preview.modelVersionId,
+            result: "accepted_replace",
+            resultModelVersionId: preview.modelVersionId,
           });
         }
         modelEditorStore.setLatestUpdateType(null);
@@ -389,14 +393,14 @@ createUI({
           throw new Error("Failed to resolve created model version.");
         }
 
-        // Record accepted_new_version generation attempt
+        // Record accepted-new-version regeneration attempt
         const meta = modelService.getPendingGenerationAttemptMeta();
         if (meta) {
           modelService.clearPendingGenerationAttemptMeta();
           modelService.recordGenerationAttempt({
             ...meta,
-            outcome: "accepted_new_version",
-            outcomeModelVersionId: createdVersionId,
+            result: "accepted_new_version",
+            resultModelVersionId: createdVersionId,
           });
         }
 
@@ -423,8 +427,8 @@ createUI({
       try {
         await modelService.commitPendingNewModelDraft();
       } catch (error) {
-        console.error("Failed to create model from generated draft:", error);
-        alert("Failed to create model from generated draft.");
+        console.error("Failed to create model from new model draft:", error);
+        alert("Failed to create model from draft.");
       } finally {
         syncDecisionActionState();
       }
@@ -466,10 +470,7 @@ createUI({
         case "latestUpdateType":
           if (
             !isRegenerationUpdateType(newValue) &&
-            !(
-              workspaceStore.hasEditingModel() &&
-              workspaceStore.isEditingModelDraft()
-            )
+            !workspaceStore.isEditingModelRegenerationDraft()
           ) {
             regenerationPreviewState = null;
           }
@@ -488,7 +489,7 @@ createUI({
       const hasEditingModelChanged =
         oldValue?.id !== newValue?.id ||
         oldValue?.versionId !== newValue?.versionId ||
-        oldValue?.isDraft !== newValue?.isDraft;
+        oldValue?.sourceVersionId !== newValue?.sourceVersionId;
       const oldHasVersion =
         oldValue?.versionId !== null && oldValue?.versionId !== undefined;
       const newHasVersion =
@@ -496,11 +497,13 @@ createUI({
       const isRegenerationDraftTransition =
         oldValue?.id &&
         oldValue?.id === newValue?.id &&
-        ((oldHasVersion && !newHasVersion && newValue?.isDraft === true) ||
+        ((oldHasVersion &&
+          !newHasVersion &&
+          newValue?.sourceVersionId === oldValue?.versionId) ||
           (!oldHasVersion &&
-            oldValue?.isDraft === true &&
+            oldValue?.sourceVersionId &&
             newHasVersion &&
-            newValue?.isDraft !== true));
+            oldValue?.sourceVersionId === newValue?.versionId));
       const shouldResetRegenerationState =
         hasEditingModelChanged && !isRegenerationDraftTransition;
 
@@ -512,8 +515,11 @@ createUI({
         }
       }
 
-      const hadInitialDraftState = oldValue?.isDraft === true && !oldValue?.id;
-      if (hadInitialDraftState && newValue?.isDraft !== true) {
+      const hadNewModelDraftState = isNewModelDraftEditingModel(oldValue);
+      if (
+        hadNewModelDraftState &&
+        !isNewModelDraftEditingModel(newValue)
+      ) {
         modelService.discardPendingNewModelDraft({ clearEditorData: false });
       }
 

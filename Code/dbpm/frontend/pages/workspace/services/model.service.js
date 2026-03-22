@@ -23,7 +23,6 @@ import {
 
 // Import constants
 const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
-const MODEL_GENERATION_TARGET = Constants.MODEL_GENERATION_TARGET;
 const EMPTY_MODEL = Constants.EMPTY_MODEL;
 const PREVIEW_THEME_PATH = "modules/model/themes/preset_customized/theme.js";
 const PREVIEW_IFRAME_ID = "modelPreviewRendererIframe";
@@ -77,6 +76,23 @@ function composeSelectionGenerationInput(selectedText, additionalPrompt = "") {
   ].join("\n");
 }
 
+function resolveGenerationAttemptType(isRegeneration = false) {
+  return isRegeneration ? "regeneration" : "new";
+}
+
+function resolveGenerationInputMode({
+  hasSelectionInput = false,
+  hasPromptInput = false,
+} = {}) {
+  if (hasSelectionInput && hasPromptInput) {
+    return "selection_with_prompt";
+  }
+  if (hasPromptInput) {
+    return "prompt_only";
+  }
+  return "selection_only";
+}
+
 let generationRequestSequence = 0;
 let lastNoSelectionLoadAlert = {
   versionId: null,
@@ -89,6 +105,31 @@ function getEditingModelContext() {
     modelId: id || null,
     modelVersionId: versionId || null,
   };
+}
+
+function resolveRegenerationContextFromEditingModel(editingModel = null) {
+  const normalizedEditingModel =
+    editingModel && typeof editingModel === "object" ? editingModel : {};
+  const modelId = normalizedEditingModel.id || null;
+  const modelVersionId =
+    normalizedEditingModel.versionId ||
+    normalizedEditingModel.sourceVersionId ||
+    null;
+
+  if (!modelId || !modelVersionId || normalizedEditingModel.isLatest !== true) {
+    return null;
+  }
+
+  return {
+    modelId,
+    modelVersionId,
+  };
+}
+
+function getActiveRegenerationContext() {
+  return resolveRegenerationContextFromEditingModel(
+    workspaceStore.getEditingModel() || null,
+  );
 }
 
 function resolveEditingModelIsLatest(modelId = null, modelVersionId = null) {
@@ -112,8 +153,8 @@ function setRegenerationDraftEditingModel({
   workspaceStore.setEditingModel({
     id: modelId,
     versionId: null,
+    sourceVersionId: modelVersionId,
     isLatest: resolveEditingModelIsLatest(modelId, modelVersionId),
-    isDraft: true,
   });
 }
 
@@ -136,8 +177,8 @@ function isSameEditingModelContext(left, right) {
   );
 }
 
-function isEditingModelContextActive(context) {
-  return isSameEditingModelContext(context, getEditingModelContext());
+function isRegenerationContextActive(context) {
+  return isSameEditingModelContext(context, getActiveRegenerationContext());
 }
 
 function getModelDisplayLabel(modelId) {
@@ -355,7 +396,7 @@ function resolveModelCreationContext(creationContext = null) {
       : "");
   const contextSelections = Array.isArray(normalizedContext.selections)
     ? normalizedContext.selections
-    : documentViewerStore.getSerializedTemporarySelections();
+    : documentViewerStore.getSerializedUnlinkedSelections();
   const prompt = normalizePromptText(normalizedContext.prompt);
   return {
     documentId: documentId || "",
@@ -693,7 +734,7 @@ function resolveModelVersionIdFromErrorContext({
   }
 
   const links = documentViewerStore.getLinks() || [];
-  if (linkId !== undefined && linkId !== null) {
+  if (linkId) {
     const link = links.find(
       (item) => String(item?.id || "") === String(linkId),
     );
@@ -702,7 +743,7 @@ function resolveModelVersionIdFromErrorContext({
     }
   }
 
-  if (modelId !== undefined && modelId !== null) {
+  if (modelId) {
     const link = links.find(
       (item) => String(item?.modelId || "") === String(modelId),
     );
@@ -1237,8 +1278,8 @@ export default {
     }
   },
   applyDeferredRegenerationPreviewForActiveEditingModel() {
-    const activeContext = getEditingModelContext();
-    if (!activeContext.modelId || !activeContext.modelVersionId) {
+    const activeContext = getActiveRegenerationContext();
+    if (!activeContext) {
       return false;
     }
 
@@ -1296,9 +1337,6 @@ export default {
     });
     workspaceStore.setEditingModel({
       id: null,
-      versionId: null,
-      isLatest: null,
-      isDraft: true,
     });
     modelEditorStore.setData(preparedModelData, {
       updateType: null,
@@ -1319,15 +1357,15 @@ export default {
         creationContext: pendingDraft.creationContext,
         preparedModelData: pendingDraft.preparedModelData,
       });
-      // Record the accepted initial generation attempt
+      // Record the accepted new-model generation attempt
       const meta = pendingGenerationAttemptMeta;
       pendingGenerationAttemptMeta = null;
       if (meta) {
         modelsAPI
           .recordGenerationAttempt({
             ...meta,
-            outcome: "accepted",
-            outcomeModelVersionId: result?.modelMeta?.latestVersionId ?? null,
+            result: "accepted_new_model",
+            resultModelVersionId: result?.modelMeta?.latestVersionId ?? null,
           })
           .catch((e) =>
             console.warn("Failed to record generation attempt:", e),
@@ -1348,8 +1386,8 @@ export default {
       return false;
     }
     const hadPendingDraft = !!pendingNewModelDraft;
-    const isDraftState = workspaceStore.isEditingModelDraft();
-    // Record declined initial generation attempt
+    const isNewModelDraftState = workspaceStore.isEditingModelNewModelDraft();
+    // Record declined new model draft attempt
     if (hadPendingDraft) {
       const meta = pendingGenerationAttemptMeta;
       pendingGenerationAttemptMeta = null;
@@ -1357,8 +1395,8 @@ export default {
         modelsAPI
           .recordGenerationAttempt({
             ...meta,
-            outcome: "declined",
-            outcomeModelVersionId: null,
+            result: "declined",
+            resultModelVersionId: null,
           })
           .catch((e) =>
             console.warn("Failed to record generation attempt:", e),
@@ -1366,29 +1404,24 @@ export default {
       }
     }
     setPendingNewModelDraft(null);
-    if (isDraftState) {
-      workspaceStore.setEditingModel({
-        id: null,
-        versionId: null,
-        isLatest: null,
-        isDraft: false,
-      });
+    if (isNewModelDraftState) {
+      workspaceStore.setEditingModel(null);
     }
     if (clearEditorData) {
       modelEditorStore.setData(null, {
         updateType: null,
       });
-    } else if (isDraftState) {
+    } else if (isNewModelDraftState) {
       modelEditorStore.setLatestUpdateType(null);
     }
     modelEditorStore.clearStatusMessage();
-    return hadPendingDraft || isDraftState;
+    return hadPendingDraft || isNewModelDraftState;
   },
 
-  async generateModelByPrompt(userInput) {
-    const regenerationContext = getEditingModelContext();
+  async refineModelByPrompt(userInput) {
+    const regenerationContext = getActiveRegenerationContext();
     const { modelId: editingModelId, modelVersionId: editingModelVersionId } =
-      regenerationContext;
+      regenerationContext || {};
     if (!editingModelId || !editingModelVersionId) {
       console.warn(
         "No active editing model found for prompt regeneration; aborting.",
@@ -1421,11 +1454,15 @@ export default {
     let hasAppliedToActiveModel = false;
     let hasDeferredPreview = false;
     try {
+      const hasPromptInput = !!userInput;
       pendingGenerationAttemptMeta = {
         projectId: workspaceStore.getProjectId(),
-        target: "regeneration",
-        mode: "prompt",
-        targetModelVersionId: editingModelVersionId,
+        generationType: "regeneration",
+        generationInputMode: resolveGenerationInputMode({
+          hasSelectionInput: false,
+          hasPromptInput,
+        }),
+        baseModelVersionId: editingModelVersionId,
         selectedWordsCount: null,
         selectedTextSimilarity: null,
         prompt: userInput || null,
@@ -1447,7 +1484,7 @@ export default {
         originalDataXml: originalModelData,
         regeneratedDataXml: regeneratedModelData,
       };
-      if (isEditingModelContextActive(regenerationContext)) {
+      if (isRegenerationContextActive(regenerationContext)) {
         modelEditorStore.setData(preview.regeneratedDataXml, {
           updateType: preview.updateType,
         });
@@ -1476,7 +1513,7 @@ export default {
       hasError = true;
       pendingGenerationAttemptMeta = null;
       console.error("Failed to regenerate model by prompt:", error);
-      if (isEditingModelContextActive(regenerationContext)) {
+      if (isRegenerationContextActive(regenerationContext)) {
         showModelGenerationErrorMessage();
       } else {
         showDeferredRegenerationErrorMessage(editingModelId);
@@ -1495,41 +1532,16 @@ export default {
     }
   },
 
-  async generateModelBySelections(target, options = {}) {
-    const normalizedTarget =
-      target === MODEL_GENERATION_TARGET.EDITING_MODEL
-        ? MODEL_GENERATION_TARGET.EDITING_MODEL
-        : MODEL_GENERATION_TARGET.NEW_MODEL;
-    const additionalPrompt = normalizePromptText(options.additionalPrompt);
-    const regenerationContext =
-      normalizedTarget === MODEL_GENERATION_TARGET.EDITING_MODEL
-        ? getEditingModelContext()
-        : null;
-    const hasEditingContextAtStart =
-      !!regenerationContext?.modelId && !!regenerationContext?.modelVersionId;
-    const originalModelData = hasEditingContextAtStart
+  async generateModelBySelections(additionalPrompt = "") {
+    additionalPrompt = normalizePromptText(additionalPrompt);
+    const regenerationContext = getActiveRegenerationContext();
+    const regenerateEditingModel = !!regenerationContext;
+    const originalModelData = regenerateEditingModel
       ? modelEditorStore.getSerializedData()
       : null;
 
-    if (hasEditingContextAtStart && !originalModelData) {
-      console.warn("No current model data found for regeneration preview.");
-      return null;
-    }
-    if (
-      normalizedTarget === MODEL_GENERATION_TARGET.NEW_MODEL &&
-      this.hasPendingNewModelDraft()
-    ) {
-      console.warn(
-        "A pending new-model draft already exists. Resolve it before generating another.",
-      );
-      return this.getPendingNewModelDraft();
-    }
-
     const requestId = beginPendingGenerationRequest({
-      type:
-        normalizedTarget === MODEL_GENERATION_TARGET.EDITING_MODEL
-          ? "regeneration_selections"
-          : "new_model",
+      type: regenerateEditingModel ? "regeneration_selections" : "new_model",
       modelId: regenerationContext?.modelId || null,
       modelVersionId: regenerationContext?.modelVersionId || null,
     });
@@ -1538,23 +1550,24 @@ export default {
     let hasDeferredPreview = false;
     try {
       const selectedText = documentViewerStore.getSelectedText();
+      const hasSelectionInput = !!selectedText;
+      const hasPromptInput = !!additionalPrompt;
       const selectedWordsCount = countWordsSimple(selectedText) || null;
-      const editingLinkForSelections =
-        normalizedTarget === MODEL_GENERATION_TARGET.EDITING_MODEL
-          ? documentViewerStore.getSerializedNewEditingModelLink()
-          : null;
+      const editingLinkForSelections = regenerateEditingModel
+        ? documentViewerStore.getSerializedNewEditingModelLink()
+        : null;
       const generationInput = composeSelectionGenerationInput(
         selectedText,
         additionalPrompt,
       );
       pendingGenerationAttemptMeta = {
         projectId: workspaceStore.getProjectId(),
-        target:
-          normalizedTarget === MODEL_GENERATION_TARGET.NEW_MODEL
-            ? "initial"
-            : "regeneration",
-        mode: additionalPrompt ? "selection_and_prompt" : "selection",
-        targetModelVersionId: regenerationContext?.modelVersionId ?? null,
+        generationType: resolveGenerationAttemptType(regenerateEditingModel),
+        generationInputMode: resolveGenerationInputMode({
+          hasSelectionInput,
+          hasPromptInput,
+        }),
+        baseModelVersionId: regenerationContext?.modelVersionId ?? null,
         selectedWordsCount,
         selectedTextSimilarity: null, // TODO: compute Jaccard vs stored link selections
         prompt: additionalPrompt || null,
@@ -1567,18 +1580,7 @@ export default {
         throw new Error("Model generation returned an empty result.");
       }
 
-      if (normalizedTarget === MODEL_GENERATION_TARGET.NEW_MODEL) {
-        return this.stagePendingNewModelDraft(generatedModel, {
-          creationContext: {
-            prompt: additionalPrompt,
-          },
-        });
-      }
-
-      if (!hasEditingContextAtStart) {
-        console.warn(
-          "No active editing model/version found for regeneration; staging a new model draft instead.",
-        );
+      if (!regenerateEditingModel) {
         return this.stagePendingNewModelDraft(generatedModel, {
           creationContext: {
             prompt: additionalPrompt,
@@ -1605,7 +1607,7 @@ export default {
         originalDataXml: originalModelData,
         regeneratedDataXml: regeneratedModelData,
       };
-      if (isEditingModelContextActive(regenerationContext)) {
+      if (isRegenerationContextActive(regenerationContext)) {
         modelEditorStore.setData(preview.regeneratedDataXml, {
           updateType: preview.updateType,
         });
@@ -1630,9 +1632,8 @@ export default {
       pendingGenerationAttemptMeta = null;
       console.error("Failed to generate model by selections:", error);
       if (
-        normalizedTarget === MODEL_GENERATION_TARGET.NEW_MODEL ||
-        !hasEditingContextAtStart ||
-        isEditingModelContextActive(regenerationContext)
+        !regenerateEditingModel ||
+        isRegenerationContextActive(regenerationContext)
       ) {
         showModelGenerationErrorMessage();
       } else {
@@ -1646,11 +1647,7 @@ export default {
       if (hasAnyPending || hasDeferredPreview || hasError) {
         return;
       }
-      if (
-        normalizedTarget === MODEL_GENERATION_TARGET.NEW_MODEL ||
-        !hasEditingContextAtStart ||
-        hasAppliedToActiveModel
-      ) {
+      if (!regenerateEditingModel || hasAppliedToActiveModel) {
         modelEditorStore.clearStatusMessage();
       }
     }
@@ -1679,7 +1676,6 @@ export default {
       id: createdModelMeta.id,
       versionId: createdModelMeta.latestVersionId,
       isLatest: true,
-      isDraft: false,
     });
     modelEditorStore.setData(preparedModelData, {
       updateType: null,
@@ -1690,7 +1686,7 @@ export default {
       status: "ready",
     });
     documentViewerStore.setSelectedSelection(null);
-    documentViewerStore.setTemporarySelections([]);
+    documentViewerStore.setUnlinkedSelections([]);
     documentViewerStore.setHasSelectionChanged(false);
     documentViewerStore.addLink(createdLink);
     projectGraphStore.addModelNodeAndEdge(createdModelMeta);
@@ -1714,7 +1710,7 @@ export default {
     modelsStore.delete(modelId);
     documentViewerStore.removeLinksByModelId(modelId);
     projectGraphStore.removeModelNodeAndEdge(modelId);
-    workspaceStore.setModelPopoverParams(null);
+    workspaceStore.setModelPopover(null);
 
     if (isEditingModel) {
       workspaceService.clearModelDisplay();
@@ -1850,7 +1846,7 @@ export default {
       ].includes(type)
     ) {
       documentViewerStore.setSelectedSelection(null);
-      documentViewerStore.setTemporarySelections([]);
+      documentViewerStore.setUnlinkedSelections([]);
       documentViewerStore.updateLink(link);
     }
   },
@@ -2122,7 +2118,6 @@ export default {
       id: modelId,
       versionId: createdVersionId,
       isLatest: true,
-      isDraft: false,
     });
     await this.loadVersion(createdVersionId, {
       needSvg: true,

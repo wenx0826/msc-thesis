@@ -4,47 +4,82 @@ import { projectsAPI } from "../../../api/index.js";
 
 const $dialog = $("#projectCreationDialog");
 const $form = $dialog.find("form");
-const $name = $("#name");
-const $submitBtn = $form.find("button[type='submit']");
-const $err = $("#err");
+const $nameInput = $("#name");
+const $error = $("#error");
+const $cancelButton = $("#cancel");
+const $submitButton = $("#create");
+const dialog = $dialog[0];
+const form = $form[0];
 
 async function createProject(name) {
-  const project = await projectsAPI.create({ name });
-  return project;
+  return projectsAPI.create({ name });
+}
+
+function setError(message = "") {
+  $error.text(message);
+}
+
+function getProjectName() {
+  return String($nameInput.val() || "").trim();
+}
+
+function setSubmitting(isSubmitting) {
+  $submitButton.prop("disabled", isSubmitting);
+}
+
+function resetDialog() {
+  form.reset();
+  setError("");
+  setSubmitting(false);
+}
+
+function openDialog() {
+  resetDialog();
+  if (!dialog.open) {
+    dialog.showModal();
+  }
+  $nameInput.trigger("focus");
+}
+
+function closeDialog() {
+  if (dialog.open) {
+    dialog.close();
+  }
+}
+
+function validateProjectName() {
+  const name = getProjectName();
+  if (name) {
+    return name;
+  }
+  setError("Name is required.");
+  $nameInput.trigger("focus");
+  return null;
 }
 
 createUI({
-  setup: () => {},
   bindListeners: () => {
-    $("#createProjectButton").on("click", () => {
-      $err.text("");
-      $name.val("");
-      $dialog[0].showModal();
-      $name.trigger("focus");
+    $("#createProjectButton").on("click", openDialog);
+    $cancelButton.on("click", closeDialog);
+    $nameInput.on("input", () => {
+      setError("");
     });
-
-    $("#cancel").on("click", () => {
-      $dialog[0].close();
-    });
-
-    $form.on("submit", async (e) => {
-      e.preventDefault();
-      const name = $name.val().trim();
-      $err.text("");
-
+    $form.on("submit", async (event) => {
+      event.preventDefault();
+      const name = validateProjectName();
       if (!name) {
-        $err.text("Name is required.");
         return;
       }
 
-      $submitBtn.prop("disabled", true);
+      setError("");
+      setSubmitting(true);
 
       try {
         const project = await createProject(name);
         window.location.href = getProjectWorkspaceURL(project.id);
-      } catch (err) {
-        $err.text(err.message);
-        $submitBtn.prop("disabled", false);
+      } catch (error) {
+        setError(error?.message || "Failed to create project.");
+        setSubmitting(false);
       }
     });
   },

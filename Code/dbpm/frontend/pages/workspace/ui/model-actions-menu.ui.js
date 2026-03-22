@@ -45,7 +45,7 @@ function viewXMLData(versionId) {
   window.open(getModelURL(versionId), "_blank");
 }
 export const createViewXMLDataMenuItem = (versionId) => ({
-  label: "View XML Data",
+  label: "View XML data",
   function_call: viewXMLData,
   text_icon: undefined,
   type: undefined,
@@ -66,7 +66,7 @@ export const createModelActionsMenu = (
 
   if (canRename) {
     menu[""].push({
-      label: "Rename Model",
+      label: "Rename model",
       function_call: renameModel,
       text_icon: undefined,
       type: undefined,
@@ -76,19 +76,19 @@ export const createModelActionsMenu = (
 
   menu[""].push(
     {
-      label: "View XML Data",
+      label: "View XML data",
       function_call: viewXMLData,
       text_icon: undefined,
       type: undefined,
       params: [versionId],
     },
     {
-      label: "Delete Model",
+      label: "Delete model",
       function_call: deleteModel,
       text_icon: undefined,
       type: undefined,
       params: [modelId],
     },
   );
-  createMenu(e, menu);
+  createMenu(e, menu, { noIcons: true });
 };

@@ -5,6 +5,7 @@ import { createTemplateElement } from "../../../shared/utils/dom.js";
 import initInlineEditor from "../../../shared/widgets/inline-editor.js";
 import { scopeSvgIds } from "../../../modules/model/utils/svg-scope.js";
 import { createModelActionsMenu } from "./model-actions-menu.ui.js";
+import { requestCloseModelPopover } from "./model-popover.ui.js";
 
 const $modelsPanel = $("#modelsPanel");
 const $viewSwitch = $("#modelsViewSwitch");
@@ -19,6 +20,7 @@ const $documentsSelect = $("#documentsSelect");
 const MODELS_LIST_HOVER_SOURCE = "models-list";
 const ALL_DOCUMENTS_FILTER_VALUE = "__all__";
 let selectedDocumentFilterId = ALL_DOCUMENTS_FILTER_VALUE;
+let modelNameEditor;
 
 function normalizeComparableId(value) {
   if (value === undefined || value === null) {
@@ -53,7 +55,7 @@ function syncModelPopoverWithFilteredVisibility() {
   const hasVisibleItem =
     $modelsPanel.find(`[data-model-id="${popoverModelId}"]:visible`).length > 0;
   if (!hasVisibleItem) {
-    workspaceStore.requestCloseModelPopover("models-filter");
+    requestCloseModelPopover("models-filter");
   }
 }
 
@@ -179,7 +181,7 @@ function onModelListItemMouseEnter(event) {
     return;
   }
 
-  workspaceStore.setModelPopoverParams({
+  workspaceStore.setModelPopover({
     target: {
       id: modelId,
       versionId: element.dataset.modelVersionId || null,
@@ -194,7 +196,7 @@ function onModelListItemMouseEnter(event) {
 }
 
 function onModelListItemMouseLeave() {
-  workspaceStore.requestCloseModelPopover(MODELS_LIST_HOVER_SOURCE);
+  requestCloseModelPopover(MODELS_LIST_HOVER_SOURCE);
 }
 
 function onDocumentFilterChange(event) {
@@ -456,16 +458,15 @@ const removeModelItem = (modelId) => {
 
 createUI({
   setup: () => {
-    const modelNameEditor = initInlineEditor({
+    modelNameEditor = initInlineEditor({
       $scope: $modelsPanel,
       onSave: (newValue, $view) => {
         const modelId = $view.closest("[data-model-id]").data("modelId");
         return modelService.renameModel(modelId, newValue);
       },
     });
-    return { modelNameEditor };
   },
-  bindListeners: ({ modelNameEditor }) => {
+  bindListeners: () => {
     $viewSwitch.on("click", ".switch-btn", onViewSwitch);
 
     $modelsPanel.on("mousedown", "[data-model-id]", onModelItemClick);

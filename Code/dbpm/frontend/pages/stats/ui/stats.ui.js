@@ -173,6 +173,7 @@ async function restoreModel(modelId) {
 }
 
 async function renderDocumentsList(documents) {
+  console.log("Rendering documents list:", documents);
   for (const doc of documents) {
     const versions = doc.versions || [];
     const latestVersion = versions.at(-1);
@@ -184,10 +185,10 @@ async function renderDocumentsList(documents) {
     const deletedModelsCount = allDocModels.length - activeModelsCount;
     // const versionName = latestVersion ? latestVersion.name : "Untitled Document";
     const $documentItem = createTemplateElement("documentItemTemplate");
-    $documentItem.attr("data-doc-id", doc.id);
+    $documentItem.attr("data-document-id", doc.id);
     $documentItem
       .find("[data-ref='documentName']")
-      .text(document?.name || "Untitled Document");
+      .text(doc?.name || "Untitled Document");
     $documentItem
       .find("[data-ref='documentVersion']")
       .text(`v${versions.length}`);
@@ -251,7 +252,8 @@ async function renderDocumentsList(documents) {
         .find("[data-ref='versionUpdatesStats']")
         .text(
           formatUpdatesStats(
-            latestModelVersion?.updatesStats || latestModelVersion?.updateSummary,
+            latestModelVersion?.updatesStats ||
+              latestModelVersion?.updateSummary,
           ),
         );
       $modelItem

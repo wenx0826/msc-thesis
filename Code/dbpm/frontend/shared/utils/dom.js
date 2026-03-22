@@ -13,6 +13,10 @@ export function openLinkInNewTab(url) {
   a.remove();
 }
 
-export function createMenu(event, menu) {
+export function createMenu(event, menu, options = {}) {
   new CustomMenu(event).contextmenu(menu);
+
+  if (options.noIcons) {
+    $("div.contextmenu").last().addClass("contextmenu--no-icons");
+  }
 }

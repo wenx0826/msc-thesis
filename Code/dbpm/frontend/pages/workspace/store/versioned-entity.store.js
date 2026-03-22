@@ -18,30 +18,19 @@ export class VersionedEntityStore extends EntitiesStore {
     return this.getEntity(id)?.latestVersionId;
   }
 
-  getLatestVersion(id) {
-    const entity = this.getEntity(id);
-    const versions = entity?.versions || [];
-    const latestVersionId = entity?.latestVersionId;
-    if (!latestVersionId) {
-      return versions.at(-1) || null;
-    }
-    return versions.find((item) => item.id === latestVersionId) || null;
-  }
   isLatestVersion(id, versionId) {
     const latestVersionId = this.getLatestVersionId(id);
     return versionId === latestVersionId;
   }
+  getLatestVersion(id) {
+    const entity = this.getEntity(id);
+    return entity.versions.at(-1);
+  }
   getLatestVersionName(id) {
-    return this.getLatestVersion(id)?.name;
+    return this.getLatestVersion(id).name;
   }
   addVersion(id, value) {
     const entity = this.getEntity(id);
-    if (!entity) {
-      return null;
-    }
-    if (!Array.isArray(entity.versions)) {
-      entity.versions = [];
-    }
     entity.versions.push(value);
     entity.latestVersionId = value.id;
     this.notify({

@@ -123,7 +123,7 @@ class DocumentViewerStore extends Store {
       editingModelLinkSelectionChangeType: "no_change",
       pendingEditingModelLinkSelectionIds: [],
       originalEditingModelSerializedSelections: null,
-      temporarySelections: [],
+      unlinkedSelections: [],
       selectionColor: "#d4e1f1",
       selectedSelection: null,
     });
@@ -190,7 +190,7 @@ class DocumentViewerStore extends Store {
     this.setContent(null);
     this.setLinks([]);
     this.setEditingModelLink(null);
-    this.setTemporarySelections([]);
+    this.setUnlinkedSelections([]);
     this.setHasSelectionChanged(false);
     this.setSelectedSelection(null);
   }
@@ -270,7 +270,7 @@ class DocumentViewerStore extends Store {
 
   computeSelectionChanged() {
     const hasSelectionChanged =
-      this.getTemporarySelections().length > 0 ||
+      this.hasUnlinkedSelection() ||
       this.hasPendingEditingModelLinkTextChanges();
     this.setHasSelectionChanged(hasSelectionChanged);
   }
@@ -734,21 +734,25 @@ class DocumentViewerStore extends Store {
 
   // #endregion
 
-  // #region temporary selections
-  getTemporarySelections() {
-    return this.state.temporarySelections;
+  // #region unlinked selections
+  getUnlinkedSelections() {
+    return this.state.unlinkedSelections;
   }
 
-  getSerializedTemporarySelections() {
-    this.state.temporarySelections = getSortedSelectionsByRange(
-      this.getTemporarySelections(),
+  hasUnlinkedSelection() {
+    return this.getUnlinkedSelections().length > 0;
+  }
+
+  getSerializedUnlinkedSelections() {
+    this.state.unlinkedSelections = getSortedSelectionsByRange(
+      this.getUnlinkedSelections(),
     );
-    return this.state.temporarySelections.map((selection) =>
+    return this.state.unlinkedSelections.map((selection) =>
       this.serializeSelection(selection),
     );
   }
 
-  addTemporarySelection(selection) {
+  addUnlinkedSelection(selection) {
     const normalizedSelection = {
       ...selection,
       style:
@@ -765,61 +769,61 @@ class DocumentViewerStore extends Store {
     if (normalizedReviewStatus) {
       normalizedSelection.reviewStatus = normalizedReviewStatus;
     }
-    this.state.temporarySelections.push(normalizedSelection);
+    this.state.unlinkedSelections.push(normalizedSelection);
     this.notify({
-      key: "temporarySelections",
+      key: "unlinkedSelections",
       operation: "add",
       value: normalizedSelection,
     });
     this.recomputeEditingModelLinkDraftState();
   }
 
-  removeTemporarySelection(selectionId) {
+  removeUnlinkedSelection(selectionId) {
     let value;
-    const index = this.state.temporarySelections.findIndex((sel) =>
+    const index = this.state.unlinkedSelections.findIndex((sel) =>
       this.areIdsEqual(sel.id, selectionId),
     );
     if (index !== -1) {
-      value = this.state.temporarySelections[index];
-      this.state.temporarySelections.splice(index, 1);
+      value = this.state.unlinkedSelections[index];
+      this.state.unlinkedSelections.splice(index, 1);
     }
-    this.notify({ key: "temporarySelections", operation: "remove", value });
+    this.notify({ key: "unlinkedSelections", operation: "remove", value });
     this.recomputeEditingModelLinkDraftState();
   }
 
-  updateTemporarySelectionColor(selectionId, color) {
-    const selection = this.state.temporarySelections.find((sel) =>
+  updateUnlinkedSelectionColor(selectionId, color) {
+    const selection = this.state.unlinkedSelections.find((sel) =>
       this.areIdsEqual(sel.id, selectionId),
     );
     if (selection && this.getSelectionBackgroundColor(selection) !== color) {
       this.setSelectionBackgroundColor(selection, color);
       this.notify({
-        key: "temporarySelections",
+        key: "unlinkedSelections",
         operation: "update",
         value: selection,
       });
     }
   }
 
-  updateTemporarySelectionRange(selectionId, range) {
-    const selection = this.state.temporarySelections.find((sel) =>
+  updateUnlinkedSelectionRange(selectionId, range) {
+    const selection = this.state.unlinkedSelections.find((sel) =>
       this.areIdsEqual(sel.id, selectionId),
     );
     if (selection && !this.areRangesEqual(selection.range, range)) {
       selection.range = range.cloneRange();
       this.notify({
-        key: "temporarySelections",
+        key: "unlinkedSelections",
         operation: "update",
         value: selection,
       });
     }
   }
 
-  setTemporarySelections(newValue) {
-    const oldValue = this.state.temporarySelections;
-    this.state.temporarySelections = newValue;
+  setUnlinkedSelections(newValue) {
+    const oldValue = this.state.unlinkedSelections;
+    this.state.unlinkedSelections = newValue;
     this.notify({
-      key: "temporarySelections",
+      key: "unlinkedSelections",
       oldValue,
       newValue,
     });
@@ -836,7 +840,7 @@ class DocumentViewerStore extends Store {
   }
 
   getSortedNewSelections() {
-    let selections = [...this.getTemporarySelections()];
+    let selections = [...this.getUnlinkedSelections()];
     const editingModelLink = this.getDisplayedEditingModelLink();
     if (editingModelLink) {
       selections = [...editingModelLink.selections, ...selections];

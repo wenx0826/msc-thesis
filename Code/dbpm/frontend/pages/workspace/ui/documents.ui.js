@@ -18,6 +18,7 @@ const $documentsSelectedCount = $("#documentsSelectedCount");
 const $documentsSelectAllButton = $("#documentsSelectAllButton");
 const $documentsClearSelectionButton = $("#documentsClearSelectionButton");
 const $documentsDeleteSelectedButton = $("#documentsDeleteSelectedButton");
+let documentNameEditor;
 // #endregion
 
 // #region DOM Rendering and Manipulation
@@ -34,8 +35,8 @@ function syncDocumentsCount() {
 
 function getVisibleDocumentIds() {
   return $documentsList
-    .find("li[data-doc-id]")
-    .map((_, element) => String(element.dataset.docId || ""))
+    .find("li[data-document-id]")
+    .map((_, element) => String(element.dataset.documentId || ""))
     .get()
     .filter(Boolean);
 }
@@ -78,7 +79,7 @@ function syncDocumentsBulkModeUI() {
 
 function addDocumentItem({ id: docId, name }) {
   const $documentItem = createTemplateElement("documentItemTemplate");
-  $documentItem.attr("data-doc-id", docId);
+  $documentItem.attr("data-document-id", docId);
   $documentItem.find("[data-ref='documentName']").text(name);
   const versionName = documentsStore.getLatestVersionName(docId);
   $documentItem.find("[data-ref='versionName']").text(versionName);
@@ -90,7 +91,7 @@ function addDocumentItem({ id: docId, name }) {
 }
 
 function getDocumentItem(docId) {
-  return $documentsList.find(`li[data-doc-id='${docId}']`);
+  return $documentsList.find(`li[data-document-id='${docId}']`);
 }
 
 function updateDocumentItem(docId, { name, versionName } = {}) {
@@ -115,8 +116,8 @@ function setDocumentItemSelected(docId, isSelected) {
 }
 
 function syncDocumentSelectionsInView() {
-  $documentsList.find("li[data-doc-id]").each((_, element) => {
-    const docId = element.dataset.docId;
+  $documentsList.find("li[data-document-id]").each((_, element) => {
+    const docId = element.dataset.documentId;
     if (!docId) {
       return;
     }
@@ -158,7 +159,7 @@ function onDocItemClick(event) {
   ) {
     return;
   }
-  const documentId = $(event.currentTarget).data("docId");
+  const documentId = $(event.currentTarget).data("documentId");
   if (documentsStore.getIsBulkEditMode()) {
     documentsStore.toggleSelected(documentId);
     return;
@@ -166,12 +167,12 @@ function onDocItemClick(event) {
   workspaceService.displayDocument(documentId);
 }
 
-function onDocItemActionsBtnClick(event, getActionsMenu) {
+function onDocItemActionsBtnClick(event) {
   event.stopPropagation();
   const $documentItem = $(event.currentTarget).closest("li");
-  const documentId = $documentItem.data("docId");
+  const documentId = $documentItem.data("documentId");
   const menu = getActionsMenu(documentId);
-  createMenu(event, menu);
+  createMenu(event, menu, { noIcons: true });
 }
 
 function onDocumentCheckboxMouseDown(event) {
@@ -184,8 +185,8 @@ function onDocumentCheckboxChange(event) {
     event.currentTarget.checked = false;
     return;
   }
-  const $documentItem = $(event.currentTarget).closest("li[data-doc-id]");
-  const documentId = $documentItem.data("docId");
+  const $documentItem = $(event.currentTarget).closest("li[data-document-id]");
+  const documentId = $documentItem.data("documentId");
   documentsStore.setSelected(documentId, event.currentTarget.checked);
 }
 
@@ -232,56 +233,54 @@ async function deleteDocument(docId) {
   }
 }
 
+function renameDocument(docId) {
+  const $documentNameView = getDocumentItem(docId).find(".inline-editor__view");
+  setTimeout(() => documentNameEditor.startEdit($documentNameView), 0);
+}
+
+function getActionsMenu(docId) {
+  const menu = {};
+  menu[""] = [
+    {
+      label: "Rename document",
+      function_call: renameDocument,
+      text_icon: undefined,
+      type: undefined,
+      params: [docId],
+    },
+    {
+      label: "Upload new version",
+      function_call: uploadNewVersion,
+      text_icon: undefined,
+      type: undefined,
+      params: [docId],
+    },
+    {
+      label: "Delete document",
+      function_call: deleteDocument,
+      text_icon: undefined,
+      type: undefined,
+      params: [docId],
+    },
+  ];
+  return menu;
+}
+
 createUI({
   setup: () => {
-    const documentNameEditor = initInlineEditor({
+    documentNameEditor = initInlineEditor({
       $scope: $documentsList,
       onSave: (newValue, $view) => {
-        const docId = $view.closest("li").data("docId");
+        const docId = $view.closest("li").data("documentId");
         documentService.renameDocument(docId, newValue);
       },
     });
-    function renameDocument(docId) {
-      const $documentNameView = getDocumentItem(docId).find(
-        ".inline-editor__view",
-      );
-      setTimeout(() => documentNameEditor.startEdit($documentNameView), 0);
-    }
-
-    function getActionsMenu(docId) {
-      const menu = {};
-      menu[""] = [
-        {
-          label: "Rename Document",
-          function_call: renameDocument,
-          text_icon: undefined,
-          type: undefined,
-          params: [docId],
-        },
-        {
-          label: "Upload New Version",
-          function_call: uploadNewVersion,
-          text_icon: undefined,
-          type: undefined,
-          params: [docId],
-        },
-        {
-          label: "Delete Document",
-          function_call: deleteDocument,
-          text_icon: undefined,
-          type: undefined,
-          params: [docId],
-        },
-      ];
-      return menu;
-    }
-    return { getActionsMenu };
   },
-  bindListeners: ({ getActionsMenu }) => {
+  bindListeners: () => {
     $documentsInput.on("change", onDocumentsInputChange);
-    $documentsList.on("mousedown", "li[data-doc-id]", onDocItemClick);
+    $documentsList.on("mousedown", "li[data-document-id]", onDocItemClick);
     $documentsList.on("mousedown", ".more-actions-btn", (e) =>
-      onDocItemActionsBtnClick(e, getActionsMenu),
+      onDocItemActionsBtnClick(e),
     );
     $documentsList.on(
       "mousedown",

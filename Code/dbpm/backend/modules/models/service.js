@@ -136,7 +136,11 @@ function createNextVersionRecord({
   });
 }
 
-function persistCreatedVersionContent({ modelId, createdVersionId, modelData }) {
+function persistCreatedVersionContent({
+  modelId,
+  createdVersionId,
+  modelData,
+}) {
   storageRepo.write(createdVersionId, modelData);
   modelRepo.updateById(modelId, {
     latestVersionId: createdVersionId,
@@ -162,8 +166,7 @@ function recordVersionCreation({
     });
   }
 
-  const projectId =
-    model.projectId || modelRepo.getProjectIdByModelId(modelId);
+  const projectId = model.projectId || modelRepo.getProjectIdByModelId(modelId);
   if (projectId) {
     logService.logEvent(projectId, "model_version_created", {
       modelId,
@@ -543,27 +546,27 @@ export default {
     return { totalCount, byType, byVersionLevel, byModel };
   },
   /**
-   * Record a model generation attempt (initial or regeneration, accepted or declined).
+   * Record a model generation attempt (new or regeneration, accepted or declined).
    * Should be called from the generation flow after the user accepts or declines.
    */
   recordGenerationAttempt({
     projectId,
-    targetModelVersionId = null,
-    outcomeModelVersionId = null,
-    target,
-    mode,
-    outcome,
+    baseModelVersionId = null,
+    resultModelVersionId = null,
+    generationType,
+    generationInputMode,
+    result,
     prompt = null,
     selectedWordsCount = null,
     selectedTextSimilarity = null,
   }) {
     return modelGenerationAttemptRepo.add({
       projectId,
-      targetModelVersionId,
-      outcomeModelVersionId,
-      target,
-      mode,
-      outcome,
+      baseModelVersionId,
+      resultModelVersionId,
+      generationType,
+      generationInputMode,
+      result,
       prompt,
       selectedWordsCount,
       selectedTextSimilarity,

@@ -225,7 +225,7 @@ export default async function (fastify, options) {
     },
   );
 
-  // POST /models/generation-attempts - Record a generation attempt outcome
+  // POST /models/generation-attempts - Record a generation attempt result
   fastify.post(
     "/generation-attempts",
     { schema: createGenerationAttemptSchema },

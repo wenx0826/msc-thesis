@@ -5,7 +5,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const dbPath = path.join(__dirname, "..", "data", "database.sqlite");
+const dbPath = path.join(__dirname, "..", "persistence", "database.sqlite");
 
 // Initialize database
 const db = new Database(dbPath);
@@ -151,16 +151,16 @@ function initializeSchema() {
     CREATE TABLE IF NOT EXISTS model_generation_attempts (
       id TEXT PRIMARY KEY,
       project_id TEXT NOT NULL,
-      target_model_version_id TEXT,
-      outcome_model_version_id TEXT,
-      target TEXT NOT NULL CHECK (target IN ('initial', 'regeneration')),
-      mode TEXT NOT NULL CHECK (mode IN (
-        'selection',
-        'selection_and_prompt',
-        'prompt'
+      base_model_version_id TEXT,
+      result_model_version_id TEXT,
+      generation_type TEXT NOT NULL CHECK (generation_type IN ('new', 'regeneration')),
+      generation_input_mode TEXT NOT NULL CHECK (generation_input_mode IN (
+        'selection_only',
+        'selection_with_prompt',
+        'prompt_only'
       )),
-      outcome TEXT NOT NULL CHECK (outcome IN (
-        'accepted',
+      result TEXT NOT NULL CHECK (result IN (
+        'accepted_new_model',
         'accepted_replace',
         'accepted_new_version',
         'declined'
@@ -170,15 +170,25 @@ function initializeSchema() {
       selected_text_similarity REAL,
       created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
       FOREIGN KEY (project_id) REFERENCES projects(id),
-      FOREIGN KEY (target_model_version_id) REFERENCES model_versions(id),
-      FOREIGN KEY (outcome_model_version_id) REFERENCES model_versions(id),
-      CHECK (NOT (target = 'initial' AND outcome IN ('accepted_replace', 'accepted_new_version'))),
-      CHECK (NOT (target = 'regeneration' AND outcome = 'accepted')),
-      CHECK (NOT (target = 'initial' AND mode = 'prompt')),
-      CHECK (NOT (target = 'initial' AND target_model_version_id IS NOT NULL)),
-      CHECK (NOT (target = 'regeneration' AND target_model_version_id IS NULL)),
-      CHECK (NOT (mode = 'prompt' AND selected_text_similarity IS NOT NULL)),
-      CHECK (NOT (target = 'initial' AND selected_text_similarity IS NOT NULL)),
+      FOREIGN KEY (base_model_version_id) REFERENCES model_versions(id),
+      FOREIGN KEY (result_model_version_id) REFERENCES model_versions(id),
+      CHECK (NOT (generation_type = 'new' AND result IN ('accepted_replace', 'accepted_new_version'))),
+      CHECK (NOT (generation_type = 'regeneration' AND result = 'accepted_new_model')),
+      CHECK (NOT (generation_type = 'new' AND generation_input_mode = 'prompt_only')),
+      CHECK (NOT (generation_type = 'new' AND base_model_version_id IS NOT NULL)),
+      CHECK (NOT (generation_type = 'regeneration' AND base_model_version_id IS NULL)),
+      CHECK (NOT (generation_input_mode = 'selection_only' AND prompt IS NOT NULL)),
+      CHECK (NOT (
+        generation_input_mode IN ('selection_with_prompt', 'prompt_only') AND
+        prompt IS NULL
+      )),
+      CHECK (NOT (generation_input_mode = 'prompt_only' AND selected_words_count IS NOT NULL)),
+      CHECK (NOT (generation_input_mode = 'prompt_only' AND selected_text_similarity IS NOT NULL)),
+      CHECK (NOT (generation_type = 'new' AND selected_text_similarity IS NOT NULL)),
+      CHECK (
+        (result = 'declined' AND result_model_version_id IS NULL) OR
+        (result != 'declined' AND result_model_version_id IS NOT NULL)
+      ),
       CHECK (selected_text_similarity IS NULL OR
              (selected_text_similarity >= 0.0 AND selected_text_similarity <= 1.0))
     )
@@ -236,7 +246,7 @@ function initializeSchema() {
     `CREATE INDEX IF NOT EXISTS idx_model_generation_attempts_project_id ON model_generation_attempts(project_id)`,
   );
   db.exec(
-    `CREATE INDEX IF NOT EXISTS idx_model_generation_attempts_outcome_model_version_id ON model_generation_attempts(outcome_model_version_id)`,
+    `CREATE INDEX IF NOT EXISTS idx_model_generation_attempts_result_model_version_id ON model_generation_attempts(result_model_version_id)`,
   );
   db.exec(
     `CREATE INDEX IF NOT EXISTS idx_model_subprocesses_model_version_id ON model_subprocesses(model_version_id)`,
@@ -256,20 +266,20 @@ function initializeSchema() {
       id,
       model_version_id,
       type,
-      NULL             AS target,
-      NULL             AS mode,
-      NULL             AS outcome,
+      NULL             AS generation_type,
+      NULL             AS generation_input_mode,
+      NULL             AS result,
       created_at
     FROM model_version_events
     UNION ALL
     SELECT
       'generation_attempt'                                   AS source,
       id,
-      COALESCE(outcome_model_version_id, target_model_version_id) AS model_version_id,
+      COALESCE(result_model_version_id, base_model_version_id) AS model_version_id,
       NULL                                                   AS type,
-      target,
-      mode,
-      outcome,
+      generation_type,
+      generation_input_mode,
+      result,
       created_at
     FROM model_generation_attempts
   `);

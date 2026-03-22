@@ -13,12 +13,17 @@ const createPopper = window.Popper?.createPopper;
 const INTERACTIVE_PADDING = 20;
 const POPOVER_OFFSET = 12;
 const POPOVER_BOUNDARY_PADDING = 12;
+const DEFAULT_OPEN_DELAY_MS = 200;
+const CLOSE_DELAY_MS = 300;
 
 let popperInstance = null;
 let isPopoverVisible = false;
 let pointerBridgeAttached = false;
 let wasPointerInsideInteractiveZone = false;
 let currentPopoverRequestToken = null;
+let openTimer = null;
+let closeTimer = null;
+let activePopoverSource = null;
 
 let currentReferenceClientRect = () => ({
   width: 0,
@@ -43,6 +48,46 @@ function normalizeComparableId(value) {
 
 function hasSameId(left, right) {
   return normalizeComparableId(left) === normalizeComparableId(right);
+}
+
+function cancelOpenModelPopover() {
+  if (!openTimer) {
+    return;
+  }
+  clearTimeout(openTimer);
+  openTimer = null;
+}
+
+function cancelCloseModelPopover() {
+  if (!closeTimer) {
+    return;
+  }
+  clearTimeout(closeTimer);
+  closeTimer = null;
+}
+
+export function requestCloseModelPopover(_source = "unknown") {
+  const hasPendingOpen = !!openTimer;
+  if (!hasPendingOpen && !isPopoverVisible) {
+    return;
+  }
+
+  cancelOpenModelPopover();
+  cancelCloseModelPopover();
+
+  if (!isPopoverVisible) {
+    workspaceStore.setModelPopover(null);
+    return;
+  }
+
+  closeTimer = setTimeout(() => {
+    workspaceStore.setModelPopover(null);
+    closeTimer = null;
+  }, CLOSE_DELAY_MS);
+}
+
+export function isModelPopoverActiveForSource(source) {
+  return activePopoverSource === source && (!!openTimer || isPopoverVisible);
 }
 
 function clonePopoverAnchor(anchor) {
@@ -339,12 +384,12 @@ function onPointerBridgeMove(event) {
   }
   if (isPointerWithinInteractiveZone(event)) {
     wasPointerInsideInteractiveZone = true;
-    workspaceStore.cancelCloseModelPopover();
-    workspaceStore.cancelOpenModelPopover();
+    cancelCloseModelPopover();
+    cancelOpenModelPopover();
     return;
   }
   if (wasPointerInsideInteractiveZone) {
-    workspaceStore.requestCloseModelPopover("pointer-bridge");
+    requestCloseModelPopover("pointer-bridge");
   }
   wasPointerInsideInteractiveZone = false;
 }
@@ -397,12 +442,12 @@ function hideModelPopover() {
 }
 
 function onModelPopoverMouseEnter() {
-  workspaceStore.cancelCloseModelPopover();
-  workspaceStore.cancelOpenModelPopover();
+  cancelCloseModelPopover();
+  cancelOpenModelPopover();
 }
 
 function onModelPopoverMouseLeave() {
-  workspaceStore.requestCloseModelPopover("popover");
+  requestCloseModelPopover("popover");
 }
 
 async function showRequestedModelPopover(snapshot, requestToken) {
@@ -467,18 +512,24 @@ async function showRequestedModelPopover(snapshot, requestToken) {
 }
 
 function handleModelPopoverStateChange(modelPopoverState) {
+  cancelCloseModelPopover();
+  cancelOpenModelPopover();
+
   if (
     modelPopoverState &&
     modelPopoverState.target?.id &&
     modelPopoverState.anchor
   ) {
+    activePopoverSource = modelPopoverState.source || null;
     const requestToken = Symbol("modelPopoverRequest");
     currentPopoverRequestToken = requestToken;
     const visibleModelId = getVisiblePopoverModelId();
-    if (
-      isPopoverVisible &&
-      visibleModelId !== String(modelPopoverState.target.id)
-    ) {
+    const requestedModelId = String(modelPopoverState.target.id);
+    const isSameVisibleModel =
+      isPopoverVisible && visibleModelId === requestedModelId;
+    const isSwitchingVisibleModel =
+      isPopoverVisible && visibleModelId && visibleModelId !== requestedModelId;
+    if (isSwitchingVisibleModel) {
       hideModelPopover();
     }
 
@@ -486,17 +537,36 @@ function handleModelPopoverStateChange(modelPopoverState) {
       modelId: modelPopoverState.target.id,
       versionId: modelPopoverState.target.versionId ?? null,
       anchor: clonePopoverAnchor(modelPopoverState.anchor),
-      hoverSource: modelPopoverState.hoverSource || null,
+      hoverSource: modelPopoverState.source || null,
     };
     if (!snapshot.anchor) {
+      activePopoverSource = null;
       console.warn("Model popover anchor is invalid, skipping popover show");
       return;
     }
 
-    void showRequestedModelPopover(snapshot, requestToken);
+    const requestedOpenDelayMs =
+      Number.isFinite(modelPopoverState.openDelayMs) &&
+      modelPopoverState.openDelayMs >= 0
+        ? modelPopoverState.openDelayMs
+        : DEFAULT_OPEN_DELAY_MS;
+    const openDelayMs =
+      isSameVisibleModel || isSwitchingVisibleModel ? 0 : requestedOpenDelayMs;
+    const showRequestedPopover = () => {
+      openTimer = null;
+      void showRequestedModelPopover(snapshot, requestToken);
+    };
+
+    if (openDelayMs === 0) {
+      showRequestedPopover();
+      return;
+    }
+
+    openTimer = setTimeout(showRequestedPopover, openDelayMs);
     return;
   }
 
+  activePopoverSource = null;
   currentPopoverRequestToken = null;
   try {
     hideModelPopover();

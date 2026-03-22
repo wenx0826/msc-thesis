@@ -14,7 +14,7 @@ const MODEL_EDITOR_STATE = {
   NONE: "none",
   LATEST: "latest",
   HISTORICAL: "historical",
-  INITIAL_DRAFT: "initial-draft",
+  NEW_MODEL_DRAFT: "new-model-draft",
   REGENERATION_DRAFT: "regeneration-draft",
 };
 
@@ -28,10 +28,11 @@ function getDocumentViewerState() {
 }
 
 function getModelEditorState() {
-  if (workspaceStore.isEditingModelDraft()) {
-    return workspaceStore.hasEditingModel()
-      ? MODEL_EDITOR_STATE.REGENERATION_DRAFT
-      : MODEL_EDITOR_STATE.INITIAL_DRAFT;
+  if (workspaceStore.isEditingModelNewModelDraft()) {
+    return MODEL_EDITOR_STATE.NEW_MODEL_DRAFT;
+  }
+  if (workspaceStore.isEditingModelRegenerationDraft()) {
+    return MODEL_EDITOR_STATE.REGENERATION_DRAFT;
   }
   if (!workspaceStore.hasEditingModel()) {
     return MODEL_EDITOR_STATE.NONE;

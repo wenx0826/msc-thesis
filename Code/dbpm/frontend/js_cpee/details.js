@@ -101,7 +101,10 @@ function do_main_work(svgid) {
     if (subprocessModelId) {
       nnewArgBehavior.text("wait_for_running");
       nnewArgUrl.text(
-        window.location.origin + "/data/models/" + subprocessModelId + ".xml",
+        window.location.origin +
+          "/persistence/models/" +
+          subprocessModelId +
+          ".xml",
       );
     } else {
       nnewArguments.remove();

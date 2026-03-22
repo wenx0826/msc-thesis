@@ -2,12 +2,11 @@ import { Store } from "../../../shared/utils/store.js";
 
 export class EntitiesStore extends Store {
   constructor({ initialState = {} } = {}) {
-    const initialBulkEditMode = initialState?.isBulkEditMode === true;
     super({
       ...initialState,
       entitiesById: {},
       selectedIds: [],
-      isBulkEditMode: initialBulkEditMode,
+      isBulkEditMode: false,
     });
   }
 
@@ -19,7 +18,11 @@ export class EntitiesStore extends Store {
 
     const nextEntities = Object.values(entitiesById);
     this.state.entitiesById = entitiesById;
-    this.notify({ key: "entitiesById", operation: "init", value: nextEntities });
+    this.notify({
+      key: "entitiesById",
+      operation: "init",
+      value: nextEntities,
+    });
     this.setSelectedIds([], { operation: "init" });
     this.setBulkEditMode(false);
   }
@@ -60,7 +63,6 @@ export class EntitiesStore extends Store {
     if (!value) {
       return null;
     }
-
     delete this.state.entitiesById[id];
     this.notify({ key: "entitiesById", operation: "delete", value });
 

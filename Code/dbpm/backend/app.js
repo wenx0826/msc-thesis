@@ -1,19 +1,40 @@
+import fs from "fs";
 import fastify from "fastify";
 import path from "path";
 import { fileURLToPath } from "url";
 import cors from "@fastify/cors";
 import fastifyStatic from "@fastify/static";
 
-import projectsRoutes from "./modules/projects/routes.js";
-import documentsRoutes from "./modules/documents/routes.js";
-import modelsRoutes from "./modules/models/routes.js";
-import documentModelLinksRoutes from "./modules/document_model_links/routes.js";
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+function ensurePersistenceFolders(persistenceRoot) {
+  [
+    persistenceRoot,
+    path.join(persistenceRoot, "documents"),
+    path.join(persistenceRoot, "models"),
+    path.join(persistenceRoot, "logs"),
+  ].forEach((dirPath) => {
+    fs.mkdirSync(dirPath, { recursive: true });
+  });
+}
+
 export default async function (options = {}) {
   const app = fastify({ logger: false, ...options });
+  const persistenceRoot = path.join(__dirname, "..", "persistence");
+  ensurePersistenceFolders(persistenceRoot);
+
+  const [
+    { default: projectsRoutes },
+    { default: documentsRoutes },
+    { default: modelsRoutes },
+    { default: documentModelLinksRoutes },
+  ] = await Promise.all([
+    import("./modules/projects/routes.js"),
+    import("./modules/documents/routes.js"),
+    import("./modules/models/routes.js"),
+    import("./modules/document_model_links/routes.js"),
+  ]);
 
   await app.register(cors, {
     origin: true,
@@ -27,8 +48,8 @@ export default async function (options = {}) {
   });
 
   await app.register(fastifyStatic, {
-    root: path.join(__dirname, "..", "data"),
-    prefix: "/data",
+    root: persistenceRoot,
+    prefix: "/persistence",
     decorateReply: false,
   });
 

@@ -1,7 +1,10 @@
 import { read, write } from "../../../utils/fileHelper.js";
 import { fileURLToPath } from "url";
 
-const documentsDirUrl = new URL("../../../../data/documents/", import.meta.url);
+const documentsDirUrl = new URL(
+  "../../../../persistence/documents/",
+  import.meta.url,
+);
 
 export default {
   getDocumentFilePath(versionId) {

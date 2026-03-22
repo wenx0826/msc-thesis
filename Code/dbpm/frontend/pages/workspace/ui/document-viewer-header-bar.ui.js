@@ -21,6 +21,7 @@ const COPY_SELECTION_SUCCESS_LABEL = "Copied";
 const COPY_SELECTION_ERROR_LABEL = "Copy failed";
 const COPY_SELECTION_FEEDBACK_DURATION_MS = 1600;
 let copySelectionFeedbackTimer = null;
+let versionSelector;
 
 function syncNextSelectionColorInput(color) {
   if (!color) return;
@@ -53,13 +54,13 @@ function getSelectedSelectionEntry() {
   }
 
   if (
-    selectedSelection.scope === "temporary" ||
+    selectedSelection.scope === "unlinked" ||
     selectedSelection.modelId === undefined ||
     selectedSelection.modelId === null
   ) {
     return (
       documentViewerStore
-        .getTemporarySelections()
+        .getUnlinkedSelections()
         .find(
           (item) => String(item.id) === String(selectedSelection.selectionId),
         ) || null
@@ -174,7 +175,7 @@ function syncCopySelectionButtonState() {
 
 createUI({
   setup: () => {
-    const versionSelector = initVersionSelector({
+    versionSelector = initVersionSelector({
       $select: $versionSelect,
       onSelect: ({ version }) => {
         workspaceService.displayDocument(version.documentId, version.id);
@@ -184,8 +185,6 @@ createUI({
     syncNextSelectionColorInput(documentViewerStore.getSelectionColor());
     syncSelectedSelectionColorInput();
     syncCopySelectionButtonState();
-
-    return { versionSelector };
   },
   bindListeners: () => {
     $selectionColorForm.on("input", (event) => {
@@ -201,11 +200,11 @@ createUI({
         return;
       }
       if (
-        selectedSelection.scope === "temporary" ||
+        selectedSelection.scope === "unlinked" ||
         selectedSelection.modelId === undefined ||
         selectedSelection.modelId === null
       ) {
-        documentViewerStore.updateTemporarySelectionColor(
+        documentViewerStore.updateUnlinkedSelectionColor(
           selectedSelection.selectionId,
           newColor,
         );
@@ -263,7 +262,7 @@ createUI({
 
       const { selectionId, modelId } = selectedSelection;
       if (!modelId) {
-        documentViewerStore.removeTemporarySelection(selectionId);
+        documentViewerStore.removeUnlinkedSelection(selectionId);
       } else {
         const updatedLink = documentViewerStore.removeLinkSelection({
           selectionId,
@@ -290,11 +289,11 @@ createUI({
     });
 
     $deselectAllSelectionsButton.on("click", () => {
-      const temporarySelections = [
-        ...documentViewerStore.getTemporarySelections(),
+      const unlinkedSelections = [
+        ...documentViewerStore.getUnlinkedSelections(),
       ];
-      temporarySelections.forEach((selection) => {
-        documentViewerStore.removeTemporarySelection(selection.id);
+      unlinkedSelections.forEach((selection) => {
+        documentViewerStore.removeUnlinkedSelection(selection.id);
       });
 
       if (documentViewerStore.getSelectedSelection()) {
@@ -306,7 +305,7 @@ createUI({
       }
     });
   },
-  subscribeStores: ({ versionSelector }) => {
+  subscribeStores: () => {
     workspaceStore.subscribe(({ key, newValue }) => {
       switch (key) {
         case "viewedDocument": {
@@ -349,7 +348,7 @@ createUI({
           clearCopySelectionFeedback();
           syncCopySelectionButtonState();
           break;
-        case "temporarySelections":
+        case "unlinkedSelections":
           syncSelectedSelectionColorInput();
           clearCopySelectionFeedback();
           syncCopySelectionButtonState();

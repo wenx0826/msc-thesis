@@ -6,7 +6,14 @@ import { append, write } from "../../utils/fileHelper.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const logsPath = path.join(__dirname, "..", "..", "..", "data", "logs");
+const logsPath = path.join(
+  __dirname,
+  "..",
+  "..",
+  "..",
+  "persistence",
+  "logs",
+);
 
 const YAML_DUMP_OPTIONS = {
   indent: 2,

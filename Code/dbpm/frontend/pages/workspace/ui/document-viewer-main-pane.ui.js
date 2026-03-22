@@ -11,6 +11,10 @@ import {
   getRenderableRangeClientRects,
   getRectsBoundingBox,
 } from "../../../modules/document/selection.js";
+import {
+  isModelPopoverActiveForSource,
+  requestCloseModelPopover,
+} from "./model-popover.ui.js";
 
 const $viewerWrap = $("#viewerWrap");
 const $documentContent = $("#documentContent");
@@ -49,11 +53,7 @@ function releaseTagPopoverSuppression() {
 }
 
 function shouldCloseDocumentTagPopoverOnScroll() {
-  const modelPopover = workspaceStore.getModelPopover();
-  if (modelPopover?.hoverSource !== DOCUMENT_TAG_POPOVER_SOURCE) {
-    return false;
-  }
-  return !!modelPopover.target?.id || !!modelPopover.openTimer;
+  return isModelPopoverActiveForSource(DOCUMENT_TAG_POPOVER_SOURCE);
 }
 
 function onViewerScroll() {
@@ -62,7 +62,7 @@ function onViewerScroll() {
     return;
   }
   suppressTagPopoverTemporarily();
-  workspaceStore.setModelPopoverParams(null);
+  workspaceStore.setModelPopover(null);
 }
 
 function isViewingLatestDocumentVersion() {
@@ -93,7 +93,7 @@ function syncDocumentReadOnlyState() {
     selection.removeAllRanges();
   }
   documentViewerStore.setSelectedSelection(null);
-  documentViewerStore.setTemporarySelections([]);
+  documentViewerStore.setUnlinkedSelections([]);
   hideSelectionHandles();
   hideSelectedSelectionToolbar();
 }
@@ -111,7 +111,7 @@ function resolveSelectionScope(selection) {
   if (selection.scope) return selection.scope;
   return selection.modelId !== undefined && selection.modelId !== null
     ? "model"
-    : "temporary";
+    : "unlinked";
 }
 
 function getNumericCssPx($element, property) {
@@ -267,7 +267,7 @@ function getInteractionWrapsBySelection(selection) {
     `.selection-wrap[data-selection-id="${selectionId}"]`,
   );
 
-  if (resolvedScope === "temporary") {
+  if (resolvedScope === "unlinked") {
     $wraps = $wraps.filter(
       (_, element) => !element.hasAttribute("data-model-id"),
     );
@@ -382,10 +382,10 @@ function getSelectionByMeta(selectionMeta) {
   if (!selectionMeta) return null;
 
   const scope = resolveSelectionScope(selectionMeta);
-  if (scope === "temporary") {
+  if (scope === "unlinked") {
     return (
       documentViewerStore
-        .getTemporarySelections()
+        .getUnlinkedSelections()
         .find(
           (selection) =>
             String(selection.id) === String(selectionMeta.selectionId),
@@ -490,8 +490,8 @@ function isSelectionMetaSelectable(selectionMeta) {
 
 function updateSelectionRangeByMeta(selectionMeta, nextRange) {
   const scope = resolveSelectionScope(selectionMeta);
-  if (scope === "temporary") {
-    documentViewerStore.updateTemporarySelectionRange(
+  if (scope === "unlinked") {
+    documentViewerStore.updateUnlinkedSelectionRange(
       selectionMeta.selectionId,
       nextRange,
     );
@@ -702,10 +702,10 @@ const clearDocumentViewer = () => {
   clearOverlayLayers();
 };
 
-// const clearTemporarySelections = () => {
-//   if (hasTemporarySelections()) {
-//     temporarySelections = [];
-//     // $temporarySelectionsLayer.empty();
+// const clearUnlinkedSelections = () => {
+//   if (hasUnlinkedSelections()) {
+//     unlinkedSelections = [];
+//     // $unlinkedSelectionsLayer.empty();
 //   }
 // };
 function removeRenderedLink({ modelId }) {
@@ -767,9 +767,8 @@ async function selectModelForSelection({
         id: modelId,
         versionId: resolvedModelVersionId,
         isLatest: modelsStore.isLatestVersion(modelId, resolvedModelVersionId),
-        isDraft: false,
       });
-      workspaceStore.setModelPopoverParams(null);
+      workspaceStore.setModelPopover(null);
       await modelService.loadVersion(resolvedModelVersionId);
     }
 
@@ -813,7 +812,7 @@ const onSelectionSelect = async (event) => {
   const { selectionId, modelId, modelVersionId, linkId } =
     $selectionWrap.data();
 
-  const scope = $selectionWrap.is("[data-model-id]") ? "model" : "temporary";
+  const scope = $selectionWrap.is("[data-model-id]") ? "model" : "unlinked";
   if (selectionId === undefined || selectionId === null || selectionId === "") {
     return;
   }
@@ -1088,10 +1087,10 @@ function setModelSelectionWrapCurrent(modelId, modelVersionId, isCurrent) {
     .toggleClass("is-current", isCurrent);
 }
 
-const rerenderTemporarySelectionsLayer = () => {
-  // if (hasTemporarySelections()) {
-  //   $temporarySelectionsLayer.empty();
-  //   temporarySelections.forEach((range) => renderSelection(range));
+const rerenderUnlinkedSelectionsLayer = () => {
+  // if (hasUnlinkedSelections()) {
+  //   $unlinkedSelectionsLayer.empty();
+  //   unlinkedSelections.forEach((range) => renderSelection(range));
   // }
 };
 
@@ -1161,12 +1160,12 @@ const rerenderOverlayLayers = () => {
   if (selectedSelection && !isSelectionMetaSelectable(selectedSelection)) {
     setSelectedSelection(null);
   }
-  const temporarySelections = documentViewerStore.getTemporarySelections();
-  temporarySelections.forEach((selection) => {
+  const unlinkedSelections = documentViewerStore.getUnlinkedSelections();
+  unlinkedSelections.forEach((selection) => {
     renderSelection(selection);
   });
   updateSelectionHandlesPosition();
-  // rerenderTemporarySelectionsLayer();
+  // rerenderUnlinkedSelectionsLayer();
 };
 
 const handleTextSelection = () => {
@@ -1185,16 +1184,16 @@ const handleTextSelection = () => {
   if (!isRangeInsideDocumentContent(range)) return;
   // if (!content.contains(range.commonAncestorContainer)) return;
   // $generateModelButton.prop("disabled", false);
-  const temporarySelection = {
+  const unlinkedSelection = {
     id: crypto.randomUUID(),
     style: {
       backgroundColor: getCurrentSelectionColor(),
     },
     range: range.cloneRange(),
   };
-  // temporarySelections.push(temporarySelection);
-  documentViewerStore.addTemporarySelection(temporarySelection);
-  // renderSelection(temporarySelection);
+  // unlinkedSelections.push(unlinkedSelection);
+  documentViewerStore.addUnlinkedSelection(unlinkedSelection);
+  // renderSelection(unlinkedSelection);
   selection.removeAllRanges();
 };
 
@@ -1266,7 +1265,7 @@ createUI({
       // const $target = $(event.currentTarget);
       event.stopPropagation();
       suppressTagPopoverTemporarily();
-      workspaceStore.setModelPopoverParams(null);
+      workspaceStore.setModelPopover(null);
       const modelId = event.currentTarget.dataset.modelId;
       const modelVersionId = event.currentTarget.dataset.modelVersionId || null;
       workspaceService.toggleModelDisplay(modelId, modelVersionId, false);
@@ -1282,7 +1281,7 @@ createUI({
       const versionId = element.dataset.modelVersionId || null;
 
       // ✨ NEW: Pass source identifier to prevent conflicts with other hover sources
-      workspaceStore.setModelPopoverParams({
+      workspaceStore.setModelPopover({
         target: {
           id: modelId,
           versionId,
@@ -1302,7 +1301,7 @@ createUI({
         event.currentTarget.dataset.modelId,
       );
       // ✨ NEW: Pass source identifier to ensure only the same source can close
-      workspaceStore.requestCloseModelPopover(DOCUMENT_TAG_POPOVER_SOURCE);
+      requestCloseModelPopover(DOCUMENT_TAG_POPOVER_SOURCE);
     });
   },
   subscribeStores: () => {
@@ -1338,7 +1337,7 @@ createUI({
                 break;
             }
             break;
-          case "temporarySelections":
+          case "unlinkedSelections":
             switch (operation) {
               case "add":
                 renderSelection(value);
@@ -1387,7 +1386,7 @@ createUI({
             //   unhighlightModelSelections(oldValue.modelId);
             // }
             break;
-          case "temporarySelections":
+          case "unlinkedSelections":
             oldValue.forEach((selection) => {
               removeRenderedSelection(selection);
             });

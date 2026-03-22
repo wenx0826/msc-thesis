@@ -96,7 +96,8 @@
                 <input type="file" id="documentVersionInput" class="hidden" />
                 <input type="file" id="documentsInput" multiple class="hidden" />
                 <div class="right item-group">
-                  <button id="documentsBulkEditToggleButton" type="button">Bulk edit</button>
+                  <button id="documentsBulkEditToggleButton">Bulk edit</button>
+
                   <button class="btn-primary"
                     onclick="document.getElementById('documentsInput').click()">Upload</button>
                 </div>
@@ -111,7 +112,7 @@
               </ui-bar>
               <ul id="documentsList">
                 <template id="documentItemTemplate">
-                  <li class="list-item" data-doc-id="">
+                  <li class="list-item" data-document-id="">
                     <input type="checkbox" class="item-select-checkbox" data-role="select-document"
                       aria-label="Select document" />
                     <div class="inline-editor">
@@ -128,12 +129,12 @@
         <ui-rest id="documentViewerPanel" class="panel" data-document-state="none">
           <ui-bar class="panel-header">
             <div>
-              <span id="documentViewerHeaderTitle" class="header-item panel-header__title">Document Viewer</span>
-              <span id="documentVersionTag" class="header-item version-tag"></span>
-              <select id="docVersionSelect" class="header-item"></select>
+              <span id="documentViewerHeaderTitle" class="state-controlled panel-header__title">Document Viewer</span>
+              <select id="docVersionSelect" class="state-controlled"></select>
+              <span id="documentVersionTag" class="state-controlled version-tag"></span>
             </div>
             <div class="right item-group">
-              <form id="selectionColorForm" class="header-item relaxngui_color_container">
+              <form id="selectionColorForm" class="state-controlled relaxngui_color_container">
                 <span class="round">
                   <input type="radio" name="selectionColor" value="#d4e1f1" id="selectionColor1" checked />
                   <label for="selectionColor1" style="background-color: #d4e1f1"></label>
@@ -160,19 +161,18 @@
                   <label for="selectionColor7" style="background-color: #deddda"></label>
                 </span>
               </form>
-              <button id="deselectAllSelectionsButton" class="header-item  btn-text">
+              <button id="deselectAllSelectionsButton" class="state-controlled btn-text">
                 Deselect all
               </button>
             </div>
           </ui-bar>
           <ui-divider></ui-divider>
-          <!-- Document Content Area -->
           <ui-content>
             <ui-area id="viewerWrap">
               <ui-area id="selectionsVisualLayer"></ui-area>
               <!-- <ui-area id="temporarySelectionsLayer"></ui-area> -->
               <ui-area id="documentContent"></ui-area>
-              <div id="documentViewerEmptyState">
+              <div id="documentViewerEmptyState" class="state-controlled">
                 No document selected
               </div>
               <ui-area id="interactionLayer">
@@ -234,19 +234,19 @@
             </ui-area>
           </ui-content>
           <ui-divider></ui-divider>
-          <ui-bar id="linkActionsBar" style="z-index: 3">
+          <ui-bar id="linkActionsBar" class="state-controlled" style="z-index: 3">
             <div class="right item-group">
-              <button id="applyLinkChangesButton" disabled>
+              <button id="applyLinkChangesButton" class="state-controlled" disabled>
                 Apply changes
               </button>
-              <div id="modelGenerationSplitButton" class="split-button">
-                <button id="modelGenerationPrimaryButton" class="btn-primary split-button__action" type="button"
-                  data-target="new_model" disabled>
-                  <span id="modelGenerationPrimaryLabel">Generate new model</span>
+              <div id="generationSplitButton" class="split-btn">
+                <button id="generationDefaultButton" class="btn-primary split-btn__action" title="Generate new model"
+                  disabled>
+                  Generate new model
                 </button>
-                <button id="modelGenerationMenuButton" class="btn-primary split-button__toggle" type="button"
-                  aria-haspopup="menu" title="More generation actions" disabled>
-                  <span class="split-button__caret"></span>
+                <button id="generationMenuButton" class="btn-primary split-btn__toggle" aria-haspopup="menu"
+                  title="More generation actions" disabled>
+                  <span class="split-btn__caret"></span>
                 </button>
               </div>
             </div>
@@ -257,30 +257,30 @@
       <ui-rest id="modelEditorPanel" class="pane pane--center panel" data-model-state="none">
         <ui-rest style="flex: 1 1 0; min-height: 100px">
           <ui-bar class="panel-header">
-            <span id="modelEditorHeaderTitle" class="header-item panel-header__title">Model Editor</span>
+            <span id="modelEditorHeaderTitle" class="state-controlled panel-header__title">Model Editor</span>
             <!-- <div id="activeModelNameEditor" class="inline-editor"> -->
             <div class="item-group">
-              <span id="editingModelName" class="header-item inline-editor__view" data-editable="1"></span>
-              <select id="modelVersionSelect" class="header-item"></select>
-              <span id="editingModelVersionTag" class="header-item version-tag hidden"></span>
-              <button id="createModelVersionButton" class="header-item"
+              <span id="editingModelName" class="state-controlled inline-editor__view" data-editable="1"></span>
+              <select id="modelVersionSelect" class="state-controlled"></select>
+              <span id="editingModelVersionTag" class="state-controlled version-tag hidden"></span>
+              <button id="createModelVersionButton" class="state-controlled"
                 title="Create a version from the current latest version">
                 + New version
               </button>
-              <button id="restoreModelVersionButton" class="header-item"
+              <button id="restoreModelVersionButton" class="state-controlled"
                 title="Create a new version by copying this selected version">
                 Restore to this version
               </button>
             </div>
             <div class="right item-group">
-              <button id="deselectModelButton" class="header-item btn-text">Deselect</button>
-              <button id="editingModelMoreActionsButton" class="header-item more-actions-btn"></button>
+              <button id="deselectModelButton" class="state-controlled btn-text">Deselect</button>
+              <button id="editingModelMoreActionsButton" class="state-controlled more-actions-btn"></button>
             </div>
 
           </ui-bar>
           <ui-divider></ui-divider>
           <ui-rest>
-            <div id="modelEditorEmptyState">
+            <div id="modelEditorEmptyState" class="state-controlled">
               No model selected
             </div>
             <ui-content id="modelling">
@@ -301,17 +301,17 @@
               <span id="modelStatusMessageText"></span>
               <button id="modelStatusMessageClose">x</button>
             </div>
-            <ui-bar id="initialGenerationDraftActionBar">
+            <ui-bar id="newModelDraftReviewBar" class="state-controlled">
               <div class="right item-group">
-                <button id="discardDraftModelButton" title="Discard generated model draft" class="btn-text">
+                <button id="discardDraftModelButton" title="Discard new model draft" class="btn-text">
                   Discard
                 </button>
-                <button id="saveDraftModelButton" title="Create model from generated draft" class="btn-primary">
+                <button id="saveDraftModelButton" title="Create model from draft" class="btn-primary">
                   Save
                 </button>
               </div>
             </ui-bar>
-            <ui-bar id="regeneratedModelActionBar">
+            <ui-bar id="regenerationDraftReviewBar" class="state-controlled">
               <div class="item-group">
                 <button id="viewOriginalModelButton" disabled>Original</button>
                 <button id="viewRegeneratedModelButton">Regenerated</button>
@@ -331,8 +331,8 @@
           </ui-rest>
         </ui-rest>
         <ui-resizehandle data-direction="horizontal" data-style="transparent"></ui-resizehandle>
-        <ui-rest style="flex: 0.25 1 0; min-height: 100px" id="modelEditPromptPane">
-          <textarea id="modelEditPromptInput" placeholder="Enter prompt to refine the model..."></textarea>
+        <ui-rest style="flex: 0.25 1 0; min-height: 100px" id="modelEditPromptPane" class="state-controlled">
+          <textarea id="modelEditorPromptInput" placeholder="Enter instructions to refine the model..."></textarea>
           <ui-bar>
             <fieldset class="right item-group" id="promptActionsGroup" disabled>
               <button id="clearPromptButton" class="btn-text">Clear</button>
@@ -440,20 +440,15 @@
       </ui-content>
     </ui-rest>
   </ui-rest>
-  <dialog id="modelGenerationPromptDialog">
-    <form id="modelGenerationPromptForm" method="dialog">
-      <h3 id="modelGenerationPromptTitle">Generate New Model with Additional Prompt</h3>
-      <p id="modelGenerationPromptHint">
-        Add extra instructions to guide generation from the selected text.
-      </p>
-      <!-- <label for="modelGenerationPromptInput">Additional prompt</label> -->
+  <dialog id="modelGenerationPromptDialog" class="dialog--wide">
+    <div class="dialog-title"></div>
+    <form id="modelGenerationPromptForm" class="dialog-form">
       <textarea id="modelGenerationPromptInput" rows="7"
-        placeholder="Describe the desired flow, constraints, or details to emphasize..."></textarea>
-      <div class="error" id="modelGenerationPromptError"></div>
-      <ui-bar>
+        placeholder="Enter instructions to guide model generation from the selected text..."></textarea>
+      <ui-bar class="dialog-actions">
         <div class="right item-group">
-          <button type="button" id="cancelModelGenerationPromptButton">Cancel</button>
-          <button type="submit" id="submitModelGenerationPromptButton" class="btn-primary" disabled>
+          <button type="button" id="cancelModelGenerationPromptButton" class="btn-text">Cancel</button>
+          <button id="submitModelGenerationPromptButton" class="btn-primary" disabled>
             Generate
           </button>
         </div>
@@ -461,7 +456,7 @@
     </form>
   </dialog>
   <iframe id="modelPreviewRendererIframe" src="model-viewer.html"
-    style="position: absolute; left: -10000px; top: -10000px; width: 1px; height: 1px; opacity: 0; pointer-events: none;"></iframe>
+    style="position: absolute; left: -9999px; top: -9999px; width: 1px; height: 1px; opacity: 0; pointer-events: none;"></iframe>
 </body>
 
 </html>

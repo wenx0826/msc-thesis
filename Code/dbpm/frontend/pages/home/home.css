@@ -1,5 +1,7 @@
 :root {
   --x-ui-content-hover-background: #efefef;
+  --muted: #666;
+  --faint: #999;
 }
 
 .main {
@@ -230,157 +232,6 @@ td.col-date {
   outline: 2px solid blue;
 } */
 
-/* ===== Project Creation Dialog ===== */
-dialog {
-  width: min(460px, calc(100vw - 28px));
-  padding: 0;
-  border: 1px solid var(--x-ui-border-color);
-  border-radius: 0.5em;
-  /* background: var(--x-ui-background-color, #fff); */
-  /* color: var(--x-ui-text-color, #2b2b2b); */
-  /* font-size: 14px; */
-  /* box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18); */
-  /* overflow: hidden; */
-}
-
-#projectCreationDialog::backdrop {
-  background: rgba(0, 0, 0, 0.2);
-}
-
-/* @media (prefers-reduced-motion: no-preference) {
-  #projectCreationDialog[open] {
-    animation: projectDialogIn 120ms ease-out;
-  }
-
-  @keyframes projectDialogIn {
-    from {
-      transform: translateY(6px);
-      opacity: 0.92;
-    }
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
-} */
-
-#projectCreationDialog #form {
-  /* margin: 0;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box; */
-}
-
-/* 
-#projectCreationDialog #form > h3 {
-  display: block;
-  width: 100%;
-  box-sizing: border-box;
-  margin: 0;
-  padding: 12px 16px;
-  background: #f7f7f7;
-  border-bottom: 1px solid var(--x-ui-border-color, #d0d0d0);
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--x-ui-text-color, #2b2b2b);
-}
-
-#projectCreationDialog #form > label {
-  display: block;
-  margin: 12px 16px 6px;
-  color: var(--x-ui-text-secondary-color, #585858);
-  font-size: 13px;
-  line-height: 1.2;
-}
-
-#projectCreationDialog #name {
-  display: block;
-  width: calc(100% - 32px);
-  height: 34px;
-  margin: 0 16px 8px;
-  padding: 6px 10px;
-  box-sizing: border-box;
-  border: 1px solid #c8c8c8;
-  border-radius: 4px;
-  background: #fff;
-  color: var(--x-ui-text-color, #2b2b2b);
-  outline: none;
-}
-
-#projectCreationDialog #name:focus {
-  border-color: #bdbdbd;
-  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.08);
-}
-
-#projectCreationDialog #err {
-  display: block;
-  min-height: 0;
-  margin: 2px 16px 0;
-  color: #c00;
-  font-size: 12px;
-  line-height: 1.25;
-}
-
-#projectCreationDialog #err:empty {
-  display: none;
-} */
-
-/* #projectCreationDialog #form > ui-bar {
-  display: block;
-  width: 100%;
-  margin-top: 10px;
-  padding: 10px 16px 12px;
-  box-sizing: border-box;
-  background: #fbfbfb;
-  border-top: 1px solid var(--x-ui-border-color, #d0d0d0);
-} */
-
-/* #projectCreationDialog #form > ui-bar .right {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-} */
-
-/* #projectCreationDialog button {
-  height: 32px;
-  min-width: 74px;
-  padding: 0 12px;
-  border: 1px solid #c8c8c8;
-  border-radius: 4px;
-  background: #f5f5f5;
-  color: var(--x-ui-text-color, #2b2b2b);
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 600;
-} */
-
-/* #projectCreationDialog #cancel:hover,
-#projectCreationDialog #save:hover {
-  background: var(--x-ui-content-hover-background, #e6e6e6);
-} */
-
-/* #projectCreationDialog #cancel:active,
-#projectCreationDialog #save:active {
-  background: var(--x-ui-content-highlight-background, #dddddd);
-} */
-
-/* #projectCreationDialog #save {
-  background: #222;
-  border-color: #222;
-  color: #fff;
-} */
-/* 
-#projectCreationDialog #save:hover {
-  background: #111;
-  border-color: #111;
-} */
-
-/* #projectCreationDialog #save:active {
-  background: #000;
-  border-color: #000;
-} */
-
 /* ===== Dashboard Content ===== */
 
 *[is="x-ui-"] ui-content:has(> ui-area[data-belongs-to-tab="dashboard"]:not(.inactive)) {
@@ -397,14 +248,6 @@ dialog {
   margin-bottom: 18px;
 }
 
-.kpi-row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  text-align: center;
-  /* 关键：整体居中 */
-}
-
 .metric-card {
   text-align: center;
   padding: 2px 0;
@@ -418,24 +261,12 @@ dialog {
   margin-bottom: 6px;
 }
 
-.kpi-title {
-  font-size: 13px;
-  color: #666;
-  margin-bottom: 8px;
-}
-
 .metric-card .metric-value {
   font-size: 32px;
   line-height: 1.05;
   font-weight: 650;
   margin: 0 0 10px;
   font-variant-numeric: tabular-nums;
-}
-
-.kpi-value {
-  font-size: 42px;
-  font-weight: 600;
-  line-height: 1;
 }
 
 .metric-subtitle {
@@ -449,97 +280,70 @@ dialog {
   /* keeps blocks aligned when some have fewer lines */
 }
 
-.kpi-sub {
-  margin-top: 10px;
-  font-size: 13px;
-  color: #666;
-}
+/* ===== Dashboard Stats ===== */
 
-.distribution-row {
+.dashboard-stats-layout {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 100px;
-  margin-top: 48px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 32px;
+  align-items: start;
+  margin-top: 24px;
 }
 
-.dist-title {
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 14px;
+.stats-layout-column {
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }
 
-.bar-row {
-  display: grid;
-  grid-template-columns: 30px 1fr 40px;
-  gap: 12px;
-  align-items: center;
-  margin-bottom: 10px;
-  font-size: 12px;
-  color: #666;
+.stats-panel {
+  width: min(100%, 420px);
 }
 
-.bar-track {
-  height: 6px;
-  background: #ecece7;
-}
-
-.bar-fill {
-  height: 100%;
-  background: #555;
-}
-
-.bar-pct {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-/* ===== Interaction (NARROW COLUMN) ===== */
-
-.interaction {
-  max-width: 520px;
-}
-
-.interaction h3 {
+.stats-panel h3 {
   font-size: 15px;
   font-weight: 600;
   margin-bottom: 18px;
 }
 
-.interaction .interaction-stats {
+.stats-panel .stats-grid {
   display: grid;
-  grid-template-columns: max-content max-content;
-  column-gap: 8px;
-  row-gap: 8px;
-  justify-content: start;
-  align-items: baseline;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 12px;
+  row-gap: 10px;
+  align-items: start;
   font-size: 14px;
 }
 
-.interaction .interaction-stats .metric-row {
+.stats-panel .stats-grid .metric-row {
   display: contents;
 }
 
-.interaction .metric-label {
+.stats-panel .metric-label {
   color: #444;
+  line-height: 1.4;
 }
 
-.interaction .metric-value {
+.stats-panel .metric-value {
   font-weight: 600;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+@media (max-width: 820px) {
+  .metrics {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
 }
 
 @media (max-width: 1000px) {
-  .kpi-row {
+  .dashboard-stats-layout {
     grid-template-columns: 1fr;
-    gap: 40px;
+    gap: 20px;
   }
 
-  .distribution-row {
-    grid-template-columns: 1fr;
-    gap: 40px;
-  }
-
-  .interaction {
-    max-width: 100%;
+  .stats-layout-column {
+    justify-content: center;
   }
 }

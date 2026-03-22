@@ -20,5 +20,4 @@ createUI({
     const projectId = getProjectIdFromURL();
     renderProjectLink(projectId);
   },
-  bindListeners: () => {},
 });

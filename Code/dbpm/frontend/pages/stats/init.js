@@ -13,7 +13,7 @@ import "./ui/index.js";
 // store.setProjectId(projectId);
 
 // async function renderDocumentModels(documentId, $documentItem) {
-//   // const $documentItem = $(`li[data-doc-id='${documentId}']`);
+//   // const $documentItem = $(`li[data-document-id='${documentId}']`);
 //   const $modelsGrid = $documentItem.find("[data-ref='modelsGrid']");
 //   console.log(
 //     "Rendering models for document ID:",
@@ -45,7 +45,7 @@ import "./ui/index.js";
 //       const $documentItem = $cloneTemplate("documentItemTemplate")
 //         .children()
 //         .first();
-//       $documentItem.find("li").attr("data-doc-id", doc.id);
+//       $documentItem.find("li").attr("data-document-id", doc.id);
 //       $documentItem
 //         .find("[data-ref='documentName']")
 //         .text(doc.name || "Unnamed Document");

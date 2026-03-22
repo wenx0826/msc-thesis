@@ -1,17 +1,14 @@
 import fs from "fs";
-import path from "path";
 
 const read = (filePath) => {
   return fs.readFileSync(filePath, "utf8");
 };
 
 const write = (filePath, content) => {
-  fs.mkdirSync(path.dirname(filePath), { recursive: true });
   fs.writeFileSync(filePath, content);
 };
 
 const append = (filePath, content) => {
-  fs.mkdirSync(path.dirname(filePath), { recursive: true });
   fs.appendFileSync(filePath, content);
 };
 

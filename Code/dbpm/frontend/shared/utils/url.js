@@ -12,11 +12,11 @@ export function getProjectWorkspaceURL(projectId) {
 }
 
 export function getProjectLogURL(projectId) {
-  return `data/logs/${projectId}.yaml`;
+  return `persistence/logs/${projectId}.yaml`;
 }
 
 export function getDocumentURL(versionId) {
-  return `data/documents/${versionId}.html`;
+  return `persistence/documents/${versionId}.html`;
 }
 
 export function getDocumentViewerURL(versionId) {
@@ -31,7 +31,7 @@ export function getDocumentRenderURL(versionId) {
   return getDocumentViewerURL(versionId);
 }
 export function getModelURL(versionId) {
-  return `data/models/${versionId}.xml`;
+  return `persistence/models/${versionId}.xml`;
 }
 
 export function getModelViewerURL(modelVersionId) {

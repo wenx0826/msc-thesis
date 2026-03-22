@@ -1,13 +1,13 @@
 import { createUI } from "../../../shared/utils/ui.js";
 import { modelService } from "../services/index.js";
 
-const $modelEditPromptInput = $("#modelEditPromptInput");
+const $promptInput = $("#modelEditorPromptInput");
 const $promptActionsGroup = $("#promptActionsGroup");
 const $sendPromptButton = $("#sendPromptButton");
 const $clearPromptButton = $("#clearPromptButton");
 
 function getPromptInput() {
-  return $modelEditPromptInput.val();
+  return $promptInput.val();
 }
 
 function getPromptText() {
@@ -20,7 +20,7 @@ function syncPromptActionState() {
 }
 
 function clearPromptInput() {
-  $modelEditPromptInput.val("");
+  $promptInput.val("");
   $promptActionsGroup.prop("disabled", true);
 }
 
@@ -29,7 +29,7 @@ createUI({
     syncPromptActionState();
   },
   bindListeners: () => {
-    $modelEditPromptInput.on("input", () => {
+    $promptInput.on("input", () => {
       syncPromptActionState();
     });
 
@@ -44,7 +44,7 @@ createUI({
         return;
       }
       clearPromptInput();
-      await modelService.generateModelByPrompt(promptText);
+      await modelService.refineModelByPrompt(promptText);
     });
   },
   subscribeStores: () => {},

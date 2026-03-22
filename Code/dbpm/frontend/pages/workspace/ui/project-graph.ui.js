@@ -6,6 +6,7 @@ import {
   documentsStore,
 } from "../store/index.js";
 import { workspaceService } from "../services/index.js";
+import { requestCloseModelPopover } from "./model-popover.ui.js";
 
 const theme = (() => {
   const style = getComputedStyle(document.documentElement);
@@ -25,6 +26,8 @@ const cyLayoutOptions = {
   name: "cose",
   animate: false,
 };
+
+let cy;
 
 function getNodeType(node) {
   return node.data("type") ?? null;
@@ -47,7 +50,7 @@ function syncGraphEmptyState(cy) {
 
 createUI({
   setup: () => {
-    const cy = cytoscape({
+    cy = cytoscape({
       container: document.getElementById("cy"),
       pixelRatio: window.devicePixelRatio || 1,
       autounselectify: true,
@@ -170,10 +173,8 @@ createUI({
         },
       ],
     });
-    syncGraphEmptyState(cy);
-    return { cy };
   },
-  bindListeners: ({ cy }) => {
+  bindListeners: () => {
     cy.on("tap", "node", (e) => {
       const node = e.target;
       const nodeType = getNodeType(node);
@@ -218,7 +219,7 @@ createUI({
             height: Math.max(0, nodeBox.h ?? nodeBox.y2 - nodeBox.y1),
           };
 
-          workspaceStore.setModelPopoverParams({
+          workspaceStore.setModelPopover({
             target: {
               id: modelId,
             },
@@ -247,15 +248,14 @@ createUI({
           break;
         case "model":
           // node.removeClass("hovered");
-          // workspaceStore.setHoveredModelId(null);
-          workspaceStore.requestCloseModelPopover("graph-node");
+          requestCloseModelPopover("graph-node");
           break;
         default:
           break;
       }
     });
   },
-  subscribeStores: ({ cy }) => {
+  subscribeStores: () => {
     projectGraphStore.subscribe(({ key, operation, value }) => {
       switch (key) {
         case "elements":

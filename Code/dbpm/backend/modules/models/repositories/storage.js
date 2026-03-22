@@ -1,7 +1,7 @@
 import { read, write } from "../../../utils/fileHelper.js";
 import { fileURLToPath } from "url";
 
-const modelsDirUrl = new URL("../../../../data/models/", import.meta.url);
+const modelsDirUrl = new URL("../../../../persistence/models/", import.meta.url);
 
 export default {
   getFilePath(versionId) {

@@ -6,7 +6,12 @@ class ModelGenerationAttemptRepository extends BaseSqlRepository {
     super({
       db,
       tableName: "model_generation_attempts",
-      requiredCreateColumns: ["project_id", "target", "mode", "outcome"],
+      requiredCreateColumns: [
+        "project_id",
+        "generation_type",
+        "generation_input_mode",
+        "result",
+      ],
     });
   }
 
@@ -15,80 +20,80 @@ class ModelGenerationAttemptRepository extends BaseSqlRepository {
    *
    * @param {object} params
    * @param {string}  params.projectId
-   * @param {string|null}  params.targetModelVersionId  - NULL for initial generation
-   * @param {string|null}  params.outcomeModelVersionId - NULL for declined attempts
-   * @param {'initial'|'regeneration'} params.target
-   * @param {'selection'|'selection_and_prompt'|'prompt'} params.mode
-   * @param {'accepted'|'accepted_replace'|'accepted_new_version'|'declined'} params.outcome
+   * @param {string|null}  params.baseModelVersionId    - NULL for new generation
+   * @param {string|null}  params.resultModelVersionId  - NULL for declined attempts
+   * @param {'new'|'regeneration'} params.generationType
+   * @param {'selection_only'|'selection_with_prompt'|'prompt_only'} params.generationInputMode
+   * @param {'accepted_new_model'|'accepted_replace'|'accepted_new_version'|'declined'} params.result
    * @param {string|null}  params.prompt
    * @param {number|null}  params.selectedWordsCount
    * @param {number|null}  params.selectedTextSimilarity - Jaccard 0.0–1.0, regeneration+selection only
    */
   add({
     projectId,
-    targetModelVersionId = null,
-    outcomeModelVersionId = null,
-    target,
-    mode,
-    outcome,
+    baseModelVersionId = null,
+    resultModelVersionId = null,
+    generationType,
+    generationInputMode,
+    result,
     prompt = null,
     selectedWordsCount = null,
     selectedTextSimilarity = null,
   }) {
     return this.create({
       projectId,
-      targetModelVersionId,
-      outcomeModelVersionId,
-      target,
-      mode,
-      outcome,
+      baseModelVersionId,
+      resultModelVersionId,
+      generationType,
+      generationInputMode,
+      result,
       prompt,
       selectedWordsCount,
       selectedTextSimilarity,
     });
   }
 
-  countByOutcomeByProjectId(projectId) {
+  countByResultByProjectId(projectId) {
     const stmt = db.prepare(`
-      SELECT outcome, COUNT(*) AS count
+      SELECT result, COUNT(*) AS count
       FROM model_generation_attempts
       WHERE project_id = ?
-      GROUP BY outcome
-      ORDER BY count DESC, outcome ASC
+      GROUP BY result
+      ORDER BY count DESC, result ASC
     `);
 
     return stmt.all(projectId).map((row) => ({
-      outcome: row.outcome,
+      result: row.result,
       count: Number(row.count) || 0,
     }));
   }
 
-  countByTargetByProjectId(projectId) {
+  countByGenerationTypeByProjectId(projectId) {
     const stmt = db.prepare(`
-      SELECT target, COUNT(*) AS count
+      SELECT generation_type, COUNT(*) AS count
       FROM model_generation_attempts
       WHERE project_id = ?
-      GROUP BY target
-      ORDER BY count DESC, target ASC
+      GROUP BY generation_type
+      ORDER BY count DESC, generation_type ASC
     `);
 
     return stmt.all(projectId).map((row) => ({
-      target: row.target,
+      generationType: row.generation_type,
       count: Number(row.count) || 0,
     }));
   }
 
-  countByModeByProjectId(projectId) {
+  countByGenerationInputModeByProjectId(projectId) {
     const stmt = db.prepare(`
-      SELECT mode, COUNT(*) AS count
+      SELECT generation_input_mode, COUNT(*) AS count
       FROM model_generation_attempts
       WHERE project_id = ?
-      GROUP BY mode
-      ORDER BY count DESC, mode ASC
+      GROUP BY generation_input_mode
+      ORDER BY count DESC, generation_input_mode ASC
     `);
 
     return stmt.all(projectId).map((row) => ({
-      mode: row.mode,
+      generationInputMode: row.generation_input_mode,
       count: Number(row.count) || 0,
     }));
   }

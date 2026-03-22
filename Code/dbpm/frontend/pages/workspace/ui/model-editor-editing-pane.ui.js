@@ -9,6 +9,7 @@ import {
 import { modelService, workspaceService } from "../services/index.js";
 import { endpointLoader } from "../../../modules/model/endpoints/endpoint-loader.js";
 import { Constants } from "../../../constants.js";
+import { requestCloseModelPopover } from "./model-popover.ui.js";
 
 const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
 const $graphCanvas = $("#graphcanvas");
@@ -205,7 +206,7 @@ const getAvailableSubprocessModels = () => {
 
 const renderModelSelect = (initialModelId = "") => {
   const $modelSelect = $(CALL_SUBPROCESS_MODEL_SELECT_SELECTOR);
-  const editingModelId = workspaceStore.getEditingModel().id;
+  const editingModelId = workspaceStore.getEditingModel()?.id ?? null;
   const modelsByDocumentId = new Map();
   for (const {
     documentId,
@@ -380,7 +381,9 @@ function syncCallSubprocessArguments(modelId) {
   const URL_INPUT_SELECTOR = `${ARGUMENTS_SELECTOR} input[data-relaxngui-path=" > call > parameters > arguments > url"]`;
   $(BEHAVIOR_INPUT_SELECTOR).val(modelId ? "wait_for_running" : "");
   $(URL_INPUT_SELECTOR).val(
-    modelId ? window.location.origin + "/data/models/" + modelId + ".xml" : "",
+    modelId
+      ? window.location.origin + "/persistence/models/" + modelId + ".xml"
+      : "",
   );
 }
 function getActiveCallTaskId() {
@@ -483,7 +486,7 @@ createUI({
       const svgId = $node.attr("id");
       const $element = $(`#graphcanvas [element-id="${svgId}"]`);
 
-      workspaceStore.setModelPopoverParams({
+      workspaceStore.setModelPopover({
         target: {
           id: modelId,
           versionId,
@@ -493,7 +496,7 @@ createUI({
       });
     });
     $(document).on("wf:subprocess-unhovered", function (e) {
-      workspaceStore.requestCloseModelPopover("subprocess-node");
+      requestCloseModelPopover("subprocess-node");
     });
   },
   subscribeStores: () => {
@@ -527,12 +530,10 @@ createUI({
               if (!editingModelVersionId) {
                 break;
               }
-
               const changedVersionId = value?.key;
               if (changedVersionId !== editingModelVersionId) {
                 break;
               }
-
               renderActiveEditingModelCachedErrors();
               break;
             }
@@ -551,8 +552,8 @@ createUI({
           // applyModelEditorReadOnlyState();
           break;
         case "editingModel": {
-          const hasEditingModel = workspaceStore.hasEditingModel();
-          if (hasEditingModel) {
+          const editingModel = workspaceStore.getEditingModel();
+          if (editingModel) {
             setReadOnlyState(workspaceStore.isEditingModelReadOnly());
           } else {
             clearModelEditor();

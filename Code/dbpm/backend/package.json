@@ -4,8 +4,7 @@
   "type": "module",
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon server.js",
-    "reset": "node utils/resetData.js"
+    "dev": "nodemon server.js"
   },
   "keywords": [],
   "author": "",

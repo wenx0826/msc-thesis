@@ -147,6 +147,11 @@ ui-bar {
   overflow: hidden;
 }
 
+/* Hidden by default and revealed by panel state rules when needed. */
+.state-controlled {
+  display: none;
+}
+
 #cy {
   position: relative;
 }

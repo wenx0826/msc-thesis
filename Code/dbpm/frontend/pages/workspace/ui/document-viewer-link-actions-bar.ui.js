@@ -9,20 +9,20 @@ import {
 import { modelService } from "../services/index.js";
 
 const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
-const MODEL_GENERATION_TARGET = Constants.MODEL_GENERATION_TARGET;
-const MODEL_GENERATION_TARGET_VALUES = new Set(
-  Object.values(MODEL_GENERATION_TARGET),
-);
+const GENERATION_TYPE = {
+  NEW: "new",
+  REGENERATION: "regeneration",
+};
+
+const $generationDefaultButton = $("#generationDefaultButton");
+const $generationMenuButton = $("#generationMenuButton");
 const $applyLinkChangesButton = $("#applyLinkChangesButton");
-const $modelGenerationPrimaryButton = $("#modelGenerationPrimaryButton");
-const $modelGenerationPrimaryLabel = $("#modelGenerationPrimaryLabel");
-const $modelGenerationMenuButton = $("#modelGenerationMenuButton");
-const $modelGenerationPromptDialog = $("#modelGenerationPromptDialog");
-const $modelGenerationPromptForm = $("#modelGenerationPromptForm");
-const $modelGenerationPromptTitle = $("#modelGenerationPromptTitle");
-const $modelGenerationPromptHint = $("#modelGenerationPromptHint");
-const $modelGenerationPromptInput = $("#modelGenerationPromptInput");
-const $modelGenerationPromptError = $("#modelGenerationPromptError");
+const $generationButtons = $generationDefaultButton.add($generationMenuButton);
+const $promptDialog = $("#modelGenerationPromptDialog");
+const promptDialog = $promptDialog[0];
+const $promptForm = $("#modelGenerationPromptForm");
+const $dialogTitle = $promptDialog.find(".dialog-title");
+const $promptInput = $("#modelGenerationPromptInput");
 const $cancelModelGenerationPromptButton = $(
   "#cancelModelGenerationPromptButton",
 );
@@ -30,261 +30,191 @@ const $submitModelGenerationPromptButton = $(
   "#submitModelGenerationPromptButton",
 );
 
+const GENERATION_UI_TEXT = {
+  [GENERATION_TYPE.REGENERATION]: {
+    action: {
+      primaryLabel: "Regenerate model",
+      menuButtonTitle: "More regeneration actions",
+    },
+    dialog: {
+      title: "Regenerate Model with Instructions",
+      submitLabel: "Regenerate",
+    },
+  },
+  [GENERATION_TYPE.NEW]: {
+    action: {
+      primaryLabel: "Generate new model",
+      menuButtonTitle: "More generation actions",
+    },
+    dialog: {
+      title: "Generate New Model with Instructions",
+      submitLabel: "Generate",
+    },
+  },
+};
+
+function getActiveGenerationType() {
+  const editingModel = workspaceStore.getEditingModel();
+  if (!editingModel) {
+    return GENERATION_TYPE.NEW;
+  }
+  return editingModel.isLatest ? GENERATION_TYPE.REGENERATION : null;
+}
+
 function isGenerationActionBusy() {
   return modelEditorStore.getIsGenerating();
 }
 
-function getGenerationActionState() {
-  const hasEditingModel = workspaceStore.hasEditingModel();
-  const hasSelectionChanged = !!documentViewerStore.getHasSelectionChanged();
-  const hasGenerationSelections =
-    documentViewerStore.getSortedNewSelections().length > 0;
-  const canGenerateNewModel = hasGenerationSelections;
-  const canRegenerateModel = !!workspaceStore.getEditingModelId();
-  const primaryTarget = hasEditingModel
-    ? MODEL_GENERATION_TARGET.EDITING_MODEL
-    : MODEL_GENERATION_TARGET.NEW_MODEL;
-
-  return {
-    hasEditingModel,
-    hasSelectionChanged,
-    hasGenerationSelections,
-    canGenerateNewModel,
-    canRegenerateModel,
-    primaryTarget,
-    isPrimaryEnabled:
-      primaryTarget === MODEL_GENERATION_TARGET.EDITING_MODEL
-        ? canRegenerateModel
-        : canGenerateNewModel,
-    hasAnyGenerationAction: canGenerateNewModel || canRegenerateModel,
-  };
-}
-
-function setPrimaryGenerationAction(target) {
-  const normalizedTarget =
-    target === MODEL_GENERATION_TARGET.EDITING_MODEL
-      ? MODEL_GENERATION_TARGET.EDITING_MODEL
-      : MODEL_GENERATION_TARGET.NEW_MODEL;
-  const label =
-    normalizedTarget === MODEL_GENERATION_TARGET.EDITING_MODEL
-      ? "Regenerate model"
-      : "Generate new model";
-
-  $modelGenerationPrimaryButton.attr("data-target", normalizedTarget);
-  $modelGenerationPrimaryButton.attr("title", label);
-  $modelGenerationPrimaryLabel.text(label);
-}
-
-function resolveGenerationTargetFromButton(element) {
-  const target = element?.dataset?.target;
-  if (MODEL_GENERATION_TARGET_VALUES.has(target)) {
-    return target;
-  }
-  console.warn(
-    "Unknown model generation target on button, falling back to NEW_MODEL:",
-    target,
+function isGenerationActionLocked() {
+  return (
+    (workspaceStore.isEditingModelNewModelDraft() &&
+      modelService.hasPendingNewModelDraft()) ||
+    isGenerationActionBusy()
   );
-  return MODEL_GENERATION_TARGET.NEW_MODEL;
 }
 
-function getPromptDialogText() {
-  return String($modelGenerationPromptInput.val() || "").trim();
-}
-
-function getPromptDialogTarget() {
-  return resolveGenerationTargetFromButton({
-    dataset: {
-      target: $modelGenerationPromptDialog.attr("data-target"),
-    },
-  });
-}
-
-function isGenerationTargetAvailable(target) {
-  const isDraftMode =
-    workspaceStore.isEditingModelDraft() &&
-    modelService.hasPendingNewModelDraft();
-  if (isDraftMode) {
+function isGenerationActionEnabled(generationType = getActiveGenerationType()) {
+  if (!generationType) {
     return false;
   }
-  const { canGenerateNewModel, canRegenerateModel } =
-    getGenerationActionState();
-  return target === MODEL_GENERATION_TARGET.EDITING_MODEL
-    ? canRegenerateModel
-    : canGenerateNewModel;
+  if (generationType === GENERATION_TYPE.REGENERATION) {
+    return true;
+  }
+  return documentViewerStore.getHasSelectionChanged();
 }
 
-function syncPromptDialogActionState() {
-  const hasPrompt = !!getPromptDialogText();
-  const isTargetAvailable = isGenerationTargetAvailable(
-    getPromptDialogTarget(),
-  );
-  $submitModelGenerationPromptButton.prop(
-    "disabled",
-    !hasPrompt || isGenerationActionBusy() || !isTargetAvailable,
-  );
-  $cancelModelGenerationPromptButton.text("Cancel");
-  $modelGenerationPromptInput.prop("disabled", isGenerationActionBusy());
+function setApplyLinkChangesButtonEnabled(enabled) {
+  $applyLinkChangesButton.prop("disabled", !enabled);
 }
 
-function resolvePromptDialogCopy(target) {
-  if (target === MODEL_GENERATION_TARGET.EDITING_MODEL) {
-    return {
-      title: "Regenerate Model with Instructions",
-      hint: "Add extra instructions to guide regeneration from the selected text.",
-      submitLabel: "Regenerate",
-    };
-  }
-  return {
-    title: "Generate New Model with Instructions",
-    hint: "Add extra instructions to guide generation from the selected text.",
-    submitLabel: "Generate",
-  };
-}
-
-function openPromptDialog(target = MODEL_GENERATION_TARGET.NEW_MODEL) {
-  if (!$modelGenerationPromptDialog.length) {
-    return;
-  }
-  const normalizedTarget = resolveGenerationTargetFromButton({
-    dataset: { target },
-  });
-  const copy = resolvePromptDialogCopy(normalizedTarget);
-
-  $modelGenerationPromptDialog.attr("data-target", normalizedTarget);
-  $modelGenerationPromptTitle.text(copy.title);
-  $modelGenerationPromptHint.text(copy.hint);
-  $submitModelGenerationPromptButton.text(copy.submitLabel);
-  $modelGenerationPromptError.text("");
-  $modelGenerationPromptInput.val("");
-  syncPromptDialogActionState();
-
-  if (!$modelGenerationPromptDialog[0].open) {
-    $modelGenerationPromptDialog[0].showModal();
-  }
-  setTimeout(() => {
-    $modelGenerationPromptInput.trigger("focus");
-  }, 0);
-}
-
-function closePromptDialog() {
-  if (!$modelGenerationPromptDialog.length) {
-    return;
-  }
-  const dialog = $modelGenerationPromptDialog[0];
-  if (!dialog.open) {
-    return;
-  }
-  dialog.close();
+function setGenerationButtonsEnabled(enabled) {
+  $generationButtons.prop("disabled", !enabled);
 }
 
 function disableGenerationControl() {
-  $modelGenerationPrimaryButton.prop("disabled", true);
-  $modelGenerationMenuButton.prop("disabled", true);
+  setGenerationButtonsEnabled(false);
 }
 
-function buildGenerationActionsMenu() {
-  const { primaryTarget, canGenerateNewModel, canRegenerateModel } =
-    getGenerationActionState();
-  const menu = { "": [] };
+function syncGenerationButtonContent(
+  generationType = getActiveGenerationType(),
+) {
+  const resolvedGenerationType = generationType || GENERATION_TYPE.NEW;
+  const buttonUiText = GENERATION_UI_TEXT[resolvedGenerationType].action;
+  $generationDefaultButton
+    .text(buttonUiText.primaryLabel)
+    .attr("title", buttonUiText.primaryLabel);
+  $generationMenuButton.attr("title", buttonUiText.menuButtonTitle);
+}
 
-  if (
-    primaryTarget === MODEL_GENERATION_TARGET.EDITING_MODEL &&
-    canRegenerateModel
-  ) {
-    menu[""].push(
+function buildGenerationActionsMenu(
+  generationType = getActiveGenerationType(),
+) {
+  if (!generationType) {
+    return null;
+  }
+
+  const actionsUiText = GENERATION_UI_TEXT[generationType].action;
+  return {
+    "": [
       {
-        label: "Regenerate model",
-        function_call: triggerGenerationAction,
+        label: actionsUiText.primaryLabel,
+        function_call: triggerGeneration,
         text_icon: undefined,
         type: undefined,
-        params: [MODEL_GENERATION_TARGET.EDITING_MODEL],
+        params: [],
       },
       {
-        label: "Regenerate model with instructions...",
+        label: `${actionsUiText.primaryLabel} with instructions...`,
         function_call: openPromptDialog,
         text_icon: undefined,
         type: undefined,
-        params: [MODEL_GENERATION_TARGET.EDITING_MODEL],
+        params: [],
       },
-    );
-  }
-
-  if (
-    primaryTarget === MODEL_GENERATION_TARGET.NEW_MODEL &&
-    canGenerateNewModel
-  ) {
-    menu[""].push(
-      {
-        label: "Generate new model",
-        function_call: triggerGenerationAction,
-        text_icon: undefined,
-        type: undefined,
-        params: [MODEL_GENERATION_TARGET.NEW_MODEL],
-      },
-      {
-        label: "Generate new model with instructions...",
-        function_call: openPromptDialog,
-        text_icon: undefined,
-        type: undefined,
-        params: [MODEL_GENERATION_TARGET.NEW_MODEL],
-      },
-    );
-  }
-
-  return menu[""].length > 0 ? menu : null;
-}
-
-function triggerGenerationAction(target, options = {}) {
-  handleGenerationAction(target, options).catch((error) => {
-    console.error("Failed to run generation action:", error);
-    applyActionButtonsState();
-  });
+    ],
+  };
 }
 
 function applyActionButtonsState() {
-  const isDraftMode =
-    workspaceStore.isEditingModelDraft() &&
-    modelService.hasPendingNewModelDraft();
-  if (isDraftMode || isGenerationActionBusy()) {
+  const activeGenerationType = getActiveGenerationType();
+  const hasEditingModel = workspaceStore.hasEditingModel();
+  const hasSelectionChanged = documentViewerStore.getHasSelectionChanged();
+
+  syncGenerationButtonContent(activeGenerationType);
+
+  if (isGenerationActionLocked()) {
     disableGenerationControl();
-    $applyLinkChangesButton.prop("disabled", true);
+    setApplyLinkChangesButtonEnabled(false);
     return;
   }
 
-  const {
-    hasEditingModel,
-    hasSelectionChanged,
-    primaryTarget,
-    isPrimaryEnabled,
-  } = getGenerationActionState();
-  const hasAnyMenuAction = !!buildGenerationActionsMenu();
-
-  setPrimaryGenerationAction(primaryTarget);
-
-  $modelGenerationPrimaryButton.prop("disabled", !isPrimaryEnabled);
-  $modelGenerationMenuButton.prop("disabled", !hasAnyMenuAction);
-
-  if (hasEditingModel) {
-    // Apply stays enabled only for pending text changes or temporary selections.
-    $applyLinkChangesButton.prop("disabled", !hasSelectionChanged);
-  } else {
-    $applyLinkChangesButton.prop("disabled", true);
-  }
+  setGenerationButtonsEnabled(isGenerationActionEnabled(activeGenerationType));
+  setApplyLinkChangesButtonEnabled(hasEditingModel && hasSelectionChanged);
 }
 
-async function handleGenerationAction(target, options = {}) {
+async function handleGeneration(additionalPrompt = "") {
   disableGenerationControl();
   try {
-    await modelService.generateModelBySelections(target, options);
+    await modelService.generateModelBySelections(additionalPrompt);
   } finally {
     applyActionButtonsState();
   }
 }
 
+function triggerGeneration(additionalPrompt = "") {
+  void handleGeneration(additionalPrompt);
+}
+
+function openGenerationMenu(event) {
+  event.preventDefault();
+  event.stopPropagation();
+
+  const $button = $(event.currentTarget);
+  if ($button.prop("disabled")) {
+    return;
+  }
+
+  const activeGenerationType = getActiveGenerationType();
+  const menu = buildGenerationActionsMenu(activeGenerationType);
+  if (!menu) {
+    return;
+  }
+
+  createMenu(event, menu, {
+    noIcons: true,
+  });
+}
+
+function getPromptText() {
+  return $promptInput.val().trim();
+}
+
+function syncPromptDialogActionState() {
+  $submitModelGenerationPromptButton.prop("disabled", !getPromptText());
+}
+
+function openPromptDialog() {
+  const activeGenerationType = getActiveGenerationType() || GENERATION_TYPE.NEW;
+  const dialogUiText = GENERATION_UI_TEXT[activeGenerationType].dialog;
+  $dialogTitle.text(dialogUiText.title);
+  $submitModelGenerationPromptButton.text(dialogUiText.submitLabel);
+  $promptInput.val("");
+  syncPromptDialogActionState();
+
+  promptDialog.showModal();
+
+  setTimeout(() => {
+    $promptInput.trigger("focus");
+  }, 0);
+}
+
+function closePromptDialog() {
+  if (promptDialog?.open) {
+    promptDialog.close();
+  }
+}
+
 createUI({
-  setup: () => {
-    applyActionButtonsState();
-  },
+  setup: () => {},
   bindListeners: () => {
     $applyLinkChangesButton.on("click", () => {
       modelService.updateEditingVersion(
@@ -292,34 +222,13 @@ createUI({
       );
     });
 
-    $modelGenerationPrimaryButton.on("click", async (event) => {
-      const target = resolveGenerationTargetFromButton(event.currentTarget);
-      await handleGenerationAction(target);
+    $generationDefaultButton.on("click", () => {
+      triggerGeneration();
     });
 
-    $modelGenerationMenuButton.on("mousedown", (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      if ($modelGenerationMenuButton.prop("disabled")) {
-        return;
-      }
-      const menu = buildGenerationActionsMenu();
-      if (!menu) {
-        return;
-      }
-      createMenu(
-        {
-          target: event.currentTarget,
-          stopPropagation: () => event.stopPropagation(),
-        },
-        menu,
-      );
-    });
+    $generationMenuButton.on("mousedown", openGenerationMenu);
 
-    $modelGenerationPromptInput.on("input", () => {
-      if ($modelGenerationPromptError.text()) {
-        $modelGenerationPromptError.text("");
-      }
+    $promptInput.on("input", () => {
       syncPromptDialogActionState();
     });
 
@@ -327,65 +236,39 @@ createUI({
       closePromptDialog();
     });
 
-    $modelGenerationPromptForm.on("submit", (event) => {
+    $promptForm.on("submit", (event) => {
       event.preventDefault();
-      const promptText = getPromptDialogText();
+
+      const promptText = getPromptText();
       if (!promptText) {
-        $modelGenerationPromptError.text("Prompt is required.");
-        syncPromptDialogActionState();
         return;
       }
-      const target = getPromptDialogTarget();
-      if (!isGenerationTargetAvailable(target)) {
-        $modelGenerationPromptError.text(
-          "This action is not currently available.",
-        );
-        syncPromptDialogActionState();
-        return;
-      }
-      $modelGenerationPromptError.text("");
       closePromptDialog();
-      triggerGenerationAction(target, { additionalPrompt: promptText });
+      triggerGeneration(promptText);
     });
 
-    $modelGenerationPromptDialog.on("click", (event) => {
-      if (event.target === $modelGenerationPromptDialog[0]) {
+    $promptDialog.on("click", (event) => {
+      if (event.target === promptDialog) {
         closePromptDialog();
       }
     });
   },
   subscribeStores: () => {
     documentViewerStore.subscribe(({ key }) => {
-      switch (key) {
-        case "hasSelectionChanged":
-          applyActionButtonsState();
-          syncPromptDialogActionState();
-          break;
-        default:
-          break;
+      if (key === "hasSelectionChanged") {
+        applyActionButtonsState();
       }
     });
 
     workspaceStore.subscribe(({ key }) => {
-      switch (key) {
-        case "editingModel": {
-          applyActionButtonsState();
-          syncPromptDialogActionState();
-          break;
-        }
-        default:
-          break;
+      if (key === "editingModel") {
+        applyActionButtonsState();
       }
     });
 
     modelEditorStore.subscribe(({ key }) => {
-      switch (key) {
-        case "isGenerating":
-          applyActionButtonsState();
-          syncPromptDialogActionState();
-          break;
-        default:
-          break;
+      if (key === "isGenerating") {
+        applyActionButtonsState();
       }
     });
   },

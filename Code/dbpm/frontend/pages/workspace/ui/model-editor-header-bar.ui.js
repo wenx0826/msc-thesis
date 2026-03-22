@@ -14,12 +14,13 @@ const $restoreVersionButton = $("#restoreModelVersionButton");
 const $versionActionButtons = $createVersionButton.add($restoreVersionButton);
 const $moreActionsButton = $("#editingModelMoreActionsButton");
 let isCreatingModelVersion = false;
+let versionSelector;
 
 function setModelNameText(name) {
   $modelName.text(name || "");
 }
 
-function resetToolbar(versionSelector) {
+function resetToolbar() {
   setModelNameText("");
   setVersionTag($modelVersionTag, null);
   versionSelector.update({ versions: [], selectedId: null });
@@ -27,7 +28,7 @@ function resetToolbar(versionSelector) {
 
 createUI({
   setup: () => {
-    const versionSelector = initVersionSelector({
+    versionSelector = initVersionSelector({
       $select: $versionSelect,
       onSelect: ({ version }) => {
         workspaceService.displayModel(version.modelId, version.id);
@@ -45,7 +46,6 @@ createUI({
     // const getActionsMenuItems = (modelId, versionId) => {
     //   const isLatestVersion = modelsStore.isLatestVersion(modelId, versionId);
     //   return [
-    return { versionSelector };
   },
   bindListeners: () => {
     $deselectButton.on("click", () => {
@@ -81,12 +81,13 @@ createUI({
       // showContextMenu($moreActionsButton, menuItems);
     });
   },
-  subscribeStores: ({ versionSelector }) => {
+  subscribeStores: () => {
     workspaceStore.subscribe(({ key, oldValue, newValue }) => {
       switch (key) {
         case "editingModel": {
-          const { id: newModelId, versionId: newVersionId, isDraft } = newValue;
-          const { id: oldModelId } = oldValue;
+          const { id: newModelId, versionId: newVersionId } = newValue || {};
+          const oldModelId = oldValue?.id;
+          const isDraft = !!newValue && !newVersionId;
 
           if (isDraft) {
             const modelMeta = newModelId
@@ -99,7 +100,7 @@ createUI({
           }
 
           if (!newModelId) {
-            resetToolbar(versionSelector);
+            resetToolbar();
             break;
           }
           const modelMeta = modelsStore.getEntity(newModelId);
