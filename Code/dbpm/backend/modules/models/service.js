@@ -11,11 +11,9 @@ import documentModelLinkService from "../document_model_links/service.js";
 import documentVersionRepo from "../documents/repositories/version.js";
 import { injectDbpmMeta } from "./utils/dbpmMetaXml.js";
 
-const SELECTION_TEXT_SEPARATOR = "\n";
-
-function selectionsToText(selections) {
+function selectionsToExactTexts(selections) {
   if (!Array.isArray(selections)) {
-    return "";
+    return [];
   }
   return selections
     .map((selection) =>
@@ -23,8 +21,7 @@ function selectionsToText(selections) {
         ? selection.textQuote.exact.trim()
         : "",
     )
-    .filter(Boolean)
-    .join(SELECTION_TEXT_SEPARATOR);
+    .filter(Boolean);
 }
 
 function pickLatestLinksByModelVersionId(links) {
@@ -52,7 +49,18 @@ function pickLatestLinksByModelVersionId(links) {
   return [...linksByModelVersionId.values()];
 }
 
-function enrichModelData(modelData, documentVersionId, selections) {
+function enrichModelData(
+  modelData,
+  documentVersionId,
+  selections,
+  {
+    prompt = null,
+    type = null,
+    modelId = null,
+    modelVersionId = null,
+    modelVersionName = null,
+  } = {},
+) {
   if (!documentVersionId) {
     return modelData;
   }
@@ -63,9 +71,16 @@ function enrichModelData(modelData, documentVersionId, selections) {
     return modelData;
   }
 
+  const isReset = !type || type.startsWith("regeneration_");
+
   return injectDbpmMeta(modelData, {
     ...documentInfo,
-    selectedText: selectionsToText(selections),
+    selections: selectionsToExactTexts(selections),
+    prompt,
+    isReset,
+    modelId,
+    modelVersionId,
+    modelVersionName,
   });
 }
 
@@ -161,7 +176,7 @@ function recordVersionCreation({
   if (mode === "copy") {
     modelVersionEventRepo.add({
       modelVersionId: createdVersionId,
-      type: reason === "revert" ? "version_reverted" : "version_created_copy",
+      type: reason === "revert" ? "manual_new_version_revert" : "manual_new_version_latest",
       selectedWordsCount: selectedWordsCount ?? null,
     });
   }
@@ -180,7 +195,7 @@ function recordVersionCreation({
 }
 
 export default {
-  createModelAndLink({ projectId, modelData, link }) {
+  createModelAndLink({ projectId, modelData, link, prompt = null }) {
     const latestModelNumber =
       projectsService.allocateLatestModelNumberById(projectId);
     const modelName = `Model_${latestModelNumber}`;
@@ -206,12 +221,23 @@ export default {
         selectedWordsCount,
       });
 
-      // Persist model XML exactly as received from the client.
-      storageRepo.write(createdModelVersion.id, modelData);
+      const enrichedModelData = enrichModelData(
+        modelData,
+        link?.documentVersionId ?? null,
+        selections,
+        {
+          prompt,
+          type: null,
+          modelId: createdModel.id,
+          modelVersionId: createdModelVersion.id,
+          modelVersionName: createdModelVersion.name,
+        },
+      );
+      storageRepo.write(createdModelVersion.id, enrichedModelData);
       modelRepo.updateById(createdModel.id, {
         latestVersionId: createdModelVersion.id,
       });
-      storageRepo.writeByModelId(createdModel.id, modelData);
+      storageRepo.writeByModelId(createdModel.id, enrichedModelData);
 
       const createdLink = documentModelLinkService.create({
         ...link,
@@ -241,6 +267,7 @@ export default {
     type = null,
     modelData = null,
     link = null,
+    prompt = null,
   }) {
     const { model, sourceVersion } = resolveValidatedCreateVersionContext({
       modelId,
@@ -286,6 +313,13 @@ export default {
           ? link.documentVersionId
           : null,
         selections,
+        {
+          prompt,
+          type,
+          modelId,
+          modelVersionId: createdVersion.id,
+          modelVersionName: createdVersion.name,
+        },
       );
       persistCreatedVersionContent({
         modelId,
@@ -623,7 +657,7 @@ export default {
     });
   },
 
-  updateVersion({ versionId, modelData, link, type }) {
+  updateVersion({ versionId, modelData, link, type, prompt = null }) {
     const version = versionRepo.findById(versionId);
     if (!version) {
       throw new Error("Model version not found");
@@ -673,6 +707,13 @@ export default {
       modelData,
       documentVersionId,
       effectiveSelections,
+      {
+        prompt,
+        type,
+        modelId,
+        modelVersionId: versionId,
+        modelVersionName: version.name,
+      },
     );
     storageRepo.write(versionId, enrichedModelData);
     syncLatestModelAlias(modelId, versionId, enrichedModelData);
@@ -801,12 +842,15 @@ export default {
           continue;
         }
 
+        const modelVersion = versionRepo.findById(modelVersionId);
         const enrichedModelData = injectDbpmMeta(modelData, {
           ...documentInfo,
-          selectedText: selectionsToText(link?.selections),
+          selections: selectionsToExactTexts(link?.selections),
+          modelId: modelVersion?.modelId ?? null,
+          modelVersionId,
+          modelVersionName: modelVersion?.name ?? null,
         });
         storageRepo.write(modelVersionId, enrichedModelData);
-        const modelVersion = versionRepo.findById(modelVersionId);
         syncLatestModelAlias(
           modelVersion?.modelId ?? null,
           modelVersionId,

@@ -4,3 +4,54 @@ event: project_created
 data:
   id: 2821446d-cb2c-4eb6-9e1d-31e429b6ae55
   name: test2
+---
+timestamp: '2026-03-22T19:09:09.066Z'
+event: document_uploaded
+data:
+  id: ec21e1bb-e69d-4b82-bc1f-014a232092e4
+  projectId: 2821446d-cb2c-4eb6-9e1d-31e429b6ae55
+  name: enhanced_feature_spec_payment_workflow.docx
+  latestVersionId: null
+  latestVersionNumber: 0
+  createdAt: '2026-03-22T19:09:09.059Z'
+  deletedAt: null
+---
+timestamp: '2026-03-22T20:13:42.173Z'
+event: model_generated
+data:
+  id: f3dfd196-39e4-43e2-ab6b-04e94daa1a7c
+  name: Model_1
+  data: <description xmlns="http://cpee.org/ns/description/1.0"/>
+---
+timestamp: '2026-03-22T20:14:07.494Z'
+event: model_version_created
+data:
+  modelId: f3dfd196-39e4-43e2-ab6b-04e94daa1a7c
+  sourceVersionId: 7f2c87c0-5470-40db-8852-c058b02ebf80
+  newVersionId: 3931528d-6af5-41dc-9cba-9b466a220a38
+  reason: new_version
+  mode: payload
+  type: regeneration_by_selections
+---
+timestamp: '2026-03-22T20:14:25.089Z'
+event: model_version_created
+data:
+  modelId: f3dfd196-39e4-43e2-ab6b-04e94daa1a7c
+  sourceVersionId: 3931528d-6af5-41dc-9cba-9b466a220a38
+  newVersionId: ddb33a29-95dd-44b0-b159-26f868a614a2
+  reason: new_version
+  mode: payload
+  type: regeneration_by_prompt
+---
+timestamp: '2026-03-22T20:17:42.606Z'
+event: model_generated
+data:
+  id: f606aab7-1be6-4643-b0fc-ea1d8c32c2cc
+  name: Model_2
+  data: <description xmlns="http://cpee.org/ns/description/1.0"/>
+---
+timestamp: '2026-03-22T21:42:32.517Z'
+event: document_updated
+data:
+  documentId: ec21e1bb-e69d-4b82-bc1f-014a232092e4
+  versionId: 3c83ab9d-e6ee-4acd-a427-c35d4067ed95

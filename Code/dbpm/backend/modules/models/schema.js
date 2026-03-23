@@ -52,9 +52,9 @@ const selectionsSchema = {
 const versionUpdateTypeSchema = {
   type: "string",
   enum: [
-    "manual_update_selections",
-    "manual_update_graph_properties_only",
-    "manual_update_graph_changed",
+    "manual_selections_update",
+    "manual_properties_update",
+    "manual_flow_update",
     "regeneration_by_selections",
     "regeneration_by_prompt",
   ],
@@ -86,6 +86,7 @@ export const createModelSchema = {
         },
         required: ["documentVersionId", "selections"],
       },
+      prompt: { type: ["string", "null"] },
     },
     required: ["projectId", "modelData", "link"],
   },
@@ -156,6 +157,7 @@ export const createVersionSchema = {
       type: versionUpdateTypeSchema,
       modelData: { type: "string" },
       link: versionCreateLinkSchema,
+      prompt: { type: ["string", "null"] },
     },
     allOf: [
       {
@@ -365,6 +367,7 @@ export const updateVersionSchema = {
           selections: selectionsSchema,
         },
       },
+      prompt: { type: ["string", "null"] },
     },
     required: ["type", "modelData"],
   },

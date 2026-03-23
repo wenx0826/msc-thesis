@@ -1,14 +1,5 @@
-<description
-  xmlns:dbpm="https://example.com/dbpm">
-  <dbpm:info>
-    <dbpm:document_info>
-      <dbpm:document_id>60c474d3-657f-42d4-8af4-a395d587d333</dbpm:document_id>
-      <dbpm:document_version_id>1f572e18-24f6-43fb-b065-7406096a416c</dbpm:document_version_id>
-      <dbpm:document_version_name>v1</dbpm:document_version_name>
-      <dbpm:text_selections>
-        <dbpm:selection>The update includes:</dbpm:selection>
-        <dbpm:selection>- Improvements to payment authorization handling</dbpm:selection>
-      </dbpm:text_selections>
-    </dbpm:document_info>
+<description xmlns:dbpm="https://example.com/dbpm">
+  <dbpm:info><dbpm:model_info><dbpm:model_id>fd196157-e9b4-4ab2-b397-10f5bdcca6bb</dbpm:model_id><dbpm:model_version_id>de144a95-6ffb-4c93-ad9a-ea92aee55107</dbpm:model_version_id><dbpm:model_version_name>v4</dbpm:model_version_name></dbpm:model_info>
+    <dbpm:document_info><dbpm:document_id>60c474d3-657f-42d4-8af4-a395d587d333</dbpm:document_id><dbpm:document_version_id>1f572e18-24f6-43fb-b065-7406096a416c</dbpm:document_version_id><dbpm:document_version_name>v1</dbpm:document_version_name><dbpm:document_file_name>enhanced_feature_spec_payment_workflow.docx</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>The update includes:</dbpm:selection><dbpm:selection>- Improvements to payment authorization handling</dbpm:selection><dbpm:selection>Retry mechanisms for recoverable transaction failures</dbpm:selection></dbpm:text_selections></dbpm:document_info>
   </dbpm:info>
   <description xmlns="http://cpee.org/ns/description/1.0"/></description>

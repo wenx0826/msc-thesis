@@ -88,15 +88,27 @@
                 <h3>Model Interaction Statistics</h3>
                 <div class="stats-grid">
                   <div class="metric-row">
-                    <div class="metric-label">avg prompt generations per model:</div>
+                    <div class="metric-label">avg regenerations per model:</div>
                     <div class="metric-value">5</div>
                   </div>
                   <div class="metric-row">
-                    <div class="metric-label">avg regenerations per model:</div>
+                    <div class="metric-label">avg prompt refinements per model:</div>
                     <div class="metric-value">8</div>
                   </div>
                   <div class="metric-row">
-                    <div class="metric-label">avg prompt refinement updates per model:</div>
+                    <div class="metric-label">avg manual updates selection changed per model:</div>
+                    <div class="metric-value">2</div>
+                  </div>
+                  <div class="metric-row">
+                    <div class="metric-label">avg manual updates graph changed per model:</div>
+                    <div class="metric-value">2</div>
+                  </div>
+                  <div class="metric-row">
+                    <div class="metric-label">avg manual new versions per model:</div>
+                    <div class="metric-value">2</div>
+                  </div>
+                  <div class="metric-row">
+                    <div class="metric-label">avg manual new versions reverted per model:</div>
                     <div class="metric-value">2</div>
                   </div>
                 </div>
@@ -118,6 +130,14 @@
                     <div class="metric-label">new model by selection and prompt acceptance rate</div>
                     <div class="metric-value">8</div>
                   </div>
+                  <div class="metric-row">
+                    <div class="metric-label">regeneration by selection only / with additional prompt:</div>
+                    <div class="metric-value">8</div>
+                  </div>
+                  <div class="metric-row">
+                    <div class="metric-label">refinement by prompt acceptance rate:</div>
+                    <div class="metric-value">8</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -137,7 +157,7 @@
     <form class="dialog-form">
       <label for="name">Name</label>
       <input id="name" type="text" autocomplete="off" />
-      <div class="dialog-error" id="err"></div>
+      <div class="dialog-error" id="error"></div>
       <ui-bar class="dialog-actions">
         <div class="right item-group">
           <button id="cancel" type="button" class="btn-text">Cancel</button>

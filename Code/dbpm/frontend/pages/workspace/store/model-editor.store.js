@@ -1,5 +1,4 @@
 import { Store } from "../../../shared/utils/store.js";
-import { updateDbpmTextSelectionsInXmlNode } from "../../../modules/model/utils/dbpm-model-xml.js";
 
 const CPEE_DESCRIPTION_NS = "http://cpee.org/ns/description/1.0";
 const DBPM_NS = "https://example.com/dbpm";
@@ -262,15 +261,6 @@ class ModelEditorStore extends Store {
       oldValue: oldData,
       newValue: parsedData,
     });
-  }
-
-  updateModelDbpmTextSelections(selections, meta = {}) {
-    const data = this.state.data;
-    if (!data) {
-      return;
-    }
-
-    updateDbpmTextSelectionsInXmlNode(data, selections, meta);
   }
 }
 

@@ -73,7 +73,7 @@ body:has(#documentViewerPanel[data-document-state="latest"]):has(#modelEditorPan
 #selectionColorForm,
 #selectedSelectionColorForm {
   margin: 0;
-  display: flex;
+  /* display: flex; */
   align-items: center;
   gap: 2px;
   height: 100%;
@@ -89,6 +89,10 @@ body:has(#documentViewerPanel[data-document-state="latest"]):has(#modelEditorPan
       box-sizing: content-box;
     }
   }
+}
+
+#selectedSelectionColorForm {
+  display: flex;
 }
 
 #deselectAllSelectionsButton,

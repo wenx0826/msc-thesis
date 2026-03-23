@@ -1,94 +1,113 @@
+import { DOMParser, XMLSerializer } from "@xmldom/xmldom";
+
 const DBPM_NS = "https://example.com/dbpm";
-const DESCRIPTION_ROOT_PATTERN =
-  /^\s*(<\?xml[\s\S]*?\?>\s*)?<description\b[^>]*>[\s\S]*<\/description>\s*$/i;
-const DESCRIPTION_ROOT_CONTENT_PATTERN =
-  /^\s*<description\b[^>]*>([\s\S]*)<\/description>\s*$/i;
-const DESCRIPTION_OPEN_TAG_PATTERN = /<description\b[^>]*>/i;
-const INNER_DESCRIPTION_ROOT_PATTERN =
-  /^\s*(?:<dbpm:info\b[\s\S]*?<\/dbpm:info>\s*)*(<description\b[^>]*(?:\/>|>[\s\S]*<\/description>))\s*$/i;
-const DBPM_INFO_BLOCK_PATTERN = /<dbpm:info\b[\s\S]*?<\/dbpm:info>/i;
-const DBPM_DOCUMENT_INFO_BLOCK_PATTERN =
-  /<dbpm:document_info\b[\s\S]*?<\/dbpm:document_info>/i;
+const serializer = new XMLSerializer();
 
-function escapeXml(value) {
-  return String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&apos;");
+function makeDOMParser() {
+  const errors = [];
+  const domParser = new DOMParser({
+    errorHandler: {
+      error: (msg) => errors.push(msg),
+      fatalError: (msg) => errors.push(msg),
+    },
+  });
+  return { domParser, errors };
 }
 
-function indentBlock(block, indentSize) {
-  const prefix = " ".repeat(indentSize);
-  return block
-    .split("\n")
-    .map((line) => (line ? `${prefix}${line}` : line))
-    .join("\n");
+function findChildByLocalName(parent, localName) {
+  for (let child = parent.firstChild; child; child = child.nextSibling) {
+    if (child.namespaceURI === DBPM_NS && child.localName === localName) {
+      return child;
+    }
+  }
+  return null;
 }
 
-function buildDocumentInfoBlock({
-  documentId = "",
-  documentVersionId = "",
-  documentVersionName = "",
-  selectedText = "",
-}) {
-  const lines = [
-    "<dbpm:document_info>",
-    `  <dbpm:document_id>${escapeXml(documentId)}</dbpm:document_id>`,
-    `  <dbpm:document_version_id>${escapeXml(documentVersionId)}</dbpm:document_version_id>`,
-  ];
+function clearChildren(el) {
+  while (el.firstChild) el.removeChild(el.firstChild);
+}
 
-  if (documentVersionName) {
-    lines.push(
-      `  <dbpm:document_version_name>${escapeXml(documentVersionName)}</dbpm:document_version_name>`,
-    );
+function makeEl(doc, localName) {
+  return doc.createElementNS(DBPM_NS, `dbpm:${localName}`);
+}
+
+function addTextEl(doc, parent, localName, value) {
+  const el = makeEl(doc, localName);
+  el.appendChild(doc.createTextNode(String(value)));
+  parent.appendChild(el);
+}
+
+function upsertModelInfoBlock(
+  doc,
+  infoEl,
+  { modelId, modelVersionId, modelVersionName },
+) {
+  let modelInfoEl = findChildByLocalName(infoEl, "model_info");
+  if (modelInfoEl) {
+    clearChildren(modelInfoEl);
+  } else {
+    modelInfoEl = makeEl(doc, "model_info");
+    infoEl.insertBefore(modelInfoEl, infoEl.firstChild);
+  }
+  if (modelId != null) addTextEl(doc, modelInfoEl, "model_id", modelId);
+  if (modelVersionId != null)
+    addTextEl(doc, modelInfoEl, "model_version_id", modelVersionId);
+  if (modelVersionName != null)
+    addTextEl(doc, modelInfoEl, "model_version_name", modelVersionName);
+}
+
+function upsertDocumentInfoBlock(doc, infoEl, meta) {
+  const {
+    documentId = "",
+    documentVersionId = "",
+    documentVersionName = "",
+    documentFileName = "",
+    selections = [],
+  } = meta;
+
+  let docInfoEl = findChildByLocalName(infoEl, "document_info");
+  if (docInfoEl) {
+    clearChildren(docInfoEl);
+  } else {
+    docInfoEl = makeEl(doc, "document_info");
+    const promptsEl = findChildByLocalName(infoEl, "prompts");
+    infoEl.insertBefore(docInfoEl, promptsEl ?? null);
   }
 
-  lines.push(
-    `  <dbpm:text_selections>${escapeXml(selectedText)}</dbpm:text_selections>`,
-  );
-  lines.push("</dbpm:document_info>");
-  return lines.join("\n");
+  addTextEl(doc, docInfoEl, "document_id", documentId);
+  addTextEl(doc, docInfoEl, "document_version_id", documentVersionId);
+  if (documentVersionName)
+    addTextEl(doc, docInfoEl, "document_version_name", documentVersionName);
+  if (documentFileName)
+    addTextEl(doc, docInfoEl, "document_file_name", documentFileName);
+
+  const selectionsEl = makeEl(doc, "text_selections");
+  docInfoEl.appendChild(selectionsEl);
+  for (const text of Array.isArray(selections) ? selections : []) {
+    if (text) {
+      const selEl = makeEl(doc, "selection");
+      selEl.appendChild(doc.createTextNode(text));
+      selectionsEl.appendChild(selEl);
+    }
+  }
 }
 
-function upsertDocumentInfoInInfoBlock(infoBlock, documentInfoBlock) {
-  if (DBPM_DOCUMENT_INFO_BLOCK_PATTERN.test(infoBlock)) {
-    return infoBlock.replace(
-      DBPM_DOCUMENT_INFO_BLOCK_PATTERN,
-      documentInfoBlock,
-    );
+function upsertPromptsBlock(doc, infoEl, prompt, isReset) {
+  if (!prompt) return;
+
+  let promptsEl = findChildByLocalName(infoEl, "prompts");
+  if (!promptsEl) {
+    promptsEl = makeEl(doc, "prompts");
+    infoEl.appendChild(promptsEl);
   }
 
-  const infoOpenTagMatch = infoBlock.match(/<dbpm:info\b[^>]*>/i);
-  if (!infoOpenTagMatch) {
-    return infoBlock;
+  if (isReset) {
+    clearChildren(promptsEl);
   }
 
-  const indentedInfo = indentBlock(documentInfoBlock, 2);
-  return infoBlock.replace(
-    infoOpenTagMatch[0],
-    `${infoOpenTagMatch[0]}\n${indentedInfo}`,
-  );
-}
-
-function buildInfoBlock(documentInfoBlock) {
-  return [
-    `<dbpm:info xmlns:dbpm="${DBPM_NS}">`,
-    indentBlock(documentInfoBlock, 2),
-    "</dbpm:info>",
-  ].join("\n");
-}
-
-function splitXmlDeclaration(xmlString) {
-  const xmlDeclMatch = xmlString.match(/^\s*(<\?xml[\s\S]*?\?>)\s*/i);
-  if (!xmlDeclMatch) {
-    return { declaration: "", body: xmlString.trim() };
-  }
-  return {
-    declaration: xmlDeclMatch[1],
-    body: xmlString.slice(xmlDeclMatch[0].length).trim(),
-  };
+  const promptEl = makeEl(doc, "prompt");
+  promptEl.appendChild(doc.createTextNode(prompt));
+  promptsEl.appendChild(promptEl);
 }
 
 export function injectDbpmMeta(modelData, meta = {}) {
@@ -96,58 +115,38 @@ export function injectDbpmMeta(modelData, meta = {}) {
     throw new Error("Model data must be a non-empty XML string");
   }
 
-  const { declaration, body } = splitXmlDeclaration(modelData);
-  const documentInfoBlock = buildDocumentInfoBlock(meta);
-  const infoBlock = buildInfoBlock(documentInfoBlock);
+  // Preserve XML declaration
+  const xmlDeclMatch = modelData.match(/^\s*(<\?xml[\s\S]*?\?>)\s*/i);
+  const declaration = xmlDeclMatch ? xmlDeclMatch[1] : null;
+  const body = xmlDeclMatch
+    ? modelData.slice(xmlDeclMatch[0].length).trim()
+    : modelData.trim();
 
-  let outputBody;
-  if (DESCRIPTION_ROOT_PATTERN.test(body)) {
-    if (DBPM_INFO_BLOCK_PATTERN.test(body)) {
-      outputBody = body.replace(DBPM_INFO_BLOCK_PATTERN, (matchedInfo) =>
-        upsertDocumentInfoInInfoBlock(matchedInfo, documentInfoBlock),
-      );
-    } else {
-      const descriptionOpenTagMatch = body.match(DESCRIPTION_OPEN_TAG_PATTERN);
-      if (!descriptionOpenTagMatch) {
-        throw new Error("Invalid description XML root");
-      }
-      outputBody = body.replace(
-        DESCRIPTION_OPEN_TAG_PATTERN,
-        `${descriptionOpenTagMatch[0]}\n${indentBlock(infoBlock, 2)}`,
-      );
-    }
-  } else {
-    outputBody = [
-      "<description>",
-      indentBlock(infoBlock, 2),
-      indentBlock(body, 2),
-      "</description>",
-    ].join("\n");
+  // Wrap bare XML in outer <description> if not already wrapped
+  const isWrapped = /^\s*<description\b/i.test(body);
+  const xmlToParse = isWrapped
+    ? body
+    : `<description>\n${body}\n</description>`;
+
+  const { domParser, errors } = makeDOMParser();
+  const doc = domParser.parseFromString(xmlToParse, "text/xml");
+  if (errors.length > 0) {
+    throw new Error(`Failed to parse model XML: ${errors[0]}`);
   }
 
-  return declaration ? `${declaration}\n${outputBody}` : outputBody;
-}
+  const outerDesc = doc.documentElement;
 
-export function getDescription(modelData) {
-  if (typeof modelData !== "string" || !modelData.trim()) {
-    throw new Error("Model data must be a non-empty XML string");
+  // Find or create <dbpm:info> as first child of outer <description>
+  let infoEl = findChildByLocalName(outerDesc, "info");
+  if (!infoEl) {
+    infoEl = doc.createElementNS(DBPM_NS, "dbpm:info");
+    outerDesc.insertBefore(infoEl, outerDesc.firstChild);
   }
 
-  const { body } = splitXmlDeclaration(modelData);
-  const descriptionMatch = body.match(DESCRIPTION_ROOT_PATTERN);
-  if (!descriptionMatch) {
-    return null;
-  }
+  upsertModelInfoBlock(doc, infoEl, meta);
+  upsertDocumentInfoBlock(doc, infoEl, meta);
+  upsertPromptsBlock(doc, infoEl, meta.prompt ?? null, meta.isReset ?? false);
 
-  const rootContentMatch = body.match(DESCRIPTION_ROOT_CONTENT_PATTERN);
-  if (!rootContentMatch) {
-    return descriptionMatch[0];
-  }
-
-  const innerDescriptionRootMatch = rootContentMatch[1].match(
-    INNER_DESCRIPTION_ROOT_PATTERN,
-  );
-  return innerDescriptionRootMatch
-    ? innerDescriptionRootMatch[1]
-    : descriptionMatch[0];
+  const serialized = serializer.serializeToString(doc.documentElement);
+  return declaration ? `${declaration}\n${serialized}` : serialized;
 }

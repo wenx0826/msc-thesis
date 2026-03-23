@@ -117,3 +117,33 @@ data:
         </dbpm:document_info>
       </dbpm:info>
       <description xmlns="http://cpee.org/ns/description/1.0"/></description>
+---
+timestamp: '2026-03-22T18:32:37.319Z'
+event: model_version_created
+data:
+  modelId: fd196157-e9b4-4ab2-b397-10f5bdcca6bb
+  sourceVersionId: f672fb67-19e4-42d5-b4e1-1498e2707282
+  newVersionId: 75f56966-fb8d-4d0a-b6f7-d1e660ab1d7a
+  reason: new_version
+  mode: payload
+  type: regeneration_by_selections
+---
+timestamp: '2026-03-22T18:38:51.007Z'
+event: model_version_created
+data:
+  modelId: fd196157-e9b4-4ab2-b397-10f5bdcca6bb
+  sourceVersionId: 75f56966-fb8d-4d0a-b6f7-d1e660ab1d7a
+  newVersionId: 03271116-8605-4cba-b715-449559362a12
+  reason: new_version
+  mode: payload
+  type: regeneration_by_prompt
+---
+timestamp: '2026-03-22T21:17:48.548Z'
+event: model_version_created
+data:
+  modelId: fd196157-e9b4-4ab2-b397-10f5bdcca6bb
+  sourceVersionId: 03271116-8605-4cba-b715-449559362a12
+  newVersionId: de144a95-6ffb-4c93-ad9a-ea92aee55107
+  reason: new_version
+  mode: payload
+  type: regeneration_by_prompt

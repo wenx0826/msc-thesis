@@ -4,6 +4,7 @@ import {
   getProjectStatsURL,
   getProjectLogURL,
 } from "../../../shared/utils/url.js";
+import { formatDateTimeToSeconds } from "../../../shared/utils/date.js";
 import { createMenu } from "../../../shared/utils/dom.js";
 import initInlineEditor from "../../../shared/widgets/inline-editor.js";
 import { projectsAPI } from "../../../api/index.js";
@@ -19,7 +20,7 @@ async function renderProjectsTable() {
       project.name || "no name",
       project.documentsCount || 0,
       project.modelsCount || 0,
-      project.createdAt,
+      project.createdAt || "",
       "",
     ]);
     $projectsTable.DataTable({
@@ -41,7 +42,16 @@ async function renderProjectsTable() {
         },
         { title: "Documents", className: "col-num" },
         { title: "Models", className: "col-num" },
-        { title: "Created", className: "col-date" },
+        {
+          title: "Created",
+          className: "col-date",
+          render: function (data, type) {
+            if (type === "display" || type === "filter") {
+              return formatDateTimeToSeconds(data);
+            }
+            return data;
+          },
+        },
         {
           title: "Actions",
           render: function () {

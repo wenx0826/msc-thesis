@@ -21,7 +21,8 @@ class DocumentVersionRepository extends BaseSqlRepository {
       SELECT
         dv.id AS document_version_id,
         dv.document_id,
-        dv.name AS document_version_name
+        dv.name AS document_version_name,
+        dv.filename AS document_file_name
       FROM document_versions dv
       WHERE dv.id = ?
     `);

@@ -134,12 +134,13 @@ function initializeSchema() {
       id TEXT PRIMARY KEY,
       model_version_id TEXT NOT NULL,
       type TEXT NOT NULL CHECK (type IN (
-        'manual_update_selections',
-        'manual_update_graph_properties_only',
-        'manual_update_graph_changed',
-        'version_created_copy',
-        'version_reverted',
-        'selections_auto_reanchored'
+        'manual_new_model',
+        'manual_selections_update',
+        'manual_properties_update',
+        'manual_flow_update',
+        'manual_new_version_latest',
+        'manual_new_version_revert',
+        'auto_selections_reanchor'
       )),
       selected_words_count INTEGER,
       created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
@@ -276,29 +277,59 @@ function initializeSchema() {
   );
 
   // Unified timeline VIEW across version events and generation attempts
+  // Columns: source, id, project_id, model_id, model_version_id, activity, created_at
+  // activity label:
+  //   - generation:    {generation_type}_{result_short}_{input_mode_short}
+  //                    e.g. new_new_model_selections_only
+  //                         regeneration_new_version_selections_and_prompt
+  //                         refinement_replace_prompt_only
+  //   - version_event: type as-is
+  //                    e.g. manual_update_selections, version_created_copy
+  // Declined generation attempts are excluded (no result version to anchor to).
   db.exec(`
     CREATE VIEW IF NOT EXISTS model_activity_events AS
+
+    -- Branch 1: AI generation attempts (accepted only)
     SELECT
-      'version_event'  AS source,
-      id,
-      model_version_id,
-      type,
-      NULL             AS generation_type,
-      NULL             AS generation_input_mode,
-      NULL             AS result,
-      created_at
-    FROM model_version_events
+      'generation'                                    AS source,
+      ga.id,
+      ga.project_id,
+      rv.model_id,
+      ga.result_model_version_id                     AS model_version_id,
+      ga.generation_type
+        || '_'
+        || CASE ga.result
+             WHEN 'accepted_new_model'   THEN 'new_model'
+             WHEN 'accepted_replace'     THEN 'replace'
+             WHEN 'accepted_new_version' THEN 'new_version'
+           END
+        -- refinement is always prompt; only new/regeneration vary by input mode
+        || CASE WHEN ga.generation_type != 'refinement'
+             THEN '_' || CASE ga.generation_input_mode
+               WHEN 'selection_only'        THEN 'selections_only'
+               WHEN 'selection_with_prompt' THEN 'selections_and_prompt'
+             END
+             ELSE ''
+           END                                       AS activity,
+      ga.created_at
+    FROM  model_generation_attempts ga
+    JOIN  model_versions rv ON rv.id = ga.result_model_version_id
+    WHERE ga.result != 'declined'
+
     UNION ALL
+
+    -- Branch 2: manual / system edits on an existing version
     SELECT
-      'generation_attempt'                                   AS source,
-      id,
-      COALESCE(result_model_version_id, base_model_version_id) AS model_version_id,
-      NULL                                                   AS type,
-      generation_type,
-      generation_input_mode,
-      result,
-      created_at
-    FROM model_generation_attempts
+      'version_event'   AS source,
+      mve.id,
+      m.project_id,
+      mv.model_id,
+      mve.model_version_id,
+      mve.type          AS activity,
+      mve.created_at
+    FROM  model_version_events mve
+    JOIN  model_versions mv ON mv.id  = mve.model_version_id
+    JOIN  models         m  ON m.id   = mv.model_id
   `);
 }
 

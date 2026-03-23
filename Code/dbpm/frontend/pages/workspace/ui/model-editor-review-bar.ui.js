@@ -94,9 +94,7 @@ function setRegenerationDecisionClickLock(isLocked) {
   const shouldLock = Boolean(isLocked);
   isRegenerationDecisionClickLocked = shouldLock;
   if (!shouldLock) {
-    $newModelDraftReviewBar.removeClass(
-      REGENERATION_ACTION_BAR_HINT_CLASS,
-    );
+    $newModelDraftReviewBar.removeClass(REGENERATION_ACTION_BAR_HINT_CLASS);
     $regenerationDraftReviewBar.removeClass(REGENERATION_ACTION_BAR_HINT_CLASS);
     if (regenerationActionBarHintTimeoutId) {
       clearTimeout(regenerationActionBarHintTimeoutId);
@@ -342,6 +340,7 @@ createUI({
         await modelService.updateEditingVersion(preview.updateType, {
           expectedModelId: preview.modelId,
           expectedModelVersionId: preview.modelVersionId,
+          prompt: preview.prompt || null,
         });
         // Record accepted-replace regeneration attempt
         const meta = modelService.getPendingGenerationAttemptMeta();
@@ -386,6 +385,7 @@ createUI({
         await modelService.createModelVersion(modelId, modelVersionId, {
           modelData: regeneratedDataXml,
           type: regenerationUpdateType,
+          prompt: preview.prompt || null,
         });
         const { id: createdModelId, versionId: createdVersionId } =
           workspaceStore.getEditingModel() || {};
@@ -516,10 +516,7 @@ createUI({
       }
 
       const hadNewModelDraftState = isNewModelDraftEditingModel(oldValue);
-      if (
-        hadNewModelDraftState &&
-        !isNewModelDraftEditingModel(newValue)
-      ) {
+      if (hadNewModelDraftState && !isNewModelDraftEditingModel(newValue)) {
         modelService.discardPendingNewModelDraft({ clearEditorData: false });
       }
 

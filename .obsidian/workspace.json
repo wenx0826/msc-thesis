@@ -125,88 +125,14 @@
             "id": "1391ce42ba35595b",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Gemini DR v0.1.md",
-                "mode": "source",
-                "source": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "Gemini DR v0.1"
-            }
-          },
-          {
-            "id": "01e0c65c8e358d61",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "DBPM – App Guide/Feature – Generate Model.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "Feature – Generate Model"
-            }
-          },
-          {
-            "id": "eb4d5e42033b0b34",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "DBPM – App Guide/Project.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "Project"
-            }
-          },
-          {
-            "id": "c6add53e20510d8c",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "MAP.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "MAP"
-            }
-          },
-          {
-            "id": "ac476c8c8a1dad08",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Video Scripts/Gemini v0 - Intro.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "Gemini v0 - Intro"
-            }
-          },
-          {
-            "id": "e9121e936dc2ec03",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Untitled 1.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "Untitled 1"
+              "title": "New tab"
             }
           }
         ],
-        "currentTab": 13
+        "currentTab": 8
       }
     ],
     "direction": "vertical"
@@ -326,13 +252,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Untitled 1.md",
+                "file": "Video Scripts/Script v0.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of Untitled 1"
+              "title": "Outline of Script v0"
             }
           },
           {
@@ -367,29 +293,73 @@
       "card-board:CardBoard": false
     }
   },
-  "active": "e9121e936dc2ec03",
+  "floating": {
+    "id": "bcc986736679e02a",
+    "type": "floating",
+    "children": [
+      {
+        "id": "4d057819068daf18",
+        "type": "window",
+        "children": [
+          {
+            "id": "dff66fc60c647678",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "01e0c65c8e358d61",
+                "type": "leaf",
+                "state": {
+                  "type": "markdown",
+                  "state": {
+                    "file": "Video Scripts/Script v0.md",
+                    "mode": "source",
+                    "source": false
+                  },
+                  "icon": "lucide-file",
+                  "title": "Script v0"
+                }
+              }
+            ]
+          }
+        ],
+        "direction": "vertical",
+        "x": 668,
+        "y": -552,
+        "width": 944,
+        "height": 904,
+        "maximize": true,
+        "zoom": 0
+      }
+    ]
+  },
+  "active": "01e0c65c8e358d61",
   "lastOpenFiles": [
-    "Code/dbpm/persistence/models/fd196157-e9b4-4ab2-b397-10f5bdcca6bb.xml",
-    "Code/dbpm/persistence/models/f672fb67-19e4-42d5-b4e1-1498e2707282.xml",
-    "Code/dbpm/persistence/models/6a98742d-5894-4054-9b84-7dde6d48d53c.xml",
-    "Code/dbpm/persistence/models/8e0c3005-d9e9-4780-b367-753b4a3bae41.xml",
-    "Code/dbpm/persistence/logs/2821446d-cb2c-4eb6-9e1d-31e429b6ae55.yaml",
-    "Code/dbpm/persistence/models/b27dc92e-74ff-4dce-8aa4-d58b8ae3b5cd.xml",
-    "Code/dbpm/persistence/models/8c5942c0-63cb-42df-a64e-8f3f8ec2b96a.xml",
-    "Code/dbpm/persistence/models/19489326-a994-4d23-ba76-859ca647383d.xml",
-    "Code/dbpm/persistence/models/03d949e1-1e58-47ab-8a52-232b074de400.xml",
-    "Code/dbpm/persistence/models/88d81bde-1736-4036-982e-d7643b65680a.xml",
-    "Code/dbpm/persistence/models/2074bd04-7f9a-459d-af38-9929859fe16d.xml",
-    "Code/dbpm/README.md",
+    "Code/dbpm/persistence/models/6375f914-9ba1-49cf-81a9-1a5a05a02ca8.xml",
+    "Code/dbpm/persistence/models/47321bae-0435-4fc7-b540-6c8aedcf8bde.xml",
+    "Code/dbpm/persistence/models/a13e1031-87b3-44a0-b84f-a867ec850e54.xml",
+    "Code/dbpm/persistence/database.sqlite-journal",
+    "Code/dbpm/persistence/models/03d21044-fd81-45f1-a21b-ecd2d4ecce08.xml",
+    "Code/dbpm/persistence/models/7dd0de7b-d7b3-4cf9-9000-4dec2f71880b.xml",
+    "Code/dbpm/persistence/models/c65e3fe5-8a1c-4b5c-ae80-671e704bcb54.xml",
+    "Code/dbpm/persistence/models/3321917b-7420-474a-b1f0-041a3847ae20.xml",
+    "Code/dbpm/persistence/models/e9dbb703-4995-43da-be11-51230e8ee897.xml",
+    "Code/dbpm/persistence/documents/cd66ea1a-2b58-4700-b4a5-b4d2b7744053.html",
+    "Code/dbpm/persistence/logs/b0315f0d-0f70-4c1a-9475-c76f3c9f6eb5.yaml",
+    "Video Scripts/Script v0.md",
+    "0 - Kanban.md",
     "Video Scripts/Gemini v0 - Intro.md",
+    "MAP.md",
     "Untitled 1.md",
+    "Code/dbpm/backend/node_modules/@xmldom/xmldom/SECURITY.md",
+    "Code/dbpm/backend/node_modules/@xmldom/xmldom/readme.md",
+    "Code/dbpm/backend/node_modules/@xmldom/xmldom/CHANGELOG.md",
+    "Code/dbpm/README.md",
     "App Guide/Feature -- Generate Model/Design Decison.md",
     "App Guide/Feature – Generate Model.md",
     "App Guide/Project.md",
     "App Guide/User Guide.md",
     "Order Processing/Untitled.md",
     "Untitled.md",
-    "MAP.md",
     "Prop/Untitled.md",
     "Subprocess.svg",
     "Prop/Gemini DR v0.md",
@@ -401,11 +371,6 @@
     "01 Introduction/01.5 Evaluation.md",
     "01 Introduction/01.4 Methodology.md",
     "01 Introduction/01.3 Contribution.md",
-    "01 Introduction/01.2 Research Questions.md",
-    "01 Introduction/01.1 Motivation.md",
-    "User Story **Workflow Story (End-to-End)**.md",
-    "Prop/User Guide.md",
-    "gemini.md",
     "Code/dbpm_reverted/backend/node_modules/@fastify/static/test/static/shallow/sample.jpg",
     "Code/dbpm_reverted/backend/node_modules/@fastify/static/example/public/images/sample.jpg",
     "Code/dbpm_reverted/backend/node_modules/@fastify/send/test/fixtures/images/node-js.png",

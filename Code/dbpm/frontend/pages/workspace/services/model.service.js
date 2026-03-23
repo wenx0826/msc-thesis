@@ -16,11 +16,7 @@ import workspaceService from "./workspace.service.js";
 import { Constants } from "../../../constants.js";
 import { classifyLinkSelectionChange } from "../utils/link-selection-draft.js";
 import { endpointLoader } from "../../../modules/model/endpoints/endpoint-loader.js";
-import {
-  injectDbpmData,
-  updateDbpmTextSelections,
-  updateDbpmPromptOnly,
-} from "../../../modules/model/utils/dbpm-model-xml.js";
+
 
 // Import constants
 const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
@@ -361,19 +357,6 @@ function selectionsToText(selections) {
     .join(" ");
 }
 
-function selectionsToExactTexts(selections) {
-  if (!Array.isArray(selections)) {
-    return [];
-  }
-  return selections
-    .map((selection) =>
-      typeof selection?.textQuote?.exact === "string"
-        ? selection.textQuote.exact.trim()
-        : "",
-    )
-    .filter(Boolean);
-}
-
 function cloneValue(value, fallback = null) {
   if (value === undefined) {
     return fallback;
@@ -416,18 +399,6 @@ function resolveModelCreationContext(creationContext = null) {
   };
 }
 
-function prepareModelDataForCreation(modelData, creationContext) {
-  const prompt = creationContext.prompt || "";
-  return injectDbpmData(modelData, {
-    documentId: creationContext.documentId || "",
-    documentVersionId: creationContext.documentVersionId,
-    documentVersionName: creationContext.documentVersionName || "",
-    selections: selectionsToExactTexts(creationContext.selections),
-    prompt,
-    promptType: prompt ? "new" : null,
-  });
-}
-
 function setPendingNewModelDraft(nextDraft) {
   if (!nextDraft) {
     pendingNewModelDraft = null;
@@ -438,9 +409,6 @@ function setPendingNewModelDraft(nextDraft) {
   );
   pendingNewModelDraft = {
     modelData: nextDraft.modelData,
-    preparedModelData:
-      nextDraft.preparedModelData ||
-      prepareModelDataForCreation(nextDraft.modelData, normalizedContext),
     creationContext: normalizedContext,
     createdAt: Date.now(),
   };
@@ -570,8 +538,6 @@ function findProcessDescriptionInWrapper(wrapperRoot) {
 function composeRegeneratedModelData({
   currentModelData,
   generatedModelData,
-  selectionUpdate = null,
-  promptUpdate = null,
 }) {
   const generatedDoc = parseXmlDocument(generatedModelData);
   if (!generatedDoc?.documentElement) {
@@ -604,24 +570,7 @@ function composeRegeneratedModelData({
     const imported = standaloneDoc.importNode(generatedDescription, true);
     ensureDescriptionNamespace(imported);
     standaloneDoc.documentElement.appendChild(imported);
-    const serializedStandalone = $(
-      standaloneDoc.documentElement,
-    ).serializePrettyXML();
-    if (!selectionUpdate && !promptUpdate) {
-      return serializedStandalone;
-    }
-    if (selectionUpdate) {
-      return updateDbpmTextSelections(
-        serializedStandalone,
-        selectionUpdate.selections || [],
-        selectionUpdate.meta || {},
-      );
-    }
-    return updateDbpmPromptOnly(
-      serializedStandalone,
-      promptUpdate.prompt,
-      promptUpdate.promptType,
-    );
+    return $(standaloneDoc.documentElement).serializePrettyXML();
   }
 
   const imported = currentDoc.importNode(generatedDescription, true);
@@ -632,22 +581,7 @@ function composeRegeneratedModelData({
   } else {
     currentRoot.appendChild(imported);
   }
-  const serializedCurrent = $(currentRoot).serializePrettyXML();
-  if (!selectionUpdate && !promptUpdate) {
-    return serializedCurrent;
-  }
-  if (selectionUpdate) {
-    return updateDbpmTextSelections(
-      serializedCurrent,
-      selectionUpdate.selections || [],
-      selectionUpdate.meta || {},
-    );
-  }
-  return updateDbpmPromptOnly(
-    serializedCurrent,
-    promptUpdate.prompt,
-    promptUpdate.promptType,
-  );
+  return $(currentRoot).serializePrettyXML();
 }
 
 function getLinkUpdatePayload(serializedLink) {
@@ -709,45 +643,6 @@ function notifyLinkUpdateTriggered({
       }),
     );
   }
-}
-
-function resolveLinkDocumentMeta(link = {}) {
-  const viewedDocument = workspaceStore.getViewedDocument() || {};
-  const modelId =
-    (typeof link?.modelId === "string" && link.modelId) ||
-    workspaceStore.getEditingModelId() ||
-    null;
-  const documentIdCandidate =
-    (typeof link?.documentId === "string" && link.documentId) ||
-    (modelId ? modelsStore.getModelDocumentId(modelId) : null) ||
-    viewedDocument.id;
-  const documentVersionIdCandidate =
-    (typeof link?.documentVersionId === "string" && link.documentVersionId) ||
-    viewedDocument.versionId;
-  const documentId =
-    typeof documentIdCandidate === "string" && documentIdCandidate
-      ? documentIdCandidate
-      : null;
-  const documentVersionId =
-    typeof documentVersionIdCandidate === "string" && documentVersionIdCandidate
-      ? documentVersionIdCandidate
-      : null;
-  const documentVersionName =
-    documentId && documentVersionId
-      ? documentsStore.getVersion(documentId, documentVersionId)?.name || ""
-      : null;
-
-  const meta = {};
-  if (documentId) {
-    meta.documentId = documentId;
-  }
-  if (documentVersionId) {
-    meta.documentVersionId = documentVersionId;
-  }
-  if (typeof documentVersionName === "string") {
-    meta.documentVersionName = documentVersionName;
-  }
-  return meta;
 }
 
 function resolveModelVersionIdFromErrorContext({
@@ -1122,11 +1017,13 @@ async function updateModelVersionAndCache({
   modelData,
   link,
   type,
+  prompt = null,
 }) {
   await modelsAPI.updateVersion(modelVersionId, {
     modelData,
     link: getModelVersionLinkPayload(link),
     type,
+    prompt,
   });
 
   try {
@@ -1188,6 +1085,7 @@ function buildExplicitCreateVersionRequest({
   modelData,
   link = null,
   type = MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
+  prompt = null,
 }) {
   const resolvedLink =
     link || documentViewerStore.getSerializedNewEditingModelLink();
@@ -1203,6 +1101,7 @@ function buildExplicitCreateVersionRequest({
     type,
     modelData,
     link: payloadLink,
+    prompt,
   };
 }
 
@@ -1352,19 +1251,14 @@ export default {
     const creationContext = resolveModelCreationContext(
       options.creationContext,
     );
-    const preparedModelData = prepareModelDataForCreation(
-      modelData,
-      creationContext,
-    );
     setPendingNewModelDraft({
       modelData,
-      preparedModelData,
       creationContext,
     });
     workspaceStore.setEditingModel({
       id: null,
     });
-    modelEditorStore.setData(preparedModelData, {
+    modelEditorStore.setData(modelData, {
       updateType: null,
     });
     return getPendingNewModelDraftSnapshot();
@@ -1381,7 +1275,6 @@ export default {
     const commitTask = (async () => {
       const result = await this.createModelAndLink(pendingDraft.modelData, {
         creationContext: pendingDraft.creationContext,
-        preparedModelData: pendingDraft.preparedModelData,
       });
       // Record the accepted new-model generation attempt
       const meta = pendingGenerationAttemptMeta;
@@ -1505,9 +1398,6 @@ export default {
       const regeneratedModelData = composeRegeneratedModelData({
         currentModelData: originalModelData,
         generatedModelData: generatedModel,
-        promptUpdate: userInput
-          ? { prompt: userInput, promptType: "refinement" }
-          : null,
       });
 
       const preview = {
@@ -1516,6 +1406,7 @@ export default {
         updateType: MODEL_UPDATE_TYPE.REGENERATION_BY_PROMPT,
         originalDataXml: originalModelData,
         regeneratedDataXml: regeneratedModelData,
+        prompt: userInput || null,
       };
       if (isRegenerationContextActive(regenerationContext)) {
         modelEditorStore.setData(preview.regeneratedDataXml, {
@@ -1608,6 +1499,7 @@ export default {
         selectedTextSimilarity: null, // TODO: compute Jaccard vs stored link selections
         prompt: additionalPrompt || null,
       };
+      const generationType = pendingGenerationAttemptMeta.generationType;
       const generatedModel = await this.generateModel(
         generationInput,
         EMPTY_MODEL,
@@ -1627,23 +1519,6 @@ export default {
       const regeneratedModelData = composeRegeneratedModelData({
         currentModelData: originalModelData,
         generatedModelData: generatedModel,
-        selectionUpdate: selectedText
-          ? {
-              selections: [selectedText],
-              meta: {
-                ...resolveLinkDocumentMeta(editingLinkForSelections || {}),
-                prompt: additionalPrompt || null,
-                promptType: pendingGenerationAttemptMeta.generationType,
-              },
-            }
-          : null,
-        promptUpdate:
-          !selectedText && additionalPrompt
-            ? {
-                prompt: additionalPrompt,
-                promptType: pendingGenerationAttemptMeta.generationType,
-              }
-            : null,
       });
 
       const preview = {
@@ -1652,6 +1527,7 @@ export default {
         updateType: MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS,
         originalDataXml: originalModelData,
         regeneratedDataXml: regeneratedModelData,
+        prompt: additionalPrompt || null,
       };
       if (isRegenerationContextActive(regenerationContext)) {
         modelEditorStore.setData(preview.regeneratedDataXml, {
@@ -1703,9 +1579,7 @@ export default {
     const creationContext = resolveModelCreationContext(
       options.creationContext,
     );
-    const preparedModelData =
-      options.preparedModelData ||
-      prepareModelDataForCreation(modelData, creationContext);
+    const prompt = creationContext.prompt || null;
 
     const link = {
       documentVersionId: creationContext.documentVersionId,
@@ -1714,8 +1588,9 @@ export default {
     const { modelMeta: createdModelMeta, link: createdLink } =
       await modelsAPI.createModelAndLink({
         projectId: workspaceStore.getProjectId(),
-        modelData: preparedModelData,
+        modelData,
         link,
+        prompt,
       });
     modelsStore.add(createdModelMeta);
     workspaceStore.setEditingModel({
@@ -1723,12 +1598,12 @@ export default {
       versionId: createdModelMeta.latestVersionId,
       isLatest: true,
     });
-    modelEditorStore.setData(preparedModelData, {
+    modelEditorStore.setData(modelData, {
       updateType: null,
     });
     modelsStore.addCachedVersion(createdModelMeta.latestVersionId, {
       modelId: createdModelMeta.id,
-      dataXml: preparedModelData,
+      dataXml: modelData,
       status: "ready",
     });
     documentViewerStore.setSelectedSelection(null);
@@ -1739,7 +1614,6 @@ export default {
     return {
       modelMeta: createdModelMeta,
       link: createdLink,
-      preparedModelData,
     };
   },
   async renameModel(modelId, newName) {
@@ -1829,7 +1703,11 @@ export default {
     projectGraphStore.removeSubprocessEdge(modelId, taskId);
   },
   async updateEditingVersion(type, options = {}) {
-    const { expectedModelId = null, expectedModelVersionId = null } = options;
+    const {
+      expectedModelId = null,
+      expectedModelVersionId = null,
+      prompt = null,
+    } = options;
     const { id: modelId, versionId: modelVersionId } =
       workspaceStore.getEditingModel() || {};
 
@@ -1858,14 +1736,6 @@ export default {
       });
     }
 
-    if (type === MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS) {
-      const selectionTexts = selectionsToExactTexts(link?.selections || []);
-      const documentMeta = resolveLinkDocumentMeta(link || {});
-      modelEditorStore.updateModelDbpmTextSelections(
-        selectionTexts,
-        documentMeta,
-      );
-    }
     const modelData = modelEditorStore.getSerializedData();
 
     if (link?.id) {
@@ -1883,6 +1753,7 @@ export default {
       modelData,
       link: link,
       type,
+      prompt,
     });
 
     if (
@@ -1961,11 +1832,6 @@ export default {
     try {
       const currentModelData =
         await modelsAPI.getDataByVersionId(modelVersionId);
-      const updatedModelData = updateDbpmTextSelections(
-        currentModelData,
-        selectionsToExactTexts(serializedLink.selections),
-        resolveLinkDocumentMeta(serializedLink),
-      );
       notifyLinkUpdateTriggered({
         source: "updateLinkTextById",
         linkId: serializedLink.id,
@@ -1974,14 +1840,14 @@ export default {
         selectionCount,
       });
       await modelsAPI.updateVersion(modelVersionId, {
-        modelData: updatedModelData,
+        modelData: currentModelData,
         link: getModelVersionLinkPayload(serializedLink),
         type: MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
       });
 
       modelsStore.addCachedVersion(modelVersionId, {
         ...(serializedLink.modelId ? { modelId: serializedLink.modelId } : {}),
-        dataXml: updatedModelData,
+        dataXml: currentModelData,
         status: "ready",
         error: null,
       });
@@ -1991,7 +1857,7 @@ export default {
         editingModelVersionId &&
         String(editingModelVersionId) === String(modelVersionId)
       ) {
-        modelEditorStore.setData(updatedModelData, {
+        modelEditorStore.setData(currentModelData, {
           updateType: null,
         });
       }
@@ -2077,10 +1943,6 @@ export default {
         return;
       }
 
-      modelEditorStore.updateModelDbpmTextSelections(
-        selectionsToExactTexts(currentSelections),
-        resolveLinkDocumentMeta(updatedLink),
-      );
       if (alertOnEmptyAfterDeletion || currentSelections.length > 0) {
         syncNoSelectionsErrorIfNeeded(
           currentSelections.length,
@@ -2112,6 +1974,7 @@ export default {
       link: explicitLink = null,
       type = null,
       allowSelectionDraftPayload = false,
+      prompt = null,
     } = options || {};
     const sourceVersion = modelsStore.getVersion(modelId, sourceVersionId);
     const isSelectedVersionLatest = modelsStore.isLatestVersion(
@@ -2132,6 +1995,7 @@ export default {
             modelData,
             link: explicitLink,
             type: type || MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
+            prompt,
           })
         : null;
     const selectionDraftCreateRequest =
