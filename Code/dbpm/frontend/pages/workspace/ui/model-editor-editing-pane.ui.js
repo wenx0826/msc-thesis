@@ -129,9 +129,9 @@ async function showWFGraph(data) {
           $datDetails.empty();
         }
         modelService.updateEditingVersion(
-          MODEL_VERSION_EVENT_TYPE.MANUAL_FLOW_UPDATE,
+          MODEL_VERSION_EVENT_TYPE.MANUAL_STRUCTURE_UPDATE,
         );
-        // saveActiveModel(MODEL_VERSION_EVENT_TYPE.MANUAL_FLOW_UPDATE);
+        // saveActiveModel(MODEL_VERSION_EVENT_TYPE.MANUAL_STRUCTURE_UPDATE);
       };
     },
   );
@@ -161,7 +161,7 @@ const showActiveModel = async (model) => {
         if (manifestation.selected() == "unknown") {
           $datDetails.empty();
         }
-        // saveActiveModel(MODEL_VERSION_EVENT_TYPE.MANUAL_FLOW_UPDATE);
+        // saveActiveModel(MODEL_VERSION_EVENT_TYPE.MANUAL_STRUCTURE_UPDATE);
         // console.log("Saving model 222");
       };
     },

@@ -1,5 +1,30 @@
 // Define available endpoints - add new endpoint names here
 const ENDPOINTS = ["subprocess"];
+const ENDPOINTS_BASE_URL = new URL("./", import.meta.url);
+
+function getEndpointAssetUrl(endpoint, fileName) {
+  return new URL(`./${endpoint}/${fileName}`, ENDPOINTS_BASE_URL).toString();
+}
+
+async function fetchEndpointText(endpoint, fileName) {
+  const response = await fetch(getEndpointAssetUrl(endpoint, fileName));
+  if (!response.ok) {
+    throw new Error(
+      `Failed to fetch ${fileName} for ${endpoint} (${response.status})`,
+    );
+  }
+  return response.text();
+}
+
+async function fetchEndpointJson(endpoint, fileName) {
+  const response = await fetch(getEndpointAssetUrl(endpoint, fileName));
+  if (!response.ok) {
+    throw new Error(
+      `Failed to fetch ${fileName} for ${endpoint} (${response.status})`,
+    );
+  }
+  return response.json();
+}
 
 export const endpointLoader = {
   _cache: null,
@@ -18,8 +43,6 @@ export const endpointLoader = {
   },
 
   async _doInit() {
-    const basePath = "/modules/model/endpoints/";
-
     // Initialize cache for all endpoints with null values
     this._cache = {};
     for (const endpoint of ENDPOINTS) {
@@ -37,9 +60,9 @@ export const endpointLoader = {
     // Load symbol, properties, and schema asynchronously for all endpoints
     const loadPromises = ENDPOINTS.map((endpoint) =>
       Promise.all([
-        fetch(`${basePath}${endpoint}/symbol.svg`).then((r) => r.text()),
-        fetch(`${basePath}${endpoint}/properties.json`).then((r) => r.json()),
-        fetch(`${basePath}${endpoint}/schema.rng`).then((r) => r.text()),
+        fetchEndpointText(endpoint, "symbol.svg"),
+        fetchEndpointJson(endpoint, "properties.json"),
+        fetchEndpointText(endpoint, "schema.rng"),
       ])
         .then(([symbolText, properties, schemaText]) => {
           this._cache[endpoint].symbol = $.parseXML(symbolText).documentElement;

@@ -54,7 +54,7 @@ const versionUpdateTypeSchema = {
   enum: [
     "manual_selections_update",
     "manual_properties_update",
-    "manual_flow_update",
+    "manual_structure_update",
     "regeneration_by_selections",
     "regeneration_by_prompt",
   ],

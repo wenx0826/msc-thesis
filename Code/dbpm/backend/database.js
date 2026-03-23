@@ -137,7 +137,7 @@ function initializeSchema() {
         'manual_new_model',
         'manual_selections_update',
         'manual_properties_update',
-        'manual_flow_update',
+        'manual_structure_update',
         'manual_new_version_latest',
         'manual_new_version_revert',
         'auto_selections_reanchor'

@@ -3,8 +3,15 @@
   const PREVIEW_CANVAS_SELECTOR = "#modelCanvasSmall";
   const PREVIEW_THEME_PATH =
     "modules/model/themes/preset_customized/theme.js";
-  const ENDPOINTS_BASE_PATH = "/modules/model/endpoints/";
+  const ENDPOINTS_BASE_URL = new URL(
+    "modules/model/endpoints/",
+    window.document.baseURI,
+  );
   const ENDPOINT_NAMES = ["subprocess"];
+
+  function getEndpointAssetUrl(endpoint, fileName) {
+    return new URL(`${endpoint}/${fileName}`, ENDPOINTS_BASE_URL).toString();
+  }
 
   let previewRenderQueue = Promise.resolve();
   let previewAdaptor = null;
@@ -227,15 +234,23 @@
       ENDPOINT_NAMES.map(async (endpoint) => {
         try {
           const [symbolResponse, propertiesResponse] = await Promise.all([
-            fetch(`${ENDPOINTS_BASE_PATH}${endpoint}/symbol.svg`),
-            fetch(`${ENDPOINTS_BASE_PATH}${endpoint}/properties.json`),
+            fetch(getEndpointAssetUrl(endpoint, "symbol.svg")),
+            fetch(getEndpointAssetUrl(endpoint, "properties.json")),
           ]);
 
           if (symbolResponse.ok) {
             endpointSymbols[endpoint] = await symbolResponse.text();
+          } else {
+            console.warn(
+              `Unable to load endpoint symbol for "${endpoint}" (${symbolResponse.status})`,
+            );
           }
           if (propertiesResponse.ok) {
             endpointProperties[endpoint] = await propertiesResponse.json();
+          } else {
+            console.warn(
+              `Unable to load endpoint properties for "${endpoint}" (${propertiesResponse.status})`,
+            );
           }
         } catch (err) {
           console.warn(

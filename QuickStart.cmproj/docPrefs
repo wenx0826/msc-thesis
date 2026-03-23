@@ -15,13 +15,13 @@
 	<key>DocPrefIsTocOpen</key>
 	<integer>0</integer>
 	<key>DocPrefMainSplitterValue</key>
-	<string>565.00000000000000000000</string>
+	<string>635.00000000000000000000</string>
 	<key>DocPrefPlayheadTime</key>
 	<string>0</string>
 	<key>DocPrefPreviewAutoFit</key>
 	<integer>0</integer>
 	<key>DocPrefPreviewScaleValue</key>
-	<string>0.71562499999999995559</string>
+	<string>0.84629629629629632426</string>
 	<key>DocPrefTrackHeaderWidth</key>
 	<string>80.00000000000000000000</string>
 	<key>DocPrefTrackHeights</key>
@@ -31,7 +31,7 @@
 		<integer>54</integer>
 	</array>
 	<key>DocPrefWindowSizePos</key>
-	<string>0 0 1512 843 0 0 1352 843 </string>
+	<string>0 0 1512 944 0 0 1512 944 </string>
 	<key>DocPrefZoomValue</key>
 	<string>2.40270996093750044409</string>
 	<key>SaveAsStandaloneProject</key>

@@ -1,9 +1,5 @@
 // Model Service - Handles model generation and updates
-import {
-  modelsAPI,
-  documentModelLinksAPI,
-  logsAPI,
-} from "../../../api/index.js";
+import { modelsAPI, documentModelLinksAPI } from "../../../api/index.js";
 import {
   workspaceStore,
   modelsStore,
@@ -1223,28 +1219,9 @@ export default {
     const regenerationContext = getActiveRegenerationContext();
     const { modelId: editingModelId, modelVersionId: editingModelVersionId } =
       regenerationContext || {};
-    if (!editingModelId || !editingModelVersionId) {
-      console.warn(
-        "No active editing model found for prompt regeneration; aborting.",
-      );
-      return null;
-    }
 
     const rpstXml = modelEditorStore.getSerializedRpstData();
-    if (!rpstXml) {
-      console.warn(
-        "Failed to resolve current model XML for prompt regeneration.",
-      );
-      return null;
-    }
-
     const originalModelData = modelEditorStore.getSerializedData();
-    if (!originalModelData) {
-      console.warn(
-        "No current model data found for prompt regeneration preview.",
-      );
-      return null;
-    }
 
     const requestId = beginPendingGenerationRequest({
       type: "regeneration_prompt",
@@ -1255,18 +1232,10 @@ export default {
     let hasAppliedToActiveModel = false;
     let hasDeferredPreview = false;
     try {
-      const hasPromptInput = !!userInput;
       pendingGenerationAttemptMeta = {
         projectId: workspaceStore.getProjectId(),
-        generationType: resolveGenerationAttemptType({
-          isRegeneration: true,
-          hasSelectionInput: false,
-          hasPromptInput,
-        }),
-        generationInputMode: resolveGenerationInputMode({
-          hasSelectionInput: false,
-          hasPromptInput,
-        }),
+        generationType: "refinement",
+        generationInputMode: "prompt",
         baseModelVersionId: editingModelVersionId,
         selectedWordsCount: null,
         selectedTextSimilarity: null,
@@ -1304,12 +1273,6 @@ export default {
         hasDeferredPreview = true;
         showDeferredRegenerationReadyMessage(editingModelId);
       }
-
-      logsAPI.createLogEntry({
-        event: "model_regenerated_by_prompt",
-        data: { modelId: editingModelId },
-      });
-
       return {
         id: editingModelId,
         versionId: editingModelVersionId,
