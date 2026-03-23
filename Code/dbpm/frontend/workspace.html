@@ -302,31 +302,35 @@
               <button id="modelStatusMessageClose">x</button>
             </div>
             <ui-bar id="newModelDraftReviewBar" class="state-controlled">
-              <div class="right item-group">
-                <button id="discardDraftModelButton" title="Discard new model draft" class="btn-text">
-                  Discard
-                </button>
-                <button id="saveDraftModelButton" title="Create model from draft" class="btn-primary">
-                  Save
-                </button>
-              </div>
+              <fieldset id="newModelDraftBarControls" class="bar-controls">
+                <div class="right item-group">
+                  <button id="discardDraftModelButton" title="Discard new model draft" class="btn-text">
+                    Discard
+                  </button>
+                  <button id="saveDraftModelButton" title="Create model from draft" class="btn-primary">
+                    Save
+                  </button>
+                </div>
+              </fieldset>
             </ui-bar>
             <ui-bar id="regenerationDraftReviewBar" class="state-controlled">
-              <div class="item-group">
-                <button id="viewOriginalModelButton" disabled>Original</button>
-                <button id="viewRegeneratedModelButton">Regenerated</button>
-              </div>
-              <div class="right item-group">
-                <button id="cancelRegenerationButton" title="Cancel changes" class="btn-text">
-                  Cancel
-                </button>
-                <button id="replaceModelButton" title="Replace with regenerated model">
-                  Replace
-                </button>
-                <button id="saveNewModelButton" title="Save as new version" class="btn-primary">
-                  Save as new version
-                </button>
-              </div>
+              <fieldset id="regenerationDraftBarControls" class="bar-controls">
+                <div class="item-group">
+                  <button id="viewOriginalModelButton" disabled>Original</button>
+                  <button id="viewRegeneratedModelButton">Regenerated</button>
+                </div>
+                <div class="right item-group">
+                  <button id="cancelRegenerationButton" title="Cancel changes" class="btn-text">
+                    Cancel
+                  </button>
+                  <button id="replaceModelButton" title="Replace with regenerated model">
+                    Replace
+                  </button>
+                  <button id="saveNewModelButton" title="Save as new version" class="btn-primary">
+                    Save as new version
+                  </button>
+                </div>
+              </fieldset>
             </ui-bar>
           </ui-rest>
         </ui-rest>

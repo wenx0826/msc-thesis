@@ -176,7 +176,10 @@ function recordVersionCreation({
   if (mode === "copy") {
     modelVersionEventRepo.add({
       modelVersionId: createdVersionId,
-      type: reason === "revert" ? "manual_new_version_revert" : "manual_new_version_latest",
+      type:
+        reason === "revert"
+          ? "manual_new_version_revert"
+          : "manual_new_version_latest",
       selectedWordsCount: selectedWordsCount ?? null,
     });
   }

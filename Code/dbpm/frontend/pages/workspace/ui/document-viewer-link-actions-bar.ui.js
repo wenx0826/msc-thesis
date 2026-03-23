@@ -8,7 +8,7 @@ import {
 } from "../store/index.js";
 import { modelService } from "../services/index.js";
 
-const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
+const MODEL_VERSION_EVENT_TYPE = Constants.MODEL_VERSION_EVENT_TYPE;
 const GENERATION_TYPE = {
   NEW: "new",
   REGENERATION: "regeneration",
@@ -218,7 +218,7 @@ createUI({
   bindListeners: () => {
     $applyLinkChangesButton.on("click", () => {
       modelService.updateEditingVersion(
-        MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
+        MODEL_VERSION_EVENT_TYPE.MANUAL_SELECTIONS_UPDATE,
       );
     });
 

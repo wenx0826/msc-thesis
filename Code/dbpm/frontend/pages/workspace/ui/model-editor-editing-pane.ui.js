@@ -11,7 +11,7 @@ import { endpointLoader } from "../../../modules/model/endpoints/endpoint-loader
 import { Constants } from "../../../constants.js";
 import { requestCloseModelPopover } from "./model-popover.ui.js";
 
-const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
+const MODEL_VERSION_EVENT_TYPE = Constants.MODEL_VERSION_EVENT_TYPE;
 const $graphCanvas = $("#graphcanvas");
 const $graphGrid = $graphCanvas.parent();
 const $datDetails = $("#dat_details");
@@ -129,9 +129,9 @@ async function showWFGraph(data) {
           $datDetails.empty();
         }
         modelService.updateEditingVersion(
-          MODEL_UPDATE_TYPE.MANUAL_UPDATE_GRAPH_CHANGED,
+          MODEL_VERSION_EVENT_TYPE.MANUAL_FLOW_UPDATE,
         );
-        // saveActiveModel(MODEL_UPDATE_TYPE.MANUAL_UPDATE_GRAPH_CHANGED);
+        // saveActiveModel(MODEL_VERSION_EVENT_TYPE.MANUAL_FLOW_UPDATE);
       };
     },
   );
@@ -161,7 +161,7 @@ const showActiveModel = async (model) => {
         if (manifestation.selected() == "unknown") {
           $datDetails.empty();
         }
-        // saveActiveModel(MODEL_UPDATE_TYPE.MANUAL_UPDATE_GRAPH_CHANGED);
+        // saveActiveModel(MODEL_VERSION_EVENT_TYPE.MANUAL_FLOW_UPDATE);
         // console.log("Saving model 222");
       };
     },
@@ -340,7 +340,7 @@ function do_main_work(svgid) {
       manifestation.update_details(svgid);
       do_main_work(svgid);
     } else {
-      saveActiveModel(MODEL_UPDATE_TYPE.MANUAL_UPDATE_GRAPH_PROPERTIES_ONLY);
+      saveActiveModel(MODEL_VERSION_EVENT_TYPE.MANUAL_PROPERTIES_UPDATE);
       // $.ajax({
       //   type: "PUT",
       //   url: url + "/properties/description/",

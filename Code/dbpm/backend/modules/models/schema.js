@@ -372,7 +372,14 @@ export const updateVersionSchema = {
     required: ["type", "modelData"],
   },
   response: {
-    200: {},
+    200: {
+      type: "object",
+      additionalProperties: false,
+      required: ["message"],
+      properties: {
+        message: { type: "string" },
+      },
+    },
   },
 };
 

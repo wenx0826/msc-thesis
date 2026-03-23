@@ -2,7 +2,6 @@ import { baseURL, handleResponse, handleTextResponse } from "./base.js";
 import { Constants } from "../constants.js";
 
 const CREATE_MODEL_SIMULATED_NETWORK_DELAY_MS = 1 * 1000;
-const GENERATE_MODEL_SIMULATED_NETWORK_DELAY_MS = 1 * 1000;
 
 function delay(ms) {
   return new Promise((resolve) => {
@@ -10,54 +9,21 @@ function delay(ms) {
   });
 }
 
+const EMPTY_MODEL_XML =
+  '<description xmlns="http://cpee.org/ns/description/1.0"/>';
+const DBPM_NS = "https://example.com/dbpm";
+
+function stripXmlDeclaration(xml) {
+  return (xml || "").replace(/^<\?xml[^?]*\?>\s*/i, "");
+}
+
+function wrapGeneratedXml(innerXml) {
+  return `<description xmlns:dbpm="${DBPM_NS}">${stripXmlDeclaration(innerXml)}</description>`;
+}
+
 export default {
-  LLMDisabled: true,
+  LLMDisabled: false,
   path: "models",
-
-  async generateSampleModel() {
-    const templatesFolder = "/modules/model/templates/";
-
-    async function fetchTemplatesList() {
-      try {
-        const r = await fetch(`${templatesFolder}templates.json`);
-        if (r.ok) {
-          const arr = await r.json();
-          return arr.map((f) => `${f.name}.xml`);
-        }
-      } catch (e) {
-        console.error("Error fetching .templates.json:", e);
-      }
-    }
-
-    try {
-      // const list = await fetchTemplatesList();
-      const list = [];
-      if (!list || !list.length) {
-        throw new Error("No templates found in templates.json");
-      }
-      const chosen = list[Math.floor(Math.random() * list.length)];
-      const resp = await fetch(`${templatesFolder}${chosen}`);
-      if (!resp.ok) {
-        throw new Error(
-          `Failed to fetch template ${chosen}, status ${resp.status}`,
-        );
-      }
-      const testset = await resp.text();
-      let data = new DOMParser().parseFromString(testset, "application/xml");
-      data = $("description", data)[0].children[0];
-      return new XMLSerializer().serializeToString(data);
-    } catch (err) {
-      console.error("generateSampleModel error:", err);
-      const resp = await fetch("/Subprocess.xml");
-      console.log("==========Fetched Subprocess.xml with status========", resp);
-      // console.log(
-      //   "==========Fetched Subprocess.xml with text========",
-      //   await resp.text(),
-      // );
-      // if (!resp.ok) throw err;
-      return '<description xmlns="http://cpee.org/ns/description/1.0"/>';
-    }
-  },
 
   async generateModelLLM({ rpstXml, userInput, llm }) {
     const fd = new FormData();
@@ -84,26 +50,15 @@ export default {
   },
 
   async generateModel(params) {
-    if (GENERATE_MODEL_SIMULATED_NETWORK_DELAY_MS > 0) {
-      await delay(GENERATE_MODEL_SIMULATED_NETWORK_DELAY_MS);
+    if (this.LLMDisabled) {
+      return wrapGeneratedXml(EMPTY_MODEL_XML);
     }
-
-    let generatedModel = null;
     try {
-      if (this.LLMDisabled) {
-        generatedModel = await this.generateSampleModel();
-      } else {
-        generatedModel = await this.generateModelLLM(params);
-      }
+      return wrapGeneratedXml(await this.generateModelLLM(params));
     } catch (err) {
-      console.log("Error generating model:", err);
-      const rejectMessage =
-        err?.message ??
-        err?.responseText ??
-        (typeof err === "string" ? err : JSON.stringify(err));
-      console.log("Reject message:", rejectMessage);
+      console.warn("Error generating model:", err?.message ?? err);
+      return wrapGeneratedXml(EMPTY_MODEL_XML);
     }
-    return generatedModel;
   },
 
   async createModelAndLink(params) {

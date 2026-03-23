@@ -175,12 +175,12 @@ ui-bar {
     padding: 0;
   }
 
-  >.right {
+  & .right {
     margin-left: auto;
     /* align-items: center; */
   }
 
-  >.center {
+  & .center {
     margin: 0 auto;
   }
 }

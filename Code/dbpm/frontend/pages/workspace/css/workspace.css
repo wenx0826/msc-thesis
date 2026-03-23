@@ -141,6 +141,13 @@ ui-bar {
   padding: 4px 10px;
 }
 
+fieldset.bar-controls {
+  display: contents;
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
 .panel {
   border: 1.5px solid var(--x-ui-border-color);
   border-radius: 1em;

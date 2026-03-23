@@ -13,7 +13,9 @@ const start = async () => {
   } catch (err) {
     app.log.error(err);
     if (err.code === "EADDRINUSE") {
-      console.error(`Port ${PORT} is already in use.`);
+      console.error(
+        `Port ${PORT} is already in use. Another backend instance is likely still running. Stop it first or use "npm run dev:restart".`,
+      );
     } else if (err.code === "EACCES") {
       console.error(`Permission denied for port ${PORT}.`);
     }

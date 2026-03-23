@@ -3,7 +3,7 @@ import { Constants } from "../../../constants.js";
 import { modelEditorStore, workspaceStore } from "../store/index.js";
 import { modelService } from "../services/index.js";
 
-const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
+const MODEL_AI_UPDATE_TYPE = Constants.MODEL_AI_UPDATE_TYPE;
 
 const $newModelDraftReviewBar = $("#newModelDraftReviewBar");
 const $regenerationDraftReviewBar = $("#regenerationDraftReviewBar");
@@ -16,6 +16,13 @@ const $viewRegeneratedModelButton = $("#viewRegeneratedModelButton");
 const $cancelRegenerationButton = $("#cancelRegenerationButton");
 const $replaceModelButton = $("#replaceModelButton");
 const $saveNewModelButton = $("#saveNewModelButton");
+
+const $newModelDraftBarControls = $("#newModelDraftBarControls");
+const $regenerationDraftBarControls = $("#regenerationDraftBarControls");
+
+function setBarBusy($fieldset, isBusy) {
+  $fieldset.prop("disabled", isBusy);
+}
 
 let regenerationPreviewState = null;
 let isApplyingRegenerationView = false;
@@ -36,8 +43,8 @@ const REGENERATION_ACTION_BAR_HINT_CLASS = "regeneration-click-hint";
 
 function isRegenerationUpdateType(updateType) {
   return [
-    MODEL_UPDATE_TYPE.REGENERATION_BY_PROMPT,
-    MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS,
+    MODEL_AI_UPDATE_TYPE.REGENERATION_BY_PROMPT,
+    MODEL_AI_UPDATE_TYPE.REGENERATION_BY_SELECTIONS,
   ].includes(updateType);
 }
 
@@ -335,6 +342,7 @@ createUI({
         setRegenerationPreviewView("regenerated");
       }
 
+      setBarBusy($regenerationDraftBarControls, true);
       try {
         restoreEditingModelAfterRegeneration(preview);
         await modelService.updateEditingVersion(preview.updateType, {
@@ -358,6 +366,8 @@ createUI({
       } catch (error) {
         console.error("Failed to keep regenerated model:", error);
         alert("Failed to keep regenerated model.");
+      } finally {
+        setBarBusy($regenerationDraftBarControls, false);
       }
     });
 
@@ -380,7 +390,7 @@ createUI({
         return;
       }
 
-      $saveNewModelButton.prop("disabled", true);
+      setBarBusy($regenerationDraftBarControls, true);
       try {
         await modelService.createModelVersion(modelId, modelVersionId, {
           modelData: regeneratedDataXml,
@@ -414,7 +424,7 @@ createUI({
         );
         alert("Failed to save regenerated model as a new version.");
       } finally {
-        $saveNewModelButton.prop("disabled", false);
+        setBarBusy($regenerationDraftBarControls, false);
       }
     });
 
@@ -424,12 +434,14 @@ createUI({
     });
 
     $saveDraftModelButton.on("click", async () => {
+      setBarBusy($newModelDraftBarControls, true);
       try {
         await modelService.commitPendingNewModelDraft();
       } catch (error) {
         console.error("Failed to create model from new model draft:", error);
         alert("Failed to create model from draft.");
       } finally {
+        setBarBusy($newModelDraftBarControls, false);
         syncDecisionActionState();
       }
     });
@@ -446,6 +458,8 @@ createUI({
               if (originalDataXml && regeneratedDataXml) {
                 const editingModelContext = getEditingModelContext();
                 const editingModel = workspaceStore.getEditingModel() || {};
+                const pendingMeta =
+                  modelService.getPendingGenerationAttemptMeta();
                 regenerationPreviewState = {
                   updateType,
                   modelId: editingModelContext.modelId,
@@ -457,6 +471,7 @@ createUI({
                   originalDataXml,
                   regeneratedDataXml,
                   view: "regenerated",
+                  prompt: pendingMeta?.prompt || null,
                 };
               }
             } else if (!isRegenerationUpdateType(updateType)) {

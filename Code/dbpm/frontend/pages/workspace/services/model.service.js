@@ -17,15 +17,12 @@ import { Constants } from "../../../constants.js";
 import { classifyLinkSelectionChange } from "../utils/link-selection-draft.js";
 import { endpointLoader } from "../../../modules/model/endpoints/endpoint-loader.js";
 
-
 // Import constants
-const MODEL_UPDATE_TYPE = Constants.MODEL_UPDATE_TYPE;
+const MODEL_VERSION_EVENT_TYPE = Constants.MODEL_VERSION_EVENT_TYPE;
+const MODEL_AI_UPDATE_TYPE = Constants.MODEL_AI_UPDATE_TYPE;
 const EMPTY_MODEL = Constants.EMPTY_MODEL;
 const PREVIEW_THEME_PATH = "modules/model/themes/preset_customized/theme.js";
 const PREVIEW_IFRAME_ID = "modelPreviewRendererIframe";
-const CPEE_DESCRIPTION_NS = "http://cpee.org/ns/description/1.0";
-const DBPM_NS = "https://example.com/dbpm";
-const XMLNS_NS = "http://www.w3.org/2000/xmlns/";
 const NO_LINKED_SELECTIONS_ERROR_CODE = "no-linked-selections";
 const NO_LINKED_SELECTIONS_ON_UPDATE_MESSAGE =
   "There is no selected text related with this model.";
@@ -441,143 +438,28 @@ function parseXmlDocument(xmlString) {
   return parsed;
 }
 
-function ensureDescriptionNamespace(node) {
-  if (!node || node.localName !== "description") {
-    return;
-  }
-  if (!node.namespaceURI && !node.getAttribute("xmlns")) {
-    node.setAttributeNS(XMLNS_NS, "xmlns", CPEE_DESCRIPTION_NS);
-  }
-}
-
-function getDirectDescriptionChildren(node) {
-  return Array.from(node?.children || []).filter(
-    (child) => child.localName === "description",
-  );
-}
-
-function resolveGeneratedProcessDescription(generatedRoot) {
-  if (!generatedRoot) {
-    return null;
-  }
-
-  if (
-    generatedRoot.localName === "description" &&
-    generatedRoot.namespaceURI === CPEE_DESCRIPTION_NS
-  ) {
-    return generatedRoot;
-  }
-
-  if (
-    generatedRoot.localName === "description" &&
-    generatedRoot.namespaceURI !== CPEE_DESCRIPTION_NS
-  ) {
-    const directDescriptions = getDirectDescriptionChildren(generatedRoot);
-    if (directDescriptions.length > 0) {
-      const directProcessDescription =
-        directDescriptions.find(
-          (node) => node.namespaceURI === CPEE_DESCRIPTION_NS,
-        ) ||
-        directDescriptions.find((node) => node.namespaceURI !== DBPM_NS) ||
-        directDescriptions[0];
-      ensureDescriptionNamespace(directProcessDescription);
-      return directProcessDescription;
-    }
-  }
-
-  const cpeeDescription = generatedRoot.getElementsByTagNameNS(
-    CPEE_DESCRIPTION_NS,
-    "description",
-  )[0];
-  if (cpeeDescription) {
-    return cpeeDescription;
-  }
-
-  if (
-    generatedRoot.localName === "description" &&
-    generatedRoot.namespaceURI !== DBPM_NS
-  ) {
-    ensureDescriptionNamespace(generatedRoot);
-    return generatedRoot;
-  }
-
-  const wrappedDoc = document.implementation.createDocument(
-    CPEE_DESCRIPTION_NS,
-    "description",
-    null,
-  );
-  wrappedDoc.documentElement.appendChild(
-    wrappedDoc.importNode(generatedRoot, true),
-  );
-  return wrappedDoc.documentElement;
-}
-
-function findProcessDescriptionInWrapper(wrapperRoot) {
-  if (!wrapperRoot) {
-    return null;
-  }
-
-  const directChildren = Array.from(wrapperRoot.children || []);
-  const namespaced = directChildren.find(
-    (node) =>
-      node.localName === "description" &&
-      node.namespaceURI === CPEE_DESCRIPTION_NS,
-  );
-  if (namespaced) {
-    return namespaced;
-  }
-
-  return (
-    directChildren.find(
-      (node) =>
-        node.localName === "description" && node.namespaceURI !== DBPM_NS,
-    ) || null
-  );
-}
-
-function composeRegeneratedModelData({
-  currentModelData,
-  generatedModelData,
-}) {
+function composeRegeneratedModelData({ currentModelData, generatedModelData }) {
   const generatedDoc = parseXmlDocument(generatedModelData);
-  if (!generatedDoc?.documentElement) {
-    return generatedModelData;
-  }
-  const generatedDescription = resolveGeneratedProcessDescription(
-    generatedDoc.documentElement,
-  );
-  if (!generatedDescription) {
-    return generatedModelData;
-  }
-
   const currentDoc = parseXmlDocument(currentModelData);
-  const currentRoot = currentDoc?.documentElement;
-  const isCurrentWrappedRoot =
-    currentRoot?.localName === "description" &&
-    currentRoot?.namespaceURI !== CPEE_DESCRIPTION_NS;
-
-  if (!isCurrentWrappedRoot) {
-    const standaloneDoc = document.implementation.createDocument(
-      null,
-      "description",
-      null,
-    );
-    standaloneDoc.documentElement.setAttributeNS(
-      XMLNS_NS,
-      "xmlns:dbpm",
-      DBPM_NS,
-    );
-    const imported = standaloneDoc.importNode(generatedDescription, true);
-    ensureDescriptionNamespace(imported);
-    standaloneDoc.documentElement.appendChild(imported);
-    return $(standaloneDoc.documentElement).serializePrettyXML();
+  if (!generatedDoc?.documentElement || !currentDoc?.documentElement) {
+    return generatedModelData;
   }
 
-  const imported = currentDoc.importNode(generatedDescription, true);
-  ensureDescriptionNamespace(imported);
-  const existingDescription = findProcessDescriptionInWrapper(currentRoot);
-  if (existingDescription) {
-    currentRoot.replaceChild(imported, existingDescription);
+  // Contract: both are in wrapper format; inner process description is the first <description> child
+  const generatedRoot = generatedDoc.documentElement;
+  const currentRoot = currentDoc.documentElement;
+
+  const generatedInner =
+    Array.from(generatedRoot.children).find(
+      (c) => c.localName === "description",
+    ) ?? generatedRoot;
+
+  const currentInner = Array.from(currentRoot.children).find(
+    (c) => c.localName === "description",
+  );
+  const imported = currentDoc.importNode(generatedInner, true);
+  if (currentInner) {
+    currentRoot.replaceChild(imported, currentInner);
   } else {
     currentRoot.appendChild(imported);
   }
@@ -1043,7 +925,7 @@ async function updateModelVersionAndCache({
 function buildSelectionDraftCreateVersionRequest({
   modelId,
   sourceVersionId,
-  type = MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
+  type = MODEL_VERSION_EVENT_TYPE.MANUAL_SELECTIONS_UPDATE,
 }) {
   if (!documentViewerStore.getHasSelectionChanged()) {
     return null;
@@ -1084,7 +966,7 @@ function buildExplicitCreateVersionRequest({
   sourceVersionId,
   modelData,
   link = null,
-  type = MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
+  type = MODEL_VERSION_EVENT_TYPE.MANUAL_SELECTIONS_UPDATE,
   prompt = null,
 }) {
   const resolvedLink =
@@ -1403,7 +1285,7 @@ export default {
       const preview = {
         modelId: editingModelId,
         modelVersionId: editingModelVersionId,
-        updateType: MODEL_UPDATE_TYPE.REGENERATION_BY_PROMPT,
+        updateType: MODEL_AI_UPDATE_TYPE.REGENERATION_BY_PROMPT,
         originalDataXml: originalModelData,
         regeneratedDataXml: regeneratedModelData,
         prompt: userInput || null,
@@ -1524,7 +1406,7 @@ export default {
       const preview = {
         modelId: regenerationContext.modelId,
         modelVersionId: regenerationContext.modelVersionId,
-        updateType: MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS,
+        updateType: MODEL_AI_UPDATE_TYPE.REGENERATION_BY_SELECTIONS,
         originalDataXml: originalModelData,
         regeneratedDataXml: regeneratedModelData,
         prompt: additionalPrompt || null,
@@ -1603,8 +1485,13 @@ export default {
     });
     modelsStore.addCachedVersion(createdModelMeta.latestVersionId, {
       modelId: createdModelMeta.id,
-      dataXml: modelData,
-      status: "ready",
+      status: "loading",
+    });
+    await this.ensureVersionCached(createdModelMeta.latestVersionId, {
+      needData: true,
+      needSvg: false,
+      modelId: createdModelMeta.id,
+      force: true,
     });
     documentViewerStore.setSelectedSelection(null);
     documentViewerStore.setUnlinkedSelections([]);
@@ -1720,8 +1607,8 @@ export default {
     }
 
     const link =
-      type === MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS ||
-      type === MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS
+      type === MODEL_VERSION_EVENT_TYPE.MANUAL_SELECTIONS_UPDATE ||
+      type === MODEL_AI_UPDATE_TYPE.REGENERATION_BY_SELECTIONS
         ? documentViewerStore.getSerializedNewEditingModelLink()
         : null;
     const selectionCount = Array.isArray(link?.selections)
@@ -1758,8 +1645,8 @@ export default {
 
     if (
       [
-        MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
-        MODEL_UPDATE_TYPE.REGENERATION_BY_SELECTIONS,
+        MODEL_VERSION_EVENT_TYPE.MANUAL_SELECTIONS_UPDATE,
+        MODEL_AI_UPDATE_TYPE.REGENERATION_BY_SELECTIONS,
       ].includes(type)
     ) {
       documentViewerStore.setSelectedSelection(null);
@@ -1836,13 +1723,13 @@ export default {
         source: "updateLinkTextById",
         linkId: serializedLink.id,
         modelVersionId,
-        changeType: MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
+        changeType: MODEL_VERSION_EVENT_TYPE.MANUAL_SELECTIONS_UPDATE,
         selectionCount,
       });
       await modelsAPI.updateVersion(modelVersionId, {
         modelData: currentModelData,
         link: getModelVersionLinkPayload(serializedLink),
-        type: MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
+        type: MODEL_VERSION_EVENT_TYPE.MANUAL_SELECTIONS_UPDATE,
       });
 
       modelsStore.addCachedVersion(modelVersionId, {
@@ -1960,7 +1847,7 @@ export default {
         modelVersionId,
         modelData,
         link: updatedLink,
-        type: MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
+        type: MODEL_VERSION_EVENT_TYPE.MANUAL_SELECTIONS_UPDATE,
       });
       documentViewerStore.updateLink(updatedLink);
     } catch (error) {
@@ -1994,7 +1881,7 @@ export default {
             sourceVersionId,
             modelData,
             link: explicitLink,
-            type: type || MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
+            type: type || MODEL_VERSION_EVENT_TYPE.MANUAL_SELECTIONS_UPDATE,
             prompt,
           })
         : null;
@@ -2007,7 +1894,7 @@ export default {
           buildSelectionDraftCreateVersionRequest({
             modelId,
             sourceVersionId,
-            type: MODEL_UPDATE_TYPE.MANUAL_UPDATE_SELECTIONS,
+            type: MODEL_VERSION_EVENT_TYPE.MANUAL_SELECTIONS_UPDATE,
           })
         : null;
     const createVersionRequest = explicitCreateRequest ||
