@@ -92,6 +92,25 @@ function upsertDocumentInfoBlock(doc, infoEl, meta) {
   }
 }
 
+function copyPromptsFromSourceXml(doc, infoEl, sourceXml) {
+  if (!sourceXml || typeof sourceXml !== "string") return;
+  const { domParser, errors } = makeDOMParser();
+  const isWrapped = /^\s*<description\b/i.test(sourceXml.trim());
+  const toParse = isWrapped
+    ? sourceXml.trim()
+    : `<description>\n${sourceXml.trim()}\n</description>`;
+  const srcDoc = domParser.parseFromString(toParse, "text/xml");
+  if (errors.length > 0) return;
+  const srcInfo = findChildByLocalName(srcDoc.documentElement, "info");
+  if (!srcInfo) return;
+  const srcPrompts = findChildByLocalName(srcInfo, "prompts");
+  if (!srcPrompts) return;
+  const existingPrompts = findChildByLocalName(infoEl, "prompts");
+  if (existingPrompts) infoEl.removeChild(existingPrompts);
+  const imported = doc.importNode(srcPrompts, true);
+  infoEl.appendChild(imported);
+}
+
 function upsertPromptsBlock(doc, infoEl, prompt, isReset) {
   if (!prompt) return;
 
@@ -145,6 +164,9 @@ export function injectDbpmMeta(modelData, meta = {}) {
 
   upsertModelInfoBlock(doc, infoEl, meta);
   upsertDocumentInfoBlock(doc, infoEl, meta);
+  if (!(meta.isReset ?? false) && meta.sourceXml) {
+    copyPromptsFromSourceXml(doc, infoEl, meta.sourceXml);
+  }
   upsertPromptsBlock(doc, infoEl, meta.prompt ?? null, meta.isReset ?? false);
 
   const serialized = serializer.serializeToString(doc.documentElement);

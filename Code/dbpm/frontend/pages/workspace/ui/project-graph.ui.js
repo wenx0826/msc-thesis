@@ -286,6 +286,14 @@ createUI({
               });
               syncGraphEmptyState(cy);
               break;
+            case "update":
+              cy.remove(cy.getElementById(value?.data?.id));
+              cy.add(value);
+              cy.layout({
+                ...cyLayoutOptions,
+              }).run();
+              syncGraphEmptyState(cy);
+              break;
             default:
               break;
           }

@@ -14,8 +14,7 @@ import { classifyLinkSelectionChange } from "../utils/link-selection-draft.js";
 import { endpointLoader } from "../../../modules/model/endpoints/endpoint-loader.js";
 
 // Import constants
-const MODEL_VERSION_EVENT_TYPE = Constants.MODEL_VERSION_EVENT_TYPE;
-const MODEL_AI_UPDATE_TYPE = Constants.MODEL_AI_UPDATE_TYPE;
+const MODEL_VERSION_CHANGE_TYPE = Constants.MODEL_VERSION_CHANGE_TYPE;
 const EMPTY_MODEL = Constants.EMPTY_MODEL;
 const PREVIEW_THEME_PATH = "modules/model/themes/preset_customized/theme.js";
 const PREVIEW_IFRAME_ID = "modelPreviewRendererIframe";
@@ -192,9 +191,9 @@ function escapeHtml(value) {
 
 function resolveInProgressMessageByRequestType(requestType) {
   switch (requestType) {
-    case "regeneration_prompt":
+    case "refinement":
       return MODEL_REGENERATION_BY_PROMPT_IN_PROGRESS_MESSAGE;
-    case "regeneration_selections":
+    case "regeneration":
       return MODEL_REGENERATION_IN_PROGRESS_MESSAGE;
     default:
       return MODEL_GENERATION_IN_PROGRESS_MESSAGE;
@@ -421,45 +420,6 @@ function getPendingNewModelDraftSnapshot() {
       ),
     },
   };
-}
-
-function parseXmlDocument(xmlString) {
-  if (typeof xmlString !== "string" || !xmlString.trim()) {
-    return null;
-  }
-  const parsed = new DOMParser().parseFromString(xmlString, "application/xml");
-  if (parsed.getElementsByTagName("parsererror")[0]) {
-    return null;
-  }
-  return parsed;
-}
-
-function composeRegeneratedModelData({ currentModelData, generatedModelData }) {
-  const generatedDoc = parseXmlDocument(generatedModelData);
-  const currentDoc = parseXmlDocument(currentModelData);
-  if (!generatedDoc?.documentElement || !currentDoc?.documentElement) {
-    return generatedModelData;
-  }
-
-  // Contract: both are in wrapper format; inner process description is the first <description> child
-  const generatedRoot = generatedDoc.documentElement;
-  const currentRoot = currentDoc.documentElement;
-
-  const generatedInner =
-    Array.from(generatedRoot.children).find(
-      (c) => c.localName === "description",
-    ) ?? generatedRoot;
-
-  const currentInner = Array.from(currentRoot.children).find(
-    (c) => c.localName === "description",
-  );
-  const imported = currentDoc.importNode(generatedInner, true);
-  if (currentInner) {
-    currentRoot.replaceChild(imported, currentInner);
-  } else {
-    currentRoot.appendChild(imported);
-  }
-  return $(currentRoot).serializePrettyXML();
 }
 
 function getLinkUpdatePayload(serializedLink) {
@@ -921,7 +881,7 @@ async function updateModelVersionAndCache({
 function buildSelectionDraftCreateVersionRequest({
   modelId,
   sourceVersionId,
-  type = MODEL_VERSION_EVENT_TYPE.MANUAL_SELECTIONS_UPDATE,
+  type = MODEL_VERSION_CHANGE_TYPE.MANUAL_SELECTIONS_UPDATE,
 }) {
   if (!documentViewerStore.getHasSelectionChanged()) {
     return null;
@@ -947,7 +907,6 @@ function buildSelectionDraftCreateVersionRequest({
   }
 
   return {
-    mode: "payload",
     modelId,
     sourceVersionId,
     reason: "new_version",
@@ -962,7 +921,7 @@ function buildExplicitCreateVersionRequest({
   sourceVersionId,
   modelData,
   link = null,
-  type = MODEL_VERSION_EVENT_TYPE.MANUAL_SELECTIONS_UPDATE,
+  type = MODEL_VERSION_CHANGE_TYPE.MANUAL_SELECTIONS_UPDATE,
   prompt = null,
 }) {
   const resolvedLink =
@@ -972,7 +931,6 @@ function buildExplicitCreateVersionRequest({
     throw new Error("Failed to resolve link payload for version creation.");
   }
   return {
-    mode: "payload",
     modelId,
     sourceVersionId,
     reason: "new_version",
@@ -1224,7 +1182,7 @@ export default {
     const originalModelData = modelEditorStore.getSerializedData();
 
     const requestId = beginPendingGenerationRequest({
-      type: "regeneration_prompt",
+      type: "refinement",
       modelId: editingModelId,
       modelVersionId: editingModelVersionId,
     });
@@ -1237,24 +1195,19 @@ export default {
         generationType: "refinement",
         generationInputMode: "prompt",
         baseModelVersionId: editingModelVersionId,
-        selectedWordsCount: null,
-        selectedTextSimilarity: null,
-        prompt: userInput || null,
+        prompt: userInput,
       };
       const generatedModel = await this.generateModel(userInput, rpstXml);
       if (!generatedModel) {
         throw new Error("Model generation returned an empty result.");
       }
 
-      const regeneratedModelData = composeRegeneratedModelData({
-        currentModelData: originalModelData,
-        generatedModelData: generatedModel,
-      });
+      const regeneratedModelData = generatedModel;
 
       const preview = {
         modelId: editingModelId,
         modelVersionId: editingModelVersionId,
-        updateType: MODEL_AI_UPDATE_TYPE.REGENERATION_BY_PROMPT,
+        updateType: MODEL_VERSION_CHANGE_TYPE.AI_REFINEMENT,
         originalDataXml: originalModelData,
         regeneratedDataXml: regeneratedModelData,
         prompt: userInput || null,
@@ -1309,7 +1262,7 @@ export default {
       : null;
 
     const requestId = beginPendingGenerationRequest({
-      type: regenerateEditingModel ? "regeneration_selections" : "new_model",
+      type: regenerateEditingModel ? "regeneration" : "new_model",
       modelId: regenerationContext?.modelId || null,
       modelVersionId: regenerationContext?.modelVersionId || null,
     });
@@ -1341,7 +1294,6 @@ export default {
         }),
         baseModelVersionId: regenerationContext?.modelVersionId ?? null,
         selectedWordsCount,
-        selectedTextSimilarity: null, // TODO: compute Jaccard vs stored link selections
         prompt: additionalPrompt || null,
       };
       const generationType = pendingGenerationAttemptMeta.generationType;
@@ -1361,15 +1313,12 @@ export default {
         });
       }
 
-      const regeneratedModelData = composeRegeneratedModelData({
-        currentModelData: originalModelData,
-        generatedModelData: generatedModel,
-      });
+      const regeneratedModelData = generatedModel;
 
       const preview = {
         modelId: regenerationContext.modelId,
         modelVersionId: regenerationContext.modelVersionId,
-        updateType: MODEL_AI_UPDATE_TYPE.REGENERATION_BY_SELECTIONS,
+        updateType: MODEL_VERSION_CHANGE_TYPE.AI_REGENERATION,
         originalDataXml: originalModelData,
         regeneratedDataXml: regeneratedModelData,
         prompt: additionalPrompt || null,
@@ -1570,8 +1519,8 @@ export default {
     }
 
     const link =
-      type === MODEL_VERSION_EVENT_TYPE.MANUAL_SELECTIONS_UPDATE ||
-      type === MODEL_AI_UPDATE_TYPE.REGENERATION_BY_SELECTIONS
+      type === MODEL_VERSION_CHANGE_TYPE.MANUAL_SELECTIONS_UPDATE ||
+      type === MODEL_VERSION_CHANGE_TYPE.AI_REGENERATION
         ? documentViewerStore.getSerializedNewEditingModelLink()
         : null;
     const selectionCount = Array.isArray(link?.selections)
@@ -1608,8 +1557,8 @@ export default {
 
     if (
       [
-        MODEL_VERSION_EVENT_TYPE.MANUAL_SELECTIONS_UPDATE,
-        MODEL_AI_UPDATE_TYPE.REGENERATION_BY_SELECTIONS,
+        MODEL_VERSION_CHANGE_TYPE.MANUAL_SELECTIONS_UPDATE,
+        MODEL_VERSION_CHANGE_TYPE.AI_REGENERATION,
       ].includes(type)
     ) {
       documentViewerStore.setSelectedSelection(null);
@@ -1686,13 +1635,13 @@ export default {
         source: "updateLinkTextById",
         linkId: serializedLink.id,
         modelVersionId,
-        changeType: MODEL_VERSION_EVENT_TYPE.MANUAL_SELECTIONS_UPDATE,
+        changeType: MODEL_VERSION_CHANGE_TYPE.MANUAL_SELECTIONS_UPDATE,
         selectionCount,
       });
       await modelsAPI.updateVersion(modelVersionId, {
         modelData: currentModelData,
         link: getModelVersionLinkPayload(serializedLink),
-        type: MODEL_VERSION_EVENT_TYPE.MANUAL_SELECTIONS_UPDATE,
+        type: MODEL_VERSION_CHANGE_TYPE.MANUAL_SELECTIONS_UPDATE,
       });
 
       modelsStore.addCachedVersion(modelVersionId, {
@@ -1810,7 +1759,7 @@ export default {
         modelVersionId,
         modelData,
         link: updatedLink,
-        type: MODEL_VERSION_EVENT_TYPE.MANUAL_SELECTIONS_UPDATE,
+        type: MODEL_VERSION_CHANGE_TYPE.MANUAL_SELECTIONS_UPDATE,
       });
       documentViewerStore.updateLink(updatedLink);
     } catch (error) {
@@ -1826,46 +1775,46 @@ export default {
       allowSelectionDraftPayload = false,
       prompt = null,
     } = options || {};
-    const sourceVersion = modelsStore.getVersion(modelId, sourceVersionId);
     const isSelectedVersionLatest = modelsStore.isLatestVersion(
       modelId,
       sourceVersionId,
     );
-    const reason = isSelectedVersionLatest ? "new_version" : "revert";
-    const sourceVersionLabel =
-      sourceVersion?.name ||
-      (typeof sourceVersion?.versionNumber === "number"
-        ? `v${sourceVersion.versionNumber}`
-        : String(sourceVersionId));
+
+    // For refinement, use the committed link (no pending unlinked selections).
+    // For all other types, use the explicitly-passed link (or let buildExplicitCreateVersionRequest fall back to the new editing link).
+    const resolvedExplicitLink =
+      type === MODEL_VERSION_CHANGE_TYPE.AI_REFINEMENT
+        ? documentViewerStore.getSerializedEditingModelLink()
+        : explicitLink;
+
     const explicitCreateRequest =
       typeof modelData === "string" && modelData.trim()
         ? buildExplicitCreateVersionRequest({
             modelId,
             sourceVersionId,
             modelData,
-            link: explicitLink,
-            type: type || MODEL_VERSION_EVENT_TYPE.MANUAL_SELECTIONS_UPDATE,
+            link: resolvedExplicitLink,
+            type: type || MODEL_VERSION_CHANGE_TYPE.MANUAL_SELECTIONS_UPDATE,
             prompt,
           })
         : null;
     const selectionDraftCreateRequest =
       !explicitCreateRequest &&
       allowSelectionDraftPayload &&
-      reason === "new_version"
+      isSelectedVersionLatest
         ? // Draft selections must only be promoted when the caller explicitly
           // requests it; header-triggered version copies should stay pure copies.
           buildSelectionDraftCreateVersionRequest({
             modelId,
             sourceVersionId,
-            type: MODEL_VERSION_EVENT_TYPE.MANUAL_SELECTIONS_UPDATE,
+            type: MODEL_VERSION_CHANGE_TYPE.MANUAL_SELECTIONS_UPDATE,
           })
         : null;
     const createVersionRequest = explicitCreateRequest ||
       selectionDraftCreateRequest || {
-        mode: "copy",
         modelId,
         sourceVersionId,
-        reason,
+        type,
       };
 
     const result = await modelsAPI.createVersion(createVersionRequest);
@@ -1884,17 +1833,10 @@ export default {
     });
     documentViewerStore.removeLinksByModelId(modelId);
     documentViewerStore.addLink(link);
-    // documentViewerStore.updateLinkByModelId(modelId, link);
-    // documentViewerStore.updateLinkModelVersion({
-    //   modelId,
-    //   sourceModelVersionId: sourceVersionId,
-    //   targetModelVersionId: createdVersionId,
-    // });
-
-    // documentViewerStore.setEditingModelLinkByModelVersionId(createdVersionId);
-    // if (!documentViewerStore.getDisplayedEditingModelLink()) {
-    //   documentViewerStore.setEditingModelLinkByModelId(modelId);
-    // }
+    if (type === MODEL_VERSION_CHANGE_TYPE.AI_REGENERATION) {
+      documentViewerStore.setSelectedSelection(null);
+      documentViewerStore.setUnlinkedSelections([]);
+    }
   },
   async loadVersion(versionId, options = {}) {
     const { needSvg = false } = options || {};

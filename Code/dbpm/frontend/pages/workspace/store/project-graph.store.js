@@ -67,7 +67,13 @@ class ProjectGraphStore extends Store {
       edges.push(toCyEdge(modelMeta.documentId, modelMeta.id, "generated"));
     });
     subprocessLinks.forEach((link) =>
-      edges.push(toCyEdge(link.modelId, link.subprocessModelId, "subprocess")),
+      edges.push(
+        toCySubprocessEdge({
+          modelId: link.modelId,
+          subprocessModelId: link.subprocessModelId,
+          taskId: link.taskId,
+        }),
+      ),
     );
     this.state.elements = [...nodes, ...edges];
     this.notify({
@@ -207,7 +213,7 @@ class ProjectGraphStore extends Store {
     this.notify({
       key: "elements",
       operation: "delete",
-      value: removed,
+      value: [removed],
     });
     return removed;
   }

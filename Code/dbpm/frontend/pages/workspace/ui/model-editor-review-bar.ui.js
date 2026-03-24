@@ -3,7 +3,7 @@ import { Constants } from "../../../constants.js";
 import { modelEditorStore, workspaceStore } from "../store/index.js";
 import { modelService } from "../services/index.js";
 
-const MODEL_AI_UPDATE_TYPE = Constants.MODEL_AI_UPDATE_TYPE;
+const MODEL_VERSION_CHANGE_TYPE = Constants.MODEL_VERSION_CHANGE_TYPE;
 
 const $newModelDraftReviewBar = $("#newModelDraftReviewBar");
 const $regenerationDraftReviewBar = $("#regenerationDraftReviewBar");
@@ -43,8 +43,8 @@ const REGENERATION_ACTION_BAR_HINT_CLASS = "regeneration-click-hint";
 
 function isRegenerationUpdateType(updateType) {
   return [
-    MODEL_AI_UPDATE_TYPE.REGENERATION_BY_PROMPT,
-    MODEL_AI_UPDATE_TYPE.REGENERATION_BY_SELECTIONS,
+    MODEL_VERSION_CHANGE_TYPE.AI_REFINEMENT,
+    MODEL_VERSION_CHANGE_TYPE.AI_REGENERATION,
   ].includes(updateType);
 }
 

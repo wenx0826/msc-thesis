@@ -139,7 +139,7 @@ function initializeSchema() {
         'manual_properties_update',
         'manual_structure_update',
         'manual_new_version_latest',
-        'manual_new_version_revert',
+        'manual_new_version_restore',
         'auto_selections_reanchor'
       )),
       selected_words_count INTEGER,
@@ -172,7 +172,6 @@ function initializeSchema() {
       )),
       prompt TEXT,
       selected_words_count INTEGER,
-      selected_text_similarity REAL,
       created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
       FOREIGN KEY (project_id) REFERENCES projects(id),
       FOREIGN KEY (base_model_version_id) REFERENCES model_versions(id),
@@ -201,14 +200,10 @@ function initializeSchema() {
         prompt IS NULL
       )),
       CHECK (NOT (generation_type = 'refinement' AND selected_words_count IS NOT NULL)),
-      CHECK (NOT (generation_type = 'refinement' AND selected_text_similarity IS NOT NULL)),
-      CHECK (NOT (generation_type = 'new' AND selected_text_similarity IS NOT NULL)),
       CHECK (
         (result = 'declined' AND result_model_version_id IS NULL) OR
         (result != 'declined' AND result_model_version_id IS NOT NULL)
-      ),
-      CHECK (selected_text_similarity IS NULL OR
-             (selected_text_similarity >= 0.0 AND selected_text_similarity <= 1.0))
+      )
     )
   `);
 
@@ -278,13 +273,16 @@ function initializeSchema() {
 
   // Unified timeline VIEW across version events and generation attempts
   // Columns: source, id, project_id, model_id, model_version_id, activity, created_at
-  // activity label:
-  //   - generation:    {generation_type}_{result_short}_{input_mode_short}
-  //                    e.g. new_new_model_selections_only
-  //                         regeneration_new_version_selections_and_prompt
-  //                         refinement_replace_prompt_only
-  //   - version_event: type as-is
-  //                    e.g. manual_update_selections, version_created_copy
+  // activity label (all AI events are prefixed with 'ai_'):
+  //   - generation:    ai_{type}_{result_short}_{input_mode_short}
+  //                    new type drops redundant result segment:
+  //                    e.g. ai_new_model_selections_only
+  //                         ai_new_model_selections_and_prompt
+  //                         ai_regeneration_replace_selections_only
+  //                         ai_regeneration_new_version_selections_and_prompt
+  //                         ai_refinement_replace
+  //                         ai_refinement_new_version
+  //   - version_event: type as-is (manual_* / auto_*)
   // Declined generation attempts are excluded (no result version to anchor to).
   db.exec(`
     CREATE VIEW IF NOT EXISTS model_activity_events AS
@@ -296,20 +294,33 @@ function initializeSchema() {
       ga.project_id,
       rv.model_id,
       ga.result_model_version_id                     AS model_version_id,
-      ga.generation_type
-        || '_'
-        || CASE ga.result
-             WHEN 'accepted_new_model'   THEN 'new_model'
-             WHEN 'accepted_replace'     THEN 'replace'
-             WHEN 'accepted_new_version' THEN 'new_version'
-           END
-        -- refinement is always prompt; only new/regeneration vary by input mode
-        || CASE WHEN ga.generation_type != 'refinement'
-             THEN '_' || CASE ga.generation_input_mode
-               WHEN 'selection_only'        THEN 'selections_only'
-               WHEN 'selection_with_prompt' THEN 'selections_and_prompt'
-             END
-             ELSE ''
+      'ai_'
+        || CASE ga.generation_type
+             WHEN 'new' THEN
+               'new_model'
+               || '_'
+               || CASE ga.generation_input_mode
+                    WHEN 'selection_only'        THEN 'selections_only'
+                    WHEN 'selection_with_prompt' THEN 'selections_and_prompt'
+                  END
+             WHEN 'refinement' THEN
+               'refinement_'
+               || CASE ga.result
+                    WHEN 'accepted_replace'     THEN 'replace'
+                    WHEN 'accepted_new_version' THEN 'new_version'
+                  END
+             ELSE
+               ga.generation_type
+               || '_'
+               || CASE ga.result
+                    WHEN 'accepted_replace'     THEN 'replace'
+                    WHEN 'accepted_new_version' THEN 'new_version'
+                  END
+               || '_'
+               || CASE ga.generation_input_mode
+                    WHEN 'selection_only'        THEN 'selections_only'
+                    WHEN 'selection_with_prompt' THEN 'selections_and_prompt'
+                  END
            END                                       AS activity,
       ga.created_at
     FROM  model_generation_attempts ga

@@ -17,7 +17,7 @@ function renameModel(modelNameEditor, $modelNameView) {
   setTimeout(() => modelNameEditor.startEdit($modelNameView), 0);
 }
 
-function exportTestSet(modelId) {
+function exportTestset(modelId) {
   //   $exportTestsetButton.on("click", (e) => {
   //       e.preventDefault();
   //       const filename = "testset_" + workspaceStore.getEditingModelId() + ".xml";
@@ -78,6 +78,13 @@ export const createModelActionsMenu = (
     {
       label: "View XML data",
       function_call: viewXMLData,
+      text_icon: undefined,
+      type: undefined,
+      params: [versionId],
+    },
+    {
+      label: "Export testset",
+      function_call: exportTestset,
       text_icon: undefined,
       type: undefined,
       params: [versionId],

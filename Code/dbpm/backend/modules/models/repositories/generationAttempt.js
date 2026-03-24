@@ -27,7 +27,6 @@ class ModelGenerationAttemptRepository extends BaseSqlRepository {
    * @param {'accepted_new_model'|'accepted_replace'|'accepted_new_version'|'declined'} params.result
    * @param {string|null}  params.prompt
    * @param {number|null}  params.selectedWordsCount
-   * @param {number|null}  params.selectedTextSimilarity - Jaccard 0.0–1.0, regeneration with selections only
    */
   add({
     projectId,
@@ -38,7 +37,6 @@ class ModelGenerationAttemptRepository extends BaseSqlRepository {
     result,
     prompt = null,
     selectedWordsCount = null,
-    selectedTextSimilarity = null,
   }) {
     return this.create({
       projectId,
@@ -49,7 +47,6 @@ class ModelGenerationAttemptRepository extends BaseSqlRepository {
       result,
       prompt,
       selectedWordsCount,
-      selectedTextSimilarity,
     });
   }
 

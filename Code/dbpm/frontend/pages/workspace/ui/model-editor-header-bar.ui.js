@@ -4,6 +4,7 @@ import setVersionTag from "../../../shared/widgets/version-tag.js";
 import initVersionSelector from "../../../shared/widgets/version-selector.js";
 import { modelsStore, workspaceStore } from "../store/index.js";
 import { modelService, workspaceService } from "../services/index.js";
+const MODEL_VERSION_CHANGE_TYPE = Constants.MODEL_VERSION_CHANGE_TYPE;
 import { createModelActionsMenu } from "./model-actions-menu.ui.js";
 const $modelName = $("#editingModelName");
 const $modelVersionTag = $("#editingModelVersionTag");
@@ -64,8 +65,13 @@ createUI({
       isCreatingModelVersion = true;
       $versionActionButtons.prop("disabled", true);
       try {
+        const isLatest = modelsStore.isLatestVersion(modelId, sourceVersionId);
+        const type = isLatest
+          ? MODEL_VERSION_CHANGE_TYPE.MANUAL_NEW_VERSION_LATEST
+          : MODEL_VERSION_CHANGE_TYPE.MANUAL_NEW_VERSION_RESTORE;
         await modelService.createModelVersion(modelId, sourceVersionId, {
           allowSelectionDraftPayload: false,
+          type,
         });
       } catch (error) {
         alert("Failed to create model version.");

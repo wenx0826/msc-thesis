@@ -59,6 +59,7 @@ function enrichModelData(
     modelId = null,
     modelVersionId = null,
     modelVersionName = null,
+    sourceVersionId = null,
   } = {},
 ) {
   if (!documentVersionId) {
@@ -71,13 +72,18 @@ function enrichModelData(
     return modelData;
   }
 
-  const isReset = !type || type.startsWith("regeneration_");
+  const isReset = !type || type === "regeneration";
+  const sourceXml =
+    !isReset && sourceVersionId
+      ? (storageRepo.read(sourceVersionId) ?? null)
+      : null;
 
   return injectDbpmMeta(modelData, {
     ...documentInfo,
     selections: selectionsToExactTexts(selections),
     prompt,
     isReset,
+    sourceXml,
     modelId,
     modelVersionId,
     modelVersionName,
@@ -134,7 +140,7 @@ function resolveValidatedCreateVersionContext({ modelId, sourceVersionId }) {
 function createNextVersionRecord({
   modelId,
   sourceVersionId,
-  reason,
+  type,
   selectedWordsCount,
 }) {
   const latestVersionNumber = modelRepo.allocateLatestVersionNumber(modelId);
@@ -144,7 +150,8 @@ function createNextVersionRecord({
 
   return versionRepo.create({
     modelId,
-    restoredFrom: reason === "revert" ? sourceVersionId : null,
+    restoredFrom:
+      type === "manual_new_version_restore" ? sourceVersionId : null,
     versionNumber: latestVersionNumber,
     name: `v${latestVersionNumber}`,
     selectedWordsCount,
@@ -168,18 +175,14 @@ function recordVersionCreation({
   modelId,
   sourceVersionId,
   createdVersionId,
-  reason,
-  mode,
+  isCopy,
   type = null,
   selectedWordsCount,
 }) {
-  if (mode === "copy") {
+  if (isCopy) {
     modelVersionEventRepo.add({
       modelVersionId: createdVersionId,
-      type:
-        reason === "revert"
-          ? "manual_new_version_revert"
-          : "manual_new_version_latest",
+      type,
       selectedWordsCount: selectedWordsCount ?? null,
     });
   }
@@ -190,8 +193,7 @@ function recordVersionCreation({
       modelId,
       sourceVersionId,
       newVersionId: createdVersionId,
-      reason,
-      mode,
+      mode: isCopy ? "copy" : "payload",
       ...(type ? { type } : {}),
     });
   }
@@ -265,8 +267,6 @@ export default {
   createVersion({
     modelId,
     sourceVersionId,
-    reason,
-    mode = null,
     type = null,
     modelData = null,
     link = null,
@@ -276,24 +276,14 @@ export default {
       modelId,
       sourceVersionId,
     });
-    const normalizedReason = reason === "revert" ? "revert" : "new_version";
-    const inferredPayloadMode =
-      mode === "payload" ||
-      (typeof modelData === "string" && modelData.trim()) ||
-      !!link;
-    const normalizedMode = inferredPayloadMode ? "payload" : "copy";
-
-    if (normalizedMode === "payload" && normalizedReason !== "new_version") {
-      throw new Error(
-        "Payload version creation only supports reason 'new_version'",
-      );
-    }
+    const isPayload =
+      (typeof modelData === "string" && !!modelData.trim()) || !!link;
 
     let selectedWordsCount = 0;
     let createdVersion = null;
     let createdLink = null;
 
-    if (normalizedMode === "payload") {
+    if (isPayload) {
       if (typeof modelData !== "string" || !modelData.trim()) {
         throw new Error("Model data is required for payload version creation");
       }
@@ -306,7 +296,7 @@ export default {
       createdVersion = createNextVersionRecord({
         modelId,
         sourceVersionId,
-        reason: normalizedReason,
+        type: null,
         selectedWordsCount,
       });
 
@@ -322,6 +312,7 @@ export default {
           modelId,
           modelVersionId: createdVersion.id,
           modelVersionName: createdVersion.name,
+          sourceVersionId,
         },
       );
       persistCreatedVersionContent({
@@ -344,7 +335,7 @@ export default {
       createdVersion = createNextVersionRecord({
         modelId,
         sourceVersionId,
-        reason: normalizedReason,
+        type,
         selectedWordsCount,
       });
 
@@ -365,8 +356,7 @@ export default {
       modelId,
       sourceVersionId,
       createdVersionId: createdVersion.id,
-      reason: normalizedReason,
-      mode: normalizedMode,
+      isCopy: !isPayload,
       type,
       selectedWordsCount,
     });
@@ -595,7 +585,6 @@ export default {
     result,
     prompt = null,
     selectedWordsCount = null,
-    selectedTextSimilarity = null,
   }) {
     return modelGenerationAttemptRepo.add({
       projectId,
@@ -606,7 +595,6 @@ export default {
       result,
       prompt,
       selectedWordsCount,
-      selectedTextSimilarity,
     });
   },
 
@@ -716,6 +704,7 @@ export default {
         modelId,
         modelVersionId: versionId,
         modelVersionName: version.name,
+        sourceVersionId: versionId,
       },
     );
     storageRepo.write(versionId, enrichedModelData);
@@ -723,10 +712,7 @@ export default {
 
     // Record version event for manual edits and lifecycle changes.
     // Regeneration outcomes are recorded separately via recordGenerationAttempt().
-    const regenerationTypes = [
-      "regeneration_by_selections",
-      "regeneration_by_prompt",
-    ];
+    const regenerationTypes = ["regeneration", "refinement"];
     if (!regenerationTypes.includes(type)) {
       modelVersionEventRepo.add({
         modelVersionId: versionId,

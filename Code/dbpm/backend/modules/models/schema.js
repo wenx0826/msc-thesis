@@ -55,8 +55,10 @@ const versionUpdateTypeSchema = {
     "manual_selections_update",
     "manual_properties_update",
     "manual_structure_update",
-    "regeneration_by_selections",
-    "regeneration_by_prompt",
+    "manual_new_version_latest",
+    "manual_new_version_restore",
+    "regeneration",
+    "refinement",
   ],
 };
 
@@ -150,10 +152,8 @@ export const createVersionSchema = {
     additionalProperties: false,
     required: ["modelId", "sourceVersionId"],
     properties: {
-      mode: { type: "string", enum: ["copy", "payload"] },
       modelId: { type: "string" },
       sourceVersionId: { type: "string" },
-      reason: { type: "string", enum: ["new_version", "revert"] },
       type: versionUpdateTypeSchema,
       modelData: { type: "string" },
       link: versionCreateLinkSchema,
@@ -162,35 +162,10 @@ export const createVersionSchema = {
     allOf: [
       {
         if: {
-          anyOf: [
-            {
-              required: ["mode"],
-              properties: {
-                mode: { const: "payload" },
-              },
-            },
-            { required: ["modelData"] },
-            { required: ["link"] },
-          ],
+          anyOf: [{ required: ["modelData"] }, { required: ["link"] }],
         },
         then: {
           required: ["modelData", "link"],
-          properties: {
-            reason: { type: "string", enum: ["new_version"] },
-          },
-        },
-      },
-      {
-        if: {
-          required: ["mode"],
-          properties: {
-            mode: { const: "copy" },
-          },
-        },
-        then: {
-          properties: {
-            reason: { type: "string", enum: ["new_version", "revert"] },
-          },
         },
       },
     ],
@@ -459,7 +434,6 @@ export const createGenerationAttemptSchema = {
       },
       prompt: { type: ["string", "null"] },
       selectedWordsCount: { type: ["integer", "null"] },
-      selectedTextSimilarity: { type: ["number", "null"] },
     },
   },
   response: {

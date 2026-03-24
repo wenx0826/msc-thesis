@@ -23,7 +23,7 @@ class ModelEditorStore extends Store {
       error: null,
       statusMessage: null,
       data: null,
-      latestUpdateType: null, // 'initial_load', 'regeneration_by_prompt', 'regeneration_by_selection', 'update_by_selection'
+      latestUpdateType: null, // 'initial_load', 'regeneration', 'refinement', 'manual_selections_update'
       isGenerating: false,
     });
   }

@@ -270,7 +270,7 @@ function do_main_work(svgid) {
       //   .get_label_by_svg_id(save["details_target"].tsvgid)
       //   .trigger("click");
       saveActiveModel(
-        window.Constants.MODEL_VERSION_EVENT_TYPE.MANUAL_PROPERTIES_UPDATE,
+        window.Constants.MODEL_VERSION_CHANGE_TYPE.MANUAL_PROPERTIES_UPDATE,
       );
     }
   });
