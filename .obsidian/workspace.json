@@ -4,139 +4,24 @@
     "type": "split",
     "children": [
       {
-        "id": "98e756873fe962aa",
+        "id": "d7c20a0ae85ef98f",
         "type": "tabs",
         "children": [
           {
-            "id": "279053b3089b8b05",
+            "id": "f528d85bfcef3690",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "01.1 Motivation.md",
+                "file": "5. Evaluation/v0.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "01.1 Motivation"
-            }
-          },
-          {
-            "id": "bf21aca753adccfd",
-            "type": "leaf",
-            "state": {
-              "type": "release-notes",
-              "state": {
-                "currentVersion": "1.11.7"
-              },
-              "icon": "lucide-book-up",
-              "title": "Release Notes 1.11.7"
-            }
-          },
-          {
-            "id": "2e8da463091eb94c",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "01.1 Motivation.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "01.1 Motivation"
-            }
-          },
-          {
-            "id": "5c0a565f43f84411",
-            "type": "leaf",
-            "state": {
-              "type": "bases",
-              "state": {
-                "file": "Untitled.base",
-                "viewName": "Table"
-              },
-              "icon": "lucide-table",
-              "title": "Untitled"
-            }
-          },
-          {
-            "id": "1f57c41513d47a3d",
-            "type": "leaf",
-            "state": {
-              "type": "kanban",
-              "state": {
-                "file": "0 - Kanban.md",
-                "kanbanViewState": {
-                  "kanban-plugin": "board",
-                  "list-collapse": [
-                    false,
-                    false,
-                    false
-                  ]
-                }
-              },
-              "icon": "lucide-ghost",
-              "title": "kanban"
-            }
-          },
-          {
-            "id": "7be5ccfe2297c057",
-            "type": "leaf",
-            "state": {
-              "type": "bases",
-              "state": {
-                "file": "Untitled 1.base",
-                "viewName": "Table"
-              },
-              "icon": "lucide-table",
-              "title": "Untitled 1"
-            }
-          },
-          {
-            "id": "b339f9ef8ae027d6",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "User Story **Workflow Story (End-to-End)**.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "User Story **Workflow Story (End-to-End)**"
-            }
-          },
-          {
-            "id": "ced735cc5107b199",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "布局.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "布局"
-            }
-          },
-          {
-            "id": "1391ce42ba35595b",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Video Scripts/Untitled.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "Untitled"
+              "title": "v0"
             }
           }
-        ],
-        "currentTab": 8
+        ]
       }
     ],
     "direction": "vertical"
@@ -193,7 +78,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200
+    "width": 243.5
   },
   "right": {
     "id": "178a598febc30077",
@@ -256,13 +141,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Video Scripts/Untitled.md",
+                "file": "5. Evaluation/v0.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of Untitled"
+              "title": "Outline of v0"
             }
           },
           {
@@ -280,8 +165,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200,
-    "collapsed": true
+    "width": 200
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -298,45 +182,45 @@
       "card-board:CardBoard": false
     }
   },
-  "active": "1391ce42ba35595b",
+  "active": "f528d85bfcef3690",
   "lastOpenFiles": [
-    "Video Scripts/Script v0.md",
-    "Video Scripts/Untitled.md",
-    "Code/dbpm/persistence/models/1567953f-5923-4bf1-a0d1-15538da3860d.xml",
-    "Code/dbpm/persistence/models/b3003600-5ef7-4675-8ed3-727941e831b3.xml",
-    "Code/dbpm/persistence/models/da5b3ea6-83f9-4f61-914b-ffdb7624462d.xml",
-    "Code/dbpm/persistence/models/451a4626-f0a7-483a-9352-0631fb769605.xml",
-    "Code/dbpm/persistence/models/0c0cdc87-92c8-4801-b7fb-71c37e8ba31f.xml",
-    "Code/dbpm/persistence/models/a3e795f4-11c0-4605-ad5c-665c6c9343e2.xml",
-    "Code/dbpm/persistence/models/22abe127-5ced-460f-9b1e-f5a8976b5ff4.xml",
-    "Code/dbpm/persistence/models/e6f8d60a-427b-426e-98f8-c4feb8a1cf9b.xml",
-    "Code/dbpm/persistence/documents/2867b377-19b1-45de-8e53-a66687c46f7e.html",
-    "Code/dbpm/persistence/documents/81d77dbb-89a0-4cc8-9fc3-2debddb63960.html",
-    "Video Scripts/Script v1.md",
-    "Video Scripts/Gemini v0 - Intro.md",
-    "Code/docling-demo/output/MAP_Stages-_Inputs_Outputs_-_Data_Cleaned_-Comma_Separated.md",
-    "Code/docling-demo/output/MAP_Stages-_Inputs_Outputs_-_Data_Cleaned.md",
-    "Code/docling-demo/output/MAP_Stages-_Inputs_Outputs.md",
-    "Code/docling-demo/output/cli/BPTM_5.md",
-    "Code/docling-demo/output/BPTM_3.md",
-    "Code/docling-demo/README.md",
-    "0 - Kanban.md",
-    "MAP.md",
+    "5. Evaluation/0_Responses (Original).md",
+    "5. Evaluation/1_Responses.md",
+    "5. Evaluation/v0.md",
+    "Thesis-latex /main.synctex.gz",
+    "Thesis-latex /main.synctex(busy)",
+    "Thesis-latex /pdflatex76807.fls",
+    "Thesis-latex /pdflatex76686.fls",
+    "Thesis-latex /main.blg",
+    "Thesis-latex /pdflatex76628.fls",
+    "Thesis-latex /pdflatex76403.fls",
+    "Thesis-latex /pdflatex76399.fls",
+    "Thesis-latex /pdflatex73204.fls",
+    "Thesis-latex /pdflatex73202.fls",
+    "6. Discussion/v0.md",
+    "01 Introduction/01.6 Structure.md",
+    "01 Introduction/01.5 Evaluation.md",
+    "01 Introduction/01.4 Methodology.md",
+    "01 Introduction/01.3 Contribution.md",
+    "01 Introduction/01.2 Research Questions.md",
+    "01 Introduction/01.1 Motivation.md",
+    "布局.md",
+    "User Story **Workflow Story (End-to-End)**.md",
+    "Untitled 2.md",
     "Untitled 1.md",
-    "Code/dbpm/backend/node_modules/@xmldom/xmldom/SECURITY.md",
-    "Code/dbpm/backend/node_modules/@xmldom/xmldom/readme.md",
-    "Code/dbpm/backend/node_modules/@xmldom/xmldom/CHANGELOG.md",
-    "Code/dbpm/README.md",
-    "App Guide/Feature -- Generate Model/Design Decison.md",
-    "App Guide/Feature – Generate Model.md",
-    "App Guide/Project.md",
-    "App Guide/User Guide.md",
-    "Order Processing/Untitled.md",
     "Untitled.md",
-    "Prop/Untitled.md",
     "Subprocess.svg",
-    "Prop/Gemini DR v0.md",
-    "Prop/Gemini v0.1.md",
+    "Prelexity related work.md",
+    "Mock-up Requirement.md",
+    "libraries X to HTML.md",
+    "MAP.md",
+    "gemini.md",
+    "Dataschema.md",
+    "E.md",
+    "3 - 7.md",
+    "7. Conclusion.md",
+    "2 Related Work - Prelexity.md",
+    "Mock-up/mock-up1.jpg",
     "Code/dbpm_reverted/backend/node_modules/@fastify/static/test/static/shallow/sample.jpg",
     "Code/dbpm_reverted/backend/node_modules/@fastify/static/example/public/images/sample.jpg",
     "Code/dbpm_reverted/backend/node_modules/@fastify/send/test/fixtures/images/node-js.png",
@@ -345,7 +229,6 @@
     "Code/dbpm_reverted/frontend/modules/workflow/themes/preset_customized/symbols/stop.svg",
     "Code/dbpm_reverted/frontend/modules/workflow/themes/preset_customized/symbols/start_event.svg",
     "Code/dbpm_reverted/frontend/modules/workflow/themes/preset_customized/symbols/start.svg",
-    "Code/dbpm_reverted/frontend/modules/workflow/themes/preset_customized/symbols/scripts.svg",
     "Untitled.canvas"
   ]
 }

@@ -141,49 +141,6 @@ function setReadOnlyState(isReadOnly) {
   save["state"] = isReadOnly ? "readonly" : "ready";
 }
 
-const showActiveModel = async (model) => {
-  save["state"] = getModelEditorSaveState();
-  save["graph_theme"] = "preset_customized";
-  // save["endpoints_cache"] = endpointLoader._cache;
-  save["graph_adaptor"] = new WfAdaptor(
-    "modules/model/themes/preset_customized/theme.js",
-    function (graphrealization) {
-      graphrealization.illustrator.get_symbol = endpointLoader._boundGetSymbol;
-      graphrealization.illustrator.get_properties =
-        endpointLoader._boundGetProperties;
-      graphrealization.set_svg_container($graphCanvas);
-      graphrealization.set_label_container($graphGrid);
-      graphrealization.set_description($(model?.data), true);
-      graphrealization.notify = function (svgid) {
-        var g = graphrealization.get_description();
-        manifestation.events.click(svgid);
-        format_instance_pos();
-        if (manifestation.selected() == "unknown") {
-          $datDetails.empty();
-        }
-        // saveActiveModel(MODEL_VERSION_CHANGE_TYPE.MANUAL_STRUCTURE_UPDATE);
-        // console.log("Saving model 222");
-      };
-    },
-  );
-};
-
-const getModelSelectContainer = ($modelSelect) => {
-  const $container = $modelSelect.closest(
-    `div[data-relaxngui-path=" > call > parameters > dbpm_subprocess_model"]`,
-  );
-  if ($container.length > 0) {
-    return $container;
-  }
-  const $fallbackContainer = $(
-    `#dat_details div[data-relaxngui-path=" > call > parameters > dbpm_subprocess_model"]`,
-  );
-  if ($fallbackContainer.length > 0) {
-    return $fallbackContainer.first();
-  }
-  return $modelSelect.parent().parent();
-};
-
 const getAvailableSubprocessModels = () => {
   const availableModels = [];
   for (const model of modelsStore.getList() || []) {

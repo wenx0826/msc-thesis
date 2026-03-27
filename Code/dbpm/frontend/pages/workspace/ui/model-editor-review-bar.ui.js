@@ -76,10 +76,6 @@ function getEditingModelContext() {
   };
 }
 
-function isNewModelDraftEditingModel(editingModel) {
-  return !!editingModel && !editingModel.id && !editingModel.versionId;
-}
-
 function isRegenerationPreviewContextCurrent(
   preview = regenerationPreviewState,
 ) {
@@ -249,6 +245,18 @@ function setRegenerationPreviewView(view) {
     ...regenerationPreviewState,
     view: normalizedView,
   };
+
+  // Sync editingModel to reflect which version is currently displayed
+  if (normalizedView === "original") {
+    restoreEditingModelAfterRegeneration(regenerationPreviewState);
+  } else {
+    workspaceStore.setEditingModel({
+      id: regenerationPreviewState.modelId,
+      versionId: null,
+      sourceVersionId: regenerationPreviewState.modelVersionId,
+      isLatest: regenerationPreviewState.modelIsLatest ?? null,
+    });
+  }
 
   isApplyingRegenerationView = true;
   modelEditorStore.setData(nextDataXml, {
@@ -497,6 +505,10 @@ createUI({
     });
 
     workspaceStore.subscribe(({ key, oldValue, newValue }) => {
+      if (key === "pendingNewModelDraft") {
+        syncDecisionActionState();
+        return;
+      }
       if (key !== "editingModel") {
         return;
       }
@@ -528,11 +540,6 @@ createUI({
         if (isRegenerationUpdateType(latestUpdateType)) {
           modelEditorStore.setLatestUpdateType(null);
         }
-      }
-
-      const hadNewModelDraftState = isNewModelDraftEditingModel(oldValue);
-      if (hadNewModelDraftState && !isNewModelDraftEditingModel(newValue)) {
-        modelService.discardPendingNewModelDraft({ clearEditorData: false });
       }
 
       syncDecisionActionState();

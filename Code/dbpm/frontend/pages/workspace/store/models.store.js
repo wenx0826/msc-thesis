@@ -4,7 +4,7 @@ class ModelsStore extends VersionedEntityStore {
   constructor() {
     super({
       initialState: {
-        cachedVersionsById: {},
+        cachedVersionsById: {}, // { [versionId]: { modelId?, dataXml?, svg?, status?, error?, errors? } }
       },
     });
   }
@@ -17,6 +17,7 @@ class ModelsStore extends VersionedEntityStore {
   hasCachedVersion(versionId) {
     return !!this.state.cachedVersionsById[versionId];
   }
+
   addCachedVersion(versionId, value) {
     const oldValue = this.state.cachedVersionsById[versionId] || null;
     const operation = oldValue ? "update" : "add";
@@ -39,7 +40,7 @@ class ModelsStore extends VersionedEntityStore {
   setCachedVersionData(versionId, value) {
     return this.addCachedVersion(versionId, value);
   }
-
+  // todo getCache
   getCachedModelByVersionId(versionId) {
     return this.state.cachedVersionsById[versionId] || null;
   }

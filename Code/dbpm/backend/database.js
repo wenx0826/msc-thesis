@@ -322,6 +322,7 @@ function initializeSchema() {
                     WHEN 'selection_with_prompt' THEN 'selections_and_prompt'
                   END
            END                                       AS activity,
+      ga.selected_words_count,
       ga.created_at
     FROM  model_generation_attempts ga
     JOIN  model_versions rv ON rv.id = ga.result_model_version_id
@@ -337,6 +338,7 @@ function initializeSchema() {
       mv.model_id,
       mve.model_version_id,
       mve.type          AS activity,
+      mve.selected_words_count,
       mve.created_at
     FROM  model_version_events mve
     JOIN  model_versions mv ON mv.id  = mve.model_version_id

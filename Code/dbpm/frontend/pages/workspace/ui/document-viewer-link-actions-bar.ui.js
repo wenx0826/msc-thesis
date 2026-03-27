@@ -66,11 +66,7 @@ function isGenerationActionBusy() {
 }
 
 function isGenerationActionLocked() {
-  return (
-    (workspaceStore.isEditingModelNewModelDraft() &&
-      modelService.hasPendingNewModelDraft()) ||
-    isGenerationActionBusy()
-  );
+  return workspaceStore.hasPendingNewModelDraft() || isGenerationActionBusy();
 }
 
 function isGenerationActionEnabled(generationType = getActiveGenerationType()) {

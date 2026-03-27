@@ -9,11 +9,12 @@ class WorkspaceStore extends Store {
       theme: null,
       viewedDocument: null, // null | { id, versionId, isLatest }
       // `editingModel`: null | { id?, versionId?, sourceVersionId?, isLatest? }
-      // null => no model selected
-      // { id:null } => new model draft
+      // null => no model selected / new model draft
       // { id, versionId:null, sourceVersionId } => regeneration draft
       // { id, versionId, isLatest } => existing version
       editingModel: null,
+      // `pendingNewModelDraft`: null | { modelData, creationContext }
+      pendingNewModelDraft: null,
       modelPopover: null, // null | { target: { id, versionId? }, anchor, source?, openDelayMs?
     });
   }
@@ -98,8 +99,7 @@ class WorkspaceStore extends Store {
     return !!this.getEditingModelId();
   }
   isEditingModelNewModelDraft() {
-    const editingModel = this.getEditingModel();
-    return !!editingModel && !editingModel.id && !editingModel.versionId;
+    return this.state.pendingNewModelDraft !== null;
   }
   isEditingModelRegenerationDraft() {
     const editingModel = this.getEditingModel();
@@ -113,6 +113,34 @@ class WorkspaceStore extends Store {
   }
   isEditingModelReadOnly() {
     return this.hasEditingModel() ? !this.getEditingModel()?.isLatest : false;
+  }
+  hasPendingNewModelDraft() {
+    return this.state.pendingNewModelDraft !== null;
+  }
+  getPendingNewModelDraft() {
+    const draft = this.state.pendingNewModelDraft;
+    if (!draft) return null;
+    return {
+      ...draft,
+      creationContext: {
+        ...draft.creationContext,
+        selections: draft.creationContext?.selections
+          ? JSON.parse(JSON.stringify(draft.creationContext.selections))
+          : [],
+      },
+    };
+  }
+  setPendingNewModelDraft(draft) {
+    const oldValue = this.state.pendingNewModelDraft;
+    this.state.pendingNewModelDraft = draft ?? null;
+    this.notify({
+      key: "pendingNewModelDraft",
+      oldValue,
+      newValue: this.state.pendingNewModelDraft,
+    });
+  }
+  clearPendingNewModelDraft() {
+    this.setPendingNewModelDraft(null);
   }
   setStatus(status) {
     this.state.status = status;

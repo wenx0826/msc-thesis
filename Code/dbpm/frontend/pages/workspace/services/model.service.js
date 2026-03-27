@@ -40,8 +40,6 @@ let previewRendererWindowPromise = null;
 const cachePromisesByVersionId = new Map();
 const pendingGenerationRequestsById = new Map();
 const deferredRegenerationPreviewsByVersionId = new Map();
-let pendingNewModelDraft = null;
-let pendingNewModelDraftCommitPromise = null;
 let pendingGenerationAttemptMeta = null;
 
 function countWordsSimple(text) {
@@ -388,37 +386,6 @@ function resolveModelCreationContext(creationContext = null) {
     documentVersionName,
     selections: cloneValue(contextSelections, []),
     prompt,
-  };
-}
-
-function setPendingNewModelDraft(nextDraft) {
-  if (!nextDraft) {
-    pendingNewModelDraft = null;
-    return;
-  }
-  const normalizedContext = resolveModelCreationContext(
-    nextDraft.creationContext,
-  );
-  pendingNewModelDraft = {
-    modelData: nextDraft.modelData,
-    creationContext: normalizedContext,
-    createdAt: Date.now(),
-  };
-}
-
-function getPendingNewModelDraftSnapshot() {
-  if (!pendingNewModelDraft) {
-    return null;
-  }
-  return {
-    ...pendingNewModelDraft,
-    creationContext: {
-      ...pendingNewModelDraft.creationContext,
-      selections: cloneValue(
-        pendingNewModelDraft.creationContext?.selections,
-        [],
-      ),
-    },
   };
 }
 
@@ -1059,10 +1026,10 @@ export default {
     return true;
   },
   hasPendingNewModelDraft() {
-    return !!pendingNewModelDraft;
+    return workspaceStore.hasPendingNewModelDraft();
   },
   getPendingNewModelDraft() {
-    return getPendingNewModelDraftSnapshot();
+    return workspaceStore.getPendingNewModelDraft();
   },
   async recordGenerationAttempt(data) {
     try {
@@ -1087,61 +1054,42 @@ export default {
     const creationContext = resolveModelCreationContext(
       options.creationContext,
     );
-    setPendingNewModelDraft({
+    workspaceStore.setPendingNewModelDraft({
       modelData,
       creationContext,
     });
-    workspaceStore.setEditingModel({
-      id: null,
-    });
+    workspaceStore.setEditingModel(null);
     modelEditorStore.setData(modelData, {
       updateType: null,
     });
-    return getPendingNewModelDraftSnapshot();
+    return workspaceStore.getPendingNewModelDraft();
   },
   async commitPendingNewModelDraft() {
-    const pendingDraft = getPendingNewModelDraftSnapshot();
+    const pendingDraft = workspaceStore.getPendingNewModelDraft();
     if (!pendingDraft) {
       return null;
     }
-    if (pendingNewModelDraftCommitPromise) {
-      return pendingNewModelDraftCommitPromise;
-    }
 
-    const commitTask = (async () => {
-      const result = await this.createModelAndLink(pendingDraft.modelData, {
-        creationContext: pendingDraft.creationContext,
-      });
-      // Record the accepted new-model generation attempt
-      const meta = pendingGenerationAttemptMeta;
-      pendingGenerationAttemptMeta = null;
-      if (meta) {
-        modelsAPI
-          .recordGenerationAttempt({
-            ...meta,
-            result: "accepted_new_model",
-            resultModelVersionId: result?.modelMeta?.latestVersionId ?? null,
-          })
-          .catch((e) =>
-            console.warn("Failed to record generation attempt:", e),
-          );
-      }
-      setPendingNewModelDraft(null);
-      return result;
-    })();
-    pendingNewModelDraftCommitPromise = commitTask;
-    try {
-      return await commitTask;
-    } finally {
-      pendingNewModelDraftCommitPromise = null;
+    const result = await this.createModelAndLink(pendingDraft.modelData, {
+      creationContext: pendingDraft.creationContext,
+    });
+    // Record the accepted new-model generation attempt
+    const meta = pendingGenerationAttemptMeta;
+    pendingGenerationAttemptMeta = null;
+    if (meta) {
+      modelsAPI
+        .recordGenerationAttempt({
+          ...meta,
+          result: "accepted_new_model",
+          resultModelVersionId: result?.modelMeta?.latestVersionId ?? null,
+        })
+        .catch((e) => console.warn("Failed to record generation attempt:", e));
     }
+    workspaceStore.clearPendingNewModelDraft();
+    return result;
   },
   discardPendingNewModelDraft({ clearEditorData = true } = {}) {
-    if (pendingNewModelDraftCommitPromise) {
-      return false;
-    }
-    const hadPendingDraft = !!pendingNewModelDraft;
-    const isNewModelDraftState = workspaceStore.isEditingModelNewModelDraft();
+    const hadPendingDraft = workspaceStore.hasPendingNewModelDraft();
     // Record declined new model draft attempt
     if (hadPendingDraft) {
       const meta = pendingGenerationAttemptMeta;
@@ -1158,19 +1106,16 @@ export default {
           );
       }
     }
-    setPendingNewModelDraft(null);
-    if (isNewModelDraftState) {
-      workspaceStore.setEditingModel(null);
-    }
+    workspaceStore.clearPendingNewModelDraft();
     if (clearEditorData) {
       modelEditorStore.setData(null, {
         updateType: null,
       });
-    } else if (isNewModelDraftState) {
+    } else if (hadPendingDraft) {
       modelEditorStore.setLatestUpdateType(null);
     }
     modelEditorStore.clearStatusMessage();
-    return hadPendingDraft || isNewModelDraftState;
+    return hadPendingDraft;
   },
 
   async refineModelByPrompt(userInput) {
@@ -1461,6 +1406,7 @@ export default {
   maybeAlertNoSelectionOnLoadedEditingModel(source = "manual_check") {
     syncNoSelectionsOnModelVersionLoadIfNeeded(source);
   },
+
   async updateSubprocessLink(taskId, subprocessModelId) {
     const { id: modelId, versionId: modelVersionId } =
       workspaceStore.getEditingModel() || {};
@@ -1501,6 +1447,7 @@ export default {
     }
     projectGraphStore.removeSubprocessEdge(modelId, taskId);
   },
+
   async updateEditingVersion(type, options = {}) {
     const {
       expectedModelId = null,
