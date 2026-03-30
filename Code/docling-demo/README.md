@@ -9,7 +9,7 @@ Use Python 3.11 on this machine. The default `python3` here is 3.9, but current 
 ## Quick start
 
 ```bash
-cd "/Users/owxwo/Documents/MSc Thesis - Document-Based Process Modeller/Code/docling-demo"
+cd "/Users/owxwo/Documents/MSc Thesis - Document-Based Process Modeler/Code/docling-demo"
 python3.11 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
