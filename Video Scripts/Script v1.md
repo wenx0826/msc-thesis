@@ -11,7 +11,7 @@
 
 
 Hello and welcome. This video shows how to get started with DBPM step by step. 
-To get started, we create a new project. The modelling workspace opens automatically.   
+To get started, we create a new project. The modeling workspace opens automatically.   
 
 We now upload documents. 
 In this example, we model a release approval process. 

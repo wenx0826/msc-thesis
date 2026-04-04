@@ -16,5 +16,155 @@
   {}
 \endgroup
 
+
+\refsection{0}
+  \datalist[entry]{none/global//global/global/global}
+    \entry{hevner2007}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=e054261c7f1739e1ba1db0a45e385c1b}{%
+           family={Hevner},
+           familyi={H\bibinitperiod},
+           given={Alan\bibnamedelima R},
+           giveni={A\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+      }
+      \strng{namehash}{e054261c7f1739e1ba1db0a45e385c1b}
+      \strng{fullhash}{e054261c7f1739e1ba1db0a45e385c1b}
+      \strng{fullhashraw}{e054261c7f1739e1ba1db0a45e385c1b}
+      \strng{bibnamehash}{e054261c7f1739e1ba1db0a45e385c1b}
+      \strng{authorbibnamehash}{e054261c7f1739e1ba1db0a45e385c1b}
+      \strng{authornamehash}{e054261c7f1739e1ba1db0a45e385c1b}
+      \strng{authorfullhash}{e054261c7f1739e1ba1db0a45e385c1b}
+      \strng{authorfullhashraw}{e054261c7f1739e1ba1db0a45e385c1b}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Scandinavian Journal of Information Systems}
+      \field{number}{2}
+      \field{title}{A three cycle view of design science research}
+      \field{volume}{19}
+      \field{year}{2007}
+      \field{pages}{87\bibrangedash 92}
+      \range{pages}{6}
+    \endentry
+    \entry{ProMoAI}{inproceedings}{}{}
+      \name{author}{4}{}{%
+        {{hash=0e9f28164af82b97077575329f0bfb13}{%
+           family={Kourani},
+           familyi={K\bibinitperiod},
+           given={Humam},
+           giveni={H\bibinitperiod}}}%
+        {{hash=31aef31d05222aad4978469412b51f0a}{%
+           family={Berti},
+           familyi={B\bibinitperiod},
+           given={Alessandro},
+           giveni={A\bibinitperiod}}}%
+        {{hash=be68b1bddc16039848fa2f97f2f486d2}{%
+           family={Schuster},
+           familyi={S\bibinitperiod},
+           given={Daniel},
+           giveni={D\bibinitperiod}}}%
+        {{hash=45fed513d4bd5fb28cebd7bb58a35c4a}{%
+           family={Aalst},
+           familyi={A\bibinitperiod},
+           given={Wil\bibnamedelimb M.\bibnamedelimi P.},
+           giveni={W\bibinitperiod\bibinitdelim M\bibinitperiod\bibinitdelim P\bibinitperiod},
+           prefix={van\bibnamedelima der},
+           prefixi={v\bibinitperiod\bibinitdelim d\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Vienna, Austria}%
+      }
+      \list{organization}{1}{%
+        {33. International Joint Conference on Artificial Intelligence, Jeju (South Korea), 3 Aug 2023 - 9 Aug 2023}%
+      }
+      \list{publisher}{1}{%
+        {International Joint Conferences on Artificial Intelligence}%
+      }
+      \strng{namehash}{142b73830dd9aba6d82bce6748077f9c}
+      \strng{fullhash}{6b38a61690c88e522dabb42991d410e4}
+      \strng{fullhashraw}{6b38a61690c88e522dabb42991d410e4}
+      \strng{bibnamehash}{6b38a61690c88e522dabb42991d410e4}
+      \strng{authorbibnamehash}{6b38a61690c88e522dabb42991d410e4}
+      \strng{authornamehash}{142b73830dd9aba6d82bce6748077f9c}
+      \strng{authorfullhash}{6b38a61690c88e522dabb42991d410e4}
+      \strng{authorfullhashraw}{6b38a61690c88e522dabb42991d410e4}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the Thirty-Third International Joint Conference on Artificial Intelligence : Jeju, Korea, 3-9 August 2024 / edited by Kate Larson ; sponsored by International Joint Conferences on Artifical Intelligence (IJCAI)}
+      \field{day}{3}
+      \field{month}{8}
+      \field{title}{{P}ro{M}o{AI} : {P}rocess {M}odeling with {G}enerative {AI}}
+      \field{year}{2023}
+      \field{dateera}{ce}
+      \field{pages}{8708\bibrangedash 8712}
+      \range{pages}{5}
+      \verb{doi}
+      \verb 10.24963/ijcai.2024/1014
+      \endverb
+      \verb{urlraw}
+      \verb https://publications.rwth-aachen.de/record/1002226
+      \endverb
+      \verb{url}
+      \verb https://publications.rwth-aachen.de/record/1002226
+      \endverb
+      \warn{\item Overwriting field 'year' with year value from field 'date' for entry 'ProMoAI'}
+      \warn{\item Overwriting field 'month' with month value from field 'date' for entry 'ProMoAI'}
+    \endentry
+    \entry{AutoBPMN.AI}{article}{}{}
+      \name{author}{4}{}{%
+        {{hash=e5059a34fe7bd231d26e3657e54be078}{%
+           family={Klievtsova},
+           familyi={K\bibinitperiod},
+           given={Nataliia},
+           giveni={N\bibinitperiod}}}%
+        {{hash=52a7f399089b44f2dc9a9706cd087fa9}{%
+           family={Ehrendorfer},
+           familyi={E\bibinitperiod},
+           given={Matthias},
+           giveni={M\bibinitperiod}}}%
+        {{hash=aa717041935f0a9febce036caca7da75}{%
+           family={Mangler},
+           familyi={M\bibinitperiod},
+           given={Juergen},
+           giveni={J\bibinitperiod}}}%
+        {{hash=bac8ca27b2681a0f11d06be2230a65a4}{%
+           family={Rinderle-Ma},
+           familyi={R\bibinithyphendelim M\bibinitperiod},
+           given={Stefanie},
+           giveni={S\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {English}%
+      }
+      \list{publisher}{1}{%
+        {CEUR-WS}%
+      }
+      \strng{namehash}{a16fa6aac46e1b78cb0c8c6a428fcec6}
+      \strng{fullhash}{4c86d36ec7d54b6bff9def0a78322995}
+      \strng{fullhashraw}{4c86d36ec7d54b6bff9def0a78322995}
+      \strng{bibnamehash}{4c86d36ec7d54b6bff9def0a78322995}
+      \strng{authorbibnamehash}{4c86d36ec7d54b6bff9def0a78322995}
+      \strng{authornamehash}{a16fa6aac46e1b78cb0c8c6a428fcec6}
+      \strng{authorfullhash}{4c86d36ec7d54b6bff9def0a78322995}
+      \strng{authorfullhashraw}{4c86d36ec7d54b6bff9def0a78322995}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{We demonstrate the text-based modeling and redesign of processes in the process execution environment of the Cloud Process Execution Engine (CPEE) based on iterative conversations with an LLM such as gemini or gpt. The input can be text and an empty model as well as text and an existing model. The output is a newly created or redesigned process model in executable format, i.e., based on abstract syntax trees and displayed in BPMN-like fashion, exploiting the automatic layout capabilities of the CPEE. The tool is demonstrated for different scenarios such as the creation and redesign of the process models, as well as the subsequent process model execution.}
+      \field{issn}{1613-0073}
+      \field{journaltitle}{CEUR Workshop Proceedings}
+      \field{note}{Publisher Copyright: {©} 2025 Copyright for this paper by its authors.; Best Dissertation Award, Doctoral Consortium, and Demonstration and Resources Forum at 23rd International Conference on Business Process Management, BPM-D 2025 ; Conference date: 31-08-2025 Through 05-09-2025}
+      \field{title}{AutoBPMN.AI: Conversational Process Modeling and Automation}
+      \field{volume}{4032}
+      \field{year}{2025}
+      \field{pages}{304\bibrangedash 311}
+      \range{pages}{8}
+    \endentry
+  \enddatalist
+\endrefsection
 \endinput
 

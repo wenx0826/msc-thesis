@@ -1,27 +1,68 @@
 \chapter{Appendix}
 
-\begin{table}[h!]
-  \begin{center}
-    \caption{Your first table}
-    \label{tab:table1}
-    \begin{tabular}{l|c|r} % <-- Alignments: 1st column left, 2nd middle and 3rd right, with vertical lines in between
-      \textbf{Value 1} & \textbf{Value 2} & \textbf{Value 3}\\
-      $\alpha$ & $\beta$ & $\gamma$ \\
-      \hline
-      1 & 1110.1 & a\\
-      2 & 10.1 & b\\
-      3 & 23.113231 & c\\
-    \end{tabular}
-  \end{center}
-  \floatfoot{A note describing the table.}
-\end{table}
 
-\newpage
+\section{Evaluation Material}
+\subsection{B2B Order Processing Scenario}
+\label{app:order}
 
-\begin{figure}[h]
-    \centering
-    \caption{My Figure Caption}
-    \includegraphics[width=0.7\textwidth]{tum-resources/images/Universitaet_Flaggen.jpg}
-    \floatfoot{A note describing the figure}
-    \label{fig:ourFigure}
-\end{figure}
+This use case consists of two synthetic documents.
+
+Document 1: Order Processing Flow (excerpt)
+
+Scope\\
+This process applies to all B2B customer orders processed through the standard order management system.
+It covers the handling of orders from initial intake through fulfillment to invoicing and payment.\\
+Overview\\
+Customer orders are received either through the customer portal or via EDI integration and are registered in the system before further processing.
+The workflow ensures that orders are validated, financially approved, and fulfilled in a consistent manner across the organization.
+Process Flow
+The process follows a sequence of stages from order intake to completion.
+Different teams (e.g., sales, finance, and warehouse) interact with the process at specific stages, but the overall structure remains consistent.
+1. Order Intake and Registration
+The process starts when an order is received and recorded in the system.
+Each order is assigned an internal reference and becomes available for further processing.
+2. Order Validation
+The order is checked to ensure that all required data is complete and consistent.
+This includes customer information, product identifiers, and quantities.
+Result
+Valid orders proceed to the next stage.
+Orders with inconsistencies are corrected before being validated again.
+3. Contract and Credit Check
+Customer-specific pricing conditions and credit limits are verified against existing agreements.
+This step is typically handled as part of the finance process.
+Result
+Orders that pass the credit check continue to the next step.
+Orders that fail the check are placed on hold for review and require approval before processing can continue.
+4. Inventory Check
+The system verifies whether the requested items are available in stock.
+Result
+Orders with available items proceed to confirmation.
+Orders with missing items are delayed or partially fulfilled, depending on stock availability.
+5. Order Confirmation
+Once the required checks are completed, the order is confirmed and released for execution.
+At this stage, the order is considered ready for fulfillment.
+6. Fulfillment and Shipping
+The warehouse prepares the order for shipment, including picking and packing.
+The goods are then shipped by the logistics provider.
+7. Invoicing and Payment
+An invoice is generated and sent to the customer.
+Payment is processed according to the agreed terms.
+The process is considered complete once the invoice has been issued and payment is recorded in the system.
+Notes
+This document provides a high-level view of the order processing flow.
+Detailed rules and system-specific behavior are described in the corresponding process pages.
+Orders that are placed on hold remain in the process until the required issues have been resolved and approval has been granted.
+Related Pages
+For more detailed rules and step-specific behavior, see:
+- Order Validation
+- Credit Check
+
+\paragraph{Document 2: Credit Check (excerpt)}
+
+The credit check is performed after order validation and includes automated evaluation, 
+issue detection, manual review, and decision-making.
+
+\paragraph{Something}\par
+Text here.
+
+Next paragraph.

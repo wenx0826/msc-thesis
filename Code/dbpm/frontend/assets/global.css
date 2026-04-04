@@ -52,6 +52,14 @@ body {
   -ms-user-select: none;
   user-select: none;
   min-height: 100vh;
+  font-family: adawaita-sans, Arial, sans-serif !important;
+}
+
+body[is="x-ui-"] button,
+body[is="x-ui-"] input,
+body[is="x-ui-"] select,
+body[is="x-ui-"] textarea {
+  font-family: inherit;
 }
 
 body[is="x-ui-"] {
@@ -60,6 +68,7 @@ body[is="x-ui-"] {
   font-weight: 400;
   color: var(--x-ui-text-color);
   background-color: var(--x-ui-background-color);
+  /* font-family: adawaita-sans, Arial, sans-serif !important; */
   /* background-color: #f4f5f7; */
 
   ui-rest {

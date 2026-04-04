@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.8.1)  30 MAR 2026 17:03
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.8.1)  4 APR 2026 21:30
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1360,7 +1360,118 @@ Package biblatex Info: ... and expl3
 (biblatex)             setting 'casechanger=expl3'.
  (/usr/local/texlive/2025/texmf-dist/tex/latex/biblatex/blx-case-expl3.sty
 Package: blx-case-expl3 2024/03/21 v3.20 expl3 case changing code for biblatex
-)))
+)) (/usr/local/texlive/2025/texmf-dist/tex/latex/forest/forest.sty
+Package: forest 2017/07/14 v2.1.5 Drawing (linguistic) trees
+ (/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibraryshapes.code.tex
+File: tikzlibraryshapes.code.tex 2023-01-15 v3.1.10 (3.1.10)
+ (/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibraryshapes.geometric.code.tex
+File: tikzlibraryshapes.geometric.code.tex 2023-01-15 v3.1.10 (3.1.10)
+ (/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibraryshapes.geometric.code.tex
+File: pgflibraryshapes.geometric.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)) (/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibraryshapes.misc.code.tex
+File: tikzlibraryshapes.misc.code.tex 2023-01-15 v3.1.10 (3.1.10)
+ (/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibraryshapes.misc.code.tex
+File: pgflibraryshapes.misc.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)) (/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibraryshapes.symbols.code.tex
+File: tikzlibraryshapes.symbols.code.tex 2023-01-15 v3.1.10 (3.1.10)
+ (/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibraryshapes.symbols.code.tex
+File: pgflibraryshapes.symbols.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)) (/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibraryshapes.arrows.code.tex
+File: tikzlibraryshapes.arrows.code.tex 2023-01-15 v3.1.10 (3.1.10)
+ (/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibraryshapes.arrows.code.tex
+File: pgflibraryshapes.arrows.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)) (/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibraryshapes.callouts.code.tex (/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibraryshapes.callouts.code.tex)) (/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibraryshapes.multipart.code.tex
+File: tikzlibraryshapes.multipart.code.tex 2023-01-15 v3.1.10 (3.1.10)
+ (/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibraryshapes.multipart.code.tex
+File: pgflibraryshapes.multipart.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgfnodepartlowerbox=\box138
+\pgfnodeparttwobox=\box139
+\pgfnodepartthreebox=\box140
+\pgfnodepartfourbox=\box141
+\pgfnodeparttwentybox=\box142
+\pgfnodepartnineteenbox=\box143
+\pgfnodeparteighteenbox=\box144
+\pgfnodepartseventeenbox=\box145
+\pgfnodepartsixteenbox=\box146
+\pgfnodepartfifteenbox=\box147
+\pgfnodepartfourteenbox=\box148
+\pgfnodepartthirteenbox=\box149
+\pgfnodeparttwelvebox=\box150
+\pgfnodepartelevenbox=\box151
+\pgfnodeparttenbox=\box152
+\pgfnodepartninebox=\box153
+\pgfnodeparteightbox=\box154
+\pgfnodepartsevenbox=\box155
+\pgfnodepartsixbox=\box156
+\pgfnodepartfivebox=\box157
+))) (/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibraryfit.code.tex
+File: tikzlibraryfit.code.tex 2023-01-15 v3.1.10 (3.1.10)
+) (/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarycalc.code.tex
+File: tikzlibrarycalc.code.tex 2023-01-15 v3.1.10 (3.1.10)
+) (/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/libraries/pgflibraryintersections.code.tex
+\pgf@intersect@solutions=\count514
+) (/usr/local/texlive/2025/texmf-dist/tex/latex/pgfopts/pgfopts.sty
+Package: pgfopts 2014/07/10 v2.1a LaTeX package options with pgfkeys
+\pgfopts@list@add@a@toks=\toks70
+\pgfopts@list@add@b@toks=\toks71
+) (/usr/local/texlive/2025/texmf-dist/tex/latex/elocalloc/elocalloc.sty
+Package: elocalloc 2016/12/15 v0.03 local allocation for LaTeX 2015+ (DPC)
+) (/usr/local/texlive/2025/texmf-dist/tex/latex/environ/environ.sty
+Package: environ 2014/05/04 v0.3 A new way to define environments
+ (/usr/local/texlive/2025/texmf-dist/tex/latex/trimspaces/trimspaces.sty
+Package: trimspaces 2009/09/17 v1.1 Trim spaces around a token list
+)) (/usr/local/texlive/2025/texmf-dist/tex/latex/inlinedef/inlinedef.sty
+Package: inlinedef 2008/07/10 v1.0 Inlined expansions within definitions
+\ID@toks=\toks72
+\ID@count=\count515
+)
+\ID@usercommands=\toks73
+\safeloop@depth=\count516
+\safeRKloop@depth=\count517
+\forest@temp@dimen=\dimen377
+\forest@temp@count=\count518
+\forest@n=\count519
+\forest@temp@global@count=\count520
+\forest@temp@toks=\toks74
+\forest@temparray@M=\count521
+\forest@temparray@N=\count522
+\forest@global@temparray@M=\count523
+\forest@global@temparray@N=\count524
+\forest@isnum@count=\count525
+\forest@isdim@nonintpart=\count526
+\forest@isdim@dimen=\dimen378
+\forest@sort@m=\count527
+\forest@sort@k=\count528
+\forest@sort@p=\count529
+\bracket@content=\toks75
+\bracket@afterthought=\toks76
+\forest@node@maxid=\count530
+\forest@process@left@M=\count531
+\forest@process@left@N=\count532
+\forest@process@right@M=\count533
+\forest@process@right@N=\count534
+\forest@process@saved@M=\count535
+\forest@process@saved@N=\count536
+\forest@process@result@M=\count537
+\forest@process@result@N=\count538
+\forest@process@n=\count539
+\forest@nodewalk@branch@toks=\toks77
+\forest@nodewalk@shortsteps@resolution=\toks78
+\forest@do@dynamics=\toks79
+\forest@box=\box158
+\forest@xg=\dimen379
+\forest@yg=\dimen380
+\forest@xs=\dimen381
+\forest@ys=\dimen382
+\forest@pi@toks=\toks80
+\forest@segment@toks=\toks81
+\forest@PIi@toks=\toks82
+\forest@PIii@toks=\toks83
+\forest@copy@in=\read7
+\forest@copy@out=\write5
+\forest@externalize@max@outer@n=\count540
+\forest@externalize@inner@n=\count541
+))
 Package csquotes Info: Checking for multilingual support...
 Package csquotes Info: ... found 'babel' package.
 Package csquotes Info: Adjusting default style.
@@ -1371,12 +1482,13 @@ File: t1ntxtlf.fd 2021/05/24 v1.1 font definition file for T1/ntx/tlf
 )
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
 (Font)              scaled to size 10.0pt on input line 20.
- (./main.aux)
+
+No file main.aux.
 \openout1 = `main.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/ntxmi/m/it on input line 20.
 LaTeX Font Info:    Trying to load font information for OML+ntxmi on input line 20.
- (/usr/local/texlive/2025/texmf-dist/tex/latex/newtx/omlntxmi.fd
+(/usr/local/texlive/2025/texmf-dist/tex/latex/newtx/omlntxmi.fd
 File: omlntxmi.fd 2015/08/25 Fontinst v1.933 font definitions for OML/ntxmi.
 )
 LaTeX Font Info:    ... okay on input line 20.
@@ -1414,17 +1526,17 @@ File: lmxntxexx.fd 2016/07/03 Fontinst v1.933 font definitions for LMX/ntxexx.
 LaTeX Font Info:    ... okay on input line 20.
  (/usr/local/texlive/2025/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count514
-\scratchdimen=\dimen377
-\scratchbox=\box138
-\nofMPsegments=\count515
-\nofMParguments=\count516
-\everyMPshowfont=\toks70
-\MPscratchCnt=\count517
-\MPscratchDim=\dimen378
-\MPnumerator=\count518
-\makeMPintoPDFobject=\count519
-\everyMPtoPDFconversion=\toks71
+\scratchcounter=\count542
+\scratchdimen=\dimen383
+\scratchbox=\box159
+\nofMPsegments=\count543
+\nofMParguments=\count544
+\everyMPshowfont=\toks84
+\MPscratchCnt=\count545
+\MPscratchDim=\dimen384
+\MPnumerator=\count546
+\makeMPintoPDFobject=\count547
+\everyMPtoPDFconversion=\toks85
 ) (/usr/local/texlive/2025/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 485.
@@ -1434,16 +1546,15 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 LaTeX Info: Command `\dddot' is already robust on input line 20.
 LaTeX Info: Command `\ddddot' is already robust on input line 20.
 Package hyperref Info: Link coloring ON on input line 20.
- (./main.out) (./main.out)
-\@outlinefile=\write5
-\openout5 = `main.out'.
+\@outlinefile=\write6
+\openout6 = `main.out'.
 
-\c@lstlisting=\count520
+\c@lstlisting=\count548
 
 Package pgfplots notification 'compat/show suggested version=true': you might benefit from \pgfplotsset{compat=1.18} (current compat level: 1.15).
 
-\c@mv@tabular=\count521
-\c@mv@boldtabular=\count522
+\c@mv@tabular=\count549
+\c@mv@boldtabular=\count550
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
 *geometry* verbose mode - [ preamble ] result:
@@ -1503,7 +1614,7 @@ LaTeX Font Info:    Font shape `T1/phv/m/n' will be
 (Font)              scaled to size 16.41594pt on input line 20.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
 (Font)              scaled to size 16.41594pt on input line 20.
-<tum-resources/images/TUM_Uhrenturm.png, id=75, 307.3884pt x 408.5664pt>
+<tum-resources/images/TUM_Uhrenturm.png, id=7, 307.3884pt x 408.5664pt>
 File: tum-resources/images/TUM_Uhrenturm.png Graphic file (type png)
 <use tum-resources/images/TUM_Uhrenturm.png>
 Package pdftex.def Info: tum-resources/images/TUM_Uhrenturm.png  used on input line 20.
@@ -1515,7 +1626,7 @@ LaTeX Font Info:    Font shape `T1/phv/m/n' will be
 
 Overfull \vbox (27.90738pt too high) has occurred while \output is active []
 
-<tum-resources/images/Universitaet_Logo_RGB.pdf, id=77, 54.02504pt x 28.452pt>
+<tum-resources/images/Universitaet_Logo_RGB.pdf, id=9, 54.02504pt x 28.452pt>
 File: tum-resources/images/Universitaet_Logo_RGB.pdf Graphic file (type pdf)
 <use tum-resources/images/Universitaet_Logo_RGB.pdf>
 Package pdftex.def Info: tum-resources/images/Universitaet_Logo_RGB.pdf  used on input line 20.
@@ -1635,7 +1746,18 @@ Package biblatex Info: Automatic encoding selection.
 
 Package biblatex Info: Trying to load bibliographic data...
 Package biblatex Info: ... file 'main.bbl' found.
- (./main.bbl)
+ (./main.bbl
+
+Package biblatex Warning: Biber reported the following issues
+(biblatex)                with 'ProMoAI':
+(biblatex)                - Overwriting field 'year' with year value from field 'date' for entry 'ProMoAI'.
+
+
+Package biblatex Warning: Biber reported the following issues
+(biblatex)                with 'ProMoAI':
+(biblatex)                - Overwriting field 'month' with month value from field 'date' for entry 'ProMoAI'.
+
+)
 Package biblatex Info: Reference section=0 on input line 20.
 Package biblatex Info: Reference segment=0 on input line 20.
  (./chapters/00_Abstract.tex
@@ -1644,139 +1766,171 @@ LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
 LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
 (Font)              scaled to size 17.28pt on input line 1.
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/it' will be
-(Font)              scaled to size 10.0pt on input line 8.
+(Font)              scaled to size 10.0pt on input line 6.
 LaTeX Font Info:    Font shape `T1/ntxtlf/b/it' will be
-(Font)              scaled to size 10.0pt on input line 8.
+(Font)              scaled to size 10.0pt on input line 6.
 )
 
-[3] (./main.toc
-LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
-(Font)              scaled to size 10.0pt on input line 3.
-LaTeX Font Info:    Trying to load font information for OT1+minntx on input line 3.
- (/usr/local/texlive/2025/texmf-dist/tex/latex/newtx/ot1minntx.fd
-File: ot1minntx.fd 2023/09/09 v1.1 font definition file for OT1/minntx
-)
-LaTeX Font Info:    Font shape `OT1/minntx/m/n' will be
-(Font)              scaled to size 10.0pt on input line 3.
-LaTeX Font Info:    Font shape `OT1/minntx/m/n' will be
-(Font)              scaled to size 7.3pt on input line 3.
-LaTeX Font Info:    Font shape `OT1/minntx/m/n' will be
-(Font)              scaled to size 5.5pt on input line 3.
-LaTeX Font Info:    Font shape `OML/ntxmi/m/it' will be
-(Font)              scaled to size 10.0pt on input line 3.
-LaTeX Font Info:    Font shape `OML/ntxmi/m/it' will be
-(Font)              scaled to size 7.3pt on input line 3.
-LaTeX Font Info:    Font shape `OML/ntxmi/m/it' will be
-(Font)              scaled to size 5.5pt on input line 3.
-LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
-(Font)              scaled to size 10.0pt on input line 3.
-LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
-(Font)              scaled to size 7.3pt on input line 3.
-LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
-(Font)              scaled to size 5.5pt on input line 3.
-LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
-(Font)              scaled to size 10.0pt on input line 3.
-LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
-(Font)              scaled to size 7.3pt on input line 3.
-LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
-(Font)              scaled to size 5.5pt on input line 3.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 3.
- (/usr/local/texlive/2025/texmf-dist/tex/latex/amsfonts/umsa.fd
-File: umsa.fd 2013/01/14 v3.01 AMS symbols A
-)
-LaTeX Font Info:    Trying to load font information for U+msb on input line 3.
- (/usr/local/texlive/2025/texmf-dist/tex/latex/amsfonts/umsb.fd
-File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-)
-LaTeX Font Info:    Trying to load font information for U+ntxmia on input line 3.
- (/usr/local/texlive/2025/texmf-dist/tex/latex/newtx/untxmia.fd
-File: untxmia.fd 2024/04/09 Fontinst v1.933 font definitions for U/ntxmia.
-)
-LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
-(Font)              scaled to size 10.0pt on input line 3.
-LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
-(Font)              scaled to size 7.3pt on input line 3.
-LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
-(Font)              scaled to size 5.5pt on input line 3.
-LaTeX Font Info:    Trying to load font information for U+ntxsym on input line 3.
- (/usr/local/texlive/2025/texmf-dist/tex/latex/newtx/untxsym.fd
-File: untxsym.fd 2023/08/16 Fontinst v1.933 font definitions for U/ntxsym.
-)
-LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
-(Font)              scaled to size 10.0pt on input line 3.
-LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
-(Font)              scaled to size 7.3pt on input line 3.
-LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
-(Font)              scaled to size 5.5pt on input line 3.
-LaTeX Font Info:    Trying to load font information for U+ntxsyc on input line 3.
- (/usr/local/texlive/2025/texmf-dist/tex/latex/newtx/untxsyc.fd
-File: untxsyc.fd 2012/04/12 Fontinst v1.933 font definitions for U/ntxsyc.
-)
-LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
-(Font)              scaled to size 10.0pt on input line 3.
-LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
-(Font)              scaled to size 7.3pt on input line 3.
-LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
-(Font)              scaled to size 5.5pt on input line 3.
-LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
-(Font)              scaled to size 10.0pt on input line 3.
-LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
-(Font)              scaled to size 7.3pt on input line 3.
-LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
-(Font)              scaled to size 5.5pt on input line 3.
-)
-\tf@toc=\write6
-\openout6 = `main.toc'.
+[3]
+No file main.toc.
+\tf@toc=\write7
+\openout7 = `main.toc'.
 
- (./main.lot)
-\tf@lot=\write7
-\openout7 = `main.lot'.
+No file main.lot.
+\tf@lot=\write8
+\openout8 = `main.lot'.
 
- (./main.lof)
-\tf@lof=\write8
-\openout8 = `main.lof'.
+No file main.lof.
+\tf@lof=\write9
+\openout9 = `main.lof'.
 
 
 
-[4]
-
-[5] (./chapters/01_Introduction.tex
+[4] (./chapters/01_Introduction.tex
 Chapter 1.
+LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
+(Font)              scaled to size 10.0pt on input line 4.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
-[6]) (./chapters/02_Related_Work.tex
+
+[5]
+
+LaTeX Warning: Reference `sec:solution:req' on page 6 undefined on input line 40.
+
+
+LaTeX Warning: Reference `sec:rel' on page 6 undefined on input line 41.
+
+
+LaTeX Warning: Reference `sec:rel' on page 6 undefined on input line 52.
+
+
+LaTeX Warning: Reference `sec:solution' on page 6 undefined on input line 52.
+
+
+LaTeX Warning: Reference `sec:eval' on page 6 undefined on input line 52.
+
+
+LaTeX Warning: Reference `sec:discussion' on page 6 undefined on input line 52.
+
+
+LaTeX Warning: Reference `sec:conclusion' on page 6 undefined on input line 52.
+
+) (./chapters/02_Related_Work.tex
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[6]
 Chapter 2.
+
+Package hyperref Warning: The anchor of a bookmark and its parent's must not
+(hyperref)                be the same. Added a new anchor on input line 6.
+
 ) (./chapters/03_Solution_Design.tex
 Chapter 3.
+
+Package hyperref Warning: The anchor of a bookmark and its parent's must not
+(hyperref)                be the same. Added a new anchor on input line 6.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 7--14
+
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[7]
+Overfull \hbox (1.0858pt too wide) in paragraph at lines 16--21
+\T1/ntxtlf/m/n/10 The LLM-backed pro-cess model gen-er-a-tion shall be im-ple-mented us-ing the API from Au-toBPMN.AI. 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 16--21
+
+ []
+
+
+Package hyperref Warning: The anchor of a bookmark and its parent's must not
+(hyperref)                be the same. Added a new anchor on input line 24.
+
+
+LaTeX Warning: Reference `fig:sol_ui' on page 8 undefined on input line 27.
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[8]
+
+LaTeX Warning: Reference `fig:sol_architecture' on page 9 undefined on input line 30.
+
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
-(Font)              scaled to size 9.0pt on input line 6.
+(Font)              scaled to size 9.0pt on input line 34.
 LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
-(Font)              scaled to size 9.0pt on input line 6.
+(Font)              scaled to size 9.0pt on input line 34.
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/it' will be
-(Font)              scaled to size 9.0pt on input line 6.
-<tum-resources/images/Universitaet_Flaggen.jpg, id=167, 1590.94376pt x 1131.22626pt>
-File: tum-resources/images/Universitaet_Flaggen.jpg Graphic file (type jpg)
-<use tum-resources/images/Universitaet_Flaggen.jpg>
-Package pdftex.def Info: tum-resources/images/Universitaet_Flaggen.jpg  used on input line 7.
-(pdftex.def)             Requested size: 276.60551pt x 196.67297pt.
+(Font)              scaled to size 9.0pt on input line 34.
+
+LaTeX Warning: File `images/sol_architecture.png' not found on input line 35.
+
+
+./chapters/03_Solution_Design.tex:35: Package pdftex.def Error: File `images/sol_architecture.png' not found: using draft setting.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.35 ....8\textwidth]{images/sol_architecture.png}
+                                                  
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+LaTeX Font Info:    Trying to load font information for T1+pcr on input line 35.
+(/usr/local/texlive/2025/texmf-dist/tex/latex/psnfss/t1pcr.fd
+File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
+)
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
-(Font)              scaled to size 8.0pt on input line 8.
-File: tum-resources/images/Universitaet_Flaggen.jpg Graphic file (type jpg)
-<use tum-resources/images/Universitaet_Flaggen.jpg>
-Package pdftex.def Info: tum-resources/images/Universitaet_Flaggen.jpg  used on input line 18.
-(pdftex.def)             Requested size: 276.60551pt x 196.67297pt.
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-File: tum-resources/images/Universitaet_Flaggen.jpg Graphic file (type jpg)
-<use tum-resources/images/Universitaet_Flaggen.jpg>
-Package pdftex.def Info: tum-resources/images/Universitaet_Flaggen.jpg  used on input line 26.
-(pdftex.def)             Requested size: 276.60551pt x 196.67297pt.
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
+(Font)              scaled to size 8.0pt on input line 36.
+<images/sol_data_model.png, id=103, 297.11pt x 629.35126pt>
+File: images/sol_data_model.png Graphic file (type png)
+<use images/sol_data_model.png>
+Package pdftex.def Info: images/sol_data_model.png  used on input line 44.
+(pdftex.def)             Requested size: 316.12317pt x 669.65398pt.
 ) (./chapters/04_Implementaion.tex
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[9]
+Overfull \vbox (103.05005pt too high) has occurred while \output is active []
+
+
+
+[10 <./images/sol_data_model.png>]
 Chapter 4.
+
+LaTeX Warning: Float too large for page by 467.05908pt on input line 102.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+
+LaTeX Warning: Reference `fig:imp_backend_com' on page 11 undefined on input line 105.
+
+(/usr/local/texlive/2025/texmf-dist/tex/latex/listings/lstlang1.sty
+File: lstlang1.sty 2024/09/23 1.10c listings language file
+)
+<images/imp_backend_com.png, id=118, 275.3487pt x 252.945pt>
+File: images/imp_backend_com.png Graphic file (type png)
+<use images/imp_backend_com.png>
+Package pdftex.def Info: images/imp_backend_com.png  used on input line 115.
+(pdftex.def)             Requested size: 316.12317pt x 290.4059pt.
 ) (./chapters/05_Evaluation.tex
 Chapter 5.
 
@@ -1784,33 +1938,222 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
-[7 <./tum-resources/images/Universitaet_Flaggen.jpg>]
+[11 <./images/imp_backend_com.png>]
+
+LaTeX Warning: Reference `app:order' on page 12 undefined on input line 7.
+
+LaTeX Font Info:    Trying to load font information for OT1+minntx on input line 7.
+(/usr/local/texlive/2025/texmf-dist/tex/latex/newtx/ot1minntx.fd
+File: ot1minntx.fd 2023/09/09 v1.1 font definition file for OT1/minntx
+)
+LaTeX Font Info:    Font shape `OT1/minntx/m/n' will be
+(Font)              scaled to size 10.0pt on input line 7.
+LaTeX Font Info:    Font shape `OT1/minntx/m/n' will be
+(Font)              scaled to size 7.3pt on input line 7.
+LaTeX Font Info:    Font shape `OT1/minntx/m/n' will be
+(Font)              scaled to size 5.5pt on input line 7.
+LaTeX Font Info:    Font shape `OML/ntxmi/m/it' will be
+(Font)              scaled to size 10.0pt on input line 7.
+LaTeX Font Info:    Font shape `OML/ntxmi/m/it' will be
+(Font)              scaled to size 7.3pt on input line 7.
+LaTeX Font Info:    Font shape `OML/ntxmi/m/it' will be
+(Font)              scaled to size 5.5pt on input line 7.
+LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
+(Font)              scaled to size 10.0pt on input line 7.
+LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
+(Font)              scaled to size 7.3pt on input line 7.
+LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
+(Font)              scaled to size 5.5pt on input line 7.
+LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
+(Font)              scaled to size 10.0pt on input line 7.
+LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
+(Font)              scaled to size 7.3pt on input line 7.
+LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
+(Font)              scaled to size 5.5pt on input line 7.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 7.
+ (/usr/local/texlive/2025/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Trying to load font information for U+msb on input line 7.
+ (/usr/local/texlive/2025/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+)
+LaTeX Font Info:    Trying to load font information for U+ntxmia on input line 7.
+ (/usr/local/texlive/2025/texmf-dist/tex/latex/newtx/untxmia.fd
+File: untxmia.fd 2024/04/09 Fontinst v1.933 font definitions for U/ntxmia.
+)
+LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
+(Font)              scaled to size 10.0pt on input line 7.
+LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
+(Font)              scaled to size 7.3pt on input line 7.
+LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
+(Font)              scaled to size 5.5pt on input line 7.
+LaTeX Font Info:    Trying to load font information for U+ntxsym on input line 7.
+ (/usr/local/texlive/2025/texmf-dist/tex/latex/newtx/untxsym.fd
+File: untxsym.fd 2023/08/16 Fontinst v1.933 font definitions for U/ntxsym.
+)
+LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
+(Font)              scaled to size 10.0pt on input line 7.
+LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
+(Font)              scaled to size 7.3pt on input line 7.
+LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
+(Font)              scaled to size 5.5pt on input line 7.
+LaTeX Font Info:    Trying to load font information for U+ntxsyc on input line 7.
+ (/usr/local/texlive/2025/texmf-dist/tex/latex/newtx/untxsyc.fd
+File: untxsyc.fd 2012/04/12 Fontinst v1.933 font definitions for U/ntxsyc.
+)
+LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
+(Font)              scaled to size 10.0pt on input line 7.
+LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
+(Font)              scaled to size 7.3pt on input line 7.
+LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
+(Font)              scaled to size 5.5pt on input line 7.
+LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
+(Font)              scaled to size 10.0pt on input line 7.
+LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
+(Font)              scaled to size 7.3pt on input line 7.
+LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
+(Font)              scaled to size 5.5pt on input line 7.
+LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
+(Font)              scaled to size 7.3pt on input line 7.
+LaTeX Font Info:    Font shape `OT1/minntx/m/n' will be
+(Font)              scaled to size 8.0pt on input line 7.
+LaTeX Font Info:    Font shape `OT1/minntx/m/n' will be
+(Font)              scaled to size 6.0pt on input line 7.
+LaTeX Font Info:    Font shape `OML/ntxmi/m/it' will be
+(Font)              scaled to size 8.0pt on input line 7.
+LaTeX Font Info:    Font shape `OML/ntxmi/m/it' will be
+(Font)              scaled to size 6.0pt on input line 7.
+LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
+(Font)              scaled to size 8.0pt on input line 7.
+LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
+(Font)              scaled to size 6.0pt on input line 7.
+LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
+(Font)              scaled to size 8.0pt on input line 7.
+LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
+(Font)              scaled to size 6.0pt on input line 7.
+LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
+(Font)              scaled to size 8.0pt on input line 7.
+LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
+(Font)              scaled to size 6.0pt on input line 7.
+LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
+(Font)              scaled to size 8.0pt on input line 7.
+LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
+(Font)              scaled to size 6.0pt on input line 7.
+LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
+(Font)              scaled to size 8.0pt on input line 7.
+LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
+(Font)              scaled to size 6.0pt on input line 7.
+LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
+(Font)              scaled to size 8.0pt on input line 7.
+LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
+(Font)              scaled to size 6.0pt on input line 7.
+LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
+(Font)              scaled to size 6.0pt on input line 7.
+
+
+Package hyperref Warning: The anchor of a bookmark and its parent's must not
+(hyperref)                be the same. Added a new anchor on input line 16.
+
+
+LaTeX Warning: Reference `fig:eva_expert2_task1' on page 12 undefined on input line 17.
+
+
+LaTeX Warning: Reference `fig:modeling-result-task2' on page 12 undefined on input line 17.
+
+
+LaTeX Warning: Reference `table:evaluation-results' on page 12 undefined on input line 19.
+
+<images/eva_expert2_task1.png, id=136, 616.704pt x 315.8199pt>
+File: images/eva_expert2_task1.png Graphic file (type png)
+<use images/eva_expert2_task1.png>
+Package pdftex.def Info: images/eva_expert2_task1.png  used on input line 23.
+(pdftex.def)             Requested size: 316.12317pt x 161.89006pt.
+
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
-[8]) (./chapters/06_Discussion.tex
+[12]
+<images/eva_expert2_task2.png, id=145, 616.704pt x 315.8199pt>
+File: images/eva_expert2_task2.png Graphic file (type png)
+<use images/eva_expert2_task2.png>
+Package pdftex.def Info: images/eva_expert2_task2.png  used on input line 31.
+(pdftex.def)             Requested size: 316.12317pt x 161.89006pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 57--58
+[]|\T1/ntxtlf/m/n/10 Process--Subprocess Re-la-
+ []
+
+
+Overfull \hbox (39.18611pt too wide) in paragraph at lines 41--75
+ [][] 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[13 <./images/eva_expert2_task1.png> <./images/eva_expert2_task2.png>]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[14]
+
+[15]
+
+LaTeX Warning: Reference `fig:text-selection-strategies' on page 16 undefined on input line 99.
+
+<images/Screenshot1.png, id=163, 262.8219pt x 278.2395pt>
+File: images/Screenshot1.png Graphic file (type png)
+<use images/Screenshot1.png>
+Package pdftex.def Info: images/Screenshot1.png  used on input line 103.
+(pdftex.def)             Requested size: 276.60551pt x 292.83939pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[16]) (./chapters/06_Discussion.tex
 Chapter 6.
 ) (./chapters/07_Conclusion.tex
 Chapter 7.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[17 <./images/Screenshot1.png>])
+
+[18]
+LaTeX Font Info:    Font shape `T1/ntxtlf/m/sc' will be
+(Font)              scaled to size 10.0pt on input line 38.
+LaTeX Font Info:    Trying to load font information for TS1+ntxtlf on input line 38.
+ (/usr/local/texlive/2025/texmf-dist/tex/latex/newtx/ts1ntxtlf.fd
+File: ts1ntxtlf.fd 2015/01/18 v1.0 fd file for TS1/ntxtlf
 )
+LaTeX Font Info:    Font shape `TS1/ntxtlf/m/n' will be
+(Font)              scaled to size 10.0pt on input line 38.
 
-[9]
 
-LaTeX Warning: Empty bibliography on input line 38.
-
-(./chapters/99_Appendix.tex
+[19{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/newtx/ntx-ec-tlf-pc.enc}{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/tex-gyre/q-ts1.enc}] (./chapters/99_Appendix.tex
 Appendix A.
 
+Package hyperref Warning: The anchor of a bookmark and its parent's must not
+(hyperref)                be the same. Added a new anchor on input line 5.
 
-[10]
-File: tum-resources/images/Universitaet_Flaggen.jpg Graphic file (type jpg)
-<use tum-resources/images/Universitaet_Flaggen.jpg>
-Package pdftex.def Info: tum-resources/images/Universitaet_Flaggen.jpg  used on input line 24.
-(pdftex.def)             Requested size: 276.60551pt x 196.67297pt.
-)
 
-[11] (./main.aux)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[20])
+
+[21]
+
+[22] (./main.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2020/03/25>
@@ -1819,25 +2162,45 @@ L3 programming layer <2020/03/25>
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
-Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 01DACBA7DE5AFF446750285900473E3A;1886.
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+
+Package rerunfilecheck Warning: File `main.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `main.out':
+(rerunfilecheck)             Before: <no file>
+(rerunfilecheck)             After:  19C2D492ED1DAE083CC55DD3C6FA2B45;5903.
+
+Package biblatex Warning: Please (re)run Biber on the file:
+(biblatex)                main
+(biblatex)                and rerun LaTeX afterwards.
+
 Package logreq Info: Writing requests to 'main.run.xml'.
 \openout1 = `main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 51440 strings out of 473190
- 1092295 string characters out of 5715801
- 2053933 words of memory out of 5000000
- 73803 multiletter control sequences out of 15000+600000
- 624257 words of font info for 95 fonts, out of 8000000 for 9000
+ 67507 strings out of 473190
+ 1493163 string characters out of 5715801
+ 2373928 words of memory out of 5000000
+ 89756 multiletter control sequences out of 15000+600000
+ 642382 words of font info for 121 fonts, out of 8000000 for 9000
  1143 hyphenation exceptions out of 8191
- 129i,17n,145p,1281b,2929s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/local/texlive/2025/texmf-dist/fonts/type1/public/newtx/NewTXMI.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/cm-super/sfrm2074.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/newtx/ztmb.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/newtx/ztmbi.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/newtx/ztmr.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/newtx/ztmri.pfb>
-Output written on main.pdf (13 pages, 763044 bytes).
+ 142i,17n,145p,1665b,5640s stack positions out of 10000i,1000n,20000p,200000b,200000s
+
+pdfTeX warning (dest): name{Hfootnote.1} has been referenced but does not exist, replaced by a fixed one
+
+</usr/local/texlive/2025/texmf-dist/fonts/type1/public/tex-gyre/qtmr.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/cm-super/sfrm2074.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/newtx/ztmb.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/newtx/ztmbi.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/newtx/ztmr.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/newtx/ztmri.pfb>
+Output written on main.pdf (24 pages, 1749339 bytes).
 PDF statistics:
- 242 PDF objects out of 1000 (max. 8388607)
- 189 compressed objects within 2 object streams
- 34 named destinations out of 1000 (max. 500000)
- 164 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 279 PDF objects out of 1000 (max. 8388607)
+ 202 compressed objects within 3 object streams
+ 73 named destinations out of 1000 (max. 500000)
+ 48 words of extra memory for PDF output out of 10000 (max. 10000000)
 

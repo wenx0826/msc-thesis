@@ -52,7 +52,7 @@ Expert 1:
 2. When the LLM generates a model and then you send instructions to modify it, it would be really useful that the LLM indicates in natural language text the differences between the two models. "Identifying and Evaluating Change Patterns and Change Support Features in Process-Aware Information Systems" (https://dbis.eprints.uni-ulm.de/id/eprint/419/) 
 3. When the user sends an instruction to the LLM, does the LLM try to find a change pattern and then apply it?, as it has been done in "Conversational Process Model Redesign" (https://arxiv.org/abs/2505.05453) 
 4. It can be useful to let the user grade manually the quality of the model and even adding a extra note. To improve LLM answers in the future / similar direction to reinforcement learning. (see https://huggingface.co/learn/llm-course/chapter12/2) 
-5. How the user can know which parts of the selected text were considered for modelling? 
+5. How the user can know which parts of the selected text were considered for modeling? 
 6. When something remains ambiguous and the LLM interprets it in a certain way, can this be flagged so that the user is aware of the ambiguity? 
 7. In the documentation it can be useful to add a diagram representing the interaction between the human, LLM, and others. 
 8. In the bottom-right corner, there is a knowledge representation showing the connections between processes / subprocesses / docus. This box should be labeled more clearly, and the nodes should be better differentiated. It was difficult to distinguish between nodes representing documents and those representing models. 

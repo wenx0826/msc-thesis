@@ -5,7 +5,7 @@
 
 
 
-The Generate Model feature allows users to automatically create a process model from selected text passages in a document. The system analyzes the selected content and generates corresponding model elements that can be visualized in the modelling workspace. Users can select one or multiple text segments before triggering the model generation.
+The Generate Model feature allows users to automatically create a process model from selected text passages in a document. The system analyzes the selected content and generates corresponding model elements that can be visualized in the modeling workspace. Users can select one or multiple text segments before triggering the model generation.
 
 ---
 
@@ -24,7 +24,7 @@ The Generate Model feature allows users to automatically create a process model 
     
 3. Adjust the selection if needed by dragging the selection handles.
     
-4. Click the Generate Model button in the modelling toolbar.
+4. Click the Generate Model button in the modeling toolbar.
     
 
   
@@ -35,7 +35,7 @@ The Generate Model feature allows users to automatically create a process model 
 
 The system analyzes the selected text and generates a process model.
 
-The generated model appears in the modelling workspace editor, where users can review and further refine the model.
+The generated model appears in the modeling workspace editor, where users can review and further refine the model.
 
   
 

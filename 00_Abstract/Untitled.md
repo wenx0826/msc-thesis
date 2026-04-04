@@ -7,14 +7,14 @@
 > Overall, our findings suggest that LLM-based approaches have strong potential for supporting document-driven process modeling. However, further work is needed to improve usability, explainability, and integration with document understanding techniques.
 
 ---
- > Document-based process modelling requires users to interpret textual information and translate it into formal process models, a task that is often fragmented across multiple tools and associated with increased cognitive effort and limited traceability between source documents and resulting models.
+ > Document-based process modeling requires users to interpret textual information and translate it into formal process models, a task that is often fragmented across multiple tools and associated with increased cognitive effort and limited traceability between source documents and resulting models.
 
-> To address these challenges, this thesis proposes an integrated system that supports document-based process modelling within a unified workspace. The system combines document interaction, AI-assisted model generation, and process model management into a coherent end-to-end workflow, while maintaining explicit links between textual content and model elements to support traceability and iterative model development.
-
->   
-
-> A qualitative evaluation was conducted with expert users to assess the usability, perceived usefulness, and limitations of the proposed system. The findings indicate that the system supports the completion of modelling tasks within an integrated environment and enables a structured and intuitive modelling workflow. At the same time, several challenges were identified, particularly in interaction design, document handling, and users’ conceptual understanding of AI-assisted modelling.
+> To address these challenges, this thesis proposes an integrated system that supports document-based process modeling within a unified workspace. The system combines document interaction, AI-assisted model generation, and process model management into a coherent end-to-end workflow, while maintaining explicit links between textual content and model elements to support traceability and iterative model development.
 
 >   
 
-> These results highlight the importance of integration, traceability, and usability in supporting document-based process modelling, as well as the need to better support users’ understanding of AI-driven system behaviour. The work contributes both a system design and empirical insights into the design of integrated, AI-assisted modelling environments.
+> A qualitative evaluation was conducted with expert users to assess the usability, perceived usefulness, and limitations of the proposed system. The findings indicate that the system supports the completion of modeling tasks within an integrated environment and enables a structured and intuitive modeling workflow. At the same time, several challenges were identified, particularly in interaction design, document handling, and users’ conceptual understanding of AI-assisted modeling.
+
+>   
+
+> These results highlight the importance of integration, traceability, and usability in supporting document-based process modeling, as well as the need to better support users’ understanding of AI-driven system behaviour. The work contributes both a system design and empirical insights into the design of integrated, AI-assisted modeling environments.

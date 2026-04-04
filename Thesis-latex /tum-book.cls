@@ -225,7 +225,7 @@
     { \flushleft\huge\bfseries\center Declaration of Academic Integrity \par}
     \vspace{10mm}
     \noindent
-    I confirm that this bachelor's thesis is my own work and I have documented all sources and material used.
+    I confirm that this master's thesis is my own work and I have documented all sources and material used.
     \par\noindent
     I am aware that the thesis in digital form can be examined for the use of unauthorized aid and in order to determine whether the thesis as a whole or parts incorporated in it may be deemed as plagiarism. For the comparison of my work with existing sources I agree that it shall be entered in a database where it shall also remain after examination, to enable comparison with future theses submitted. Further rights of reproduction and usage, however, are not granted here.
     \par\noindent
@@ -370,6 +370,8 @@
 \addbibresource{literature.bib}
 \DeclareLanguageMapping{english}{english-apa}
 \pdfimageresolution 300
+
+\usepackage{forest}
 
 \newcommand{\paragraphWithHeading}[1]{\paragraph{#1}\mbox{}\newline}
 \pgfplotsset{compat=1.15}

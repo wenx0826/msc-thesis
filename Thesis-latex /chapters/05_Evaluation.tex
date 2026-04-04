@@ -1,13 +1,110 @@
 \chapter{Evaluation}
-\label{sec:evaluation}
+\label{sec:evaluation} 
 
-\section{Evaluation Method}
+\section{Evaluation Procedure}
+The developed system was evaluated with four modeling experts to assess its usability and perceived usefulness, as well as to gather feedback on potential improvements and additional features.
 
-A qualitative evaluation was conducted with four expert users with both academic and practical experience in process modelling. The evaluation consisted of task-based activities followed by a questionnaire including open-ended questions to assess the system's usability and perceived usefulness, as well as to capture participants' expert perspectives on potential improvements and additional features.
+Each evaluation session followed a semi-structured procedure and lasted approximately 40 minutes. It began with a brief demonstration of the system's workflow and main features. After that, the participants were asked to complete two tasks. The first was an exploratory task based on a synthetic B2B order processing scenario consisting of two wiki-style documents in DOCX format (see Appendix~\ref{app:order}). It was designed to help participants familiarize themselves with the system. The second was a more realistic process modeling task based on an open-source SOP document \footnote{\href{https://dnrc.mt.gov/_docs/forestry/Wildfire/agreements-plans-guides/DNRC-Manuals/300-Fire-Business-Manual/Appendix-300-Manual/2023_Fire_Contract_PMT_SOP.pdf}{DNRC SOP Document}} in PDF format. For both tasks, participants were not given strict instructions on how to proceed, allowing them to explore the system freely. If time permitted, participants could additionally use the system with their own documents. 
 
-Each evaluation session followed this procedure. It began with a brief guided walkthrough and demonstration of the system, introducing its workflow and main features. Participants were then asked to complete two tasks: an initial exploratory task designed to enable them to gain hands-on experience with the system, followed by a more realistic process modelling task based on a real-world document. If time permitted, participants could additionally use the system with their own documents.
+Following task completion, participants completed a questionnaire including the following questions: \\
+(1) What aspects of the tool did you like while using it? \\
+(2) What aspects of the tool did you not like or find problematic? \\
+(3) What improvements or additional features would you most like to see in the tool? \\
+(4) If you needed to model processes from documents in the future, would you consider using this tool? Why or why not?
 
-Following task completion, participants completed a questionnaire including a series of open-ended questions regarding their experiences with the system, covering aspects they found useful or problematic, as well as suggestions for improvements and desired features. In addition, participants were asked whether they would consider using the system in future document-based process modelling tasks and to elaborate on their reasoning. Each evaluation session lasted approximately 40–50 minutes.
+\section{Evaluation Results}
+\subsection{Overall Perception}
+Overall, participants perceived the tool as usable and intuitive, and capable of supporting document-based process modeling tasks within a unified environment. The Figure (See Figure~\ref{fig:eva_expert2_task1}) and the figure (See Figure~\ref{fig:modeling-result-task2}) illustrate the modeling results from one expert for the first and second tasks, respectively. 
 
-\section{Results}
+The feedback to each functionality is summarized within the table~\ref{table:evaluation-results}. Due to different background of the expert, different experts provided different perspectives on the system, therefore no quantiative summary is provided in table, but it is mentioned in the description of the following sections when relevant.
+\begin{figure}[H]
+    \centering
+    \caption{Modeling result} 
+    \includegraphics[width=0.8\textwidth]{images/eva_expert2_task1.png}
+    \floatfoot{Modeling result of an expert for the first task.}
+    \label{fig:eva_expert2_task1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \caption{Modeling result}
+    \includegraphics[width=0.8\textwidth]{images/eva_expert2_task2.png}
+    \floatfoot{Modeling result of an expert for the second task.}
+    \label{fig:modeling-result-task2}
+\end{figure}
+
+
+\begin{table}[H]
+\centering
+\caption{Summary of Evaluation Results by Functionality}
+    \label{table:evaluation-results}
+\begin{tabular}{p{4cm} p{5cm} p{5cm}}
+\hline
+\textbf{Functional Area} & \textbf{Perceived Benefits} & \textbf{Perceived Limitations} \\
+\hline
+Document Interaction 
+& Intuitive text selection workflow
+& Readability issue\\
+
+Integrated LLM-based Process Modeling 
+& Effective, Good quality
+& Lack of transparency in regeneration logic, Unnecessary review step of the first generated model \\
+
+Traceability 
+& Clear link between text and model
+& Lack of fine-grained traceability between actual used text and model\\
+
+Process--Subprocess Relationships 
+& Convienient, easy to establish
+& \\
+
+Model Versioning  
+& Very useful 
+& \\
+
+Graph-based Visualization 
+& Helpful for larger systems 
+& Node types not clear \\
+
+Log and Statistics 
+& Potentially useful for analysis 
+& \\
+
+\hline
+\end{tabular}
+\end{table}
+\subsection{Positive Aspects}
+The basic workflow of selecting relevant text, generating process models, and the linkage between the selected text and the corresponding models was generally perceived as clear and easy to follow. In addition, establishing relationships between process models and subprocesses was perceived as simple and useful.
+
+Besides the core functionalities of the system, several additional positive aspects were perceived by participants. First, the versioning functionality was highlighted as the most valuable feature, as it effectively supports iterative process model development by enabling users to track changes and revisit previous model versions. Second, the embed within the model XML data of relevant information such as selected text and prompt history is considered a well-integrated design feature by some participants. Third, logging and statistical information elicited interest among some participants due to its potential for further analysis. Finally, the network-style visualization of relationships across models and documents was mentioned as helpful, especially in the use of larger systems.
+\subsection{Challenges in Interaction and Use}
+Despite the generally positive perception of the system, participants reported several challenges related to interaction and use. These challenges can be grouped into three categories: interaction-level issues, practical limitations in use, and challenges in understanding the system’s underlying logic.
+At the interaction level, several issues were identified in the system’s interaction design. In particular, the requirement to explicitly deselect the current model before initiating a new modeling step was not immediately clear to users. In addition, the review step following the initial generation of models was perceived by some participants as unnecessary, as the generated models were already of sufficiently good quality.
+At the level of system use, participants reported practical constraints when working with documents. In particular, the display of PDF documents was perceived as suboptimal, which affected their experience when reading. 
+Beyond interaction and practical usage issues, participants also encountered challenges in understanding the system’s underlying logic, particularly in relation to AI-assisted model modifications. While the initial generation of models from selected text was generally well understood, subsequent AI-assisted modifications were less transparent to users. It was often unclear how the system constructed its input, including whether and how the current model and selected text were incorporated into the generation process. As a result, participants found it difficult to anticipate how their actions would influence the generated outputs, which occasionally led to mismatches between expected and actual results. 
+\subsection{Potential Improvements and Additional Features}
+Beyond the challenges identified in system use and interaction, a number of improvements and desired features for the system were suggested. These can be grouped into two categories: system-level features and more advanced AI-assisted modeling capabilities.
+At the system level, improvements and desired features were suggested across several aspects Firstly, improvements to the visualization were mentioned, including clearer differentiation and identification of elements (i.e. which type of element a node is and which version it represents). More expressive visual representations are also suggested such as using size, distance, or other visual properties to convey additional information. Secondly, model comparison was suggested as a valuable feature to help users understand and verify changes between different model versions, making it easier to identify modifications and track model iterations over time. Finally, an AI-assisted document interaction feature was suggested, where relevant information can be retrieved from documents and automatically selected to reduce manual effort and time. Some minor UI improvement suggestions are not described here in details.
+The second category concerns advanced AI-assisted modeling capabilities. In particular, participants emphasized the need for fine-grained traceability between source text and model. When selecting larger text passages, only a subset of the text is reflected in the generated model, and it is unclear which parts are actually used. Therefore, a clearer indication of the actual text used for model generation is required, ideally at the level of individual tasks. In addition, a retrieval-augmented generation (RAG)-based approach was proposed, in which all documents can serve as context for model generation. Beyond this, participants also expected more general advanced AI modeling capabilities, including explainability of the generated model through conversational interaction with chatbots, as well as support for model quality evaluation and automatic improvement.
+\subsection{Future Use Intention}
+Participants indicated an intention to use the system in use cases involving the management and exploration of multiple models and their associated documents. In these cases, features such as clear text-model traceability, process-subprocess relationship, and model management functionalities were considered particularly useful. In contrast, for simpler use cases, such as generating a process model from a single document, the system remains a viable option but does not provide a strong advantage over existing approaches. In general, participants pointed to the need for more advanced functionalities, specifically in relation to AI-assisted modeling features and improved interaction with documents.
+
+
+
+\section{Additional Observations}
+
+
+Besides the gathered feedback, some findings regarding user behaviour and interaction are observed during the evaluation.
+
+While most participants tended to select larger portions of text when starting with a new document, some preferred to begin with building models for smaller segments. These different strategies are illustrated in Figure~\ref{fig:text-selection-strategies}.
+\begin{figure}[H]
+    \centering
+    \caption{Different modeling strategies}
+    \includegraphics[width=0.7\textwidth]{images/Screenshot1.png}
+    \floatfoot{Different modeling strategies observed during task execution (above: larger part selection; below: step-by-step selection)}
+    \label{fig:text-selection-strategies}
+\end{figure}
+
+
+
 

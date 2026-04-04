@@ -339,9 +339,9 @@
                 <text_0>Please rate your **programming** experience with respect to the following 5-point levels:</text_0>
                 <select_0>no experience; learned in class or from book; used on a class project; used on one project in industry; used on multiple projects in industry</select_0>
                 <input_0>How many years of programming experience do you have?</input_0>
-                <text_1>Please rate your **modelling** experience with respect to the following 5-point levels:</text_1>
+                <text_1>Please rate your **modeling** experience with respect to the following 5-point levels:</text_1>
                 <select_1>no experience; learned in class or from book; used on a class project; used on one project in industry; used on multiple projects in industry</select_1>
-                <input_1>How many years of modelling experience do you have?</input_1>
+                <input_1>How many years of modeling experience do you have?</input_1>
                 <input_2>Which graphical modeling languages are you familiar with (e.g., UML, ER, etc.)?</input_2>
               </default>
             </arguments>
