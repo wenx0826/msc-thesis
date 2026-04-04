@@ -2376,6 +2376,7 @@
     <bcf:citekey order="1" intorder="1">hevner2007</bcf:citekey>
     <bcf:citekey order="2" intorder="1">ProMoAI</bcf:citekey>
     <bcf:citekey order="3" intorder="1">AutoBPMN.AI</bcf:citekey>
+    <bcf:citekey order="4" intorder="1">NotebookLM</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="none">
