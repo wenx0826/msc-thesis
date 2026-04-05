@@ -366,12 +366,24 @@
 \usepackage{verbatim}
 \graphicspath{{img/}}
 \usepackage{wrapfig}
+\usepackage{listings}
+\lstset{basicstyle=\ttfamily\small,breaklines=true}
+% Define minimal JavaScript language in case the TeX distribution lacks it
+\lstdefinelanguage{JavaScript}{%
+  morekeywords={const,let,var,function,return,if,else,for,while,break,continue,import,from,export,default,try,catch,finally,throw,new,typeof,instanceof},%
+  sensitive=true,%
+  morecomment=[l]{//},%
+  morecomment=[s]{/*}{*/},%
+  morestring=[b]",%
+  morestring=[b]'
+}
 \usepackage[backend=biber,style=ieee, pagetracker=true]{biblatex}
 \addbibresource{literature.bib}
 \DeclareLanguageMapping{english}{english-apa}
 \pdfimageresolution 300
 
 \usepackage{forest}
+\usepackage{pgfplots}
 
 \newcommand{\paragraphWithHeading}[1]{\paragraph{#1}\mbox{}\newline}
 \pgfplotsset{compat=1.15}

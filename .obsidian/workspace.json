@@ -11,12 +11,12 @@
             "id": "f528d85bfcef3690",
             "type": "leaf",
             "state": {
-              "type": "pdf",
+              "type": "image",
               "state": {
-                "file": "Data/MAP_process_description.pdf"
+                "file": "Mock-up/sketch.jpg"
               },
-              "icon": "lucide-file-text",
-              "title": "MAP_process_description"
+              "icon": "lucide-image",
+              "title": "sketch"
             }
           },
           {
@@ -195,13 +195,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Data/MAP_process_description.pdf",
+                "file": "Mock-up/sketch.jpg",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of MAP_process_description"
+              "title": "Outline of sketch"
             }
           },
           {
@@ -236,35 +236,42 @@
       "card-board:CardBoard": false
     }
   },
-  "active": "bc0d0905923aa57d",
+  "active": "f528d85bfcef3690",
   "lastOpenFiles": [
     "Thesis-latex /main.synctex(busy)",
-    "Thesis-latex /pdflatex69879.fls",
-    "Thesis-latex /pdflatex69869.fls",
-    "Thesis-latex /pdflatex69832.fls",
-    "Thesis-latex /main.blg",
-    "Thesis-latex /pdflatex69804.fls",
-    "Thesis-latex /pdflatex69415.fls",
-    "Thesis-latex /pdflatex69384.fls",
-    "Thesis-latex /pdflatex69251.fls",
-    "Thesis-latex /pdflatex69245.fls",
-    "Thesis-latex /pdflatex69233.fls",
+    "Thesis-latex /pdflatex16318.fls",
+    "Thesis-latex /pdflatex16304.fls",
+    "Thesis-latex /pdflatex16294.fls",
+    "Thesis-latex /pdflatex16249.fls",
+    "Thesis-latex /pdflatex16235.fls",
+    "Thesis-latex /pdflatex16223.fls",
+    "Thesis-latex /pdflatex16183.fls",
+    "Thesis-latex /pdflatex16163.fls",
+    "Thesis-latex /pdflatex16120.fls",
+    "Thesis-latex /pdflatex16106.fls",
+    "Thesis-latex /images/Screenshot 2026-04-05 at 19.18.47.png",
+    "Thesis-latex /images/Screenshot 2026-04-05 at 19.18.32.png",
+    "Thesis-latex /images/Screenshot 2026-04-05 at 19.18.14.png",
+    "05_Evaluation/v0.md",
+    "Mock-up/sketch.jpg",
+    "03_Solution Design/0_v0.md",
+    "05_Evaluation/v1.md",
+    "05_Evaluation/v0.9.md",
+    "SystemModels/backend.md",
+    "SystemModels/architecture_v1.md",
+    "SystemModels/C4-Architecture/architecture_v1.md",
+    "SystemModels/Untitled.md",
     "Thesis-latex /images/sol_architecture.png",
-    "Graph/fe_v0.md",
+    "SystemModels/fe_v0.md",
     "Thesis-latex /images/imp_backend_com.png",
     "Thesis-latex /images/imp_backend.png",
     "Thesis-latex /images/Screenshot 2026-04-04 at 20.49.56.png",
-    "Graph/backend.md",
     "Thesis-latex /images/sol_data_model.png",
     "Thesis-latex /images/sol_data_model1.png",
-    "Thesis-latex /images/Screenshot 2026-04-04 at 20.34.36.png",
-    "Graph/data_v1.md",
-    "Graph/data_v0.md",
+    "SystemModels/data_v1.md",
+    "SystemModels/data_v0.md",
     "Graph/data.md",
-    "Thesis-latex /images/sol_archetecture.png",
-    "Thesis-latex /images/Screenshot 2026-04-04 at 17.43.38.png",
     "Architecture/v0.md",
-    "Mock-up/v0.jpg",
     "06_Discussion/v0.9.0.md",
     "05_Evaluation/1_Responses.md",
     "05_Evaluation/0_Responses (Original).md",
@@ -274,16 +281,9 @@
     "03_Solution Design/User Interface Design.md",
     "03_Solution Design/Data.md",
     "07_Conclusion/v0.md",
-    "05_Evaluation/v1.md",
     "00_Abstract/Untitled.md",
-    "05_Evaluation/v0.md",
     "01_Introduction/1.2_Research Questions/v_0.9.md",
     "01_Introduction/1.2_Research Questions/0_v0.1_RQ3.md",
-    "01_Introduction/1.2_Research Questions/0_v0.1_RQ1.md",
-    "01_Introduction/1.5_Evaluation/v0.md",
-    "01_Introduction/1.2_Research Questions/v0.9.1.md",
-    "01_Introduction/1.2_Research Questions/0_v0.1_RQ2.md",
-    "01_Introduction/1.1_Motivation/v0.0.md",
     "Untitled.canvas"
   ]
 }

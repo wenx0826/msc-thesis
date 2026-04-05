@@ -1,9 +1,11 @@
 \babel@toc {english}{}\relax 
 \babel@toc {english}{}\relax 
-\contentsline {figure}{\numberline {1}{\ignorespaces System Architecture}}{11}{figure.caption.5}%
-\contentsline {figure}{\numberline {2}{\ignorespaces Data Model}}{12}{figure.caption.6}%
-\contentsline {figure}{\numberline {4}{\ignorespaces Backend Component}}{13}{figure.caption.10}%
-\contentsline {figure}{\numberline {5}{\ignorespaces Modeling result}}{15}{figure.caption.12}%
-\contentsline {figure}{\numberline {6}{\ignorespaces Modeling result}}{15}{figure.caption.13}%
-\contentsline {figure}{\numberline {7}{\ignorespaces Different modeling strategies}}{19}{figure.caption.15}%
-\contentsline {figure}{\numberline {3}{\ignorespaces Frontend directory structure of the DBPM application.}}{24}{figure.caption.8}%
+\contentsline {figure}{\numberline {1}{\ignorespaces Example JSON schema used in the backend for text quotes}}{12}{figure.caption.5}%
+\contentsline {figure}{\numberline {2}{\ignorespaces System Architecture}}{14}{figure.caption.6}%
+\contentsline {figure}{\numberline {3}{\ignorespaces Conceptual Data Model}}{15}{figure.caption.7}%
+\contentsline {figure}{\numberline {4}{\ignorespaces Frontend codebase structure}}{17}{figure.caption.9}%
+\contentsline {figure}{\numberline {5}{\ignorespaces Example JSON schema used in the backend for text quotes}}{18}{figure.caption.11}%
+\contentsline {figure}{\numberline {6}{\ignorespaces Backend Component}}{19}{figure.caption.12}%
+\contentsline {figure}{\numberline {7}{\ignorespaces Modeling result}}{21}{figure.caption.14}%
+\contentsline {figure}{\numberline {8}{\ignorespaces Modeling result}}{21}{figure.caption.15}%
+\contentsline {figure}{\numberline {9}{\ignorespaces Different modeling strategies}}{25}{figure.caption.17}%

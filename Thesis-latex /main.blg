@@ -1,21 +1,21 @@
-[2] Config.pm:308> INFO - This is Biber 2.20
-[3] Config.pm:311> INFO - Logfile is 'main.blg'
-[452] biber-darwin:340> INFO - === Sat Apr  4, 2026, 22:03:16
-[553] Biber.pm:420> INFO - Reading 'main.bcf'
-[2663] Biber.pm:994> INFO - Found 4 citekeys in bib section 0
-[2754] Biber.pm:4463> INFO - Processing section 0
-[2851] Biber.pm:4654> INFO - Looking for bibtex file 'literature.bib' for section 0
-[2883] bibtex.pm:1713> INFO - LaTeX decoding ...
-[3037] bibtex.pm:1519> INFO - Found BibTeX data source 'literature.bib'
-[3548] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
-[3548] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[3549] Biber.pm:4283> INFO - Sorting list 'none/global//global/global/global' of type 'entry' with template 'none' and locale 'en-US'
-[3550] Biber.pm:4289> INFO - No sort tailoring available for locale 'en-US'
-[3599] bbl.pm:676> INFO - Writing 'main.bbl' with encoding 'UTF-8'
-[3613] bbl.pm:779> INFO - Output to main.bbl
-[3617] Biber.pm:131> WARN - Duplicate entry key: 'weske2019business' in file 'literature.bib', skipping ...
-[3617] Biber.pm:131> WARN - legacy month field 'Aug' in entry 'ProMoAI' is not an integer - this will probably not sort properly.
-[3617] Biber.pm:131> WARN - Overwriting field 'year' with year value from field 'date' for entry 'ProMoAI'
-[3618] Biber.pm:131> WARN - Overwriting field 'month' with month value from field 'date' for entry 'ProMoAI'
-[3619] Biber.pm:131> WARN - I didn't find a database entry for 'NotebookLM' (section 0)
-[3619] Biber.pm:133> INFO - WARNINGS: 5
+[0] Config.pm:308> INFO - This is Biber 2.20
+[0] Config.pm:311> INFO - Logfile is 'main.blg'
+[40] biber-darwin:340> INFO - === Sun Apr  5, 2026, 22:50:19
+[49] Biber.pm:420> INFO - Reading 'main.bcf'
+[91] Biber.pm:994> INFO - Found 5 citekeys in bib section 0
+[99] Biber.pm:4463> INFO - Processing section 0
+[105] Biber.pm:4654> INFO - Looking for bibtex file 'literature.bib' for section 0
+[106] bibtex.pm:1713> INFO - LaTeX decoding ...
+[116] bibtex.pm:1519> INFO - Found BibTeX data source 'literature.bib'
+[146] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[146] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[146] Biber.pm:4283> INFO - Sorting list 'none/global//global/global/global' of type 'entry' with template 'none' and locale 'en-US'
+[146] Biber.pm:4289> INFO - No sort tailoring available for locale 'en-US'
+[167] bbl.pm:676> INFO - Writing 'main.bbl' with encoding 'UTF-8'
+[169] bbl.pm:779> INFO - Output to main.bbl
+[169] Biber.pm:131> WARN - Duplicate entry key: 'weske2019business' in file 'literature.bib', skipping ...
+[169] Biber.pm:131> WARN - legacy month field 'Aug' in entry 'ProMoAI' is not an integer - this will probably not sort properly.
+[169] Biber.pm:131> WARN - Overwriting field 'year' with year value from field 'date' for entry 'ProMoAI'
+[169] Biber.pm:131> WARN - Overwriting field 'month' with month value from field 'date' for entry 'ProMoAI'
+[169] Biber.pm:131> WARN - I didn't find a database entry for 'NotebookLM' (section 0)
+[169] Biber.pm:133> INFO - WARNINGS: 5

@@ -2,16 +2,16 @@
 C4Container
     title DBPM — System Context & Containers
 
-    Person(user, "Process Modeller", "Creates and manages CPEE process models derived from documents")
+    Person(user, "Process Modeler", "Creates and manages process models derived from documents")
 
     System_Ext(llm, "LLM Interface", "LLM hosted at autobpmn.ai.")
     System_Ext(cpee, "CPEE CDN", "Flow editor & renderer components loaded from cpee.org.")
 
     System_Boundary(dbpm, "Document-Based Process Modeller (DBPM)") {
-        Container(frontend, "Frontend", "jQuery", "SPA served as static files. Handles document upload, text selection, model editing, and project management.")
+        Container(frontend, "Frontend", "Container: JavaScript and JQuery", "MPA, containing pages: homepage, workspace and statistic")
         Container(backend, "Backend", "Node.js · Fastify", "REST API. Modules: projects, documents, models, document-model-links, logs.")
-        ContainerDb(sqlite, "Database", "SQLite", "Metadata: projects, documents, models, versions, selections, generation attempts, events.")
-        ContainerDb(files, "File Storage", "Filesystem", "HTML document versions · CPEE XML model versions · YAML event logs")
+        ContainerDb(sqlite, "Database", "Container: SQLite", "Metadata: Projects information, documents metadata, models metadata, document-model links, statistic data, ect.")
+        ContainerDb(files, "File Storage", "Container: Filesystem", "Documents stored as HTML,XML model data, YAML event logs")
     }
 
     Rel(user, frontend, "Uses", "Browser / HTTP")

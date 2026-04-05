@@ -12,39 +12,55 @@
 \contentsline {subsection}{ProMoAI}{9}{section*.1}%
 \contentsline {subsection}{BPMN-Chatbot}{9}{section*.1}%
 \contentsline {subsection}{AutoBPMN.AI}{9}{section*.1}%
-\contentsline {section}{\numberline {2.2}Document-based Tool?}{10}{section.2.2}%
-\contentsline {subsection}{NotebookLM}{10}{section*.2}%
+\contentsline {section}{\numberline {2.2}Document-based Interaction Tool}{10}{section.2.2}%
+\contentsline {subsection}{NotebookLM?}{10}{section*.2}%
+\contentsline {subsection}{Jupyter Notebook?}{10}{section*.2}%
+\contentsline {section}{\numberline {2.3}Human-in-the-loop}{10}{section.2.3}%
 \contentsline {chapter}{\numberline {3}Solution Design}{10}{chapter.3}%
 \contentsline {section}{\numberline {3.1}Requirements}{10}{section.3.1}%
 \contentsline {subsection}{Functional Requirements}{10}{section*.3}%
 \contentsline {subsection}{Non-functional Requirements}{10}{section*.3}%
-\contentsline {section}{\numberline {3.2}Modeling Workflow Design}{11}{section.3.2}%
-\contentsline {section}{\numberline {3.3}Use Cases}{11}{section.3.3}%
-\contentsline {subsection}{Use Case 1: Text Selection and Model Generation}{11}{section*.4}%
-\contentsline {section}{\numberline {3.4}User Interface Design}{11}{section.3.4}%
-\contentsline {section}{\numberline {3.5}System Architecture}{11}{section.3.5}%
-\contentsline {section}{\numberline {3.6}Data Model}{12}{section.3.6}%
-\contentsline {chapter}{\numberline {4}Implementation}{13}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Frontend}{13}{section.4.1}%
-\contentsline {subsection}{Architecture}{13}{section*.7}%
-\contentsline {section}{\numberline {4.2}Backend}{13}{section.4.2}%
-\contentsline {subsection}{Architecture}{13}{section*.9}%
-\contentsline {chapter}{\numberline {5}Evaluation}{14}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Evaluation Procedure}{14}{section.5.1}%
-\contentsline {section}{\numberline {5.2}Evaluation Results}{14}{section.5.2}%
-\contentsline {subsection}{Overall Perception}{14}{section*.11}%
-\contentsline {subsection}{Positive Aspects}{16}{table.caption.14}%
-\contentsline {subsection}{Challenges in Interaction and Use}{17}{table.caption.14}%
-\contentsline {subsection}{Potential Improvements and Additional Features}{17}{table.caption.14}%
-\contentsline {subsection}{Future Use Intention}{18}{table.caption.14}%
-\contentsline {section}{\numberline {5.3}Additional Observations}{18}{section.5.3}%
-\contentsline {chapter}{\numberline {6}Discussion}{19}{chapter.6}%
-\contentsline {section}{\numberline {6.1}Usability and User Experience}{19}{section.6.1}%
-\contentsline {section}{\numberline {6.2}User Expectations}{20}{section.6.2}%
-\contentsline {chapter}{\numberline {7}Conclusion}{20}{chapter.7}%
-\contentsline {chapter}{Bibliography}{21}{chapter.7}%
-\contentsline {chapter}{\numberline {A}Appendix}{22}{chapter.A}%
-\contentsline {section}{\numberline {A.1}Evaluation Material}{22}{section.A.1}%
-\contentsline {subsection}{B2B Order Processing Scenario}{22}{section*.16}%
-\contentsline {paragraph}{Document 2: Credit Check (excerpt)}{23}{section*.16}%
-\contentsline {paragraph}{Something}{23}{section*.16}%
+\contentsline {section}{\numberline {3.2}System Overview}{11}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Modeling Workflow Design}{11}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Core Functionalities Design}{12}{section.3.4}%
+\contentsline {subsection}{Document Management}{12}{section*.4}%
+\contentsline {subsection}{Document Interaction}{12}{section*.4}%
+\contentsline {subsection}{Process modeling}{12}{section*.4}%
+\contentsline {subsubsection}{Human-in-the-loop Process Modeling and Version Control}{12}{section*.4}%
+\contentsline {subsubsection}{Use Case: Model Generation}{12}{section*.4}%
+\contentsline {subsubsection}{Use Case: Model Modification}{12}{section*.4}%
+\contentsline {subsubsection}{Use Case: Establishing Process-Subprocess Relationships}{12}{section*.4}%
+\contentsline {subsubsection}{Augumented Model Data}{12}{section*.4}%
+\contentsline {subsection}{Traceability}{12}{lstnumber.-1.2}%
+\contentsline {subsection}{Project Graph Visualization}{12}{lstnumber.-1.2}%
+\contentsline {section}{\numberline {3.5}User Interface and Interaction Design}{13}{section.3.5}%
+\contentsline {section}{\numberline {3.6}System Architecture}{13}{section.3.6}%
+\contentsline {section}{\numberline {3.7}Conceptual Data Model}{15}{section.3.7}%
+\contentsline {chapter}{\numberline {4}Implementation}{17}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Frontend}{17}{section.4.1}%
+\contentsline {subsection}{Architecture}{17}{section*.8}%
+\contentsline {subsection}{Document Rendering}{18}{figure.caption.9}%
+\contentsline {subsection}{Model Rendering}{18}{figure.caption.9}%
+\contentsline {subsection}{Architecture}{18}{figure.caption.9}%
+\contentsline {section}{\numberline {4.2}Backend}{18}{section.4.2}%
+\contentsline {subsection}{Architecture}{18}{section*.10}%
+\contentsline {section}{\numberline {4.3}Database}{19}{section.4.3}%
+\contentsline {chapter}{\numberline {5}Evaluation}{19}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Evaluation Procedure}{19}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Evaluation Results}{20}{section.5.2}%
+\contentsline {subsection}{Overall Perception}{20}{section*.13}%
+\contentsline {subsection}{Positive Aspects}{22}{table.caption.16}%
+\contentsline {subsection}{Challenges in Interaction and Use}{23}{table.caption.16}%
+\contentsline {subsection}{Potential Improvements and Additional Features}{23}{table.caption.16}%
+\contentsline {subsection}{Future Use Intention}{24}{table.caption.16}%
+\contentsline {section}{\numberline {5.3}Additional Observations}{24}{section.5.3}%
+\contentsline {chapter}{\numberline {6}Discussion}{25}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Usability and User Experience}{25}{section.6.1}%
+\contentsline {section}{\numberline {6.2}User Expectations}{26}{section.6.2}%
+\contentsline {chapter}{\numberline {7}Conclusion}{26}{chapter.7}%
+\contentsline {chapter}{Bibliography}{27}{chapter.7}%
+\contentsline {chapter}{\numberline {A}Appendix}{28}{chapter.A}%
+\contentsline {section}{\numberline {A.1}Evaluation Material}{28}{section.A.1}%
+\contentsline {subsection}{B2B Order Processing Scenario}{28}{section*.18}%
+\contentsline {paragraph}{Document 2: Credit Check (excerpt)}{29}{section*.18}%
+\contentsline {paragraph}{Something}{29}{section*.18}%
