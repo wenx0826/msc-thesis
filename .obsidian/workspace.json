@@ -11,12 +11,42 @@
             "id": "f528d85bfcef3690",
             "type": "leaf",
             "state": {
-              "type": "image",
+              "type": "markdown",
               "state": {
-                "file": "Mock-up/sketch.jpg"
+                "file": "07_Conclusion/v0.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "lucide-image",
-              "title": "sketch"
+              "icon": "lucide-file",
+              "title": "v0"
+            }
+          },
+          {
+            "id": "cc1379ffae4af3ab",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "07_Conclusion/v0.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "v0"
+            }
+          },
+          {
+            "id": "42930d948fd4298a",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "07_Conclusion/v0.2.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "v0.2"
             }
           },
           {
@@ -75,7 +105,8 @@
               "title": "Model Management"
             }
           }
-        ]
+        ],
+        "currentTab": 2
       }
     ],
     "direction": "vertical"
@@ -195,13 +226,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Mock-up/sketch.jpg",
+                "file": "07_Conclusion/v0.2.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of sketch"
+              "title": "Outline of v0.2"
             }
           },
           {
@@ -236,54 +267,54 @@
       "card-board:CardBoard": false
     }
   },
-  "active": "f528d85bfcef3690",
+  "active": "42930d948fd4298a",
   "lastOpenFiles": [
-    "Thesis-latex /main.synctex(busy)",
-    "Thesis-latex /pdflatex16318.fls",
-    "Thesis-latex /pdflatex16304.fls",
-    "Thesis-latex /pdflatex16294.fls",
-    "Thesis-latex /pdflatex16249.fls",
-    "Thesis-latex /pdflatex16235.fls",
-    "Thesis-latex /pdflatex16223.fls",
-    "Thesis-latex /pdflatex16183.fls",
-    "Thesis-latex /pdflatex16163.fls",
-    "Thesis-latex /pdflatex16120.fls",
-    "Thesis-latex /pdflatex16106.fls",
-    "Thesis-latex /images/Screenshot 2026-04-05 at 19.18.47.png",
-    "Thesis-latex /images/Screenshot 2026-04-05 at 19.18.32.png",
-    "Thesis-latex /images/Screenshot 2026-04-05 at 19.18.14.png",
+    "Thesis/main.synctex(busy)",
+    "Thesis/pdflatex45489.fls",
+    "Thesis/pdflatex45482.fls",
+    "Thesis/main.run.xml",
+    "Thesis/main.lof",
+    "Thesis/main.lot",
+    "Thesis/main.toc",
+    "Thesis/main.bcf",
+    "Thesis/main.out",
+    "Thesis/main.log",
+    "Thesis/main.fls",
+    "Thesis/images/mock-up1.jpg",
+    "07_Conclusion/v0.1.md",
+    "07_Conclusion/v0.md",
+    "06_Discussion/v0.0.md",
     "05_Evaluation/v0.md",
-    "Mock-up/sketch.jpg",
-    "03_Solution Design/0_v0.md",
+    "05_Evaluation/1_Responses.md",
+    "05_Evaluation/0_Responses (Original).md",
+    "05_Evaluation/v1.1.md",
     "05_Evaluation/v1.md",
     "05_Evaluation/v0.9.md",
+    "06_Discussion/v0.1.md",
+    "06_Discussion/v0.9.0.md",
+    "07_Conclusion/v0.2.md",
+    "01_Introduction/1.5_Evaluation/v0.md",
+    "01_Introduction/1.5_Evaluation/0_v0.md",
+    "01_Introduction/1.4_Methodology/v0.0.md",
+    "01_Introduction/1.2_Research Questions/v_0.9.md",
+    "01_Introduction/1.2_Research Questions/0_v0.1_RQ3.md",
+    "01_Introduction/1.2_Research Questions/0_v0.1_RQ2.md",
+    "Thesis/images/sol_architecture.png",
+    "Thesis/images/Screenshot 2026-04-07 at 13.53.00.png",
+    "v0.1.md",
+    "Mock-up/sketch.jpg",
+    "Thesis/tum-resources/images/valueprop.PNG",
+    "Thesis/tum-resources/images/Universitaet_Flaggen.jpg",
+    "Thesis/tum-resources/images/TUM_Uhrenturm.png",
+    "Thesis/images/Screenshot1.png",
+    "Thesis/images/sol_data_model.png",
+    "Thesis/images/imp_backend_com.png",
+    "Thesis/README.md",
+    "03_Solution Design/0_v0.md",
     "SystemModels/backend.md",
     "SystemModels/architecture_v1.md",
     "SystemModels/C4-Architecture/architecture_v1.md",
     "SystemModels/Untitled.md",
-    "Thesis-latex /images/sol_architecture.png",
-    "SystemModels/fe_v0.md",
-    "Thesis-latex /images/imp_backend_com.png",
-    "Thesis-latex /images/imp_backend.png",
-    "Thesis-latex /images/Screenshot 2026-04-04 at 20.49.56.png",
-    "Thesis-latex /images/sol_data_model.png",
-    "Thesis-latex /images/sol_data_model1.png",
-    "SystemModels/data_v1.md",
-    "SystemModels/data_v0.md",
-    "Graph/data.md",
-    "Architecture/v0.md",
-    "06_Discussion/v0.9.0.md",
-    "05_Evaluation/1_Responses.md",
-    "05_Evaluation/0_Responses (Original).md",
-    "03_Solution Design/0_System Overview.md",
-    "03_Solution Design/Model Management.md",
-    "03_Solution Design/01 Design Objectives.md",
-    "03_Solution Design/User Interface Design.md",
-    "03_Solution Design/Data.md",
-    "07_Conclusion/v0.md",
-    "00_Abstract/Untitled.md",
-    "01_Introduction/1.2_Research Questions/v_0.9.md",
-    "01_Introduction/1.2_Research Questions/0_v0.1_RQ3.md",
     "Untitled.canvas"
   ]
 }

@@ -1,5 +1,4 @@
 const OriginalWFAdaptorManifestationBase = WFAdaptorManifestationBase;
-const events = {};
 
 function getNode(svgid) {
   var node = this.adaptor.description.get_node_by_svg_id(svgid).get(0);
@@ -46,7 +45,6 @@ function CustomizedWFAdaptorManifestationBase(...args) {
     }
   };
 
-  // const originalDblclick = inst.events.dblclick;
   const originalMouseover = inst.events.mouseover;
   const originalMouseout = inst.events.mouseout;
 
@@ -61,7 +59,7 @@ function CustomizedWFAdaptorManifestationBase(...args) {
     };
 
     inst.elements.call.adaptor.mouseout = (svgid, e) => {
-      originalMouseout.call(inst, svgid, e); // Call original mouseover logic
+      originalMouseout.call(inst, svgid, e);
       const node = getNode.call(inst, svgid);
       const isSubprocess = checkSubprocess(node);
       if (isSubprocess) {

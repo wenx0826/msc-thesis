@@ -1,0 +1,73 @@
+\babel@toc {english}{}\relax 
+\babel@toc {english}{}\relax 
+\contentsline {chapter}{\numberline {1}Introduction}{7}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Motivation}{7}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Research Questions}{7}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Contribution}{8}{section.1.3}%
+\contentsline {section}{\numberline {1.4}Methodology}{8}{section.1.4}%
+\contentsline {section}{\numberline {1.5}Evaluation}{8}{section.1.5}%
+\contentsline {section}{\numberline {1.6}Structure}{9}{section.1.6}%
+\contentsline {chapter}{\numberline {2}Related Work}{9}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Text2Model Transformation? Text-based Process Modeling?}{9}{section.2.1}%
+\contentsline {section}{\numberline {2.2}LLM-based Process Modeling Tool}{9}{section.2.2}%
+\contentsline {subsection}{ProMoAI}{9}{section*.1}%
+\contentsline {subsection}{BPMN-Chatbot}{9}{section*.1}%
+\contentsline {subsection}{AutoBPMN.AI}{9}{section*.1}%
+\contentsline {section}{\numberline {2.3}Document AI Tool}{9}{section.2.3}%
+\contentsline {subsection}{NotebookLM?}{9}{section*.2}%
+\contentsline {section}{\numberline {2.4}Human-in-the-loop}{10}{section.2.4}%
+\contentsline {chapter}{\numberline {3}Solution Design}{10}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Requirements}{10}{section.3.1}%
+\contentsline {subsection}{Functional Requirements}{10}{section*.3}%
+\contentsline {subsection}{Non-functional Requirements}{10}{section*.3}%
+\contentsline {section}{\numberline {3.2}Design Overview}{10}{section.3.2}%
+\contentsline {subsection}{Views}{11}{section*.4}%
+\contentsline {subsubsection}{Workspace}{11}{section*.4}%
+\contentsline {section}{\numberline {3.3}Modeling Workflow Design}{12}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Core Functionalities Design}{12}{section.3.4}%
+\contentsline {subsection}{Document Management}{12}{section*.6}%
+\contentsline {subsection}{Document Interaction}{12}{section*.6}%
+\contentsline {subsection}{Process modeling}{12}{section*.6}%
+\contentsline {subsubsection}{Human-in-the-loop Process Modeling and Version Control}{12}{section*.6}%
+\contentsline {subsubsection}{Use Case: Model Generation}{12}{section*.6}%
+\contentsline {subsubsection}{Use Case: Model Modification}{12}{section*.6}%
+\contentsline {subsubsection}{Use Case: Establishing Process-Subprocess Relationships}{12}{section*.6}%
+\contentsline {subsubsection}{Augmented Model Data}{13}{section*.6}%
+\contentsline {subsection}{Traceability}{13}{lstnumber.-1.20}%
+\contentsline {subsection}{Project Graph Visualization}{13}{lstnumber.-1.20}%
+\contentsline {section}{\numberline {3.5}Interaction Design}{14}{section.3.5}%
+\contentsline {section}{\numberline {3.6}System Architecture}{14}{section.3.6}%
+\contentsline {section}{\numberline {3.7}Conceptual Data Model}{16}{section.3.7}%
+\contentsline {chapter}{\numberline {4}Implementation}{18}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Frontend}{18}{section.4.1}%
+\contentsline {subsection}{Architecture}{18}{section*.10}%
+\contentsline {section}{\numberline {4.2}State Management}{18}{section.4.2}%
+\contentsline {subsection}{Document Processing}{19}{section*.12}%
+\contentsline {subsection}{Text Selection Rendering}{19}{section*.12}%
+\contentsline {subsubsection}{Virtual Overlay Strategy}{19}{section*.12}%
+\contentsline {subsubsection}{Virtual Overlay Strategy}{19}{section*.12}%
+\contentsline {subsection}{Modeling}{19}{section*.12}%
+\contentsline {subsection}{Rendering Customization}{19}{section*.12}%
+\contentsline {subsection}{Architecture}{19}{section*.12}%
+\contentsline {section}{\numberline {4.3}Backend}{19}{section.4.3}%
+\contentsline {subsection}{Architecture}{19}{section*.13}%
+\contentsline {section}{\numberline {4.4}Database}{20}{section.4.4}%
+\contentsline {chapter}{\numberline {5}Evaluation}{20}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Evaluation Procedure}{20}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Evaluation Results}{21}{section.5.2}%
+\contentsline {subsection}{Overall Perception}{21}{section*.16}%
+\contentsline {subsection}{Positive Aspects}{24}{table.caption.19}%
+\contentsline {subsection}{Challenges in Interaction and Use}{24}{table.caption.19}%
+\contentsline {subsection}{Potential Improvements and Additional Features}{24}{table.caption.19}%
+\contentsline {section}{\numberline {5.3}Additional Observations}{24}{section.5.3}%
+\contentsline {chapter}{\numberline {6}Discussion}{25}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Usability and User Experience}{25}{section.6.1}%
+\contentsline {section}{\numberline {6.2}User Expectations}{25}{section.6.2}%
+\contentsline {chapter}{\numberline {7}Conclusion}{25}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Summary}{25}{section.7.1}%
+\contentsline {section}{\numberline {7.2}Future Work}{25}{section.7.2}%
+\contentsline {chapter}{\numberline {A}Appendix}{26}{chapter.A}%
+\contentsline {section}{\numberline {A.1}Evaluation Material}{26}{section.A.1}%
+\contentsline {subsection}{B2B Order Processing Scenario}{26}{section*.21}%
+\contentsline {paragraph}{Document 2: Credit Check (excerpt)}{27}{section*.21}%
+\contentsline {paragraph}{Something}{27}{section*.21}%

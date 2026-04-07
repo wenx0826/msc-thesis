@@ -443,12 +443,33 @@ createUI({
       const svgId = $node.attr("id");
       const $element = $(`#graphcanvas [element-id="${svgId}"]`);
 
+      const el = $element[0];
+      if (el) {
+        const rect = el.getBoundingClientRect();
+        $('<div class="displaylabel">Double-click to view subprocess</div>')
+          .css({
+            position: "fixed",
+            left: rect.left + rect.width / 2,
+            top: rect.top - 20,
+            transform: "translateX(-50%)",
+            background: "#333",
+            color: "#fff",
+            padding: "3px 8px",
+            borderRadius: "4px",
+            fontSize: "12px",
+            pointerEvents: "none",
+            zIndex: 9999,
+            whiteSpace: "nowrap",
+          })
+          .appendTo("body");
+      }
+
       workspaceStore.setModelPopover({
         target: {
           id: modelId,
           versionId,
         },
-        anchor: { type: "element", element: $element[0] },
+        anchor: { type: "element", element: el },
         source: "subprocess-node",
       });
     });
