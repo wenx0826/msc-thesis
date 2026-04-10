@@ -38,10 +38,6 @@ export default async function (fastify, options) {
       try {
         const result =
           documentModelLinkService.getLatestByModelVersionId(modelVersionId);
-        if (!result) {
-          reply.code(404).send({ error: "Link not found" });
-          return;
-        }
         reply.send(result);
       } catch (err) {
         console.error("Failed to fetch latest link by model version:", err);
@@ -61,14 +57,6 @@ export default async function (fastify, options) {
       reply.send(result);
     } catch (err) {
       console.error("Failed to update link:", err);
-      if (err.message === "Selections are required") {
-        reply.code(400).send({ error: err.message });
-        return;
-      }
-      if (err.message === "Link not found") {
-        reply.code(404).send({ error: "Link not found" });
-        return;
-      }
       reply.code(500).send({ error: "Failed to update link" });
     }
   });
@@ -86,14 +74,6 @@ export default async function (fastify, options) {
         reply.send(result);
       } catch (err) {
         console.error("Failed to create selection:", err);
-        if (err.message === "Link not found") {
-          reply.code(404).send({ error: "Link not found" });
-          return;
-        }
-        if (err.message === "Selection already exists") {
-          reply.code(409).send({ error: "Selection already exists" });
-          return;
-        }
         reply.code(500).send({ error: "Failed to create selection" });
       }
     },
@@ -113,10 +93,6 @@ export default async function (fastify, options) {
         reply.send(result);
       } catch (err) {
         console.error("Failed to update selection:", err);
-        if (["Link not found", "Selection not found"].includes(err.message)) {
-          reply.code(404).send({ error: err.message });
-          return;
-        }
         reply.code(500).send({ error: "Failed to update selection" });
       }
     },
@@ -135,10 +111,6 @@ export default async function (fastify, options) {
         reply.send(result);
       } catch (err) {
         console.error("Failed to delete selection:", err);
-        if (["Link not found", "Selection not found"].includes(err.message)) {
-          reply.code(404).send({ error: err.message });
-          return;
-        }
         reply.code(500).send({ error: "Failed to delete selection" });
       }
     },

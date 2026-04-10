@@ -4,13 +4,22 @@
 \section{Requirements}
 \label{sec:solution:req}
 \subsection{Functional Requirements}
-The system must meet the following core requirements for a MVP:\\
+
+When starting the thesis the following functional requirements for the system were defined:
+
+\begin{itemize}
+    \item The user should be able to load multiple documents.
+    \item The user should 
+\end{itemize}
+
+Also the following non-functional requirements were specified:
+
 It shall integrate the necessary modeling functionalities within one unified interface (webpage).\\
 It shall support upload multiple documents in textual format, e.g.,TXT, DOCX, PDF.\\
 It shall allow users to select multiple passages from one document to serve as input for LLM-based process model auto-generation. \\
 It shall provide a clear visual link between the text and the generated model.\\
 It shall embed the source text within the generated process model for traceability purposes.\\
-It shall allow users to establish process-subprocess relationships between models.\\
+It shall allow users to e§stablish process-subprocess relationships between models.\\
 It shall record user behavior and interactions with the system for analysis purposes.\\
 One additional requirement is that the system shall be able to support document update.
 \subsection{Non-functional Requirements}
@@ -23,16 +32,16 @@ The LLM-backed process model generation shall be implemented using the API from 
 \section{Design Overview}
 The desgign overview is described from the user perspective.
 
-Firstly, we define the following concepts to better describe the system:
-- Project: a use case consisting of one or more documents for which process models needs to be created.
-- Workspace: the unified page/interface where the modeling workflow is performed, from document upload to model export.
-- Traceability: the ability to navigate between source text and the corresponding process model.
-- Project graph: a network-style visualization of relationships among models and documents within a project.
+Firstly, we define the following concepts to better describe the system:\\
+- Project: a use case consisting of one or more documents for which process models needs to be created.\\
+- Workspace: the unified page/interface where the modeling workflow is performed, from document upload to model export.\\
+- Traceability: the ability to navigate between source text and the corresponding process model.\\
+- Project graph: a network-style visualization of relationships among models and documents within a project.\\
 
 The system consists of three main pages: a home page for managing projects, a workspace page where the modeling workflow takes place, and a statistics page for viewing project-related metrics.
 
-\subsection{Views}
-The system is designed to contain three pages: a home page where a user can create a new project or open an existing project, a workspace page where the modeling workflow happens, and a statistic page where the user can view the statistics of the project.
+\subsection{System Views}
+The system is designed to contain three pages: a home page where a user can create a new project or open an existing project, a workspace page where the modeling workflow takes place, and a statistics page where the user can view the statistics of the project.
 \subsubsection{Workspace}
 The layout design of the user interface is shown in the figure~\ref{fig:sol_ui} in a 3-pane layout. The left pane is for document uploading and viewing, the middle pane is for process modeling and the right pane is for process models viewing and project graph visualization. The details are divided as the following: a) Document List b) Document Viewer c) Model Editor c.1) Model Canvas c.2) Model Prompt Editor d) Model List e) Project Graph Visualization.
 \begin{figure}[H]
@@ -44,12 +53,22 @@ The layout design of the user interface is shown in the figure~\ref{fig:sol_ui} 
 \end{figure}
 \section{Modeling Workflow Design}
 As the core part of the system, this section describes the modeling workflow that happens in the workspace page in Use Case Diagram.
-Figure: the use case diagram for the interaction of a user within the workspace page.\\
+Figure: .\\
 user --> Upload/Rename/Update/Delete Document\\
      --> View document --> Select Text Passages --> Generate Process Model\\
      --> View Process Model --> Modify Process Model --> Link Process Model with other Models\\
      --> Rename/Delete/Export Process Model
+
+\begin{figure}
+  \centering
+  \caption{the use case diagram for the interaction of a user within the workspace page} 
+  \includegraphics[width=0.8\textwidth]{images/workspace_user_interaction.png}
+  \floatfoot{The use case diagram for the interaction of a user within the workspace page.}
+  \label{fig:workspace_user_interaction}
+\end{figure}
 \section{Core Functionalities Design}
+
+
 \subsection{Document Management}
 
 \subsection{Document Interaction}
@@ -122,7 +141,7 @@ A document can be triggered to be displayed by the following pathes:\\
 (3). Click on the document node in the project graph visualization\\
 
 \section{System Architecture}
-The system architecture is shown in the figure~\ref{fig:sol_architecture}. The system is designed as a web-based application, with a front-end implemented using native JavaScript, HTML, and CSS. The back-end is responsible for handling user interactions, managing document uploads, and communicating with the LLM API for process model generation. The visualization of the process models is achieved using the CPEE library, which allows for dynamic rendering of BPMN diagrams based on the generated models.
+The system architecture is shown in the figure~\ref{fig:sol_architecture}. The system follows the common web-application client-server pattern. 
 \begin{figure}[H]
     \centering
     \caption{System Architecture} 

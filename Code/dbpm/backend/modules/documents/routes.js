@@ -51,11 +51,7 @@ export default async function (fastify, options) {
         reply.send(result);
       } catch (err) {
         console.error("Failed to read document content:", err);
-        if (err.message === "Document not found") {
-          reply.code(404).send({ error: "Document not found" });
-        } else {
-          reply.code(500).send({ error: "Failed to read document content" });
-        }
+        reply.code(500).send({ error: "Failed to read document content" });
       }
     },
   );
@@ -100,11 +96,7 @@ export default async function (fastify, options) {
         reply.send(result);
       } catch (err) {
         console.error("Failed to delete document:", err);
-        if (err.message === "Document not found") {
-          reply.code(404).send({ error: "Document not found" });
-        } else {
-          reply.code(500).send({ error: "Failed to delete document" });
-        }
+        reply.code(500).send({ error: "Failed to delete document" });
       }
     },
   );
@@ -120,11 +112,7 @@ export default async function (fastify, options) {
         reply.send(result);
       } catch (err) {
         console.error("Failed to restore document:", err);
-        if (err.message === "Document not found") {
-          reply.code(404).send({ error: "Document not found" });
-        } else {
-          reply.code(500).send({ error: "Failed to restore document" });
-        }
+        reply.code(500).send({ error: "Failed to restore document" });
       }
     },
   );

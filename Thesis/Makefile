@@ -78,9 +78,11 @@ index: $(PDFS)
 
 %.pdf: %.tex ${TEXD}
 	@$(PDFC) $<
+	@echo "Running biber for bibliography ..."
+	@$(BIBC) $(patsubst %.tex,%,$<)
 	@echo "Reparsing for TOC and AUX ..."
 	@$(PDFC) $< >/dev/null 2>/dev/null
-	@rm -f *.log *.out
+	@$(PDFC) $< >/dev/null 2>/dev/null
 	@rm -f *.log *.out
 	@$(VIEW) $@ 1>/dev/null 2>&1 &
 

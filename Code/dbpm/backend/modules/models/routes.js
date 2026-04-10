@@ -32,31 +32,7 @@ export default async function (fastify, options) {
         reply.send(result);
       } catch (err) {
         console.error("Failed to create model version:", err);
-        if (
-          [
-            "Model not found",
-            "Model deleted",
-            "Source model version not found",
-          ].includes(err.message)
-        ) {
-          reply.code(404).send({ error: err.message });
-          return;
-        }
-        if (
-          [
-            "Source version does not belong to the model",
-            "Payload version creation only supports reason 'new_version'",
-            "Model data is required for payload version creation",
-            "Link is required for payload version creation",
-          ].includes(err.message)
-        ) {
-          reply.code(400).send({ error: err.message });
-          return;
-        }
-        reply.code(500).send({
-          error: "Failed to create model version",
-          details: err.message,
-        });
+        reply.code(500).send({ error: "Failed to create model version" });
       }
     },
   );
@@ -71,10 +47,6 @@ export default async function (fastify, options) {
         reply.send(updatedModel);
       } catch (err) {
         console.error("Failed to update model metadata:", err);
-        if (["Model not found", "Model deleted"].includes(err.message)) {
-          reply.code(404).send({ error: err.message });
-          return;
-        }
         reply.code(500).send({ error: "Failed to update model metadata" });
       }
     },
@@ -100,11 +72,7 @@ export default async function (fastify, options) {
         reply.send(result);
       } catch (err) {
         console.error("Failed to delete model:", err);
-        if (err.message === "Model not found") {
-          reply.code(404).send({ error: "Model not found" });
-        } else {
-          reply.code(500).send({ error: "Failed to delete model" });
-        }
+        reply.code(500).send({ error: "Failed to delete model" });
       }
     },
   );
@@ -120,11 +88,7 @@ export default async function (fastify, options) {
         reply.send(result);
       } catch (err) {
         console.error("Failed to restore model:", err);
-        if (err.message === "Model not found") {
-          reply.code(404).send({ error: "Model not found" });
-        } else {
-          reply.code(500).send({ error: "Failed to restore model" });
-        }
+        reply.code(500).send({ error: "Failed to restore model" });
       }
     },
   );
@@ -177,27 +141,6 @@ export default async function (fastify, options) {
         reply.send(result);
       } catch (err) {
         console.error("Failed to update subprocess link:", err);
-        if (
-          [
-            "Model version not found",
-            "Model not found",
-            "Model deleted",
-            "Subprocess model not found",
-            "Subprocess model deleted",
-          ].includes(err.message)
-        ) {
-          reply.code(404).send({ error: err.message });
-          return;
-        }
-        if (
-          [
-            "Task not found",
-            "Model cannot reference itself as subprocess",
-          ].includes(err.message)
-        ) {
-          reply.code(400).send({ error: err.message });
-          return;
-        }
         reply.code(500).send({ error: "Failed to update subprocess link" });
       }
     },
@@ -216,10 +159,6 @@ export default async function (fastify, options) {
         reply.send({ message: "Model content updated" });
       } catch (err) {
         console.error("Failed to update model:", err);
-        if (["Model not found", "Model deleted"].includes(err.message)) {
-          reply.code(404).send({ error: err.message });
-          return;
-        }
         reply.code(500).send({ error: "Failed to update model" });
       }
     },

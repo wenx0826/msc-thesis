@@ -1,0 +1,181 @@
+<?xml version="1.0"?>
+<testset xmlns="http://cpee.org/ns/properties/2.0">
+<executionhandler>ruby</executionhandler>
+<dataelements/>
+<endpoints/>
+<attributes>
+<guarded>none</guarded>
+<modeltype>CPEE</modeltype>
+<theme>preset</theme>
+<guarded_id/>
+<info>Subprocess</info>
+<creator>Christine Ashcreek</creator>
+<author>Christine Ashcreek</author>
+<model_uuid>1fc43528-3e4a-40ee-8503-c0ed7e5d883c</model_uuid>
+<model_version/>
+<design_stage>development</design_stage>
+<design_dir>Templates.dir</design_dir>
+</attributes>
+<description xmlns:dbpm="https://example.com/dbpm"><![CDATA[<dbpm:info><dbpm:model_info><dbpm:model_id>f7818fcb-c777-4c40-9928-84947e333b1b</dbpm:model_id><dbpm:model_version_id>ecbe1cd4-b2bb-4dd1-ad88-f024d7f6d542</dbpm:model_version_id><dbpm:model_version_name>v1</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>cb16a228-0b2a-4162-8c84-0716be0dbbf6</dbpm:document_id><dbpm:document_version_id>4c09f0c7-3767-471f-b134-1c093f619c7a</dbpm:document_version_id><dbpm:document_version_name>v1</dbpm:document_version_name><dbpm:document_file_name>MAP_Stages-_Inputs_Outputs_-_Data_Cleaned_-Comma_Separated.txt</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>|   N° |   Stage | Step                                                                     | Input fields or cluster                                                                                                                                                                 | Output fields or cluster                                                                                                        | R                                                                         | A   | C   | I   |
+|------|---------|--------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------|-----|-----|-----|
+|    1 |       1 | Review Market                                                            | Idea description                                                                                                                                                                        | Market review report                                                                                                            | PM or AM                                                                  |     |     |     |
+|    2 |       1 | Review Portfolio                                                         | Idea description                                                                                                                                                                        | Portfolio Review report                                                                                                         | PM or AM                                                                  |     |     |     |
+|    3 |       1 | Perform Competitive Analysis                                             | Idea description                                                                                                                                                                        | Competitor Analysis Report                                                                                                      | PM or AM                                                                  |     |     |     |
+|    4 |       1 | Analyzing underlying problem/opportunity/threat                          | Idea description, Market review report, Competitor Analysis report, Portfolio Review report                                                                                             | Problem Canvas                                                                                                                  | PM or AM                                                                  |     |     |     |
+|    5 |       1 | Define Mission, Goals and Objectives                                     | problem canvas                                                                                                                                                                          | Mission One Pager                                                                                                               | PM or AM                                                                  |     |     |     |
+|    6 |       1 | Estimate Project Size, Impact and Strategic Fit                          | Mission One Pager                                                                                                                                                                       | Project Estimation                                                                                                              | PM or AM                                                                  |     |     |     |
+|    7 |       1 | Define High Level Risks                                                  | Mission One Pager, Project Estimation                                                                                                                                                   | Project Charter                                                                                                                 | PM or AM                                                                  |     |     |     |
+|    8 |       1 | Estimate resources to MAP project                                        | Mision One Pager, Project Estimation                                                                                                                                                    | *type of ressources *ressources usage                                                                                           | PM or AM                                                                  |     |     |     |
+|    9 |       1 | Allocate team members for MAP project                                    | *type of ressources, *ressources usage                                                                                                                                                  | *ressources allocation                                                                                                          | Head of assigned ressources                                               |     |     |     |
+|   10 |       1 | Estimate MAP Project Duration                                            | Mision One Pager, Project Estimation *ressources allocation                                                                                                                             | MAP Duration                                                                                                                    | PM or AM                                                                  |     |     |     |
+|   11 |       1 | ONE PAGER TEMPLATE COMPLETED                                             | Problem Canvas, Mission One Pager, Project Estimation                                                                                                                                   | One Pager Template                                                                                                              | AUTOMATIC                                                                 |     |     |     |
+|   12 |       1 | Elaborate MAP Project Charter                                            | Mission One Pager, Project Charter, *ressources allocation, MAP Duration                                                                                                                | MAP Project Charter                                                                                                             | AUTOMATIC                                                                 |     |     |     |
+|   13 |       1 | Rate MAP project (Stage 1)                                               | One Pager Template, MAP Project Charter                                                                                                                                                 | MAP project rating gate 1                                                                                                       | VP Zumtobel Brand &amp; Application VP Brand &amp; Application Thorn (others tbd) |     |     |     |
+|   14 |       1 | Gate 1 decision                                                          | MAP project rating gate1                                                                                                                                                                | Approval for moving to Stage 2 OR Rejection                                                                                     | VP Zumtobel Brand &amp; Application VP Brand &amp; Application Thorn (others tbd) |     |     |     |
+|      |       2 | Identify Stakeholders                                                    | One Pager Template                                                                                                                                                                      | Stakeholder                                                                                                                     | PM or AM                                                                  |     |     |     |
+|      |       2 | Characterize Persona                                                     | Stakeholder                                                                                                                                                                             | Persona                                                                                                                         |                                                                           |     |     |     |
+|      |</dbpm:selection></dbpm:text_selections></dbpm:document_info></dbpm:info>]]><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+  <choose mode="exclusive" a:alt_id="0">
+    <alternative condition="">
+      <call id="a1" endpoint="" a:alt_id="1">
+        <parameters>
+          <label>Review Market</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </alternative>
+    <alternative condition="">
+      <call id="a5" endpoint="" a:alt_id="2">
+        <parameters>
+          <label>Review Portfolio</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </alternative>
+    <alternative condition="">
+      <call id="a9" endpoint="" a:alt_id="3">
+        <parameters>
+          <label>Perform Competitive Analysis</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </alternative>
+  </choose>
+  <call id="a3" endpoint="" a:alt_id="4">
+    <parameters>
+      <label>Analyzing underlying problem/opportunity/threat</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a13" endpoint="" a:alt_id="5">
+    <parameters>
+      <label>Define Mission, Goals and Objectives</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a15" endpoint="" a:alt_id="6">
+    <parameters>
+      <label>Estimate Project Size, Impact and Strategic Fit</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a17" endpoint="" a:alt_id="7">
+    <parameters>
+      <label>Define High Level Risks</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a19" endpoint="" a:alt_id="8">
+    <parameters>
+      <label>Estimate resources to MAP project</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a21" endpoint="" a:alt_id="9">
+    <parameters>
+      <label>Allocate team members for MAP project</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a23" endpoint="" a:alt_id="10">
+    <parameters>
+      <label>Estimate MAP Project Duration</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a25" endpoint="" a:alt_id="11">
+    <parameters>
+      <label>ONE PAGER TEMPLATE COMPLETED</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a27" endpoint="" a:alt_id="12">
+    <parameters>
+      <label>Elaborate MAP Project Charter</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a29" endpoint="" a:alt_id="13">
+    <parameters>
+      <label>Rate MAP project (Stage 1)</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a31" endpoint="" a:alt_id="14">
+    <parameters>
+      <label>Gate 1 decision</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <choose mode="exclusive" a:alt_id="15">
+    <alternative condition="Approval" language="text/javascript">
+      <call id="a35" endpoint="" a:alt_id="16">
+        <parameters>
+          <label>Identify Stakeholders</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a39" endpoint="" a:alt_id="17">
+        <parameters>
+          <label>Characterize Persona</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </alternative>
+    <alternative condition="Rejection" language="text/javascript"/>
+  </choose>
+</description>
+</description>
+</testset>

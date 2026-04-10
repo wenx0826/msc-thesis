@@ -110,33 +110,6 @@ function countSelectedWords(selections) {
   );
 }
 
-function resolveValidatedCreateVersionContext({ modelId, sourceVersionId }) {
-  if (!modelId) {
-    throw new Error("Model not found");
-  }
-  if (!sourceVersionId) {
-    throw new Error("Source model version not found");
-  }
-
-  const model = modelRepo.findById(modelId, true);
-  if (!model) {
-    throw new Error("Model not found");
-  }
-  if (model.deletedAt) {
-    throw new Error("Model deleted");
-  }
-
-  const sourceVersion = versionRepo.findById(sourceVersionId);
-  if (!sourceVersion) {
-    throw new Error("Source model version not found");
-  }
-  if (sourceVersion.modelId !== modelId) {
-    throw new Error("Source version does not belong to the model");
-  }
-
-  return { model, sourceVersion };
-}
-
 function createNextVersionRecord({
   modelId,
   sourceVersionId,
@@ -272,10 +245,15 @@ export default {
     link = null,
     prompt = null,
   }) {
-    const { model, sourceVersion } = resolveValidatedCreateVersionContext({
-      modelId,
-      sourceVersionId,
-    });
+    const model = modelRepo.findById(modelId, true);
+    if (!model) throw new Error("Model not found");
+    if (model.deletedAt) throw new Error("Model deleted");
+
+    const sourceVersion = versionRepo.findById(sourceVersionId);
+    if (!sourceVersion) throw new Error("Source model version not found");
+    if (sourceVersion.modelId !== modelId)
+      throw new Error("Source version does not belong to the model");
+
     const isPayload =
       (typeof modelData === "string" && !!modelData.trim()) || !!link;
 
@@ -394,13 +372,6 @@ export default {
     return storageRepo.read(versionId);
   },
   updateSubprocessLink({ modelVersionId, taskId, subprocessModelId }) {
-    if (!modelVersionId) {
-      throw new Error("Model version not found");
-    }
-    if (!taskId || typeof taskId !== "string") {
-      throw new Error("Task not found");
-    }
-
     const sourceVersion = versionRepo.findById(modelVersionId);
     if (!sourceVersion) {
       throw new Error("Model version not found");

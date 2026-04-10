@@ -12,13 +12,6 @@ function normalizeSelectionTextPosition(textPosition) {
   }
 }
 
-function normalizeSelectionId(id) {
-  if (id === undefined || id === null) {
-    return "";
-  }
-  return String(id);
-}
-
 function buildSelectionsSignature(selections, mapper) {
   const normalizedSelections = Array.isArray(selections) ? selections : [];
   return JSON.stringify(normalizedSelections.map(mapper));
@@ -48,7 +41,7 @@ export function classifyLinkSelectionChange({
   const previousTextSignature = buildSelectionsSignature(
     previousSelections,
     (selection) => ({
-      id: normalizeSelectionId(selection?.id) || null,
+      id: selection?.id ?? null,
       textPosition: normalizeSelectionTextPosition(selection?.textPosition),
       textQuoteExact:
         typeof selection?.textQuote?.exact === "string"
@@ -59,7 +52,7 @@ export function classifyLinkSelectionChange({
   const currentTextSignature = buildSelectionsSignature(
     currentSelections,
     (selection) => ({
-      id: normalizeSelectionId(selection?.id) || null,
+      id: selection?.id ?? null,
       textPosition: normalizeSelectionTextPosition(selection?.textPosition),
       textQuoteExact:
         typeof selection?.textQuote?.exact === "string"
@@ -74,7 +67,7 @@ export function classifyLinkSelectionChange({
   const previousColorSignature = buildSelectionsSignature(
     previousSelections,
     (selection) => ({
-      id: normalizeSelectionId(selection?.id) || null,
+      id: selection?.id ?? null,
       backgroundColor:
         typeof selection?.style?.backgroundColor === "string"
           ? selection.style.backgroundColor
@@ -88,7 +81,7 @@ export function classifyLinkSelectionChange({
   const currentColorSignature = buildSelectionsSignature(
     currentSelections,
     (selection) => ({
-      id: normalizeSelectionId(selection?.id) || null,
+      id: selection?.id ?? null,
       backgroundColor:
         typeof selection?.style?.backgroundColor === "string"
           ? selection.style.backgroundColor
@@ -113,27 +106,19 @@ export function derivePendingTextChangedSelectionIds({
   const previousById = new Map();
   (Array.isArray(previousSelections) ? previousSelections : []).forEach(
     (selection) => {
-      const normalizedId = normalizeSelectionId(selection?.id);
-      if (!normalizedId) {
-        return;
-      }
-      previousById.set(normalizedId, selection);
+      if (!selection?.id) return;
+      previousById.set(selection.id, selection);
     },
   );
 
   return (Array.isArray(currentSelections) ? currentSelections : [])
     .map((selection) => {
-      const normalizedId = normalizeSelectionId(selection?.id);
-      if (!normalizedId) {
-        return null;
-      }
-      const previousSelection = previousById.get(normalizedId);
-      if (!previousSelection) {
-        return null;
-      }
+      if (!selection?.id) return null;
+      const previousSelection = previousById.get(selection.id);
+      if (!previousSelection) return null;
       return getSelectionTextSignature(previousSelection) !==
         getSelectionTextSignature(selection)
-        ? normalizedId
+        ? selection.id
         : null;
     })
     .filter(Boolean);
@@ -146,19 +131,15 @@ export function buildStyleSyncedSelections({
   const currentById = new Map();
   (Array.isArray(currentSelections) ? currentSelections : []).forEach(
     (selection) => {
-      const normalizedId = normalizeSelectionId(selection?.id);
-      if (!normalizedId) {
-        return;
-      }
-      currentById.set(normalizedId, selection);
+      if (!selection?.id) return;
+      currentById.set(selection.id, selection);
     },
   );
 
   return (Array.isArray(previousSelections) ? previousSelections : []).map(
     (selection) => {
       const clonedSelection = cloneSerializedSelection(selection);
-      const normalizedId = normalizeSelectionId(selection?.id);
-      const currentSelection = currentById.get(normalizedId);
+      const currentSelection = currentById.get(selection?.id);
       if (!currentSelection) {
         return clonedSelection;
       }

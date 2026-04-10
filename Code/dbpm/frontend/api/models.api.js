@@ -22,7 +22,7 @@ function wrapGeneratedXml(innerXml) {
 }
 
 export default {
-  LLMDisabled: false,
+  LLMDisabled: true,
   path: "models",
 
   async generateModelLLM({ rpstXml, userInput, llm }) {

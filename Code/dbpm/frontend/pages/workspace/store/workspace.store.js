@@ -9,7 +9,8 @@ class WorkspaceStore extends Store {
       theme: null,
       viewedDocument: null, // null | { id, versionId, isLatest }
       // `editingModel`: null | { id?, versionId?, sourceVersionId?, isLatest? }
-      // null => no model selected / new model draft
+      // null => no model selected
+      // { id: null } => new model draft
       // { id, versionId:null, sourceVersionId } => regeneration draft
       // { id, versionId, isLatest } => existing version
       editingModel: null,
@@ -99,7 +100,7 @@ class WorkspaceStore extends Store {
     return !!this.getEditingModelId();
   }
   isEditingModelNewModelDraft() {
-    return this.state.pendingNewModelDraft !== null;
+    return this.state.editingModel !== null && this.state.editingModel.id === null;
   }
   isEditingModelRegenerationDraft() {
     const editingModel = this.getEditingModel();

@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "07_Conclusion/v0.md",
+                "file": "03_Solution Design/Graph.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "v0"
+              "title": "Graph"
             }
           },
           {
@@ -41,12 +41,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "07_Conclusion/v0.2.md",
+                "file": "06_Discussion/v0.9.0.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "v0.2"
+              "title": "v0.9.0"
             }
           },
           {
@@ -105,8 +105,7 @@
               "title": "Model Management"
             }
           }
-        ],
-        "currentTab": 2
+        ]
       }
     ],
     "direction": "vertical"
@@ -226,13 +225,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "07_Conclusion/v0.2.md",
+                "file": "03_Solution Design/Graph.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of v0.2"
+              "title": "Outline of Graph"
             }
           },
           {
@@ -267,54 +266,54 @@
       "card-board:CardBoard": false
     }
   },
-  "active": "42930d948fd4298a",
+  "active": "f528d85bfcef3690",
   "lastOpenFiles": [
-    "Thesis/main.synctex(busy)",
-    "Thesis/pdflatex45489.fls",
-    "Thesis/pdflatex45482.fls",
-    "Thesis/main.run.xml",
-    "Thesis/main.lof",
-    "Thesis/main.lot",
-    "Thesis/main.toc",
-    "Thesis/main.bcf",
-    "Thesis/main.out",
-    "Thesis/main.log",
-    "Thesis/main.fls",
-    "Thesis/images/mock-up1.jpg",
-    "07_Conclusion/v0.1.md",
-    "07_Conclusion/v0.md",
-    "06_Discussion/v0.0.md",
-    "05_Evaluation/v0.md",
-    "05_Evaluation/1_Responses.md",
-    "05_Evaluation/0_Responses (Original).md",
-    "05_Evaluation/v1.1.md",
-    "05_Evaluation/v1.md",
-    "05_Evaluation/v0.9.md",
-    "06_Discussion/v0.1.md",
-    "06_Discussion/v0.9.0.md",
-    "07_Conclusion/v0.2.md",
-    "01_Introduction/1.5_Evaluation/v0.md",
-    "01_Introduction/1.5_Evaluation/0_v0.md",
-    "01_Introduction/1.4_Methodology/v0.0.md",
-    "01_Introduction/1.2_Research Questions/v_0.9.md",
-    "01_Introduction/1.2_Research Questions/0_v0.1_RQ3.md",
-    "01_Introduction/1.2_Research Questions/0_v0.1_RQ2.md",
-    "Thesis/images/sol_architecture.png",
-    "Thesis/images/Screenshot 2026-04-07 at 13.53.00.png",
-    "v0.1.md",
-    "Mock-up/sketch.jpg",
-    "Thesis/tum-resources/images/valueprop.PNG",
-    "Thesis/tum-resources/images/Universitaet_Flaggen.jpg",
-    "Thesis/tum-resources/images/TUM_Uhrenturm.png",
-    "Thesis/images/Screenshot1.png",
-    "Thesis/images/sol_data_model.png",
-    "Thesis/images/imp_backend_com.png",
-    "Thesis/README.md",
-    "03_Solution Design/0_v0.md",
-    "SystemModels/backend.md",
-    "SystemModels/architecture_v1.md",
-    "SystemModels/C4-Architecture/architecture_v1.md",
-    "SystemModels/Untitled.md",
+    "ga94hor:doc-based-process-modeler/backend/modules/documents/service.js",
+    "ga94hor:doc-based-process-modeler/backend/modules/projects/service.js",
+    "ga94hor:doc-based-process-modeler/backend/modules/document_model_links/service.js",
+    "ga94hor:doc-based-process-modeler/backend/modules/projects",
+    "ga94hor:doc-based-process-modeler/backend/modules/documents",
+    "ga94hor:doc-based-process-modeler/backend/modules/document_model_links",
+    "ga94hor:doc-based-process-modeler/backend/modules",
+    "ga94hor:doc-based-process-modeler/backend",
+    "ga94hor:doc-based-process-modeler",
+    "ga94hor:doc-based-process-modeler/backend/node_modules/readable-stream/experimentalWarning.js",
+    "ga94hor:doc-based-process-modeler/backend/node_modules/readable-stream/errors.js",
+    "ga94hor:doc-based-process-modeler/backend/node_modules/pino-std-serializers/Readme.md",
+    "ga94hor:doc-based-process-modeler/backend/node_modules/@pkgjs/parseargs/README.md",
+    "ga94hor:doc-based-process-modeler/backend/node_modules/better-sqlite3/README.md",
+    "ga94hor:doc-based-process-modeler/backend/node_modules/fastify/SPONSORS.md",
+    "ga94hor:doc-based-process-modeler/backend/node_modules/fastify/SECURITY.md",
+    "ga94hor:doc-based-process-modeler/backend/node_modules/fastify/README.md",
+    "ga94hor:doc-based-process-modeler/backend/node_modules/fastify/PROJECT_CHARTER.md",
+    "ga94hor:doc-based-process-modeler/backend/node_modules/fastify/GOVERNANCE.md",
+    "ga94hor:doc-based-process-modeler/backend/node_modules/ajv/README.md",
+    "ga94hor:doc-based-process-modeler/backend/node_modules/pino/pretty-demo.png",
+    "ga94hor:doc-based-process-modeler/backend/node_modules/pino/pino-tree.png",
+    "ga94hor:doc-based-process-modeler/backend/node_modules/pino/pino-logo-hire.png",
+    "ga94hor:doc-based-process-modeler/backend/node_modules/pino/pino-banner.png",
+    "ga94hor:doc-based-process-modeler/backend/node_modules/pino/favicon-32x32.png",
+    "ga94hor:doc-based-process-modeler/backend/node_modules/pino/favicon-16x16.png",
+    "ga94hor:doc-based-process-modeler/backend/node_modules/pino/SECURITY.md",
+    "ga94hor:doc-based-process-modeler/backend/node_modules/pino/docsify/sidebar.md",
+    "ga94hor:doc-based-process-modeler/backend/node_modules/pino/README.md",
+    "ga94hor:doc-based-process-modeler/backend/node_modules/pino/CONTRIBUTING.md",
+    "ga94hor:doc-based-process-modeler/backend/node_modules/pino/docs/web.md",
+    "ga94hor:doc-based-process-modeler/backend/node_modules/pino/docs/transports.md",
+    "ga94hor:doc-based-process-modeler/backend/node_modules/pino/docs/redaction.md",
+    "ga94hor:doc-based-process-modeler/backend/node_modules/pino/docs/pretty.md",
+    "ga94hor:doc-based-process-modeler/backend/node_modules/pino/docs/lts.md",
+    "ga94hor:doc-based-process-modeler/backend/node_modules/pino/docs/help.md",
+    "ga94hor:doc-based-process-modeler/backend/node_modules/pino/docs/ecosystem.md",
+    "ga94hor:doc-based-process-modeler/backend/node_modules/pino/docs/diagnostics.md",
+    "ga94hor:doc-based-process-modeler/backend/node_modules/pino/docs/child-loggers.md",
+    "ga94hor:doc-based-process-modeler/backend/node_modules/pino/docs/bundling.md",
+    "ga94hor:doc-based-process-modeler/backend/node_modules/pino/docs/browser.md",
+    "ga94hor:doc-based-process-modeler/backend/node_modules/pino/docs/benchmarks.md",
+    "ga94hor:doc-based-process-modeler/backend/node_modules/@fastify/send/test/fixtures/images/node-js.png",
+    "ga94hor:doc-based-process-modeler/backend/node_modules/@fastify/static/example/public/images/sample.jpg",
+    "ga94hor:doc-based-process-modeler/backend/node_modules/@fastify/static/test/content-type/sample.jpg",
+    "ga94hor:doc-based-process-modeler/backend/node_modules/@fastify/static/test/static-pre-compressed/sample.jpg",
     "Untitled.canvas"
   ]
 }

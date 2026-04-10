@@ -58,11 +58,7 @@ export default async function (fastify, options) {
       reply.send(project);
     } catch (err) {
       console.error("Failed to fetch project:", err);
-      if (err.message === "Project not found") {
-        reply.code(404).send({ error: "Project not found" });
-      } else {
-        reply.code(500).send({ error: "Failed to fetch project" });
-      }
+      reply.code(500).send({ error: "Failed to fetch project" });
     }
   });
 
@@ -121,13 +117,7 @@ export default async function (fastify, options) {
         reply.send(project);
       } catch (err) {
         console.error("Failed to update project:", err);
-        if (err.message === "Project not found or no valid fields to update") {
-          reply
-            .code(404)
-            .send({ error: "Project not found or no valid fields to update" });
-        } else {
-          reply.code(500).send({ error: "Failed to update project" });
-        }
+        reply.code(500).send({ error: "Failed to update project" });
       }
     },
   );
@@ -143,11 +133,7 @@ export default async function (fastify, options) {
         reply.send(result);
       } catch (err) {
         console.error("Failed to delete project:", err);
-        if (err.message === "Project not found") {
-          reply.code(404).send({ error: "Project not found" });
-        } else {
-          reply.code(500).send({ error: "Failed to delete project" });
-        }
+        reply.code(500).send({ error: "Failed to delete project" });
       }
     },
   );

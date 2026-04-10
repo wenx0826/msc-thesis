@@ -1,0 +1,63 @@
+
+```mermaid
+erDiagram
+    projects {
+       
+    }
+    documents {
+      
+    }
+    document_versions {
+       
+    }
+    models {
+       
+    }
+    model_versions {
+       
+    }
+    document_model_links {
+       
+    }
+    document_model_link_selections {
+       
+    }
+    document_model_link_selection_history {
+       
+    }
+    model_version_events {
+  
+    }
+    model_generation_attempts {
+       
+    }
+    model_subprocesses {
+       
+    }
+
+    projects ||--o{ documents : "has"
+    projects ||--o{ models : "has"
+    projects ||--o{ model_generation_attempts : "tracks"
+
+    documents ||--o{ document_versions : "versioned as"
+    documents |o--o| document_versions : "latest version ptr"
+    document_versions |o--o{ document_versions : "restored from"
+
+    models ||--o{ model_versions : "versioned as"
+    models |o--o| model_versions : "latest version ptr"
+    model_versions |o--o{ model_versions : "restored from"
+
+    document_versions ||--o{ document_model_links : "participates in"
+    model_versions ||--o{ document_model_links : "participates in"
+
+    document_model_links ||--o{ document_model_link_selections : "has"
+    document_model_link_selections ||--o{ document_model_link_selection_history : "audit trail"
+
+    model_versions ||--o{ model_version_events : "has events"
+
+    model_versions |o--o{ model_generation_attempts : "is base for"
+    model_versions |o--o| model_generation_attempts : "is result of"
+
+    model_versions ||--o{ model_subprocesses : "defines subprocess ref"
+    models ||--o{ model_subprocesses : "used as subprocess"
+```

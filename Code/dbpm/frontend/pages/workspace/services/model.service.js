@@ -1058,7 +1058,7 @@ export default {
       modelData,
       creationContext,
     });
-    workspaceStore.setEditingModel(null);
+    workspaceStore.setEditingModel({ id: null });
     modelEditorStore.setData(modelData, {
       updateType: null,
     });
@@ -1107,6 +1107,9 @@ export default {
       }
     }
     workspaceStore.clearPendingNewModelDraft();
+    if (hadPendingDraft) {
+      workspaceStore.setEditingModel(null);
+    }
     if (clearEditorData) {
       modelEditorStore.setData(null, {
         updateType: null,

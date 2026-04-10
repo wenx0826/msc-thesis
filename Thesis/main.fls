@@ -705,6 +705,11 @@ INPUT ./chapters/03_Solution_Design.tex
 INPUT ./chapters/03_Solution_Design.tex
 INPUT ./chapters/03_Solution_Design.tex
 INPUT chapters/03_Solution_Design.tex
+INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/newtx/ts1ntxtlf.fd
+INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/newtx/ts1ntxtlf.fd
+INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/newtx/ts1ntxtlf.fd
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/tex-gyre/ts1-qtmr.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/tex-gyre/q-ts1.enc
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntx-Regular-tlf-t1.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntx-Regular-tlf-t1.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntx-Regular-tlf-ot1.tfm
@@ -742,6 +747,11 @@ INPUT ./images/mock-up1.jpg
 INPUT ./images/mock-up1.jpg
 INPUT ./images/mock-up1.jpg
 INPUT ./images/mock-up1.jpg
+INPUT ./images/workspace_user_interaction.png
+INPUT ./images/workspace_user_interaction.png
+INPUT ./images/workspace_user_interaction.png
+INPUT ./images/workspace_user_interaction.png
+INPUT ./images/workspace_user_interaction.png
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/listings/lstlang1.sty
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/listings/lstlang1.sty
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/listings/lstlang1.sty
@@ -802,6 +812,10 @@ INPUT ./chapters/07_Conclusion.tex
 INPUT ./chapters/07_Conclusion.tex
 INPUT ./chapters/07_Conclusion.tex
 INPUT chapters/07_Conclusion.tex
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntx-Regular-tlf-sc-t1.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/newtx/ntx-ec-tlf-pc.enc
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/adobe/courier/pcrr8t.vf
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/adobe/courier/pcrr8r.tfm
 INPUT ./chapters/99_Appendix.tex
 INPUT ./chapters/99_Appendix.tex
 INPUT ./chapters/99_Appendix.tex
@@ -812,6 +826,7 @@ INPUT ./main.out
 INPUT ./main.out
 INPUT main.run.xml
 OUTPUT main.run.xml
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/tex-gyre/qtmr.pfb
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/cm-super/sfrm2074.pfb
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb

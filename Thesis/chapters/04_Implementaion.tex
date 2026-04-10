@@ -100,10 +100,31 @@
   ]
 \end{forest}%
 }
+\end{figure}
 
 \section{State Management}
 pub-sub
+\begin{figure}[H]
+  \centering
+  \caption{store implementation}
+  \label{fig:imp_frontend_pubsub_store}
+  \begin{lstlisting}[language=JavaScript]
+export class Store {
+  constructor(initialState = {}) {
+    this.state = { ...initialState };
+    this.subscribers = new Set();
+  }
 
+  subscribe(fn) {
+    this.subscribers.add(fn);
+    return () => this.subscribers.delete(fn);
+  }
+
+  notify(patch) {
+    this.subscribers.forEach((fn) => fn(patch));
+  }
+}
+  \end{lstlisting}
 \end{figure}
 \subsection{Document Processing}
 
