@@ -1,12 +1,12 @@
 # Fdb version 4
-["biber main"] 1775567362.80562 "main.bcf" "main.bbl" "main" 1775847525.98038 0
+["biber main"] 1775567362.80562 "main.bcf" "main.bbl" "main" 1775865665.83408 0
   "literature.bib" 1775422194.71402 10423 3ede4781b8694083eb9fc7e187d594d4 ""
-  "main.bcf" 1775847525.82802 108009 33da8a64ea9de6b47acbc4365ed4045e "pdflatex"
+  "main.bcf" 1775865665.6642 108009 33da8a64ea9de6b47acbc4365ed4045e "pdflatex"
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["pdflatex"] 1775847522.44665 "/Users/owxwo/Documents/MSc Thesis - Document-Based Process Modeller/Thesis/main.tex" "main.pdf" "main" 1775847525.98069 0
+["pdflatex"] 1775865662.05912 "/Users/owxwo/Documents/MSc Thesis - Document-Based Process Modeller/Thesis/main.tex" "main.pdf" "main" 1775865665.83444 0
   "/Users/owxwo/Documents/MSc Thesis - Document-Based Process Modeller/Thesis/main.tex" 1775427249.23302 1057 ad342b8c766a28c4129d814e98095c34 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc" 1136849721 2971 def0b6c1f0b107b3b936def894055589 ""
@@ -358,7 +358,7 @@
   "chapters/04_Implementaion.tex" 1775568612.67408 3854 af0292ba2390e037c3099098d6a8ed3b ""
   "chapters/05_Evaluation.tex" 1775740911.62951 5011 c064d850c34b626e19635cbd9c18fd62 ""
   "chapters/06_Discussion.tex" 1775224489.38358 476 55a2978f8156cc44e8cd383103627e7f ""
-  "chapters/07_Conclusion.tex" 1775509909.53005 1048 48faa12a11f3422ea57d67cd04dd5f53 ""
+  "chapters/07_Conclusion.tex" 1775865661.69304 1047 c4252ca5d8f64ef91dc1ca1c84cafbe1 ""
   "chapters/99_Appendix.tex" 1775124992.89461 3269 c2aa32544ebc6a4893562e04ed1417e7 ""
   "images/Screenshot1.png" 1775123168.22595 275878 a94719ac8fa6262d829b3ea325413d78 ""
   "images/eva_expert2_task1.png" 1775149762.74291 418589 488b4b1a88b4bbc7684e6932d355326c ""
@@ -368,14 +368,14 @@
   "images/sol_architecture.png" 1775562787.75414 151790 bd398aabe74356032d787301d2c93a7b ""
   "images/sol_data_model.png" 1775690413.73354 107599 6e2a75958ba8b28eb2f39d15566f3199 ""
   "images/workspace_user_interaction.png" 1775568068.4392 57461 270ddd7d00315831dd9b7a27497721fc ""
-  "main.aux" 1775847525.8225 13356 c71d5024d9ce4887b3cf25c0b5670b4f "pdflatex"
+  "main.aux" 1775865665.6575 13356 c71d5024d9ce4887b3cf25c0b5670b4f "pdflatex"
   "main.bbl" 1775567364.32064 8918 99a41c7019090598682799f787d00ce0 "biber main"
-  "main.lof" 1775847525.82878 1374 61b5837b0733b19a59ce0fc2bd21364e "pdflatex"
-  "main.lot" 1775847525.82876 184 77442b57a999d9bd69d15ddb2b466217 "pdflatex"
-  "main.out" 1775847525.82533 8466 dd52c3f63c7800559b29e71b12efd7b9 "pdflatex"
-  "main.run.xml" 1775847525.82864 2530 adad30a430d3197aa08eb6d402abf822 "pdflatex"
+  "main.lof" 1775865665.6653 1374 61b5837b0733b19a59ce0fc2bd21364e "pdflatex"
+  "main.lot" 1775865665.66528 184 77442b57a999d9bd69d15ddb2b466217 "pdflatex"
+  "main.out" 1775865665.66106 8466 dd52c3f63c7800559b29e71b12efd7b9 "pdflatex"
+  "main.run.xml" 1775865665.66514 2530 adad30a430d3197aa08eb6d402abf822 "pdflatex"
   "main.tex" 1775427249.23302 1057 ad342b8c766a28c4129d814e98095c34 ""
-  "main.toc" 1775847525.82869 5100 ac01c03193ad72fce5704e237644949c "pdflatex"
+  "main.toc" 1775865665.66524 5100 ac01c03193ad72fce5704e237644949c "pdflatex"
   "tum-base-text.sty" 1675119506 2199 aa02c92bff7eebef3a7bffc3e440d29e ""
   "tum-base.sty" 1675118687 3514 643a84ea706dec2b136809face9eb66e ""
   "tum-book.cls" 1775499151.70886 11737 5b627f45d31fefbf243fbf069ff6d513 ""
