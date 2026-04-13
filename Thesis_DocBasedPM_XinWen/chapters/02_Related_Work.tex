@@ -1,0 +1,161 @@
+\chapter{Related Work}
+\label{sec:rel}
+\section{Foundational Concepts and Technologies}
+In this section, we briefly introduce the foundational concepts and technologies relevant to this thesis.
+
+Business Process Modeling (PM)
+BPMN, LLM, BPM, RPST, 
+
+While many tools exist that deal with analysis of large document sets, to the best of our knowledge no integrated tool with the dedicated purpose of creating Process Models from documents set exists. Therefore here we will explore some related tools.
+
+In total, eleven AI-assist modeling tools are explored during the literature review (See table \ref{tab:lr}). Here, we mainly focus on the key approaches and the distinguishing features they offer.
+
+\begin{table}[htb!]
+    \centering
+    \caption{Literature review: horizontal research}
+    \floatfoot{Source: https://scholar.google.com/}
+    \begin{tabular}{lccl}
+        \textit{Keywords for search} & \textit{hits} & \textit{selected} & \textit{Selection criteria}\\
+        \hline
+        allintitle: process modeling generative AI & 12 & 1 & Process modeling tool\\
+        allintitle: process modeling LLM[s] & 16+7 & 5+0 & Process modeling tool\\ 
+        allintitle: process modeling large language & 49 & 1& \\   
+        allintitle: conversational process modeling & 8 & 1 &Process modeling tool\\
+        allintitle: BPMN generative AI & 2 & 0 & \\   
+        allintitle: BPMN LLM[s]& 12+8 & 2+1& \\
+        allintitle: BPMN large language& 7 & 1& \\
+        \textit{Results horizontal search} & 121 & 11 & \\
+        \textit{Results vertical/backward search} &  & & \\
+        Added papers &  & 1& \\
+        \textit{Overall:} &  & 1& \\
+        \hline
+    \end{tabular}
+
+    \label{tab:lr}
+\end{table}
+
+In the 12 hits of the first search query("allintitle: process modeling generative AI"), the tool ProMoAI \cite{kourani2024promoai}is identified. It is the first tool shown in the academic literature to leverage LLMs for automated process model generation, introduced in 2024, and is frequently referenced in subsequent work. ProMoAI enables the transformation of natural language into process models and supports iterative refinement through feedback loops, demonstrating the feasibility of LLM-based process modeling.
+
+In the second query ("allintitle: process modeling LLM"), among 16 hits, 5 tools are identified. The first two noticed is BPMN-Chatbot  \cite{kopke2024introducing} and BPMN Assist    \cite{licardo2026bpmn}. BPMN-Chatbot is an early one in 2024 with key strength in toke efficiency\cite{kopke2024efficient}, compared with PromoAI's approach. Its method was introduced in. BPMN Assist    \cite{licardo2026bpmn} is a very latest one. BPMN Assistant \cite{licardo2026bpmn} represents a more recent development, emphasizing structured intermediate representations (e.g., JSON) to improve reliability, editing capabilities, and performance in interactive modeling scenarios.
+
+The tool KICoPro is introduced in \cite{lauer2026human}, focusing on human-in-the-loop process modeling, where users collaborate with AI systems during model creation.
+
+The tool HyperMode is introduced in \cite{pardo2025direct}, which combines LLM-based generation with a direct manipulation interface, allowing users to refine process models interactively by selecting and modifying elements within the diagram.
+
+Additionally, the tool BPMNGen is firstly introduced in \cite{horner2025towards} then further developed and evaluated in \cite{horner2026automatically}. It is a different one using NLP, with empirical evaluations showing strong semantic quality for simple to moderately complex processes.
+
+In the last search attempt for term "process modeling" by combining it with "large language",  one more tool PRODIGY is explored mentioned within the paper \cite{ziche2024llm4pm}
+
+In the search query ("allintitle: conversational process modeling"), the only tool AutoBPMN.AI \cite{klievtsova2025autobpmn} is found. 
+
+Finally, combining “BPMN” with "generative AI", "LLM[s]", or "large language" led to the identification of 3 additional tools, including BPMN-Chatbot++ \cite{safan2025bpmn}, LLM4BPMNGen \cite{costa2025llm4bpmngen}, and Nala2BPMN \cite{nour2024nala2bpmn}.
+
+BPMN-Chatbot++\cite{safan2025bpmn} is found in  Tool no name \cite{safan2025framework}
+
+LLM4BPMNGen\cite{costa2025llm4bpmngen} 
+
+% \footnote{https://promoai.streamlit.app/}, accessed 
+Nala2BPMN \cite{nour2024nala2bpmn} 
+
+In summary, although a growing number of tools leverage LLMs to support process modeling, none provide a fully integrated solution for automatically deriving complete process models from large document collections.
+
+In summary, while numerous tools leverage LLMs for generating process models from natural language, they predominantly focus on single textual inputs and interactive refinement. There is still no integrated solution specifically designed to process and synthesize large document sets into coherent, unified process models. This highlights a clear research gap and motivates the need for approaches that bridge document analysis and process model generation in a scalable and integrated manner.
+
+
+
+\begin{table}[htb!]
+\centering
+\caption{Related work on state-of-the-art AI-assisted process modeling tools}
+\begin{tabular}{p{2.5cm} l p{2cm} p{2cm} p{4cm}}
+\hline
+\textbf{Tool} & \textbf{Year} & \textbf{Input Form} & \textbf{Output Notation} & \textbf{Key Contribution / Difference} \\
+\hline
+
+ProMoAI \cite{kourani2024promoai} & 2024 
+& Natural language text + iterative feedback 
+& BPMN / PNML 
+& Generates process models via constrained Python code and intermediate POWL representation; strong focus on correctness and error handling. \\
+
+\hline
+
+BPMN-Chatbot \cite{kopke2024introducing, kopke2024efficient} & 2024 
+& Text or voice input + interactive refinement 
+& BPMN
+& Conversational web-based tool with strong token efficiency and correctness; supports iterative modeling and versioning. \\
+
+\hline
+
+Nala2BPMN \cite{nour2024nala2bpmn} & 2024 
+& Natural language text 
+& BPMN
+& Hybrid pipeline combining LLM extraction with algorithmic BPMN construction; handles ambiguity and incomplete input. \\
+
+\hline
+
+PRODIGY \cite{ziche2024llm4pm} & 2024 
+& Natural language + enterprise documents (RAG) 
+& BPMN Sketch Miner textual syntax 
+& Enterprise-oriented tool leveraging retrieval-augmented generation for process modeling from organizational knowledge. \\
+\hline
+
+LLM4BPMNGen \cite{costa2025llm4bpmngen} & 2025 
+& Text, audio upload, or voice input 
+& BPMN
+& Multimodal input support with structured prompting; improves coverage of BPMN elements and generation robustness. \\
+\hline
+
+BPMN-Chatbot++ \cite{safan2025bpmn} & 2025 
+& Text/voice (enhanced interaction) 
+& BPMN
+& Extension of BPMN-Chatbot with improved prompting, interaction quality, and modeling performance (focus on efficiency and usability). \\
+
+\hline
+
+AutoBPMN.AI \cite{klievtsova2025autobpmn} & 2025 
+& Natural language text 
+& CPEE-Tree
+& Output in executable format \\
+
+\hline
+
+HyperMode \cite{pardo2025direct} & 2025 
+& Natural language + direct manipulation (UI interaction) 
+& BPMN diagrams 
+& Combines LLM-based generation with direct manipulation interface, enabling users to refine models via selection-based interaction and prompts.  \\
+
+\hline
+
+BPMNGen \cite{horner2025towards, horner2026automatically} & 2026 
+& Natural language text + conversational refinement 
+& BPMN
+& LLM-based conversational framework with strong focus on human-centered evaluation (semantic quality, cognitive load, usability).   \\
+
+\hline
+
+BPMN Assist \cite{licardo2026bpmn} & 2026 
+& Natural language text (editing + creation) 
+& BPMN
+& Introduces structured JSON intermediate representation for reliable and efficient editing; improves latency, token efficiency, and editing success.  \\
+\hline
+
+KICoPro \cite{lauer2026human} & 2026 
+& Natural language + human-in-the-loop interaction 
+& BPMN
+& Emphasizes human-AI collaboration and interactive refinement in process modeling (focus on usability and co-creation). \\
+\hline
+
+\end{tabular}
+\label{tab:lr}
+\end{table}
+
+
+\section{AutoBPMN.AI}
+Here, we provide a more detailed in depth review of the AutoBPMN.AI tool, as we will leverage its LLM service for the automated process model generation in our proposed system.
+
+AutoBPMN.AI provides an LLM-backed service that turns natural language process descriptions into an \,\emph{executable} process representation (CPEE-Tree) \cite{klievtsova2025autobpmn}. The core interaction is conversational: the user describes a procedure in free-form text, and the service produces (and maintains) a structured model corresponding to that description.
+
+Model creation is performed iteratively over multiple turns. After the initial model draft is generated, the user can issue follow-up instructions (e.g., clarifications, corrections, additions, or restructuring requests). The service uses the conversational context to interpret each instruction and updates the executable model accordingly, enabling step-by-step refinement rather than a single one-shot generation.
+
+In summary, the AutoBPMN.AI LLM service operates as a dialogue-driven modeling loop with two key artifacts exchanged between user and system: natural language messages as input and an updated CPEE-Tree model as output at each iteration.
+
+In this thesis, we will leverage the LLM REST service provided by AutoBPMN.AI for model generation and refinement within our proposed system.

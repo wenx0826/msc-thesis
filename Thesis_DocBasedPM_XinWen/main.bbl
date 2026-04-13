@@ -1,0 +1,603 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{none/global//global/global/global}
+    \entry{hevner2007}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=e054261c7f1739e1ba1db0a45e385c1b}{%
+           family={Hevner},
+           familyi={H\bibinitperiod},
+           given={Alan\bibnamedelima R},
+           giveni={A\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+      }
+      \strng{namehash}{e054261c7f1739e1ba1db0a45e385c1b}
+      \strng{fullhash}{e054261c7f1739e1ba1db0a45e385c1b}
+      \strng{fullhashraw}{e054261c7f1739e1ba1db0a45e385c1b}
+      \strng{bibnamehash}{e054261c7f1739e1ba1db0a45e385c1b}
+      \strng{authorbibnamehash}{e054261c7f1739e1ba1db0a45e385c1b}
+      \strng{authornamehash}{e054261c7f1739e1ba1db0a45e385c1b}
+      \strng{authorfullhash}{e054261c7f1739e1ba1db0a45e385c1b}
+      \strng{authorfullhashraw}{e054261c7f1739e1ba1db0a45e385c1b}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Scandinavian Journal of Information Systems}
+      \field{number}{2}
+      \field{title}{A three cycle view of design science research}
+      \field{volume}{19}
+      \field{year}{2007}
+      \field{pages}{87\bibrangedash 92}
+      \range{pages}{6}
+    \endentry
+    \entry{kourani2024promoai}{article}{}{}
+      \name{author}{4}{}{%
+        {{hash=0e9f28164af82b97077575329f0bfb13}{%
+           family={Kourani},
+           familyi={K\bibinitperiod},
+           given={Humam},
+           giveni={H\bibinitperiod}}}%
+        {{hash=31aef31d05222aad4978469412b51f0a}{%
+           family={Berti},
+           familyi={B\bibinitperiod},
+           given={Alessandro},
+           giveni={A\bibinitperiod}}}%
+        {{hash=be68b1bddc16039848fa2f97f2f486d2}{%
+           family={Schuster},
+           familyi={S\bibinitperiod},
+           given={Daniel},
+           giveni={D\bibinitperiod}}}%
+        {{hash=0e0a6c83cdc39e5b8d914fae0bbf7c29}{%
+           family={Van\bibnamedelimb Der\bibnamedelima Aalst},
+           familyi={V\bibinitperiod\bibinitdelim D\bibinitperiod\bibinitdelim A\bibinitperiod},
+           given={Wil\bibnamedelima MP},
+           giveni={W\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+      }
+      \strng{namehash}{142b73830dd9aba6d82bce6748077f9c}
+      \strng{fullhash}{21c5ab925775b05fdba7ba469edbcbc6}
+      \strng{fullhashraw}{21c5ab925775b05fdba7ba469edbcbc6}
+      \strng{bibnamehash}{21c5ab925775b05fdba7ba469edbcbc6}
+      \strng{authorbibnamehash}{21c5ab925775b05fdba7ba469edbcbc6}
+      \strng{authornamehash}{142b73830dd9aba6d82bce6748077f9c}
+      \strng{authorfullhash}{21c5ab925775b05fdba7ba469edbcbc6}
+      \strng{authorfullhashraw}{21c5ab925775b05fdba7ba469edbcbc6}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{arXiv preprint arXiv:2403.04327}
+      \field{title}{ProMoAI: process modeling with generative AI}
+      \field{year}{2024}
+    \endentry
+    \entry{kopke2024introducing}{inproceedings}{}{}
+      \name{author}{2}{}{%
+        {{hash=68c86791c3b26467d56417ab6dc6ddb0}{%
+           family={Köpke},
+           familyi={K\bibinitperiod},
+           given={Julius},
+           giveni={J\bibinitperiod}}}%
+        {{hash=2ddb030fcae418d7f35b39785c9331a0}{%
+           family={Safan},
+           familyi={S\bibinitperiod},
+           given={Aya},
+           giveni={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{58229ecc287dc10f2f4540ac07b49f66}
+      \strng{fullhash}{58229ecc287dc10f2f4540ac07b49f66}
+      \strng{fullhashraw}{58229ecc287dc10f2f4540ac07b49f66}
+      \strng{bibnamehash}{58229ecc287dc10f2f4540ac07b49f66}
+      \strng{authorbibnamehash}{58229ecc287dc10f2f4540ac07b49f66}
+      \strng{authornamehash}{58229ecc287dc10f2f4540ac07b49f66}
+      \strng{authorfullhash}{58229ecc287dc10f2f4540ac07b49f66}
+      \strng{authorfullhashraw}{58229ecc287dc10f2f4540ac07b49f66}
+      \field{extraname}{1}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{BPM (Demos/Resources Forum)}
+      \field{title}{Introducing the BPMN-Chatbot for Efficient LLM-Based Process Modeling.}
+      \field{year}{2024}
+      \field{pages}{86\bibrangedash 90}
+      \range{pages}{5}
+    \endentry
+    \entry{licardo2026bpmn}{article}{}{}
+      \name{author}{3}{}{%
+        {{hash=66b4adaf3daa085c6474da95e4c857b0}{%
+           family={Licardo},
+           familyi={L\bibinitperiod},
+           given={Josip\bibnamedelima Tomo},
+           giveni={J\bibinitperiod\bibinitdelim T\bibinitperiod}}}%
+        {{hash=e1dfd355fc7dd477b19b0b447692c4cb}{%
+           family={Tanković},
+           familyi={T\bibinitperiod},
+           given={Nikola},
+           giveni={N\bibinitperiod}}}%
+        {{hash=3c3fd4f835bc3aa916786e1e1bfd388a}{%
+           family={Etinger},
+           familyi={E\bibinitperiod},
+           given={Darko},
+           giveni={D\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {MDPI}%
+      }
+      \strng{namehash}{fe49685f08429a99d3ad27a14c62b902}
+      \strng{fullhash}{d4ae0b16626225fc058bf598fff1fc1b}
+      \strng{fullhashraw}{d4ae0b16626225fc058bf598fff1fc1b}
+      \strng{bibnamehash}{d4ae0b16626225fc058bf598fff1fc1b}
+      \strng{authorbibnamehash}{d4ae0b16626225fc058bf598fff1fc1b}
+      \strng{authornamehash}{fe49685f08429a99d3ad27a14c62b902}
+      \strng{authorfullhash}{d4ae0b16626225fc058bf598fff1fc1b}
+      \strng{authorfullhashraw}{d4ae0b16626225fc058bf598fff1fc1b}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Applied Sciences}
+      \field{number}{5}
+      \field{title}{BPMN Assistant: An LLM-Based Approach to Business Process Modeling}
+      \field{volume}{16}
+      \field{year}{2026}
+      \field{pages}{2213}
+      \range{pages}{1}
+    \endentry
+    \entry{kopke2024efficient}{inproceedings}{}{}
+      \name{author}{2}{}{%
+        {{hash=68c86791c3b26467d56417ab6dc6ddb0}{%
+           family={Köpke},
+           familyi={K\bibinitperiod},
+           given={Julius},
+           giveni={J\bibinitperiod}}}%
+        {{hash=2ddb030fcae418d7f35b39785c9331a0}{%
+           family={Safan},
+           familyi={S\bibinitperiod},
+           given={Aya},
+           giveni={A\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{58229ecc287dc10f2f4540ac07b49f66}
+      \strng{fullhash}{58229ecc287dc10f2f4540ac07b49f66}
+      \strng{fullhashraw}{58229ecc287dc10f2f4540ac07b49f66}
+      \strng{bibnamehash}{58229ecc287dc10f2f4540ac07b49f66}
+      \strng{authorbibnamehash}{58229ecc287dc10f2f4540ac07b49f66}
+      \strng{authornamehash}{58229ecc287dc10f2f4540ac07b49f66}
+      \strng{authorfullhash}{58229ecc287dc10f2f4540ac07b49f66}
+      \strng{authorfullhashraw}{58229ecc287dc10f2f4540ac07b49f66}
+      \field{extraname}{2}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{International conference on business process management}
+      \field{title}{Efficient LLM-based conversational process modeling}
+      \field{year}{2024}
+      \field{pages}{259\bibrangedash 270}
+      \range{pages}{12}
+    \endentry
+    \entry{lauer2026human}{article}{}{}
+      \name{author}{3}{}{%
+        {{hash=e18717773790e36a4740c0784b1b42e9}{%
+           family={Lauer},
+           familyi={L\bibinitperiod},
+           given={Chantale},
+           giveni={C\bibinitperiod}}}%
+        {{hash=8524be75a72f69e71435fb4b623cb58c}{%
+           family={Pfeiffer},
+           familyi={P\bibinitperiod},
+           given={Peter},
+           giveni={P\bibinitperiod}}}%
+        {{hash=ad839df5a9cc3674c8ec8c468bb4785e}{%
+           family={Mehdiyev},
+           familyi={M\bibinitperiod},
+           given={Nijat},
+           giveni={N\bibinitperiod}}}%
+      }
+      \strng{namehash}{4f14320d6e5d70c0caded7cc1a65c2bb}
+      \strng{fullhash}{8e7158986f449e7d5925df598b466a91}
+      \strng{fullhashraw}{8e7158986f449e7d5925df598b466a91}
+      \strng{bibnamehash}{8e7158986f449e7d5925df598b466a91}
+      \strng{authorbibnamehash}{8e7158986f449e7d5925df598b466a91}
+      \strng{authornamehash}{4f14320d6e5d70c0caded7cc1a65c2bb}
+      \strng{authorfullhash}{8e7158986f449e7d5925df598b466a91}
+      \strng{authorfullhashraw}{8e7158986f449e7d5925df598b466a91}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{arXiv preprint arXiv:2603.12895}
+      \field{title}{Human-Centered Evaluation of an LLM-Based Process Modeling Copilot: A Mixed-Methods Study with Domain Experts}
+      \field{year}{2026}
+    \endentry
+    \entry{pardo2025direct}{inproceedings}{}{}
+      \name{author}{5}{}{%
+        {{hash=645fccfdc6b55e7936f7deecbb528f20}{%
+           family={Pardo\bibnamedelima Gutierrez},
+           familyi={P\bibinitperiod\bibinitdelim G\bibinitperiod},
+           given={Sergio},
+           giveni={S\bibinitperiod}}}%
+        {{hash=3e1f5b8d55ea4c755602463256367b2d}{%
+           family={Alrabie},
+           familyi={A\bibinitperiod},
+           given={Lina},
+           giveni={L\bibinitperiod}}}%
+        {{hash=bbdfc7b8994011db131db3c1ac261da8}{%
+           family={Di\bibnamedelima Fede},
+           familyi={D\bibinitperiod\bibinitdelim F\bibinitperiod},
+           given={Giulia},
+           giveni={G\bibinitperiod}}}%
+        {{hash=817aebcb7ef612b370704604d3dffce2}{%
+           family={Vitali},
+           familyi={V\bibinitperiod},
+           given={Monica},
+           giveni={M\bibinitperiod}}}%
+        {{hash=ddc5a435642d5075a2806ea82f87032d}{%
+           family={Andolina},
+           familyi={A\bibinitperiod},
+           given={Salvatore},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{a668afb538acca84d2dde4b1ad2d5a37}
+      \strng{fullhash}{74ee359adee1dd8213d4a361ecda957a}
+      \strng{fullhashraw}{74ee359adee1dd8213d4a361ecda957a}
+      \strng{bibnamehash}{74ee359adee1dd8213d4a361ecda957a}
+      \strng{authorbibnamehash}{74ee359adee1dd8213d4a361ecda957a}
+      \strng{authornamehash}{a668afb538acca84d2dde4b1ad2d5a37}
+      \strng{authorfullhash}{74ee359adee1dd8213d4a361ecda957a}
+      \strng{authorfullhashraw}{74ee359adee1dd8213d4a361ecda957a}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the 16th Biannual Conference of the Italian SIGCHI Chapter}
+      \field{title}{A Direct manipulation interface for LLM-based process modeling}
+      \field{year}{2025}
+      \field{pages}{1\bibrangedash 3}
+      \range{pages}{3}
+    \endentry
+    \entry{horner2025towards}{inproceedings}{}{}
+      \name{author}{1}{}{%
+        {{hash=3f271de50d575b37aedd83574b2adbb6}{%
+           family={Hörner},
+           familyi={H\bibinitperiod},
+           given={Luca\bibnamedelima Franziska},
+           giveni={L\bibinitperiod\bibinitdelim F\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{3f271de50d575b37aedd83574b2adbb6}
+      \strng{fullhash}{3f271de50d575b37aedd83574b2adbb6}
+      \strng{fullhashraw}{3f271de50d575b37aedd83574b2adbb6}
+      \strng{bibnamehash}{3f271de50d575b37aedd83574b2adbb6}
+      \strng{authorbibnamehash}{3f271de50d575b37aedd83574b2adbb6}
+      \strng{authornamehash}{3f271de50d575b37aedd83574b2adbb6}
+      \strng{authorfullhash}{3f271de50d575b37aedd83574b2adbb6}
+      \strng{authorfullhashraw}{3f271de50d575b37aedd83574b2adbb6}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{International Conference on Advanced Information Systems Engineering}
+      \field{title}{Towards an LLM-based conversational framework for business process modeling: Research approach and preliminary results}
+      \field{year}{2025}
+      \field{pages}{286\bibrangedash 293}
+      \range{pages}{8}
+    \endentry
+    \entry{horner2026automatically}{article}{}{}
+      \name{author}{3}{}{%
+        {{hash=3f271de50d575b37aedd83574b2adbb6}{%
+           family={Hörner},
+           familyi={H\bibinitperiod},
+           given={Luca\bibnamedelima Franziska},
+           giveni={L\bibinitperiod\bibinitdelim F\bibinitperiod}}}%
+        {{hash=6a031fe006d6dca729550c66c56ad0a5}{%
+           family={Möller},
+           familyi={M\bibinitperiod},
+           given={Maximilian},
+           giveni={M\bibinitperiod}}}%
+        {{hash=8eaa44e89e43f01f5d0fd74865b3bb51}{%
+           family={Reichert},
+           familyi={R\bibinitperiod},
+           given={Manfred},
+           giveni={M\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{435d25c65ebcc1e03c93e4a56bdca5ae}
+      \strng{fullhash}{c234a6c00b14e43b9fe5221f8bc0957f}
+      \strng{fullhashraw}{c234a6c00b14e43b9fe5221f8bc0957f}
+      \strng{bibnamehash}{c234a6c00b14e43b9fe5221f8bc0957f}
+      \strng{authorbibnamehash}{c234a6c00b14e43b9fe5221f8bc0957f}
+      \strng{authornamehash}{435d25c65ebcc1e03c93e4a56bdca5ae}
+      \strng{authorfullhash}{c234a6c00b14e43b9fe5221f8bc0957f}
+      \strng{authorfullhashraw}{c234a6c00b14e43b9fe5221f8bc0957f}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Business \& Information Systems Engineering}
+      \field{title}{Automatically Generating BPMN 2.0 Process Models from Natural Language Process Descriptions: Challenges, Framework, Quality Assessment}
+      \field{year}{2026}
+      \field{pages}{1\bibrangedash 25}
+      \range{pages}{25}
+    \endentry
+    \entry{ziche2024llm4pm}{inproceedings}{}{}
+      \name{author}{2}{}{%
+        {{hash=0f4793072be7156d935e2fdc2e25e885}{%
+           family={Ziche},
+           familyi={Z\bibinitperiod},
+           given={Clara},
+           giveni={C\bibinitperiod}}}%
+        {{hash=1358ba6aba0f0bb0d7708bb5b86d0329}{%
+           family={Apruzzese},
+           familyi={A\bibinitperiod},
+           given={Giovanni},
+           giveni={G\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{22a91134c39284ed1eda2deee5b83c10}
+      \strng{fullhash}{22a91134c39284ed1eda2deee5b83c10}
+      \strng{fullhashraw}{22a91134c39284ed1eda2deee5b83c10}
+      \strng{bibnamehash}{22a91134c39284ed1eda2deee5b83c10}
+      \strng{authorbibnamehash}{22a91134c39284ed1eda2deee5b83c10}
+      \strng{authornamehash}{22a91134c39284ed1eda2deee5b83c10}
+      \strng{authorfullhash}{22a91134c39284ed1eda2deee5b83c10}
+      \strng{authorfullhashraw}{22a91134c39284ed1eda2deee5b83c10}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{International conference on business process management}
+      \field{title}{LLM4PM: A case study on using large language models for process modeling in enterprise organizations}
+      \field{year}{2024}
+      \field{pages}{472\bibrangedash 483}
+      \range{pages}{12}
+    \endentry
+    \entry{klievtsova2025autobpmn}{article}{}{}
+      \name{author}{4}{}{%
+        {{hash=e5059a34fe7bd231d26e3657e54be078}{%
+           family={Klievtsova},
+           familyi={K\bibinitperiod},
+           given={Nataliia},
+           giveni={N\bibinitperiod}}}%
+        {{hash=52a7f399089b44f2dc9a9706cd087fa9}{%
+           family={Ehrendorfer},
+           familyi={E\bibinitperiod},
+           given={Matthias},
+           giveni={M\bibinitperiod}}}%
+        {{hash=aa717041935f0a9febce036caca7da75}{%
+           family={Mangler},
+           familyi={M\bibinitperiod},
+           given={Juergen},
+           giveni={J\bibinitperiod}}}%
+        {{hash=bac8ca27b2681a0f11d06be2230a65a4}{%
+           family={Rinderle-Ma},
+           familyi={R\bibinithyphendelim M\bibinitperiod},
+           given={Stefanie},
+           giveni={S\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {CEUR-WS}%
+      }
+      \strng{namehash}{a16fa6aac46e1b78cb0c8c6a428fcec6}
+      \strng{fullhash}{4c86d36ec7d54b6bff9def0a78322995}
+      \strng{fullhashraw}{4c86d36ec7d54b6bff9def0a78322995}
+      \strng{bibnamehash}{4c86d36ec7d54b6bff9def0a78322995}
+      \strng{authorbibnamehash}{4c86d36ec7d54b6bff9def0a78322995}
+      \strng{authornamehash}{a16fa6aac46e1b78cb0c8c6a428fcec6}
+      \strng{authorfullhash}{4c86d36ec7d54b6bff9def0a78322995}
+      \strng{authorfullhashraw}{4c86d36ec7d54b6bff9def0a78322995}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{1613-0073}
+      \field{journaltitle}{CEUR Workshop Proceedings}
+      \field{title}{AutoBPMN. AI: Conversational Process Modeling and Automation}
+      \field{volume}{4032}
+      \field{year}{2025}
+      \field{pages}{304\bibrangedash 311}
+      \range{pages}{8}
+    \endentry
+    \entry{safan2025bpmn}{inproceedings}{}{}
+      \name{author}{2}{}{%
+        {{hash=2ddb030fcae418d7f35b39785c9331a0}{%
+           family={Safan},
+           familyi={S\bibinitperiod},
+           given={Aya},
+           giveni={A\bibinitperiod}}}%
+        {{hash=68c86791c3b26467d56417ab6dc6ddb0}{%
+           family={Köpke},
+           familyi={K\bibinitperiod},
+           given={Julius},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{25fe23f08ecff16f765bff7e4eeba9cf}
+      \strng{fullhash}{25fe23f08ecff16f765bff7e4eeba9cf}
+      \strng{fullhashraw}{25fe23f08ecff16f765bff7e4eeba9cf}
+      \strng{bibnamehash}{25fe23f08ecff16f765bff7e4eeba9cf}
+      \strng{authorbibnamehash}{25fe23f08ecff16f765bff7e4eeba9cf}
+      \strng{authornamehash}{25fe23f08ecff16f765bff7e4eeba9cf}
+      \strng{authorfullhash}{25fe23f08ecff16f765bff7e4eeba9cf}
+      \strng{authorfullhashraw}{25fe23f08ecff16f765bff7e4eeba9cf}
+      \field{extraname}{1}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the BPM}
+      \field{title}{BPMN-Chatbot++: LLM-Based Modeling of Collaboration Diagrams with Data}
+      \field{year}{2025}
+    \endentry
+    \entry{costa2025llm4bpmngen}{article}{}{}
+      \name{author}{3}{}{%
+        {{hash=2a8b2e60e62b64fa0671cc478eb465ec}{%
+           family={Costa},
+           familyi={C\bibinitperiod},
+           given={Ana},
+           giveni={A\bibinitperiod}}}%
+        {{hash=8035f4b0164736029c42f0c54a4b5e46}{%
+           family={Wimmer},
+           familyi={W\bibinitperiod},
+           given={Alena},
+           giveni={A\bibinitperiod}}}%
+        {{hash=4d752747982a0a9629526e420fd031ad}{%
+           family={Pufahl},
+           familyi={P\bibinitperiod},
+           given={Luise},
+           giveni={L\bibinitperiod}}}%
+      }
+      \strng{namehash}{f41f0412d9e71aea48e50c847c7c224b}
+      \strng{fullhash}{31ff0ab87ee6f94663a7afad12044c2b}
+      \strng{fullhashraw}{31ff0ab87ee6f94663a7afad12044c2b}
+      \strng{bibnamehash}{31ff0ab87ee6f94663a7afad12044c2b}
+      \strng{authorbibnamehash}{31ff0ab87ee6f94663a7afad12044c2b}
+      \strng{authornamehash}{f41f0412d9e71aea48e50c847c7c224b}
+      \strng{authorfullhash}{31ff0ab87ee6f94663a7afad12044c2b}
+      \strng{authorfullhashraw}{31ff0ab87ee6f94663a7afad12044c2b}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{LLM4BPMNGen: A Tool for BPMN Generation with LLMs}
+      \field{year}{2025}
+    \endentry
+    \entry{nour2024nala2bpmn}{inproceedings}{}{}
+      \name{author}{5}{}{%
+        {{hash=1a70d8db228609def1b74b2d5c2c1b53}{%
+           family={Nour\bibnamedelima Eldin},
+           familyi={N\bibinitperiod\bibinitdelim E\bibinitperiod},
+           given={Ali},
+           giveni={A\bibinitperiod}}}%
+        {{hash=420b4308b708445d1838f4b5ffd81252}{%
+           family={Assy},
+           familyi={A\bibinitperiod},
+           given={Nour},
+           giveni={N\bibinitperiod}}}%
+        {{hash=28221fd0638edda62abb5b28c5ce01a2}{%
+           family={Anesini},
+           familyi={A\bibinitperiod},
+           given={Olan},
+           giveni={O\bibinitperiod}}}%
+        {{hash=782d99e641740b7c8f2a36728d37a0b1}{%
+           family={Dalmas},
+           familyi={D\bibinitperiod},
+           given={Benjamin},
+           giveni={B\bibinitperiod}}}%
+        {{hash=47b3c8046cdbdc45e1ed031df378f657}{%
+           family={Gaaloul},
+           familyi={G\bibinitperiod},
+           given={Walid},
+           giveni={W\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{9cfac75a12dc901534636b4c1e54f404}
+      \strng{fullhash}{d8aca346492710e3e550966c8a64d679}
+      \strng{fullhashraw}{d8aca346492710e3e550966c8a64d679}
+      \strng{bibnamehash}{d8aca346492710e3e550966c8a64d679}
+      \strng{authorbibnamehash}{d8aca346492710e3e550966c8a64d679}
+      \strng{authornamehash}{9cfac75a12dc901534636b4c1e54f404}
+      \strng{authorfullhash}{d8aca346492710e3e550966c8a64d679}
+      \strng{authorfullhashraw}{d8aca346492710e3e550966c8a64d679}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{International conference on cooperative information systems}
+      \field{title}{Nala2BPMN: automating BPMN model generation with large language models}
+      \field{year}{2024}
+      \field{pages}{398\bibrangedash 404}
+      \range{pages}{7}
+    \endentry
+    \entry{safan2025framework}{inproceedings}{}{}
+      \name{author}{2}{}{%
+        {{hash=2ddb030fcae418d7f35b39785c9331a0}{%
+           family={Safan},
+           familyi={S\bibinitperiod},
+           given={Aya},
+           giveni={A\bibinitperiod}}}%
+        {{hash=68c86791c3b26467d56417ab6dc6ddb0}{%
+           family={Köpke},
+           familyi={K\bibinitperiod},
+           given={Julius},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{25fe23f08ecff16f765bff7e4eeba9cf}
+      \strng{fullhash}{25fe23f08ecff16f765bff7e4eeba9cf}
+      \strng{fullhashraw}{25fe23f08ecff16f765bff7e4eeba9cf}
+      \strng{bibnamehash}{25fe23f08ecff16f765bff7e4eeba9cf}
+      \strng{authorbibnamehash}{25fe23f08ecff16f765bff7e4eeba9cf}
+      \strng{authornamehash}{25fe23f08ecff16f765bff7e4eeba9cf}
+      \strng{authorfullhash}{25fe23f08ecff16f765bff7e4eeba9cf}
+      \strng{authorfullhashraw}{25fe23f08ecff16f765bff7e4eeba9cf}
+      \field{extraname}{2}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{ER2025: companion proceedings of the 44th international conference on conceptual modeling: industrial track, ER Forum, 8th SCME, Poitiers. https://ceur-ws. org}
+      \field{title}{A framework for LLM-based conceptual modeling: Application to BPMN collaboration diagrams}
+      \field{volume}{4099}
+      \field{year}{2025}
+    \endentry
+    \entry{w3c_annotation_model}{report}{}{}
+      \name{author}{1}{}{%
+        {{hash=446a1ae6601a5c59360c7d591c3992da}{%
+           family={{W3C}},
+           familyi={W\bibinitperiod}}}%
+      }
+      \list{institution}{1}{%
+        {World Wide Web Consortium}%
+      }
+      \strng{namehash}{446a1ae6601a5c59360c7d591c3992da}
+      \strng{fullhash}{446a1ae6601a5c59360c7d591c3992da}
+      \strng{fullhashraw}{446a1ae6601a5c59360c7d591c3992da}
+      \strng{bibnamehash}{446a1ae6601a5c59360c7d591c3992da}
+      \strng{authorbibnamehash}{446a1ae6601a5c59360c7d591c3992da}
+      \strng{authornamehash}{446a1ae6601a5c59360c7d591c3992da}
+      \strng{authorfullhash}{446a1ae6601a5c59360c7d591c3992da}
+      \strng{authorfullhashraw}{446a1ae6601a5c59360c7d591c3992da}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2026-04-05}
+      \field{title}{Web Annotation Data Model}
+      \field{type}{techreport}
+      \field{year}{2017}
+      \verb{urlraw}
+      \verb https://www.w3.org/TR/annotation-model/
+      \endverb
+      \verb{url}
+      \verb https://www.w3.org/TR/annotation-model/
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

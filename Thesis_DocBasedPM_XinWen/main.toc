@@ -1,0 +1,69 @@
+\babel@toc {english}{}\relax 
+\babel@toc {english}{}\relax 
+\contentsline {chapter}{\numberline {1}Introduction}{7}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Motivation}{7}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Research Questions}{7}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Contribution}{8}{section.1.3}%
+\contentsline {section}{\numberline {1.4}Methodology}{9}{section.1.4}%
+\contentsline {section}{\numberline {1.5}Evaluation}{9}{section.1.5}%
+\contentsline {section}{\numberline {1.6}Structure}{9}{section.1.6}%
+\contentsline {chapter}{\numberline {2}Related Work}{9}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Foundational Concepts and Technologies}{9}{section.2.1}%
+\contentsline {section}{\numberline {2.2}AutoBPMN.AI}{13}{section.2.2}%
+\contentsline {chapter}{\numberline {3}Solution Design}{13}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Requirements}{13}{section.3.1}%
+\contentsline {subsection}{Context and Goal}{13}{section*.3}%
+\contentsline {section}{\numberline {3.2}Requirements Elicitation}{14}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Requirements Elicitation}{15}{section.3.3}%
+\contentsline {subsection}{Functional Requirements}{15}{section*.6}%
+\contentsline {subsection}{Design Constraints}{15}{section*.6}%
+\contentsline {section}{\numberline {3.4}User Interface and Interaction Design}{16}{section.3.4}%
+\contentsline {subsection}{System Views}{16}{section*.7}%
+\contentsline {subsection}{System Views}{16}{section*.7}%
+\contentsline {subsubsection}{Workspace}{16}{section*.7}%
+\contentsline {section}{\numberline {3.5}Modeling Workflow Design}{17}{section.3.5}%
+\contentsline {subsection}{Design Difficulities}{17}{section*.9}%
+\contentsline {section}{\numberline {3.6}Core Functionalities Design}{17}{section.3.6}%
+\contentsline {subsection}{Document Management}{17}{section*.10}%
+\contentsline {section}{\numberline {3.7}Document Update}{17}{section.3.7}%
+\contentsline {subsection}{Document Interaction}{17}{section*.11}%
+\contentsline {subsection}{Process modeling}{17}{section*.11}%
+\contentsline {subsubsection}{Human-in-the-loop Process Modeling and Version Control}{17}{section*.11}%
+\contentsline {subsubsection}{Use Case: Model Generation}{18}{section*.11}%
+\contentsline {subsubsection}{Use Case: Model Modification}{18}{section*.11}%
+\contentsline {subsubsection}{Use Case: Establishing Process-Subprocess Relationships}{18}{section*.11}%
+\contentsline {subsubsection}{Augmented Model Data}{18}{section*.11}%
+\contentsline {section}{\numberline {3.8}Interactive Design Difficulty}{18}{section.3.8}%
+\contentsline {section}{\numberline {3.9}System Architecture}{18}{section.3.9}%
+\contentsline {section}{\numberline {3.10}Data Model}{20}{section.3.10}%
+\contentsline {chapter}{\numberline {4}Implementation}{20}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Frontend}{21}{section.4.1}%
+\contentsline {subsection}{Architecture}{21}{section*.14}%
+\contentsline {section}{\numberline {4.2}State Management}{22}{section.4.2}%
+\contentsline {subsection}{Document Processing}{22}{lstnumber.-1.15}%
+\contentsline {subsection}{Text Selection Rendering}{22}{lstnumber.-1.15}%
+\contentsline {subsubsection}{Virtual Overlay Strategy}{22}{lstnumber.-1.15}%
+\contentsline {subsubsection}{Virtual Overlay Strategy}{22}{lstnumber.-1.15}%
+\contentsline {subsection}{Modeling}{23}{lstnumber.-1.15}%
+\contentsline {subsection}{Rendering Customization}{23}{lstnumber.-1.15}%
+\contentsline {subsection}{Architecture}{23}{lstnumber.-1.15}%
+\contentsline {section}{\numberline {4.3}Backend}{23}{section.4.3}%
+\contentsline {subsection}{Architecture}{23}{section*.17}%
+\contentsline {section}{\numberline {4.4}Database Schema}{24}{section.4.4}%
+\contentsline {chapter}{\numberline {5}Evaluation}{25}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Evaluation Procedure}{25}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Evaluation Results}{26}{section.5.2}%
+\contentsline {subsection}{Overall Perception and Task Completion}{26}{section*.20}%
+\contentsline {subsection}{Positive Aspects}{27}{table.caption.24}%
+\contentsline {subsection}{Problems in Interaction and Use}{28}{table.caption.24}%
+\contentsline {subsection}{Potential Improvements and Additional Features}{29}{table.caption.24}%
+\contentsline {subsection}{Future Use Intention}{30}{table.caption.24}%
+\contentsline {chapter}{\numberline {6}Discussion}{31}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Usability and User Experience}{31}{section.6.1}%
+\contentsline {section}{\numberline {6.2}User Expectations}{31}{section.6.2}%
+\contentsline {section}{\numberline {6.3}Limitations}{31}{section.6.3}%
+\contentsline {chapter}{\numberline {7}Conclusion}{31}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Summary}{31}{section.7.1}%
+\contentsline {section}{\numberline {7.2}Future Work}{32}{section.7.2}%
+\contentsline {chapter}{Bibliography}{34}{section.7.2}%
+\contentsline {chapter}{\numberline {A}Appendix}{36}{chapter.A}%

@@ -1,0 +1,56 @@
+\chapter{Introduction}
+\label{sec:intro}
+
+\section{Motivation}
+\label{sec:intro:mo}
+
+Business process is a valuable asset of an organization. But most of them are stored in unstructured format, e.g., Word documents, PDF files. Manual transformation from unstructured text to structured process models is time-consuming and error-prone.
+
+In the era of Gen-AI, LLM has proved to be a promising solution to support creating process modeling efficiently. However, on one hand it still cannot fully replace human in process modeling especially when domain knowledge is needed. On the other hand, existing LLM-based process modeling tools and approaches still have limitations especially in the scenario for creating process models from documents. For example, the typical "one view one model" approach make it hard to manage for large systems, where multiple process and subprocess models are needed. In addition,the usual separate interface of the document and the generated model make it hard to verify the result. Besides,user need to manually extract relevant information from documents and input it into the conversational chatbot. 
+
+To address these limitations, this work proposes an integrated tool that supports process modeling from documents with a more seamless, efficient, and user-friendly workflow by offering the following core features: (1) manage all the related documents and models for one use case within one unified view (2) allowing users to upload documents and select passages from the documents to serve as input for LLM-based process model generation directly, (3) providing a clear visual link between the text and the generated model through display the document and the model side by side
+\section{Research Questions}
+\label{sec:intro:rq}
+
+This work addresses the following research questions:
+
+RQ1 How do existing tools supported AI assisted process modeling with multiple documents as input?
+
+This question investigates how existing approaches and tools support process modeling from documents by identifying their functionalities and capabilities. It helps guide the design of the proposed system.
+
+RQ2 Which layout and properties are beneficial for an integrated system that supports AI assisted process modeling with multiple documents as input?
+
+This question addresses the design of the proposed system. It focuses on what functionalities should be integrated and how to integrate them, aiming to enable a seamless modeling workflow with high usability.
+
+RQ3 How do user perceive the benefits and limitation of the system?
+
+This question evaluates the proposed system from the users’ perspective. It aims at understanding how users perceive the system’s benefits and limitations. Its results provide insights into the system’s strengths and weaknesses and help identify potential design issues and areas for improvement. 
+
+
+\section{Contribution}
+\label{sec:intro:con}
+The contribution of this thesis consists of the following aspects:
+
+Firstly, a systematic review of the existing tools and approaches for AI-assisted process modeling is conducted, which provides insights into the current state of the art and guides the design of the proposed system.
+
+Secondly, an integrated system is designed and developed to support process modeling from documents using LLMs. The system offers a more seamless, efficient, and user-friendly workflow by integrating multiple functionalities, such as document management, model generation, and traceability between text and model.
+
+Thirdly, the proposed system is evaluated through a user study with process modeling experts. The evaluation results provide insights into the system’s benefits and limitations from the users’ perspective, which can inform future improvements and further research in this area.
+
+\section{Methodology}
+\label{sec:intro:meth}
+The process of this thesis employees the research cycles of DSR from Hevner\cite{hevner2007}:
+The relevance cycle: the first cycle is done through the communication with modeling experts and proposes the tool and elicites the requirements in section \ref{sec:solution:req} for the system. 
+
+The rigor cycle: it is done through the review in section \ref{sec:rel}.
+The design cycle: the first cycle is done through the delivered solution of RQ2 and evaluation result of RQ3. Through the analysis and discussion of the evalution result, we can identify the strengths and weaknesses of the proposed tool, and further improve the design of the tool in the next iteration.
+
+\section{Evaluation}
+\label{sec:intro:ev}
+The evaluation of the proposed system is done with 4 experts in qualitative way. It consisted of task-based activities and a follow-up questionnaire to collect user feedback on the tool's usability and perceived usefulness.
+
+\section{Structure}
+\label{sec:intro:struct}
+The remainder of this thesis is structured as follows:
+
+Chapter~\ref{sec:rel} reviews the related work of LLM-based process modeling tools. Chapter~\ref{sec:solution} presents the design solution of the tool, including its requirements, architecture, and functionalities. Chapter~\ref{sec:implementation} describes its technical implementation. Chapter~\ref{sec:evaluation} describes the evaluation of the proposed system, including the methodology, results. Chapter~\ref{sec:discussion} discusses the implications of the findings and potential future work. Finally, Chapter~\ref{sec:conclusion} summarizes the current work and outlines future work.
