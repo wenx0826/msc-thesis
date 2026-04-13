@@ -1,0 +1,244 @@
+{
+  "configuration" : {
+    "scope" : "SoftwareSystem"
+  },
+  "description" : "Description",
+  "documentation" : { },
+  "id" : 1,
+  "lastModifiedDate" : "2026-04-12T10:22:19Z",
+  "model" : {
+    "people" : [ {
+      "description" : "Modeling expert, or domain expert who needs to created process models based on documents",
+      "id" : "1",
+      "name" : "User",
+      "properties" : {
+        "structurizr.dsl.identifier" : "u"
+      },
+      "relationships" : [ {
+        "description" : "Uses",
+        "destinationId" : "4",
+        "id" : "8",
+        "sourceId" : "1",
+        "tags" : "Relationship"
+      }, {
+        "description" : "Uses",
+        "destinationId" : "3",
+        "id" : "9",
+        "linkedRelationshipId" : "8",
+        "sourceId" : "1"
+      } ],
+      "tags" : "Element,Person"
+    } ],
+    "softwareSystems" : [ {
+      "documentation" : { },
+      "id" : "2",
+      "name" : "AutoBPMN.AI LLM Service",
+      "properties" : {
+        "structurizr.dsl.identifier" : "llm"
+      },
+      "tags" : "Element,Software System,LLMService"
+    }, {
+      "containers" : [ {
+        "documentation" : { },
+        "id" : "4",
+        "name" : "Web Application",
+        "properties" : {
+          "structurizr.dsl.identifier" : "ss.fe"
+        },
+        "relationships" : [ {
+          "description" : "Reads from and writes to",
+          "destinationId" : "2",
+          "id" : "10",
+          "sourceId" : "4",
+          "tags" : "Relationship"
+        }, {
+          "description" : "Reads from and writes to",
+          "destinationId" : "5",
+          "id" : "12",
+          "sourceId" : "4",
+          "tags" : "Relationship"
+        } ],
+        "tags" : "Element,Container,FE"
+      }, {
+        "documentation" : { },
+        "id" : "5",
+        "name" : "Backend",
+        "properties" : {
+          "structurizr.dsl.identifier" : "ss.be"
+        },
+        "relationships" : [ {
+          "description" : "Reads from and writes to",
+          "destinationId" : "6",
+          "id" : "13",
+          "sourceId" : "5",
+          "tags" : "Relationship"
+        }, {
+          "description" : "Reads from and writes to",
+          "destinationId" : "7",
+          "id" : "14",
+          "sourceId" : "5",
+          "tags" : "Relationship"
+        } ],
+        "tags" : "Element,Container,BE",
+        "technology" : "Node.js"
+      }, {
+        "documentation" : { },
+        "id" : "6",
+        "name" : "Directory",
+        "properties" : {
+          "structurizr.dsl.identifier" : "ss.fs"
+        },
+        "tags" : "Element,Container,Directory"
+      }, {
+        "documentation" : { },
+        "id" : "7",
+        "name" : "Database",
+        "properties" : {
+          "structurizr.dsl.identifier" : "ss.db"
+        },
+        "tags" : "Element,Container,Database"
+      } ],
+      "documentation" : { },
+      "id" : "3",
+      "name" : "Document-Based Process Modeler",
+      "properties" : {
+        "structurizr.dsl.identifier" : "ss"
+      },
+      "relationships" : [ {
+        "description" : "Reads from and writes to",
+        "destinationId" : "2",
+        "id" : "11",
+        "linkedRelationshipId" : "10",
+        "sourceId" : "3"
+      } ],
+      "tags" : "Element,Software System"
+    } ]
+  },
+  "name" : "Name",
+  "properties" : {
+    "structurizr.inspection.error" : "18",
+    "structurizr.dsl" : "d29ya3NwYWNlICJOYW1lIiAiRGVzY3JpcHRpb24iIHsKCiAgICAhaWRlbnRpZmllcnMgaGllcmFyY2hpY2FsCgoKCiAgICBtb2RlbCB7CiAgICAgICAgdSA9IHBlcnNvbiAiVXNlciIgIk1vZGVsaW5nIGV4cGVydCwgb3IgZG9tYWluIGV4cGVydCB3aG8gbmVlZHMgdG8gY3JlYXRlZCBwcm9jZXNzIG1vZGVscyBiYXNlZCBvbiBkb2N1bWVudHMiCiAgICAgICAgbGxtID0gc29mdHdhcmVTeXN0ZW0gIkF1dG9CUE1OLkFJIExMTSBTZXJ2aWNlIiAiIiB7CiAgICAgICAgICAgIHRhZ3MgIkxMTVNlcnZpY2UiIAogICAgICAgIH0KICAgICAgICBzcyA9IHNvZnR3YXJlU3lzdGVtICJEb2N1bWVudC1CYXNlZCBQcm9jZXNzIE1vZGVsZXIiIHsKICAgICAgICAgICAgZmUgPSBjb250YWluZXIgIldlYiBBcHBsaWNhdGlvbiIgewogICAgICAgICAgICAgICAgdGFncyAiRkUiCiAgICAgICAgICAgIH0KICAgICAgICAgICAgYmUgPSBjb250YWluZXIgIkJhY2tlbmQiIHsKICAgICAgICAgICAgICAgIHRlY2hub2xvZ3kgIk5vZGUuanMiCiAgICAgICAgICAgICAgICB0YWdzICJCRSIKICAgICAgICAgICAgfQogICAgICAgICAgICBmcyA9IGNvbnRhaW5lciAiRGlyZWN0b3J5IiB7CiAgICAgICAgICAgICAgICB0YWdzICJEaXJlY3RvcnkiCiAgICAgICAgICAgIH0KICAgICAgICAgICAgZGIgPSBjb250YWluZXIgIkRhdGFiYXNlIiB7CiAgICAgICAgICAgICAgICB0YWdzICJEYXRhYmFzZSIKICAgICAgICAgICAgfQogICAgICAgIH0KICAgICAgICB1IC0+IHNzLmZlICJVc2VzIgogICAgICAgIHNzLmZlIC0+IGxsbSAiUmVhZHMgZnJvbSBhbmQgd3JpdGVzIHRvIgogICAgICAgIHNzLmZlIC0+IHNzLmJlICJSZWFkcyBmcm9tIGFuZCB3cml0ZXMgdG8iCiAgICAgICAgc3MuYmUgLT4gc3MuZnMgIlJlYWRzIGZyb20gYW5kIHdyaXRlcyB0byIKICAgICAgICBzcy5iZSAtPiBzcy5kYiAiUmVhZHMgZnJvbSBhbmQgd3JpdGVzIHRvIgogICAgfQovKgplbGVtZW50IDx0YWc+IHsKICAgIHNoYXBlIDxCb3h8Um91bmRlZEJveHxDaXJjbGV8RWxsaXBzZXxIZXhhZ29ufERpYW1vbmR8Q3lsaW5kZXJ8QnVja2V0fFBpcGV8UGVyc29ufFJvYm90fEZvbGRlcnxXZWJCcm93c2VyfFdpbmRvd3xUZXJtaW5hbHxTaGVsbHxNb2JpbGVEZXZpY2VQb3J0cmFpdHxNb2JpbGVEZXZpY2VMYW5kc2NhcGV8Q29tcG9uZW50PgogICAgaWNvbiA8ZmlsZXx1cmw+CiAgICB3aWR0aCA8aW50ZWdlcj4KICAgIGhlaWdodCA8aW50ZWdlcj4KICAgIGJhY2tncm91bmQgPCNycmdnYmJ8Y29sb3IgbmFtZT4KICAgIGNvbG9yIDwjcnJnZ2JifGNvbG9yIG5hbWU+CiAgICBjb2xvdXIgPCNycmdnYmJ8Y29sb3IgbmFtZT4KICAgIHN0cm9rZSA8I3JyZ2diYnxjb2xvciBuYW1lPgogICAgc3Ryb2tlV2lkdGggPGludGVnZXI6IDEtMTA+CiAgICBmb250U2l6ZSA8aW50ZWdlcj4KICAgIGJvcmRlciA8c29saWR8ZGFzaGVkfGRvdHRlZD4KICAgIG9wYWNpdHkgPGludGVnZXI6IDAtMTAwPgogICAgbWV0YWRhdGEgPHRydWV8ZmFsc2U+CiAgICBkZXNjcmlwdGlvbiA8dHJ1ZXxmYWxzZT4KICAgIHByb3BlcnRpZXMgewogICAgICAgIG5hbWUgdmFsdWUKICAgIH0KfQoqLwoKICAgIHZpZXdzIHsKICAgICAgICBzeXN0ZW1Db250ZXh0IHNzICJTeXN0ZW1Db250ZXh0IiB7CiAgICAgICAgICAgIGluY2x1ZGUgKgogICAgICAgIH0KCiAgICAgICAgY29udGFpbmVyIHNzICJBcmNoaXRlY3R1cmUiIHsKICAgICAgICAgICAgaW5jbHVkZSAqCiAgICAgICAgfQoKICAgICAgICBzdHlsZXMgewogICAgICAgICAgICBlbGVtZW50ICJFbGVtZW50IiB7CiAgICAgICAgICAgICAgICAvL2NvbG9yICMyYjJiMmIKICAgICAgICAgICAgICAgIC8vc3Ryb2tlICMyYjJiMmIKICAgICAgICAgICAgICAgIGNvbG9yICMwNzczYWYKICAgICAgICAgICAgICAgIHN0cm9rZSAjMDc3M2FmCiAgICAgICAgICAgICAgICBzdHJva2VXaWR0aCA1CiAgICAgICAgICAgICAgICBzaGFwZSByb3VuZGVkYm94CiAgICAgICAgICAgIH0KICAgICAgICAgICAgZWxlbWVudCAiUGVyc29uIiB7CiAgICAgICAgICAgICAgICBjb2xvciAjNTVhYTU1CiAgICAgICAgICAgICAgICBzdHJva2UgIzU1YWE1NQogICAgICAgICAgICAgICAgc2hhcGUgcGVyc29uCiAgICAgICAgICAgIH0KICAgICAgICAgICAgZWxlbWVudCAiTExNU2VydmljZSIgewogICAgICAgICAgICAgICAgY29sb3IgI2Y4ODcyOAogICAgICAgICAgICAgICAgc3Ryb2tlICNmODg3MjgKICAgICAgICAgICAgfQogICAgICAgICAgICBlbGVtZW50ICJGRSIgewogICAgICAgICAgICAgICAgc2hhcGUgV2ViQnJvd3NlcgogICAgICAgICAgICB9CiAgICAgICAgICAgIGVsZW1lbnQgIkJFIiB7CiAgICAgICAgICAgICAgICBzaGFwZSBTaGVsbAogICAgICAgICAgICB9CiAgICAgICAgICAgIGVsZW1lbnQgIkRhdGFiYXNlIiB7CiAgICAgICAgICAgICAgICBzaGFwZSBjeWxpbmRlcgogICAgICAgICAgICB9CiAgICAgICAgICAgIGVsZW1lbnQgIkRpcmVjdG9yeSIgewogICAgICAgICAgICAgICAgc2hhcGUgRm9sZGVyCiAgICAgICAgICAgIH0KICAgICAgICAgICAgZWxlbWVudCAiQm91bmRhcnkiIHsKICAgICAgICAgICAgICAgIHN0cm9rZVdpZHRoIDUKICAgICAgICAgICAgfQogICAgICAgICAgICByZWxhdGlvbnNoaXAgIlJlbGF0aW9uc2hpcCIgewogICAgICAgICAgICAgICAgdGhpY2tuZXNzIDQKICAgICAgICAgICAgfQogICAgICAgIH0KICAgIH0KCiAgICBjb25maWd1cmF0aW9uIHsKICAgICAgICBzY29wZSBzb2Z0d2FyZXN5c3RlbQogICAgfQoKfQ==",
+    "structurizr.inspection.info" : "0",
+    "structurizr.inspection.ignore" : "0",
+    "structurizr.inspection.warning" : "0"
+  },
+  "views" : {
+    "configuration" : {
+      "lastSavedView" : "SystemContext",
+      "styles" : {
+        "elements" : [ {
+          "shape" : "Shell",
+          "tag" : "BE"
+        }, {
+          "strokeWidth" : 5,
+          "tag" : "Boundary"
+        }, {
+          "shape" : "Cylinder",
+          "tag" : "Database"
+        }, {
+          "shape" : "Folder",
+          "tag" : "Directory"
+        }, {
+          "color" : "#0773af",
+          "shape" : "RoundedBox",
+          "stroke" : "#0773af",
+          "strokeWidth" : 5,
+          "tag" : "Element"
+        }, {
+          "shape" : "WebBrowser",
+          "tag" : "FE"
+        }, {
+          "color" : "#f88728",
+          "stroke" : "#f88728",
+          "tag" : "LLMService"
+        }, {
+          "color" : "#55aa55",
+          "shape" : "Person",
+          "stroke" : "#55aa55",
+          "tag" : "Person"
+        } ],
+        "relationships" : [ {
+          "tag" : "Relationship",
+          "thickness" : 4
+        } ]
+      },
+      "terminology" : { }
+    },
+    "containerViews" : [ {
+      "dimensions" : {
+        "height" : 2109,
+        "width" : 1895
+      },
+      "elements" : [ {
+        "id" : "1",
+        "x" : 625,
+        "y" : -30
+      }, {
+        "id" : "2",
+        "x" : 1275,
+        "y" : 125
+      }, {
+        "id" : "4",
+        "x" : 604,
+        "y" : 631
+      }, {
+        "id" : "5",
+        "x" : 610,
+        "y" : 1112
+      }, {
+        "id" : "6",
+        "x" : 285,
+        "y" : 1550
+      }, {
+        "id" : "7",
+        "x" : 980,
+        "y" : 1560
+      } ],
+      "externalSoftwareSystemBoundariesVisible" : false,
+      "key" : "Architecture",
+      "name" : "Container View: Document-Based Process Modeler",
+      "order" : 2,
+      "relationships" : [ {
+        "id" : "10"
+      }, {
+        "id" : "12"
+      }, {
+        "id" : "13"
+      }, {
+        "id" : "14"
+      }, {
+        "id" : "8"
+      } ],
+      "softwareSystemId" : "3"
+    } ],
+    "systemContextViews" : [ {
+      "dimensions" : {
+        "height" : 1300,
+        "width" : 2880
+      },
+      "elements" : [ {
+        "id" : "1",
+        "x" : 840,
+        "y" : 165
+      }, {
+        "id" : "2",
+        "x" : 1505,
+        "y" : 730
+      }, {
+        "id" : "3",
+        "x" : 820,
+        "y" : 735
+      } ],
+      "enterpriseBoundaryVisible" : true,
+      "key" : "SystemContext",
+      "name" : "System Context View: Document-Based Process Modeler",
+      "order" : 1,
+      "relationships" : [ {
+        "id" : "11"
+      }, {
+        "id" : "9"
+      } ],
+      "softwareSystemId" : "3"
+    } ]
+  }
+}
