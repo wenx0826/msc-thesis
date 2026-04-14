@@ -69,12 +69,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "07_Conclusion/v0,9.md",
+                "file": "03_Solution Design/Untitled.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "v0,9"
+              "title": "Untitled"
             }
           },
           {
@@ -254,13 +254,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "07_Conclusion/v0,9.md",
+                "file": "03_Solution Design/Untitled.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of v0,9"
+              "title": "Outline of Untitled"
             }
           },
           {
@@ -297,22 +297,29 @@
   },
   "active": "e91cee0ea264b2f1",
   "lastOpenFiles": [
+    "Thesis_DocBasedPM_XinWen/pdflatex28016.fls",
+    "Thesis_DocBasedPM_XinWen/pdflatex28003.fls",
     "Thesis_DocBasedPM_XinWen/main.synctex(busy)",
-    "Thesis_DocBasedPM_XinWen/pdflatex24444.fls",
-    "Thesis_DocBasedPM_XinWen/pdflatex24136.fls",
-    "Thesis_DocBasedPM_XinWen/pdflatex24082.fls",
-    "Thesis_DocBasedPM_XinWen/pdflatex23981.fls",
-    "Thesis_DocBasedPM_XinWen/pdflatex23848.fls",
-    "Thesis_DocBasedPM_XinWen/pdflatex23823.fls",
-    "Thesis_DocBasedPM_XinWen/pdflatex23761.fls",
-    "Thesis_DocBasedPM_XinWen/pdflatex23633.fls",
-    "Thesis_DocBasedPM_XinWen/pdflatex23606.fls",
-    "Thesis_DocBasedPM_XinWen/pdflatex23579.fls",
-    "Untitled 3.md",
-    "07_Conclusion/v0,9.md",
-    "07_Conclusion/v0.2.md",
+    "Thesis_DocBasedPM_XinWen/pdflatex27987.fls",
+    "Thesis_DocBasedPM_XinWen/pdflatex27748.fls",
+    "Thesis_DocBasedPM_XinWen/pdflatex27733.fls",
+    "Thesis_DocBasedPM_XinWen/pdflatex27715.fls",
+    "Thesis_DocBasedPM_XinWen/pdflatex27459.fls",
+    "Thesis_DocBasedPM_XinWen/pdflatex27449.fls",
+    "Thesis_DocBasedPM_XinWen/pdflatex27431.fls",
+    "Thesis_DocBasedPM_XinWen/pdflatex25969.fls",
+    "03_Solution Design/Model Management.md",
+    "03_Solution Design/Graph.md",
     "03_Solution Design/Data Model - v0.md",
     "03_Solution Design/Data.md",
+    "03_Solution Design/01 Design Objectives.md",
+    "03_Solution Design/0_v0.md",
+    "03_Solution Design/0_System Overview.md",
+    "02_Related work/v0.md",
+    "02_Related work/AI.md",
+    "07_Conclusion/v0,9.md",
+    "Untitled 3.md",
+    "07_Conclusion/v0.2.md",
     "04_Implementation/Untitled.md",
     "04_Implementation/Frontend.md",
     "05_Evaluation/0_Responses (Original).md",
@@ -321,9 +328,7 @@
     "05_Evaluation/v1.1.md",
     "05_Evaluation/v1.md",
     "05_Evaluation/v0.9.md",
-    "02_Related work/AI.md",
     "Untitled 2.md",
-    "02_Related work/v0.md",
     "06_Discussion/v0.9.0.md",
     "07_Conclusion/v0.md",
     "References/References.md",
@@ -334,11 +339,6 @@
     "Thesis/images/Screenshot 2026-04-11 at 17.10.17.png",
     "Thesis/images/Screenshot 2026-04-11 at 16.52.00.png",
     "SystemModels/data_v2.md",
-    "SystemModels/Untitled 1.md",
-    "libraries X to HTML.md",
-    "SystemModels/C4-Architecture/architecture_v1.md",
-    "SystemModels/fe_v0.md",
-    "SystemModels/data_v1.md",
     "Subprocess.svg",
     "Mock-up/mock-up1.jpg",
     "Mock-up/sketch.jpg",

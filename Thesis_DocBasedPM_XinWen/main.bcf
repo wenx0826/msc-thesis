@@ -2373,30 +2373,31 @@
     <bcf:datasource type="file" datatype="bibtex" glob="false">literature.bib</bcf:datasource>
   </bcf:bibdata>
   <bcf:section number="0">
-    <bcf:citekey order="1" intorder="1">hevner2007</bcf:citekey>
-    <bcf:citekey order="2" intorder="1">kourani2024promoai</bcf:citekey>
-    <bcf:citekey order="3" intorder="1">kopke2024introducing</bcf:citekey>
-    <bcf:citekey order="4" intorder="1">licardo2026bpmn</bcf:citekey>
-    <bcf:citekey order="5" intorder="1">kopke2024efficient</bcf:citekey>
-    <bcf:citekey order="6" intorder="1">licardo2026bpmn</bcf:citekey>
+    <bcf:citekey order="1" intorder="1">klievtsova2024process</bcf:citekey>
+    <bcf:citekey order="2" intorder="1">hevner2007</bcf:citekey>
+    <bcf:citekey order="3" intorder="1">kourani2024promoai</bcf:citekey>
+    <bcf:citekey order="4" intorder="1">kopke2024introducing</bcf:citekey>
+    <bcf:citekey order="5" intorder="1">licardo2026bpmn</bcf:citekey>
+    <bcf:citekey order="6" intorder="1">kopke2024efficient</bcf:citekey>
     <bcf:citekey order="7" intorder="1">licardo2026bpmn</bcf:citekey>
-    <bcf:citekey order="8" intorder="1">lauer2026human</bcf:citekey>
-    <bcf:citekey order="9" intorder="1">pardo2025direct</bcf:citekey>
-    <bcf:citekey order="10" intorder="1">horner2025towards</bcf:citekey>
-    <bcf:citekey order="11" intorder="1">horner2026automatically</bcf:citekey>
-    <bcf:citekey order="12" intorder="1">ziche2024llm4pm</bcf:citekey>
-    <bcf:citekey order="13" intorder="1">klievtsova2025autobpmn</bcf:citekey>
-    <bcf:citekey order="14" intorder="1">safan2025bpmn</bcf:citekey>
-    <bcf:citekey order="15" intorder="1">costa2025llm4bpmngen</bcf:citekey>
-    <bcf:citekey order="16" intorder="1">nour2024nala2bpmn</bcf:citekey>
-    <bcf:citekey order="17" intorder="1">safan2025bpmn</bcf:citekey>
-    <bcf:citekey order="18" intorder="1">safan2025framework</bcf:citekey>
-    <bcf:citekey order="19" intorder="1">costa2025llm4bpmngen</bcf:citekey>
-    <bcf:citekey order="20" intorder="1">nour2024nala2bpmn</bcf:citekey>
-    <bcf:citekey order="21" intorder="1">klievtsova2025autobpmn</bcf:citekey>
-    <bcf:citekey order="22" intorder="1">functional_requirement_wiki</bcf:citekey>
-    <bcf:citekey order="23" intorder="1">randall1988service</bcf:citekey>
-    <bcf:citekey order="24" intorder="1">w3c_annotation_model</bcf:citekey>
+    <bcf:citekey order="8" intorder="1">licardo2026bpmn</bcf:citekey>
+    <bcf:citekey order="9" intorder="1">lauer2026human</bcf:citekey>
+    <bcf:citekey order="10" intorder="1">pardo2025direct</bcf:citekey>
+    <bcf:citekey order="11" intorder="1">horner2025towards</bcf:citekey>
+    <bcf:citekey order="12" intorder="1">horner2026automatically</bcf:citekey>
+    <bcf:citekey order="13" intorder="1">ziche2024llm4pm</bcf:citekey>
+    <bcf:citekey order="14" intorder="1">klievtsova2025autobpmn</bcf:citekey>
+    <bcf:citekey order="15" intorder="1">safan2025bpmn</bcf:citekey>
+    <bcf:citekey order="16" intorder="1">costa2025llm4bpmngen</bcf:citekey>
+    <bcf:citekey order="17" intorder="1">nour2024nala2bpmn</bcf:citekey>
+    <bcf:citekey order="18" intorder="1">safan2025bpmn</bcf:citekey>
+    <bcf:citekey order="19" intorder="1">safan2025framework</bcf:citekey>
+    <bcf:citekey order="20" intorder="1">costa2025llm4bpmngen</bcf:citekey>
+    <bcf:citekey order="21" intorder="1">nour2024nala2bpmn</bcf:citekey>
+    <bcf:citekey order="22" intorder="1">klievtsova2025autobpmn</bcf:citekey>
+    <bcf:citekey order="23" intorder="1">functional_requirement_wiki</bcf:citekey>
+    <bcf:citekey order="24" intorder="1">randall1988service</bcf:citekey>
+    <bcf:citekey order="25" intorder="1">w3c_annotation_model</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="none">
