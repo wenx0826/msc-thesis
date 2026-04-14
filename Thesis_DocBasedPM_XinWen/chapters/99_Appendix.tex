@@ -1,1 +1,22 @@
 \chapter{Appendix}
+
+
+\begin{itemize}
+    \item \textit{Upload Documents.} The user uploads multiple documents in textual format, e.g., TXT, DOCX, PDF.
+    \item \textit{Select Text Passages.} The user selects multiple passages from one uploaded document, then clicks the Generate button to .
+    
+\end{itemize}
+
+It shall allow users to select multiple passages from one document to serve as input for LLM-based process model auto-generation. \\
+It shall provide a clear visual link between the text and the generated model.\\
+It shall embed the source text within the generated process model for traceability purposes.\\
+It shall allow users to establish process-subprocess relationships between models.\\
+It shall record user behavior and interactions with the system for analysis purposes.\\
+One additional requirement is that the system shall be able to support document update.
+\subsection{Design Constraints}
+\begin{itemize}
+    \item It shall be implemented as a web-based application.\\
+    \item The frontend shall be developed using native web technologies (JavaScript, HTML, and CSS).\\
+    \item \textit{Process Model Visualization.} The visualization of the process model shall be implemented using the CPEE Layout\footnote{\url{https://github.com/etm/cpee-layout}} library.\\
+    \item \textit{LLM Service Integrati.} The LLM-backed process model generation shall be implemented using the API from AutoBPMN.AI.\\
+\end{itemize}

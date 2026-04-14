@@ -565,6 +565,65 @@
       \field{volume}{4099}
       \field{year}{2025}
     \endentry
+    \entry{functional_requirement_wiki}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=b6aea1a416c89509a7df1cbb69249cb6}{%
+           family={{Wikipedia contributors}},
+           familyi={W\bibinitperiod}}}%
+      }
+      \strng{namehash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{fullhash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{fullhashraw}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{bibnamehash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{authorbibnamehash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{authornamehash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{authorfullhash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{authorfullhashraw}{b6aea1a416c89509a7df1cbb69249cb6}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{[Online; accessed 14-April-2026]}
+      \field{title}{{Functional requirement}}
+      \field{year}{2026}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/Functional_requirement
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/Functional_requirement
+      \endverb
+    \endentry
+    \entry{randall1988service}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=e5afaf13fe7d5446c067e3a6904a77de}{%
+           family={Randall\bibnamedelima Brandt},
+           familyi={R\bibinitperiod\bibinitdelim B\bibinitperiod},
+           given={D},
+           giveni={D\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {MCB UP Ltd}%
+      }
+      \strng{namehash}{e5afaf13fe7d5446c067e3a6904a77de}
+      \strng{fullhash}{e5afaf13fe7d5446c067e3a6904a77de}
+      \strng{fullhashraw}{e5afaf13fe7d5446c067e3a6904a77de}
+      \strng{bibnamehash}{e5afaf13fe7d5446c067e3a6904a77de}
+      \strng{authorbibnamehash}{e5afaf13fe7d5446c067e3a6904a77de}
+      \strng{authornamehash}{e5afaf13fe7d5446c067e3a6904a77de}
+      \strng{authorfullhash}{e5afaf13fe7d5446c067e3a6904a77de}
+      \strng{authorfullhashraw}{e5afaf13fe7d5446c067e3a6904a77de}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Services Marketing}
+      \field{number}{3}
+      \field{title}{How service marketers can identify value-enhancing service elements}
+      \field{volume}{2}
+      \field{year}{1988}
+      \field{pages}{35\bibrangedash 41}
+      \range{pages}{7}
+    \endentry
     \entry{w3c_annotation_model}{report}{}{}
       \name{author}{1}{}{%
         {{hash=446a1ae6601a5c59360c7d591c3992da}{%
@@ -582,8 +641,8 @@
       \strng{authornamehash}{446a1ae6601a5c59360c7d591c3992da}
       \strng{authorfullhash}{446a1ae6601a5c59360c7d591c3992da}
       \strng{authorfullhashraw}{446a1ae6601a5c59360c7d591c3992da}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{note}{Accessed: 2026-04-05}

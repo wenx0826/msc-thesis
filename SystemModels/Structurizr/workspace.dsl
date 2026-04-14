@@ -9,7 +9,7 @@ workspace "Name" "Description" {
         llm = softwareSystem "AutoBPMN.AI\nLLM Service" "Provides LLM REST service for process model creation and redesign" "HTTPS API" {
             tags "LLMService" 
         }
-        ss = softwareSystem "Document-Based Process Modeler" "Supports the modeling process from document upload to model creation, refinement and management" {
+        ss = softwareSystem "Document-Based Process Modeler" "Supports the modeling process from document upload to model creation, modification and management" {
             fe = container "Frontend" {
                 technology "Static HTML + ES modules"
                 tags "FE"

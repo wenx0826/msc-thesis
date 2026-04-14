@@ -5,12 +5,26 @@ This chapter discusses the evaluation's findings and reflects on their implicati
 
 \section{Usability and User Experience}
 
-Regarding the usability issues. While some features can be mitigated by design, some are hard. As this tool eliciate a new way of process modeling, it requires a fam to let user get used to the new way of modeling.
+Among these usability issues, some can be mitigated and improved through design, while others are more challenging to be improved for the system. 
+
+The first finding is that document readability is key to the tool's design, as it aims to enable users to start using it by reading. If a user doesn't have a good reading experience, turns to reading the document in their familiar way, and then finds the same text position within the tool, it will significantly affect the tool's designed usage scenario and reduce efficiency.
+
+For the interaction design, some of the improvement ideas have been made up; e.g., to avoid the unnecessary review step, we can easily offer a project settings feature. And for the transparent AI input or system logic, it can be improved by showing instructions, e.g., using a switch button to give the user more flexible control over the AI input. In contrast, as this tool introduces a new way of process modelling involving multiple documents and multiple models, e.g., deselecting the deselect current model to start a new model step, is quite representative, without coming up with a good solution, therefore, it requires users to be familiar with the new interaction and workflow, which raises the challenge for the system.
 
 \section {User Expectations}
-1. Document  - 
+During the evaluation, participants raised more advanced expectations, which are out of the current system's scope, but are worth further discussion.
 
-2. Modeling The User show more expectation than, although as we are aming to keep a transparent traceability between . User show higher expectation than the normal tool according to the feedback. If we want the . For a such tool, if the desgin goal is to let them 
+Firstly, the expected fine-grained traceability between text and model represents an advanced requirement that goes beyond the capabilities of current LLM-based process modelling tools. However, it is a particularly important feature in the context of document-based process modelling, as 
+the system is designed to facilitate a easier verification for the traceability of the AI-generated model. Therefore, exploring approaches to enable fine-grained traceability can be considered a valuable direction for future work.
+
+Secondly, the expectation of integrated AI-powered document intelligence is another advanced requirement that has not yet been included in the current system. However, it represents a promising and valuable direction for future development, as such capabilities could further enhance the system’s efficiency and perceived usefulness. In particular, enabling intelligent document understanding, contextual retrieval, and semantic linking between textual content and modelling elements could significantly streamline the modelling workflow and improve the overall user experience.
 
 \section {Limitations}
-The materail we used in the evaluation is   Although, there is a real world document. The participants are not using their own documents to solve a real task from their own work area. Besides, the 
+Due to the small sample size (n=4), all of whom are modelling experts, the study did not include the perspective of domain experts. Besides, although the material provided is a real-world SOP document, it is a really well-written one with appropriate structure and not too long, 5 pages. So the document readability issue could affect the tool's usability more.
+
+Besides, the evaluation didn't mention it as a limitation that the system is currently designed so that a model can be generated from a single document, without enabling cross-document modeling, which may require a more complex user interaction design.
+
+
+
+
+

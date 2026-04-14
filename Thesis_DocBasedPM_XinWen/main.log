@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.8.1)  14 APR 2026 01:19
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.8.1)  14 APR 2026 17:10
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1526,9 +1526,6 @@ LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
 
 LaTeX Warning: Label `tab:lr' multiply defined.
 
-
-LaTeX Warning: Label `sec:solution:req' multiply defined.
-
 )
 \openout1 = `main.aux'.
 
@@ -1667,7 +1664,7 @@ LaTeX Font Info:    Font shape `T1/phv/m/n' will be
 (Font)              scaled to size 16.41594pt on input line 19.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
 (Font)              scaled to size 16.41594pt on input line 19.
-<tum-resources/images/TUM_Uhrenturm.png, id=233, 307.3884pt x 408.5664pt>
+<tum-resources/images/TUM_Uhrenturm.png, id=187, 307.3884pt x 408.5664pt>
 File: tum-resources/images/TUM_Uhrenturm.png Graphic file (type png)
 <use tum-resources/images/TUM_Uhrenturm.png>
 Package pdftex.def Info: tum-resources/images/TUM_Uhrenturm.png  used on input line 19.
@@ -1679,7 +1676,7 @@ LaTeX Font Info:    Font shape `T1/phv/m/n' will be
 
 Overfull \vbox (27.90738pt too high) has occurred while \output is active []
 
-<tum-resources/images/Universitaet_Logo_RGB.pdf, id=235, 54.02504pt x 28.452pt>
+<tum-resources/images/Universitaet_Logo_RGB.pdf, id=189, 54.02504pt x 28.452pt>
 File: tum-resources/images/Universitaet_Logo_RGB.pdf Graphic file (type pdf)
 <use tum-resources/images/Universitaet_Logo_RGB.pdf>
 Package pdftex.def Info: tum-resources/images/Universitaet_Logo_RGB.pdf  used on input line 19.
@@ -1808,9 +1805,9 @@ LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
 LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
 (Font)              scaled to size 17.28pt on input line 1.
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/it' will be
-(Font)              scaled to size 10.0pt on input line 13.
+(Font)              scaled to size 10.0pt on input line 5.
 LaTeX Font Info:    Font shape `T1/ntxtlf/b/it' will be
-(Font)              scaled to size 10.0pt on input line 13.
+(Font)              scaled to size 10.0pt on input line 5.
 )
 
 [3] (./main.toc
@@ -1893,12 +1890,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
-[4]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-
-[5])
+[4])
 \tf@toc=\write7
 \openout7 = `main.toc'.
 
@@ -1906,7 +1898,9 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 \tf@lot=\write8
 \openout8 = `main.lot'.
 
- (./main.lof)
+ (./main.lof
+
+[5])
 \tf@lof=\write9
 \openout9 = `main.lof'.
 
@@ -1914,9 +1908,6 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 [6] (./chapters/01_Introduction.tex
 Chapter 1.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
 
 
 [7]
@@ -1926,444 +1917,150 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 [8]) (./chapters/02_Related_Work.tex
 Chapter 2.
+LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
+(Font)              scaled to size 9.0pt on input line 21.
+LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
+(Font)              scaled to size 9.0pt on input line 21.
+LaTeX Font Info:    Font shape `T1/ntxtlf/m/it' will be
+(Font)              scaled to size 9.0pt on input line 21.
+LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
+(Font)              scaled to size 8.0pt on input line 22.
 
 
 [9]
-LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
-(Font)              scaled to size 9.0pt on input line 15.
-LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
-(Font)              scaled to size 9.0pt on input line 15.
-LaTeX Font Info:    Font shape `T1/ntxtlf/m/it' will be
-(Font)              scaled to size 9.0pt on input line 15.
-LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
-(Font)              scaled to size 8.0pt on input line 16.
-
-Underfull \vbox (badness 4634) has occurred while \output is active []
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
 [10]
-Underfull \hbox (badness 10000) in paragraph at lines 75--76
-[]|\T1/ntxtlf/m/n/10 Natural lan-
+Underfull \hbox (badness 10000) in paragraph at lines 85--86
+[]|\T1/ntxtlf/m/n/10 Conversational mod-el-ing
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 75--76
-\T1/ntxtlf/m/n/10 guage text
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 75--76
-\T1/ntxtlf/m/n/10 + it-er-a-tive
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 76--77
-[]|\T1/ntxtlf/m/n/10 BPMN /
- []
-
-
-Underfull \hbox (badness 1533) in paragraph at lines 77--78
-[]|\T1/ntxtlf/m/n/10 Generates pro-cess mod-els
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 81--81
-[]|\T1/ntxtlf/m/n/10 BPMN-Chatbot
- []
-
-
-Underfull \hbox (badness 1360) in paragraph at lines 82--83
-\T1/ntxtlf/m/n/10 ac-tive re-fine-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 84--85
-[]|\T1/ntxtlf/m/n/10 Conversational web-based
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 84--85
-\T1/ntxtlf/m/n/10 tool with strong to-ken
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 89--90
-[]|\T1/ntxtlf/m/n/10 Natural lan-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 96--97
-[]|\T1/ntxtlf/m/n/10 Natural lan-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 96--97
-\T1/ntxtlf/m/n/10 guage +
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 96--97
-\T1/ntxtlf/m/n/10 en-ter-prise
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 96--97
-\T1/ntxtlf/m/n/10 doc-u-ments
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 98--99
-[]|\T1/ntxtlf/m/n/10 Enterprise-oriented tool
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 98--99
-\T1/ntxtlf/m/n/10 lever-ag-ing retrieval-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 98--99
-\T1/ntxtlf/m/n/10 augmented gen-er-a-tion
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 101--101
-[]|\T1/ntxtlf/m/n/10 LLM4BPMNGen
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 102--103
-[]|\T1/ntxtlf/m/n/10 Text, au-dio
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 102--103
-\T1/ntxtlf/m/n/10 up-load, or
- []
-
-
-Underfull \hbox (badness 2027) in paragraph at lines 104--105
-[]|\T1/ntxtlf/m/n/10 Multimodal in-put sup-port
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 107--107
+Underfull \hbox (badness 10000) in paragraph at lines 102--102
 []|\T1/ntxtlf/m/n/10 BPMN-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 107--107
-\T1/ntxtlf/m/n/10 Chatbot++
+Underfull \hbox (badness 1533) in paragraph at lines 110--111
+[]|\T1/ntxtlf/m/n/10 Executable model gen-er-a-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 108--109
-[]|\T1/ntxtlf/m/n/10 Text/voice
+Underfull \hbox (badness 10000) in paragraph at lines 125--126
+[]|\T1/ntxtlf/m/n/10 JSON-based in-ter-me-di-ate
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 108--109
-\T1/ntxtlf/m/n/10 (en-hanced
+Underfull \hbox (badness 2401) in paragraph at lines 130--131
+[]|\T1/ntxtlf/m/n/10 Human-in-the-loop mod-el-
  []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 110--111
-[]|\T1/ntxtlf/m/n/10 Extension of BPMN-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 110--111
-\T1/ntxtlf/m/n/10 Chatbot with im-proved
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 110--111
-\T1/ntxtlf/m/n/10 prompt-ing, in-ter-ac-tion
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 110--111
-\T1/ntxtlf/m/n/10 qual-ity, and mod-el-ing
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 110--111
-\T1/ntxtlf/m/n/10 per-for-mance (fo-cus on
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 114--114
-[]|\T1/ntxtlf/m/n/10 AutoBPMN.AI
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 115--116
-[]|\T1/ntxtlf/m/n/10 Natural lan-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 122--123
-[]|\T1/ntxtlf/m/n/10 Natural lan-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 122--123
-\T1/ntxtlf/m/n/10 ma-nip-u-la-tion
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 122--123
-\T1/ntxtlf/m/n/10 (UI in-ter-ac-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 123--124
-[]|\T1/ntxtlf/m/n/10 BPMN di-a-
- []
-
-
-Underfull \hbox (badness 4084) in paragraph at lines 124--125
-\T1/ntxtlf/m/n/10 selection-based in-ter-ac-tion
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 128--128
-[]|\T1/ntxtlf/m/n/10 BPMNGen [[][][]8[][]],
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 129--130
-[]|\T1/ntxtlf/m/n/10 Natural
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 129--130
-\T1/ntxtlf/m/n/10 lan-guage
- []
-
-
-Underfull \hbox (badness 4144) in paragraph at lines 129--130
-\T1/ntxtlf/m/n/10 text + con-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 129--130
-\T1/ntxtlf/m/n/10 ver-sa-tional
- []
-
-
-Underfull \hbox (badness 3323) in paragraph at lines 131--132
-[]|\T1/ntxtlf/m/n/10 LLM-based con-ver-sa-tional
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 136--137
-[]|\T1/ntxtlf/m/n/10 Natural lan-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 136--137
-\T1/ntxtlf/m/n/10 guage text
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 136--137
-\T1/ntxtlf/m/n/10 (edit-ing +
- []
-
-
-Underfull \hbox (badness 1112) in paragraph at lines 138--139
-\T1/ntxtlf/m/n/10 in-ter-me-di-ate rep-re-sen-ta-tion
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 142--143
-[]|\T1/ntxtlf/m/n/10 Natural
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 142--143
-\T1/ntxtlf/m/n/10 lan-guage
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 142--143
-\T1/ntxtlf/m/n/10 + human-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 142--143
-\T1/ntxtlf/m/n/10 in-the-loop
- []
-
-
-LaTeX Warning: Float too large for page by 103.40572pt on input line 149.
 
 
 
 [11]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
 
 [12]) (./chapters/03_Solution_Design.tex
 Chapter 3.
 
 Package hyperref Warning: The anchor of a bookmark and its parent's must not
-(hyperref)                be the same. Added a new anchor on input line 5.
+(hyperref)                be the same. Added a new anchor on input line 6.
 
-<images/sol_context.png, id=471, 272.9397pt x 212.9556pt>
+<images/sol_context.png, id=400, 272.9397pt x 212.9556pt>
 File: images/sol_context.png Graphic file (type png)
 <use images/sol_context.png>
 Package pdftex.def Info: images/sol_context.png  used on input line 11.
 (pdftex.def)             Requested size: 316.12317pt x 246.64847pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-
-[13
-
-]
-<images/sol_workspace_interaction_usage_model.png, id=477, 363.0363pt x 202.1151pt>
+<images/sol_workspace_interaction_usage_model.png, id=404, 363.0363pt x 202.1151pt>
 File: images/sol_workspace_interaction_usage_model.png Graphic file (type png)
 <use images/sol_workspace_interaction_usage_model.png>
-Package pdftex.def Info: images/sol_workspace_interaction_usage_model.png  used on input line 21.
-(pdftex.def)             Requested size: 316.12317pt x 175.99599pt.
+Package pdftex.def Info: images/sol_workspace_interaction_usage_model.png  used on input line 22.
+(pdftex.def)             Requested size: 395.15247pt x 219.99576pt.
 
 
-Package hyperref Warning: The anchor of a bookmark and its parent's must not
-(hyperref)                be the same. Added a new anchor on input line 30.
-
-
-
-[14 <./images/sol_context.png> <./images/sol_workspace_interaction_usage_model.png>]
-LaTeX Font Info:    Trying to load font information for TS1+ntxtlf on input line 47.
- (/usr/local/texlive/2025/texmf-dist/tex/latex/newtx/ts1ntxtlf.fd
-File: ts1ntxtlf.fd 2015/01/18 v1.0 fd file for TS1/ntxtlf
-)
-LaTeX Font Info:    Font shape `TS1/ntxtlf/m/n' will be
-(Font)              scaled to size 10.0pt on input line 47.
-
-Underfull \hbox (badness 10000) in paragraph at lines 55--56
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 56--57
-
- []
-
+[13]
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
-(Font)              scaled to size 7.3pt on input line 57.
+(Font)              scaled to size 7.3pt on input line 26.
 LaTeX Font Info:    Font shape `OT1/minntx/m/n' will be
-(Font)              scaled to size 8.0pt on input line 57.
+(Font)              scaled to size 8.0pt on input line 26.
 LaTeX Font Info:    Font shape `OT1/minntx/m/n' will be
-(Font)              scaled to size 6.0pt on input line 57.
+(Font)              scaled to size 6.0pt on input line 26.
 LaTeX Font Info:    Font shape `OML/ntxmi/m/it' will be
-(Font)              scaled to size 8.0pt on input line 57.
+(Font)              scaled to size 8.0pt on input line 26.
 LaTeX Font Info:    Font shape `OML/ntxmi/m/it' will be
-(Font)              scaled to size 6.0pt on input line 57.
+(Font)              scaled to size 6.0pt on input line 26.
 LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
-(Font)              scaled to size 8.0pt on input line 57.
+(Font)              scaled to size 8.0pt on input line 26.
 LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
-(Font)              scaled to size 6.0pt on input line 57.
+(Font)              scaled to size 6.0pt on input line 26.
 LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
-(Font)              scaled to size 8.0pt on input line 57.
+(Font)              scaled to size 8.0pt on input line 26.
 LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
-(Font)              scaled to size 6.0pt on input line 57.
+(Font)              scaled to size 6.0pt on input line 26.
 LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
-(Font)              scaled to size 8.0pt on input line 57.
+(Font)              scaled to size 8.0pt on input line 26.
 LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
-(Font)              scaled to size 6.0pt on input line 57.
+(Font)              scaled to size 6.0pt on input line 26.
 LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
-(Font)              scaled to size 8.0pt on input line 57.
+(Font)              scaled to size 8.0pt on input line 26.
 LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
-(Font)              scaled to size 6.0pt on input line 57.
+(Font)              scaled to size 6.0pt on input line 26.
 LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
-(Font)              scaled to size 8.0pt on input line 57.
+(Font)              scaled to size 8.0pt on input line 26.
 LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
-(Font)              scaled to size 6.0pt on input line 57.
+(Font)              scaled to size 6.0pt on input line 26.
 LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
-(Font)              scaled to size 8.0pt on input line 57.
+(Font)              scaled to size 8.0pt on input line 26.
 LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
-(Font)              scaled to size 6.0pt on input line 57.
+(Font)              scaled to size 6.0pt on input line 26.
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
-(Font)              scaled to size 6.0pt on input line 57.
-LaTeX Font Info:    Trying to load font information for T1+pcr on input line 57.
-(/usr/local/texlive/2025/texmf-dist/tex/latex/psnfss/t1pcr.fd
+(Font)              scaled to size 6.0pt on input line 26.
+LaTeX Font Info:    Trying to load font information for T1+pcr on input line 26.
+ (/usr/local/texlive/2025/texmf-dist/tex/latex/psnfss/t1pcr.fd
 File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
 )
-Underfull \hbox (badness 10000) in paragraph at lines 57--58
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 58--59
-
- []
+<images/sol_data_model.png, id=413, 679.53876pt x 501.875pt>
+File: images/sol_data_model.png Graphic file (type png)
+<use images/sol_data_model.png>
+Package pdftex.def Info: images/sol_data_model.png  used on input line 31.
+(pdftex.def)             Requested size: 355.6348pt x 262.6536pt.
 
 
-
-[15{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/tex-gyre/q-ts1.enc}]
-Underfull \hbox (badness 10000) in paragraph at lines 64--69
-
- []
-
-
-Package hyperref Warning: The anchor of a bookmark and its parent's must not
-(hyperref)                be the same. Added a new anchor on input line 72.
-
-<images/mock-up1.jpg, id=494, 842.14626pt x 548.0475pt>
-File: images/mock-up1.jpg Graphic file (type jpg)
-<use images/mock-up1.jpg>
-Package pdftex.def Info: images/mock-up1.jpg  used on input line 81.
-(pdftex.def)             Requested size: 316.12317pt x 205.72636pt.
-
+[14 <./images/sol_context.png>]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
-[16]
-Underfull \hbox (badness 10000) in paragraph at lines 86--88
+[15 <./images/sol_workspace_interaction_usage_model.png> <./images/sol_data_model.png>]
+<images/mock-up1.jpg, id=428, 842.14626pt x 548.0475pt>
+File: images/mock-up1.jpg Graphic file (type jpg)
+<use images/mock-up1.jpg>
+Package pdftex.def Info: images/mock-up1.jpg  used on input line 51.
+(pdftex.def)             Requested size: 355.6348pt x 231.44112pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 56--58
 
  []
 
 
 Package hyperref Warning: The anchor of a bookmark and its parent's must not
-(hyperref)                be the same. Added a new anchor on input line 88.
+(hyperref)                be the same. Added a new anchor on input line 58.
 
-
-Package hyperref Warning: The anchor of a bookmark and its parent's must not
-(hyperref)                be the same. Added a new anchor on input line 92.
-
-
-Package hyperref Warning: The anchor of a bookmark and its parent's must not
-(hyperref)                be the same. Added a new anchor on input line 95.
-
-
-
-[17 <./images/mock-up1.jpg>]
-<images/sol_architecture.png, id=506, 562.1pt x 469.755pt>
+<images/sol_architecture.png, id=430, 562.1pt x 469.755pt>
 File: images/sol_architecture.png Graphic file (type png)
 <use images/sol_architecture.png>
-Package pdftex.def Info: images/sol_architecture.png  used on input line 126.
+Package pdftex.def Info: images/sol_architecture.png  used on input line 66.
 (pdftex.def)             Requested size: 316.12317pt x 264.18637pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
-[18]
-<images/sol_data_model.png, id=511, 679.53876pt x 501.875pt>
-File: images/sol_data_model.png Graphic file (type png)
-<use images/sol_data_model.png>
-Package pdftex.def Info: images/sol_data_model.png  used on input line 136.
-(pdftex.def)             Requested size: 355.6348pt x 262.6536pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-
-[19 <./images/sol_architecture.png>]) (./chapters/04_Implementaion.tex
+[16 <./images/mock-up1.jpg>]) (./chapters/04_Implementaion.tex
 Chapter 4.
 
 Package hyperref Warning: The anchor of a bookmark and its parent's must not
@@ -2374,12 +2071,12 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
-[20 <./images/sol_data_model.png>]
+[17 <./images/sol_architecture.png>]
 Overfull \vbox (590.69856pt too high) has occurred while \output is active []
 
 
 
-[21]
+[18]
 
 Package hyperref Warning: The anchor of a bookmark and its parent's must not
 (hyperref)                be the same. Added a new anchor on input line 140.
@@ -2389,8 +2086,8 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
-[22]
-<images/imp_backend_com.png, id=548, 275.3487pt x 252.945pt>
+[19]
+<images/imp_backend_com.png, id=469, 275.3487pt x 252.945pt>
 File: images/imp_backend_com.png Graphic file (type png)
 <use images/imp_backend_com.png>
 Package pdftex.def Info: images/imp_backend_com.png  used on input line 166.
@@ -2400,31 +2097,31 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
-[23]
+[20]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
-[24 <./images/imp_backend_com.png>]) (./chapters/05_Evaluation.tex
+[21 <./images/imp_backend_com.png>]) (./chapters/05_Evaluation.tex
 Chapter 5.
 
 
-[25]
+[22]
 
 Package hyperref Warning: The anchor of a bookmark and its parent's must not
 (hyperref)                be the same. Added a new anchor on input line 16.
 
-<images/eva_expert2_task1.png, id=580, 616.704pt x 315.8199pt>
+<images/eva_expert2_task1.png, id=499, 616.704pt x 315.8199pt>
 File: images/eva_expert2_task1.png Graphic file (type png)
 <use images/eva_expert2_task1.png>
 Package pdftex.def Info: images/eva_expert2_task1.png  used on input line 23.
 (pdftex.def)             Requested size: 395.15247pt x 202.36499pt.
-<images/eva_expert2_task2.png, id=581, 616.704pt x 315.8199pt>
+<images/eva_expert2_task2.png, id=500, 616.704pt x 315.8199pt>
 File: images/eva_expert2_task2.png Graphic file (type png)
 <use images/eva_expert2_task2.png>
 Package pdftex.def Info: images/eva_expert2_task2.png  used on input line 31.
 (pdftex.def)             Requested size: 395.15247pt x 202.36499pt.
-<images/Screenshot1.png, id=583, 262.8219pt x 278.2395pt>
+<images/Screenshot1.png, id=502, 262.8219pt x 278.2395pt>
 File: images/Screenshot1.png Graphic file (type png)
 <use images/Screenshot1.png>
 Package pdftex.def Info: images/Screenshot1.png  used on input line 40.
@@ -2434,7 +2131,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
-[26 <./images/eva_expert2_task1.png>]
+[23 <./images/eva_expert2_task1.png>]
 Overfull \vbox (9.59988pt too high) detected at line 58
  []
 
@@ -2449,7 +2146,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 81--82
  []
 
 
-Overfull \hbox (3.17424pt too wide) in paragraph at lines 52--92
+Overfull \hbox (3.17424pt too wide) in paragraph at lines 52--95
  [][] 
  []
 
@@ -2458,32 +2155,32 @@ Underfull \vbox (badness 6944) has occurred while \output is active []
 
 
 
-[27 <./images/eva_expert2_task2.png>]
+[24 <./images/eva_expert2_task2.png>]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
-[28 <./images/Screenshot1.png>]
+[25 <./images/Screenshot1.png>]
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-[29]) (./chapters/06_Discussion.tex
+
+
+[26]) (./chapters/06_Discussion.tex
 Chapter 6.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
-[30]) (./chapters/07_Conclusion.tex
+[27]
+
+[28]) (./chapters/07_Conclusion.tex
 Chapter 7.
 
 
-[31])
-Underfull \vbox (badness 10000) has occurred while \output is active []
+[29])
 
-
-
-[32]
-
-[33]
+[30]
 Overfull \hbox (18.46487pt too wide) in paragraph at lines 37--37
 \T1/ntxtlf/m/n/10 mod-el-ing copi-lot: A mixed-methods study with do-main ex-perts,^^Q \T1/ntxtlf/m/it/10 arXiv preprint arXiv:2603.12895\T1/ntxtlf/m/n/10 ,
  []
@@ -2492,13 +2189,53 @@ LaTeX Font Info:    Font shape `T1/ntxtlf/m/sc' will be
 (Font)              scaled to size 10.0pt on input line 37.
 
 
-[34{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/newtx/ntx-ec-tlf-pc.enc}]
+[31{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/newtx/ntx-ec-tlf-pc.enc}]
+Overfull \hbox (26.00441pt too wide) in paragraph at lines 37--37
+\T1/ntxtlf/m/n/10 [On-line]. Avail-able: [][]$\T1/pcr/m/n/10 https : / / en . wikipedia . org / wiki / Functional _ requirement$[][]\T1/ntxtlf/m/n/10 . 
+ []
 
-[35] (./chapters/99_Appendix.tex
+
+
+[32] (./chapters/99_Appendix.tex
 Appendix A.
+LaTeX Font Info:    Trying to load font information for TS1+ntxtlf on input line 5.
+(/usr/local/texlive/2025/texmf-dist/tex/latex/newtx/ts1ntxtlf.fd
+File: ts1ntxtlf.fd 2015/01/18 v1.0 fd file for TS1/ntxtlf
+)
+LaTeX Font Info:    Font shape `TS1/ntxtlf/m/n' will be
+(Font)              scaled to size 10.0pt on input line 5.
+
+
+Package hyperref Warning: Difference (2) between bookmark levels is greater 
+(hyperref)                than one, level fixed on input line 16.
+
+
+Package hyperref Warning: The anchor of a bookmark and its parent's must not
+(hyperref)                be the same. Added a new anchor on input line 16.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 18--19
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 19--20
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 20--21
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 21--22
+
+ []
+
 )
 
-[36] (./main.aux)
+[33{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/tex-gyre/q-ts1.enc}] (./main.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2020/03/25>
@@ -2511,19 +2248,22 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 LaTeX Warning: There were multiply-defined labels.
 
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: A8830405B819400BD1168F2D1794123B;8488.
+(rerunfilecheck)             Checksum: BE8A97BB1040FC9A841D0662D1060057;6834.
 Package logreq Info: Writing requests to 'main.run.xml'.
 \openout1 = `main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 68003 strings out of 473190
- 1503042 string characters out of 5715801
- 2430534 words of memory out of 5000000
- 90142 multiletter control sequences out of 15000+600000
+ 67982 strings out of 473190
+ 1503130 string characters out of 5715801
+ 2430604 words of memory out of 5000000
+ 90131 multiletter control sequences out of 15000+600000
  643003 words of font info for 123 fonts, out of 8000000 for 9000
  1143 hyphenation exceptions out of 8191
  144i,17n,145p,1699b,5622s stack positions out of 10000i,1000n,20000p,200000b,200000s
+
+pdfTeX warning (dest): name{Hfootnote.3} has been referenced but does not exist, replaced by a fixed one
+
 
 pdfTeX warning (dest): name{Hfootnote.2} has been referenced but does not exist, replaced by a fixed one
 
@@ -2531,10 +2271,10 @@ pdfTeX warning (dest): name{Hfootnote.2} has been referenced but does not exist,
 pdfTeX warning (dest): name{Hfootnote.1} has been referenced but does not exist, replaced by a fixed one
 
 </usr/local/texlive/2025/texmf-dist/fonts/type1/public/tex-gyre/qtmr.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/cm-super/sfrm2074.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/newtx/ztmb.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/newtx/ztmbi.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/newtx/ztmr.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/newtx/ztmri.pfb>
-Output written on main.pdf (38 pages, 2286137 bytes).
+Output written on main.pdf (35 pages, 2283470 bytes).
 PDF statistics:
- 722 PDF objects out of 1000 (max. 8388607)
- 619 compressed objects within 7 object streams
- 143 named destinations out of 1000 (max. 500000)
- 540 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 643 PDF objects out of 1000 (max. 8388607)
+ 544 compressed objects within 6 object streams
+ 133 named destinations out of 1000 (max. 500000)
+ 444 words of extra memory for PDF output out of 10000 (max. 10000000)
 

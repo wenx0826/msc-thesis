@@ -1,48 +1,20 @@
 \chapter{Conclusion}
 \label{sec:conclusion}
-\section{Summary}
-In this work, we propose and develop a process modeling tool, especially for the needs process modeling from documents. We explore two possibilties 
+This work is motivated by the inconvenience of state-of-the-art AI-assisted process modeling tools, which typically only provide a text input box and lack of support for document-based sources. To resolve this issue, we designed, implemented, and evaluated an integrated web-based process modeling tool, especially for the document-based process modeling scenario, offering a seamless, efficient, and user-friendly workflow.
 
-Here we summarize the research questions:
+We first revisit the research questions:
 
-RQ1 How do existing tools supported AI-assisted process modeling with documents?
+RQ1 How do existing tools support AI-assisted process modelling with documents?
 
-As elaborated in Chapter02, the current tools in research / academic area, mainly focus on the quality of the generated model, accoding to the provided description. To our best knowledage, there is no tools right now to support model auto-generation from document, therefore, to do so an export has to copy and paste text themselves
+A thorough systematic review of existing tools and approaches for AI-assisted process modelling is conducted. The review shows that most of the existing tools still focus on model generation capabilities and quality. There is a trend to augment the input model with audio. However, the use case of creating process models from documents or a segment of documents remains missing.
 
-RQ2 How can an integrated system be designed to support process modeling from documents?
-RQ2 Which layout and properties are beneficial for an integrated system that supports AI assisted process modeling with multiple documents as input?
-- ?
+RQ2: What functionalities should a system provide to support AI-assisted process modelling from documents, and how should these functionalities be designed and integrated in a seamless and user-friendly manner?
 
-RQ3 How do user perceive the benefits and limitation of the system?
-RQ3 What are advantages and disadvantages of such a system? 
+We derived minimal core requirements as follows: a unified workspace for documents and models; direct text selection from documents as LLM input; side-by-side visualization with explicit text–model traceability; and subprocess relationship management.
+Additional enhanced features include LLM-based model revision, model versioning, document update support, bulk management, and interactive project graph visualization. The design process showed that extending functionality increases integration complexity and may negatively affect usability, requiring careful trade-offs.
 
-Perceived benefits: Intuitive and reduce the tool switching time..., versioning
-Perceived limitations: More features is expected
+RQ3 How do users perceive the benefits and limitations of the system?
 
-Participants found the system particularly valuable for creating and exploring multiple models from documents using features like text-model link and process-subprocess model link. However, for simpler tasks, such as building a model from a single document, the system offers limited advantages compared to existing tools.
+An evaluation with four process modeling experts indicates that the system is generally intuitive and usable, with particular value for creating and exploring multiple models from documents, supported by features such as text–model links and process–subprocess links. The evaluation implies two valuable future work directions: fine-grained text–model traceability and AI-powered document intelligence, both of which have particular potential to improve efficiency and user experience.
 
-In summary, we extend the functionality of LLM-based modeling processing to in two area:
-1. we offered a new input modality for LLM-based modeling - the input text is selected from the document.
-2. a traceability.
-3. 
-
-
-\section{Future Work}
-Future work includes:
-- Improve and Extend the current features. e.g. the rendering issue , improve ..., text search,,, or support more documents type by leveraging other types... For such a system a lot of stuff can be done.
-- Integrated some document intelligent from simple e.g. using AI-to summarize the content, to advanced like chatbot query
-- Fine-tuning the LLM for more precise text extraction, as discussed, since one of the key features is the traceablity, a dedicated for such case can be offered.
-
-
-I. Research Implications
- 
-
- 
-II. Future Research Directions
- 
-Future research can be conducted in depth across four areas: user interaction, system functionality, intelligent assistance, and scenario implementation.
-First, optimize user-intuitive interaction and visualization design, simplify operational steps, and improve multi-format document rendering capabilities. Clearly distinguish model elements and version relationships through visual cues to enhance overall usability.
-Second, establish a refined model management and traceability system. Develop features such as version comparison, fine-grained text-to-model traceability, and intelligent document information filtering to enhance full-lifecycle modeling support capabilities.
-Third, research explainable AI-assisted modeling mechanisms. Clarify AI input rules and reasoning processes to enable predictable modification outcomes and controllable workflows, ensuring user autonomy while advancing intelligence levels.
-Fourth, integrate search-enhanced generation technology with conversational interaction to build cross-document contextual modeling capabilities. Develop automated model quality assessment and optimization functions to further improve modeling efficiency and quality.
-Fifth, conduct adaptation research for practical scenarios such as complex business processes and multi-document collaboration. Promote the integration of the tool with existing systems to establish standardized application paradigms, thereby enhancing the tool’s engineering implementation capabilities and expanding its industry applicability.
+Overall, this work demonstrates the feasibility and value of supporting document-based process modeling through the prototype. It provides a new input modal direct text selection from uploaded documents as LLM input. Future work can include further improving the system's usability and extend to support more document types, as well as exploring the directions of fine-grained traceability and AI-assisted document capabilities integration.

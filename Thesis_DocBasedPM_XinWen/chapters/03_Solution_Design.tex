@@ -2,9 +2,9 @@
 \chapter{Solution Design}
 \label{sec:solution}
 \section{Requirements}
+\label{sec:solution:req}
 \subsection{Context and Goal}
-
-First, we define the context and goal of the solution design. The system is provided as a web-based application, as illustrated in Figure~\ref{fig:sol_context}. The target users include both process modeling experts and domain experts who need to create process models based on documents. To improve modeling efficiency and support non-expert users, the system leverages the LLM service of AutoBPMN.AI for automated model generation. The overall goal is to provide a single, integrated platform in which users can complete the entire modeling process from document upload to model creation, modification and subsequent model management.
+First, the context and objectives of the solution design are defined. The system is provided as a web-based application, as illustrated in Figure~\ref{fig:sol_context}. The target users include both process modeling experts and domain experts who need to create process models from textual documents. To improve modeling efficiency and support non-expert users, the system leverages the LLM service of AutoBPMN.AI for automated model generation. The overall objective is to provide an integrated platform in which users can complete the entire modeling workflow—from document upload to model creation, modification, and subsequent management—in a seamless and user-friendly manner, thereby addressing Research Question 2.
 \begin{figure}[htb!]
   \centering
   \caption{System context} 
@@ -12,73 +12,43 @@ First, we define the context and goal of the solution design. The system is prov
   \label{fig:sol_context}
 \end{figure}
 
-\section{Requirements Elicitation}
-When starting the work the following requirements for the system were defined. 
-\label{sec:solution:req}
+\subsection{Requirements Elicitation}
+Functional requirements define the system’s expected behavior by describing the functions, inputs, outputs, and interactions that enable the system to fulfill its intended objectives \cite{functional_requirement_wiki}. In this work, we adopt the classification proposed by \cite{randall1988service}, further diving the functional requirements into minimal requirements, which represent the indispensable core functionalities required for the system to operate, and enhancing requirements, which include additional features that improve usability and overall performance but are not strictly necessary for basic operation.
+
+When starting the work, the following minimal requirements for the system have been elicitated by my supervisor. Firstly, the system should allow users to upload multiple documents. The basic process modelling is defined as follows: first, the user should be able to select multiple passages from a single document; then, by clicking a Generate button, the system will send the selected text to the LLM service. The system should then display the generated model side-by-side with the document to facilitate verification. Besides, the system should always provide a clear visual link between the text and the generated model. Then a user should be able to select other passages to create more models. Another important requirement is that the system should allow users to establish process-subprocess relationships between models. This flow should be designed on a single web page to avoid users having to switch between tools. The activities described are depicted in the Figure~\ref{fig:workspace_usage_model}. Here, we use the concept of workspace for this dedicated interface, a term commonly used across many software tools, where the modelling flow is performed. 
 \begin{figure}[htb!]
   \centering
   \caption{Usage model} 
-  \includegraphics[width=0.8\textwidth]{images/sol_workspace_interaction_usage_model.png}
+  \includegraphics[width=1\textwidth]{images/sol_workspace_interaction_usage_model.png}
   \label{fig:workspace_usage_model}
 \end{figure}
 
-\section{Requirements Elicitation}
-\label{sec:solution:req}
+Regarding non-functional requirements, only usability, as a very general goal, is defined at this stage. Besides this, a series of technical design constraints are specified. In addition to the two constraints already introduced in the system context, i.e. the system should be implemented as a web-based application and should leverage AutoBPMN.AI’s LLM service, two more constraints are explicitly defined. First, the frontend should be developed using native web technologies (JavaScript, HTML, and CSS). Second, the visualization of the process model should be implemented using the CPEE Layout\footnote{\url{https://github.com/etm/cpee-layout}} library, following the same layout as used in AutoBPMN.AI, which makes the models easy to export and import, and also provides the potential for them to be uploaded to the CPEE environment without additional manual effort, where they can be directly further manipulated and executed.
 
+\begin{figure}[htb!]
+    \centering
+    \caption{Conceptual data model} 
+    \includegraphics[width=0.9\textwidth]{images/sol_data_model.png}
+    \label{fig:sol_data_model}
+\end{figure}
 
-
-\subsection{Functional Requirements}
-
-Functional requirements define the specific behaviors, actions, and features a system must perform. They outline input/output processing, data manipulation, and user interactions necessary for the system to meet its objectives. These requirements are essential for to build a prototype for this thesis, ensuring system functionality and user needs are met. {LINK TO WIKIPEDA}
-
-It shall allow users to select multiple passages from one document to serve as input for LLM-based process model auto-generation. \\
-It shall provide a clear visual link between the text and the generated model.\\
-It shall embed the source text within the generated process model for traceability purposes.\\
-It shall allow users to establish process-subprocess relationships between models.\\
-It shall record user behavior and interactions with the system for analysis purposes.\\
-One additional requirement is that the system shall be able to support document update.
-
-
-
-
-
-
-\begin{itemize}
-    \item \textit{Upload Documents.} The user uploads multiple documents in textual format, e.g., TXT, DOCX, PDF.
-    \item \textit{Select Text Passages.} The user selects multiple passages from one uploaded document, then clicks the Generate button to .
-    
-\end{itemize}
-
-
-\subsection{Design Constraints}
-\begin{itemize}
-    \item It shall be implemented as a web-based application.\\
-    \item The frontend shall be developed using native web technologies (JavaScript, HTML, and CSS).\\
-    \item \textit{Process Model Visualization.} The visualization of the process model shall be implemented using the CPEE Layout\footnote{\url{https://github.com/etm/cpee-layout}} library.\\
-    \item \textit{LLM Service Integrati.} The LLM-backed process model generation shall be implemented using the API from AutoBPMN.AI.\\
-\end{itemize}
 
 \section{User Interface and Interaction Design}
+
+For the user interface and interaction design, the focus is on providing a seamless and intuitive experience for users to interact with the system. The design aims to facilitate efficient document management, process modeling, and visualization of process models.
+
+
 The desgign overview is described from the user perspective.
 
-Firstly, we define the following concepts to better describe the system:\\
-- Project: a use case consisting of one or more documents for which process models needs to be created.\\
-- Workspace: the unified page/interface where the modeling workflow is performed, from document upload to model export.\\
-- Traceability: the ability to navigate between source text and the corresponding process model.\\
-- Project graph: a network-style visualization of relationships among models and documents within a project.\\
+The layout design of the main workspace is shown in the figure~\ref{fig:sol_ui} in a 3-pane layout. The left pane is for document uploading and viewing, the middle pane is for process modeling and the right pane is for process models viewing and project graph visualization. The details are divided as the following: a) Document List b) Document Viewer c) Model Editor  d) Model List e) Project Graph.
 
-The system consists of three main pages: a home page for managing projects, a workspace page where the modeling workflow takes place, and a statistics page for viewing project-related metrics.
 
-\subsection{System Views}
-The system is designed to contain three pages: a home page where a user can create a new project or open an existing project, a workspace page where the modeling workflow takes place, and a statistics page where the user can view the statistics of the project.
-\subsection{System Views}
-The system is designed to contain three pages: a home page where a user can create a new project or open an existing project, a workspace page where the modeling workflow takes place, and a statistics page where the user can view the statistics of the project.
-\subsubsection{Workspace}
-The layout design of the user interface is shown in the figure~\ref{fig:sol_ui} in a 3-pane layout. The left pane is for document uploading and viewing, the middle pane is for process modeling and the right pane is for process models viewing and project graph visualization. The details are divided as the following: a) Document List b) Document Viewer c) Model Editor  d) Model List e) Project Graph.
-\begin{figure}[H]
+
+
+\begin{figure}[htb!]
     \centering
     \caption{Workspace UI Layout} 
-    \includegraphics[width=0.8\textwidth]{images/mock-up1.jpg}
+    \includegraphics[width=0.9\textwidth]{images/mock-up1.jpg}
     \floatfoot{The user interface layout of the workspace page.}
     \label{fig:sol_ui}
 \end{figure}
@@ -87,55 +57,13 @@ As the core part of the system, this section describes the modeling workflow tha
 Figure: .\\
 \subsection{Design Difficulities}
 
-\section{Core Functionalities Design}
-
-\subsection{Document Management}
-\section{Document Update}
-The document update is planned and designed to 
-\subsection{Document Interaction}
-text selection
-text selection editing
-\subsection{Process modeling}
-\subsubsection{Human-in-the-loop Process Modeling and Version Control}
-
-\subsubsection{Use Case: Model Generation}
-By click the button an adavance mode is desgin 
-\subsubsection{Use Case: Model Modification}
-a. Manual edit
-b. Update selected text and apply the changes. 
-c. Refinement by sending prompt to LLM:\\
-   Input: prompt only and the current Model\\
-d. Regeneration:\\
-   Input: type a. current model + changed selected text passage b. advanced mode: prompt + current model + changed selected text passage
-   
-\subsubsection{Use Case: Establishing Process-Subprocess Relationships}
-
-- a review step for each LLM-generated model.
-\subsubsection{Augmented Model Data}
-\section{Interactive Design Difficulty}
-
-
-
-
 \section{System Architecture}
 The system architecture is shown in the figure~\ref{fig:sol_architecture}. The system follows the common web-application client-server pattern. 
 
-\begin{figure}[H]
+\begin{figure}[htb!]
     \centering
-    \caption{System Architecture} 
+    \caption{System architecture} 
     \includegraphics[width=0.8\textwidth]{images/sol_architecture.png}
     \floatfoot{The system architecture of the document-based process modeling tool.}
     \label{fig:sol_architecture}
 \end{figure}
-
-\section{Data Model}
-
-\begin{figure}[H]
-    \centering
-    \caption{The conceptual data model of the system.} 
-    \includegraphics[width=0.9\textwidth]{images/sol_data_model.png}
-    \label{fig:sol_data_model}
-\end{figure}
-
-
-

@@ -729,10 +729,6 @@ INPUT ./images/sol_workspace_interaction_usage_model.png
 INPUT ./images/sol_workspace_interaction_usage_model.png
 INPUT ./images/sol_workspace_interaction_usage_model.png
 INPUT ./images/sol_workspace_interaction_usage_model.png
-INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/newtx/ts1ntxtlf.fd
-INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/newtx/ts1ntxtlf.fd
-INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/newtx/ts1ntxtlf.fd
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/tex-gyre/ts1-qtmr.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntx-Regular-tlf-t1.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntx-Regular-tlf-ot1.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntx-Regular-tlf-ot1.tfm
@@ -759,7 +755,11 @@ INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/psnfss/t1pcr.fd
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/psnfss/t1pcr.fd
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/psnfss/t1pcr.fd
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/adobe/courier/pcrr8t.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/tex-gyre/q-ts1.enc
+INPUT ./images/sol_data_model.png
+INPUT ./images/sol_data_model.png
+INPUT ./images/sol_data_model.png
+INPUT ./images/sol_data_model.png
+INPUT ./images/sol_data_model.png
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/adobe/courier/pcrr8t.vf
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/adobe/courier/pcrr8r.tfm
 INPUT ./images/mock-up1.jpg
@@ -772,11 +772,6 @@ INPUT ./images/sol_architecture.png
 INPUT ./images/sol_architecture.png
 INPUT ./images/sol_architecture.png
 INPUT ./images/sol_architecture.png
-INPUT ./images/sol_data_model.png
-INPUT ./images/sol_data_model.png
-INPUT ./images/sol_data_model.png
-INPUT ./images/sol_data_model.png
-INPUT ./images/sol_data_model.png
 INPUT ./chapters/04_Implementaion.tex
 INPUT ./chapters/04_Implementaion.tex
 INPUT ./chapters/04_Implementaion.tex
@@ -830,6 +825,11 @@ INPUT ./chapters/99_Appendix.tex
 INPUT ./chapters/99_Appendix.tex
 INPUT ./chapters/99_Appendix.tex
 INPUT chapters/99_Appendix.tex
+INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/newtx/ts1ntxtlf.fd
+INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/newtx/ts1ntxtlf.fd
+INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/newtx/ts1ntxtlf.fd
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/tex-gyre/ts1-qtmr.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/tex-gyre/q-ts1.enc
 INPUT main.aux
 INPUT ./main.out
 INPUT ./main.out
