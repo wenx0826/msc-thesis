@@ -1,8 +1,8 @@
-PWD /Users/owxwo/Documents/msc-thesis/Thesis_DocBasedPM_XinWen
+PWD /Users/owxwo/Documents/msc-thesis/Thesis_DocBasedPM_XinWen 2
 INPUT /usr/local/texlive/2025/texmf.cnf
 INPUT /usr/local/texlive/2025/texmf-dist/web2c/texmf.cnf
 INPUT /usr/local/texlive/2025/texmf-var/web2c/pdftex/pdflatex.fmt
-INPUT /Users/owxwo/Documents/msc-thesis/Thesis_DocBasedPM_XinWen/main.tex
+INPUT /Users/owxwo/Documents/msc-thesis/Thesis_DocBasedPM_XinWen 2/main.tex
 OUTPUT main.log
 INPUT ./tum-book.cls
 INPUT tum-book.cls
@@ -760,13 +760,13 @@ INPUT ./images/sol_data_model.png
 INPUT ./images/sol_data_model.png
 INPUT ./images/sol_data_model.png
 INPUT ./images/sol_data_model.png
+INPUT ./images/mock-up1.jpg
+INPUT ./images/mock-up1.jpg
+INPUT ./images/mock-up1.jpg
+INPUT ./images/mock-up1.jpg
+INPUT ./images/mock-up1.jpg
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/adobe/courier/pcrr8t.vf
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/adobe/courier/pcrr8r.tfm
-INPUT ./images/mock-up1.jpg
-INPUT ./images/mock-up1.jpg
-INPUT ./images/mock-up1.jpg
-INPUT ./images/mock-up1.jpg
-INPUT ./images/mock-up1.jpg
 INPUT ./images/sol_architecture.png
 INPUT ./images/sol_architecture.png
 INPUT ./images/sol_architecture.png
@@ -781,11 +781,6 @@ INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/adobe/courier/pcrr8t.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/adobe/courier/pcrr8t.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/adobe/courier/pcrr8t.vf
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/adobe/courier/pcrr8r.tfm
-INPUT ./images/imp_backend_com.png
-INPUT ./images/imp_backend_com.png
-INPUT ./images/imp_backend_com.png
-INPUT ./images/imp_backend_com.png
-INPUT ./images/imp_backend_com.png
 INPUT ./chapters/05_Evaluation.tex
 INPUT ./chapters/05_Evaluation.tex
 INPUT ./chapters/05_Evaluation.tex
@@ -825,17 +820,11 @@ INPUT ./chapters/99_Appendix.tex
 INPUT ./chapters/99_Appendix.tex
 INPUT ./chapters/99_Appendix.tex
 INPUT chapters/99_Appendix.tex
-INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/newtx/ts1ntxtlf.fd
-INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/newtx/ts1ntxtlf.fd
-INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/newtx/ts1ntxtlf.fd
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/tex-gyre/ts1-qtmr.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/tex-gyre/q-ts1.enc
 INPUT main.aux
 INPUT ./main.out
 INPUT ./main.out
 INPUT main.run.xml
 OUTPUT main.run.xml
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/tex-gyre/qtmr.pfb
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/cm-super/sfrm2074.pfb
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb

@@ -19,6 +19,43 @@
 
 \refsection{0}
   \datalist[entry]{none/global//global/global/global}
+    \entry{daclin2024gai4bm}{inproceedings}{}{}
+      \name{author}{3}{}{%
+        {{hash=8ba2f4113e378b531cef3f80e1500436}{%
+           family={Daclin},
+           familyi={D\bibinitperiod},
+           given={Nicolas},
+           giveni={N\bibinitperiod}}}%
+        {{hash=4db330aec69f95b6ba5d789da2a72980}{%
+           family={Mallek-Daclin},
+           familyi={M\bibinithyphendelim D\bibinitperiod},
+           given={Sihem},
+           giveni={S\bibinitperiod}}}%
+        {{hash=1e37bc76354b48fab67e9bfe9b5587b3}{%
+           family={Zacharewicz},
+           familyi={Z\bibinitperiod},
+           given={Grégory},
+           giveni={G\bibinitperiod}}}%
+      }
+      \strng{namehash}{7b7ee0b8a6e78366dd841fd8b961c740}
+      \strng{fullhash}{6cddbccf918277117fe28bab4e64059a}
+      \strng{fullhashraw}{6cddbccf918277117fe28bab4e64059a}
+      \strng{bibnamehash}{6cddbccf918277117fe28bab4e64059a}
+      \strng{authorbibnamehash}{6cddbccf918277117fe28bab4e64059a}
+      \strng{authornamehash}{7b7ee0b8a6e78366dd841fd8b961c740}
+      \strng{authorfullhash}{6cddbccf918277117fe28bab4e64059a}
+      \strng{authorfullhashraw}{6cddbccf918277117fe28bab4e64059a}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{10th International Food Operations and Processing Simulation Workshop (FoodOPS)}
+      \field{title}{Generative AI for Business Model Generation (GAI4BM): from Textual Description to Business Process Model}
+      \field{year}{2024}
+      \verb{doi}
+      \verb 10.46354/i3m.2024.foodops.013
+      \endverb
+    \endentry
     \entry{klievtsova2024process}{inproceedings}{}{}
       \name{author}{5}{}{%
         {{hash=e5059a34fe7bd231d26e3657e54be078}{%
@@ -59,8 +96,8 @@
       \strng{authorfullhash}{760d78eeabc05256daa19efdea74083b}
       \strng{authorfullhashraw}{760d78eeabc05256daa19efdea74083b}
       \field{extraname}{1}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{booktitle}{International Conference on Process Mining}
@@ -85,8 +122,8 @@
       \strng{authornamehash}{e054261c7f1739e1ba1db0a45e385c1b}
       \strng{authorfullhash}{e054261c7f1739e1ba1db0a45e385c1b}
       \strng{authorfullhashraw}{e054261c7f1739e1ba1db0a45e385c1b}
-      \field{sortinit}{2}
-      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{Scandinavian Journal of Information Systems}
@@ -96,6 +133,178 @@
       \field{year}{2007}
       \field{pages}{87\bibrangedash 92}
       \range{pages}{6}
+    \endentry
+    \entry{omg2011bpmn}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=4d6b6fbad838f7618c462458711482fa}{%
+           family={{Object Management Group}},
+           familyi={O\bibinitperiod}}}%
+      }
+      \strng{namehash}{4d6b6fbad838f7618c462458711482fa}
+      \strng{fullhash}{4d6b6fbad838f7618c462458711482fa}
+      \strng{fullhashraw}{4d6b6fbad838f7618c462458711482fa}
+      \strng{bibnamehash}{4d6b6fbad838f7618c462458711482fa}
+      \strng{authorbibnamehash}{4d6b6fbad838f7618c462458711482fa}
+      \strng{authornamehash}{4d6b6fbad838f7618c462458711482fa}
+      \strng{authorfullhash}{4d6b6fbad838f7618c462458711482fa}
+      \strng{authorfullhashraw}{4d6b6fbad838f7618c462458711482fa}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://www.omg.org/spec/BPMN/2.0}}
+      \field{title}{Business Process Model and Notation (BPMN) Version 2.0}
+      \field{year}{2011}
+    \endentry
+    \entry{vanderAalst1998}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=45fed513d4bd5fb28cebd7bb58a35c4a}{%
+           family={Aalst},
+           familyi={A\bibinitperiod},
+           given={Wil\bibnamedelimb M.\bibnamedelimi P.},
+           giveni={W\bibinitperiod\bibinitdelim M\bibinitperiod\bibinitdelim P\bibinitperiod},
+           prefix={van\bibnamedelima der},
+           prefixi={v\bibinitperiod\bibinitdelim d\bibinitperiod}}}%
+      }
+      \strng{namehash}{45fed513d4bd5fb28cebd7bb58a35c4a}
+      \strng{fullhash}{45fed513d4bd5fb28cebd7bb58a35c4a}
+      \strng{fullhashraw}{45fed513d4bd5fb28cebd7bb58a35c4a}
+      \strng{bibnamehash}{45fed513d4bd5fb28cebd7bb58a35c4a}
+      \strng{authorbibnamehash}{45fed513d4bd5fb28cebd7bb58a35c4a}
+      \strng{authornamehash}{45fed513d4bd5fb28cebd7bb58a35c4a}
+      \strng{authorfullhash}{45fed513d4bd5fb28cebd7bb58a35c4a}
+      \strng{authorfullhashraw}{45fed513d4bd5fb28cebd7bb58a35c4a}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Circuits, Systems, and Computers}
+      \field{number}{1}
+      \field{title}{The Application of Petri Nets to Workflow Management}
+      \field{volume}{8}
+      \field{year}{1998}
+      \field{pages}{21\bibrangedash 66}
+      \range{pages}{46}
+    \endentry
+    \entry{vanhatalo2009rpst}{inproceedings}{}{}
+      \name{author}{3}{}{%
+        {{hash=386ea3bd19b3b7d7f7465645b717941f}{%
+           family={Vanhatalo},
+           familyi={V\bibinitperiod},
+           given={Jussi},
+           giveni={J\bibinitperiod}}}%
+        {{hash=2c4c977a8ff5b05a6e8239f87b40dcc1}{%
+           family={Völzer},
+           familyi={V\bibinitperiod},
+           given={Hagen},
+           giveni={H\bibinitperiod}}}%
+        {{hash=46ba2e918706134f01f89f44e12e58bc}{%
+           family={Koehler},
+           familyi={K\bibinitperiod},
+           given={Jana},
+           giveni={J\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{a2f7532b7e83ae0bc0d479db3f18724f}
+      \strng{fullhash}{068548862a8ad1108622c8daa7b0ad1a}
+      \strng{fullhashraw}{068548862a8ad1108622c8daa7b0ad1a}
+      \strng{bibnamehash}{068548862a8ad1108622c8daa7b0ad1a}
+      \strng{authorbibnamehash}{068548862a8ad1108622c8daa7b0ad1a}
+      \strng{authornamehash}{a2f7532b7e83ae0bc0d479db3f18724f}
+      \strng{authorfullhash}{068548862a8ad1108622c8daa7b0ad1a}
+      \strng{authorfullhashraw}{068548862a8ad1108622c8daa7b0ad1a}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the 7th International Conference on Business Process Management (BPM)}
+      \field{title}{The Refined Process Structure Tree}
+      \field{year}{2009}
+      \field{pages}{100\bibrangedash 115}
+      \range{pages}{16}
+    \endentry
+    \entry{friedrich2011process}{inproceedings}{}{}
+      \name{author}{3}{}{%
+        {{hash=d1f481ac5e7e8ab0519dac8c8bf94250}{%
+           family={Friedrich},
+           familyi={F\bibinitperiod},
+           given={Fabian},
+           giveni={F\bibinitperiod}}}%
+        {{hash=77c03f6db0b7101e4efabda4bd436ce4}{%
+           family={Mendling},
+           familyi={M\bibinitperiod},
+           given={Jan},
+           giveni={J\bibinitperiod}}}%
+        {{hash=7d063724d1bb5ef1c238e0f429890f3b}{%
+           family={Puhlmann},
+           familyi={P\bibinitperiod},
+           given={Frank},
+           giveni={F\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{b4601104fda71693b23ffdfbfa219fee}
+      \strng{fullhash}{f64836857e0630439faf7fe7394ad783}
+      \strng{fullhashraw}{f64836857e0630439faf7fe7394ad783}
+      \strng{bibnamehash}{f64836857e0630439faf7fe7394ad783}
+      \strng{authorbibnamehash}{f64836857e0630439faf7fe7394ad783}
+      \strng{authornamehash}{b4601104fda71693b23ffdfbfa219fee}
+      \strng{authorfullhash}{f64836857e0630439faf7fe7394ad783}
+      \strng{authorfullhashraw}{f64836857e0630439faf7fe7394ad783}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the 23rd International Conference on Advanced Information Systems Engineering (CAiSE)}
+      \field{title}{Process Model Generation from Natural Language Text}
+      \field{year}{2011}
+      \field{pages}{482\bibrangedash 496}
+      \range{pages}{15}
+    \endentry
+    \entry{kourani2024llm}{article}{}{}
+      \name{author}{4}{}{%
+        {{hash=0e9f28164af82b97077575329f0bfb13}{%
+           family={Kourani},
+           familyi={K\bibinitperiod},
+           given={Humam},
+           giveni={H\bibinitperiod}}}%
+        {{hash=31aef31d05222aad4978469412b51f0a}{%
+           family={Berti},
+           familyi={B\bibinitperiod},
+           given={Alessandro},
+           giveni={A\bibinitperiod}}}%
+        {{hash=be68b1bddc16039848fa2f97f2f486d2}{%
+           family={Schuster},
+           familyi={S\bibinitperiod},
+           given={Daniel},
+           giveni={D\bibinitperiod}}}%
+        {{hash=45fed513d4bd5fb28cebd7bb58a35c4a}{%
+           family={Aalst},
+           familyi={A\bibinitperiod},
+           given={Wil\bibnamedelimb M.\bibnamedelimi P.},
+           giveni={W\bibinitperiod\bibinitdelim M\bibinitperiod\bibinitdelim P\bibinitperiod},
+           prefix={van\bibnamedelima der},
+           prefixi={v\bibinitperiod\bibinitdelim d\bibinitperiod}}}%
+      }
+      \strng{namehash}{142b73830dd9aba6d82bce6748077f9c}
+      \strng{fullhash}{6b38a61690c88e522dabb42991d410e4}
+      \strng{fullhashraw}{6b38a61690c88e522dabb42991d410e4}
+      \strng{bibnamehash}{6b38a61690c88e522dabb42991d410e4}
+      \strng{authorbibnamehash}{6b38a61690c88e522dabb42991d410e4}
+      \strng{authornamehash}{142b73830dd9aba6d82bce6748077f9c}
+      \strng{authorfullhash}{6b38a61690c88e522dabb42991d410e4}
+      \strng{authorfullhashraw}{6b38a61690c88e522dabb42991d410e4}
+      \field{extraname}{1}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{arXiv preprint arXiv:2403.07541}
+      \field{title}{Process Modeling With Large Language Models}
+      \field{year}{2024}
     \endentry
     \entry{kourani2024promoai}{article}{}{}
       \name{author}{4}{}{%
@@ -128,8 +337,9 @@
       \strng{authornamehash}{142b73830dd9aba6d82bce6748077f9c}
       \strng{authorfullhash}{21c5ab925775b05fdba7ba469edbcbc6}
       \strng{authorfullhashraw}{21c5ab925775b05fdba7ba469edbcbc6}
-      \field{sortinit}{7}
-      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{extraname}{2}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{arXiv preprint arXiv:2403.04327}
@@ -158,8 +368,8 @@
       \strng{authorfullhash}{58229ecc287dc10f2f4540ac07b49f66}
       \strng{authorfullhashraw}{58229ecc287dc10f2f4540ac07b49f66}
       \field{extraname}{1}
-      \field{sortinit}{8}
-      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{booktitle}{BPM (Demos/Resources Forum)}
@@ -197,8 +407,8 @@
       \strng{authornamehash}{fe49685f08429a99d3ad27a14c62b902}
       \strng{authorfullhash}{d4ae0b16626225fc058bf598fff1fc1b}
       \strng{authorfullhashraw}{d4ae0b16626225fc058bf598fff1fc1b}
-      \field{sortinit}{9}
-      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{Applied Sciences}
@@ -461,8 +671,8 @@
       \strng{authorfullhash}{4c86d36ec7d54b6bff9def0a78322995}
       \strng{authorfullhashraw}{4c86d36ec7d54b6bff9def0a78322995}
       \field{extraname}{2}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{1613-0073}
@@ -495,8 +705,8 @@
       \strng{authorfullhash}{25fe23f08ecff16f765bff7e4eeba9cf}
       \strng{authorfullhashraw}{25fe23f08ecff16f765bff7e4eeba9cf}
       \field{extraname}{1}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{booktitle}{Proceedings of the BPM}
@@ -692,8 +902,8 @@
       \strng{authornamehash}{446a1ae6601a5c59360c7d591c3992da}
       \strng{authorfullhash}{446a1ae6601a5c59360c7d591c3992da}
       \strng{authorfullhashraw}{446a1ae6601a5c59360c7d591c3992da}
-      \field{sortinit}{2}
-      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{note}{Accessed: 2026-04-05}
@@ -708,10 +918,6 @@
       \endverb
     \endentry
   \enddatalist
-  \missing{friedrich2011process}
-  \missing{omg2011bpmn}
-  \missing{vanderAalst1998}
-  \missing{vanhatalo2009rpst}
 \endrefsection
 \endinput
 

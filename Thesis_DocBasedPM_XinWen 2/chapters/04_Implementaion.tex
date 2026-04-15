@@ -1,3 +1,4 @@
+\FloatBarrier
 \chapter{Implementation}
 \label{sec:implementation}
 
@@ -67,7 +68,6 @@ When a stored selection is displayed again, the frontend resolves the serialized
 
 \subsubsection{Virtual Overlay Strategy}
 Selection rendering is implemented as a virtual overlay rather than by wrapping the original text nodes. The selection module collects client rectangles, filters and de-duplicates them, removes oversized container rectangles, and reconstructs more accurate line-level rectangles when necessary. The resulting geometry is then rendered as overlay elements above the document content.
-
 This avoids mutating the source DOM and keeps selection rendering stable across re-renders, updates, and version switches.
 
 \subsubsection{Link Update Detection}
@@ -84,7 +84,7 @@ Instead of implementing a process-model editor from scratch, the frontend reuses
 These events connect the generic renderer to workspace-specific behavior such as subprocess navigation and contextual interaction. Together, the layered frontend organization, pub-sub stores, document normalization, overlay rendering, and renderer customization support the end-to-end modelling workflow.
 \section{Backend}
 \subsection{Architecture}
-The backend is implemented using a layered architecture. In this system, the layered structure is realized through route, service, and repository layers, each with a clearly separated responsibility. Route modules expose REST endpoints, service modules implement the application logic, and repository modules encapsulate data-access operations. Fastify was chosen as the backend framework because it is lightweight and provides native support for schema-based validation of requests and responses.
+The backend is implemented using a layered architecture. In this system, the layered structure is realized through route, service, and repository layers, each with a clearly separated responsibility. Route modules expose REST endpoints, service modules implement the application logic, and repository modules encapsulate data-access operations. Fastify.js was chosen as the backend framework because it is lightweight and provides native support for schema-based validation of requests and responses. 
 
 The schema layer is important because the system exchanges structured selection data between frontend and backend. As shown in Figure~\ref{fig:imp_backend_schema_example}, selectors are validated before entering the service logic. The same approach is used across document, model, and link endpoints.
 
@@ -108,17 +108,8 @@ const textQuoteSchema = {
 
 The backend combines relational persistence with file-based storage. Metadata such as projects, documents, models, versions, and links are stored in SQLite, while large document contents and model XML payloads are stored as files in the persistence directory. This hybrid design keeps metadata queryable without placing large HTML and XML payloads directly in the database.
 
-The service layer implements the application-specific workflows used by the frontend. For example, when a new document version is created, the backend stores the content, updates the latest-version pointer, and copies the latest link information. When a new model or model version is created, the backend persists the XML payload, updates version references, stores the related link, and records monitoring information.
+The service layer implements the application-specific workflows used by the frontend. For example, when a new document version is created, the backend stores the content, updates the latest-version pointer, and copies the latest link information. When a new model or model version is created, the backend persists the XML payload, updates version references, stores the related link, and records monitoring information. The backend also handles cross-cutting concerns such as soft deletion, logging, and aggregated workspace endpoints. 
 
-The backend also handles cross-cutting concerns such as soft deletion, logging, and aggregated workspace endpoints. As shown in Figure~\ref{fig:imp_backend_com}, it serves as the consistency layer that preserves version relations, link integrity, and monitoring data across the modelling workflow.
-
-\begin{figure}[H]
-    \centering
-    \caption{Backend Component} 
-    \includegraphics[width=0.8\textwidth]{images/imp_backend_com.png}
-    \floatfoot{The backend component of the document-based process modeling tool.}
-    \label{fig:imp_backend_com}
-\end{figure}
 \section{Database Schema}
 
 Firstly, Project, Document, Model and Document Model Link are the minimal tables needed to support the proposed system. It is also how the system was implemented when it first adopted the database. The Document and Model tables were used to store metadata like name, words count of a document. Theoretically, the Document Model Link table can be stored as an attribute within the model version, since the system is currently designed to allow one model to be derived from only one document. But it is a decision made very early to store it in a separate table to easily support a potentially many-to-many (M2M) relationship in the future.
