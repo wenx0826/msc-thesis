@@ -23,28 +23,21 @@ When starting the work, the following minimal requirements for the system have b
   \label{fig:workspace_usage_model}
 \end{figure}
 
-Regarding non-functional requirements, only usability, as a very general goal, is defined at this stage. Besides this, a series of technical design constraints are specified. In addition to the two constraints already introduced in the system context, i.e. the system should be implemented as a web-based application and should leverage AutoBPMN.AI’s LLM service, two more constraints are explicitly defined. First, the frontend should be developed using native web technologies (JavaScript, HTML, and CSS). Second, the visualization of the process model should be implemented using the CPEE Layout\footnote{\url{https://github.com/etm/cpee-layout}, last access 2026-04-17} library, following the same layout as used in AutoBPMN.AI, which makes the models easy to export and import, and also provides the potential for them to be uploaded to the CPEE environment without additional manual effort, where they can be directly further manipulated and executed.
+Regarding non-functional requirements, only usability, as a very general goal, is defined at this stage. Besides this, a series of technical design constraints are specified. In addition to the two constraints already introduced in the system context, i.e. the system should be implemented as a web-based application and should leverage AutoBPMN.AI’s LLM service\footnote{\url{https://autobpmn.ai/}, accessed 2026-04-15}, two more constraints are explicitly defined. First, the frontend should be developed using native web technologies (JavaScript, HTML, and CSS). Second, the visualization of the process model should be implemented using the CPEE Layout\footnote{\url{https://github.com/etm/cpee-layout}, accessed 2026-04-15} library, following the same layout as used in AutoBPMN.AI, which makes the models easy to export and import, and also provides the potential for them to be uploaded to the CPEE environment without additional manual effort, where they can be directly further manipulated and executed.
 
-
-With the development, more enhancing requirments are elicitated. Firstly, we use the term "Project" for  
-\begin{figure}[htb!]
-    \centering
-    \caption{Conceptual data model} 
-    \includegraphics[width=0.8\textwidth]{images/sol_data_model.png}
-    \label{fig:sol_data_model}
-\end{figure}
+With the development of the system, several enhancing requirements were identified. One key aspect is model modification, since generated models are not final and need to be refined. The system therefore supports several ways to modify models. Users can edit the model manually, provide additional prompts, or regenerate the model based on updated text. In addition, documents naturally require versioning, as they may be updated over time. Once document versioning is considered, model versioning becomes a natural and necessary extension in the system. Since models are created based on documents, they may need to follow these changes. Supporting model versioning helps keep the relation between documents and models clear and manageable.
 
 \section{User Interface and Interaction Design}
 
-The layout design of the main workspace is shown in the figure~\ref{fig:sol_ui} in a 3-pane layout. The left pane is for document uploading and viewing, the middle pane is for process modeling and the right pane is for process models viewing and project graph visualization. The details are divided as the following: a) Document List b) Document Viewer c) Model Editor  d) Model List e) Project Graph.
+The layout design of the workspace page is illustrated in Figure 3 as a three-pane layout. The left pane is dedicated to document uploading and viewing, the middle pane supports process modeling, and the right pane is used for process model visualization and project graph representation. The components of the interface are organized as follows: (a) Document List, (b) Document Viewer, (c) Model Editor, (d) Model List, and (e) Project Graph. The Document List allows users to manage their uploaded documents, while the Document Viewer provides a space for users to read and select text from the documents. The Model Editor is where users can view, edit and refine the process model. The Model List displays all the created models for easy access. The Project Graph visually represents the relationships among models and documents, particularly the process-subprocess model links.
 
 \begin{figure}[htb!]
     \centering
-    \caption{Workspace UI Layout} 
-    \includegraphics[width=0.9\textwidth]{images/mock-up1.jpg}
-    \floatfoot{The user interface layout of the workspace page.}
+    \caption{Workspace UI Layout Mock-up} 
+    \includegraphics[width=0.9\textwidth]{images/mock-up.png}
     \label{fig:sol_ui}
 \end{figure}
+
 
 
 \section{System Architecture}
@@ -55,6 +48,5 @@ The system architecture is illustrated in Figure~\ref{fig:sol_architecture}. It 
     \centering
     \caption{System architecture} 
     \includegraphics[width=0.8\textwidth]{images/sol_architecture.png}
-    \floatfoot{The system architecture of the document-based process modeling tool.}
     \label{fig:sol_architecture}
 \end{figure}
