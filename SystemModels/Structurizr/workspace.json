@@ -2,12 +2,10 @@
   "configuration" : {
     "scope" : "SoftwareSystem"
   },
-  "description" : "Description",
+  "description" : "Structurizr model of the document-based process modeling system architecture",
   "documentation" : { },
   "id" : 1,
-  "lastModifiedAgent" : "structurizr/diagrams/6d3447ed-501e-4bc2-ad44-8845356a9601",
-  "lastModifiedDate" : "2026-04-14T17:47:45Z",
-  "lastModifiedUser" : "109866739",
+  "lastModifiedDate" : "2026-04-15T07:12:56Z",
   "model" : {
     "people" : [ {
       "description" : "A modeling or domain expert",
@@ -19,14 +17,14 @@
       "relationships" : [ {
         "description" : "Interacts with",
         "destinationId" : "4",
-        "id" : "40",
+        "id" : "46",
         "sourceId" : "1",
         "tags" : "Relationship"
       }, {
         "description" : "Interacts with",
         "destinationId" : "3",
-        "id" : "41",
-        "linkedRelationshipId" : "40",
+        "id" : "47",
+        "linkedRelationshipId" : "46",
         "sourceId" : "1"
       } ],
       "tags" : "Element,Person"
@@ -43,7 +41,7 @@
     }, {
       "containers" : [ {
         "components" : [ {
-          "description" : "Project listing/creation and overview dashboard",
+          "description" : "Landing page for project creation, project browsing, and high-level overview statistics",
           "documentation" : { },
           "id" : "5",
           "name" : "Home Page",
@@ -52,21 +50,21 @@
           },
           "relationships" : [ {
             "description" : "Loads projects + overview",
-            "destinationId" : "10",
-            "id" : "48",
+            "destinationId" : "16",
+            "id" : "54",
             "sourceId" : "5",
             "tags" : "Relationship"
           }, {
             "description" : "Uses",
-            "destinationId" : "13",
-            "id" : "49",
+            "destinationId" : "19",
+            "id" : "55",
             "sourceId" : "5",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Page",
           "technology" : "HTML + ES modules"
         }, {
-          "description" : "Main modelling workspace",
+          "description" : "Main three-pane workspace for document viewing, model editing, and graph-based navigation",
           "documentation" : { },
           "id" : "6",
           "name" : "Workspace Page",
@@ -75,150 +73,285 @@
           },
           "relationships" : [ {
             "description" : "Loads and updates project state",
-            "destinationId" : "10",
-            "id" : "50",
+            "destinationId" : "16",
+            "id" : "56",
             "sourceId" : "6",
             "tags" : "Relationship"
           }, {
-            "description" : "Loads documents/models/logs",
-            "destinationId" : "11",
-            "id" : "51",
+            "description" : "Bootstraps feature",
+            "destinationId" : "7",
+            "id" : "57",
             "sourceId" : "6",
             "tags" : "Relationship"
           }, {
-            "description" : "Uses",
-            "destinationId" : "13",
-            "id" : "52",
-            "sourceId" : "6",
-            "tags" : "Relationship"
-          }, {
-            "description" : "Generates models",
-            "destinationId" : "12",
-            "id" : "53",
+            "description" : "Hosts feature UI",
+            "destinationId" : "8",
+            "id" : "58",
             "sourceId" : "6",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Page",
           "technology" : "HTML + ES modules"
         }, {
-          "description" : "Project statistics",
+          "description" : "Initializes the workspace page, validates the selected project, lazy-loads UI modules, and starts the initial workspace load",
           "documentation" : { },
           "id" : "7",
+          "name" : "Workspace Bootstrap",
+          "properties" : {
+            "structurizr.dsl.identifier" : "ss.fe.wsBootstrap"
+          },
+          "relationships" : [ {
+            "description" : "Validates project",
+            "destinationId" : "16",
+            "id" : "59",
+            "sourceId" : "7",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Lazy-loads",
+            "destinationId" : "8",
+            "id" : "60",
+            "sourceId" : "7",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Starts initial workspace load",
+            "destinationId" : "10",
+            "id" : "61",
+            "sourceId" : "7",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component,WorkspaceFeature",
+          "technology" : "pages/workspace/init.js"
+        }, {
+          "description" : "Coordinates the workspace shell, header, document pane, model editor pane, review controls, and project graph interactions",
+          "documentation" : { },
+          "id" : "8",
+          "name" : "Workspace UI Module",
+          "properties" : {
+            "structurizr.dsl.identifier" : "ss.fe.wsUI"
+          },
+          "relationships" : [ {
+            "description" : "Reads reactive state",
+            "destinationId" : "9",
+            "id" : "62",
+            "sourceId" : "8",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Invokes user actions",
+            "destinationId" : "10",
+            "id" : "63",
+            "sourceId" : "8",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Renders selections and overlays",
+            "destinationId" : "11",
+            "id" : "64",
+            "sourceId" : "8",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Renders and edits models",
+            "destinationId" : "12",
+            "id" : "65",
+            "sourceId" : "8",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Uses",
+            "destinationId" : "19",
+            "id" : "66",
+            "sourceId" : "8",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component,WorkspaceFeature",
+          "technology" : "pages/workspace/ui/*.js"
+        }, {
+          "description" : "Client-side state for workspace context, documents, selections, models, editor state, and graph projection",
+          "documentation" : { },
+          "id" : "9",
+          "name" : "Workspace Stores",
+          "properties" : {
+            "structurizr.dsl.identifier" : "ss.fe.wsState"
+          },
+          "tags" : "Element,Component,WorkspaceFeature",
+          "technology" : "pages/workspace/store/*.js"
+        }, {
+          "description" : "Orchestrates workspace loading, document operations, model operations, version handling, and traceability actions",
+          "documentation" : { },
+          "id" : "10",
+          "name" : "Workspace Services",
+          "properties" : {
+            "structurizr.dsl.identifier" : "ss.fe.wsServices"
+          },
+          "relationships" : [ {
+            "description" : "Calls projects/documents/models/links APIs",
+            "destinationId" : "16",
+            "id" : "67",
+            "sourceId" : "10",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Generates and refines models",
+            "destinationId" : "18",
+            "id" : "68",
+            "sourceId" : "10",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Updates state",
+            "destinationId" : "9",
+            "id" : "69",
+            "sourceId" : "10",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Transforms document input",
+            "destinationId" : "11",
+            "id" : "70",
+            "sourceId" : "10",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Loads editor data and endpoints",
+            "destinationId" : "12",
+            "id" : "71",
+            "sourceId" : "10",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component,WorkspaceFeature",
+          "technology" : "pages/workspace/services/*.js"
+        }, {
+          "description" : "Provides document HTML processing, text selection handling, and overlay utilities used by the workspace page",
+          "documentation" : { },
+          "id" : "11",
+          "name" : "Document Interaction Module",
+          "properties" : {
+            "structurizr.dsl.identifier" : "ss.fe.docInteractionModule"
+          },
+          "tags" : "Element,Component,WorkspaceFeature",
+          "technology" : "modules/document/*.js"
+        }, {
+          "description" : "Provides CPEE-based model rendering, endpoint loading, XML helpers, and editor integration used by the workspace page",
+          "documentation" : { },
+          "id" : "12",
+          "name" : "Model Editor Adapter",
+          "properties" : {
+            "structurizr.dsl.identifier" : "ss.fe.modelEditorAdapter"
+          },
+          "tags" : "Element,Component,WorkspaceFeature",
+          "technology" : "modules/model/*.js"
+        }, {
+          "description" : "Statistics page for inspecting project-level usage and modeling metrics",
+          "documentation" : { },
+          "id" : "13",
           "name" : "Stats Page",
           "properties" : {
             "structurizr.dsl.identifier" : "ss.fe.statsPage"
           },
           "relationships" : [ {
             "description" : "Loads statistics",
-            "destinationId" : "10",
-            "id" : "54",
-            "sourceId" : "7",
+            "destinationId" : "16",
+            "id" : "72",
+            "sourceId" : "13",
             "tags" : "Relationship"
           }, {
             "description" : "Uses",
-            "destinationId" : "13",
-            "id" : "55",
-            "sourceId" : "7",
+            "destinationId" : "19",
+            "id" : "73",
+            "sourceId" : "13",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Page",
           "technology" : "HTML + ES modules"
         }, {
-          "description" : "Read-only document view with selection overlays",
+          "description" : "Document rendering area with text selections, overlays, and traceability markers",
           "documentation" : { },
-          "id" : "8",
+          "id" : "14",
           "name" : "Document Viewer",
           "properties" : {
             "structurizr.dsl.identifier" : "ss.fe.documentViewer"
           },
           "relationships" : [ {
             "description" : "Loads trace selections",
-            "destinationId" : "10",
-            "id" : "56",
-            "sourceId" : "8",
+            "destinationId" : "16",
+            "id" : "74",
+            "sourceId" : "14",
             "tags" : "Relationship"
           }, {
             "description" : "Loads document content",
-            "destinationId" : "11",
-            "id" : "57",
-            "sourceId" : "8",
+            "destinationId" : "17",
+            "id" : "75",
+            "sourceId" : "14",
             "tags" : "Relationship"
           }, {
             "description" : "Uses",
-            "destinationId" : "13",
-            "id" : "58",
-            "sourceId" : "8",
+            "destinationId" : "19",
+            "id" : "76",
+            "sourceId" : "14",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Page",
           "technology" : "HTML + ES modules"
         }, {
-          "description" : "Read-only model preview/renderer",
+          "description" : "Model preview and rendering area for inspecting persisted process models",
           "documentation" : { },
-          "id" : "9",
+          "id" : "15",
           "name" : "Model Viewer",
           "properties" : {
             "structurizr.dsl.identifier" : "ss.fe.modelViewer"
           },
           "relationships" : [ {
             "description" : "Loads model XML",
-            "destinationId" : "10",
-            "id" : "59",
-            "sourceId" : "9",
+            "destinationId" : "16",
+            "id" : "77",
+            "sourceId" : "15",
             "tags" : "Relationship"
           }, {
             "description" : "Uses",
-            "destinationId" : "13",
-            "id" : "60",
-            "sourceId" : "9",
+            "destinationId" : "19",
+            "id" : "78",
+            "sourceId" : "15",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Page",
           "technology" : "HTML + ES modules"
         }, {
-          "description" : "Fetch-based client for backend routes (projects/documents/models/links/logs/stats)",
+          "description" : "Fetch-based client for backend endpoints covering projects, documents, models, links, logs, and statistics",
           "documentation" : { },
-          "id" : "10",
+          "id" : "16",
           "name" : "Backend API Client",
           "properties" : {
             "structurizr.dsl.identifier" : "ss.fe.apiClient"
           },
           "relationships" : [ {
             "description" : "Requests JSON APIs",
-            "destinationId" : "15",
-            "id" : "61",
-            "sourceId" : "10",
+            "destinationId" : "21",
+            "id" : "79",
+            "sourceId" : "16",
             "tags" : "Relationship"
           }, {
             "description" : "Requests JSON APIs",
-            "destinationId" : "14",
-            "id" : "62",
-            "linkedRelationshipId" : "61",
-            "sourceId" : "10"
+            "destinationId" : "20",
+            "id" : "80",
+            "linkedRelationshipId" : "79",
+            "sourceId" : "16"
           } ],
           "tags" : "Element,Component,APIClient",
           "technology" : "Fetch API"
         }, {
-          "description" : "Loads persisted artifacts via static /persistence paths",
+          "description" : "Loads persisted artifacts such as document HTML and model XML from backend-exposed persistence paths",
           "documentation" : { },
-          "id" : "11",
+          "id" : "17",
           "name" : "Persistence File Loader",
           "properties" : {
             "structurizr.dsl.identifier" : "ss.fe.persistenceLoader"
           },
           "relationships" : [ {
-            "description" : "Reads /persistence/*",
-            "destinationId" : "38",
-            "id" : "63",
-            "sourceId" : "11",
+            "description" : "Reads",
+            "destinationId" : "44",
+            "id" : "81",
+            "sourceId" : "17",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Storage",
           "technology" : "HTTP GET"
         }, {
-          "description" : "Calls AutoBPMN.AI LLM endpoint for model generation",
+          "description" : "Invokes the AutoBPMN.AI endpoint to generate or refine process models from selected text and prompts",
           "documentation" : { },
-          "id" : "12",
+          "id" : "18",
           "name" : "LLM Client",
           "properties" : {
             "structurizr.dsl.identifier" : "ss.fe.llmClient"
@@ -226,16 +359,16 @@
           "relationships" : [ {
             "description" : "Requests model generation",
             "destinationId" : "2",
-            "id" : "65",
-            "sourceId" : "12",
+            "id" : "83",
+            "sourceId" : "18",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,LLMClient",
           "technology" : "HTTP (multipart/form-data)"
         }, {
-          "description" : "Shared DOM/URL/helpers used by pages",
+          "description" : "Shared helper modules for DOM manipulation, URL handling, and common frontend logic",
           "documentation" : { },
-          "id" : "13",
+          "id" : "19",
           "name" : "Shared Utilities",
           "properties" : {
             "structurizr.dsl.identifier" : "ss.fe.sharedUtils"
@@ -243,6 +376,7 @@
           "tags" : "Element,Component,Shared",
           "technology" : "JavaScript modules"
         } ],
+        "description" : "Browser-based user interface",
         "documentation" : { },
         "id" : "4",
         "name" : "Frontend",
@@ -252,517 +386,517 @@
         "relationships" : [ {
           "description" : "Makes API requests to",
           "destinationId" : "2",
-          "id" : "42",
+          "id" : "48",
           "sourceId" : "4",
           "tags" : "Relationship"
         }, {
-          "description" : "Reads from and writes to",
-          "destinationId" : "14",
-          "id" : "44",
+          "description" : "Makes API requests to",
+          "destinationId" : "20",
+          "id" : "50",
           "sourceId" : "4",
           "tags" : "Relationship"
         }, {
           "description" : "Calls HTTP API",
-          "destinationId" : "15",
-          "id" : "47",
+          "destinationId" : "21",
+          "id" : "53",
           "sourceId" : "4",
           "tags" : "Relationship"
         }, {
-          "description" : "Reads /persistence/*",
-          "destinationId" : "38",
-          "id" : "64",
-          "linkedRelationshipId" : "63",
+          "description" : "Reads",
+          "destinationId" : "44",
+          "id" : "82",
+          "linkedRelationshipId" : "81",
           "sourceId" : "4"
         } ],
         "tags" : "Element,Container,FE",
-        "technology" : "Static HTML + ES modules"
+        "technology" : "JavaScript, HTML, CSS"
       }, {
         "components" : [ {
-          "description" : "HTTP API server and static file serving",
+          "description" : "Single server process that serves the frontend, exposes REST APIs, and publishes persisted artifacts",
           "documentation" : { },
-          "id" : "15",
+          "id" : "21",
           "name" : "Fastify App",
           "properties" : {
             "structurizr.dsl.identifier" : "ss.be.api"
           },
           "relationships" : [ {
             "description" : "Registers",
-            "destinationId" : "16",
-            "id" : "66",
-            "sourceId" : "15",
+            "destinationId" : "22",
+            "id" : "84",
+            "sourceId" : "21",
             "tags" : "Relationship"
           }, {
             "description" : "Registers",
-            "destinationId" : "19",
-            "id" : "67",
-            "sourceId" : "15",
+            "destinationId" : "25",
+            "id" : "85",
+            "sourceId" : "21",
             "tags" : "Relationship"
           }, {
             "description" : "Registers",
-            "destinationId" : "24",
-            "id" : "68",
-            "sourceId" : "15",
+            "destinationId" : "30",
+            "id" : "86",
+            "sourceId" : "21",
             "tags" : "Relationship"
           }, {
             "description" : "Registers",
-            "destinationId" : "32",
-            "id" : "69",
-            "sourceId" : "15",
+            "destinationId" : "38",
+            "id" : "87",
+            "sourceId" : "21",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,API",
           "technology" : "Node.js (Fastify)"
         }, {
-          "description" : "Routes under /projects",
+          "description" : "HTTP routes under /projects for project lifecycle and workspace aggregation",
           "documentation" : { },
-          "id" : "16",
+          "id" : "22",
           "name" : "Projects Routes",
           "properties" : {
             "structurizr.dsl.identifier" : "ss.be.projectsRoutes"
           },
           "relationships" : [ {
             "description" : "Invokes",
-            "destinationId" : "17",
-            "id" : "70",
-            "sourceId" : "16",
+            "destinationId" : "23",
+            "id" : "88",
+            "sourceId" : "22",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Routes",
           "technology" : "Fastify plugin"
         }, {
-          "description" : "Project orchestration",
+          "description" : "Coordinates project operations and aggregates related documents, models, and statistics",
           "documentation" : { },
-          "id" : "17",
+          "id" : "23",
           "name" : "Projects Service",
           "properties" : {
             "structurizr.dsl.identifier" : "ss.be.projectsService"
           },
           "relationships" : [ {
             "description" : "Reads/writes",
-            "destinationId" : "18",
-            "id" : "71",
-            "sourceId" : "17",
+            "destinationId" : "24",
+            "id" : "89",
+            "sourceId" : "23",
             "tags" : "Relationship"
           }, {
             "description" : "Queries",
-            "destinationId" : "20",
-            "id" : "72",
-            "sourceId" : "17",
+            "destinationId" : "26",
+            "id" : "90",
+            "sourceId" : "23",
             "tags" : "Relationship"
           }, {
             "description" : "Queries",
-            "destinationId" : "25",
-            "id" : "73",
-            "sourceId" : "17",
+            "destinationId" : "31",
+            "id" : "91",
+            "sourceId" : "23",
             "tags" : "Relationship"
           }, {
             "description" : "Logs events",
-            "destinationId" : "35",
-            "id" : "74",
-            "sourceId" : "17",
+            "destinationId" : "41",
+            "id" : "92",
+            "sourceId" : "23",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Service",
           "technology" : "JavaScript module"
         }, {
-          "description" : "SQL access for projects",
+          "description" : "Repository for project metadata stored in SQLite",
           "documentation" : { },
-          "id" : "18",
+          "id" : "24",
           "name" : "Projects Repository",
           "properties" : {
             "structurizr.dsl.identifier" : "ss.be.projectsRepo"
           },
           "relationships" : [ {
             "description" : "Queries",
-            "destinationId" : "39",
-            "id" : "94",
-            "sourceId" : "18",
+            "destinationId" : "45",
+            "id" : "112",
+            "sourceId" : "24",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Repository",
           "technology" : "better-sqlite3"
         }, {
-          "description" : "Routes under /documents",
+          "description" : "HTTP routes under /documents for upload, versioning, metadata updates, and restoration",
           "documentation" : { },
-          "id" : "19",
+          "id" : "25",
           "name" : "Documents Routes",
           "properties" : {
             "structurizr.dsl.identifier" : "ss.be.documentsRoutes"
           },
           "relationships" : [ {
             "description" : "Invokes",
-            "destinationId" : "20",
-            "id" : "75",
-            "sourceId" : "19",
+            "destinationId" : "26",
+            "id" : "93",
+            "sourceId" : "25",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Routes",
           "technology" : "Fastify plugin"
         }, {
-          "description" : "Document versions, content and metadata",
+          "description" : "Handles document lifecycle, versioning, content persistence, and cascaded updates to linked models",
           "documentation" : { },
-          "id" : "20",
+          "id" : "26",
           "name" : "Documents Service",
           "properties" : {
             "structurizr.dsl.identifier" : "ss.be.documentsService"
           },
           "relationships" : [ {
             "description" : "Reads/writes",
-            "destinationId" : "21",
-            "id" : "76",
-            "sourceId" : "20",
+            "destinationId" : "27",
+            "id" : "94",
+            "sourceId" : "26",
             "tags" : "Relationship"
           }, {
             "description" : "Reads/writes",
-            "destinationId" : "22",
-            "id" : "77",
-            "sourceId" : "20",
+            "destinationId" : "28",
+            "id" : "95",
+            "sourceId" : "26",
             "tags" : "Relationship"
           }, {
             "description" : "Reads/writes",
-            "destinationId" : "23",
-            "id" : "78",
-            "sourceId" : "20",
+            "destinationId" : "29",
+            "id" : "96",
+            "sourceId" : "26",
             "tags" : "Relationship"
           }, {
             "description" : "Copies links",
-            "destinationId" : "33",
-            "id" : "79",
-            "sourceId" : "20",
+            "destinationId" : "39",
+            "id" : "97",
+            "sourceId" : "26",
             "tags" : "Relationship"
           }, {
             "description" : "Triggers rewrite/cascade",
-            "destinationId" : "25",
-            "id" : "80",
-            "sourceId" : "20",
+            "destinationId" : "31",
+            "id" : "98",
+            "sourceId" : "26",
             "tags" : "Relationship"
           }, {
             "description" : "Logs events",
-            "destinationId" : "35",
-            "id" : "81",
-            "sourceId" : "20",
+            "destinationId" : "41",
+            "id" : "99",
+            "sourceId" : "26",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Service",
           "technology" : "JavaScript module"
         }, {
-          "description" : "SQL access for documents",
+          "description" : "Repository for document metadata and latest-version pointers",
           "documentation" : { },
-          "id" : "21",
+          "id" : "27",
           "name" : "Documents Repository",
           "properties" : {
             "structurizr.dsl.identifier" : "ss.be.documentsRepo"
           },
           "relationships" : [ {
             "description" : "Queries",
-            "destinationId" : "39",
-            "id" : "95",
-            "sourceId" : "21",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component,Repository",
-          "technology" : "better-sqlite3"
-        }, {
-          "description" : "SQL access for document_versions",
-          "documentation" : { },
-          "id" : "22",
-          "name" : "Document Versions Repository",
-          "properties" : {
-            "structurizr.dsl.identifier" : "ss.be.documentVersionsRepo"
-          },
-          "relationships" : [ {
-            "description" : "Queries",
-            "destinationId" : "39",
-            "id" : "96",
-            "sourceId" : "22",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component,Repository",
-          "technology" : "better-sqlite3"
-        }, {
-          "description" : "Persist document HTML in /persistence/documents",
-          "documentation" : { },
-          "id" : "23",
-          "name" : "Documents Storage",
-          "properties" : {
-            "structurizr.dsl.identifier" : "ss.be.documentsStorage"
-          },
-          "relationships" : [ {
-            "description" : "Reads/writes",
-            "destinationId" : "38",
-            "id" : "103",
-            "sourceId" : "23",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component,Storage",
-          "technology" : "Filesystem"
-        }, {
-          "description" : "Routes under /models",
-          "documentation" : { },
-          "id" : "24",
-          "name" : "Models Routes",
-          "properties" : {
-            "structurizr.dsl.identifier" : "ss.be.modelsRoutes"
-          },
-          "relationships" : [ {
-            "description" : "Invokes",
-            "destinationId" : "25",
-            "id" : "82",
-            "sourceId" : "24",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component,Routes",
-          "technology" : "Fastify plugin"
-        }, {
-          "description" : "Model/version lifecycle and generation attempt tracking",
-          "documentation" : { },
-          "id" : "25",
-          "name" : "Models Service",
-          "properties" : {
-            "structurizr.dsl.identifier" : "ss.be.modelsService"
-          },
-          "relationships" : [ {
-            "description" : "Reads/writes",
-            "destinationId" : "26",
-            "id" : "83",
-            "sourceId" : "25",
-            "tags" : "Relationship"
-          }, {
-            "description" : "Reads/writes",
-            "destinationId" : "27",
-            "id" : "84",
-            "sourceId" : "25",
-            "tags" : "Relationship"
-          }, {
-            "description" : "Reads/writes",
-            "destinationId" : "28",
-            "id" : "85",
-            "sourceId" : "25",
-            "tags" : "Relationship"
-          }, {
-            "description" : "Reads/writes",
-            "destinationId" : "29",
-            "id" : "86",
-            "sourceId" : "25",
-            "tags" : "Relationship"
-          }, {
-            "description" : "Reads/writes",
-            "destinationId" : "30",
-            "id" : "87",
-            "sourceId" : "25",
-            "tags" : "Relationship"
-          }, {
-            "description" : "Reads/writes",
-            "destinationId" : "31",
-            "id" : "88",
-            "sourceId" : "25",
-            "tags" : "Relationship"
-          }, {
-            "description" : "Reads/writes",
-            "destinationId" : "33",
-            "id" : "89",
-            "sourceId" : "25",
-            "tags" : "Relationship"
-          }, {
-            "description" : "Logs events",
-            "destinationId" : "35",
-            "id" : "90",
-            "sourceId" : "25",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component,Service",
-          "technology" : "JavaScript module"
-        }, {
-          "description" : "SQL access for models",
-          "documentation" : { },
-          "id" : "26",
-          "name" : "Models Repository",
-          "properties" : {
-            "structurizr.dsl.identifier" : "ss.be.modelsRepo"
-          },
-          "relationships" : [ {
-            "description" : "Queries",
-            "destinationId" : "39",
-            "id" : "97",
-            "sourceId" : "26",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component,Repository",
-          "technology" : "better-sqlite3"
-        }, {
-          "description" : "SQL access for model_versions",
-          "documentation" : { },
-          "id" : "27",
-          "name" : "Model Versions Repository",
-          "properties" : {
-            "structurizr.dsl.identifier" : "ss.be.modelVersionsRepo"
-          },
-          "relationships" : [ {
-            "description" : "Queries",
-            "destinationId" : "39",
-            "id" : "98",
+            "destinationId" : "45",
+            "id" : "113",
             "sourceId" : "27",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Repository",
           "technology" : "better-sqlite3"
         }, {
-          "description" : "SQL access for model_generation_attempts",
+          "description" : "Repository for immutable document version records",
           "documentation" : { },
           "id" : "28",
-          "name" : "Model Generation Attempts Repository",
+          "name" : "Document Versions Repository",
           "properties" : {
-            "structurizr.dsl.identifier" : "ss.be.modelGenerationAttemptsRepo"
+            "structurizr.dsl.identifier" : "ss.be.documentVersionsRepo"
           },
           "relationships" : [ {
             "description" : "Queries",
-            "destinationId" : "39",
-            "id" : "99",
+            "destinationId" : "45",
+            "id" : "114",
             "sourceId" : "28",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Repository",
           "technology" : "better-sqlite3"
         }, {
-          "description" : "SQL access for model_version_events",
+          "description" : "Filesystem storage for serialized document content in /persistence/documents",
           "documentation" : { },
           "id" : "29",
-          "name" : "Model Version Events Repository",
+          "name" : "Documents Storage",
           "properties" : {
-            "structurizr.dsl.identifier" : "ss.be.modelVersionEventsRepo"
-          },
-          "relationships" : [ {
-            "description" : "Queries",
-            "destinationId" : "39",
-            "id" : "100",
-            "sourceId" : "29",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component,Repository",
-          "technology" : "better-sqlite3"
-        }, {
-          "description" : "SQL access for model_subprocesses",
-          "documentation" : { },
-          "id" : "30",
-          "name" : "Model Subprocesses Repository",
-          "properties" : {
-            "structurizr.dsl.identifier" : "ss.be.modelSubprocessesRepo"
-          },
-          "relationships" : [ {
-            "description" : "Queries",
-            "destinationId" : "39",
-            "id" : "101",
-            "sourceId" : "30",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component,Repository",
-          "technology" : "better-sqlite3"
-        }, {
-          "description" : "Persist model XML in /persistence/models",
-          "documentation" : { },
-          "id" : "31",
-          "name" : "Models Storage",
-          "properties" : {
-            "structurizr.dsl.identifier" : "ss.be.modelsStorage"
+            "structurizr.dsl.identifier" : "ss.be.documentsStorage"
           },
           "relationships" : [ {
             "description" : "Reads/writes",
-            "destinationId" : "38",
-            "id" : "104",
-            "sourceId" : "31",
+            "destinationId" : "44",
+            "id" : "121",
+            "sourceId" : "29",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Storage",
           "technology" : "Filesystem"
         }, {
-          "description" : "Routes under /document-model-links",
+          "description" : "HTTP routes under /models for model creation, versioning, updates, subprocess links, and generation logging",
           "documentation" : { },
-          "id" : "32",
-          "name" : "Document-Model Links Routes",
+          "id" : "30",
+          "name" : "Models Routes",
           "properties" : {
-            "structurizr.dsl.identifier" : "ss.be.linksRoutes"
+            "structurizr.dsl.identifier" : "ss.be.modelsRoutes"
           },
           "relationships" : [ {
             "description" : "Invokes",
-            "destinationId" : "33",
-            "id" : "91",
-            "sourceId" : "32",
+            "destinationId" : "31",
+            "id" : "100",
+            "sourceId" : "30",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Routes",
           "technology" : "Fastify plugin"
         }, {
-          "description" : "Manage links and selection history",
+          "description" : "Handles model lifecycle, version management, XML enrichment, subprocess binding, and generation-attempt tracking",
           "documentation" : { },
-          "id" : "33",
-          "name" : "Document-Model Links Service",
+          "id" : "31",
+          "name" : "Models Service",
           "properties" : {
-            "structurizr.dsl.identifier" : "ss.be.linksService"
+            "structurizr.dsl.identifier" : "ss.be.modelsService"
           },
           "relationships" : [ {
             "description" : "Reads/writes",
+            "destinationId" : "32",
+            "id" : "101",
+            "sourceId" : "31",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Reads/writes",
+            "destinationId" : "33",
+            "id" : "102",
+            "sourceId" : "31",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Reads/writes",
             "destinationId" : "34",
-            "id" : "92",
-            "sourceId" : "33",
+            "id" : "103",
+            "sourceId" : "31",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Reads/writes",
+            "destinationId" : "35",
+            "id" : "104",
+            "sourceId" : "31",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Reads/writes",
+            "destinationId" : "36",
+            "id" : "105",
+            "sourceId" : "31",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Reads/writes",
+            "destinationId" : "37",
+            "id" : "106",
+            "sourceId" : "31",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Reads/writes",
+            "destinationId" : "39",
+            "id" : "107",
+            "sourceId" : "31",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Logs events",
+            "destinationId" : "41",
+            "id" : "108",
+            "sourceId" : "31",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Service",
           "technology" : "JavaScript module"
         }, {
-          "description" : "SQL access for linking + selections",
+          "description" : "Repository for model metadata and latest-version pointers",
           "documentation" : { },
-          "id" : "34",
-          "name" : "Document-Model Links Repository",
+          "id" : "32",
+          "name" : "Models Repository",
           "properties" : {
-            "structurizr.dsl.identifier" : "ss.be.linksRepo"
+            "structurizr.dsl.identifier" : "ss.be.modelsRepo"
           },
           "relationships" : [ {
             "description" : "Queries",
-            "destinationId" : "39",
-            "id" : "102",
+            "destinationId" : "45",
+            "id" : "115",
+            "sourceId" : "32",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component,Repository",
+          "technology" : "better-sqlite3"
+        }, {
+          "description" : "Repository for immutable model version records",
+          "documentation" : { },
+          "id" : "33",
+          "name" : "Model Versions Repository",
+          "properties" : {
+            "structurizr.dsl.identifier" : "ss.be.modelVersionsRepo"
+          },
+          "relationships" : [ {
+            "description" : "Queries",
+            "destinationId" : "45",
+            "id" : "116",
+            "sourceId" : "33",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component,Repository",
+          "technology" : "better-sqlite3"
+        }, {
+          "description" : "Repository for persisted generation-attempt metadata and outcomes",
+          "documentation" : { },
+          "id" : "34",
+          "name" : "Model Generation Attempts Repository",
+          "properties" : {
+            "structurizr.dsl.identifier" : "ss.be.modelGenerationAttemptsRepo"
+          },
+          "relationships" : [ {
+            "description" : "Queries",
+            "destinationId" : "45",
+            "id" : "117",
             "sourceId" : "34",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Repository",
           "technology" : "better-sqlite3"
         }, {
-          "description" : "Append-only project log events",
+          "description" : "Repository for manual and automatic model version lifecycle events",
           "documentation" : { },
           "id" : "35",
+          "name" : "Model Version Events Repository",
+          "properties" : {
+            "structurizr.dsl.identifier" : "ss.be.modelVersionEventsRepo"
+          },
+          "relationships" : [ {
+            "description" : "Queries",
+            "destinationId" : "45",
+            "id" : "118",
+            "sourceId" : "35",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component,Repository",
+          "technology" : "better-sqlite3"
+        }, {
+          "description" : "Repository for task-to-subprocess bindings between models",
+          "documentation" : { },
+          "id" : "36",
+          "name" : "Model Subprocesses Repository",
+          "properties" : {
+            "structurizr.dsl.identifier" : "ss.be.modelSubprocessesRepo"
+          },
+          "relationships" : [ {
+            "description" : "Queries",
+            "destinationId" : "45",
+            "id" : "119",
+            "sourceId" : "36",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component,Repository",
+          "technology" : "better-sqlite3"
+        }, {
+          "description" : "Filesystem storage for serialized model XML in /persistence/models",
+          "documentation" : { },
+          "id" : "37",
+          "name" : "Models Storage",
+          "properties" : {
+            "structurizr.dsl.identifier" : "ss.be.modelsStorage"
+          },
+          "relationships" : [ {
+            "description" : "Reads/writes",
+            "destinationId" : "44",
+            "id" : "122",
+            "sourceId" : "37",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component,Storage",
+          "technology" : "Filesystem"
+        }, {
+          "description" : "HTTP routes under /document-model-links for traceability links and selection operations",
+          "documentation" : { },
+          "id" : "38",
+          "name" : "Document-Model Links Routes",
+          "properties" : {
+            "structurizr.dsl.identifier" : "ss.be.linksRoutes"
+          },
+          "relationships" : [ {
+            "description" : "Invokes",
+            "destinationId" : "39",
+            "id" : "109",
+            "sourceId" : "38",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component,Routes",
+          "technology" : "Fastify plugin"
+        }, {
+          "description" : "Maintains document-model traceability links, current selections, and selection history",
+          "documentation" : { },
+          "id" : "39",
+          "name" : "Document-Model Links Service",
+          "properties" : {
+            "structurizr.dsl.identifier" : "ss.be.linksService"
+          },
+          "relationships" : [ {
+            "description" : "Reads/writes",
+            "destinationId" : "40",
+            "id" : "110",
+            "sourceId" : "39",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component,Service",
+          "technology" : "JavaScript module"
+        }, {
+          "description" : "Repository for links, selections, and their history stored in SQLite",
+          "documentation" : { },
+          "id" : "40",
+          "name" : "Document-Model Links Repository",
+          "properties" : {
+            "structurizr.dsl.identifier" : "ss.be.linksRepo"
+          },
+          "relationships" : [ {
+            "description" : "Queries",
+            "destinationId" : "45",
+            "id" : "120",
+            "sourceId" : "40",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component,Repository",
+          "technology" : "better-sqlite3"
+        }, {
+          "description" : "Writes append-only project event logs for auditing and analysis",
+          "documentation" : { },
+          "id" : "41",
           "name" : "Logs Service",
           "properties" : {
             "structurizr.dsl.identifier" : "ss.be.logsService"
           },
           "relationships" : [ {
             "description" : "Appends",
-            "destinationId" : "36",
-            "id" : "93",
-            "sourceId" : "35",
+            "destinationId" : "42",
+            "id" : "111",
+            "sourceId" : "41",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Service",
           "technology" : "JavaScript module"
         }, {
-          "description" : "Append to /persistence/logs",
+          "description" : "Filesystem-based persistence for append-only log files in /persistence/logs",
           "documentation" : { },
-          "id" : "36",
+          "id" : "42",
           "name" : "Logs Repository",
           "properties" : {
             "structurizr.dsl.identifier" : "ss.be.logsRepo"
           },
           "relationships" : [ {
             "description" : "Reads/writes",
-            "destinationId" : "38",
-            "id" : "105",
-            "sourceId" : "36",
+            "destinationId" : "44",
+            "id" : "123",
+            "sourceId" : "42",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Repository",
           "technology" : "Filesystem"
         }, {
-          "description" : "Shared SQL repository utilities",
+          "description" : "Shared repository utilities for common SQLite access patterns",
           "documentation" : { },
-          "id" : "37",
+          "id" : "43",
           "name" : "Base SQL Repository",
           "properties" : {
             "structurizr.dsl.identifier" : "ss.be.baseSqlRepo"
@@ -770,45 +904,48 @@
           "tags" : "Element,Component,Shared",
           "technology" : "JavaScript module"
         } ],
+        "description" : "Server-side application exposing APIs and managing persistence",
         "documentation" : { },
-        "id" : "14",
+        "id" : "20",
         "name" : "Backend",
         "properties" : {
           "structurizr.dsl.identifier" : "ss.be"
         },
         "relationships" : [ {
           "description" : "Reads from and writes to",
-          "destinationId" : "38",
-          "id" : "45",
-          "sourceId" : "14",
+          "destinationId" : "44",
+          "id" : "51",
+          "sourceId" : "20",
           "tags" : "Relationship"
         }, {
           "description" : "Reads from and writes to",
-          "destinationId" : "39",
-          "id" : "46",
-          "sourceId" : "14",
+          "destinationId" : "45",
+          "id" : "52",
+          "sourceId" : "20",
           "tags" : "Relationship"
         } ],
         "tags" : "Element,Container,BE",
         "technology" : "Node.js (Fastify)"
       }, {
+        "description" : "Local file system storage for documents, models, and logs",
         "documentation" : { },
-        "id" : "38",
-        "name" : "Directory",
+        "id" : "44",
+        "name" : "File Storage",
         "properties" : {
           "structurizr.dsl.identifier" : "ss.fs"
         },
         "tags" : "Element,Container,Directory",
-        "technology" : "Local filesystem (/persistence)"
+        "technology" : "Local file system"
       }, {
+        "description" : "Structured store for project, document metadata, model metadata, document-model links, statistic data, ect.",
         "documentation" : { },
-        "id" : "39",
+        "id" : "45",
         "name" : "Database",
         "properties" : {
           "structurizr.dsl.identifier" : "ss.db"
         },
         "tags" : "Element,Container,Database",
-        "technology" : "SQLite (better-sqlite3)"
+        "technology" : "SQLite"
       } ],
       "description" : "Supports the modeling process from document upload to model creation, modification and management",
       "documentation" : { },
@@ -820,24 +957,24 @@
       "relationships" : [ {
         "description" : "Makes API requests to",
         "destinationId" : "2",
-        "id" : "43",
-        "linkedRelationshipId" : "42",
+        "id" : "49",
+        "linkedRelationshipId" : "48",
         "sourceId" : "3"
       } ],
       "tags" : "Element,Software System"
     } ]
   },
-  "name" : "Name",
+  "name" : "Document-Based Process Modeler",
   "properties" : {
+    "structurizr.inspection.error" : "81",
+    "structurizr.dsl" : "d29ya3NwYWNlICJEb2N1bWVudC1CYXNlZCBQcm9jZXNzIE1vZGVsZXIiICJTdHJ1Y3R1cml6ciBtb2RlbCBvZiB0aGUgZG9jdW1lbnQtYmFzZWQgcHJvY2VzcyBtb2RlbGluZyBzeXN0ZW0gYXJjaGl0ZWN0dXJlIiB7CgogICAgIWlkZW50aWZpZXJzIGhpZXJhcmNoaWNhbAoKCgogICAgbW9kZWwgewogICAgICAgdSA9IHBlcnNvbiAiVXNlciIgIkEgbW9kZWxpbmcgb3IgZG9tYWluIGV4cGVydCIKICAgICAgICBsbG0gPSBzb2Z0d2FyZVN5c3RlbSAiQXV0b0JQTU4uQUlcbkxMTSBTZXJ2aWNlIiAiUHJvdmlkZXMgTExNIFJFU1Qgc2VydmljZSBmb3IgcHJvY2VzcyBtb2RlbCBjcmVhdGlvbiBhbmQgcmVkZXNpZ24iICJIVFRQUyBBUEkiIHsKICAgICAgICAgICAgdGFncyAiTExNU2VydmljZSIgCiAgICAgICAgfQogICAgICAgIHNzID0gc29mdHdhcmVTeXN0ZW0gIkRvY3VtZW50LUJhc2VkIFByb2Nlc3MgTW9kZWxlciIgIlN1cHBvcnRzIHRoZSBtb2RlbGluZyBwcm9jZXNzIGZyb20gZG9jdW1lbnQgdXBsb2FkIHRvIG1vZGVsIGNyZWF0aW9uLCBtb2RpZmljYXRpb24gYW5kIG1hbmFnZW1lbnQiIHsKICAgICAgICAgICAgZmUgPSBjb250YWluZXIgIkZyb250ZW5kIiAiQnJvd3Nlci1iYXNlZCB1c2VyIGludGVyZmFjZSIgewogICAgICAgICAgICAgICAgdGVjaG5vbG9neSAiSmF2YVNjcmlwdCwgSFRNTCwgQ1NTIgogICAgICAgICAgICAgICAgdGFncyAiRkUiCgogICAgICAgICAgICAgICAgaG9tZVBhZ2UgPSBjb21wb25lbnQgIkhvbWUgUGFnZSIgIkxhbmRpbmcgcGFnZSBmb3IgcHJvamVjdCBjcmVhdGlvbiwgcHJvamVjdCBicm93c2luZywgYW5kIGhpZ2gtbGV2ZWwgb3ZlcnZpZXcgc3RhdGlzdGljcyIgIkhUTUwgKyBFUyBtb2R1bGVzIiB7CiAgICAgICAgICAgICAgICAgICAgdGFncyAiUGFnZSIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIHdvcmtzcGFjZVBhZ2UgPSBjb21wb25lbnQgIldvcmtzcGFjZSBQYWdlIiAiTWFpbiB0aHJlZS1wYW5lIHdvcmtzcGFjZSBmb3IgZG9jdW1lbnQgdmlld2luZywgbW9kZWwgZWRpdGluZywgYW5kIGdyYXBoLWJhc2VkIG5hdmlnYXRpb24iICJIVE1MICsgRVMgbW9kdWxlcyIgewogICAgICAgICAgICAgICAgICAgIHRhZ3MgIlBhZ2UiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICB3c0Jvb3RzdHJhcCA9IGNvbXBvbmVudCAiV29ya3NwYWNlIEJvb3RzdHJhcCIgIkluaXRpYWxpemVzIHRoZSB3b3Jrc3BhY2UgcGFnZSwgdmFsaWRhdGVzIHRoZSBzZWxlY3RlZCBwcm9qZWN0LCBsYXp5LWxvYWRzIFVJIG1vZHVsZXMsIGFuZCBzdGFydHMgdGhlIGluaXRpYWwgd29ya3NwYWNlIGxvYWQiICJwYWdlcy93b3Jrc3BhY2UvaW5pdC5qcyIgewogICAgICAgICAgICAgICAgICAgIHRhZ3MgIldvcmtzcGFjZUZlYXR1cmUiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICB3c1VJID0gY29tcG9uZW50ICJXb3Jrc3BhY2UgVUkgTW9kdWxlIiAiQ29vcmRpbmF0ZXMgdGhlIHdvcmtzcGFjZSBzaGVsbCwgaGVhZGVyLCBkb2N1bWVudCBwYW5lLCBtb2RlbCBlZGl0b3IgcGFuZSwgcmV2aWV3IGNvbnRyb2xzLCBhbmQgcHJvamVjdCBncmFwaCBpbnRlcmFjdGlvbnMiICJwYWdlcy93b3Jrc3BhY2UvdWkvKi5qcyIgewogICAgICAgICAgICAgICAgICAgIHRhZ3MgIldvcmtzcGFjZUZlYXR1cmUiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICB3c1N0YXRlID0gY29tcG9uZW50ICJXb3Jrc3BhY2UgU3RvcmVzIiAiQ2xpZW50LXNpZGUgc3RhdGUgZm9yIHdvcmtzcGFjZSBjb250ZXh0LCBkb2N1bWVudHMsIHNlbGVjdGlvbnMsIG1vZGVscywgZWRpdG9yIHN0YXRlLCBhbmQgZ3JhcGggcHJvamVjdGlvbiIgInBhZ2VzL3dvcmtzcGFjZS9zdG9yZS8qLmpzIiB7CiAgICAgICAgICAgICAgICAgICAgdGFncyAiV29ya3NwYWNlRmVhdHVyZSIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIHdzU2VydmljZXMgPSBjb21wb25lbnQgIldvcmtzcGFjZSBTZXJ2aWNlcyIgIk9yY2hlc3RyYXRlcyB3b3Jrc3BhY2UgbG9hZGluZywgZG9jdW1lbnQgb3BlcmF0aW9ucywgbW9kZWwgb3BlcmF0aW9ucywgdmVyc2lvbiBoYW5kbGluZywgYW5kIHRyYWNlYWJpbGl0eSBhY3Rpb25zIiAicGFnZXMvd29ya3NwYWNlL3NlcnZpY2VzLyouanMiIHsKICAgICAgICAgICAgICAgICAgICB0YWdzICJXb3Jrc3BhY2VGZWF0dXJlIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgZG9jSW50ZXJhY3Rpb25Nb2R1bGUgPSBjb21wb25lbnQgIkRvY3VtZW50IEludGVyYWN0aW9uIE1vZHVsZSIgIlByb3ZpZGVzIGRvY3VtZW50IEhUTUwgcHJvY2Vzc2luZywgdGV4dCBzZWxlY3Rpb24gaGFuZGxpbmcsIGFuZCBvdmVybGF5IHV0aWxpdGllcyB1c2VkIGJ5IHRoZSB3b3Jrc3BhY2UgcGFnZSIgIm1vZHVsZXMvZG9jdW1lbnQvKi5qcyIgewogICAgICAgICAgICAgICAgICAgIHRhZ3MgIldvcmtzcGFjZUZlYXR1cmUiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICBtb2RlbEVkaXRvckFkYXB0ZXIgPSBjb21wb25lbnQgIk1vZGVsIEVkaXRvciBBZGFwdGVyIiAiUHJvdmlkZXMgQ1BFRS1iYXNlZCBtb2RlbCByZW5kZXJpbmcsIGVuZHBvaW50IGxvYWRpbmcsIFhNTCBoZWxwZXJzLCBhbmQgZWRpdG9yIGludGVncmF0aW9uIHVzZWQgYnkgdGhlIHdvcmtzcGFjZSBwYWdlIiAibW9kdWxlcy9tb2RlbC8qLmpzIiB7CiAgICAgICAgICAgICAgICAgICAgdGFncyAiV29ya3NwYWNlRmVhdHVyZSIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIHN0YXRzUGFnZSA9IGNvbXBvbmVudCAiU3RhdHMgUGFnZSIgIlN0YXRpc3RpY3MgcGFnZSBmb3IgaW5zcGVjdGluZyBwcm9qZWN0LWxldmVsIHVzYWdlIGFuZCBtb2RlbGluZyBtZXRyaWNzIiAiSFRNTCArIEVTIG1vZHVsZXMiIHsKICAgICAgICAgICAgICAgICAgICB0YWdzICJQYWdlIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgZG9jdW1lbnRWaWV3ZXIgPSBjb21wb25lbnQgIkRvY3VtZW50IFZpZXdlciIgIkRvY3VtZW50IHJlbmRlcmluZyBhcmVhIHdpdGggdGV4dCBzZWxlY3Rpb25zLCBvdmVybGF5cywgYW5kIHRyYWNlYWJpbGl0eSBtYXJrZXJzIiAiSFRNTCArIEVTIG1vZHVsZXMiIHsKICAgICAgICAgICAgICAgICAgICB0YWdzICJQYWdlIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgbW9kZWxWaWV3ZXIgPSBjb21wb25lbnQgIk1vZGVsIFZpZXdlciIgIk1vZGVsIHByZXZpZXcgYW5kIHJlbmRlcmluZyBhcmVhIGZvciBpbnNwZWN0aW5nIHBlcnNpc3RlZCBwcm9jZXNzIG1vZGVscyIgIkhUTUwgKyBFUyBtb2R1bGVzIiB7CiAgICAgICAgICAgICAgICAgICAgdGFncyAiUGFnZSIKICAgICAgICAgICAgICAgIH0KCiAgICAgICAgICAgICAgICBhcGlDbGllbnQgPSBjb21wb25lbnQgIkJhY2tlbmQgQVBJIENsaWVudCIgIkZldGNoLWJhc2VkIGNsaWVudCBmb3IgYmFja2VuZCBlbmRwb2ludHMgY292ZXJpbmcgcHJvamVjdHMsIGRvY3VtZW50cywgbW9kZWxzLCBsaW5rcywgbG9ncywgYW5kIHN0YXRpc3RpY3MiICJGZXRjaCBBUEkiIHsKICAgICAgICAgICAgICAgICAgICB0YWdzICJBUElDbGllbnQiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICBwZXJzaXN0ZW5jZUxvYWRlciA9IGNvbXBvbmVudCAiUGVyc2lzdGVuY2UgRmlsZSBMb2FkZXIiICJMb2FkcyBwZXJzaXN0ZWQgYXJ0aWZhY3RzIHN1Y2ggYXMgZG9jdW1lbnQgSFRNTCBhbmQgbW9kZWwgWE1MIGZyb20gYmFja2VuZC1leHBvc2VkIHBlcnNpc3RlbmNlIHBhdGhzIiAiSFRUUCBHRVQiIHsKICAgICAgICAgICAgICAgICAgICB0YWdzICJTdG9yYWdlIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgbGxtQ2xpZW50ID0gY29tcG9uZW50ICJMTE0gQ2xpZW50IiAiSW52b2tlcyB0aGUgQXV0b0JQTU4uQUkgZW5kcG9pbnQgdG8gZ2VuZXJhdGUgb3IgcmVmaW5lIHByb2Nlc3MgbW9kZWxzIGZyb20gc2VsZWN0ZWQgdGV4dCBhbmQgcHJvbXB0cyIgIkhUVFAgKG11bHRpcGFydC9mb3JtLWRhdGEpIiB7CiAgICAgICAgICAgICAgICAgICAgdGFncyAiTExNQ2xpZW50IgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgc2hhcmVkVXRpbHMgPSBjb21wb25lbnQgIlNoYXJlZCBVdGlsaXRpZXMiICJTaGFyZWQgaGVscGVyIG1vZHVsZXMgZm9yIERPTSBtYW5pcHVsYXRpb24sIFVSTCBoYW5kbGluZywgYW5kIGNvbW1vbiBmcm9udGVuZCBsb2dpYyIgIkphdmFTY3JpcHQgbW9kdWxlcyIgewogICAgICAgICAgICAgICAgICAgIHRhZ3MgIlNoYXJlZCIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQogICAgICAgICAgICBiZSA9IGNvbnRhaW5lciAiQmFja2VuZCIgIlNlcnZlci1zaWRlIGFwcGxpY2F0aW9uIGV4cG9zaW5nIEFQSXMgYW5kIG1hbmFnaW5nIHBlcnNpc3RlbmNlIiB7CiAgICAgICAgICAgICAgICB0ZWNobm9sb2d5ICJOb2RlLmpzIChGYXN0aWZ5KSIKICAgICAgICAgICAgICAgIHRhZ3MgIkJFIgoKICAgICAgICAgICAgICAgIGFwaSA9IGNvbXBvbmVudCAiRmFzdGlmeSBBcHAiICJTaW5nbGUgc2VydmVyIHByb2Nlc3MgdGhhdCBzZXJ2ZXMgdGhlIGZyb250ZW5kLCBleHBvc2VzIFJFU1QgQVBJcywgYW5kIHB1Ymxpc2hlcyBwZXJzaXN0ZWQgYXJ0aWZhY3RzIiAiTm9kZS5qcyAoRmFzdGlmeSkiIHsKICAgICAgICAgICAgICAgICAgICB0YWdzICJBUEkiCiAgICAgICAgICAgICAgICB9CgogICAgICAgICAgICAgICAgcHJvamVjdHNSb3V0ZXMgPSBjb21wb25lbnQgIlByb2plY3RzIFJvdXRlcyIgIkhUVFAgcm91dGVzIHVuZGVyIC9wcm9qZWN0cyBmb3IgcHJvamVjdCBsaWZlY3ljbGUgYW5kIHdvcmtzcGFjZSBhZ2dyZWdhdGlvbiIgIkZhc3RpZnkgcGx1Z2luIiB7CiAgICAgICAgICAgICAgICAgICAgdGFncyAiUm91dGVzIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgcHJvamVjdHNTZXJ2aWNlID0gY29tcG9uZW50ICJQcm9qZWN0cyBTZXJ2aWNlIiAiQ29vcmRpbmF0ZXMgcHJvamVjdCBvcGVyYXRpb25zIGFuZCBhZ2dyZWdhdGVzIHJlbGF0ZWQgZG9jdW1lbnRzLCBtb2RlbHMsIGFuZCBzdGF0aXN0aWNzIiAiSmF2YVNjcmlwdCBtb2R1bGUiIHsKICAgICAgICAgICAgICAgICAgICB0YWdzICJTZXJ2aWNlIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgcHJvamVjdHNSZXBvID0gY29tcG9uZW50ICJQcm9qZWN0cyBSZXBvc2l0b3J5IiAiUmVwb3NpdG9yeSBmb3IgcHJvamVjdCBtZXRhZGF0YSBzdG9yZWQgaW4gU1FMaXRlIiAiYmV0dGVyLXNxbGl0ZTMiIHsKICAgICAgICAgICAgICAgICAgICB0YWdzICJSZXBvc2l0b3J5IgogICAgICAgICAgICAgICAgfQoKICAgICAgICAgICAgICAgIGRvY3VtZW50c1JvdXRlcyA9IGNvbXBvbmVudCAiRG9jdW1lbnRzIFJvdXRlcyIgIkhUVFAgcm91dGVzIHVuZGVyIC9kb2N1bWVudHMgZm9yIHVwbG9hZCwgdmVyc2lvbmluZywgbWV0YWRhdGEgdXBkYXRlcywgYW5kIHJlc3RvcmF0aW9uIiAiRmFzdGlmeSBwbHVnaW4iIHsKICAgICAgICAgICAgICAgICAgICB0YWdzICJSb3V0ZXMiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICBkb2N1bWVudHNTZXJ2aWNlID0gY29tcG9uZW50ICJEb2N1bWVudHMgU2VydmljZSIgIkhhbmRsZXMgZG9jdW1lbnQgbGlmZWN5Y2xlLCB2ZXJzaW9uaW5nLCBjb250ZW50IHBlcnNpc3RlbmNlLCBhbmQgY2FzY2FkZWQgdXBkYXRlcyB0byBsaW5rZWQgbW9kZWxzIiAiSmF2YVNjcmlwdCBtb2R1bGUiIHsKICAgICAgICAgICAgICAgICAgICB0YWdzICJTZXJ2aWNlIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgZG9jdW1lbnRzUmVwbyA9IGNvbXBvbmVudCAiRG9jdW1lbnRzIFJlcG9zaXRvcnkiICJSZXBvc2l0b3J5IGZvciBkb2N1bWVudCBtZXRhZGF0YSBhbmQgbGF0ZXN0LXZlcnNpb24gcG9pbnRlcnMiICJiZXR0ZXItc3FsaXRlMyIgewogICAgICAgICAgICAgICAgICAgIHRhZ3MgIlJlcG9zaXRvcnkiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICBkb2N1bWVudFZlcnNpb25zUmVwbyA9IGNvbXBvbmVudCAiRG9jdW1lbnQgVmVyc2lvbnMgUmVwb3NpdG9yeSIgIlJlcG9zaXRvcnkgZm9yIGltbXV0YWJsZSBkb2N1bWVudCB2ZXJzaW9uIHJlY29yZHMiICJiZXR0ZXItc3FsaXRlMyIgewogICAgICAgICAgICAgICAgICAgIHRhZ3MgIlJlcG9zaXRvcnkiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICBkb2N1bWVudHNTdG9yYWdlID0gY29tcG9uZW50ICJEb2N1bWVudHMgU3RvcmFnZSIgIkZpbGVzeXN0ZW0gc3RvcmFnZSBmb3Igc2VyaWFsaXplZCBkb2N1bWVudCBjb250ZW50IGluIC9wZXJzaXN0ZW5jZS9kb2N1bWVudHMiICJGaWxlc3lzdGVtIiB7CiAgICAgICAgICAgICAgICAgICAgdGFncyAiU3RvcmFnZSIKICAgICAgICAgICAgICAgIH0KCiAgICAgICAgICAgICAgICBtb2RlbHNSb3V0ZXMgPSBjb21wb25lbnQgIk1vZGVscyBSb3V0ZXMiICJIVFRQIHJvdXRlcyB1bmRlciAvbW9kZWxzIGZvciBtb2RlbCBjcmVhdGlvbiwgdmVyc2lvbmluZywgdXBkYXRlcywgc3VicHJvY2VzcyBsaW5rcywgYW5kIGdlbmVyYXRpb24gbG9nZ2luZyIgIkZhc3RpZnkgcGx1Z2luIiB7CiAgICAgICAgICAgICAgICAgICAgdGFncyAiUm91dGVzIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgbW9kZWxzU2VydmljZSA9IGNvbXBvbmVudCAiTW9kZWxzIFNlcnZpY2UiICJIYW5kbGVzIG1vZGVsIGxpZmVjeWNsZSwgdmVyc2lvbiBtYW5hZ2VtZW50LCBYTUwgZW5yaWNobWVudCwgc3VicHJvY2VzcyBiaW5kaW5nLCBhbmQgZ2VuZXJhdGlvbi1hdHRlbXB0IHRyYWNraW5nIiAiSmF2YVNjcmlwdCBtb2R1bGUiIHsKICAgICAgICAgICAgICAgICAgICB0YWdzICJTZXJ2aWNlIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgbW9kZWxzUmVwbyA9IGNvbXBvbmVudCAiTW9kZWxzIFJlcG9zaXRvcnkiICJSZXBvc2l0b3J5IGZvciBtb2RlbCBtZXRhZGF0YSBhbmQgbGF0ZXN0LXZlcnNpb24gcG9pbnRlcnMiICJiZXR0ZXItc3FsaXRlMyIgewogICAgICAgICAgICAgICAgICAgIHRhZ3MgIlJlcG9zaXRvcnkiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICBtb2RlbFZlcnNpb25zUmVwbyA9IGNvbXBvbmVudCAiTW9kZWwgVmVyc2lvbnMgUmVwb3NpdG9yeSIgIlJlcG9zaXRvcnkgZm9yIGltbXV0YWJsZSBtb2RlbCB2ZXJzaW9uIHJlY29yZHMiICJiZXR0ZXItc3FsaXRlMyIgewogICAgICAgICAgICAgICAgICAgIHRhZ3MgIlJlcG9zaXRvcnkiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICBtb2RlbEdlbmVyYXRpb25BdHRlbXB0c1JlcG8gPSBjb21wb25lbnQgIk1vZGVsIEdlbmVyYXRpb24gQXR0ZW1wdHMgUmVwb3NpdG9yeSIgIlJlcG9zaXRvcnkgZm9yIHBlcnNpc3RlZCBnZW5lcmF0aW9uLWF0dGVtcHQgbWV0YWRhdGEgYW5kIG91dGNvbWVzIiAiYmV0dGVyLXNxbGl0ZTMiIHsKICAgICAgICAgICAgICAgICAgICB0YWdzICJSZXBvc2l0b3J5IgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgbW9kZWxWZXJzaW9uRXZlbnRzUmVwbyA9IGNvbXBvbmVudCAiTW9kZWwgVmVyc2lvbiBFdmVudHMgUmVwb3NpdG9yeSIgIlJlcG9zaXRvcnkgZm9yIG1hbnVhbCBhbmQgYXV0b21hdGljIG1vZGVsIHZlcnNpb24gbGlmZWN5Y2xlIGV2ZW50cyIgImJldHRlci1zcWxpdGUzIiB7CiAgICAgICAgICAgICAgICAgICAgdGFncyAiUmVwb3NpdG9yeSIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIG1vZGVsU3VicHJvY2Vzc2VzUmVwbyA9IGNvbXBvbmVudCAiTW9kZWwgU3VicHJvY2Vzc2VzIFJlcG9zaXRvcnkiICJSZXBvc2l0b3J5IGZvciB0YXNrLXRvLXN1YnByb2Nlc3MgYmluZGluZ3MgYmV0d2VlbiBtb2RlbHMiICJiZXR0ZXItc3FsaXRlMyIgewogICAgICAgICAgICAgICAgICAgIHRhZ3MgIlJlcG9zaXRvcnkiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICBtb2RlbHNTdG9yYWdlID0gY29tcG9uZW50ICJNb2RlbHMgU3RvcmFnZSIgIkZpbGVzeXN0ZW0gc3RvcmFnZSBmb3Igc2VyaWFsaXplZCBtb2RlbCBYTUwgaW4gL3BlcnNpc3RlbmNlL21vZGVscyIgIkZpbGVzeXN0ZW0iIHsKICAgICAgICAgICAgICAgICAgICB0YWdzICJTdG9yYWdlIgogICAgICAgICAgICAgICAgfQoKICAgICAgICAgICAgICAgIGxpbmtzUm91dGVzID0gY29tcG9uZW50ICJEb2N1bWVudC1Nb2RlbCBMaW5rcyBSb3V0ZXMiICJIVFRQIHJvdXRlcyB1bmRlciAvZG9jdW1lbnQtbW9kZWwtbGlua3MgZm9yIHRyYWNlYWJpbGl0eSBsaW5rcyBhbmQgc2VsZWN0aW9uIG9wZXJhdGlvbnMiICJGYXN0aWZ5IHBsdWdpbiIgewogICAgICAgICAgICAgICAgICAgIHRhZ3MgIlJvdXRlcyIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIGxpbmtzU2VydmljZSA9IGNvbXBvbmVudCAiRG9jdW1lbnQtTW9kZWwgTGlua3MgU2VydmljZSIgIk1haW50YWlucyBkb2N1bWVudC1tb2RlbCB0cmFjZWFiaWxpdHkgbGlua3MsIGN1cnJlbnQgc2VsZWN0aW9ucywgYW5kIHNlbGVjdGlvbiBoaXN0b3J5IiAiSmF2YVNjcmlwdCBtb2R1bGUiIHsKICAgICAgICAgICAgICAgICAgICB0YWdzICJTZXJ2aWNlIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgbGlua3NSZXBvID0gY29tcG9uZW50ICJEb2N1bWVudC1Nb2RlbCBMaW5rcyBSZXBvc2l0b3J5IiAiUmVwb3NpdG9yeSBmb3IgbGlua3MsIHNlbGVjdGlvbnMsIGFuZCB0aGVpciBoaXN0b3J5IHN0b3JlZCBpbiBTUUxpdGUiICJiZXR0ZXItc3FsaXRlMyIgewogICAgICAgICAgICAgICAgICAgIHRhZ3MgIlJlcG9zaXRvcnkiCiAgICAgICAgICAgICAgICB9CgogICAgICAgICAgICAgICAgbG9nc1NlcnZpY2UgPSBjb21wb25lbnQgIkxvZ3MgU2VydmljZSIgIldyaXRlcyBhcHBlbmQtb25seSBwcm9qZWN0IGV2ZW50IGxvZ3MgZm9yIGF1ZGl0aW5nIGFuZCBhbmFseXNpcyIgIkphdmFTY3JpcHQgbW9kdWxlIiB7CiAgICAgICAgICAgICAgICAgICAgdGFncyAiU2VydmljZSIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIGxvZ3NSZXBvID0gY29tcG9uZW50ICJMb2dzIFJlcG9zaXRvcnkiICJGaWxlc3lzdGVtLWJhc2VkIHBlcnNpc3RlbmNlIGZvciBhcHBlbmQtb25seSBsb2cgZmlsZXMgaW4gL3BlcnNpc3RlbmNlL2xvZ3MiICJGaWxlc3lzdGVtIiB7CiAgICAgICAgICAgICAgICAgICAgdGFncyAiUmVwb3NpdG9yeSIKICAgICAgICAgICAgICAgIH0KCiAgICAgICAgICAgICAgICBiYXNlU3FsUmVwbyA9IGNvbXBvbmVudCAiQmFzZSBTUUwgUmVwb3NpdG9yeSIgIlNoYXJlZCByZXBvc2l0b3J5IHV0aWxpdGllcyBmb3IgY29tbW9uIFNRTGl0ZSBhY2Nlc3MgcGF0dGVybnMiICJKYXZhU2NyaXB0IG1vZHVsZSIgewogICAgICAgICAgICAgICAgICAgIHRhZ3MgIlNoYXJlZCIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQogICAgICAgICAgICBmcyA9IGNvbnRhaW5lciAiRmlsZSBTdG9yYWdlIiAiTG9jYWwgZmlsZSBzeXN0ZW0gc3RvcmFnZSBmb3IgZG9jdW1lbnRzLCBtb2RlbHMsIGFuZCBsb2dzIiB7CiAgICAgICAgICAgICAgICB0ZWNobm9sb2d5ICJMb2NhbCBmaWxlIHN5c3RlbSIKICAgICAgICAgICAgICAgIHRhZ3MgIkRpcmVjdG9yeSIKICAgICAgICAgICAgfQogICAgICAgICAgICBkYiA9IGNvbnRhaW5lciAiRGF0YWJhc2UiICJTdHJ1Y3R1cmVkIHN0b3JlIGZvciBwcm9qZWN0LCBkb2N1bWVudCBtZXRhZGF0YSwgbW9kZWwgbWV0YWRhdGEsIGRvY3VtZW50LW1vZGVsIGxpbmtzLCBzdGF0aXN0aWMgZGF0YSwgZWN0LiIgewogICAgICAgICAgICAgICAgdGVjaG5vbG9neSAiU1FMaXRlIgogICAgICAgICAgICAgICAgdGFncyAiRGF0YWJhc2UiCiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICAgICAgdSAtPiBzcy5mZSAiSW50ZXJhY3RzIHdpdGgiCiAgICAgICAgc3MuZmUgLT4gbGxtICJNYWtlcyBBUEkgcmVxdWVzdHMgdG8iCiAgICAgICAgc3MuZmUgLT4gc3MuYmUgIk1ha2VzIEFQSSByZXF1ZXN0cyB0byIKICAgICAgICBzcy5iZSAtPiBzcy5mcyAiUmVhZHMgZnJvbSBhbmQgd3JpdGVzIHRvIgogICAgICAgIHNzLmJlIC0+IHNzLmRiICJSZWFkcyBmcm9tIGFuZCB3cml0ZXMgdG8iCgogICAgICAgIHNzLmZlIC0+IHNzLmJlLmFwaSAiQ2FsbHMgSFRUUCBBUEkiCgogICAgICAgIHNzLmZlLmhvbWVQYWdlIC0+IHNzLmZlLmFwaUNsaWVudCAiTG9hZHMgcHJvamVjdHMgKyBvdmVydmlldyIKICAgICAgICBzcy5mZS5ob21lUGFnZSAtPiBzcy5mZS5zaGFyZWRVdGlscyAiVXNlcyIKCiAgICAgICAgc3MuZmUud29ya3NwYWNlUGFnZSAtPiBzcy5mZS5hcGlDbGllbnQgIkxvYWRzIGFuZCB1cGRhdGVzIHByb2plY3Qgc3RhdGUiCiAgICAgICAgc3MuZmUud29ya3NwYWNlUGFnZSAtPiBzcy5mZS53c0Jvb3RzdHJhcCAiQm9vdHN0cmFwcyBmZWF0dXJlIgogICAgICAgIHNzLmZlLndvcmtzcGFjZVBhZ2UgLT4gc3MuZmUud3NVSSAiSG9zdHMgZmVhdHVyZSBVSSIKCiAgICAgICAgc3MuZmUud3NCb290c3RyYXAgLT4gc3MuZmUuYXBpQ2xpZW50ICJWYWxpZGF0ZXMgcHJvamVjdCIKICAgICAgICBzcy5mZS53c0Jvb3RzdHJhcCAtPiBzcy5mZS53c1VJICJMYXp5LWxvYWRzIgogICAgICAgIHNzLmZlLndzQm9vdHN0cmFwIC0+IHNzLmZlLndzU2VydmljZXMgIlN0YXJ0cyBpbml0aWFsIHdvcmtzcGFjZSBsb2FkIgoKICAgICAgICBzcy5mZS53c1VJIC0+IHNzLmZlLndzU3RhdGUgIlJlYWRzIHJlYWN0aXZlIHN0YXRlIgogICAgICAgIHNzLmZlLndzVUkgLT4gc3MuZmUud3NTZXJ2aWNlcyAiSW52b2tlcyB1c2VyIGFjdGlvbnMiCiAgICAgICAgc3MuZmUud3NVSSAtPiBzcy5mZS5kb2NJbnRlcmFjdGlvbk1vZHVsZSAiUmVuZGVycyBzZWxlY3Rpb25zIGFuZCBvdmVybGF5cyIKICAgICAgICBzcy5mZS53c1VJIC0+IHNzLmZlLm1vZGVsRWRpdG9yQWRhcHRlciAiUmVuZGVycyBhbmQgZWRpdHMgbW9kZWxzIgogICAgICAgIHNzLmZlLndzVUkgLT4gc3MuZmUuc2hhcmVkVXRpbHMgIlVzZXMiCgogICAgICAgIHNzLmZlLndzU2VydmljZXMgLT4gc3MuZmUuYXBpQ2xpZW50ICJDYWxscyBwcm9qZWN0cy9kb2N1bWVudHMvbW9kZWxzL2xpbmtzIEFQSXMiCiAgICAgICAgc3MuZmUud3NTZXJ2aWNlcyAtPiBzcy5mZS5sbG1DbGllbnQgIkdlbmVyYXRlcyBhbmQgcmVmaW5lcyBtb2RlbHMiCiAgICAgICAgc3MuZmUud3NTZXJ2aWNlcyAtPiBzcy5mZS53c1N0YXRlICJVcGRhdGVzIHN0YXRlIgogICAgICAgIHNzLmZlLndzU2VydmljZXMgLT4gc3MuZmUuZG9jSW50ZXJhY3Rpb25Nb2R1bGUgIlRyYW5zZm9ybXMgZG9jdW1lbnQgaW5wdXQiCiAgICAgICAgc3MuZmUud3NTZXJ2aWNlcyAtPiBzcy5mZS5tb2RlbEVkaXRvckFkYXB0ZXIgIkxvYWRzIGVkaXRvciBkYXRhIGFuZCBlbmRwb2ludHMiCgogICAgICAgIHNzLmZlLnN0YXRzUGFnZSAtPiBzcy5mZS5hcGlDbGllbnQgIkxvYWRzIHN0YXRpc3RpY3MiCiAgICAgICAgc3MuZmUuc3RhdHNQYWdlIC0+IHNzLmZlLnNoYXJlZFV0aWxzICJVc2VzIgoKICAgICAgICBzcy5mZS5kb2N1bWVudFZpZXdlciAtPiBzcy5mZS5hcGlDbGllbnQgIkxvYWRzIHRyYWNlIHNlbGVjdGlvbnMiCiAgICAgICAgc3MuZmUuZG9jdW1lbnRWaWV3ZXIgLT4gc3MuZmUucGVyc2lzdGVuY2VMb2FkZXIgIkxvYWRzIGRvY3VtZW50IGNvbnRlbnQiCiAgICAgICAgc3MuZmUuZG9jdW1lbnRWaWV3ZXIgLT4gc3MuZmUuc2hhcmVkVXRpbHMgIlVzZXMiCgogICAgICAgIHNzLmZlLm1vZGVsVmlld2VyIC0+IHNzLmZlLmFwaUNsaWVudCAiTG9hZHMgbW9kZWwgWE1MIgogICAgICAgIHNzLmZlLm1vZGVsVmlld2VyIC0+IHNzLmZlLnNoYXJlZFV0aWxzICJVc2VzIgoKICAgICAgICBzcy5mZS5hcGlDbGllbnQgLT4gc3MuYmUuYXBpICJSZXF1ZXN0cyBKU09OIEFQSXMiCiAgICAgICAgc3MuZmUucGVyc2lzdGVuY2VMb2FkZXIgLT4gc3MuZnMgIlJlYWRzIgogICAgICAgIHNzLmZlLmxsbUNsaWVudCAtPiBsbG0gIlJlcXVlc3RzIG1vZGVsIGdlbmVyYXRpb24iCgogICAgICAgIHNzLmJlLmFwaSAtPiBzcy5iZS5wcm9qZWN0c1JvdXRlcyAiUmVnaXN0ZXJzIgogICAgICAgIHNzLmJlLmFwaSAtPiBzcy5iZS5kb2N1bWVudHNSb3V0ZXMgIlJlZ2lzdGVycyIKICAgICAgICBzcy5iZS5hcGkgLT4gc3MuYmUubW9kZWxzUm91dGVzICJSZWdpc3RlcnMiCiAgICAgICAgc3MuYmUuYXBpIC0+IHNzLmJlLmxpbmtzUm91dGVzICJSZWdpc3RlcnMiCgogICAgICAgIHNzLmJlLnByb2plY3RzUm91dGVzIC0+IHNzLmJlLnByb2plY3RzU2VydmljZSAiSW52b2tlcyIKICAgICAgICBzcy5iZS5wcm9qZWN0c1NlcnZpY2UgLT4gc3MuYmUucHJvamVjdHNSZXBvICJSZWFkcy93cml0ZXMiCiAgICAgICAgc3MuYmUucHJvamVjdHNTZXJ2aWNlIC0+IHNzLmJlLmRvY3VtZW50c1NlcnZpY2UgIlF1ZXJpZXMiCiAgICAgICAgc3MuYmUucHJvamVjdHNTZXJ2aWNlIC0+IHNzLmJlLm1vZGVsc1NlcnZpY2UgIlF1ZXJpZXMiCiAgICAgICAgc3MuYmUucHJvamVjdHNTZXJ2aWNlIC0+IHNzLmJlLmxvZ3NTZXJ2aWNlICJMb2dzIGV2ZW50cyIKCiAgICAgICAgc3MuYmUuZG9jdW1lbnRzUm91dGVzIC0+IHNzLmJlLmRvY3VtZW50c1NlcnZpY2UgIkludm9rZXMiCiAgICAgICAgc3MuYmUuZG9jdW1lbnRzU2VydmljZSAtPiBzcy5iZS5kb2N1bWVudHNSZXBvICJSZWFkcy93cml0ZXMiCiAgICAgICAgc3MuYmUuZG9jdW1lbnRzU2VydmljZSAtPiBzcy5iZS5kb2N1bWVudFZlcnNpb25zUmVwbyAiUmVhZHMvd3JpdGVzIgogICAgICAgIHNzLmJlLmRvY3VtZW50c1NlcnZpY2UgLT4gc3MuYmUuZG9jdW1lbnRzU3RvcmFnZSAiUmVhZHMvd3JpdGVzIgogICAgICAgIHNzLmJlLmRvY3VtZW50c1NlcnZpY2UgLT4gc3MuYmUubGlua3NTZXJ2aWNlICJDb3BpZXMgbGlua3MiCiAgICAgICAgc3MuYmUuZG9jdW1lbnRzU2VydmljZSAtPiBzcy5iZS5tb2RlbHNTZXJ2aWNlICJUcmlnZ2VycyByZXdyaXRlL2Nhc2NhZGUiCiAgICAgICAgc3MuYmUuZG9jdW1lbnRzU2VydmljZSAtPiBzcy5iZS5sb2dzU2VydmljZSAiTG9ncyBldmVudHMiCgogICAgICAgIHNzLmJlLm1vZGVsc1JvdXRlcyAtPiBzcy5iZS5tb2RlbHNTZXJ2aWNlICJJbnZva2VzIgogICAgICAgIHNzLmJlLm1vZGVsc1NlcnZpY2UgLT4gc3MuYmUubW9kZWxzUmVwbyAiUmVhZHMvd3JpdGVzIgogICAgICAgIHNzLmJlLm1vZGVsc1NlcnZpY2UgLT4gc3MuYmUubW9kZWxWZXJzaW9uc1JlcG8gIlJlYWRzL3dyaXRlcyIKICAgICAgICBzcy5iZS5tb2RlbHNTZXJ2aWNlIC0+IHNzLmJlLm1vZGVsR2VuZXJhdGlvbkF0dGVtcHRzUmVwbyAiUmVhZHMvd3JpdGVzIgogICAgICAgIHNzLmJlLm1vZGVsc1NlcnZpY2UgLT4gc3MuYmUubW9kZWxWZXJzaW9uRXZlbnRzUmVwbyAiUmVhZHMvd3JpdGVzIgogICAgICAgIHNzLmJlLm1vZGVsc1NlcnZpY2UgLT4gc3MuYmUubW9kZWxTdWJwcm9jZXNzZXNSZXBvICJSZWFkcy93cml0ZXMiCiAgICAgICAgc3MuYmUubW9kZWxzU2VydmljZSAtPiBzcy5iZS5tb2RlbHNTdG9yYWdlICJSZWFkcy93cml0ZXMiCiAgICAgICAgc3MuYmUubW9kZWxzU2VydmljZSAtPiBzcy5iZS5saW5rc1NlcnZpY2UgIlJlYWRzL3dyaXRlcyIKICAgICAgICBzcy5iZS5tb2RlbHNTZXJ2aWNlIC0+IHNzLmJlLmxvZ3NTZXJ2aWNlICJMb2dzIGV2ZW50cyIKCiAgICAgICAgc3MuYmUubGlua3NSb3V0ZXMgLT4gc3MuYmUubGlua3NTZXJ2aWNlICJJbnZva2VzIgogICAgICAgIHNzLmJlLmxpbmtzU2VydmljZSAtPiBzcy5iZS5saW5rc1JlcG8gIlJlYWRzL3dyaXRlcyIKCiAgICAgICAgc3MuYmUubG9nc1NlcnZpY2UgLT4gc3MuYmUubG9nc1JlcG8gIkFwcGVuZHMiCgogICAgICAgIHNzLmJlLnByb2plY3RzUmVwbyAtPiBzcy5kYiAiUXVlcmllcyIKICAgICAgICBzcy5iZS5kb2N1bWVudHNSZXBvIC0+IHNzLmRiICJRdWVyaWVzIgogICAgICAgIHNzLmJlLmRvY3VtZW50VmVyc2lvbnNSZXBvIC0+IHNzLmRiICJRdWVyaWVzIgogICAgICAgIHNzLmJlLm1vZGVsc1JlcG8gLT4gc3MuZGIgIlF1ZXJpZXMiCiAgICAgICAgc3MuYmUubW9kZWxWZXJzaW9uc1JlcG8gLT4gc3MuZGIgIlF1ZXJpZXMiCiAgICAgICAgc3MuYmUubW9kZWxHZW5lcmF0aW9uQXR0ZW1wdHNSZXBvIC0+IHNzLmRiICJRdWVyaWVzIgogICAgICAgIHNzLmJlLm1vZGVsVmVyc2lvbkV2ZW50c1JlcG8gLT4gc3MuZGIgIlF1ZXJpZXMiCiAgICAgICAgc3MuYmUubW9kZWxTdWJwcm9jZXNzZXNSZXBvIC0+IHNzLmRiICJRdWVyaWVzIgogICAgICAgIHNzLmJlLmxpbmtzUmVwbyAtPiBzcy5kYiAiUXVlcmllcyIKCiAgICAgICAgc3MuYmUuZG9jdW1lbnRzU3RvcmFnZSAtPiBzcy5mcyAiUmVhZHMvd3JpdGVzIgogICAgICAgIHNzLmJlLm1vZGVsc1N0b3JhZ2UgLT4gc3MuZnMgIlJlYWRzL3dyaXRlcyIKICAgICAgICBzcy5iZS5sb2dzUmVwbyAtPiBzcy5mcyAiUmVhZHMvd3JpdGVzIgogICAgfQovKgplbGVtZW50IDx0YWc+IHsKICAgIHNoYXBlIDxCb3h8Um91bmRlZEJveHxDaXJjbGV8RWxsaXBzZXxIZXhhZ29ufERpYW1vbmR8Q3lsaW5kZXJ8QnVja2V0fFBpcGV8UGVyc29ufFJvYm90fEZvbGRlcnxXZWJCcm93c2VyfFdpbmRvd3xUZXJtaW5hbHxTaGVsbHxNb2JpbGVEZXZpY2VQb3J0cmFpdHxNb2JpbGVEZXZpY2VMYW5kc2NhcGV8Q29tcG9uZW50PgogICAgaWNvbiA8ZmlsZXx1cmw+CiAgICB3aWR0aCA8aW50ZWdlcj4KICAgIGhlaWdodCA8aW50ZWdlcj4KICAgIGJhY2tncm91bmQgPCNycmdnYmJ8Y29sb3IgbmFtZT4KICAgIGNvbG9yIDwjcnJnZ2JifGNvbG9yIG5hbWU+CiAgICBjb2xvdXIgPCNycmdnYmJ8Y29sb3IgbmFtZT4KICAgIHN0cm9rZSA8I3JyZ2diYnxjb2xvciBuYW1lPgogICAgc3Ryb2tlV2lkdGggPGludGVnZXI6IDEtMTA+CiAgICBmb250U2l6ZSA8aW50ZWdlcj4KICAgIGJvcmRlciA8c29saWR8ZGFzaGVkfGRvdHRlZD4KICAgIG9wYWNpdHkgPGludGVnZXI6IDAtMTAwPgogICAgbWV0YWRhdGEgPHRydWV8ZmFsc2U+CiAgICBkZXNjcmlwdGlvbiA8dHJ1ZXxmYWxzZT4KICAgIHByb3BlcnRpZXMgewogICAgICAgIG5hbWUgdmFsdWUKICAgIH0KfQoqLwoKICAgIHZpZXdzIHsKICAgICAgICBzeXN0ZW1Db250ZXh0IHNzICJTeXN0ZW1Db250ZXh0IiB7CiAgICAgICAgICAgIGluY2x1ZGUgKgogICAgICAgIH0KCiAgICAgICAgY29udGFpbmVyIHNzICJBcmNoaXRlY3R1cmUiIHsKICAgICAgICAgICAgaW5jbHVkZSAqCiAgICAgICAgfQoKICAgICAgICBjb21wb25lbnQgc3MuYmUgIkJhY2tlbmRDb21wb25lbnRzIiB7CiAgICAgICAgICAgIGluY2x1ZGUgKgogICAgICAgICAgICBpbmNsdWRlIHNzLmZlCiAgICAgICAgICAgIGluY2x1ZGUgc3MuZnMKICAgICAgICAgICAgaW5jbHVkZSBzcy5kYgogICAgICAgIH0KCiAgICAgICAgY29tcG9uZW50IHNzLmZlICJGcm9udGVuZENvbXBvbmVudHMiIHsKICAgICAgICAgICAgaW5jbHVkZSAqCiAgICAgICAgICAgIGluY2x1ZGUgc3MuYmUuYXBpCiAgICAgICAgICAgIGluY2x1ZGUgc3MuZnMKICAgICAgICAgICAgaW5jbHVkZSBsbG0KICAgICAgICB9CgogICAgICAgIGNvbXBvbmVudCBzcy5mZSAiV29ya3NwYWNlUGFnZUZyb250ZW5kIiB7CiAgICAgICAgICAgIGluY2x1ZGUgc3MuZmUud29ya3NwYWNlUGFnZQogICAgICAgICAgICBpbmNsdWRlIHNzLmZlLndzQm9vdHN0cmFwCiAgICAgICAgICAgIGluY2x1ZGUgc3MuZmUud3NVSQogICAgICAgICAgICBpbmNsdWRlIHNzLmZlLndzU3RhdGUKICAgICAgICAgICAgaW5jbHVkZSBzcy5mZS53c1NlcnZpY2VzCiAgICAgICAgICAgIGluY2x1ZGUgc3MuZmUuZG9jSW50ZXJhY3Rpb25Nb2R1bGUKICAgICAgICAgICAgaW5jbHVkZSBzcy5mZS5tb2RlbEVkaXRvckFkYXB0ZXIKICAgICAgICAgICAgaW5jbHVkZSBzcy5mZS5hcGlDbGllbnQKICAgICAgICAgICAgaW5jbHVkZSBzcy5mZS5sbG1DbGllbnQKICAgICAgICAgICAgaW5jbHVkZSBzcy5mZS5zaGFyZWRVdGlscwogICAgICAgICAgICBpbmNsdWRlIHNzLmJlLmFwaQogICAgICAgICAgICBpbmNsdWRlIGxsbQoKICAgICAgICAgICAgYXV0b2xheW91dCBscgogICAgICAgIH0KCiAgICAgICAgc3R5bGVzIHsKICAgICAgICAgICAgZWxlbWVudCAiRWxlbWVudCIgewogICAgICAgICAgICAgICAgLy9jb2xvciAjMmIyYjJiCiAgICAgICAgICAgICAgICAvL3N0cm9rZSAjMmIyYjJiCiAgICAgICAgICAgICAgICBjb2xvciAjMDc3M2FmCiAgICAgICAgICAgICAgICBzdHJva2UgIzA3NzNhZgogICAgICAgICAgICAgICAgc3Ryb2tlV2lkdGggNQogICAgICAgICAgICAgICAgc2hhcGUgcm91bmRlZGJveAogICAgICAgICAgICB9CiAgICAgICAgICAgIGVsZW1lbnQgIkNvbXBvbmVudCIgewogICAgICAgICAgICAgICAgc2hhcGUgY29tcG9uZW50CiAgICAgICAgICAgIH0KICAgICAgICAgICAgZWxlbWVudCAiUGVyc29uIiB7CiAgICAgICAgICAgICAgICBjb2xvciAjNTVhYTU1CiAgICAgICAgICAgICAgICBzdHJva2UgIzU1YWE1NQogICAgICAgICAgICAgICAgc2hhcGUgcGVyc29uCiAgICAgICAgICAgIH0KICAgICAgICAgICAgZWxlbWVudCAiTExNU2VydmljZSIgewogICAgICAgICAgICAgICAgY29sb3IgI2Y4ODcyOAogICAgICAgICAgICAgICAgc3Ryb2tlICNmODg3MjgKICAgICAgICAgICAgICAgIHNoYXBlIGhleGFnb24KICAgICAgICAgICAgfQogICAgICAgICAgICBlbGVtZW50ICJBUEkiIHsKICAgICAgICAgICAgICAgIHNoYXBlIGhleGFnb24KICAgICAgICAgICAgfQogICAgICAgICAgICBlbGVtZW50ICJQYWdlIiB7CiAgICAgICAgICAgICAgICBzaGFwZSBXZWJCcm93c2VyCiAgICAgICAgICAgIH0KICAgICAgICAgICAgZWxlbWVudCAiTExNQ2xpZW50IiB7CiAgICAgICAgICAgICAgICBzaGFwZSBoZXhhZ29uCiAgICAgICAgICAgIH0KICAgICAgICAgICAgZWxlbWVudCAiRkUiIHsKICAgICAgICAgICAgICAgIHNoYXBlIFdlYkJyb3dzZXIKICAgICAgICAgICAgfQogICAgICAgICAgICBlbGVtZW50ICJCRSIgewogICAgICAgICAgICAgICAgc2hhcGUgU2hlbGwKICAgICAgICAgICAgfQogICAgICAgICAgICBlbGVtZW50ICJEYXRhYmFzZSIgewogICAgICAgICAgICAgICAgc2hhcGUgY3lsaW5kZXIKICAgICAgICAgICAgfQogICAgICAgICAgICBlbGVtZW50ICJEaXJlY3RvcnkiIHsKICAgICAgICAgICAgICAgIHNoYXBlIEZvbGRlcgogICAgICAgICAgICB9CiAgICAgICAgICAgIGVsZW1lbnQgIkJvdW5kYXJ5IiB7CiAgICAgICAgICAgICAgICBzdHJva2VXaWR0aCA1CiAgICAgICAgICAgIH0KICAgICAgICAgICAgcmVsYXRpb25zaGlwICJSZWxhdGlvbnNoaXAiIHsKICAgICAgICAgICAgICAgIHRoaWNrbmVzcyA0CiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICB9CgogICAgY29uZmlndXJhdGlvbiB7CiAgICAgICAgc2NvcGUgc29mdHdhcmVzeXN0ZW0KICAgIH0KCn0=",
     "structurizr.inspection.info" : "0",
     "structurizr.inspection.ignore" : "0",
-    "structurizr.inspection.error" : "73",
-    "structurizr.inspection.warning" : "0",
-    "structurizr.dsl" : "d29ya3NwYWNlICJOYW1lIiAiRGVzY3JpcHRpb24iIHsKCiAgICAhaWRlbnRpZmllcnMgaGllcmFyY2hpY2FsCgoKCiAgICBtb2RlbCB7CiAgICAgICB1ID0gcGVyc29uICJVc2VyIiAiQSBtb2RlbGluZyBvciBkb21haW4gZXhwZXJ0IgogICAgICAgIGxsbSA9IHNvZnR3YXJlU3lzdGVtICJBdXRvQlBNTi5BSVxuTExNIFNlcnZpY2UiICJQcm92aWRlcyBMTE0gUkVTVCBzZXJ2aWNlIGZvciBwcm9jZXNzIG1vZGVsIGNyZWF0aW9uIGFuZCByZWRlc2lnbiIgIkhUVFBTIEFQSSIgewogICAgICAgICAgICB0YWdzICJMTE1TZXJ2aWNlIiAKICAgICAgICB9CiAgICAgICAgc3MgPSBzb2Z0d2FyZVN5c3RlbSAiRG9jdW1lbnQtQmFzZWQgUHJvY2VzcyBNb2RlbGVyIiAiU3VwcG9ydHMgdGhlIG1vZGVsaW5nIHByb2Nlc3MgZnJvbSBkb2N1bWVudCB1cGxvYWQgdG8gbW9kZWwgY3JlYXRpb24sIG1vZGlmaWNhdGlvbiBhbmQgbWFuYWdlbWVudCIgewogICAgICAgICAgICBmZSA9IGNvbnRhaW5lciAiRnJvbnRlbmQiIHsKICAgICAgICAgICAgICAgIHRlY2hub2xvZ3kgIlN0YXRpYyBIVE1MICsgRVMgbW9kdWxlcyIKICAgICAgICAgICAgICAgIHRhZ3MgIkZFIgoKICAgICAgICAgICAgICAgIGhvbWVQYWdlID0gY29tcG9uZW50ICJIb21lIFBhZ2UiICJQcm9qZWN0IGxpc3RpbmcvY3JlYXRpb24gYW5kIG92ZXJ2aWV3IGRhc2hib2FyZCIgIkhUTUwgKyBFUyBtb2R1bGVzIiB7CiAgICAgICAgICAgICAgICAgICAgdGFncyAiUGFnZSIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIHdvcmtzcGFjZVBhZ2UgPSBjb21wb25lbnQgIldvcmtzcGFjZSBQYWdlIiAiTWFpbiBtb2RlbGxpbmcgd29ya3NwYWNlIiAiSFRNTCArIEVTIG1vZHVsZXMiIHsKICAgICAgICAgICAgICAgICAgICB0YWdzICJQYWdlIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgc3RhdHNQYWdlID0gY29tcG9uZW50ICJTdGF0cyBQYWdlIiAiUHJvamVjdCBzdGF0aXN0aWNzIiAiSFRNTCArIEVTIG1vZHVsZXMiIHsKICAgICAgICAgICAgICAgICAgICB0YWdzICJQYWdlIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgZG9jdW1lbnRWaWV3ZXIgPSBjb21wb25lbnQgIkRvY3VtZW50IFZpZXdlciIgIlJlYWQtb25seSBkb2N1bWVudCB2aWV3IHdpdGggc2VsZWN0aW9uIG92ZXJsYXlzIiAiSFRNTCArIEVTIG1vZHVsZXMiIHsKICAgICAgICAgICAgICAgICAgICB0YWdzICJQYWdlIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgbW9kZWxWaWV3ZXIgPSBjb21wb25lbnQgIk1vZGVsIFZpZXdlciIgIlJlYWQtb25seSBtb2RlbCBwcmV2aWV3L3JlbmRlcmVyIiAiSFRNTCArIEVTIG1vZHVsZXMiIHsKICAgICAgICAgICAgICAgICAgICB0YWdzICJQYWdlIgogICAgICAgICAgICAgICAgfQoKICAgICAgICAgICAgICAgIGFwaUNsaWVudCA9IGNvbXBvbmVudCAiQmFja2VuZCBBUEkgQ2xpZW50IiAiRmV0Y2gtYmFzZWQgY2xpZW50IGZvciBiYWNrZW5kIHJvdXRlcyAocHJvamVjdHMvZG9jdW1lbnRzL21vZGVscy9saW5rcy9sb2dzL3N0YXRzKSIgIkZldGNoIEFQSSIgewogICAgICAgICAgICAgICAgICAgIHRhZ3MgIkFQSUNsaWVudCIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIHBlcnNpc3RlbmNlTG9hZGVyID0gY29tcG9uZW50ICJQZXJzaXN0ZW5jZSBGaWxlIExvYWRlciIgIkxvYWRzIHBlcnNpc3RlZCBhcnRpZmFjdHMgdmlhIHN0YXRpYyAvcGVyc2lzdGVuY2UgcGF0aHMiICJIVFRQIEdFVCIgewogICAgICAgICAgICAgICAgICAgIHRhZ3MgIlN0b3JhZ2UiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICBsbG1DbGllbnQgPSBjb21wb25lbnQgIkxMTSBDbGllbnQiICJDYWxscyBBdXRvQlBNTi5BSSBMTE0gZW5kcG9pbnQgZm9yIG1vZGVsIGdlbmVyYXRpb24iICJIVFRQIChtdWx0aXBhcnQvZm9ybS1kYXRhKSIgewogICAgICAgICAgICAgICAgICAgIHRhZ3MgIkxMTUNsaWVudCIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIHNoYXJlZFV0aWxzID0gY29tcG9uZW50ICJTaGFyZWQgVXRpbGl0aWVzIiAiU2hhcmVkIERPTS9VUkwvaGVscGVycyB1c2VkIGJ5IHBhZ2VzIiAiSmF2YVNjcmlwdCBtb2R1bGVzIiB7CiAgICAgICAgICAgICAgICAgICAgdGFncyAiU2hhcmVkIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgICAgIGJlID0gY29udGFpbmVyICJCYWNrZW5kIiB7CiAgICAgICAgICAgICAgICB0ZWNobm9sb2d5ICJOb2RlLmpzIChGYXN0aWZ5KSIKICAgICAgICAgICAgICAgIHRhZ3MgIkJFIgoKICAgICAgICAgICAgICAgIGFwaSA9IGNvbXBvbmVudCAiRmFzdGlmeSBBcHAiICJIVFRQIEFQSSBzZXJ2ZXIgYW5kIHN0YXRpYyBmaWxlIHNlcnZpbmciICJOb2RlLmpzIChGYXN0aWZ5KSIgewogICAgICAgICAgICAgICAgICAgIHRhZ3MgIkFQSSIKICAgICAgICAgICAgICAgIH0KCiAgICAgICAgICAgICAgICBwcm9qZWN0c1JvdXRlcyA9IGNvbXBvbmVudCAiUHJvamVjdHMgUm91dGVzIiAiUm91dGVzIHVuZGVyIC9wcm9qZWN0cyIgIkZhc3RpZnkgcGx1Z2luIiB7CiAgICAgICAgICAgICAgICAgICAgdGFncyAiUm91dGVzIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgcHJvamVjdHNTZXJ2aWNlID0gY29tcG9uZW50ICJQcm9qZWN0cyBTZXJ2aWNlIiAiUHJvamVjdCBvcmNoZXN0cmF0aW9uIiAiSmF2YVNjcmlwdCBtb2R1bGUiIHsKICAgICAgICAgICAgICAgICAgICB0YWdzICJTZXJ2aWNlIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgcHJvamVjdHNSZXBvID0gY29tcG9uZW50ICJQcm9qZWN0cyBSZXBvc2l0b3J5IiAiU1FMIGFjY2VzcyBmb3IgcHJvamVjdHMiICJiZXR0ZXItc3FsaXRlMyIgewogICAgICAgICAgICAgICAgICAgIHRhZ3MgIlJlcG9zaXRvcnkiCiAgICAgICAgICAgICAgICB9CgogICAgICAgICAgICAgICAgZG9jdW1lbnRzUm91dGVzID0gY29tcG9uZW50ICJEb2N1bWVudHMgUm91dGVzIiAiUm91dGVzIHVuZGVyIC9kb2N1bWVudHMiICJGYXN0aWZ5IHBsdWdpbiIgewogICAgICAgICAgICAgICAgICAgIHRhZ3MgIlJvdXRlcyIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIGRvY3VtZW50c1NlcnZpY2UgPSBjb21wb25lbnQgIkRvY3VtZW50cyBTZXJ2aWNlIiAiRG9jdW1lbnQgdmVyc2lvbnMsIGNvbnRlbnQgYW5kIG1ldGFkYXRhIiAiSmF2YVNjcmlwdCBtb2R1bGUiIHsKICAgICAgICAgICAgICAgICAgICB0YWdzICJTZXJ2aWNlIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgZG9jdW1lbnRzUmVwbyA9IGNvbXBvbmVudCAiRG9jdW1lbnRzIFJlcG9zaXRvcnkiICJTUUwgYWNjZXNzIGZvciBkb2N1bWVudHMiICJiZXR0ZXItc3FsaXRlMyIgewogICAgICAgICAgICAgICAgICAgIHRhZ3MgIlJlcG9zaXRvcnkiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICBkb2N1bWVudFZlcnNpb25zUmVwbyA9IGNvbXBvbmVudCAiRG9jdW1lbnQgVmVyc2lvbnMgUmVwb3NpdG9yeSIgIlNRTCBhY2Nlc3MgZm9yIGRvY3VtZW50X3ZlcnNpb25zIiAiYmV0dGVyLXNxbGl0ZTMiIHsKICAgICAgICAgICAgICAgICAgICB0YWdzICJSZXBvc2l0b3J5IgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgZG9jdW1lbnRzU3RvcmFnZSA9IGNvbXBvbmVudCAiRG9jdW1lbnRzIFN0b3JhZ2UiICJQZXJzaXN0IGRvY3VtZW50IEhUTUwgaW4gL3BlcnNpc3RlbmNlL2RvY3VtZW50cyIgIkZpbGVzeXN0ZW0iIHsKICAgICAgICAgICAgICAgICAgICB0YWdzICJTdG9yYWdlIgogICAgICAgICAgICAgICAgfQoKICAgICAgICAgICAgICAgIG1vZGVsc1JvdXRlcyA9IGNvbXBvbmVudCAiTW9kZWxzIFJvdXRlcyIgIlJvdXRlcyB1bmRlciAvbW9kZWxzIiAiRmFzdGlmeSBwbHVnaW4iIHsKICAgICAgICAgICAgICAgICAgICB0YWdzICJSb3V0ZXMiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICBtb2RlbHNTZXJ2aWNlID0gY29tcG9uZW50ICJNb2RlbHMgU2VydmljZSIgIk1vZGVsL3ZlcnNpb24gbGlmZWN5Y2xlIGFuZCBnZW5lcmF0aW9uIGF0dGVtcHQgdHJhY2tpbmciICJKYXZhU2NyaXB0IG1vZHVsZSIgewogICAgICAgICAgICAgICAgICAgIHRhZ3MgIlNlcnZpY2UiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICBtb2RlbHNSZXBvID0gY29tcG9uZW50ICJNb2RlbHMgUmVwb3NpdG9yeSIgIlNRTCBhY2Nlc3MgZm9yIG1vZGVscyIgImJldHRlci1zcWxpdGUzIiB7CiAgICAgICAgICAgICAgICAgICAgdGFncyAiUmVwb3NpdG9yeSIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIG1vZGVsVmVyc2lvbnNSZXBvID0gY29tcG9uZW50ICJNb2RlbCBWZXJzaW9ucyBSZXBvc2l0b3J5IiAiU1FMIGFjY2VzcyBmb3IgbW9kZWxfdmVyc2lvbnMiICJiZXR0ZXItc3FsaXRlMyIgewogICAgICAgICAgICAgICAgICAgIHRhZ3MgIlJlcG9zaXRvcnkiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICBtb2RlbEdlbmVyYXRpb25BdHRlbXB0c1JlcG8gPSBjb21wb25lbnQgIk1vZGVsIEdlbmVyYXRpb24gQXR0ZW1wdHMgUmVwb3NpdG9yeSIgIlNRTCBhY2Nlc3MgZm9yIG1vZGVsX2dlbmVyYXRpb25fYXR0ZW1wdHMiICJiZXR0ZXItc3FsaXRlMyIgewogICAgICAgICAgICAgICAgICAgIHRhZ3MgIlJlcG9zaXRvcnkiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICBtb2RlbFZlcnNpb25FdmVudHNSZXBvID0gY29tcG9uZW50ICJNb2RlbCBWZXJzaW9uIEV2ZW50cyBSZXBvc2l0b3J5IiAiU1FMIGFjY2VzcyBmb3IgbW9kZWxfdmVyc2lvbl9ldmVudHMiICJiZXR0ZXItc3FsaXRlMyIgewogICAgICAgICAgICAgICAgICAgIHRhZ3MgIlJlcG9zaXRvcnkiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICBtb2RlbFN1YnByb2Nlc3Nlc1JlcG8gPSBjb21wb25lbnQgIk1vZGVsIFN1YnByb2Nlc3NlcyBSZXBvc2l0b3J5IiAiU1FMIGFjY2VzcyBmb3IgbW9kZWxfc3VicHJvY2Vzc2VzIiAiYmV0dGVyLXNxbGl0ZTMiIHsKICAgICAgICAgICAgICAgICAgICB0YWdzICJSZXBvc2l0b3J5IgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgbW9kZWxzU3RvcmFnZSA9IGNvbXBvbmVudCAiTW9kZWxzIFN0b3JhZ2UiICJQZXJzaXN0IG1vZGVsIFhNTCBpbiAvcGVyc2lzdGVuY2UvbW9kZWxzIiAiRmlsZXN5c3RlbSIgewogICAgICAgICAgICAgICAgICAgIHRhZ3MgIlN0b3JhZ2UiCiAgICAgICAgICAgICAgICB9CgogICAgICAgICAgICAgICAgbGlua3NSb3V0ZXMgPSBjb21wb25lbnQgIkRvY3VtZW50LU1vZGVsIExpbmtzIFJvdXRlcyIgIlJvdXRlcyB1bmRlciAvZG9jdW1lbnQtbW9kZWwtbGlua3MiICJGYXN0aWZ5IHBsdWdpbiIgewogICAgICAgICAgICAgICAgICAgIHRhZ3MgIlJvdXRlcyIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIGxpbmtzU2VydmljZSA9IGNvbXBvbmVudCAiRG9jdW1lbnQtTW9kZWwgTGlua3MgU2VydmljZSIgIk1hbmFnZSBsaW5rcyBhbmQgc2VsZWN0aW9uIGhpc3RvcnkiICJKYXZhU2NyaXB0IG1vZHVsZSIgewogICAgICAgICAgICAgICAgICAgIHRhZ3MgIlNlcnZpY2UiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICBsaW5rc1JlcG8gPSBjb21wb25lbnQgIkRvY3VtZW50LU1vZGVsIExpbmtzIFJlcG9zaXRvcnkiICJTUUwgYWNjZXNzIGZvciBsaW5raW5nICsgc2VsZWN0aW9ucyIgImJldHRlci1zcWxpdGUzIiB7CiAgICAgICAgICAgICAgICAgICAgdGFncyAiUmVwb3NpdG9yeSIKICAgICAgICAgICAgICAgIH0KCiAgICAgICAgICAgICAgICBsb2dzU2VydmljZSA9IGNvbXBvbmVudCAiTG9ncyBTZXJ2aWNlIiAiQXBwZW5kLW9ubHkgcHJvamVjdCBsb2cgZXZlbnRzIiAiSmF2YVNjcmlwdCBtb2R1bGUiIHsKICAgICAgICAgICAgICAgICAgICB0YWdzICJTZXJ2aWNlIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgbG9nc1JlcG8gPSBjb21wb25lbnQgIkxvZ3MgUmVwb3NpdG9yeSIgIkFwcGVuZCB0byAvcGVyc2lzdGVuY2UvbG9ncyIgIkZpbGVzeXN0ZW0iIHsKICAgICAgICAgICAgICAgICAgICB0YWdzICJSZXBvc2l0b3J5IgogICAgICAgICAgICAgICAgfQoKICAgICAgICAgICAgICAgIGJhc2VTcWxSZXBvID0gY29tcG9uZW50ICJCYXNlIFNRTCBSZXBvc2l0b3J5IiAiU2hhcmVkIFNRTCByZXBvc2l0b3J5IHV0aWxpdGllcyIgIkphdmFTY3JpcHQgbW9kdWxlIiB7CiAgICAgICAgICAgICAgICAgICAgdGFncyAiU2hhcmVkIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgICAgIGZzID0gY29udGFpbmVyICJEaXJlY3RvcnkiIHsKICAgICAgICAgICAgICAgIHRlY2hub2xvZ3kgIkxvY2FsIGZpbGVzeXN0ZW0gKC9wZXJzaXN0ZW5jZSkiCiAgICAgICAgICAgICAgICB0YWdzICJEaXJlY3RvcnkiCiAgICAgICAgICAgIH0KICAgICAgICAgICAgZGIgPSBjb250YWluZXIgIkRhdGFiYXNlIiB7CiAgICAgICAgICAgICAgICB0ZWNobm9sb2d5ICJTUUxpdGUgKGJldHRlci1zcWxpdGUzKSIKICAgICAgICAgICAgICAgIHRhZ3MgIkRhdGFiYXNlIgogICAgICAgICAgICB9CiAgICAgICAgfQogICAgICAgIHUgLT4gc3MuZmUgIkludGVyYWN0cyB3aXRoIgogICAgICAgIHNzLmZlIC0+IGxsbSAiTWFrZXMgQVBJIHJlcXVlc3RzIHRvIgogICAgICAgIHNzLmZlIC0+IHNzLmJlICJSZWFkcyBmcm9tIGFuZCB3cml0ZXMgdG8iCiAgICAgICAgc3MuYmUgLT4gc3MuZnMgIlJlYWRzIGZyb20gYW5kIHdyaXRlcyB0byIKICAgICAgICBzcy5iZSAtPiBzcy5kYiAiUmVhZHMgZnJvbSBhbmQgd3JpdGVzIHRvIgoKICAgICAgICBzcy5mZSAtPiBzcy5iZS5hcGkgIkNhbGxzIEhUVFAgQVBJIgoKICAgICAgICBzcy5mZS5ob21lUGFnZSAtPiBzcy5mZS5hcGlDbGllbnQgIkxvYWRzIHByb2plY3RzICsgb3ZlcnZpZXciCiAgICAgICAgc3MuZmUuaG9tZVBhZ2UgLT4gc3MuZmUuc2hhcmVkVXRpbHMgIlVzZXMiCgogICAgICAgIHNzLmZlLndvcmtzcGFjZVBhZ2UgLT4gc3MuZmUuYXBpQ2xpZW50ICJMb2FkcyBhbmQgdXBkYXRlcyBwcm9qZWN0IHN0YXRlIgogICAgICAgIHNzLmZlLndvcmtzcGFjZVBhZ2UgLT4gc3MuZmUucGVyc2lzdGVuY2VMb2FkZXIgIkxvYWRzIGRvY3VtZW50cy9tb2RlbHMvbG9ncyIKICAgICAgICBzcy5mZS53b3Jrc3BhY2VQYWdlIC0+IHNzLmZlLnNoYXJlZFV0aWxzICJVc2VzIgogICAgICAgIHNzLmZlLndvcmtzcGFjZVBhZ2UgLT4gc3MuZmUubGxtQ2xpZW50ICJHZW5lcmF0ZXMgbW9kZWxzIgoKICAgICAgICBzcy5mZS5zdGF0c1BhZ2UgLT4gc3MuZmUuYXBpQ2xpZW50ICJMb2FkcyBzdGF0aXN0aWNzIgogICAgICAgIHNzLmZlLnN0YXRzUGFnZSAtPiBzcy5mZS5zaGFyZWRVdGlscyAiVXNlcyIKCiAgICAgICAgc3MuZmUuZG9jdW1lbnRWaWV3ZXIgLT4gc3MuZmUuYXBpQ2xpZW50ICJMb2FkcyB0cmFjZSBzZWxlY3Rpb25zIgogICAgICAgIHNzLmZlLmRvY3VtZW50Vmlld2VyIC0+IHNzLmZlLnBlcnNpc3RlbmNlTG9hZGVyICJMb2FkcyBkb2N1bWVudCBjb250ZW50IgogICAgICAgIHNzLmZlLmRvY3VtZW50Vmlld2VyIC0+IHNzLmZlLnNoYXJlZFV0aWxzICJVc2VzIgoKICAgICAgICBzcy5mZS5tb2RlbFZpZXdlciAtPiBzcy5mZS5hcGlDbGllbnQgIkxvYWRzIG1vZGVsIFhNTCIKICAgICAgICBzcy5mZS5tb2RlbFZpZXdlciAtPiBzcy5mZS5zaGFyZWRVdGlscyAiVXNlcyIKCiAgICAgICAgc3MuZmUuYXBpQ2xpZW50IC0+IHNzLmJlLmFwaSAiUmVxdWVzdHMgSlNPTiBBUElzIgogICAgICAgIHNzLmZlLnBlcnNpc3RlbmNlTG9hZGVyIC0+IHNzLmZzICJSZWFkcyAvcGVyc2lzdGVuY2UvKiIKICAgICAgICBzcy5mZS5sbG1DbGllbnQgLT4gbGxtICJSZXF1ZXN0cyBtb2RlbCBnZW5lcmF0aW9uIgoKICAgICAgICBzcy5iZS5hcGkgLT4gc3MuYmUucHJvamVjdHNSb3V0ZXMgIlJlZ2lzdGVycyIKICAgICAgICBzcy5iZS5hcGkgLT4gc3MuYmUuZG9jdW1lbnRzUm91dGVzICJSZWdpc3RlcnMiCiAgICAgICAgc3MuYmUuYXBpIC0+IHNzLmJlLm1vZGVsc1JvdXRlcyAiUmVnaXN0ZXJzIgogICAgICAgIHNzLmJlLmFwaSAtPiBzcy5iZS5saW5rc1JvdXRlcyAiUmVnaXN0ZXJzIgoKICAgICAgICBzcy5iZS5wcm9qZWN0c1JvdXRlcyAtPiBzcy5iZS5wcm9qZWN0c1NlcnZpY2UgIkludm9rZXMiCiAgICAgICAgc3MuYmUucHJvamVjdHNTZXJ2aWNlIC0+IHNzLmJlLnByb2plY3RzUmVwbyAiUmVhZHMvd3JpdGVzIgogICAgICAgIHNzLmJlLnByb2plY3RzU2VydmljZSAtPiBzcy5iZS5kb2N1bWVudHNTZXJ2aWNlICJRdWVyaWVzIgogICAgICAgIHNzLmJlLnByb2plY3RzU2VydmljZSAtPiBzcy5iZS5tb2RlbHNTZXJ2aWNlICJRdWVyaWVzIgogICAgICAgIHNzLmJlLnByb2plY3RzU2VydmljZSAtPiBzcy5iZS5sb2dzU2VydmljZSAiTG9ncyBldmVudHMiCgogICAgICAgIHNzLmJlLmRvY3VtZW50c1JvdXRlcyAtPiBzcy5iZS5kb2N1bWVudHNTZXJ2aWNlICJJbnZva2VzIgogICAgICAgIHNzLmJlLmRvY3VtZW50c1NlcnZpY2UgLT4gc3MuYmUuZG9jdW1lbnRzUmVwbyAiUmVhZHMvd3JpdGVzIgogICAgICAgIHNzLmJlLmRvY3VtZW50c1NlcnZpY2UgLT4gc3MuYmUuZG9jdW1lbnRWZXJzaW9uc1JlcG8gIlJlYWRzL3dyaXRlcyIKICAgICAgICBzcy5iZS5kb2N1bWVudHNTZXJ2aWNlIC0+IHNzLmJlLmRvY3VtZW50c1N0b3JhZ2UgIlJlYWRzL3dyaXRlcyIKICAgICAgICBzcy5iZS5kb2N1bWVudHNTZXJ2aWNlIC0+IHNzLmJlLmxpbmtzU2VydmljZSAiQ29waWVzIGxpbmtzIgogICAgICAgIHNzLmJlLmRvY3VtZW50c1NlcnZpY2UgLT4gc3MuYmUubW9kZWxzU2VydmljZSAiVHJpZ2dlcnMgcmV3cml0ZS9jYXNjYWRlIgogICAgICAgIHNzLmJlLmRvY3VtZW50c1NlcnZpY2UgLT4gc3MuYmUubG9nc1NlcnZpY2UgIkxvZ3MgZXZlbnRzIgoKICAgICAgICBzcy5iZS5tb2RlbHNSb3V0ZXMgLT4gc3MuYmUubW9kZWxzU2VydmljZSAiSW52b2tlcyIKICAgICAgICBzcy5iZS5tb2RlbHNTZXJ2aWNlIC0+IHNzLmJlLm1vZGVsc1JlcG8gIlJlYWRzL3dyaXRlcyIKICAgICAgICBzcy5iZS5tb2RlbHNTZXJ2aWNlIC0+IHNzLmJlLm1vZGVsVmVyc2lvbnNSZXBvICJSZWFkcy93cml0ZXMiCiAgICAgICAgc3MuYmUubW9kZWxzU2VydmljZSAtPiBzcy5iZS5tb2RlbEdlbmVyYXRpb25BdHRlbXB0c1JlcG8gIlJlYWRzL3dyaXRlcyIKICAgICAgICBzcy5iZS5tb2RlbHNTZXJ2aWNlIC0+IHNzLmJlLm1vZGVsVmVyc2lvbkV2ZW50c1JlcG8gIlJlYWRzL3dyaXRlcyIKICAgICAgICBzcy5iZS5tb2RlbHNTZXJ2aWNlIC0+IHNzLmJlLm1vZGVsU3VicHJvY2Vzc2VzUmVwbyAiUmVhZHMvd3JpdGVzIgogICAgICAgIHNzLmJlLm1vZGVsc1NlcnZpY2UgLT4gc3MuYmUubW9kZWxzU3RvcmFnZSAiUmVhZHMvd3JpdGVzIgogICAgICAgIHNzLmJlLm1vZGVsc1NlcnZpY2UgLT4gc3MuYmUubGlua3NTZXJ2aWNlICJSZWFkcy93cml0ZXMiCiAgICAgICAgc3MuYmUubW9kZWxzU2VydmljZSAtPiBzcy5iZS5sb2dzU2VydmljZSAiTG9ncyBldmVudHMiCgogICAgICAgIHNzLmJlLmxpbmtzUm91dGVzIC0+IHNzLmJlLmxpbmtzU2VydmljZSAiSW52b2tlcyIKICAgICAgICBzcy5iZS5saW5rc1NlcnZpY2UgLT4gc3MuYmUubGlua3NSZXBvICJSZWFkcy93cml0ZXMiCgogICAgICAgIHNzLmJlLmxvZ3NTZXJ2aWNlIC0+IHNzLmJlLmxvZ3NSZXBvICJBcHBlbmRzIgoKICAgICAgICBzcy5iZS5wcm9qZWN0c1JlcG8gLT4gc3MuZGIgIlF1ZXJpZXMiCiAgICAgICAgc3MuYmUuZG9jdW1lbnRzUmVwbyAtPiBzcy5kYiAiUXVlcmllcyIKICAgICAgICBzcy5iZS5kb2N1bWVudFZlcnNpb25zUmVwbyAtPiBzcy5kYiAiUXVlcmllcyIKICAgICAgICBzcy5iZS5tb2RlbHNSZXBvIC0+IHNzLmRiICJRdWVyaWVzIgogICAgICAgIHNzLmJlLm1vZGVsVmVyc2lvbnNSZXBvIC0+IHNzLmRiICJRdWVyaWVzIgogICAgICAgIHNzLmJlLm1vZGVsR2VuZXJhdGlvbkF0dGVtcHRzUmVwbyAtPiBzcy5kYiAiUXVlcmllcyIKICAgICAgICBzcy5iZS5tb2RlbFZlcnNpb25FdmVudHNSZXBvIC0+IHNzLmRiICJRdWVyaWVzIgogICAgICAgIHNzLmJlLm1vZGVsU3VicHJvY2Vzc2VzUmVwbyAtPiBzcy5kYiAiUXVlcmllcyIKICAgICAgICBzcy5iZS5saW5rc1JlcG8gLT4gc3MuZGIgIlF1ZXJpZXMiCgogICAgICAgIHNzLmJlLmRvY3VtZW50c1N0b3JhZ2UgLT4gc3MuZnMgIlJlYWRzL3dyaXRlcyIKICAgICAgICBzcy5iZS5tb2RlbHNTdG9yYWdlIC0+IHNzLmZzICJSZWFkcy93cml0ZXMiCiAgICAgICAgc3MuYmUubG9nc1JlcG8gLT4gc3MuZnMgIlJlYWRzL3dyaXRlcyIKICAgIH0KLyoKZWxlbWVudCA8dGFnPiB7CiAgICBzaGFwZSA8Qm94fFJvdW5kZWRCb3h8Q2lyY2xlfEVsbGlwc2V8SGV4YWdvbnxEaWFtb25kfEN5bGluZGVyfEJ1Y2tldHxQaXBlfFBlcnNvbnxSb2JvdHxGb2xkZXJ8V2ViQnJvd3NlcnxXaW5kb3d8VGVybWluYWx8U2hlbGx8TW9iaWxlRGV2aWNlUG9ydHJhaXR8TW9iaWxlRGV2aWNlTGFuZHNjYXBlfENvbXBvbmVudD4KICAgIGljb24gPGZpbGV8dXJsPgogICAgd2lkdGggPGludGVnZXI+CiAgICBoZWlnaHQgPGludGVnZXI+CiAgICBiYWNrZ3JvdW5kIDwjcnJnZ2JifGNvbG9yIG5hbWU+CiAgICBjb2xvciA8I3JyZ2diYnxjb2xvciBuYW1lPgogICAgY29sb3VyIDwjcnJnZ2JifGNvbG9yIG5hbWU+CiAgICBzdHJva2UgPCNycmdnYmJ8Y29sb3IgbmFtZT4KICAgIHN0cm9rZVdpZHRoIDxpbnRlZ2VyOiAxLTEwPgogICAgZm9udFNpemUgPGludGVnZXI+CiAgICBib3JkZXIgPHNvbGlkfGRhc2hlZHxkb3R0ZWQ+CiAgICBvcGFjaXR5IDxpbnRlZ2VyOiAwLTEwMD4KICAgIG1ldGFkYXRhIDx0cnVlfGZhbHNlPgogICAgZGVzY3JpcHRpb24gPHRydWV8ZmFsc2U+CiAgICBwcm9wZXJ0aWVzIHsKICAgICAgICBuYW1lIHZhbHVlCiAgICB9Cn0KKi8KCiAgICB2aWV3cyB7CiAgICAgICAgc3lzdGVtQ29udGV4dCBzcyAiU3lzdGVtQ29udGV4dCIgewogICAgICAgICAgICBpbmNsdWRlICoKICAgICAgICB9CgogICAgICAgIGNvbnRhaW5lciBzcyAiQXJjaGl0ZWN0dXJlIiB7CiAgICAgICAgICAgIGluY2x1ZGUgKgogICAgICAgIH0KCiAgICAgICAgY29tcG9uZW50IHNzLmJlICJCYWNrZW5kQ29tcG9uZW50cyIgewogICAgICAgICAgICBpbmNsdWRlICoKICAgICAgICAgICAgaW5jbHVkZSBzcy5mZQogICAgICAgICAgICBpbmNsdWRlIHNzLmZzCiAgICAgICAgICAgIGluY2x1ZGUgc3MuZGIKICAgICAgICB9CgogICAgICAgIGNvbXBvbmVudCBzcy5mZSAiRnJvbnRlbmRDb21wb25lbnRzIiB7CiAgICAgICAgICAgIGluY2x1ZGUgKgogICAgICAgICAgICBpbmNsdWRlIHNzLmJlLmFwaQogICAgICAgICAgICBpbmNsdWRlIHNzLmZzCiAgICAgICAgICAgIGluY2x1ZGUgbGxtCiAgICAgICAgfQoKICAgICAgICBzdHlsZXMgewogICAgICAgICAgICBlbGVtZW50ICJFbGVtZW50IiB7CiAgICAgICAgICAgICAgICAvL2NvbG9yICMyYjJiMmIKICAgICAgICAgICAgICAgIC8vc3Ryb2tlICMyYjJiMmIKICAgICAgICAgICAgICAgIGNvbG9yICMwNzczYWYKICAgICAgICAgICAgICAgIHN0cm9rZSAjMDc3M2FmCiAgICAgICAgICAgICAgICBzdHJva2VXaWR0aCA1CiAgICAgICAgICAgICAgICBzaGFwZSByb3VuZGVkYm94CiAgICAgICAgICAgIH0KICAgICAgICAgICAgZWxlbWVudCAiQ29tcG9uZW50IiB7CiAgICAgICAgICAgICAgICBzaGFwZSBjb21wb25lbnQKICAgICAgICAgICAgfQogICAgICAgICAgICBlbGVtZW50ICJQZXJzb24iIHsKICAgICAgICAgICAgICAgIGNvbG9yICM1NWFhNTUKICAgICAgICAgICAgICAgIHN0cm9rZSAjNTVhYTU1CiAgICAgICAgICAgICAgICBzaGFwZSBwZXJzb24KICAgICAgICAgICAgfQogICAgICAgICAgICBlbGVtZW50ICJMTE1TZXJ2aWNlIiB7CiAgICAgICAgICAgICAgICBjb2xvciAjZjg4NzI4CiAgICAgICAgICAgICAgICBzdHJva2UgI2Y4ODcyOAogICAgICAgICAgICAgICAgc2hhcGUgaGV4YWdvbgogICAgICAgICAgICB9CiAgICAgICAgICAgIGVsZW1lbnQgIkFQSSIgewogICAgICAgICAgICAgICAgc2hhcGUgaGV4YWdvbgogICAgICAgICAgICB9CiAgICAgICAgICAgIGVsZW1lbnQgIlBhZ2UiIHsKICAgICAgICAgICAgICAgIHNoYXBlIFdlYkJyb3dzZXIKICAgICAgICAgICAgfQogICAgICAgICAgICBlbGVtZW50ICJMTE1DbGllbnQiIHsKICAgICAgICAgICAgICAgIHNoYXBlIGhleGFnb24KICAgICAgICAgICAgfQogICAgICAgICAgICBlbGVtZW50ICJGRSIgewogICAgICAgICAgICAgICAgc2hhcGUgV2ViQnJvd3NlcgogICAgICAgICAgICB9CiAgICAgICAgICAgIGVsZW1lbnQgIkJFIiB7CiAgICAgICAgICAgICAgICBzaGFwZSBTaGVsbAogICAgICAgICAgICB9CiAgICAgICAgICAgIGVsZW1lbnQgIkRhdGFiYXNlIiB7CiAgICAgICAgICAgICAgICBzaGFwZSBjeWxpbmRlcgogICAgICAgICAgICB9CiAgICAgICAgICAgIGVsZW1lbnQgIkRpcmVjdG9yeSIgewogICAgICAgICAgICAgICAgc2hhcGUgRm9sZGVyCiAgICAgICAgICAgIH0KICAgICAgICAgICAgZWxlbWVudCAiQm91bmRhcnkiIHsKICAgICAgICAgICAgICAgIHN0cm9rZVdpZHRoIDUKICAgICAgICAgICAgfQogICAgICAgICAgICByZWxhdGlvbnNoaXAgIlJlbGF0aW9uc2hpcCIgewogICAgICAgICAgICAgICAgdGhpY2tuZXNzIDQKICAgICAgICAgICAgfQogICAgICAgIH0KICAgIH0KCiAgICBjb25maWd1cmF0aW9uIHsKICAgICAgICBzY29wZSBzb2Z0d2FyZXN5c3RlbQogICAgfQoKfQ=="
+    "structurizr.inspection.warning" : "0"
   },
   "views" : {
     "componentViews" : [ {
-      "containerId" : "14",
+      "containerId" : "20",
       "dimensions" : {
         "height" : 4489,
         "width" : 7055
@@ -847,103 +984,103 @@
         "x" : 3969,
         "y" : 210
       }, {
-        "id" : "15",
+        "id" : "21",
         "x" : 3969,
         "y" : 684
       }, {
-        "id" : "16",
+        "id" : "22",
         "x" : 1900,
         "y" : 1575
       }, {
-        "id" : "17",
+        "id" : "23",
         "x" : 1880,
         "y" : 2280
       }, {
-        "id" : "18",
+        "id" : "24",
         "x" : 1799,
         "y" : 3345
       }, {
-        "id" : "19",
+        "id" : "25",
         "x" : 3310,
         "y" : 1520
       }, {
-        "id" : "20",
+        "id" : "26",
         "x" : 2835,
         "y" : 2295
       }, {
-        "id" : "21",
+        "id" : "27",
         "x" : 2299,
         "y" : 3345
       }, {
-        "id" : "22",
+        "id" : "28",
         "x" : 2799,
         "y" : 3345
       }, {
-        "id" : "23",
+        "id" : "29",
         "x" : 299,
         "y" : 3345
       }, {
-        "id" : "24",
+        "id" : "30",
         "x" : 4505,
         "y" : 1505
       }, {
-        "id" : "25",
+        "id" : "31",
         "x" : 3870,
         "y" : 2300
       }, {
-        "id" : "26",
+        "id" : "32",
         "x" : 3299,
         "y" : 3345
       }, {
-        "id" : "27",
+        "id" : "33",
         "x" : 3799,
         "y" : 3345
       }, {
-        "id" : "28",
+        "id" : "34",
         "x" : 4299,
         "y" : 3345
       }, {
-        "id" : "29",
+        "id" : "35",
         "x" : 4799,
         "y" : 3345
       }, {
-        "id" : "30",
+        "id" : "36",
         "x" : 5299,
         "y" : 3345
       }, {
-        "id" : "31",
+        "id" : "37",
         "x" : 790,
         "y" : 3340
       }, {
-        "id" : "32",
+        "id" : "38",
         "x" : 6040,
         "y" : 1495
       }, {
-        "id" : "33",
+        "id" : "39",
         "x" : 6055,
         "y" : 2350
       }, {
-        "id" : "34",
+        "id" : "40",
         "x" : 5804,
         "y" : 3345
       }, {
-        "id" : "35",
+        "id" : "41",
         "x" : 1305,
         "y" : 2685
       }, {
-        "id" : "36",
+        "id" : "42",
         "x" : 1299,
         "y" : 3345
       }, {
-        "id" : "37",
+        "id" : "43",
         "x" : 6304,
         "y" : 3345
       }, {
-        "id" : "38",
+        "id" : "44",
         "x" : 815,
         "y" : 4195
       }, {
-        "id" : "39",
+        "id" : "45",
         "x" : 3760,
         "y" : 4245
       } ],
@@ -964,53 +1101,45 @@
       }, {
         "id" : "105"
       }, {
-        "id" : "47"
+        "id" : "106"
       }, {
-        "id" : "64"
+        "id" : "107"
       }, {
-        "id" : "66"
+        "id" : "108"
       }, {
-        "id" : "67"
+        "id" : "109"
       }, {
-        "id" : "68"
+        "id" : "110"
       }, {
-        "id" : "69"
+        "id" : "111"
       }, {
-        "id" : "70"
+        "id" : "112"
       }, {
-        "id" : "71"
+        "id" : "113"
       }, {
-        "id" : "72"
+        "id" : "114"
       }, {
-        "id" : "73",
-        "vertices" : [ {
-          "x" : 2705,
-          "y" : 1845
-        } ]
+        "id" : "115"
       }, {
-        "id" : "74"
+        "id" : "116"
       }, {
-        "id" : "75"
+        "id" : "117"
       }, {
-        "id" : "76"
+        "id" : "118"
       }, {
-        "id" : "77"
+        "id" : "119"
       }, {
-        "id" : "78"
+        "id" : "120"
       }, {
-        "id" : "79",
-        "vertices" : [ {
-          "x" : 4040,
-          "y" : 2065
-        } ]
+        "id" : "121"
       }, {
-        "id" : "80"
+        "id" : "122"
       }, {
-        "id" : "81"
+        "id" : "123"
+      }, {
+        "id" : "53"
       }, {
         "id" : "82"
-      }, {
-        "id" : "83"
       }, {
         "id" : "84"
       }, {
@@ -1026,7 +1155,11 @@
       }, {
         "id" : "90"
       }, {
-        "id" : "91"
+        "id" : "91",
+        "vertices" : [ {
+          "x" : 2705,
+          "y" : 1845
+        } ]
       }, {
         "id" : "92"
       }, {
@@ -1038,7 +1171,11 @@
       }, {
         "id" : "96"
       }, {
-        "id" : "97"
+        "id" : "97",
+        "vertices" : [ {
+          "x" : 4040,
+          "y" : 2065
+        } ]
       }, {
         "id" : "98"
       }, {
@@ -1088,14 +1225,38 @@
         "y" : 712
       }, {
         "id" : "13",
+        "x" : 2684,
+        "y" : 260
+      }, {
+        "id" : "14",
+        "x" : 3514,
+        "y" : 260
+      }, {
+        "id" : "15",
+        "x" : 4489,
+        "y" : 260
+      }, {
+        "id" : "16",
+        "x" : 1564,
+        "y" : 762
+      }, {
+        "id" : "17",
+        "x" : 2869,
+        "y" : 762
+      }, {
+        "id" : "18",
+        "x" : 799,
+        "y" : 712
+      }, {
+        "id" : "19",
         "x" : 3909,
         "y" : 762
       }, {
-        "id" : "14",
+        "id" : "20",
         "x" : 1564,
         "y" : 1315
       }, {
-        "id" : "38",
+        "id" : "44",
         "x" : 1894,
         "y" : 1768
       } ],
@@ -1104,108 +1265,222 @@
       "name" : "Component View: Document-Based Process Modeler - Frontend",
       "order" : 4,
       "relationships" : [ {
-        "id" : "45",
+        "id" : "51",
         "vertices" : [ {
           "x" : 1789,
           "y" : 1692
         } ]
       }, {
-        "id" : "48",
+        "id" : "54",
         "vertices" : [ {
           "x" : 1499,
           "y" : 636
         } ]
       }, {
-        "id" : "49",
+        "id" : "55",
         "vertices" : [ {
           "x" : 3529,
           "y" : 636
         } ]
       }, {
-        "id" : "50",
+        "id" : "56",
         "vertices" : [ {
           "x" : 1789,
           "y" : 636
         } ]
       }, {
-        "id" : "51",
-        "vertices" : [ {
-          "x" : 2949,
-          "y" : 636
-        } ]
+        "id" : "57"
       }, {
-        "id" : "52",
-        "vertices" : [ {
-          "x" : 3819,
-          "y" : 636
-        } ]
+        "id" : "58"
       }, {
-        "id" : "53",
-        "vertices" : [ {
-          "x" : 999,
-          "y" : 636
-        } ]
+        "id" : "59"
       }, {
-        "id" : "54",
-        "vertices" : [ {
-          "x" : 2079,
-          "y" : 636
-        } ]
+        "id" : "60"
       }, {
-        "id" : "55",
-        "vertices" : [ {
-          "x" : 4109,
-          "y" : 636
-        } ]
+        "id" : "61"
       }, {
-        "id" : "56",
-        "vertices" : [ {
-          "x" : 2369,
-          "y" : 636
-        } ]
+        "id" : "62"
       }, {
-        "id" : "57",
-        "vertices" : [ {
-          "x" : 3239,
-          "y" : 636
-        } ]
+        "id" : "63"
       }, {
-        "id" : "58",
+        "id" : "64"
+      }, {
+        "id" : "65"
+      }, {
+        "id" : "66",
         "vertices" : [ {
           "x" : 4609,
           "y" : 636
         } ]
       }, {
-        "id" : "59",
+        "id" : "67"
+      }, {
+        "id" : "68"
+      }, {
+        "id" : "69"
+      }, {
+        "id" : "70"
+      }, {
+        "id" : "71"
+      }, {
+        "id" : "72",
+        "vertices" : [ {
+          "x" : 2079,
+          "y" : 636
+        } ]
+      }, {
+        "id" : "73",
+        "vertices" : [ {
+          "x" : 4109,
+          "y" : 636
+        } ]
+      }, {
+        "id" : "74",
+        "vertices" : [ {
+          "x" : 2369,
+          "y" : 636
+        } ]
+      }, {
+        "id" : "75",
+        "vertices" : [ {
+          "x" : 3239,
+          "y" : 636
+        } ]
+      }, {
+        "id" : "76",
+        "vertices" : [ {
+          "x" : 4609,
+          "y" : 636
+        } ]
+      }, {
+        "id" : "77",
         "vertices" : [ {
           "x" : 2659,
           "y" : 636
         } ]
       }, {
-        "id" : "60",
+        "id" : "78",
         "vertices" : [ {
           "x" : 4899,
           "y" : 636
         } ]
       }, {
-        "id" : "62"
+        "id" : "80"
       }, {
-        "id" : "63",
+        "id" : "81",
         "vertices" : [ {
           "x" : 3094,
           "y" : 1692
         } ]
       }, {
-        "id" : "65",
+        "id" : "83",
         "vertices" : [ {
           "x" : 999,
           "y" : 1239
         } ]
       } ]
+    }, {
+      "automaticLayout" : {
+        "edgeSeparation" : 50,
+        "nodeSeparation" : 50,
+        "rankDirection" : "LeftRight",
+        "rankSeparation" : 100,
+        "vertices" : true
+      },
+      "containerId" : "4",
+      "elements" : [ {
+        "id" : "2",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "6",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "7",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "8",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "9",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "10",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "11",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "12",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "16",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "18",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "19",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "21",
+        "x" : 0,
+        "y" : 0
+      } ],
+      "externalContainerBoundariesVisible" : false,
+      "key" : "WorkspacePageFrontend",
+      "name" : "Component View: Document-Based Process Modeler - Frontend",
+      "order" : 5,
+      "relationships" : [ {
+        "id" : "56"
+      }, {
+        "id" : "57"
+      }, {
+        "id" : "58"
+      }, {
+        "id" : "59"
+      }, {
+        "id" : "60"
+      }, {
+        "id" : "61"
+      }, {
+        "id" : "62"
+      }, {
+        "id" : "63"
+      }, {
+        "id" : "64"
+      }, {
+        "id" : "65"
+      }, {
+        "id" : "66"
+      }, {
+        "id" : "67"
+      }, {
+        "id" : "68"
+      }, {
+        "id" : "69"
+      }, {
+        "id" : "70"
+      }, {
+        "id" : "71"
+      }, {
+        "id" : "79"
+      }, {
+        "id" : "83"
+      } ]
     } ],
     "configuration" : {
       "lastSavedView" : "BackendComponents",
-      "metadataSymbols" : "SquareBrackets",
       "styles" : {
         "elements" : [ {
           "shape" : "Hexagon",
@@ -1276,15 +1551,15 @@
         "x" : 701,
         "y" : 766
       }, {
-        "id" : "14",
+        "id" : "20",
         "x" : 707,
         "y" : 1247
       }, {
-        "id" : "38",
+        "id" : "44",
         "x" : 327,
         "y" : 1685
       }, {
-        "id" : "39",
+        "id" : "45",
         "x" : 1077,
         "y" : 1695
       } ],
@@ -1293,17 +1568,17 @@
       "name" : "Container View: Document-Based Process Modeler",
       "order" : 2,
       "relationships" : [ {
-        "id" : "40"
-      }, {
-        "id" : "42"
-      }, {
-        "id" : "44"
-      }, {
-        "id" : "45"
-      }, {
         "id" : "46"
       }, {
-        "id" : "64",
+        "id" : "48"
+      }, {
+        "id" : "50"
+      }, {
+        "id" : "51"
+      }, {
+        "id" : "52"
+      }, {
+        "id" : "82",
         "vertices" : [ {
           "x" : 552,
           "y" : 918
@@ -1334,9 +1609,9 @@
       "name" : "System Context View: Document-Based Process Modeler",
       "order" : 1,
       "relationships" : [ {
-        "id" : "41"
+        "id" : "47"
       }, {
-        "id" : "43"
+        "id" : "49"
       } ],
       "softwareSystemId" : "3"
     } ]

@@ -1,4 +1,4 @@
-workspace "Name" "Description" {
+workspace "Document-Based Process Modeler" "Structurizr model of the document-based process modeling system architecture" {
 
     !identifiers hierarchical
 
@@ -10,131 +10,149 @@ workspace "Name" "Description" {
             tags "LLMService" 
         }
         ss = softwareSystem "Document-Based Process Modeler" "Supports the modeling process from document upload to model creation, modification and management" {
-            fe = container "Frontend" {
-                technology "Static HTML + ES modules"
+            fe = container "Frontend" "Browser-based user interface" {
+                technology "JavaScript, HTML, CSS"
                 tags "FE"
 
-                homePage = component "Home Page" "Project listing/creation and overview dashboard" "HTML + ES modules" {
+                homePage = component "Home Page" "Landing page for project creation, project browsing, and high-level overview statistics" "HTML + ES modules" {
                     tags "Page"
                 }
-                workspacePage = component "Workspace Page" "Main modelling workspace" "HTML + ES modules" {
+                workspacePage = component "Workspace Page" "Main three-pane workspace for document viewing, model editing, and graph-based navigation" "HTML + ES modules" {
                     tags "Page"
                 }
-                statsPage = component "Stats Page" "Project statistics" "HTML + ES modules" {
+                wsBootstrap = component "Workspace Bootstrap" "Initializes the workspace page, validates the selected project, lazy-loads UI modules, and starts the initial workspace load" "pages/workspace/init.js" {
+                    tags "WorkspaceFeature"
+                }
+                wsUI = component "Workspace UI Module" "Coordinates the workspace shell, header, document pane, model editor pane, review controls, and project graph interactions" "pages/workspace/ui/*.js" {
+                    tags "WorkspaceFeature"
+                }
+                wsState = component "Workspace Stores" "Client-side state for workspace context, documents, selections, models, editor state, and graph projection" "pages/workspace/store/*.js" {
+                    tags "WorkspaceFeature"
+                }
+                wsServices = component "Workspace Services" "Orchestrates workspace loading, document operations, model operations, version handling, and traceability actions" "pages/workspace/services/*.js" {
+                    tags "WorkspaceFeature"
+                }
+                docInteractionModule = component "Document Interaction Module" "Provides document HTML processing, text selection handling, and overlay utilities used by the workspace page" "modules/document/*.js" {
+                    tags "WorkspaceFeature"
+                }
+                modelEditorAdapter = component "Model Editor Adapter" "Provides CPEE-based model rendering, endpoint loading, XML helpers, and editor integration used by the workspace page" "modules/model/*.js" {
+                    tags "WorkspaceFeature"
+                }
+                statsPage = component "Stats Page" "Statistics page for inspecting project-level usage and modeling metrics" "HTML + ES modules" {
                     tags "Page"
                 }
-                documentViewer = component "Document Viewer" "Read-only document view with selection overlays" "HTML + ES modules" {
+                documentViewer = component "Document Viewer" "Document rendering area with text selections, overlays, and traceability markers" "HTML + ES modules" {
                     tags "Page"
                 }
-                modelViewer = component "Model Viewer" "Read-only model preview/renderer" "HTML + ES modules" {
+                modelViewer = component "Model Viewer" "Model preview and rendering area for inspecting persisted process models" "HTML + ES modules" {
                     tags "Page"
                 }
 
-                apiClient = component "Backend API Client" "Fetch-based client for backend routes (projects/documents/models/links/logs/stats)" "Fetch API" {
+                apiClient = component "Backend API Client" "Fetch-based client for backend endpoints covering projects, documents, models, links, logs, and statistics" "Fetch API" {
                     tags "APIClient"
                 }
-                persistenceLoader = component "Persistence File Loader" "Loads persisted artifacts via static /persistence paths" "HTTP GET" {
+                persistenceLoader = component "Persistence File Loader" "Loads persisted artifacts such as document HTML and model XML from backend-exposed persistence paths" "HTTP GET" {
                     tags "Storage"
                 }
-                llmClient = component "LLM Client" "Calls AutoBPMN.AI LLM endpoint for model generation" "HTTP (multipart/form-data)" {
+                llmClient = component "LLM Client" "Invokes the AutoBPMN.AI endpoint to generate or refine process models from selected text and prompts" "HTTP (multipart/form-data)" {
                     tags "LLMClient"
                 }
-                sharedUtils = component "Shared Utilities" "Shared DOM/URL/helpers used by pages" "JavaScript modules" {
+                sharedUtils = component "Shared Utilities" "Shared helper modules for DOM manipulation, URL handling, and common frontend logic" "JavaScript modules" {
                     tags "Shared"
                 }
             }
-            be = container "Backend" {
+            be = container "Backend" "Server-side application exposing APIs and managing persistence" {
                 technology "Node.js (Fastify)"
                 tags "BE"
 
-                api = component "Fastify App" "HTTP API server and static file serving" "Node.js (Fastify)" {
+                api = component "Fastify App" "Single server process that serves the frontend, exposes REST APIs, and publishes persisted artifacts" "Node.js (Fastify)" {
                     tags "API"
                 }
 
-                projectsRoutes = component "Projects Routes" "Routes under /projects" "Fastify plugin" {
+                projectsRoutes = component "Projects Routes" "HTTP routes under /projects for project lifecycle and workspace aggregation" "Fastify plugin" {
                     tags "Routes"
                 }
-                projectsService = component "Projects Service" "Project orchestration" "JavaScript module" {
+                projectsService = component "Projects Service" "Coordinates project operations and aggregates related documents, models, and statistics" "JavaScript module" {
                     tags "Service"
                 }
-                projectsRepo = component "Projects Repository" "SQL access for projects" "better-sqlite3" {
+                projectsRepo = component "Projects Repository" "Repository for project metadata stored in SQLite" "better-sqlite3" {
                     tags "Repository"
                 }
 
-                documentsRoutes = component "Documents Routes" "Routes under /documents" "Fastify plugin" {
+                documentsRoutes = component "Documents Routes" "HTTP routes under /documents for upload, versioning, metadata updates, and restoration" "Fastify plugin" {
                     tags "Routes"
                 }
-                documentsService = component "Documents Service" "Document versions, content and metadata" "JavaScript module" {
+                documentsService = component "Documents Service" "Handles document lifecycle, versioning, content persistence, and cascaded updates to linked models" "JavaScript module" {
                     tags "Service"
                 }
-                documentsRepo = component "Documents Repository" "SQL access for documents" "better-sqlite3" {
+                documentsRepo = component "Documents Repository" "Repository for document metadata and latest-version pointers" "better-sqlite3" {
                     tags "Repository"
                 }
-                documentVersionsRepo = component "Document Versions Repository" "SQL access for document_versions" "better-sqlite3" {
+                documentVersionsRepo = component "Document Versions Repository" "Repository for immutable document version records" "better-sqlite3" {
                     tags "Repository"
                 }
-                documentsStorage = component "Documents Storage" "Persist document HTML in /persistence/documents" "Filesystem" {
+                documentsStorage = component "Documents Storage" "Filesystem storage for serialized document content in /persistence/documents" "Filesystem" {
                     tags "Storage"
                 }
 
-                modelsRoutes = component "Models Routes" "Routes under /models" "Fastify plugin" {
+                modelsRoutes = component "Models Routes" "HTTP routes under /models for model creation, versioning, updates, subprocess links, and generation logging" "Fastify plugin" {
                     tags "Routes"
                 }
-                modelsService = component "Models Service" "Model/version lifecycle and generation attempt tracking" "JavaScript module" {
+                modelsService = component "Models Service" "Handles model lifecycle, version management, XML enrichment, subprocess binding, and generation-attempt tracking" "JavaScript module" {
                     tags "Service"
                 }
-                modelsRepo = component "Models Repository" "SQL access for models" "better-sqlite3" {
+                modelsRepo = component "Models Repository" "Repository for model metadata and latest-version pointers" "better-sqlite3" {
                     tags "Repository"
                 }
-                modelVersionsRepo = component "Model Versions Repository" "SQL access for model_versions" "better-sqlite3" {
+                modelVersionsRepo = component "Model Versions Repository" "Repository for immutable model version records" "better-sqlite3" {
                     tags "Repository"
                 }
-                modelGenerationAttemptsRepo = component "Model Generation Attempts Repository" "SQL access for model_generation_attempts" "better-sqlite3" {
+                modelGenerationAttemptsRepo = component "Model Generation Attempts Repository" "Repository for persisted generation-attempt metadata and outcomes" "better-sqlite3" {
                     tags "Repository"
                 }
-                modelVersionEventsRepo = component "Model Version Events Repository" "SQL access for model_version_events" "better-sqlite3" {
+                modelVersionEventsRepo = component "Model Version Events Repository" "Repository for manual and automatic model version lifecycle events" "better-sqlite3" {
                     tags "Repository"
                 }
-                modelSubprocessesRepo = component "Model Subprocesses Repository" "SQL access for model_subprocesses" "better-sqlite3" {
+                modelSubprocessesRepo = component "Model Subprocesses Repository" "Repository for task-to-subprocess bindings between models" "better-sqlite3" {
                     tags "Repository"
                 }
-                modelsStorage = component "Models Storage" "Persist model XML in /persistence/models" "Filesystem" {
+                modelsStorage = component "Models Storage" "Filesystem storage for serialized model XML in /persistence/models" "Filesystem" {
                     tags "Storage"
                 }
 
-                linksRoutes = component "Document-Model Links Routes" "Routes under /document-model-links" "Fastify plugin" {
+                linksRoutes = component "Document-Model Links Routes" "HTTP routes under /document-model-links for traceability links and selection operations" "Fastify plugin" {
                     tags "Routes"
                 }
-                linksService = component "Document-Model Links Service" "Manage links and selection history" "JavaScript module" {
+                linksService = component "Document-Model Links Service" "Maintains document-model traceability links, current selections, and selection history" "JavaScript module" {
                     tags "Service"
                 }
-                linksRepo = component "Document-Model Links Repository" "SQL access for linking + selections" "better-sqlite3" {
+                linksRepo = component "Document-Model Links Repository" "Repository for links, selections, and their history stored in SQLite" "better-sqlite3" {
                     tags "Repository"
                 }
 
-                logsService = component "Logs Service" "Append-only project log events" "JavaScript module" {
+                logsService = component "Logs Service" "Writes append-only project event logs for auditing and analysis" "JavaScript module" {
                     tags "Service"
                 }
-                logsRepo = component "Logs Repository" "Append to /persistence/logs" "Filesystem" {
+                logsRepo = component "Logs Repository" "Filesystem-based persistence for append-only log files in /persistence/logs" "Filesystem" {
                     tags "Repository"
                 }
 
-                baseSqlRepo = component "Base SQL Repository" "Shared SQL repository utilities" "JavaScript module" {
+                baseSqlRepo = component "Base SQL Repository" "Shared repository utilities for common SQLite access patterns" "JavaScript module" {
                     tags "Shared"
                 }
             }
-            fs = container "Directory" {
-                technology "Local filesystem (/persistence)"
+            fs = container "File Storage" "Local file system storage for documents, models, and logs" {
+                technology "Local file system"
                 tags "Directory"
             }
-            db = container "Database" {
-                technology "SQLite (better-sqlite3)"
+            db = container "Database" "Structured store for project, document metadata, model metadata, document-model links, statistic data, ect." {
+                technology "SQLite"
                 tags "Database"
             }
         }
         u -> ss.fe "Interacts with"
         ss.fe -> llm "Makes API requests to"
-        ss.fe -> ss.be "Reads from and writes to"
+        ss.fe -> ss.be "Makes API requests to"
         ss.be -> ss.fs "Reads from and writes to"
         ss.be -> ss.db "Reads from and writes to"
 
@@ -144,9 +162,24 @@ workspace "Name" "Description" {
         ss.fe.homePage -> ss.fe.sharedUtils "Uses"
 
         ss.fe.workspacePage -> ss.fe.apiClient "Loads and updates project state"
-        ss.fe.workspacePage -> ss.fe.persistenceLoader "Loads documents/models/logs"
-        ss.fe.workspacePage -> ss.fe.sharedUtils "Uses"
-        ss.fe.workspacePage -> ss.fe.llmClient "Generates models"
+        ss.fe.workspacePage -> ss.fe.wsBootstrap "Bootstraps feature"
+        ss.fe.workspacePage -> ss.fe.wsUI "Hosts feature UI"
+
+        ss.fe.wsBootstrap -> ss.fe.apiClient "Validates project"
+        ss.fe.wsBootstrap -> ss.fe.wsUI "Lazy-loads"
+        ss.fe.wsBootstrap -> ss.fe.wsServices "Starts initial workspace load"
+
+        ss.fe.wsUI -> ss.fe.wsState "Reads reactive state"
+        ss.fe.wsUI -> ss.fe.wsServices "Invokes user actions"
+        ss.fe.wsUI -> ss.fe.docInteractionModule "Renders selections and overlays"
+        ss.fe.wsUI -> ss.fe.modelEditorAdapter "Renders and edits models"
+        ss.fe.wsUI -> ss.fe.sharedUtils "Uses"
+
+        ss.fe.wsServices -> ss.fe.apiClient "Calls projects/documents/models/links APIs"
+        ss.fe.wsServices -> ss.fe.llmClient "Generates and refines models"
+        ss.fe.wsServices -> ss.fe.wsState "Updates state"
+        ss.fe.wsServices -> ss.fe.docInteractionModule "Transforms document input"
+        ss.fe.wsServices -> ss.fe.modelEditorAdapter "Loads editor data and endpoints"
 
         ss.fe.statsPage -> ss.fe.apiClient "Loads statistics"
         ss.fe.statsPage -> ss.fe.sharedUtils "Uses"
@@ -159,7 +192,7 @@ workspace "Name" "Description" {
         ss.fe.modelViewer -> ss.fe.sharedUtils "Uses"
 
         ss.fe.apiClient -> ss.be.api "Requests JSON APIs"
-        ss.fe.persistenceLoader -> ss.fs "Reads /persistence/*"
+        ss.fe.persistenceLoader -> ss.fs "Reads"
         ss.fe.llmClient -> llm "Requests model generation"
 
         ss.be.api -> ss.be.projectsRoutes "Registers"
@@ -253,6 +286,23 @@ element <tag> {
             include ss.be.api
             include ss.fs
             include llm
+        }
+
+        component ss.fe "WorkspacePageFrontend" {
+            include ss.fe.workspacePage
+            include ss.fe.wsBootstrap
+            include ss.fe.wsUI
+            include ss.fe.wsState
+            include ss.fe.wsServices
+            include ss.fe.docInteractionModule
+            include ss.fe.modelEditorAdapter
+            include ss.fe.apiClient
+            include ss.fe.llmClient
+            include ss.fe.sharedUtils
+            include ss.be.api
+            include llm
+
+            autolayout lr
         }
 
         styles {

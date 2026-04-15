@@ -8,43 +8,43 @@
 \contentsline {section}{\numberline {1.5}Evaluation}{9}{section.1.5}%
 \contentsline {section}{\numberline {1.6}Structure}{9}{section.1.6}%
 \contentsline {chapter}{\numberline {2}Related Work}{9}{chapter.2}%
-\contentsline {section}{\numberline {2.1}Foundational Concepts and Technologies}{9}{section.2.1}%
-\contentsline {section}{\numberline {2.2}AI-Assisted Process Modeling Tools}{9}{section.2.2}%
-\contentsline {section}{\numberline {2.3}AutoBPMN.AI}{12}{section.2.3}%
+\contentsline {section}{\numberline {2.1}Background}{9}{section.2.1}%
+\contentsline {section}{\numberline {2.2}AI-Assisted Process Modeling Tools}{10}{section.2.2}%
+\contentsline {section}{\numberline {2.3}AutoBPMN.AI}{13}{section.2.3}%
 \contentsline {chapter}{\numberline {3}Solution Design}{13}{chapter.3}%
 \contentsline {section}{\numberline {3.1}Requirements}{13}{section.3.1}%
 \contentsline {subsection}{Context and Goal}{13}{section*.3}%
-\contentsline {subsection}{Requirements Elicitation}{13}{figure.caption.4}%
+\contentsline {subsection}{Requirements Elicitation}{14}{figure.caption.4}%
 \contentsline {section}{\numberline {3.2}User Interface and Interaction Design}{16}{section.3.2}%
-\contentsline {section}{\numberline {3.3}Modeling Workflow Design}{16}{section.3.3}%
+\contentsline {section}{\numberline {3.3}Modeling Workflow Design}{17}{section.3.3}%
 \contentsline {subsection}{Design Difficulities}{17}{section*.8}%
 \contentsline {section}{\numberline {3.4}System Architecture}{17}{section.3.4}%
 \contentsline {chapter}{\numberline {4}Implementation}{18}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Frontend}{18}{section.4.1}%
-\contentsline {subsection}{Architecture}{18}{section*.10}%
-\contentsline {subsection}{State Management}{20}{lstnumber.-1.16}%
-\contentsline {subsection}{Document Processing}{21}{lstnumber.-2.15}%
-\contentsline {subsection}{Text Selection Rendering}{22}{lstnumber.-2.15}%
-\contentsline {subsubsection}{Virtual Overlay Strategy}{23}{lstnumber.-3.10}%
-\contentsline {subsubsection}{Link Update Detection}{24}{lstnumber.-3.10}%
-\contentsline {subsection}{Modeling}{24}{lstnumber.-3.10}%
-\contentsline {subsection}{Rendering Customization}{25}{lstnumber.-3.10}%
-\contentsline {section}{\numberline {4.2}Backend}{25}{section.4.2}%
-\contentsline {subsection}{Architecture}{25}{section*.15}%
-\contentsline {section}{\numberline {4.3}Database Schema}{28}{section.4.3}%
-\contentsline {chapter}{\numberline {5}Evaluation}{29}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Evaluation Procedure}{29}{section.5.1}%
-\contentsline {section}{\numberline {5.2}Evaluation Results}{30}{section.5.2}%
-\contentsline {subsection}{Overall Perception and Task Completion}{30}{section*.18}%
-\contentsline {subsection}{Positive Aspects}{31}{table.caption.22}%
-\contentsline {subsection}{Problems in Interaction and Use}{32}{table.caption.22}%
-\contentsline {subsection}{Potential Improvements and Additional Features}{34}{table.caption.22}%
-\contentsline {subsection}{Future Use Intention}{34}{table.caption.22}%
-\contentsline {chapter}{\numberline {6}Discussion}{35}{chapter.6}%
-\contentsline {section}{\numberline {6.1}Usability and User Experience}{35}{section.6.1}%
-\contentsline {section}{\numberline {6.2}User Expectations}{35}{section.6.2}%
-\contentsline {section}{\numberline {6.3}Limitations}{36}{section.6.3}%
-\contentsline {chapter}{\numberline {7}Conclusion}{36}{chapter.7}%
-\contentsline {chapter}{Bibliography}{38}{chapter.7}%
-\contentsline {chapter}{\numberline {A}Appendix}{40}{chapter.A}%
-\contentsline {subsection}{Design Constraints}{40}{section*.23}%
+\contentsline {section}{\numberline {4.1}Frontend}{19}{section.4.1}%
+\contentsline {subsection}{Architecture}{19}{section*.10}%
+\contentsline {subsection}{State Management}{19}{section*.10}%
+\contentsline {subsection}{Document Processing}{20}{lstnumber.-1.15}%
+\contentsline {subsection}{Text Selection Rendering}{20}{lstnumber.-1.15}%
+\contentsline {subsubsection}{Virtual Overlay Strategy}{21}{lstnumber.-2.10}%
+\contentsline {subsubsection}{Link Update Detection}{22}{lstnumber.-2.10}%
+\contentsline {subsection}{Modeling}{22}{lstnumber.-2.10}%
+\contentsline {subsection}{Rendering Customization}{22}{lstnumber.-2.10}%
+\contentsline {section}{\numberline {4.2}Backend}{22}{section.4.2}%
+\contentsline {subsection}{Architecture}{22}{section*.13}%
+\contentsline {section}{\numberline {4.3}Database Schema}{24}{section.4.3}%
+\contentsline {chapter}{\numberline {5}Evaluation}{25}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Evaluation Procedure}{25}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Evaluation Results}{26}{section.5.2}%
+\contentsline {subsection}{Overall Perception and Task Completion}{26}{section*.16}%
+\contentsline {subsection}{Positive Aspects}{27}{table.caption.20}%
+\contentsline {subsection}{Problems in Interaction and Use}{28}{table.caption.20}%
+\contentsline {subsection}{Potential Improvements and Additional Features}{30}{table.caption.20}%
+\contentsline {subsection}{Future Use Intention}{30}{table.caption.20}%
+\contentsline {chapter}{\numberline {6}Discussion}{31}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Usability and User Experience}{31}{section.6.1}%
+\contentsline {section}{\numberline {6.2}User Expectations}{31}{section.6.2}%
+\contentsline {section}{\numberline {6.3}Limitations}{32}{section.6.3}%
+\contentsline {chapter}{\numberline {7}Conclusion}{32}{chapter.7}%
+\contentsline {chapter}{Bibliography}{34}{chapter.7}%
+\contentsline {chapter}{\numberline {A}Appendix}{36}{chapter.A}%
+\contentsline {subsection}{Design Constraints}{36}{section*.21}%

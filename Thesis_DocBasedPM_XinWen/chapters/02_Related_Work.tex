@@ -1,20 +1,14 @@
 \chapter{Related Work}
 \label{sec:rel}
-\section{Foundational Concepts and Technologies}
-In this section, we briefly introduce the foundational concepts and technologies relevant to this thesis.
+\section{Background}
+Business Process Management (BPM) refers to the systematic design, analysis, and optimization of organizational processes to improve efficiency and effectiveness, while Business Process Modeling (BPM) focuses on representing these processes in a structured and understandable form. BPM languages can be broadly categorized into conceptual, formal, and executable types. Conceptual languages, such as Business Process Model and Notation (BPMN), provide intuitive graphical notations that facilitate communication between business and technical stakeholders, although they lack fully formal semantics \cite{omg2011bpmn}. In contrast, formal languages like Petri Net offer mathematically precise representations, enabling rigorous analysis of properties such as correctness and deadlock-freedom \cite{vanderAalst1998}. To operationalize process models, executable structures such as Refined Process Structure Tree (RPST) are used to transform models into well-structured, executable components \cite{vanhatalo2009rpst}.
 
-BPM:
-BPMN:
-RPST:
-AI:
-Natural Language Processing:
-Generative AI:
-LLM:
+The generation of process models from textual descriptions, known as text-to-model, has evolved significantly over time. Early approaches relied on rule-based methods within Natural Language Processing, mapping linguistic elements such as verbs and nouns to process activities and actors \cite{friedrich2011process}. Subsequent statistical and machine learning approaches improved robustness but required annotated data and extensive feature engineering. More recently, advances in Large Language Models have enabled more flexible and accurate generation of process models from natural language, representing a shift toward automated and intelligent process modeling.
 
 \section{AI-Assisted Process Modeling Tools}
 While many tools exist that deal with analysis of large document sets, to the best of our knowledge no integrated tool with the dedicated purpose of creating Process Models from documents set exists. Therefore here we will explore some related tools.
 
-In total, eleven AI-assist modeling tools are explored during the literature review (See table \ref{tab:lr}). Here, we mainly focus on the key approaches and the distinguishing features they offer.
+In total, eleven AI-assist modeling tools are explored during the literature review (See table \ref{tab:lr}). Here, we mainly focus on the key approaches and the distinguishing features they offer. 
 
 \begin{table}[htb!]
     \centering
@@ -76,7 +70,7 @@ In summary, while numerous tools leverage LLMs for generating process models fro
 
 ProMoAI & 2024 
 & NL text 
-& BPMN 
+& BPMN/PNML
 & Code-based generation with correctness focus \\
 \hline
 BPMN-Chatbot & 2024 
@@ -95,9 +89,9 @@ PRODIGY & 2024
 & RAG-based enterprise modeling \\
 \hline
 LLM4BPMNGen & 2025 
-& Multimodal 
+& Audio/text/voice
 & BPMN
-& Multimodal input + structured prompting \\
+& Audio upload + structured prompting \\
 \hline
 BPMN-Chatbot++ & 2025 
 & Text/voice 
@@ -106,7 +100,7 @@ BPMN-Chatbot++ & 2025
 \hline
 AutoBPMN.AI & 2025 
 & NL text 
-& CPEE
+& CPEE Tree
 & Executable model generation \\
 \hline
 HyperMode & 2025 

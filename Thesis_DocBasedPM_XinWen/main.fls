@@ -781,11 +781,6 @@ INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/adobe/courier/pcrr8t.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/adobe/courier/pcrr8t.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/adobe/courier/pcrr8t.vf
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/adobe/courier/pcrr8r.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/listings/lstlang1.sty
-INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/listings/lstlang1.sty
-INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/listings/lstlang1.sty
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/adobe/courier/pcrr8t.vf
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/adobe/courier/pcrr8r.tfm
 INPUT ./images/imp_backend_com.png
 INPUT ./images/imp_backend_com.png
 INPUT ./images/imp_backend_com.png
@@ -823,6 +818,8 @@ INPUT ./chapters/07_Conclusion.tex
 INPUT chapters/07_Conclusion.tex
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntx-Regular-tlf-sc-t1.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/newtx/ntx-ec-tlf-pc.enc
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/adobe/courier/pcrr8t.vf
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/adobe/courier/pcrr8r.tfm
 INPUT ./chapters/99_Appendix.tex
 INPUT ./chapters/99_Appendix.tex
 INPUT ./chapters/99_Appendix.tex

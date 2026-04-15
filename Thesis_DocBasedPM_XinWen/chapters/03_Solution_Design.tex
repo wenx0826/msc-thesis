@@ -25,6 +25,7 @@ When starting the work, the following minimal requirements for the system have b
 
 Regarding non-functional requirements, only usability, as a very general goal, is defined at this stage. Besides this, a series of technical design constraints are specified. In addition to the two constraints already introduced in the system context, i.e. the system should be implemented as a web-based application and should leverage AutoBPMN.AI’s LLM service, two more constraints are explicitly defined. First, the frontend should be developed using native web technologies (JavaScript, HTML, and CSS). Second, the visualization of the process model should be implemented using the CPEE Layout\footnote{\url{https://github.com/etm/cpee-layout}} library, following the same layout as used in AutoBPMN.AI, which makes the models easy to export and import, and also provides the potential for them to be uploaded to the CPEE environment without additional manual effort, where they can be directly further manipulated and executed.
 
+
 \begin{figure}[htb!]
     \centering
     \caption{Conceptual data model} 
@@ -35,15 +36,7 @@ Regarding non-functional requirements, only usability, as a very general goal, i
 
 \section{User Interface and Interaction Design}
 
-For the user interface and interaction design, the focus is on providing a seamless and intuitive experience for users to interact with the system. The design aims to facilitate efficient document management, process modeling, and visualization of process models.
-
-
-The desgign overview is described from the user perspective.
-
 The layout design of the main workspace is shown in the figure~\ref{fig:sol_ui} in a 3-pane layout. The left pane is for document uploading and viewing, the middle pane is for process modeling and the right pane is for process models viewing and project graph visualization. The details are divided as the following: a) Document List b) Document Viewer c) Model Editor  d) Model List e) Project Graph.
-
-
-
 
 \begin{figure}[htb!]
     \centering
@@ -58,7 +51,7 @@ Figure: .
 \subsection{Design Difficulities}
 
 \section{System Architecture}
-The system architecture is shown in the figure~\ref{fig:sol_architecture}. The system follows the common web-application client-server pattern. 
+The system architecture is shown in the figure~\ref{fig:sol_architecture}. The system follows a modular client-server architecture implemented as a single web application. A Node.js backend serves both the static frontend and a set of RESTful endpoints for project, document, model, and link management. The frontend, implemented with native web technologies, provides a workspace-oriented user interface for document viewing, process model editing, and graph-based project navigation. Business logic is organized into backend service modules that handle versioning, document-model traceability, subprocess relationships, and logging. Persistence is realized through a hybrid approach that stores structured metadata in SQLite and document, model, and log artifacts in the filesystem. External services are integrated for LLM-based model generation and CPEE-based process model visualization and editing.
 
 \begin{figure}[htb!]
     \centering

@@ -128,8 +128,8 @@
       \strng{authornamehash}{142b73830dd9aba6d82bce6748077f9c}
       \strng{authorfullhash}{21c5ab925775b05fdba7ba469edbcbc6}
       \strng{authorfullhashraw}{21c5ab925775b05fdba7ba469edbcbc6}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{arXiv preprint arXiv:2403.04327}
@@ -158,8 +158,8 @@
       \strng{authorfullhash}{58229ecc287dc10f2f4540ac07b49f66}
       \strng{authorfullhashraw}{58229ecc287dc10f2f4540ac07b49f66}
       \field{extraname}{1}
-      \field{sortinit}{4}
-      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{booktitle}{BPM (Demos/Resources Forum)}
@@ -197,8 +197,8 @@
       \strng{authornamehash}{fe49685f08429a99d3ad27a14c62b902}
       \strng{authorfullhash}{d4ae0b16626225fc058bf598fff1fc1b}
       \strng{authorfullhashraw}{d4ae0b16626225fc058bf598fff1fc1b}
-      \field{sortinit}{5}
-      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{Applied Sciences}
@@ -234,8 +234,8 @@
       \strng{authorfullhash}{58229ecc287dc10f2f4540ac07b49f66}
       \strng{authorfullhashraw}{58229ecc287dc10f2f4540ac07b49f66}
       \field{extraname}{2}
-      \field{sortinit}{6}
-      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{booktitle}{International conference on business process management}
@@ -270,8 +270,8 @@
       \strng{authornamehash}{4f14320d6e5d70c0caded7cc1a65c2bb}
       \strng{authorfullhash}{8e7158986f449e7d5925df598b466a91}
       \strng{authorfullhashraw}{8e7158986f449e7d5925df598b466a91}
-      \field{sortinit}{9}
-      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{arXiv preprint arXiv:2603.12895}
@@ -529,8 +529,8 @@
       \strng{authornamehash}{f41f0412d9e71aea48e50c847c7c224b}
       \strng{authorfullhash}{31ff0ab87ee6f94663a7afad12044c2b}
       \strng{authorfullhashraw}{31ff0ab87ee6f94663a7afad12044c2b}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{LLM4BPMNGen: A Tool for BPMN Generation with LLMs}
@@ -575,8 +575,8 @@
       \strng{authornamehash}{9cfac75a12dc901534636b4c1e54f404}
       \strng{authorfullhash}{d8aca346492710e3e550966c8a64d679}
       \strng{authorfullhashraw}{d8aca346492710e3e550966c8a64d679}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{booktitle}{International conference on cooperative information systems}
@@ -607,8 +607,8 @@
       \strng{authorfullhash}{25fe23f08ecff16f765bff7e4eeba9cf}
       \strng{authorfullhashraw}{25fe23f08ecff16f765bff7e4eeba9cf}
       \field{extraname}{2}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{booktitle}{ER2025: companion proceedings of the 44th international conference on conceptual modeling: industrial track, ER Forum, 8th SCME, Poitiers. https://ceur-ws. org}
@@ -708,6 +708,10 @@
       \endverb
     \endentry
   \enddatalist
+  \missing{friedrich2011process}
+  \missing{omg2011bpmn}
+  \missing{vanderAalst1998}
+  \missing{vanhatalo2009rpst}
 \endrefsection
 \endinput
 
