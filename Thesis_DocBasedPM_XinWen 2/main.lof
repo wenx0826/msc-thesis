@@ -4,7 +4,7 @@
 \contentsline {figure}{\numberline {2}{\ignorespaces Usage model}}{15}{figure.caption.5}%
 \contentsline {figure}{\numberline {3}{\ignorespaces Workspace UI Layout Mock-up}}{16}{figure.caption.6}%
 \contentsline {figure}{\numberline {4}{\ignorespaces System architecture}}{18}{figure.caption.7}%
-\contentsline {figure}{\numberline {5}{\ignorespaces store implementation}}{20}{figure.caption.9}%
+\contentsline {figure}{\numberline {5}{\ignorespaces Base \texttt {Store} class implementing the publish-subscribe mechanism}}{20}{figure.caption.9}%
 \contentsline {figure}{\numberline {6}{\ignorespaces Core implementation of selection serialization}}{21}{figure.caption.10}%
 \contentsline {figure}{\numberline {7}{\ignorespaces Example JSON schema used in the backend for text quotes}}{23}{figure.caption.12}%
 \contentsline {figure}{\numberline {8}{\ignorespaces Data model}}{25}{figure.caption.13}%

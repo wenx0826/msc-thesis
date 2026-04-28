@@ -1,13 +1,3 @@
-==DBPM is a web-based modeling tool for creating process models from documents, using AI-assisted model generation while maintaining traceability to the original source==.
-
-> It’s a modeling tool designed to provide a simple and intuitive way to create process models from documents.
-
-> Currently, it supports formats like TXT, DOC, and PDF.
-
-> But it can be easily extended, as there are open-source libraries that provide a unified interface for converting different types of content—such as images, audio, or presentations—into text.
-> However, it can be easily extended to support other formats, thanks to existing open-source libraries.
-
-
 
 
 Hello and welcome. This video shows how to get started with the tool, Document-Based Process Modeler step by step. 

@@ -21,26 +21,25 @@
 \contentsline {subsection}{Architecture}{18}{section*.8}%
 \contentsline {subsection}{State Management}{19}{section*.8}%
 \contentsline {subsection}{Document Processing}{20}{lstnumber.-1.15}%
-\contentsline {subsection}{Text Selection Rendering}{20}{lstnumber.-1.15}%
-\contentsline {subsubsection}{Virtual Overlay Strategy}{21}{lstnumber.-2.10}%
-\contentsline {subsubsection}{Link Update Detection}{21}{lstnumber.-2.10}%
+\contentsline {subsection}{Text Selection Rendering}{21}{lstnumber.-1.15}%
+\contentsline {subsubsection}{Virtual Overlay Strategy}{22}{lstnumber.-2.10}%
+\contentsline {subsubsection}{Link Update Detection}{22}{lstnumber.-2.10}%
 \contentsline {subsection}{Modeling}{22}{lstnumber.-2.10}%
-\contentsline {subsection}{Rendering Customization}{22}{lstnumber.-2.10}%
-\contentsline {section}{\numberline {4.2}Backend}{22}{section.4.2}%
-\contentsline {subsection}{Architecture}{22}{section*.11}%
-\contentsline {section}{\numberline {4.3}Database Schema}{23}{section.4.3}%
-\contentsline {chapter}{\numberline {5}Evaluation}{25}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Evaluation Procedure}{25}{section.5.1}%
-\contentsline {section}{\numberline {5.2}Evaluation Results}{26}{section.5.2}%
-\contentsline {subsection}{Overall Perception and Task Completion}{26}{section*.14}%
-\contentsline {subsection}{Positive Aspects}{27}{table.caption.18}%
-\contentsline {subsection}{Problems in Interaction and Use}{28}{table.caption.18}%
+\contentsline {subsection}{Model Rendering Customization}{22}{lstnumber.-2.10}%
+\contentsline {section}{\numberline {4.2}Backend}{23}{section.4.2}%
+\contentsline {subsection}{Architecture}{23}{section*.11}%
+\contentsline {section}{\numberline {4.3}Database Schema}{24}{section.4.3}%
+\contentsline {chapter}{\numberline {5}Evaluation}{26}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Evaluation Procedure}{26}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Evaluation Results}{27}{section.5.2}%
+\contentsline {subsection}{Overall Perception and Task Completion}{27}{section*.14}%
+\contentsline {subsection}{Positive Aspects}{28}{table.caption.18}%
+\contentsline {subsection}{Problems in Interaction and Use}{29}{table.caption.18}%
 \contentsline {subsection}{Potential Improvements and Additional Features}{30}{table.caption.18}%
-\contentsline {subsection}{Future Use Intention}{30}{table.caption.18}%
+\contentsline {subsection}{Future Use Intention}{31}{table.caption.18}%
 \contentsline {chapter}{\numberline {6}Discussion}{31}{chapter.6}%
 \contentsline {section}{\numberline {6.1}Usability and User Experience}{31}{section.6.1}%
-\contentsline {section}{\numberline {6.2}User Expectations}{31}{section.6.2}%
+\contentsline {section}{\numberline {6.2}User Expectations}{32}{section.6.2}%
 \contentsline {section}{\numberline {6.3}Limitations}{32}{section.6.3}%
-\contentsline {chapter}{\numberline {7}Conclusion}{32}{chapter.7}%
-\contentsline {chapter}{Bibliography}{34}{chapter.7}%
-\contentsline {chapter}{\numberline {A}Appendix}{37}{chapter.A}%
+\contentsline {chapter}{\numberline {7}Conclusion}{33}{chapter.7}%
+\contentsline {chapter}{Bibliography}{35}{chapter.7}%

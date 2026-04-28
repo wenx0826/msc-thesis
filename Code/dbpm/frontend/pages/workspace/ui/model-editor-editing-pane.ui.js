@@ -432,6 +432,7 @@ createUI({
       if (modelId) {
         workspaceService.displayModel(modelId);
       }
+      $(".subprocessHintLabel").remove();
     });
     $(document).on("wf:subprocess-hovered", function (e) {
       const $node = $(e.detail.node);
@@ -446,7 +447,9 @@ createUI({
       const el = $element[0];
       if (el) {
         const rect = el.getBoundingClientRect();
-        $('<div class="displaylabel">Double-click to view subprocess</div>')
+        $(
+          '<div class="subprocessHintLabel">Double-click to view subprocess</div>',
+        )
           .css({
             position: "fixed",
             left: rect.left + rect.width / 2,
@@ -475,6 +478,7 @@ createUI({
     });
     $(document).on("wf:subprocess-unhovered", function (e) {
       requestCloseModelPopover("subprocess-node");
+      $(".subprocessHintLabel").remove();
     });
   },
   subscribeStores: () => {

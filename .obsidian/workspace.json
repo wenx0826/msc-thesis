@@ -4,137 +4,53 @@
     "type": "split",
     "children": [
       {
-        "id": "d7c20a0ae85ef98f",
+        "id": "f89bda49af6728ad",
         "type": "tabs",
         "children": [
           {
-            "id": "f528d85bfcef3690",
+            "id": "5fede265ca5e1b28",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "02_Related work/v0.md",
+                "file": "Pre/2_Solution Design.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "v0"
+              "title": "2_Solution Design"
             }
           },
           {
-            "id": "cc1379ffae4af3ab",
+            "id": "7cb210cc188b691e",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "07_Conclusion/v0.md",
+                "file": "Pre/4_Evaluation.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "v0"
+              "title": "4_Evaluation"
             }
           },
           {
-            "id": "42930d948fd4298a",
+            "id": "277a94e1f3b9d642",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "02_Related work/v0.md",
+                "file": "Pre/4_Evaluation.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "v0"
-            }
-          },
-          {
-            "id": "31f1d22a200d65eb",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "07_Conclusion/v0.2.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "v0.2"
-            }
-          },
-          {
-            "id": "e91cee0ea264b2f1",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "07_Conclusion/v0.9.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "v0.9"
-            }
-          },
-          {
-            "id": "7ef8243630187ee7",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "05_Evaluation/v0.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "v0"
-            }
-          },
-          {
-            "id": "ed337c1663ea17e6",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "06_Discussion/v0.9.0.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "v0.9.0"
-            }
-          },
-          {
-            "id": "c62118a76cd99ed6",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "00_Abstract/Untitled.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "Untitled"
-            }
-          },
-          {
-            "id": "bbef22118d89b172",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "03_Solution Design/Model Management.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "Model Management"
+              "title": "4_Evaluation"
             }
           }
         ],
-        "currentTab": 4
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -254,13 +170,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "07_Conclusion/v0.9.md",
+                "file": "Pre/4_Evaluation.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of v0.9"
+              "title": "Outline of 4_Evaluation"
             }
           },
           {
@@ -290,59 +206,60 @@
       "templates:Insert template": false,
       "command-palette:Open command palette": false,
       "remotely-save:Remotely Save": false,
-      "card-board:CardBoard": false,
       "obsidian-kanban:Create new board": false,
-      "table-editor-obsidian:Advanced Tables Toolbar": false
+      "table-editor-obsidian:Advanced Tables Toolbar": false,
+      "card-board:CardBoard": false,
+      "audio-recorder:Start/stop recording": false
     }
   },
-  "active": "e91cee0ea264b2f1",
+  "active": "7cb210cc188b691e",
   "lastOpenFiles": [
-    "Thesis_DocBasedPM_XinWen 2/main.synctex(busy)",
-    "Thesis_DocBasedPM_XinWen 2/pdflatex79207.fls",
-    "Thesis_DocBasedPM_XinWen 2/pdflatex78853.fls",
-    "Thesis_DocBasedPM_XinWen 2/pdflatex78780.fls",
-    "Thesis_DocBasedPM_XinWen 2/pdflatex78442.fls",
-    "Thesis_DocBasedPM_XinWen 2/pdflatex78360.fls",
-    "Thesis_DocBasedPM_XinWen 2/pdflatex78303.fls",
-    "Thesis_DocBasedPM_XinWen 2/pdflatex78263.fls",
-    "Thesis_DocBasedPM_XinWen 2/pdflatex78232.fls",
-    "Thesis_DocBasedPM_XinWen 2/pdflatex78187.fls",
-    "Thesis_DocBasedPM_XinWen 2/pdflatex78064.fls",
-    "Thesis_DocBasedPM_XinWen 2/images/mock-up.png",
-    "Thesis_DocBasedPM_XinWen 2/images/Screenshot 2026-04-15 at 19.12.33.png",
-    "Thesis_DocBasedPM_XinWen 2/images/imp_data_model.png",
-    "Thesis_DocBasedPM_XinWen 2/images/Screenshot 2026-04-15 at 18.40.21.png",
-    "Thesis_DocBasedPM_XinWen 2/images/sol_workspace_interaction_usage_model.png",
-    "Thesis_DocBasedPM_XinWen 2/images/sol_data_modelx.png",
-    "Thesis_DocBasedPM_XinWen 2/images/sol_data_model.png",
-    "Thesis_DocBasedPM_XinWen 2/images/sol_context.png",
-    "Thesis_DocBasedPM_XinWen 2/images/sol_architecturex.png",
-    "Thesis_DocBasedPM_XinWen 2/images/sol_architecture.png",
-    "07_Conclusion/v0.2.md",
-    "03_Solution Design/Untitled.md",
-    "03_Solution Design/Model Management.md",
-    "03_Solution Design/Graph.md",
-    "03_Solution Design/Data Model - v0.md",
-    "03_Solution Design/Data.md",
-    "03_Solution Design/01 Design Objectives.md",
-    "03_Solution Design/0_v0.md",
-    "03_Solution Design/0_System Overview.md",
-    "02_Related work/v0.md",
-    "02_Related work/AI.md",
-    "07_Conclusion/v0.9.md",
-    "Untitled 3.md",
-    "04_Implementation/Untitled.md",
-    "04_Implementation/Frontend.md",
-    "05_Evaluation/0_Responses (Original).md",
-    "05_Evaluation/1_Responses.md",
-    "05_Evaluation/v0.md",
-    "05_Evaluation/v1.1.md",
-    "05_Evaluation/v1.md",
-    "05_Evaluation/v0.9.md",
-    "Untitled 2.md",
-    "06_Discussion/v0.9.0.md",
-    "07_Conclusion/v0.md",
-    "References/References.md",
+    "doc-based-process-modeler/evaluation_data/Task1_Fictional_B2BOrderProcessing/Order_Processing_Flow.docx",
+    "doc-based-process-modeler/evaluation_data/Task1_Fictional_B2BOrderProcessing/Credit_Check.docx",
+    "doc-based-process-modeler/evaluation_data/Task2_SOP",
+    "doc-based-process-modeler/evaluation_data/Task1_Fictional_B2BOrderProcessing",
+    "doc-based-process-modeler/evaluation_data",
+    "doc-based-process-modeler/persistence/models/fe6f8d49-cbbf-4c5a-8bfa-a1605de8fc6a.xml",
+    "doc-based-process-modeler/persistence/models/f425394c-bd05-4c71-b7b2-eb32f6aa03bd.xml",
+    "doc-based-process-modeler/persistence/models/f09f92ca-7433-45d5-bb2d-420636a72ec2.xml",
+    "doc-based-process-modeler/persistence/models/edc2262a-ee25-4d24-acbc-bf665a4a43e0.xml",
+    "doc-based-process-modeler/persistence/models/ed6d9ccf-a35e-4e00-8fe3-69b8a49e5d17.xml",
+    "doc-based-process-modeler/persistence/models/eb4a21a1-061e-4613-b221-3611f7bb49ee.xml",
+    "doc-based-process-modeler/backend/node_modules/setprototypeof/README.md",
+    "doc-based-process-modeler/backend/node_modules/path-scurry/README.md",
+    "doc-based-process-modeler/backend/node_modules/path-scurry/LICENSE.md",
+    "doc-based-process-modeler/backend/node_modules/isexe/README.md",
+    "doc-based-process-modeler/backend/node_modules/fastify/test/bundler/README.md",
+    "doc-based-process-modeler/backend/node_modules/fastify/docs/resources/encapsulation_context.svg",
+    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/Warnings.md",
+    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/Validation-and-Serialization.md",
+    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/TypeScript.md",
+    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/Type-Providers.md",
+    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/Server.md",
+    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/Routes.md",
+    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/Request.md",
+    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/Reply.md",
+    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/Principles.md",
+    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/Plugins.md",
+    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/Middleware.md",
+    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/Logging.md",
+    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/Lifecycle.md",
+    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/LTS.md",
+    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/Index.md",
+    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/Hooks.md",
+    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/HTTP2.md",
+    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/Errors.md",
+    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/Encapsulation.md",
+    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/Decorators.md",
+    "doc-based-process-modeler/backend/node_modules/@fastify/static/test/static/shallow/sample.jpg",
+    "doc-based-process-modeler/backend/node_modules/@fastify/static/example/public/images/sample.jpg",
+    "doc-based-process-modeler/backend/node_modules/@fastify/send/test/fixtures/images/node-js.png",
+    "doc-based-process-modeler/backend/node_modules/@fastify/static/test/static-pre-compressed/sample.jpg",
+    "doc-based-process-modeler/backend/node_modules/@fastify/static/test/content-type/sample.jpg",
+    "doc-based-process-modeler/backend/node_modules/kill-port/logo.png",
+    "doc-based-process-modeler/backend/node_modules/pino/pretty-demo.png",
+    "doc-based-process-modeler/backend/node_modules/pino/pino-tree.png",
+    "doc-based-process-modeler/backend/node_modules/pino/pino-logo-hire.png",
     "Untitled.canvas"
   ]
 }

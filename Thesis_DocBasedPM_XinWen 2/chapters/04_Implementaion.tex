@@ -9,13 +9,14 @@ The frontend was implemented as a native web application using JavaScript, HTML,
 The workspace initialization logic validates the current project, loads the required UI modules, and triggers the initial data loading. At runtime, the workspace service loads document, model, and subprocess metadata, initializes the stores, and selects an initial document if available. Later actions, such as opening a version, generating a model, or navigating to a subprocess, are handled through the same orchestration flow.
 
 \subsection{State Management}
-The frontend uses a lightweight publish-subscribe mechanism to coordinate the document list, document viewer, model editor, and project graph. The base implementation, shown in Figure~\ref{fig:imp_frontend_pubsub_store}, stores local state and notifies subscribers through patch objects.
 
-This mechanism is extended through specialized stores for entity collections, versioned entities, workspace state, document-viewer state, model-editor state, and the project graph. The approach was chosen because it supports synchronized updates across several panes without introducing a larger frontend framework.
+The workspace presents four concurrently visible panes — the document list, document viewer, model editor, and project graph — each of which must react to changes triggered in the others. To keep these panes synchronized without coupling them directly, the frontend adopts a lightweight publish-subscribe mechanism: each pane subscribes to the stores it depends on and is notified whenever relevant state changes.
+
+The mechanism is built around a small store hierarchy. The base \texttt{Store} class, shown in Figure~\ref{fig:imp_frontend_pubsub_store}, holds local state in a plain object and maintains a subscriber set. Specialized stores extend this foundation to cover different concerns: \texttt{EntitiesStore} manages keyed entity collections and exposes add, update, and remove operations; \texttt{VersionedEntityStore} further extends it with version-aware lookups; and separate stores for workspace coordination, document-viewer state, model-editor state, and the project graph each encapsulate their own domain fields and mutations.
 
 \begin{figure}[H]
   \centering
-  \caption{store implementation}
+  \caption{Base \texttt{Store} class implementing the publish-subscribe mechanism}
   \label{fig:imp_frontend_pubsub_store}
   \begin{lstlisting}[language=JavaScript]
 export class Store {
@@ -36,15 +37,15 @@ export class Store {
   \end{lstlisting}
 \end{figure}
 
-\subsection{Document Processing}
-Document upload is partly handled on the frontend so that heterogeneous source formats can be normalized before entering the main interaction flow. The implementation accepts PDF, DOC, DOCX, and plain-text input. Word documents are converted directly to HTML, while PDF files are processed into a structured HTML representation.
+UI modules interact with stores by calling \texttt{subscribe()} during initialization and holding the returned unsubscribe function for cleanup. Each notification delivers a patch object carrying a \texttt{key} and an \texttt{operation} field, so subscribers can react selectively — for example, the model-editor panel handles model-editor store patches while ignoring document-viewer updates. This targeted notification pattern supports synchronized updates across the workspace panes without requiring a larger frontend framework.
 
-For PDFs, the frontend extracts text items, groups them into lines, classifies them into headings, lists, and paragraphs, and renders the result as semantic HTML. This normalization is necessary because later operations, especially selection serialization, overlay rendering, and re-anchoring, depend on stable DOM text ranges rather than on raw file content.
+\subsection{Document Processing}
+Document upload is partly handled on the frontend so that heterogeneous source formats can be normalized before entering the main interaction flow. The implementation accepts PDF, DOC, DOCX, and plain-text input. Word documents are converted to HTML using Mammoth.js\footnote{\url{https://github.com/mwilliamson/mammoth.js}, accessed 2026-04-15}, a client-side library that maps DOCX content to semantic HTML elements. PDF files are processed using PDF.js\footnote{\url{https://mozilla.github.io/pdf.js/}, accessed 2026-04-15}, Mozilla's open-source PDF rendering library, which provides access to the raw text content and its positional metadata.
+
+For PDFs, the frontend uses PDF.js to extract per-page text items, then groups them into lines based on their vertical positions, classifies them as headings, list items, or paragraphs using font size and formatting heuristics, and assembles the result as semantic HTML. This normalization step is necessary because later operations — selection serialization, overlay rendering, and re-anchoring — depend on stable DOM text ranges rather than on raw file content.
 
 \subsection{Text Selection Rendering}
-One of the central frontend mechanisms is the transformation of browser text selections into persistent, version-aware linkable objects. A user selection is serialized into a text-position selector together with a text-quote selector, following the anchoring idea of the W3C Web Annotation Model \cite{w3c_annotation_model}. The text-position selector identifies the range in the current text stream, while the text quote preserves the selected wording for later validation or re-anchoring.
-
-Figure~\ref{fig:imp_frontend_selection_serialization} shows the core implementation used to convert a browser range into a persistent selector object.
+One of the central frontend mechanisms is the transformation of browser text selections into persistent, version-aware linkable objects. A user selection is serialized into a text-position selector together with a text-quote selector, following the anchoring idea of the W3C Web Annotation Model \cite{w3c_annotation_model}. The text-position selector identifies the range in the current text stream, while the text quote preserves the selected wording for later validation or re-anchoring. Figure~\ref{fig:imp_frontend_selection_serialization} shows the core implementation used to convert a browser range into a persistent selector object.
 
 \begin{figure}[H]
   \centering
@@ -78,10 +79,11 @@ The modeling flow coordinates the document viewer, the model service, and the mo
 
 The frontend also keeps the relation to the originating document version so that model editing remains synchronized with the document context. This logic supports new models, regenerations, refinements, and historical versions.
 
-\subsection{Rendering Customization}
+\subsection{Model Rendering Customization}
 Instead of implementing a process-model editor from scratch, the frontend reuses the CPEE layout and rendering infrastructure and extends it where necessary. The main customization is the workflow adaptor layer, which dispatches additional events for call and subprocess nodes.
 
 These events connect the generic renderer to workspace-specific behavior such as subprocess navigation and contextual interaction. Together, the layered frontend organization, pub-sub stores, document normalization, overlay rendering, and renderer customization support the end-to-end modelling workflow.
+
 \section{Backend}
 \subsection{Architecture}
 The backend is implemented using a layered architecture. In this system, the layered structure is realized through route, service, and repository layers, each with a clearly separated responsibility. Route modules expose REST endpoints, service modules implement the application logic, and repository modules encapsulate data-access operations. Fastify.js was chosen as the backend framework because it is lightweight and provides native support for schema-based validation of requests and responses. 
