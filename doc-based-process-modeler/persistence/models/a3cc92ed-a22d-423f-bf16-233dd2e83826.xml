@@ -1,0 +1,152 @@
+<description xmlns:dbpm="https://example.com/dbpm"><dbpm:info><dbpm:model_info><dbpm:model_id>0b4185fc-d8ca-490d-a932-5ba811117f65</dbpm:model_id><dbpm:model_version_id>a3cc92ed-a22d-423f-bf16-233dd2e83826</dbpm:model_version_id><dbpm:model_version_name>v5</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>912fe776-792e-4586-9881-18e77d2b7cfe</dbpm:document_id><dbpm:document_version_id>1dbd2234-1f89-403f-86fe-20e98b56a87b</dbpm:document_version_id><dbpm:document_version_name>v1</dbpm:document_version_name><dbpm:document_file_name>Order_Processing_Flow.docx</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>Process FlowThe process follows a sequence of stages from order intake to completion.Different teams (e.g., sales, finance, and warehouse) interact with the process at specific stages, but the overall structure remains consistent.1. Order Intake and RegistrationThe process starts when an order is received and recorded in the system.Each order is assigned an internal reference and becomes available for further processing.2. Order ValidationThe order is checked to ensure that all required data is complete and consistent.This includes customer information, product identifiers, and quantities.ResultValid orders proceed to the next stage.Orders with inconsistencies are corrected before being validated again.3. Contract and Credit CheckCustomer-specific pricing conditions and credit limits are verified against existing agreements.This step is typically handled as part of the finance process.ResultOrders that pass the credit check continue to the next step.Orders that fail the check are placed on hold for review and require approval before processing can continue.4. Inventory CheckThe system verifies whether the requested items are available in stock.ResultOrders with available items proceed to confirmation.Orders with missing items are delayed or partially fulfilled, depending on stock availability.5. Order ConfirmationOnce the required checks are completed, the order is confirmed and released for execution.At this stage, the order is considered ready for fulfillment.6. Fulfillment and ShippingThe warehouse prepares the order for shipment, including picking and packing.The goods are then shipped by the logistics provider.7. Invoicing and PaymentAn invoice is generated and sent to the customer.Payment is processed according to the agreed terms.The process is considered complete once the invoice has been issued and payment is recorded in the system.</dbpm:selection><dbpm:selection>Validation</dbpm:selection></dbpm:text_selections></dbpm:document_info><dbpm:prompts><dbpm:prompt>Correct orders which are invalid</dbpm:prompt><dbpm:prompt>Still you are not correcting those with inconsistencies</dbpm:prompt></dbpm:prompts></dbpm:info><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+  <call id="a1" endpoint="" a:alt_id="a1" svg-id="a1" svg-label="Order Intake and Registration" svg-type="call" svg-subtype="call">
+    <parameters>
+      <label>Order Intake and Registration</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <loop mode="pre_test" condition="true" svg-id="loop_1" svg-label="true" svg-type="loop" svg-subtype="loop_head">
+    <call id="a5" endpoint="" a:alt_id="a3" svg-id="a5" svg-label="Order Validation" svg-type="call" svg-subtype="call">
+      <parameters>
+        <label>Order Validation</label>
+        <method/>
+        <type>:task</type>
+        <arguments/>
+      </parameters>
+    </call>
+    <loop mode="pre_test" condition="true" svg-id="loop_0" svg-label="true" svg-type="loop" svg-subtype="loop_head">
+      <choose mode="exclusive" a:alt_id="gw2s" svg-id="choose_6" svg-type="choose" svg-subtype="choose_exclusive">
+        <alternative condition="" svg-id="alternative_12" svg-type="alternative" svg-subtype="alternative">
+          <choose mode="exclusive" a:alt_id="gw3s" svg-id="choose_5" svg-type="choose" svg-subtype="choose_exclusive">
+            <alternative condition="false" language="text/javascript" svg-id="alternative_0" svg-label="false" svg-type="alternative" svg-subtype="alternative">
+              <call id="a5" endpoint="" a:alt_id="a3" svg-id="a5" svg-label="Order Validation" svg-type="call" svg-subtype="call">
+                <parameters>
+                  <label>Order Validation</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="true" language="text/javascript" svg-id="alternative_11" svg-label="true" svg-type="alternative" svg-subtype="alternative">
+              <call id="a11" endpoint="subprocess" svg-id="a11" a:alt_id="a7" svg-label="Contract and Credit Check" svg-type="call" svg-subtype="call"><parameters><label>Contract and Credit Check</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/><arguments><behavior/><url/></arguments></parameters></call>
+              <choose mode="exclusive" a:alt_id="0" svg-id="choose_4" svg-type="choose" svg-subtype="choose_exclusive">
+                <alternative condition="" svg-id="alternative_7" svg-type="alternative" svg-subtype="alternative">
+                  <choose mode="exclusive" a:alt_id="gw4s" svg-id="choose_2" svg-type="choose" svg-subtype="choose_exclusive">
+                    <alternative condition="Fail" language="text/javascript" svg-id="alternative_1" svg-label="Fail" svg-type="alternative" svg-subtype="alternative">
+                      <call id="a15" endpoint="" a:alt_id="a15" svg-id="a15" svg-label="Review and Approval" svg-type="call" svg-subtype="call">
+                        <parameters>
+                          <label>Review and Approval</label>
+                          <method/>
+                          <type>:task</type>
+                          <arguments/>
+                        </parameters>
+                      </call>
+                      <call id="a11" endpoint="subprocess" svg-id="a11" a:alt_id="a7" svg-label="Contract and Credit Check" svg-type="call" svg-subtype="call"><parameters><label>Contract and Credit Check</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model/><arguments><behavior/><url/></arguments></parameters></call>
+                    </alternative>
+                    <alternative condition="Pass" language="text/javascript" svg-id="alternative_6" svg-label="Pass" svg-type="alternative" svg-subtype="alternative">
+                      <call id="a21" endpoint="" a:alt_id="a13" svg-id="a21" svg-label="Inventory Check" svg-type="call" svg-subtype="call">
+                        <parameters>
+                          <label>Inventory Check</label>
+                          <method/>
+                          <type>:task</type>
+                          <arguments/>
+                        </parameters>
+                      </call>
+                      <choose mode="exclusive" a:alt_id="gw5s" svg-id="choose_0" svg-type="choose" svg-subtype="choose_exclusive">
+                        <alternative condition="Available" language="text/javascript" svg-id="alternative_2" svg-label="Available" svg-type="alternative" svg-subtype="alternative"/>
+                        <alternative condition="Missing" language="text/javascript" svg-id="alternative_3" svg-label="Missing" svg-type="alternative" svg-subtype="alternative">
+                          <call id="a27" endpoint="" a:alt_id="a23" svg-id="a27" svg-label="Delay or Partial Fulfillment" svg-type="call" svg-subtype="call">
+                            <parameters>
+                              <label>Delay or Partial Fulfillment</label>
+                              <method/>
+                              <type>:task</type>
+                              <arguments/>
+                            </parameters>
+                          </call>
+                        </alternative>
+                      </choose>
+                      <call id="a31" endpoint="" a:alt_id="a21" svg-id="a31" svg-label="Order Confirmation" svg-type="call" svg-subtype="call">
+                        <parameters>
+                          <label>Order Confirmation</label>
+                          <method/>
+                          <type>:task</type>
+                          <arguments/>
+                        </parameters>
+                      </call>
+                      <call id="a33" endpoint="" a:alt_id="a27" svg-id="a33" svg-label="Fulfillment and Shipping" svg-type="call" svg-subtype="call">
+                        <parameters>
+                          <label>Fulfillment and Shipping</label>
+                          <method/>
+                          <type>:task</type>
+                          <arguments/>
+                        </parameters>
+                      </call>
+                      <call id="a35" endpoint="" a:alt_id="a29" svg-id="a35" svg-label="Invoicing and Payment" svg-type="call" svg-subtype="call">
+                        <parameters>
+                          <label>Invoicing and Payment</label>
+                          <method/>
+                          <type>:task</type>
+                          <arguments/>
+                        </parameters>
+                      </call>
+                      <choose mode="exclusive" a:alt_id="gw4e" svg-id="choose_1" svg-type="choose" svg-subtype="choose_exclusive">
+                        <alternative condition="" svg-id="alternative_4" svg-type="alternative" svg-subtype="alternative"/>
+                        <alternative condition="" svg-id="alternative_5" svg-type="alternative" svg-subtype="alternative"/>
+                      </choose>
+                    </alternative>
+                  </choose>
+                </alternative>
+                <alternative condition="" svg-id="alternative_10" svg-type="alternative" svg-subtype="alternative">
+                  <choose mode="exclusive" a:alt_id="gw4e" svg-id="choose_3" svg-type="choose" svg-subtype="choose_exclusive">
+                    <alternative condition="" svg-id="alternative_8" svg-type="alternative" svg-subtype="alternative"/>
+                    <alternative condition="" svg-id="alternative_9" svg-type="alternative" svg-subtype="alternative">
+                      <call id="a31" endpoint="" a:alt_id="a21" svg-id="a31" svg-label="Order Confirmation" svg-type="call" svg-subtype="call">
+                        <parameters>
+                          <label>Order Confirmation</label>
+                          <method/>
+                          <type>:task</type>
+                          <arguments/>
+                        </parameters>
+                      </call>
+                      <call id="a33" endpoint="" a:alt_id="a27" svg-id="a33" svg-label="Fulfillment and Shipping" svg-type="call" svg-subtype="call">
+                        <parameters>
+                          <label>Fulfillment and Shipping</label>
+                          <method/>
+                          <type>:task</type>
+                          <arguments/>
+                        </parameters>
+                      </call>
+                      <call id="a35" endpoint="" a:alt_id="a29" svg-id="a35" svg-label="Invoicing and Payment" svg-type="call" svg-subtype="call">
+                        <parameters>
+                          <label>Invoicing and Payment</label>
+                          <method/>
+                          <type>:task</type>
+                          <arguments/>
+                        </parameters>
+                      </call>
+                    </alternative>
+                  </choose>
+                </alternative>
+              </choose>
+              <escape a:alt_id="-1" svg-id="escape_0" svg-type="escape" svg-subtype="escape"/>
+            </alternative>
+          </choose>
+        </alternative>
+        <alternative condition="Invalid" language="text/javascript" svg-id="alternative_13" svg-label="Invalid" svg-type="alternative" svg-subtype="alternative">
+          <call id="a5" endpoint="" a:alt_id="a3" svg-id="a5" svg-label="Order Validation" svg-type="call" svg-subtype="call">
+            <parameters>
+              <label>Order Validation</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+      </choose>
+    </loop>
+  </loop>
+</description>
+</description>

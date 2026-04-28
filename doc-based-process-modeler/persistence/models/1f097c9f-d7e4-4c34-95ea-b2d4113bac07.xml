@@ -1,0 +1,75 @@
+<description xmlns:dbpm="https://example.com/dbpm"><dbpm:info><dbpm:model_info><dbpm:model_id>1f097c9f-d7e4-4c34-95ea-b2d4113bac07</dbpm:model_id><dbpm:model_version_id>621ebb35-894b-430d-bb77-6e6e3a3c344b</dbpm:model_version_id><dbpm:model_version_name>v1</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>ccac78b1-030f-40c5-b445-8f659f9232d8</dbpm:document_id><dbpm:document_version_id>90c7b1e7-b3ff-401b-a29d-7819b84c2795</dbpm:document_version_id><dbpm:document_version_name>v1</dbpm:document_version_name><dbpm:document_file_name>Bachelor_thesis_collaboration_process_generator.docx</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>Process Model Generator for CPN IDE Process mining subsumes algorithms for the (semi-)automatic creation, analysis and management of process models given event data recorded from business process execution. It is typically divided into three pillars: Process discovery, conformance checking and process enhancement. First, process discovery technique take the recorded event data and construct a process model representing the behavior in the event data. Second, conformance checking relates the behavior in the event data with the behavior in the (discovered) process model to detect deviations. Third, process enhancement consists of techniques to improve the business process [Aal16] . Although process discovery is the most researched process mining pillar, it has been recently shown that the design of discovery techniques lacks certain quality guarantees [Gar+19,Wer+23]. To introduce more rigor and quality guarantees into the design of future process discovery techniques, four maturity stages are proposed. Validating the third and fourth stage requires a process model generator for the class of to be discovered process models. The validation further requires to simulate process executions given generated process models [Wer+23]. An established simulator in academia is CPN IDE (https://cpnide.org/) that supports an expressive class of process models: colored Petri nets [Jen81]. So far, the BPM research community lacks process model generators that generate process models to be simulated in CPN IDE.The purpose of this Bachelor thesis is to develop a process model generator in Python for a predefined class of process models to be simulated in CPN IDE. Additionally, relevant parametrization of the process model generation is favourable.Prerequisites: (1) Knowledge of process model languages (2) Theoretical foundations in formal languages and logic. (3) Knowledge of programming and software engineering.Contact: bachelor.i17 [at] in.tum.de[Aal16] W. van der Aalst, Process Mining. Berlin, Heidelberg: Springer Berlin Heidelberg, 2016. doi: 10.1007/978-3-662-49851-4.[Gar+19] C. dos S. Garcia et al., “Process mining techniques and applications – A systematic mapping study,” Expert Systems with Applications, vol. 133, pp. 260–295, Nov. 2019, doi: 10.1016/j.eswa.2019.05.003.[Wer+23] J. M. E. M. van der Werf, A. Polyvyanyy, B. R. van Wensveen, M. Brinkhuis, and H. A. Reijers, “All that glitters is not gold: Four maturity stages of process discovery algorithms,” Information Systems, vol. 114, p. 102155, Mar. 2023, doi: 10.1016/j.is.2022.102155.[Jen81]  K. Jensen, “Coloured Petri nets and the invariant-method,” Theoretical computer science, vol. 14, no. 3, pp. 317–336, 1981.</dbpm:selection></dbpm:text_selections></dbpm:document_info></dbpm:info><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+  <call id="a1" endpoint="" a:alt_id="1">
+    <parameters>
+      <label>Process Mining</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <choose mode="exclusive" a:alt_id="2">
+    <alternative condition="Process Discovery" language="text/javascript">
+      <call id="a5" endpoint="" a:alt_id="3">
+        <parameters>
+          <label>Construct Process Model</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </alternative>
+    <alternative condition="Conformance Checking" language="text/javascript">
+      <call id="a7" endpoint="" a:alt_id="4">
+        <parameters>
+          <label>Detect Deviations</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </alternative>
+    <alternative condition="Process Enhancement" language="text/javascript">
+      <call id="a9" endpoint="" a:alt_id="5">
+        <parameters>
+          <label>Improve Business Process</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </alternative>
+  </choose>
+  <call id="a17" endpoint="" a:alt_id="7">
+    <parameters>
+      <label>Introduce Rigor and Quality Guarantees</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a19" endpoint="" a:alt_id="8">
+    <parameters>
+      <label>Validate Maturity Stages</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a21" endpoint="" a:alt_id="9">
+    <parameters>
+      <label>Simulate Process Executions</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a23" endpoint="" a:alt_id="10">
+    <parameters>
+      <label>Develop Process Model Generator</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+</description>
+</description>

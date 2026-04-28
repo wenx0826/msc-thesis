@@ -1,0 +1,228 @@
+---
+timestamp: '2026-03-24T06:50:59.723Z'
+event: project_created
+data:
+  id: d69ac407-dd85-466a-accf-a081a271ab29
+  name: Evaluation_Expert2_Task2
+---
+timestamp: '2026-03-24T08:16:32.412Z'
+event: document_uploaded
+data:
+  id: d8aaae99-33cd-4975-bfd9-e19acbd2c782
+  projectId: d69ac407-dd85-466a-accf-a081a271ab29
+  name: 2023_Fire_Contract_PMT_SOP.pdf
+  latestVersionId: null
+  latestVersionNumber: 0
+  createdAt: '2026-03-24T08:16:28.034Z'
+  deletedAt: null
+---
+timestamp: '2026-03-24T09:46:30.606Z'
+event: model_generated
+data:
+  id: 8f5ac965-e570-4eab-8d14-7460745c1919
+  name: Model_1
+  data: |-
+    <description xmlns:dbpm="https://example.com/dbpm"><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+      <loop mode="pre_test" condition="true">
+        <call id="a1" endpoint="" a:alt_id="1">
+          <parameters>
+            <label>Review Payment Packet</label>
+            <method/>
+            <type>:task</type>
+            <arguments/>
+          </parameters>
+        </call>
+        <loop mode="pre_test" condition="Major Deficiencies">
+          <choose mode="exclusive" a:alt_id="2">
+            <alternative condition="Major Deficiencies" language="text/javascript">
+              <call id="a7" endpoint="" a:alt_id="4">
+                <parameters>
+                  <label>Return to Land Office/Unit</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+              <call id="a1" endpoint="" a:alt_id="1">
+                <parameters>
+                  <label>Review Payment Packet</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="">
+              <escape a:alt_id="-1"/>
+            </alternative>
+            <alternative condition="Minor Issues" language="text/javascript">
+              <call id="a5" endpoint="" a:alt_id="3">
+                <parameters>
+                  <label>Contact Land Office/Unit</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="Packet Compliant" language="text/javascript"/>
+          </choose>
+        </loop>
+        <call id="a9" endpoint="" a:alt_id="5">
+          <parameters>
+            <label>Sign Approval Sheet</label>
+            <method/>
+            <type>:task</type>
+            <arguments/>
+          </parameters>
+        </call>
+        <call id="a15" endpoint="" a:alt_id="6">
+          <parameters>
+            <label>Forward Documents to FSO</label>
+            <method/>
+            <type>:task</type>
+            <arguments/>
+          </parameters>
+        </call>
+        <choose mode="exclusive" a:alt_id="7">
+          <alternative condition="DNRC Audit Modified Payment" language="text/javascript">
+            <call id="a19" endpoint="" a:alt_id="8">
+              <parameters>
+                <label>Email Explanation and Corrected Invoice</label>
+                <method/>
+                <type>:task</type>
+                <arguments/>
+              </parameters>
+            </call>
+          </alternative>
+          <alternative condition="DNRC Audit OK" language="text/javascript"/>
+        </choose>
+        <call id="a21" endpoint="" a:alt_id="9">
+          <parameters>
+            <label>Post Redacted Payment Packet</label>
+            <method/>
+            <type>:task</type>
+            <arguments/>
+          </parameters>
+        </call>
+      </loop>
+    </description>
+    </description>
+---
+timestamp: '2026-03-24T09:50:28.695Z'
+event: model_generated
+data:
+  id: 27f736b6-988e-47a5-960b-eedae7b2ea7f
+  name: Model_2
+  data: |-
+    <description xmlns:dbpm="https://example.com/dbpm"><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+      <call id="a1" endpoint="" a:alt_id="1">
+        <parameters>
+          <label>Incident Management Team or Unit Initiates Payment Packet</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a3" endpoint="" a:alt_id="2">
+        <parameters>
+          <label>Compile Payment Packet with Supporting Documents</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <loop mode="pre_test" condition="true">
+        <call id="a5" endpoint="" a:alt_id="3">
+          <parameters>
+            <label>Land Office/Unit Audits and Approves Payment Packet</label>
+            <method/>
+            <type>:task</type>
+            <arguments/>
+          </parameters>
+        </call>
+        <call id="a7" endpoint="" a:alt_id="4">
+          <parameters>
+            <label>FDO Reviews Payment Packet for Compliance</label>
+            <method/>
+            <type>:task</type>
+            <arguments/>
+          </parameters>
+        </call>
+        <loop mode="pre_test" condition="Major Deficiencies">
+          <choose mode="exclusive" a:alt_id="5">
+            <alternative condition="Major Deficiencies" language="text/javascript">
+              <call id="a15" endpoint="" a:alt_id="8">
+                <parameters>
+                  <label>Return Packet to Land Office/Unit for Resubmission</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+              <call id="a5" endpoint="" a:alt_id="3">
+                <parameters>
+                  <label>Land Office/Unit Audits and Approves Payment Packet</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+              <call id="a7" endpoint="" a:alt_id="4">
+                <parameters>
+                  <label>FDO Reviews Payment Packet for Compliance</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="">
+              <escape a:alt_id="-1"/>
+            </alternative>
+            <alternative condition="Minor Issues" language="text/javascript">
+              <call id="a11" endpoint="" a:alt_id="6">
+                <parameters>
+                  <label>Contact Land Office/Unit for Clarification and Modify Packet</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="Compliant" language="text/javascript"/>
+          </choose>
+        </loop>
+        <call id="a13" endpoint="" a:alt_id="7">
+          <parameters>
+            <label>FDO Signs Fire Invoice Approval Sheet</label>
+            <method/>
+            <type>:task</type>
+            <arguments/>
+          </parameters>
+        </call>
+        <call id="a19" endpoint="" a:alt_id="9">
+          <parameters>
+            <label>Forward Invoice Approval Sheet and Invoice to FSO</label>
+            <method/>
+            <type>:task</type>
+            <arguments/>
+          </parameters>
+        </call>
+        <call id="a21" endpoint="" a:alt_id="10">
+          <parameters>
+            <label>FSO Processes Payment in SABHRS</label>
+            <method/>
+            <type>:task</type>
+            <arguments/>
+          </parameters>
+        </call>
+      </loop>
+    </description>
+    </description>
+---
+timestamp: '2026-03-24T09:51:23.293Z'
+event: model_deleted
+data:
+  id: 27f736b6-988e-47a5-960b-eedae7b2ea7f
+  name: Model_2

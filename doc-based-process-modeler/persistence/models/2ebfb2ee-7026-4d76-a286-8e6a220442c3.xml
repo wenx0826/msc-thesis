@@ -1,0 +1,166 @@
+<description xmlns:dbpm="https://example.com/dbpm"><dbpm:info><dbpm:model_info><dbpm:model_id>0b4185fc-d8ca-490d-a932-5ba811117f65</dbpm:model_id><dbpm:model_version_id>2ebfb2ee-7026-4d76-a286-8e6a220442c3</dbpm:model_version_id><dbpm:model_version_name>v3</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>912fe776-792e-4586-9881-18e77d2b7cfe</dbpm:document_id><dbpm:document_version_id>1dbd2234-1f89-403f-86fe-20e98b56a87b</dbpm:document_version_id><dbpm:document_version_name>v1</dbpm:document_version_name><dbpm:document_file_name>Order_Processing_Flow.docx</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>Process FlowThe process follows a sequence of stages from order intake to completion.Different teams (e.g., sales, finance, and warehouse) interact with the process at specific stages, but the overall structure remains consistent.1. Order Intake and RegistrationThe process starts when an order is received and recorded in the system.Each order is assigned an internal reference and becomes available for further processing.2. Order ValidationThe order is checked to ensure that all required data is complete and consistent.This includes customer information, product identifiers, and quantities.ResultValid orders proceed to the next stage.Orders with inconsistencies are corrected before being validated again.3. Contract and Credit CheckCustomer-specific pricing conditions and credit limits are verified against existing agreements.This step is typically handled as part of the finance process.ResultOrders that pass the credit check continue to the next step.Orders that fail the check are placed on hold for review and require approval before processing can continue.4. Inventory CheckThe system verifies whether the requested items are available in stock.ResultOrders with available items proceed to confirmation.Orders with missing items are delayed or partially fulfilled, depending on stock availability.5. Order ConfirmationOnce the required checks are completed, the order is confirmed and released for execution.At this stage, the order is considered ready for fulfillment.6. Fulfillment and ShippingThe warehouse prepares the order for shipment, including picking and packing.The goods are then shipped by the logistics provider.7. Invoicing and PaymentAn invoice is generated and sent to the customer.Payment is processed according to the agreed terms.The process is considered complete once the invoice has been issued and payment is recorded in the system.</dbpm:selection><dbpm:selection>Validation</dbpm:selection></dbpm:text_selections></dbpm:document_info><dbpm:prompts><dbpm:prompt>Correct orders which are invalid</dbpm:prompt><dbpm:prompt>Still you are not correcting those with inconsistencies</dbpm:prompt></dbpm:prompts></dbpm:info><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+  <call id="a1" endpoint="" a:alt_id="a1">
+    <parameters>
+      <label>Order Intake and Registration</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <loop mode="pre_test" condition="true">
+    <call id="a5" endpoint="" a:alt_id="a3">
+      <parameters>
+        <label>Order Validation</label>
+        <method/>
+        <type>:task</type>
+        <arguments/>
+      </parameters>
+    </call>
+    <loop mode="pre_test" condition="true">
+      <choose mode="exclusive" a:alt_id="gw2s">
+        <alternative condition="">
+          <choose mode="exclusive" a:alt_id="gw3s">
+            <alternative condition="false" language="text/javascript">
+              <call id="a5" endpoint="" a:alt_id="a3">
+                <parameters>
+                  <label>Order Validation</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="true" language="text/javascript">
+              <call id="a11" endpoint="" a:alt_id="a7">
+                <parameters>
+                  <label>Contract and Credit Check</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+              <choose mode="exclusive" a:alt_id="0">
+                <alternative condition="">
+                  <choose mode="exclusive" a:alt_id="gw4s">
+                    <alternative condition="Fail" language="text/javascript">
+                      <call id="a15" endpoint="" a:alt_id="a15">
+                        <parameters>
+                          <label>Review and Approval</label>
+                          <method/>
+                          <type>:task</type>
+                          <arguments/>
+                        </parameters>
+                      </call>
+                      <call id="a11" endpoint="" a:alt_id="a7">
+                        <parameters>
+                          <label>Contract and Credit Check</label>
+                          <method/>
+                          <type>:task</type>
+                          <arguments/>
+                        </parameters>
+                      </call>
+                    </alternative>
+                    <alternative condition="Pass" language="text/javascript">
+                      <call id="a21" endpoint="" a:alt_id="a13">
+                        <parameters>
+                          <label>Inventory Check</label>
+                          <method/>
+                          <type>:task</type>
+                          <arguments/>
+                        </parameters>
+                      </call>
+                      <choose mode="exclusive" a:alt_id="gw5s">
+                        <alternative condition="Available" language="text/javascript"/>
+                        <alternative condition="Missing" language="text/javascript">
+                          <call id="a27" endpoint="" a:alt_id="a23">
+                            <parameters>
+                              <label>Delay or Partial Fulfillment</label>
+                              <method/>
+                              <type>:task</type>
+                              <arguments/>
+                            </parameters>
+                          </call>
+                        </alternative>
+                      </choose>
+                      <call id="a31" endpoint="" a:alt_id="a21">
+                        <parameters>
+                          <label>Order Confirmation</label>
+                          <method/>
+                          <type>:task</type>
+                          <arguments/>
+                        </parameters>
+                      </call>
+                      <call id="a33" endpoint="" a:alt_id="a27">
+                        <parameters>
+                          <label>Fulfillment and Shipping</label>
+                          <method/>
+                          <type>:task</type>
+                          <arguments/>
+                        </parameters>
+                      </call>
+                      <call id="a35" endpoint="" a:alt_id="a29">
+                        <parameters>
+                          <label>Invoicing and Payment</label>
+                          <method/>
+                          <type>:task</type>
+                          <arguments/>
+                        </parameters>
+                      </call>
+                      <choose mode="exclusive" a:alt_id="gw4e">
+                        <alternative condition=""/>
+                        <alternative condition=""/>
+                      </choose>
+                    </alternative>
+                  </choose>
+                </alternative>
+                <alternative condition="">
+                  <choose mode="exclusive" a:alt_id="gw4e">
+                    <alternative condition=""/>
+                    <alternative condition="">
+                      <call id="a31" endpoint="" a:alt_id="a21">
+                        <parameters>
+                          <label>Order Confirmation</label>
+                          <method/>
+                          <type>:task</type>
+                          <arguments/>
+                        </parameters>
+                      </call>
+                      <call id="a33" endpoint="" a:alt_id="a27">
+                        <parameters>
+                          <label>Fulfillment and Shipping</label>
+                          <method/>
+                          <type>:task</type>
+                          <arguments/>
+                        </parameters>
+                      </call>
+                      <call id="a35" endpoint="" a:alt_id="a29">
+                        <parameters>
+                          <label>Invoicing and Payment</label>
+                          <method/>
+                          <type>:task</type>
+                          <arguments/>
+                        </parameters>
+                      </call>
+                    </alternative>
+                  </choose>
+                </alternative>
+              </choose>
+              <escape a:alt_id="-1"/>
+            </alternative>
+          </choose>
+        </alternative>
+        <alternative condition="Invalid" language="text/javascript">
+          <call id="a5" endpoint="" a:alt_id="a3">
+            <parameters>
+              <label>Order Validation</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+      </choose>
+    </loop>
+  </loop>
+</description>
+</description>

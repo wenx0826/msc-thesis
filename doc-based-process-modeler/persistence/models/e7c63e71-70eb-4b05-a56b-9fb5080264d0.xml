@@ -1,0 +1,33 @@
+<description xmlns:dbpm="https://example.com/dbpm"><dbpm:info><dbpm:model_info><dbpm:model_id>31576e9f-b668-4df2-965a-34e46bd5b616</dbpm:model_id><dbpm:model_version_id>e7c63e71-70eb-4b05-a56b-9fb5080264d0</dbpm:model_version_id><dbpm:model_version_name>v1</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>fae3c8d9-0426-483a-8320-1c1902ff4202</dbpm:document_id><dbpm:document_version_id>390fce0c-3871-4d93-a819-b579c074e590</dbpm:document_version_id><dbpm:document_version_name>v1</dbpm:document_version_name><dbpm:document_file_name>Spezifikationskatalog_Vorlesungsverzeichnis_Online_V0.9.pdf</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>3.2.1 Aktions- &amp; Ablaufdiagramm für den Use Case AAbbildung 11: Aktions- &amp; Ablaufdiagramm für den Use Case A203.2.2 Einstiegsseite SucheDie Einstiegsseite der Suche ist einer der beiden Eröffnungsscreens für das Vorlesungsverzeichnis der Universität Wien. Die Seite sollte unter einer leicht merkbaren und sprechenden URL zu finden sein, die von Seiten der Universität Wien noch zu definieren ist (s.o.).Abbildung 12: Einstiegsseite für die Suche im VVZIm Metaspezifischen Text soll dem Benutzer inhaltlich vermittelt werden, wo er sich befindet und in kurzen Hinweisen erklären, wie er das VVZ verwenden kann. Benötigt er detailliertere Hilfe, so kann er die über den „Hilfe?“-Link, welcher auf jeder Seite prominent zu finden ist, aufrufen.Inhaltlicher Textvorschlag: Hier haben Sie die Möglichkeit im Vorlesungsverzeichnis der Universität Wien nach Veranstaltungen, Lehrpersonen oder Instituten zu durchsuchen. Speziell für die Suche nach Veranstaltungen steht ihnen auch eine erweiterte Suche zur Verfügung, in der Sie Ihre Suche einschränken können. Alternativ können Sie auch durch das gesamte Verzeichnis blättern!Der Link zur „erweiterten Suche“ in diesem Text führt direkt zu Use Case A2, wo bereits der Suchbereich „Veranstaltungen“ ausgewählt ist und die zusätzlichen Suchoptionen eingeblendet sind. Der Link „Blättern“ führt zur Startseite des Use Case B. Folgende Use Cases können direkt von dieser Seite aus aufgerufen werden:</dbpm:selection></dbpm:text_selections></dbpm:document_info></dbpm:info><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+  <call id="a1" endpoint="" a:alt_id="1">
+    <parameters>
+      <label>Display Search Entry Page</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <choose mode="exclusive" a:alt_id="2">
+    <alternative condition="Extended Search" language="text/javascript">
+      <call id="a5" endpoint="" a:alt_id="3">
+        <parameters>
+          <label>Go to Use Case A2</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </alternative>
+    <alternative condition="Browse" language="text/javascript">
+      <call id="a7" endpoint="" a:alt_id="4">
+        <parameters>
+          <label>Go to Use Case B</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </alternative>
+  </choose>
+</description>
+</description>

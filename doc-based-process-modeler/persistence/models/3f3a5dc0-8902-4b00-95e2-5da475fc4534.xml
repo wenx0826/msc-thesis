@@ -1,0 +1,36 @@
+<description xmlns:dbpm="https://example.com/dbpm"><dbpm:info><dbpm:model_info><dbpm:model_id>91b8cffa-6c31-4990-99a0-bbae3e661963</dbpm:model_id><dbpm:model_version_id>3f3a5dc0-8902-4b00-95e2-5da475fc4534</dbpm:model_version_id><dbpm:model_version_name>v1</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>26fd7b3c-467b-4101-8c2e-c5e95dccc02d</dbpm:document_id><dbpm:document_version_id>108b9d44-c0d6-4537-a5f1-ffd3baac291a</dbpm:document_version_id><dbpm:document_version_name>v1</dbpm:document_version_name><dbpm:document_file_name>2023_Fire_Contract_PMT_SOP.pdf</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>I. PROCESS OVERVIEWThe DNRC fire accounting process is identical to its normal business practices and procedures. The expense is incurred by the operations or support personnel at the unit, land office, dispatch center, or incident. The supervisor for the individual that incurred the expense is responsible for ensuring the expense is appropriate, operationally sound, and within applicable policy and agreements. The source documentation is first received and approved at the incident or unit level and flows through higher-level authorities until the expense is recorded by the DNRC Financial Services Office (FSO) in the Statewide Accounting, Budgeting, and Human Resource System (SABHRS). Only cash transactions are entered in SABHRS, while non-cash expenses, such as DNRC owned equipment use, are collected at the FDO.A fire payment packet is the compilation of all the Emergency Equipment Use Invoices (OF-286) for a single piece of equipment for the same vendor for one incident. The land office/unit is responsible for compiling, auditing, and approving the payment packet. The FDO is responsible for final auditing and approval of the payment packet. The FSO is responsible for entering the payment packet into SABHRS.Responsibilities by entity:IncidentLand Office/Unit FDO FSO DOATeam/Unit Packet Packet Final packet Payment entry Paymentcompilation and compilation, audit and in SABHRS Disbursementaudit initial review, and approvalapproval</dbpm:selection></dbpm:text_selections></dbpm:document_info></dbpm:info><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+  <call id="a1" endpoint="" a:alt_id="1" svg-id="a1" svg-label="Expense Incurred" svg-type="call" svg-subtype="call">
+    <parameters>
+      <label>Expense Incurred</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a3" endpoint="" a:alt_id="2" svg-id="a3" svg-label="Supervisor Approval" svg-type="call" svg-subtype="call">
+    <parameters>
+      <label>Supervisor Approval</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a5" endpoint="" a:alt_id="3" svg-id="a5" svg-label="Receive and Approve at Incident/Unit Level" svg-type="call" svg-subtype="call">
+    <parameters>
+      <label>Receive and Approve at Incident/Unit Level</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a7" endpoint="" a:alt_id="4" svg-id="a7" svg-label="Flow Through Higher Authorities" svg-type="call" svg-subtype="call">
+    <parameters>
+      <label>Flow Through Higher Authorities</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a9" endpoint="subprocess" svg-id="a9" a:alt_id="5" svg-label="DNRC Financial Services Office Records Expense in SABHRS" svg-type="call" svg-subtype="call"><parameters><label>DNRC Financial Services Office Records Expense in SABHRS</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>c1a96ca5-a6c0-4f48-9db5-a33759d77013</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>https://lehre.bpm.in.tum.de/persistence/models/c1a96ca5-a6c0-4f48-9db5-a33759d77013.xml</url></arguments></parameters></call>
+</description>
+</description>

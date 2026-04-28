@@ -1,0 +1,224 @@
+/* Shared document viewer styles used by workspace and document-viewer pages */
+
+#documentContent {
+  /* Safari can keep inherited -webkit-user-select:none from body unless overridden explicitly. */
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+  -webkit-touch-callout: default;
+  cursor: text;
+  padding: 0.5em;
+  position: relative;
+  z-index: 1;
+  background: transparent;
+  text-align: justify;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+#documentContent * {
+  max-width: 100%;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+#documentContent.is-historical-version,
+#documentContent.is-historical-version * {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: default;
+}
+
+#viewerWrap {
+  position: relative;
+  overflow-y: auto;
+}
+
+#selectionsVisualLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+#interactionLayer {
+  pointer-events: none;
+}
+
+#interactionLayer * {
+  z-index: 2;
+}
+
+#selectionsInteractionLayer {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  pointer-events: none;
+}
+
+#selectionHandlesLayer {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  pointer-events: none;
+}
+
+#modelTagsLayer * {
+  z-index: 3;
+}
+
+.selection-wrap {
+  position: absolute;
+}
+
+.range-rect {
+  position: absolute;
+  opacity: 0.75;
+}
+
+#selectionsVisualLayer .selection-wrap.is-current * {
+  z-index: 4;
+}
+
+#selectionsInteractionLayer .selection-wrap {
+  pointer-events: none;
+  outline-offset: 2px;
+}
+
+#selectionsInteractionLayer .selection-wrap:not([data-model-id]) {
+  outline: 2px dashed var(--wfadaptor-highlight);
+}
+
+#selectionsInteractionLayer .selection-wrap.is-current {
+  outline: 2px solid var(--wfadaptor-highlight);
+}
+
+#selectionsInteractionLayer .selection-wrap.selected {
+  outline: 2px solid var(--wfadaptor-selected);
+}
+
+#selectionsInteractionLayer .selection-wrap.selected:not([data-model-id]) {
+  outline-style: dashed;
+}
+
+#selectionsInteractionLayer .selection-wrap.is-pending-text-change {
+  outline: 2px dashed var(--wfadaptor-highlight);
+}
+
+#selectionsInteractionLayer .selection-wrap.is-pending-text-change.selected {
+  outline: 2px dashed var(--wfadaptor-selected);
+}
+
+#selectionsInteractionLayer .selection-wrap.is-readonly-trace {
+  outline: 2px solid var(--x-ui-text-secondary-color);
+}
+
+#selectionsInteractionLayer .selection-wrap.is-readonly-trace.selected {
+  outline: 2px solid var(--x-ui-text-secondary-color);
+}
+
+#selectionsInteractionLayer .selection-wrap.is-readonly-trace.selected:not([data-model-id]) {
+  outline-style: solid;
+}
+
+#selectionsInteractionLayer .range-rect {
+  opacity: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  pointer-events: auto;
+  cursor: default;
+}
+
+#selectionsInteractionLayer .selection-wrap .range-rect {
+  background: transparent;
+}
+
+#selectionsInteractionLayer .selection-wrap.is-readonly-trace .range-rect {
+  pointer-events: none;
+}
+
+#selectionHandlesLayer .selection-handle {
+  position: absolute;
+  width: 12px;
+  height: 16px;
+  border: none;
+  background: transparent;
+  pointer-events: auto;
+  cursor: ew-resize;
+  transform: translate(-50%, -50%);
+  z-index: 4;
+}
+
+#selectionHandlesLayer .selection-handle::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+  border-radius: 1px;
+  background: var(--wfadaptor-selected);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.14);
+}
+
+#viewerWrap.selection-handle-dragging,
+#viewerWrap.selection-handle-dragging * {
+  cursor: ew-resize !important;
+}
+
+.tag-span {
+  position: absolute;
+  display: inline-block;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 11px;
+  line-height: 11px;
+  padding: 0 3px;
+  border-radius: 2px;
+  white-space: nowrap;
+  background: var(--x-ui-content-light-background);
+  box-shadow: inset 0 0 0 1px var(--x-ui-border-light-color);
+  color: var(--x-ui-text-secondary-color);
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.tag-span:hover {
+  background: var(--x-ui-content-hover-background);
+  box-shadow: inset 0 0 0 1px var(--x-ui-border-color);
+  color: var(--x-ui-text-color);
+}
+
+.tag-span.is-current {
+  background: var(--wfadaptor-highlight);
+  color: white;
+  box-shadow: none;
+}
+
+/* .tag-span.is-readonly,
+.tag-span.is-readonly:hover,
+.tag-span.is-current.is-readonly,
+.tag-span.is-current.is-readonly:hover,
+.tag-span.is-readonly-trace,
+.tag-span.is-readonly-trace:hover,
+.tag-span.is-current.is-readonly-trace,
+.tag-span.is-current.is-readonly-trace:hover {
+  background: var(--x-ui-text-secondary-color);
+  box-shadow: inset 0 0 0 1px #444;
+  color: #fff;
+} */
+
+.tag-span.is-current.is-readonly,
+.tag-span.is-current.is-readonly:hover {
+  background: var(--x-ui-text-secondary-color);
+  box-shadow: inset 0 0 0 1px #444;
+  color: #fff;
+}

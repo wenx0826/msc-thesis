@@ -1,0 +1,51 @@
+<description xmlns:dbpm="https://example.com/dbpm"><dbpm:info><dbpm:model_info><dbpm:model_id>52bf0243-00cc-4824-8335-06262e3ef35f</dbpm:model_id><dbpm:model_version_id>c3288830-5fcb-4b1f-aadf-aa414b6dfa76</dbpm:model_version_id><dbpm:model_version_name>v1</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>ccac78b1-030f-40c5-b445-8f659f9232d8</dbpm:document_id><dbpm:document_version_id>90c7b1e7-b3ff-401b-a29d-7819b84c2795</dbpm:document_version_id><dbpm:document_version_name>v1</dbpm:document_version_name><dbpm:document_file_name>Bachelor_thesis_collaboration_process_generator.docx</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>The purpose of this Bachelor thesis is to develop a process model generator in Python for a predefined class of process models to be simulated in CPN IDE. Additionally, relevant parametrization of the process model generation is favourable.</dbpm:selection><dbpm:selection>.Prerequisites: (1) Knowledge of process model languages (2) Theoretical foundations in formal languages and logic. (3) Knowledge</dbpm:selection><dbpm:selection>equisites: (1) Knowledge of process model languages (2) Theoretical foundations in formal languages and logic. (3) Knowledge of programming and software engineering.</dbpm:selection></dbpm:text_selections></dbpm:document_info></dbpm:info><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+  <call id="a1" endpoint="" a:alt_id="1">
+    <parameters>
+      <label>Define Thesis Purpose</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a3" endpoint="" a:alt_id="2">
+    <parameters>
+      <label>Identify Prerequisites</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a5" endpoint="" a:alt_id="3">
+    <parameters>
+      <label>Identify Knowledge Requirements</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a7" endpoint="" a:alt_id="4">
+    <parameters>
+      <label>Develop Process Model Generator in Python</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a9" endpoint="" a:alt_id="5">
+    <parameters>
+      <label>Simulate in CPN IDE</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a11" endpoint="" a:alt_id="6">
+    <parameters>
+      <label>Parametrize Process Model Generation</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+</description>
+</description>

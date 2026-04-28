@@ -1,0 +1,51 @@
+import { createUI } from "../../../shared/utils/ui.js";
+import { modelService } from "../services/index.js";
+
+const $promptInput = $("#modelEditorPromptInput");
+const $promptActionsGroup = $("#promptActionsGroup");
+const $sendPromptButton = $("#sendPromptButton");
+const $clearPromptButton = $("#clearPromptButton");
+
+function getPromptInput() {
+  return $promptInput.val();
+}
+
+function getPromptText() {
+  return getPromptInput().trim();
+}
+
+function syncPromptActionState() {
+  $promptActionsGroup.prop("disabled", !getPromptInput());
+  $sendPromptButton.prop("disabled", !getPromptText());
+}
+
+function clearPromptInput() {
+  $promptInput.val("");
+  $promptActionsGroup.prop("disabled", true);
+}
+
+createUI({
+  setup: () => {
+    syncPromptActionState();
+  },
+  bindListeners: () => {
+    $promptInput.on("input", () => {
+      syncPromptActionState();
+    });
+
+    $clearPromptButton.on("mousedown", (e) => {
+      e.preventDefault(); // Prevent losing focus on the input
+      clearPromptInput();
+    });
+
+    $sendPromptButton.on("click", async () => {
+      const promptText = getPromptText();
+      if (!promptText) {
+        return;
+      }
+      clearPromptInput();
+      await modelService.refineModelByPrompt(promptText);
+    });
+  },
+  subscribeStores: () => {},
+});

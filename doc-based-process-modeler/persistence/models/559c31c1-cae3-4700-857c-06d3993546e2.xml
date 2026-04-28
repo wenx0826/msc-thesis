@@ -1,0 +1,113 @@
+<description xmlns:dbpm="https://example.com/dbpm"><dbpm:info><dbpm:model_info><dbpm:model_id>91b8cffa-6c31-4990-99a0-bbae3e661963</dbpm:model_id><dbpm:model_version_id>559c31c1-cae3-4700-857c-06d3993546e2</dbpm:model_version_id><dbpm:model_version_name>v2</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>26fd7b3c-467b-4101-8c2e-c5e95dccc02d</dbpm:document_id><dbpm:document_version_id>108b9d44-c0d6-4537-a5f1-ffd3baac291a</dbpm:document_version_id><dbpm:document_version_name>v1</dbpm:document_version_name><dbpm:document_file_name>2023_Fire_Contract_PMT_SOP.pdf</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>I. PROCESS OVERVIEWThe DNRC fire accounting process is identical to its normal business practices and procedures. The expense is incurred by the operations or support personnel at the unit, land office, dispatch center, or incident. The supervisor for the individual that incurred the expense is responsible for ensuring the expense is appropriate, operationally sound, and within applicable policy and agreements. The source documentation is first received and approved at the incident or unit level and flows through higher-level authorities until the expense is recorded by the DNRC Financial Services Office (FSO) in the Statewide Accounting, Budgeting, and Human Resource System (SABHRS). Only cash transactions are entered in SABHRS, while non-cash expenses, such as DNRC owned equipment use, are collected at the FDO.A fire payment packet is the compilation of all the Emergency Equipment Use Invoices (OF-286) for a single piece of equipment for the same vendor for one incident. The land office/unit is responsible for compiling, auditing, and approving the payment packet. The FDO is responsible for final auditing and approval of the payment packet. The FSO is responsible for entering the payment packet into SABHRS.Responsibilities by entity:IncidentLand Office/Unit FDO FSO DOATeam/Unit Packet Packet Final packet Payment entry Paymentcompilation and compilation, audit and in SABHRS Disbursementaudit initial review, and approvalapproval</dbpm:selection></dbpm:text_selections></dbpm:document_info><dbpm:prompts><dbpm:prompt>split the model up into more steps</dbpm:prompt></dbpm:prompts></dbpm:info><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+  <call id="a1" endpoint="" a:alt_id="1">
+    <parameters>
+      <label>Expense Incurred</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a3" endpoint="" a:alt_id="2">
+    <parameters>
+      <label>Supervisor Approval</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a5" endpoint="" a:alt_id="3">
+    <parameters>
+      <label>Receive and Approve at Incident/Unit Level</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a7" endpoint="" a:alt_id="4">
+    <parameters>
+      <label>Flow Through Higher Authorities</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a9" endpoint="" a:alt_id="5">
+    <parameters>
+      <label>DNRC FSO Records Expense in SABHRS</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <choose mode="exclusive" a:alt_id="14">
+    <alternative condition="Cash Transaction" language="text/javascript">
+      <call id="a13" endpoint="" a:alt_id="6">
+        <parameters>
+          <label>Enter into SABHRS</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </alternative>
+    <alternative condition="Non-Cash Expense" language="text/javascript">
+      <call id="a17" endpoint="" a:alt_id="7">
+        <parameters>
+          <label>Collect at FDO</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </alternative>
+  </choose>
+  <call id="a21" endpoint="" a:alt_id="8">
+    <parameters>
+      <label>Land Office/Unit Compiles Packet</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a23" endpoint="" a:alt_id="9">
+    <parameters>
+      <label>Land Office/Unit Audits Packet</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a25" endpoint="" a:alt_id="10">
+    <parameters>
+      <label>Land Office/Unit Approves Packet</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a27" endpoint="" a:alt_id="11">
+    <parameters>
+      <label>FDO Final Audit and Approval</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a29" endpoint="" a:alt_id="12">
+    <parameters>
+      <label>FSO Enters Packet into SABHRS</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a31" endpoint="" a:alt_id="13">
+    <parameters>
+      <label>DOA Payment Disbursement</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+</description>
+</description>

@@ -1,0 +1,36 @@
+<description xmlns:dbpm="https://example.com/dbpm"><dbpm:info><dbpm:model_info><dbpm:model_id>135cb750-90ce-46a4-af8b-e65323f85fb4</dbpm:model_id><dbpm:model_version_id>ad67cc32-d95b-4902-b750-1a491d28b474</dbpm:model_version_id><dbpm:model_version_name>v3</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>b913b7be-ac28-4f86-87b6-49122d14206c</dbpm:document_id><dbpm:document_version_id>a44d613b-d131-41f5-8b01-2a6702ba9854</dbpm:document_version_id><dbpm:document_version_name>v1</dbpm:document_version_name><dbpm:document_file_name>feature_spec_payment.docx</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>t Workflow Update (Enhanced Release Process)1. Feature OverviewThis feature introduces enhancements to the payment workflow to improve transaction reliability and user feedback during checkout. The update focuses on authorization handling, retry behavior, and consistency of user notifications across different transaction outcomes.</dbpm:selection></dbpm:text_selections></dbpm:document_info></dbpm:info><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+  <call id="a1" endpoint="subprocess" svg-id="a1" a:alt_id="1" svg-label="Improve Payment Workflow" svg-type="call" svg-subtype="call"><parameters><label>Improve Payment Workflow</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>b00066ac-895e-4ca9-ba5d-1d2068c81860</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>https://lehre.bpm.in.tum.de/persistence/models/b00066ac-895e-4ca9-ba5d-1d2068c81860.xml</url></arguments></parameters></call>
+  <call id="a3" endpoint="" a:alt_id="2" svg-id="a3" svg-label="Enhance Transaction Reliability" svg-type="call" svg-subtype="call">
+    <parameters>
+      <label>Enhance Transaction Reliability</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a5" endpoint="" a:alt_id="3" svg-id="a5" svg-label="Update Authorization Handling" svg-type="call" svg-subtype="call">
+    <parameters>
+      <label>Update Authorization Handling</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a7" endpoint="" a:alt_id="4" svg-id="a7" svg-label="Modify Retry Behavior" svg-type="call" svg-subtype="call">
+    <parameters>
+      <label>Modify Retry Behavior</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a9" endpoint="" a:alt_id="5" svg-id="a9" svg-label="Ensure Consistent User Notifications" svg-type="call" svg-subtype="call">
+    <parameters>
+      <label>Ensure Consistent User Notifications</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+</description>
+</description>

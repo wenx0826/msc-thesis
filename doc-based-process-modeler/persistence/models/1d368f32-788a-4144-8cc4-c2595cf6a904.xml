@@ -1,0 +1,19 @@
+<description xmlns:dbpm="https://example.com/dbpm"><dbpm:info><dbpm:model_info><dbpm:model_id>b00066ac-895e-4ca9-ba5d-1d2068c81860</dbpm:model_id><dbpm:model_version_id>1d368f32-788a-4144-8cc4-c2595cf6a904</dbpm:model_version_id><dbpm:model_version_name>v1</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>7137bc33-e534-427b-b26f-dfb310c05757</dbpm:document_id><dbpm:document_version_id>89d68979-cac9-422f-9e2f-1fcccd313c02</dbpm:document_version_id><dbpm:document_version_name>v1</dbpm:document_version_name><dbpm:document_file_name>qa_validation_process.docx</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>1. Select Test ScenariosIdentify representative payment scenarios, including success, failure, and retry cases.2. Execute TestsRun test scenarios and record system behavior.</dbpm:selection></dbpm:text_selections></dbpm:document_info></dbpm:info><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+  <call id="a1" endpoint="" a:alt_id="1">
+    <parameters>
+      <label>Select Test Scenarios</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a3" endpoint="" a:alt_id="2">
+    <parameters>
+      <label>Execute Tests</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+</description>
+</description>

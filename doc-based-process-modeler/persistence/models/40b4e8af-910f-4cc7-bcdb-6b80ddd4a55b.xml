@@ -1,0 +1,70 @@
+<description xmlns:dbpm="https://example.com/dbpm"><dbpm:info><dbpm:model_info><dbpm:model_id>40b4e8af-910f-4cc7-bcdb-6b80ddd4a55b</dbpm:model_id><dbpm:model_version_id>7862bd57-d958-405e-abf8-1affaceeac38</dbpm:model_version_id><dbpm:model_version_name>v1</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>29c5df79-c11c-4682-abe3-62758a90d321</dbpm:document_id><dbpm:document_version_id>f874855d-df5f-4070-bc6c-facec824f97b</dbpm:document_version_id><dbpm:document_version_name>v1</dbpm:document_version_name><dbpm:document_file_name>2023_Fire_Contract_PMT_SOP.pdf</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>Process: Fire Payment Packet Review (FDO) Responsibility: Conduct a compliance review of the audit and payment approval by the land office/unit.1. Review the payment packet for compliance with the objectives set forth in this SOP.2. Resolving discrepancies:a. For minor issues, contact the land office/unit for clarification. Modify the paymentpacket as necessary.b. Major payment packet deficiencies are returned to the land office/unit forresubmission.3. Confirm the packet is in compliance by signing the FDO Fire Invoice Approval Sheet.4. Forward the original Invoice Approval Sheet, Emergency Equipment Use Invoice,Invoice Deduction Sheet (from e-ISuite), and copies of the fuel receipts to FSO.5. If the DNRC audit process results in a modified payment to the vendor, the FDO will emailan explanation detailing the corrections and provide a copy of the corrected Emergency Equipment Use Invoice to the vendor and the initiating land office/unit.6. FDO posts a copy of the redacted payment packet to the Fire Finance &amp; Payments drive forthat CY (F:Drive name).</dbpm:selection></dbpm:text_selections></dbpm:document_info></dbpm:info><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+  <call id="a1" endpoint="" a:alt_id="1">
+    <parameters>
+      <label>Review Payment Packet</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <choose mode="exclusive" a:alt_id="2">
+    <alternative condition="Minor Issues" language="text/javascript">
+      <call id="a5" endpoint="" a:alt_id="3">
+        <parameters>
+          <label>Contact Land Office for Clarification</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </alternative>
+    <alternative condition="Major Deficiencies" language="text/javascript">
+      <call id="a7" endpoint="" a:alt_id="4">
+        <parameters>
+          <label>Return Packet for Resubmission</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </alternative>
+  </choose>
+  <call id="a13" endpoint="" a:alt_id="6">
+    <parameters>
+      <label>Confirm Packet Compliance</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a15" endpoint="" a:alt_id="7">
+    <parameters>
+      <label>Forward Documents to FSO</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <choose mode="exclusive" a:alt_id="8">
+    <alternative condition="DNRC Audit Modified Payment" language="text/javascript">
+      <call id="a19" endpoint="" a:alt_id="9">
+        <parameters>
+          <label>Email Explanation and Corrected Invoice</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </alternative>
+    <alternative condition="No Modification" language="text/javascript"/>
+  </choose>
+  <call id="a21" endpoint="" a:alt_id="10">
+    <parameters>
+      <label>Post Redacted Packet</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+</description>
+</description>

@@ -1,0 +1,63 @@
+<description xmlns:dbpm="https://example.com/dbpm"><dbpm:info><dbpm:model_info><dbpm:model_id>a1c1b5d7-1c48-4cb7-ac51-701acd568b8a</dbpm:model_id><dbpm:model_version_id>4dd4d3ee-8d54-4a99-ad4f-2bc8b9bb3228</dbpm:model_version_id><dbpm:model_version_name>v2</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>c706a634-79a5-4c76-812b-c46acf1b4b5d</dbpm:document_id><dbpm:document_version_id>0c5ed144-7028-4aa2-a627-1c1901856d58</dbpm:document_version_id><dbpm:document_version_name>v1</dbpm:document_version_name><dbpm:document_file_name>UFIND_Factsheet.docx</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>Über ein zentrales Suchfeld kann nach Begriffen gesucht werden. Die Ergebnisse werden nach Lehrveranstaltungen, Prüfungen, Personen, Organisationen oder Web gegliedert angezeigt. Die Ergebnisse der Websuche sind Daten, die ausschließlich im Internet zu finden sind. Es werden keine Daten ausgegeben, die hinter passwortgeschützten Anwendungen, wie z.B. u:cris, liegen.Wichtig bei der Neuentwicklung von U:FIND war vor allem die technische Umsetzung im Hintergrund. U:FIND lässt sich mehrmals täglich in wenigen Minuten rasch und unkompliziert aktualisieren und liefert somit den AnwenderInnen immer die aktuellsten Inhalte.Weiters hat U:FIND ein responsives Design und lässt sich auch von mobilen Endgeräten wie Smartphones oder Tablets gut nutzen.</dbpm:selection></dbpm:text_selections></dbpm:document_info></dbpm:info><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+  <call id="a1" endpoint="" a:alt_id="1" svg-id="a1" svg-label="Search in U:FIND" svg-type="call" svg-subtype="call">
+    <parameters>
+      <label>Search in U:FIND</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <choose mode="exclusive" a:alt_id="2" svg-id="choose_0" svg-type="choose" svg-subtype="choose_exclusive">
+    <alternative condition="Lehrveranstaltungen" language="text/javascript" svg-id="alternative_0" svg-label="Lehrveranstaltungen" svg-type="alternative" svg-subtype="alternative">
+      <call id="a5" endpoint="" a:alt_id="3" svg-id="a5" svg-label="Display Courses" svg-type="call" svg-subtype="call">
+        <parameters>
+          <label>Display Courses</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </alternative>
+    <alternative condition="Prüfungen" language="text/javascript" svg-id="alternative_1" svg-label="Prüfungen" svg-type="alternative" svg-subtype="alternative">
+      <call id="a7" endpoint="" a:alt_id="4" svg-id="a7" svg-label="Display Exams" svg-type="call" svg-subtype="call">
+        <parameters>
+          <label>Display Exams</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </alternative>
+    <alternative condition="Personen" language="text/javascript" svg-id="alternative_2" svg-label="Personen" svg-type="alternative" svg-subtype="alternative">
+      <call id="a9" endpoint="" a:alt_id="5" svg-id="a9" svg-label="Display People" svg-type="call" svg-subtype="call">
+        <parameters>
+          <label>Display People</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </alternative>
+    <alternative condition="Organisationen" language="text/javascript" svg-id="alternative_3" svg-label="Organisationen" svg-type="alternative" svg-subtype="alternative">
+      <call id="a11" endpoint="" a:alt_id="6" svg-id="a11" svg-label="Display Organizations" svg-type="call" svg-subtype="call">
+        <parameters>
+          <label>Display Organizations</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </alternative>
+    <alternative condition="Web" language="text/javascript" svg-id="alternative_4" svg-label="Web" svg-type="alternative" svg-subtype="alternative">
+      <call id="a13" endpoint="" a:alt_id="7" svg-id="a13" svg-label="Display Web Results" svg-type="call" svg-subtype="call">
+        <parameters>
+          <label>Display Web Results</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </alternative>
+  </choose>
+</description>
+</description>

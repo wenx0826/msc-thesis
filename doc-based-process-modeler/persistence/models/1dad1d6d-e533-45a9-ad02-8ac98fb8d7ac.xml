@@ -1,0 +1,43 @@
+<description xmlns:dbpm="https://example.com/dbpm"><dbpm:info><dbpm:model_info><dbpm:model_id>1dad1d6d-e533-45a9-ad02-8ac98fb8d7ac</dbpm:model_id><dbpm:model_version_id>b7854002-fbb8-4820-9a83-5888749950f1</dbpm:model_version_id><dbpm:model_version_name>v3</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>9b87fd8d-cfe3-45ce-9c81-ba40f7e602aa</dbpm:document_id><dbpm:document_version_id>9cc39529-3c5c-4d14-94c7-2b213cff70ed</dbpm:document_version_id><dbpm:document_version_name>v1</dbpm:document_version_name><dbpm:document_file_name>Order_Processing_Flow.docx</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>OverviewCustomer orders are received either through the customer portal or via EDI integration and are registered in the system before further processing.The workflow ensures that orders are validated, financially approved, and fulfilled in a consistent manner across the organization.</dbpm:selection></dbpm:text_selections></dbpm:document_info><dbpm:prompts><dbpm:prompt>merge the first two steps into one</dbpm:prompt><dbpm:prompt>add a step called X at the end</dbpm:prompt></dbpm:prompts></dbpm:info><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+  <call id="a1" endpoint="" a:alt_id="a1">
+    <parameters>
+      <label>Register Order</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a3" endpoint="" a:alt_id="a3">
+    <parameters>
+      <label>Validate Order</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a5" endpoint="" a:alt_id="a5">
+    <parameters>
+      <label>Financially Approve Order</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a7" endpoint="" a:alt_id="a7">
+    <parameters>
+      <label>Fulfill Order</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a9" endpoint="" a:alt_id="a8">
+    <parameters>
+      <label>X</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+</description>
+</description>

@@ -1,0 +1,633 @@
+---
+timestamp: '2026-03-24T09:15:27.882Z'
+event: project_created
+data:
+  id: 5b595f81-5408-49b7-9116-6b7ec45983c5
+  name: Johannes
+---
+timestamp: '2026-03-24T09:34:57.447Z'
+event: document_uploaded
+data:
+  id: d3cc1c4e-afd4-4238-b4e1-88347db98262
+  projectId: 5b595f81-5408-49b7-9116-6b7ec45983c5
+  name: safer-tattooing-overview-of-current-knowledge-and-challenges-of-toxicological-assessment-1st-edition-2017.PDF
+  latestVersionId: null
+  latestVersionNumber: 0
+  createdAt: '2026-03-24T09:34:54.862Z'
+  deletedAt: null
+---
+timestamp: '2026-03-24T09:35:52.906Z'
+event: model_generated
+data:
+  id: cdb99535-17ca-4f10-98b4-40f1af8446da
+  name: Model_1
+  data: |-
+    <description xmlns:dbpm="https://example.com/dbpm"><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+      <call id="a1" endpoint="" a:alt_id="1">
+        <parameters>
+          <label>Tattoo Application</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a3" endpoint="" a:alt_id="2">
+        <parameters>
+          <label>Initial Tissue Response - Peeling, Oedema, Erythema</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a5" endpoint="" a:alt_id="3">
+        <parameters>
+          <label>Healing of Punctured Skin</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a7" endpoint="" a:alt_id="4">
+        <parameters>
+          <label>Pigment Present in Deeper Skin Layers</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a9" endpoint="" a:alt_id="5">
+        <parameters>
+          <label>Epidermis Regeneration</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a11" endpoint="" a:alt_id="6">
+        <parameters>
+          <label>Inflammatory Cells Disappear</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a13" endpoint="" a:alt_id="7">
+        <parameters>
+          <label>Neutrophils and Macrophages Migrate to Lymph Nodes</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a15" endpoint="" a:alt_id="8">
+        <parameters>
+          <label>Trans-epidermal Elimination of Particles</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a17" endpoint="" a:alt_id="9">
+        <parameters>
+          <label>Intact Basement Membrane Prevents Further Loss</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a19" endpoint="" a:alt_id="10">
+        <parameters>
+          <label>Pigment Particles in Dermis</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a21" endpoint="" a:alt_id="11">
+        <parameters>
+          <label>Pigment Migration to Secondary Position</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </description>
+    </description>
+---
+timestamp: '2026-03-24T09:36:43.077Z'
+event: model_version_created
+data:
+  modelId: cdb99535-17ca-4f10-98b4-40f1af8446da
+  sourceVersionId: ed6d9ccf-a35e-4e00-8fe3-69b8a49e5d17
+  newVersionId: 7ae99bf4-c2c6-4072-8618-74ffc3af879e
+  mode: payload
+  type: refinement
+---
+timestamp: '2026-03-24T09:37:36.887Z'
+event: document_uploaded
+data:
+  id: 7ff3cb27-4fb9-4fef-af40-2e6a3c057485
+  projectId: 5b595f81-5408-49b7-9116-6b7ec45983c5
+  name: guide-to-the-preparation-use-and-quality-assurance-of-blood-components-21st-edition.PDF
+  latestVersionId: null
+  latestVersionNumber: 0
+  createdAt: '2026-03-24T09:37:34.977Z'
+  deletedAt: null
+---
+timestamp: '2026-03-24T09:38:08.684Z'
+event: model_generated
+data:
+  id: 5d68a2cb-f877-41cb-a44d-cd6b68df8520
+  name: Model_2
+  data: |-
+    <description xmlns:dbpm="https://example.com/dbpm"><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+      <call id="a1" endpoint="" a:alt_id="1">
+        <parameters>
+          <label>Define Quality System</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a3" endpoint="" a:alt_id="2">
+        <parameters>
+          <label>Review Processes</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a5" endpoint="" a:alt_id="3">
+        <parameters>
+          <label>Validate Critical Steps</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a7" endpoint="" a:alt_id="4">
+        <parameters>
+          <label>Keep Records</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a9" endpoint="" a:alt_id="5">
+        <parameters>
+          <label>Ensure Adequate Premises</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a11" endpoint="" a:alt_id="6">
+        <parameters>
+          <label>Link Sample Tubes and Blood Bag</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a13" endpoint="" a:alt_id="7">
+        <parameters>
+          <label>Donor Identification and Assessment</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a15" endpoint="" a:alt_id="8">
+        <parameters>
+          <label>Re-identify Donor</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a17" endpoint="" a:alt_id="9">
+        <parameters>
+          <label>Prepare Venepuncture Site</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a19" endpoint="" a:alt_id="10">
+        <parameters>
+          <label>Use Sterile Collection Systems</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a21" endpoint="" a:alt_id="11">
+        <parameters>
+          <label>Check Collection System</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a23" endpoint="" a:alt_id="12">
+        <parameters>
+          <label>Manage Adverse Reactions</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </description>
+    </description>
+---
+timestamp: '2026-03-24T09:38:40.723Z'
+event: model_version_created
+data:
+  modelId: 5d68a2cb-f877-41cb-a44d-cd6b68df8520
+  sourceVersionId: f09f92ca-7433-45d5-bb2d-420636a72ec2
+  newVersionId: dc599119-8a25-4768-bc42-15a5bdf107bf
+  mode: payload
+  type: refinement
+---
+timestamp: '2026-03-24T09:39:18.270Z'
+event: model_version_created
+data:
+  modelId: 5d68a2cb-f877-41cb-a44d-cd6b68df8520
+  sourceVersionId: dc599119-8a25-4768-bc42-15a5bdf107bf
+  newVersionId: 1f0da8b4-3016-40e0-999a-ee373897739d
+  mode: payload
+  type: refinement
+---
+timestamp: '2026-03-24T09:40:12.153Z'
+event: model_generated
+data:
+  id: 0a46aceb-b9ab-4602-b018-b1cdb52248f5
+  name: Model_3
+  data: |-
+    <description xmlns:dbpm="https://example.com/dbpm"><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+      <call id="a1" endpoint="" a:alt_id="1">
+        <parameters>
+          <label>Check skin at venepuncture site</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a3" endpoint="" a:alt_id="2">
+        <parameters>
+          <label>Prepare venepuncture site</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a5" endpoint="" a:alt_id="3">
+        <parameters>
+          <label>Monitor disinfection procedure</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a7" endpoint="" a:alt_id="4">
+        <parameters>
+          <label>Mix blood with anticoagulant</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a9" endpoint="" a:alt_id="5">
+        <parameters>
+          <label>Check blood volume</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a11" endpoint="" a:alt_id="6">
+        <parameters>
+          <label>Venepuncture with new needle if needed</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a13" endpoint="" a:alt_id="7">
+        <parameters>
+          <label>Take laboratory samples</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a15" endpoint="" a:alt_id="8">
+        <parameters>
+          <label>Mix collection bag gently</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a17" endpoint="" a:alt_id="9">
+        <parameters>
+          <label>Specify and control max collection time</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <choose mode="exclusive" a:alt_id="10">
+        <alternative condition="Bleeding &gt; 15min" language="text/javascript">
+          <choose mode="exclusive" a:alt_id="11">
+            <alternative condition="Whole blood" language="text/javascript">
+              <call id="a25" endpoint="" a:alt_id="13">
+                <parameters>
+                  <label>Do not use for platelets</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="Plasma" language="text/javascript">
+              <call id="a27" endpoint="" a:alt_id="14">
+                <parameters>
+                  <label>Do not use for direct transfusion</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+          </choose>
+        </alternative>
+        <alternative condition="Bleeding &lt;= 15min" language="text/javascript">
+          <call id="a23" endpoint="" a:alt_id="12">
+            <parameters>
+              <label>Use manual or automated mixing</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+          <call id="a29" endpoint="" a:alt_id="15">
+            <parameters>
+              <label>Check donation number</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+      </choose>
+      <call id="a37" endpoint="" a:alt_id="17">
+        <parameters>
+          <label>Record donation activity</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a39" endpoint="" a:alt_id="18">
+        <parameters>
+          <label>Handle blood bags</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a41" endpoint="" a:alt_id="19">
+        <parameters>
+          <label>Ensure donation link to system</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a43" endpoint="" a:alt_id="20">
+        <parameters>
+          <label>Check blood container</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a45" endpoint="" a:alt_id="21">
+        <parameters>
+          <label>Check labelling and barcode</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a47" endpoint="" a:alt_id="22">
+        <parameters>
+          <label>Store and transport blood bags</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a49" endpoint="" a:alt_id="23">
+        <parameters>
+          <label>Discharge blood into bag</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a51" endpoint="" a:alt_id="24">
+        <parameters>
+          <label>Ensure correct connection of apheresis</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a53" endpoint="" a:alt_id="25">
+        <parameters>
+          <label>Observe donor during apheresis</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a55" endpoint="" a:alt_id="26">
+        <parameters>
+          <label>Evaluate risk of pre-medication</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a57" endpoint="" a:alt_id="27">
+        <parameters>
+          <label>Store archive samples</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </description>
+    </description>
+---
+timestamp: '2026-03-24T09:40:46.035Z'
+event: model_version_created
+data:
+  modelId: 0a46aceb-b9ab-4602-b018-b1cdb52248f5
+  sourceVersionId: 31c68e9f-4603-4596-a816-f75821fc8336
+  newVersionId: 692d45be-3079-4a3f-84e8-719d33b662a0
+  mode: payload
+  type: refinement
+---
+timestamp: '2026-03-24T09:52:30.223Z'
+event: document_uploaded
+data:
+  id: ccac78b1-030f-40c5-b445-8f659f9232d8
+  projectId: 5b595f81-5408-49b7-9116-6b7ec45983c5
+  name: Bachelor_thesis_collaboration_process_generator.docx
+  latestVersionId: null
+  latestVersionNumber: 0
+  createdAt: '2026-03-24T09:52:27.594Z'
+  deletedAt: null
+---
+timestamp: '2026-03-24T09:52:58.708Z'
+event: model_generated
+data:
+  id: 1f097c9f-d7e4-4c34-95ea-b2d4113bac07
+  name: Model_4
+  data: |-
+    <description xmlns:dbpm="https://example.com/dbpm"><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+      <call id="a1" endpoint="" a:alt_id="1">
+        <parameters>
+          <label>Process Mining</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <choose mode="exclusive" a:alt_id="2">
+        <alternative condition="Process Discovery" language="text/javascript">
+          <call id="a5" endpoint="" a:alt_id="3">
+            <parameters>
+              <label>Construct Process Model</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+        <alternative condition="Conformance Checking" language="text/javascript">
+          <call id="a7" endpoint="" a:alt_id="4">
+            <parameters>
+              <label>Detect Deviations</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+        <alternative condition="Process Enhancement" language="text/javascript">
+          <call id="a9" endpoint="" a:alt_id="5">
+            <parameters>
+              <label>Improve Business Process</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+      </choose>
+      <call id="a17" endpoint="" a:alt_id="7">
+        <parameters>
+          <label>Introduce Rigor and Quality Guarantees</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a19" endpoint="" a:alt_id="8">
+        <parameters>
+          <label>Validate Maturity Stages</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a21" endpoint="" a:alt_id="9">
+        <parameters>
+          <label>Simulate Process Executions</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a23" endpoint="" a:alt_id="10">
+        <parameters>
+          <label>Develop Process Model Generator</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </description>
+    </description>
+---
+timestamp: '2026-03-24T09:58:06.057Z'
+event: model_generated
+data:
+  id: 52bf0243-00cc-4824-8335-06262e3ef35f
+  name: Model_5
+  data: |-
+    <description xmlns:dbpm="https://example.com/dbpm"><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+      <call id="a1" endpoint="" a:alt_id="1">
+        <parameters>
+          <label>Define Thesis Purpose</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a3" endpoint="" a:alt_id="2">
+        <parameters>
+          <label>Identify Prerequisites</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a5" endpoint="" a:alt_id="3">
+        <parameters>
+          <label>Identify Knowledge Requirements</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a7" endpoint="" a:alt_id="4">
+        <parameters>
+          <label>Develop Process Model Generator in Python</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a9" endpoint="" a:alt_id="5">
+        <parameters>
+          <label>Simulate in CPN IDE</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a11" endpoint="" a:alt_id="6">
+        <parameters>
+          <label>Parametrize Process Model Generation</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </description>
+    </description>

@@ -1,0 +1,269 @@
+---
+timestamp: '2026-03-24T13:32:47.293Z'
+event: project_created
+data:
+  id: 596e15c9-723f-4806-982d-320e1b478e73
+  name: Evaluation_Expert4_Task1
+---
+timestamp: '2026-03-24T13:33:47.910Z'
+event: document_uploaded
+data:
+  id: f724e881-dddc-4e4c-9992-6eb78025fc24
+  projectId: 596e15c9-723f-4806-982d-320e1b478e73
+  name: Credit_Check.docx
+  latestVersionId: null
+  latestVersionNumber: 0
+  createdAt: '2026-03-24T13:33:47.013Z'
+  deletedAt: null
+---
+timestamp: '2026-03-24T13:33:49.251Z'
+event: document_uploaded
+data:
+  id: a5a58666-4c0e-4001-bd18-8321f8429037
+  projectId: 596e15c9-723f-4806-982d-320e1b478e73
+  name: Order_Processing_Flow.docx
+  latestVersionId: null
+  latestVersionNumber: 0
+  createdAt: '2026-03-24T13:33:47.911Z'
+  deletedAt: null
+---
+timestamp: '2026-03-24T13:57:41.746Z'
+event: model_generated
+data:
+  id: dfc91293-a657-435b-9205-bef6d8129a5a
+  name: Model_1
+  data: |-
+    <description xmlns:dbpm="https://example.com/dbpm"><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+      <call id="a1" endpoint="" a:alt_id="1">
+        <parameters>
+          <label>Receive Order</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a3" endpoint="" a:alt_id="2">
+        <parameters>
+          <label>Check Inventory</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <choose mode="exclusive" a:alt_id="3">
+        <alternative condition="In Stock" language="text/javascript"/>
+        <alternative condition="Out of Stock" language="text/javascript">
+          <call id="a9" endpoint="" a:alt_id="5">
+            <parameters>
+              <label>Order Items</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+          <call id="a13" endpoint="" a:alt_id="7">
+            <parameters>
+              <label>Receive Items</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+      </choose>
+      <call id="a7" endpoint="" a:alt_id="4">
+        <parameters>
+          <label>Pack Order</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a11" endpoint="" a:alt_id="6">
+        <parameters>
+          <label>Ship Order</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </description>
+    </description>
+---
+timestamp: '2026-03-24T13:58:41.524Z'
+event: model_generated
+data:
+  id: 1986c631-2733-4378-8e72-dd94ec626753
+  name: Model_2
+  data: |-
+    <description xmlns:dbpm="https://example.com/dbpm"><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+      <call id="a1" endpoint="" a:alt_id="1">
+        <parameters>
+          <label>Process Description</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </description>
+    </description>
+---
+timestamp: '2026-03-24T14:00:08.112Z'
+event: document_uploaded
+data:
+  id: 333218cf-c157-415a-b2f6-682e671f546f
+  projectId: 596e15c9-723f-4806-982d-320e1b478e73
+  name: CELEX%3A32016R0679%3ADE%3ATXT.pdf
+  latestVersionId: null
+  latestVersionNumber: 0
+  createdAt: '2026-03-24T14:00:05.612Z'
+  deletedAt: null
+---
+timestamp: '2026-03-24T14:02:22.464Z'
+event: model_generated
+data:
+  id: 7abf018c-9abd-4c5b-a19a-9957afdd8842
+  name: Model_3
+  data: |-
+    <description xmlns:dbpm="https://example.com/dbpm"><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+      <call id="a1" endpoint="" a:alt_id="1">
+        <parameters>
+          <label>Begin processing personal data</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a3" endpoint="" a:alt_id="2">
+        <parameters>
+          <label>Determine if data processing is for personal/family activities</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <choose mode="exclusive" a:alt_id="3">
+        <alternative condition="Yes" language="text/javascript">
+          <call id="a7" endpoint="" a:alt_id="4">
+            <parameters>
+              <label>Exempt from GDPR</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+        <alternative condition="No" language="text/javascript">
+          <call id="a9" endpoint="" a:alt_id="5">
+            <parameters>
+              <label>Determine if data processing is for crime prevention/investigation</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+          <choose mode="exclusive" a:alt_id="6">
+            <alternative condition="Yes" language="text/javascript">
+              <call id="a15" endpoint="" a:alt_id="7">
+                <parameters>
+                  <label>Subject to specific EU act</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="No" language="text/javascript">
+              <call id="a17" endpoint="" a:alt_id="8">
+                <parameters>
+                  <label>Determine if data processing is by courts in judicial capacity</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+              <choose mode="exclusive" a:alt_id="9">
+                <alternative condition="Yes" language="text/javascript">
+                  <call id="a23" endpoint="" a:alt_id="10">
+                    <parameters>
+                      <label>Supervised by special bodies</label>
+                      <method/>
+                      <type>:task</type>
+                      <arguments/>
+                    </parameters>
+                  </call>
+                </alternative>
+                <alternative condition="">
+                  <call id="a25" endpoint="" a:alt_id="11">
+                    <parameters>
+                      <label>Determine if data processing is by establishment in the EU</label>
+                      <method/>
+                      <type>:task</type>
+                      <arguments/>
+                    </parameters>
+                  </call>
+                  <choose mode="exclusive" a:alt_id="12">
+                    <alternative condition="Yes" language="text/javascript">
+                      <call id="a31" endpoint="" a:alt_id="13">
+                        <parameters>
+                          <label>Subject to GDPR</label>
+                          <method/>
+                          <type>:task</type>
+                          <arguments/>
+                        </parameters>
+                      </call>
+                    </alternative>
+                    <alternative condition="No" language="text/javascript">
+                      <call id="a33" endpoint="" a:alt_id="14">
+                        <parameters>
+                          <label>Determine if offering goods/services to individuals in the EU</label>
+                          <method/>
+                          <type>:task</type>
+                          <arguments/>
+                        </parameters>
+                      </call>
+                      <choose mode="exclusive" a:alt_id="16">
+                        <alternative condition="Yes" language="text/javascript">
+                          <call id="a31" endpoint="" a:alt_id="13">
+                            <parameters>
+                              <label>Subject to GDPR</label>
+                              <method/>
+                              <type>:task</type>
+                              <arguments/>
+                            </parameters>
+                          </call>
+                        </alternative>
+                        <alternative condition="No" language="text/javascript">
+                          <call id="a43" endpoint="" a:alt_id="17">
+                            <parameters>
+                              <label>Determine if monitoring behavior of individuals in the EU</label>
+                              <method/>
+                              <type>:task</type>
+                              <arguments/>
+                            </parameters>
+                          </call>
+                          <choose mode="exclusive" a:alt_id="19">
+                            <alternative condition="Yes" language="text/javascript">
+                              <call id="a31" endpoint="" a:alt_id="13">
+                                <parameters>
+                                  <label>Subject to GDPR</label>
+                                  <method/>
+                                  <type>:task</type>
+                                  <arguments/>
+                                </parameters>
+                              </call>
+                            </alternative>
+                            <alternative condition="No" language="text/javascript"/>
+                          </choose>
+                        </alternative>
+                      </choose>
+                    </alternative>
+                  </choose>
+                </alternative>
+              </choose>
+            </alternative>
+          </choose>
+        </alternative>
+      </choose>
+    </description>
+    </description>

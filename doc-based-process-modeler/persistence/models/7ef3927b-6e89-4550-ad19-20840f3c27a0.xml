@@ -1,0 +1,75 @@
+<description xmlns:dbpm="https://example.com/dbpm"><dbpm:info><dbpm:model_info><dbpm:model_id>3bec4a98-8d77-4635-b321-db23ba7663dc</dbpm:model_id><dbpm:model_version_id>7ef3927b-6e89-4550-ad19-20840f3c27a0</dbpm:model_version_id><dbpm:model_version_name>v1</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>29c5df79-c11c-4682-abe3-62758a90d321</dbpm:document_id><dbpm:document_version_id>f874855d-df5f-4070-bc6c-facec824f97b</dbpm:document_version_id><dbpm:document_version_name>v1</dbpm:document_version_name><dbpm:document_file_name>2023_Fire_Contract_PMT_SOP.pdf</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>Procedures Process: Fire Payment Audit (Land Office/Unit) Responsibility: Verify the accuracy of the incident invoice regarding mathematical computation, incident information, duplicate invoicing, document audit completion and payment approval.1. Initiate the FDO Fire Invoice Approval Sheet.2. Assemble the documents in order as previously stated in Section II.3. Indicate the TIN is listed on the OF-286 Emergency Equipment Use Invoice for allprivate vendors. TIN is not necessary on local government fire packets.4. Accomplish the audit objectives using the Fire Payment Audit Guide.FDO SOP - Fire Finance Contract Operations (revised June ‘23) Page 4 of 55. Correct invoices as necessary by redline only so that original documentation is still visible.6. Note errors, omissions, and corrections on the Approval Sheet for subsequent review.7. Ensure the invoice is accurate, complete, and not duplicative.8. Approve the invoice by signing the complete Fire Invoice Approval Sheet.9. Forward the original payment packet to the FDO and maintain a copy or scan at theland office/unit.</dbpm:selection></dbpm:text_selections></dbpm:document_info></dbpm:info><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+  <call id="a1" endpoint="" a:alt_id="1">
+    <parameters>
+      <label>Initiate FDO Fire Invoice Approval Sheet</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a3" endpoint="" a:alt_id="2">
+    <parameters>
+      <label>Assemble Documents</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a5" endpoint="" a:alt_id="3">
+    <parameters>
+      <label>Indicate TIN on OF-286 Invoice</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a7" endpoint="" a:alt_id="4">
+    <parameters>
+      <label>Accomplish Audit Objectives</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a9" endpoint="" a:alt_id="5">
+    <parameters>
+      <label>Correct Invoices</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a11" endpoint="" a:alt_id="6">
+    <parameters>
+      <label>Note Errors on Approval Sheet</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a13" endpoint="" a:alt_id="7">
+    <parameters>
+      <label>Ensure Invoice Accuracy</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a15" endpoint="" a:alt_id="8">
+    <parameters>
+      <label>Approve Invoice</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a17" endpoint="" a:alt_id="9">
+    <parameters>
+      <label>Forward Payment Packet</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+</description>
+</description>

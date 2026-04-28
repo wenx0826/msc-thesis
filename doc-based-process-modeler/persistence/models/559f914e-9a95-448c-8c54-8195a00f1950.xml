@@ -1,0 +1,27 @@
+<description xmlns:dbpm="https://example.com/dbpm"><dbpm:info><dbpm:model_info><dbpm:model_id>a1c1b5d7-1c48-4cb7-ac51-701acd568b8a</dbpm:model_id><dbpm:model_version_id>559f914e-9a95-448c-8c54-8195a00f1950</dbpm:model_version_id><dbpm:model_version_name>v1</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>c706a634-79a5-4c76-812b-c46acf1b4b5d</dbpm:document_id><dbpm:document_version_id>0c5ed144-7028-4aa2-a627-1c1901856d58</dbpm:document_version_id><dbpm:document_version_name>v1</dbpm:document_version_name><dbpm:document_file_name>UFIND_Factsheet.docx</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>U:FIND ist das neue Vorlesungs- und Personenverzeichnis der Universität Wien, welches das bestehende Vorlesungsverzeichnis und die separate Personensuche ablöst. Bei der Entwicklung wurde der Fokus auf die erhöhte Benutzerfreundlichkeit für alle Zielgruppen gelegt und das Design an die Anforderungen des Corporate Designs der Universität Wien angepasst.</dbpm:selection></dbpm:text_selections></dbpm:document_info></dbpm:info><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+  <call id="a1" endpoint="" a:alt_id="1">
+    <parameters>
+      <label>Develop U:FIND</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a3" endpoint="" a:alt_id="2">
+    <parameters>
+      <label>Focus on User-Friendliness</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a5" endpoint="" a:alt_id="3">
+    <parameters>
+      <label>Adapt to Corporate Design</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+</description>
+</description>

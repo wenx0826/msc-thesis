@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Doc-Based Process Modeller</title>
+  <script type="text/javascript" src="https://cpee.org/js_libs/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cpee.org/js_libs/jquery.browser.js"></script>
+  <script type="text/javascript" charset="utf8"
+    src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css" />
+  <script type="module" src="pages/home/init.js"></script>
+  <script type="text/javascript" src="https://cpee.org/js_libs/uidash.js" defer></script>
+  <link rel="stylesheet" href="https://cpee.org/js_libs/uidash.css" type="text/css" />
+  <script type="text/javascript" src="https://cpee.org/js_libs/custommenu.js" defer></script>
+  <link rel="stylesheet" href="https://cpee.org/js_libs/custommenu.css" type="text/css" />
+
+
+  <link rel="stylesheet" href="assets/global.css" type="text/css" />
+  <link rel="stylesheet" href="pages/home/home.css" type="text/css" />
+
+  <!-- <style type="text/css">
+        @font-face {
+            font-family: TencentSans;
+            src: url("chrome-extension://lkjkfecdnfjopaeaibboihfkmhdjmanm/static/fonts/TencentSans.woff2");
+        }
+    </style> -->
+</head>
+
+<body is="x-ui-">
+  <div class="hero">
+    <h1>Document-Based Process Modeller</h1>
+    <button id="createProjectButton" class="btn-primary">
+      <span class="btn-primary__icon" aria-hidden="true">+</span>
+      <span>Create New Project</span>
+    </button>
+    <div>
+      <a href="#" target="_blank" rel="noreferrer">Watch Quick Start Video</a>
+    </div>
+  </div>
+  <ui-rest class="main">
+    <div class="page-rail">
+      <ui-tabbar>
+        <ui-before></ui-before>
+        <ui-tab data-tab="projects" class>Projects</ui-tab>
+        <ui-tab data-tab="dashboard" class="inactive">Dashboard</ui-tab>
+      </ui-tabbar>
+      <ui-content>
+        <ui-area data-belongs-to-tab="projects">
+          <table id="projectsTable">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th class="col-num">Documents</th>
+                <th class="col-num">Models</th>
+                <th class="col-date">Created</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </ui-area>
+        <ui-area data-belongs-to-tab="dashboard" class="inactive">
+          <section class="metrics">
+            <div class="metric-card">
+              <div class="metric-title">Projects</div>
+              <div class="metric-value" id="projectsCount">—</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-title">Documents</div>
+              <div class="metric-value" id="documentsCount">—</div>
+              <div class="metric-subtitle">avg words: <span id="documentsAvgWordsCount"></span></div>
+              <div class="metric-subtitle">avg versions: <span id="documentsAvgVersionsCount"></span></div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-title">Models</div>
+              <div class="metric-value" id="modelsCount">—</div>
+              <div class="metric-subtitle">avg selected words: <span id="modelsAvgSelectedWordsCount"></span></div>
+              <div class="metric-subtitle">avg versions: <span id="modelsAvgVersionsCount"></span></div>
+            </div>
+          </section>
+          <ui-divider class="light"></ui-divider>
+          <div class="dashboard-stats-layout">
+            <div class="stats-layout-column stats-layout-column--left">
+              <div class="stats-panel">
+                <h3>Model Interaction Statistics</h3>
+                <div class="stats-grid">
+                  <div class="metric-row">
+                    <div class="metric-label">avg regenerations per model:</div>
+                    <div class="metric-value">5</div>
+                  </div>
+                  <div class="metric-row">
+                    <div class="metric-label">avg prompt refinements per model:</div>
+                    <div class="metric-value">8</div>
+                  </div>
+                  <div class="metric-row">
+                    <div class="metric-label">avg manual updates selection changed per model:</div>
+                    <div class="metric-value">2</div>
+                  </div>
+                  <div class="metric-row">
+                    <div class="metric-label">avg manual updates graph changed per model:</div>
+                    <div class="metric-value">2</div>
+                  </div>
+                  <div class="metric-row">
+                    <div class="metric-label">avg manual new versions per model:</div>
+                    <div class="metric-value">2</div>
+                  </div>
+                  <div class="metric-row">
+                    <div class="metric-label">avg manual new versions reverted per model:</div>
+                    <div class="metric-value">2</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="stats-layout-column stats-layout-column--right">
+              <div class="stats-panel">
+                <h3>AI Generation Statistics</h3>
+                <div class="stats-grid">
+                  <div class="metric-row">
+                    <div class="metric-label">new model by selection only / with additional prompt:</div>
+                    <div class="metric-value">5</div>
+                  </div>
+                  <div class="metric-row">
+                    <div class="metric-label">new model by selection only acceptance rate:</div>
+                    <div class="metric-value">5</div>
+                  </div>
+                  <div class="metric-row">
+                    <div class="metric-label">new model by selection and prompt acceptance rate</div>
+                    <div class="metric-value">8</div>
+                  </div>
+                  <div class="metric-row">
+                    <div class="metric-label">regeneration by selection only / with additional prompt:</div>
+                    <div class="metric-value">8</div>
+                  </div>
+                  <div class="metric-row">
+                    <div class="metric-label">refinement by prompt acceptance rate:</div>
+                    <div class="metric-value">8</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ui-area>
+      </ui-content>
+    </div>
+  </ui-rest>
+  <div class="footer">
+    <div>
+      If you encounter any issues or the system behaves unexpectedly, please
+      contact:&nbsp;<a href="mailto:xin.wen@tum.de">xin.wen@tum.de</a>
+    </div>
+  </div>
+  <dialog id="projectCreationDialog">
+    <div class="dialog-title">New Project</div>
+    <form class="dialog-form">
+      <label for="name">Name</label>
+      <input id="name" type="text" autocomplete="off" />
+      <div class="dialog-error" id="error"></div>
+      <ui-bar class="dialog-actions">
+        <div class="right item-group">
+          <button id="cancel" type="button" class="btn-text">Cancel</button>
+          <button id="create" type="submit" class="btn-primary">Create</button>
+        </div>
+      </ui-bar>
+    </form>
+  </dialog>
+</body>
+<script>
+</script>
+
+</html>

@@ -1,0 +1,8 @@
+<element xmlns="http://relaxng.org/ns/structure/1.0" xmlns:rngui="http://rngui.org" name="arguments" rngui:header="Subprocess Arguments">
+  <element name="behavior" rngui:label="behavior">
+    <data type="string"/>
+  </element>
+  <element name="url" rngui:label="url">
+    <data type="string" />
+  </element>
+</element>

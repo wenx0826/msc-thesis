@@ -1,0 +1,466 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Doc-Based Process Modeller</title>
+  <!-- CPEE libs and styles -->
+  <script type="text/javascript" src="https://cpee.org/js_libs/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cpee.org/js_libs/jquery.browser.js"></script>
+  <script type="text/javascript" src="https://cpee.org/js_libs/jquery.caret.min.js"></script>
+  <script type="text/javascript" src="https://cpee.org/js_libs/jquery.cookie.js"></script>
+  <script type="text/javascript" src="https://cpee.org/js_libs/jquery.svg.min.js"></script>
+  <script type="text/javascript" src="https://cpee.org/js_libs/jquery.svgdom.min.js"></script>
+  <script type="text/javascript" src="https://cpee.org/js_libs/custommenu.js"></script>
+  <link rel="stylesheet" href="https://cpee.org/js_libs/custommenu.css" type="text/css" />
+  <script type="text/javascript" src="https://cpee.org/js_libs/marked.min.js"></script>
+  <script type="text/javascript" src="https://cpee.org/js_libs/parsequery.js"></script>
+  <script type="text/javascript" src="https://cpee.org/js_libs/printf.js"></script>
+  <script type="text/javascript" src="https://cpee.org/js_libs/relaxngui.js"></script>
+  <script type="text/javascript" src="https://cpee.org/js_libs/strftime.min.js"></script>
+  <script type="text/javascript" src="https://cpee.org/js_libs/uidash.js"></script>
+  <link rel="stylesheet" href="https://cpee.org/js_libs/uidash.css" type="text/css" />
+  <link rel="stylesheet" href="https://cpee.org/js_libs/uidash-icons.css" type="text/css" />
+  <script type="text/javascript" src="https://cpee.org/js_libs/underscore.min.js"></script>
+  <script type="text/javascript" src="https://cpee.org/js_libs/util.js"></script>
+  <script type="text/javascript" src="https://cpee.org/js_libs/vkbeautify.js"></script>
+  <link rel="stylesheet" href="https://cpee.org/js_libs/relaxngui.css" type="text/css" />
+
+  <!-- modelling ui -->
+  <script type="text/javascript" src="modules/model/wfadaptor.js"></script>
+  <!-- <script type="text/javascript" src="https://cpee.org/flow/js/wfadaptor.js"></script> -->
+  <link rel="stylesheet" href="modules/model/wfadaptor.css" type="text/css" />
+  <script type="text/javascript" src="https://cpee.org/flow/themes/base.js"></script>
+  <script type="text/javascript" src="modules/model/themes/base_customized.js" type="module"></script>
+
+  <!-- <script type="text/javascript" src="js_cpee/extended_columns.js"></script> -->
+  <!-- <link rel="stylesheet" href="css/extended_columns-label.css" type="text/css" />
+  <link rel="stylesheet" href="css/extended_columns-svg.css" type="text/css" /> -->
+
+  <script type="text/javascript" src="js_cpee/instance.js"></script>
+  <script type="text/javascript" src="js_cpee/details.js"></script>
+  <!-- <script type="text/javascript" src="js/parameters.js"></script>
+  <script type="text/javascript" src="js/modifiers.js"></script> -->
+
+  <!-- DBPM lib project graph-->
+  <script src="https://unpkg.com/cytoscape@3.26.0/dist/cytoscape.min.js" defer></script>
+  <!-- dbpm scripts -->
+  <script type="module" src="pages/workspace/init.js"></script>
+
+  <!-- DBPM libs overridden-->
+  <script src="js_libs_overridden/uidash_overridden.js" defer></script>
+  <!-- DBPM libs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
+  <script src="https://unpkg.com/mammoth/mammoth.browser.min.js" defer></script>
+  <script src="https://unpkg.com/@popperjs/core@2"></script>
+  <!-- DBPM ui-->
+  <link rel="stylesheet" href="assets/global.css" type="text/css" />
+  <link rel="stylesheet" href="modules/document/document-viewer.css" type="text/css" />
+  <link rel="stylesheet" href="pages/workspace/css/index.css" type="text/css" />
+</head>
+
+<body is="x-ui-">
+  <ui-bar class="header">
+    <ul class="breadcrumb">
+      <li><a href="index.html" title="Home"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9,22 9,12 15,12 15,22"></polyline>
+          </svg></a></li>
+      <li>
+        <div id="projectNameEditor" class="inline-editor">
+          <span id="projectName" class="inline-editor__view" data-editable="1"></span>
+        </div>
+      </li>
+    </ul>
+    <div class="right item-group">
+      <span>LLM: gemini 2 Flash</span>
+      <a id="logLink" href="" target="_blank">Log</a>
+      <a id="statsLink" href="stats.html">Statistics</a>
+    </div>
+  </ui-bar>
+  <ui-rest class="main">
+    <ui-content>
+      <ui-rest class="pane pane--left">
+        <ui-tabbed id="documentsPanel" data-bulk-mode="false">
+          <ui-tabbar>
+            <ui-tab class="switch"></ui-tab>
+            <ui-tab class="panel-header" data-tab="documents">
+              <span class="panel-header__title">Documents</span>
+              <span class="panel-header__subtitle">(<span id="documentsCount"></span>)</span>
+            </ui-tab>
+          </ui-tabbar>
+          <ui-content>
+            <ui-area data-belongs-to-tab="documents">
+              <ui-bar>
+                <input type="file" id="documentVersionInput" class="hidden" />
+                <input type="file" id="documentsInput" multiple class="hidden" />
+                <div class="right item-group">
+                  <button id="documentsBulkEditToggleButton">Bulk edit</button>
+
+                  <button class="btn-primary"
+                    onclick="document.getElementById('documentsInput').click()">Upload</button>
+                </div>
+              </ui-bar>
+              <ui-bar id="documentsBulkActionsBar" class="bulk-actions-bar hidden">
+                <span id="documentsSelectedCount" class="bulk-actions-bar__count">0 selected</span>
+                <div class="right item-group">
+                  <button id="documentsSelectAllButton" disabled>Select all</button>
+                  <button id="documentsClearSelectionButton" class="btn-text" disabled>Clear</button>
+                  <button id="documentsDeleteSelectedButton" disabled>Delete selected</button>
+                </div>
+              </ui-bar>
+              <ul id="documentsList">
+                <template id="documentItemTemplate">
+                  <li class="list-item" data-document-id="">
+                    <input type="checkbox" class="item-select-checkbox" data-role="select-document"
+                      aria-label="Select document" />
+                    <div class="inline-editor">
+                      <span class="document-name inline-editor__view" data-ref="documentName"></span>
+                    </div>
+                    <span class="version-name" data-ref="versionName"></span>
+                    <button class="more-actions-btn"></button>
+                  </li>
+                </template>
+              </ul>
+            </ui-area>
+          </ui-content>
+        </ui-tabbed>
+        <ui-rest id="documentViewerPanel" class="panel" data-document-state="none">
+          <ui-bar class="panel-header">
+            <div>
+              <span id="documentViewerHeaderTitle" class="state-controlled panel-header__title">Document Viewer</span>
+              <select id="docVersionSelect" class="state-controlled"></select>
+              <span id="documentVersionTag" class="state-controlled version-tag"></span>
+            </div>
+            <div class="right item-group">
+              <form id="selectionColorForm" class="state-controlled relaxngui_color_container">
+                <span class="round">
+                  <input type="radio" name="selectionColor" value="#d4e1f1" id="selectionColor1" checked />
+                  <label for="selectionColor1" style="background-color: #d4e1f1"></label>
+                </span>
+                <span class="round">
+                  <input type="radio" name="selectionColor" value="#d8f0dd" id="selectionColor2" />
+                  <label for="selectionColor2" style="background-color: #d8f0dd"></label>
+                </span>
+                <span class="round">
+                  <input type="radio" name="selectionColor" value="#ffffcc" id="selectionColor3" />
+                  <label for="selectionColor3" style="background-color: #ffffcc"></label>
+                </span>
+                <span class="round">
+                  <input type="radio" name="selectionColor" value="#e4c3e4" id="selectionColor4" />
+                  <label for="selectionColor4" style="background-color: #e4c3e4"></label></span>
+                <span class="round">
+                  <input type="radio" name="selectionColor" value="#f8a8c6" id="selectionColor5" />
+                  <label for="selectionColor5" style="background-color: #f8a8c6"></label></span>
+                <span class="round">
+                  <input type="radio" name="selectionColor" value="#ded0c5" id="selectionColor6" />
+                  <label for="selectionColor6" style="background-color: #ded0c5"></label></span>
+                <span class="round">
+                  <input type="radio" name="selectionColor" value="#deddda" id="selectionColor7" />
+                  <label for="selectionColor7" style="background-color: #deddda"></label>
+                </span>
+              </form>
+              <button id="deselectAllSelectionsButton" class="state-controlled btn-text">
+                Deselect all
+              </button>
+            </div>
+          </ui-bar>
+          <ui-divider></ui-divider>
+          <ui-content>
+            <ui-area id="viewerWrap">
+              <ui-area id="selectionsVisualLayer"></ui-area>
+              <!-- <ui-area id="temporarySelectionsLayer"></ui-area> -->
+              <ui-area id="documentContent"></ui-area>
+              <div id="documentViewerEmptyState" class="state-controlled">
+                No document selected
+              </div>
+              <ui-area id="interactionLayer">
+                <div id="selectionsInteractionLayer"></div>
+                <div id="modelTagsLayer"></div>
+                <div id="selectionHandlesLayer">
+                  <div class="selection-handle hidden" data-side="start"></div>
+                  <div class="selection-handle hidden" data-side="end"></div>
+                </div>
+                <ui-bar id="selectedSelectionToolbar">
+                  <form id="selectedSelectionColorForm" class="relaxngui_color_container">
+                    <!-- <div class="relaxngui_color_container"> -->
+                    <span class="round">
+                      <input type="radio" name="selectedSelectionColor" value="#d4e1f1" id="selectedSelectionColor1"
+                        checked />
+                      <label for="selectedSelectionColor1" style="background-color: #d4e1f1"></label>
+                    </span>
+                    <span class="round">
+                      <input type="radio" name="selectedSelectionColor" value="#d8f0dd" id="selectedSelectionColor2" />
+                      <label for="selectedSelectionColor2" style="background-color: #d8f0dd"></label>
+                    </span>
+                    <span class="round">
+                      <input type="radio" name="selectedSelectionColor" value="#ffffcc" id="selectedSelectionColor3" />
+                      <label for="selectedSelectionColor3" style="background-color: #ffffcc"></label>
+                    </span>
+                    <span class="round">
+                      <input type="radio" name="selectedSelectionColor" value="#e4c3e4" id="selectedSelectionColor4" />
+                      <label for="selectedSelectionColor4" style="background-color: #e4c3e4"></label></span>
+                    <span class="round">
+                      <input type="radio" name="selectedSelectionColor" value="#f8a8c6" id="selectedSelectionColor5" />
+                      <label for="selectedSelectionColor5" style="background-color: #f8a8c6"></label></span>
+                    <span class="round">
+                      <input type="radio" name="selectedSelectionColor" value="#ded0c5" id="selectedSelectionColor6" />
+                      <label for="selectedSelectionColor6" style="background-color: #ded0c5"></label></span>
+                    <span class="round">
+                      <input type="radio" name="selectedSelectionColor" value="#deddda" id="selectedSelectionColor7" />
+                      <label for="selectedSelectionColor7" style="background-color: #deddda"></label>
+                    </span>
+                    <!-- </div> -->
+                  </form>
+                  <button id="selectedSelectionCopyButton" type="button" title="Copy selected text to clipboard">
+                    Copy selection
+                  </button>
+                  <button id="selectedSelectionDeleteButton">
+                    Delete selection
+                  </button>
+                </ui-bar>
+                <!-- <div id="activeModelTags"></div> -->
+              </ui-area>
+              <template id="selectionWrapTemplate">
+                <div class="selection-wrap"></div>
+              </template>
+              <template id="selectionRangeRectTemplate">
+                <div class="range-rect"></div>
+              </template>
+              <template id="modelTagTemplate">
+                <span class="tag-span"></span>
+              </template>
+            </ui-area>
+          </ui-content>
+          <ui-divider></ui-divider>
+          <ui-bar id="linkActionsBar" class="state-controlled" style="z-index: 3">
+            <div class="right item-group">
+              <button id="applyLinkChangesButton" class="state-controlled" disabled>
+                Apply changes
+              </button>
+              <div id="generationSplitButton" class="split-btn">
+                <button id="generationDefaultButton" class="btn-primary split-btn__action" title="Generate new model"
+                  disabled>
+                  Generate new model
+                </button>
+                <button id="generationMenuButton" class="btn-primary split-btn__toggle" aria-haspopup="menu"
+                  title="More generation actions" disabled>
+                  <span class="split-btn__caret"></span>
+                </button>
+              </div>
+            </div>
+          </ui-bar>
+        </ui-rest>
+      </ui-rest>
+      <ui-resizehandle id="columnResizehandle1" data-direction="vertical"></ui-resizehandle>
+      <ui-rest id="modelEditorPanel" class="pane pane--center panel" data-model-state="none">
+        <ui-rest style="flex: 1 1 0; min-height: 100px">
+          <ui-bar class="panel-header">
+            <span id="modelEditorHeaderTitle" class="state-controlled panel-header__title">Model Editor</span>
+            <!-- <div id="activeModelNameEditor" class="inline-editor"> -->
+            <div class="item-group">
+              <span id="editingModelName" class="state-controlled inline-editor__view" data-editable="1"></span>
+              <select id="modelVersionSelect" class="state-controlled"></select>
+              <span id="editingModelVersionTag" class="state-controlled version-tag hidden"></span>
+              <button id="createModelVersionButton" class="state-controlled"
+                title="Create a version from the current latest version">
+                + New version
+              </button>
+              <button id="restoreModelVersionButton" class="state-controlled"
+                title="Create a new version by copying this selected version">
+                Restore to this version
+              </button>
+            </div>
+            <div class="right item-group">
+              <button id="deselectModelButton" class="state-controlled btn-text">Deselect</button>
+              <button id="editingModelMoreActionsButton" class="state-controlled more-actions-btn"></button>
+            </div>
+
+          </ui-bar>
+          <ui-divider></ui-divider>
+          <ui-rest>
+            <div id="modelEditorEmptyState" class="state-controlled">
+              No model selected
+            </div>
+            <ui-content id="modelling">
+              <ui-area id="graphgrid">
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:x="http://www.w3.org/1999/xlink"
+                  id="graphcanvas" width="1" height="1" style="display: block">
+                </svg>
+              </ui-area>
+            </ui-content>
+            <div id="dat_details"></div>
+            <div id="relaxngworker" class="hidden"></div>
+            <ul id="modelErrorList">
+              <template id="modelErrorItemTemplate">
+                <li class="model-error-item"></li>
+              </template>
+            </ul>
+            <div id="modelStatusMessage" class="hidden">
+              <span id="modelStatusMessageText"></span>
+              <button id="modelStatusMessageClose">x</button>
+            </div>
+            <ui-bar id="newModelDraftReviewBar" class="state-controlled">
+              <fieldset id="newModelDraftBarControls" class="bar-controls">
+                <div class="right item-group">
+                  <button id="discardDraftModelButton" title="Discard new model draft" class="btn-text">
+                    Discard
+                  </button>
+                  <button id="saveDraftModelButton" title="Create model from draft" class="btn-primary">
+                    Save
+                  </button>
+                </div>
+              </fieldset>
+            </ui-bar>
+            <ui-bar id="regenerationDraftReviewBar" class="state-controlled">
+              <fieldset id="regenerationDraftBarControls" class="bar-controls">
+                <div class="item-group">
+                  <button id="viewOriginalModelButton" disabled>Original</button>
+                  <button id="viewRegeneratedModelButton">Regenerated</button>
+                </div>
+                <div class="right item-group">
+                  <button id="cancelRegenerationButton" title="Cancel changes" class="btn-text">
+                    Cancel
+                  </button>
+                  <button id="replaceModelButton" title="Replace with regenerated model">
+                    Replace
+                  </button>
+                  <button id="saveNewModelButton" title="Save as new version" class="btn-primary">
+                    Save as new version
+                  </button>
+                </div>
+              </fieldset>
+            </ui-bar>
+          </ui-rest>
+        </ui-rest>
+        <ui-resizehandle data-direction="horizontal" data-style="transparent"></ui-resizehandle>
+        <ui-rest style="flex: 0.25 1 0; min-height: 100px" id="modelEditorPromptPane" class="state-controlled">
+          <textarea id="modelEditorPromptInput" placeholder="Enter instructions to refine the model..."></textarea>
+          <ui-bar>
+            <fieldset class="right item-group" id="promptActionsGroup" disabled>
+              <button id="clearPromptButton" class="btn-text">Clear</button>
+              <button id="sendPromptButton" class="btn-primary">Send</button>
+            </fieldset>
+          </ui-bar>
+        </ui-rest>
+      </ui-rest>
+      <ui-resizehandle data-direction="vertical"></ui-resizehandle>
+      <ui-rest class="pane pane--right">
+        <ui-rest id="modelsPanel" class="panel" data-current-view="grid" data-bulk-mode="false"
+          style="flex: 0.68 1 0; min-height: 100px">
+          <ui-bar class="panel-header">
+            <span class="panel-header__title">Models</span>
+            <span class="panel-header__subtitle">(<span data-ref="modelsCount"></span>)</span>
+          </ui-bar>
+          <ui-divider></ui-divider>
+          <ui-bar>
+            <div id="modelsViewSwitch" class="switch-btn-group">
+              <button class="switch-btn is-current" data-view="grid">
+                ⬜
+              </button>
+              <button class="switch-btn" data-view="list">
+                ☰
+              </button>
+            </div>
+            <div class="right item-group">
+              <button id="modelsBulkEditToggleButton" type="button">Bulk edit</button>
+            </div>
+          </ui-bar>
+          <ui-bar id="modelsDocumentFilterBar">
+            <!-- <div class="right">  -->
+            <div class="field">
+              <label for="documentsSelect">Document:</label>
+              <select name="documentsSelect" id="documentsSelect">
+              </select>
+            </div>
+            <!-- </div> -->
+          </ui-bar>
+          <ui-bar id="modelsBulkActionsBar" class="bulk-actions-bar hidden">
+            <span id="modelsSelectedCount" class="bulk-actions-bar__count">0 selected</span>
+            <div class="right item-group">
+              <button id="modelsSelectAllButton" disabled>Select All</button>
+              <button id="modelsClearSelectionButton" class="btn-text" disabled>Clear</button>
+              <button id="modelsDeleteSelectedButton" disabled>Delete Selected</button>
+            </div>
+          </ui-bar>
+          <ui-rest>
+            <ui-content>
+              <ui-area>
+                <div id="modelsGrid" data-belongs-to-view="grid">
+                  <template id="modelGridTemplate">
+                    <div class="model-grid-item" data-model-id="" data-model-version-id="" data-document-id="">
+                      <ui-bar>
+                        <input type="checkbox" class="item-select-checkbox" data-role="select-model"
+                          aria-label="Select model" />
+                        <div class="inline-editor">
+                          <span class="inline-editor__view" data-ref="modelName"></span>
+                        </div>
+                        <span class="version-name" data-ref="versionName"></span>
+                        <button class="more-actions-btn"></button>
+                      </ui-bar>
+                      <div data-ref="modelGrid">
+                        <div>Loading<span class="loading-dots"></span></div>
+                      </div>
+                    </div>
+                  </template>
+                </div>
+                <ul id="modelsList" data-belongs-to-view="list">
+                  <template id="modelItemTemplate">
+                    <li class="list-item model-list-item" data-model-id="" data-model-version-id="" data-document-id="">
+                      <input type="checkbox" class="item-select-checkbox" data-role="select-model"
+                        aria-label="Select model" />
+                      <div class="inline-editor">
+                        <span class="inline-editor__view" data-ref="modelName"></span>
+                      </div>
+                      <span class="version-name" data-ref="versionName"></span>
+                      <button class="more-actions-btn"></button>
+                    </li>
+                  </template>
+                </ul>
+              </ui-area>
+            </ui-content>
+          </ui-rest>
+        </ui-rest>
+        <ui-resizehandle data-direction="horizontal" data-style="dots"></ui-resizehandle>
+        <ui-rest class="panel" style="flex: 0.32 1 0; min-height: 100px">
+          <ui-content>
+            <ui-area id="cy" data-empty="true">
+              <div id="projectGraphEmptyState">No graph yet</div>
+            </ui-area>
+          </ui-content>
+        </ui-rest>
+      </ui-rest>
+    </ui-content>
+  </ui-rest>
+  <ui-rest id="modelPopover" class="hidden">
+    <ui-bar>
+      <span id="modelPopoverName" class="model-popover-title"></span>
+      <span id="modelPopoverVersionName" class="version-name"></span>
+    </ui-bar>
+    <ui-rest>
+      <ui-content>
+        <ui-area id="modelPopoverGrid"></ui-area>
+      </ui-content>
+    </ui-rest>
+  </ui-rest>
+  <dialog id="modelGenerationPromptDialog" class="dialog--wide">
+    <div class="dialog-title"></div>
+    <form id="modelGenerationPromptForm" class="dialog-form">
+      <textarea id="modelGenerationPromptInput" rows="7"
+        placeholder="Enter instructions to guide model generation from the selected text..."></textarea>
+      <ui-bar class="dialog-actions">
+        <div class="right item-group">
+          <button type="button" id="cancelModelGenerationPromptButton" class="btn-text">Cancel</button>
+          <button id="submitModelGenerationPromptButton" class="btn-primary" disabled>
+            Generate
+          </button>
+        </div>
+      </ui-bar>
+    </form>
+  </dialog>
+  <iframe id="modelPreviewRendererIframe" src="model-viewer.html"
+    style="position: absolute; left: -9999px; top: -9999px; width: 1px; height: 1px; opacity: 0; pointer-events: none;"></iframe>
+</body>
+
+</html>

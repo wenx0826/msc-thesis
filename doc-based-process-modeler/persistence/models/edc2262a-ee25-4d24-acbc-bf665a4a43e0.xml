@@ -1,0 +1,27 @@
+<description xmlns:dbpm="https://example.com/dbpm"><dbpm:info><dbpm:model_info><dbpm:model_id>edc2262a-ee25-4d24-acbc-bf665a4a43e0</dbpm:model_id><dbpm:model_version_id>b9743db1-d990-430e-b47f-ebccbb28c86a</dbpm:model_version_id><dbpm:model_version_name>v1</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>fae3c8d9-0426-483a-8320-1c1902ff4202</dbpm:document_id><dbpm:document_version_id>390fce0c-3871-4d93-a819-b579c074e590</dbpm:document_version_id><dbpm:document_version_name>v1</dbpm:document_version_name><dbpm:document_file_name>Spezifikationskatalog_Vorlesungsverzeichnis_Online_V0.9.pdf</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>Für Prüfungen ist die Detailseite etwas anders aufgebaut als für Lehrveranstaltungen, da deutlich weniger Informationen dargestellt werden müssen.3.5.1 Abschnitte der DetailseiteNeben dem Header und Footer, der auch für diese Seiten identisch mit denen der anderen Seiten im VVZ Online ist, ist der Informationsbereich jeder Detailseite auch hier in zwei Bereiche unterteilt, dem statischen oberen Titelbereich, in dem auch allgemeine Funktionen wie Back-Links und Merkzettel- Aufruf möglich sind (in Abbildung blau eingefärbt) und den Detail-Bereich (grün eingefärbt) der jedoch nur in zwei verschiedene auf- und zuklappbare Abschnitte unterteilt ist:</dbpm:selection></dbpm:text_selections></dbpm:document_info></dbpm:info><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+  <call id="a1" endpoint="" a:alt_id="1">
+    <parameters>
+      <label>Display Header and Footer</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a3" endpoint="" a:alt_id="2">
+    <parameters>
+      <label>Display Static Title Area</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a5" endpoint="" a:alt_id="3">
+    <parameters>
+      <label>Display Detail Area</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+</description>
+</description>

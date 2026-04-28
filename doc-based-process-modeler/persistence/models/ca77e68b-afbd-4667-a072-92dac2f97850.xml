@@ -1,0 +1,19 @@
+<description xmlns:dbpm="https://example.com/dbpm"><dbpm:info><dbpm:model_info><dbpm:model_id>ca77e68b-afbd-4667-a072-92dac2f97850</dbpm:model_id><dbpm:model_version_id>6a9275a1-d62b-496f-b7f3-b0dc3be38f8b</dbpm:model_version_id><dbpm:model_version_name>v1</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>29c5df79-c11c-4682-abe3-62758a90d321</dbpm:document_id><dbpm:document_version_id>f874855d-df5f-4070-bc6c-facec824f97b</dbpm:document_version_id><dbpm:document_version_name>v1</dbpm:document_version_name><dbpm:document_file_name>2023_Fire_Contract_PMT_SOP.pdf</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>Process: Fire Payment (FSO) Responsibility: Submit the approved invoice for payment in SABHRS Steps:1. Ensure the Invoice Approval Sheet is signed by the Area and FDO.2. Process the document for payment in accordance with FSO protocol.FDO SOP - Fire Finance Contract Operations (revised June ‘23) Page 5 of 5</dbpm:selection></dbpm:text_selections></dbpm:document_info></dbpm:info><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+  <call id="a1" endpoint="" a:alt_id="1">
+    <parameters>
+      <label>Ensure Invoice Approval Sheet is signed</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a3" endpoint="" a:alt_id="2">
+    <parameters>
+      <label>Process document for payment</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+</description>
+</description>

@@ -1,0 +1,349 @@
+:root {
+  --x-ui-content-hover-background: #efefef;
+  --muted: #666;
+  --faint: #999;
+}
+
+.main {
+  padding-bottom: 36px !important;
+}
+
+.hero {
+  padding-top: 32px;
+  padding-bottom: 20px;
+  text-align: center;
+  background-color: var(--x-ui-outside-color);
+}
+
+.hero a:link,
+.hero a:visited {
+  color: var(--x-ui-text-secondary-color);
+}
+
+.footer {
+  font-size: 0.85em;
+  text-align: center;
+  color: var(--x-ui-text-muted-color);
+  background-color: var(--x-ui-outside-color);
+}
+
+.footer>div {
+  display: inline-block;
+  padding: 0.5em 8em 0.6em 8em;
+  border-top: 1px solid var(--x-ui-border-light-color);
+}
+
+.footer a:link,
+.footer a:visited {
+  color: var(--x-ui-text-muted-color);
+}
+
+#createProjectButton {
+  background: var(--x-ui-text-color);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.5em 1.5em;
+  margin-top: 12px;
+  margin-bottom: 10px;
+  border: none;
+  border-radius: 0.6em;
+  font-size: 1.25em;
+  font-weight: 600;
+}
+
+*[is="x-ui-"] ui-tabbar {
+  padding-left: 1em;
+  padding-right: 1em;
+  padding-bottom: 0;
+}
+
+*[is="x-ui-"] ui-tabbar>ui-tab {
+  /* border-bottom-width: 2pt; */
+  position: relative;
+  padding-left: 0.65em;
+  padding-right: 0.65em;
+}
+
+*[is="x-ui-"] ui-tabbar>ui-tab:not(.inactive)::after {
+  content: "";
+  position: absolute;
+  bottom: -2pt;
+  left: 0;
+  right: 0;
+  height: 2pt;
+  background: var(--x-ui-background-color);
+  z-index: 2;
+  pointer-events: none;
+}
+
+*[is="x-ui-"] ui-tabbar>ui-tab.inactive {
+  border-bottom: none;
+}
+
+[is="x-ui-"] ui-tabbar>ui-before {
+  /* border-bottom: 1pt solid var(--x-ui-border-color); */
+  padding-left: 1.5em;
+}
+
+*[is="x-ui-"] ui-content {
+  position: relative;
+  border-top: 1pt solid var(--x-ui-border-color);
+  border-top-left-radius: 1em;
+  border-top-right-radius: 1em;
+}
+
+/* *[is="x-ui-"]ui-content > ui-area[data-belongs-to-tab="projects"] {
+  padding-bottom: 0.25em;
+} */
+/* *[is="x-ui-"] ui-content {
+  padding-bottom: 0.25em;
+} */
+*[is="x-ui-"] ui-tabbar>ui-tab.inactive,
+ui-tabbed>ui-tabbar>ui-tab.switch {
+  background-color: var(--x-tab-inactive-color);
+}
+
+*[is="x-ui-"] ui-content:has(> ui-area[data-belongs-to-tab="projects"]:not(.inactive)) {
+  padding-bottom: 0.25em;
+}
+
+#projectsTable {
+  border-collapse: collapse;
+}
+
+table.dataTable thead th {
+  border-color: var(--x-ui-border-color);
+}
+
+/* table.dataTable.no-footer {
+  border-color: var(--x-ui-border-color);
+} */
+table thead th {
+  font-weight: bold;
+  text-align: left;
+  /* padding: 0.3em 0.5em; */
+}
+
+table tbody tr:hover td {
+  background-color: var(--x-ui-content-hover-background);
+}
+
+[is="x-ui-"] table tbody tr:hover td {
+  background-color: var(--x-ui-content-hover-background);
+}
+
+tr.contextmenuitem .capitalized {
+  text-transform: capitalize;
+}
+
+#projectsTable_info {
+  /* margin-top: 0.5em; */
+  font-size: 0.9em;
+  color: var(--x-ui-text-secondary-color);
+}
+
+#projectsTable,
+#projectsTable th,
+#projectsTable td {
+  box-sizing: border-box;
+}
+
+#projectsTable {
+  table-layout: fixed;
+  width: 100%;
+  max-width: 100%;
+  border-collapse: collapse;
+  font-size: 1em;
+}
+
+#projectsTable th {
+  font-weight: bold;
+  text-align: left;
+  /* padding: 0.3em 0.5em; */
+}
+
+#projectsTable td,
+#projectsTable th {
+  padding: 0.5em 1em;
+}
+
+#projectsTable tbody td {
+  border-bottom: 1px solid var(--x-ui-border-light-color);
+}
+
+.col-num {
+  text-align: right;
+  width: 120px;
+}
+
+.col-date {
+  padding-left: 2em;
+  width: 180px;
+  white-space: nowrap;
+}
+
+td.col-num,
+td.col-date {
+  color: var(--x-ui-text-secondary-color);
+}
+
+#projectsTable td:first-child {
+  overflow: hidden;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+#projectsTable td:first-child .inline-editor__view {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+}
+
+#projectsTable td:first-child:hover {
+  text-decoration: underline;
+}
+
+#projectsTable th:last-child {
+  width: 80px;
+  text-align: center;
+}
+
+#projectsTable td:last-child {
+  width: 80px;
+  position: relative;
+  /* padding: 0.1em 1em; */
+}
+
+#projectsTable td:last-child button {
+  position: absolute;
+  inset: 0.2em 1.5em;
+  /* 你要留边距就用 4px；要贴边就 0 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* inset: 0.1em 1.5em; */
+}
+
+/* #projectsTable td:first-child {
+  outline: 2px solid red;
+}
+#projectsTable td:last-child {
+  outline: 2px solid blue;
+} */
+
+/* ===== Dashboard Content ===== */
+
+*[is="x-ui-"] ui-content:has(> ui-area[data-belongs-to-tab="dashboard"]:not(.inactive)) {
+  padding: 1.5em 2em;
+}
+
+/* Metrics (borderless, typography blocks) */
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+  align-items: start;
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.metric-card {
+  text-align: center;
+  padding: 2px 0;
+  text-align: center;
+}
+
+.metric-title {
+  /* font-size: 12px; */
+  color: var(--muted);
+  letter-spacing: 0.02em;
+  margin-bottom: 6px;
+}
+
+.metric-card .metric-value {
+  font-size: 32px;
+  line-height: 1.05;
+  font-weight: 650;
+  margin: 0 0 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.metric-subtitle {
+  font-size: 12px;
+  color: var(--faint);
+  /* line-height: 1.4; */
+  /* display: flex; */
+  /* flex-direction: column; */
+  /* gap: 4px; */
+  /* min-height: 34px; */
+  /* keeps blocks aligned when some have fewer lines */
+}
+
+/* ===== Dashboard Stats ===== */
+
+.dashboard-stats-layout {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 32px;
+  align-items: start;
+  margin-top: 24px;
+}
+
+.stats-layout-column {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.stats-panel {
+  width: min(100%, 420px);
+}
+
+.stats-panel h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 18px;
+}
+
+.stats-panel .stats-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 12px;
+  row-gap: 10px;
+  align-items: start;
+  font-size: 14px;
+}
+
+.stats-panel .stats-grid .metric-row {
+  display: contents;
+}
+
+.stats-panel .metric-label {
+  color: #444;
+  line-height: 1.4;
+}
+
+.stats-panel .metric-value {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+@media (max-width: 820px) {
+  .metrics {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+}
+
+@media (max-width: 1000px) {
+  .dashboard-stats-layout {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .stats-layout-column {
+    justify-content: center;
+  }
+}

@@ -1,0 +1,43 @@
+<description xmlns:dbpm="https://example.com/dbpm"><dbpm:info><dbpm:model_info><dbpm:model_id>4e41a8d9-867e-4f04-bf83-da64dfb6df3b</dbpm:model_id><dbpm:model_version_id>e0051d4c-6e48-428d-b641-a0216c9c3fa7</dbpm:model_version_id><dbpm:model_version_name>v1</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>fae3c8d9-0426-483a-8320-1c1902ff4202</dbpm:document_id><dbpm:document_version_id>390fce0c-3871-4d93-a819-b579c074e590</dbpm:document_version_id><dbpm:document_version_name>v1</dbpm:document_version_name><dbpm:document_file_name>Spezifikationskatalog_Vorlesungsverzeichnis_Online_V0.9.pdf</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>Das VVZ ist sowohl von innerhalb als auch außerhalb des Universitätsnetzwerks über eine möglichst sprechende URL anzubieten. Unserer Vorschlag wäre zum einenhttp://www.univie.ac.at/vvzund zusätzlichhttp://vvz.univie.ac.atsowiehttp://vorlesungsverzeichnis.univie.ac.atEine dieser URLs sollte die führende Adresse sein, alle anderen Links bzw. URLs müssten entsprechend auf diese weiterleiten. Als Landing-Page sollte die Einstiegsseite Suche gewählt werden. Weiterhin ist zu bedenken, dass auch die jetzige URL der Einstiegsseite des VVZ weiter zur Verfügung stehen und auf die ggf. neue URL der neuen Einstiegsseite weiterleiten soll.</dbpm:selection></dbpm:text_selections></dbpm:document_info></dbpm:info><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+  <call id="a1" endpoint="" a:alt_id="1">
+    <parameters>
+      <label>Provide VVZ URLs</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a3" endpoint="" a:alt_id="2">
+    <parameters>
+      <label>Choose Leading URL</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a5" endpoint="" a:alt_id="3">
+    <parameters>
+      <label>Redirect Other URLs</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a7" endpoint="" a:alt_id="4">
+    <parameters>
+      <label>Set Landing Page to Search</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a9" endpoint="" a:alt_id="5">
+    <parameters>
+      <label>Maintain Existing URL with Redirection</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+</description>
+</description>

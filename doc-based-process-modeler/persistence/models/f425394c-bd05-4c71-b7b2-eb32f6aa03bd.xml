@@ -1,0 +1,102 @@
+<description xmlns:dbpm="https://example.com/dbpm"><dbpm:info><dbpm:model_info><dbpm:model_id>56b215cc-7a39-40fb-b282-8e457d95d150</dbpm:model_id><dbpm:model_version_id>f425394c-bd05-4c71-b7b2-eb32f6aa03bd</dbpm:model_version_id><dbpm:model_version_name>v1</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>a786ab5d-9f97-4db0-a576-e1eb933448c6</dbpm:document_id><dbpm:document_version_id>6ea9738e-477a-44ed-9ba0-3d6a3b3506cf</dbpm:document_version_id><dbpm:document_version_name>v1</dbpm:document_version_name><dbpm:document_file_name>MAP_Stages-_Inputs_Outputs_-_Data_Cleaned_-Comma_Separated.txt</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>Stage 2 OR Rejection                                                                                     | VP Zumtobel Brand &amp; Application VP Brand &amp; Application Thorn (others tbd) |     |     |     |
+|      |       2 | Identify Stakeholders                                                    | One Pager Template                                                                                                                                                                      | Stakeholder                                                                                                                     | PM or AM                                                                  |     |     |     |
+|      |       2 | Characterize Persona                                                     | Stakeholder                                                                                                                                                                             | Persona                                                                                                                         |                                                                           |     |     |     |
+|      |       2 | Elicit Stakeholder Needs                                                 | Stakeholder Persona                                                                                                                                                                     | Needs elicitation outcome                                                                                                       | PM or AM                                                                  |     |     |     |
+|      |       2 | Formulate and document Stakeholder Needs                                 | Needs elicitation outcome                                                                                                                                                               | *Need Statement *Originator/Author *Owner *Priority *Criticality *Rationale/Reason Why *Allocation / Budgeting *trace to source |                                                                           |     |     |     |
+|      |       2 | Identify Drivers &amp; Constraints                                           | One Pager Template                                                                                                                                                                      | Drivers &amp; Constraints                                                                                                           | PM or AM                                                                  |     |     |     |
+|      |       2 | Identify Stakeholders related to Drivers&amp;Constraints (if any)​           | Drivers &amp; Constraints                                                                                                                                                                   | Stakeholder                                                                                                                     | PM or AM                                                                  |     |     |     |
+|      |       2 | Formulate needs related to these Drivers &amp; Constraints and document them | Drivers &amp; Constraints Stakeholder                                                                                                                                                       | *Need Statement *trace to source *Originator/Author *Owner *Criticality *Rationale/Reason Why *Allocation / Budgeting           | PM or AM                                                                  |     |     |     |
+|      |       2 | Identify Conflicting  Needs                                              | * Need Statement *Originator/Author *Owner *Criticality *Rationale/Reason Why *Allocation / Budgeting                                                                                   | * Conflicting Needs link * Conflicting needs rational                                                                           | PM or AM                                                                  |     |     |     |
+|      |       2 | Conduct Risks Assessment Stage 2                                         | *Need Statement *Originator/Author *Owner *Criticality *Rationale/Reason Why *Allocation / Budgeting *Conflicting needs rational *trace to source                                       | Risk Identification                                                                                                             | PM or AM                                                                  |     |     |     |
+|      |       2 | Rate MAP project (Stage 2)                                               | *Need Statement *Originator/Author *Owner *Priority *Criticality *Rationale/Reason Why *Allocation / Budgeting *Conflicting needs link *Conflicting needs rational *Risk Identification | MAP project rating                                                                                                              | VP Zumtobel Brand &amp; Application VP Brand &amp; Application Thorn (others tbd) |     |     |     |
+|      |       2 | Gate 2 decision                                                          | MAP project rating                                                                                                                                                                      | Approval for moving to Stage 3 OR Rejection                                                                                     | VP Zumtobel Brand &amp; Application VP Brand &amp; Application Thorn (others tbd) |     |     |     |</dbpm:selection></dbpm:text_selections></dbpm:document_info></dbpm:info><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+  <call id="a1" endpoint="" a:alt_id="1">
+    <parameters>
+      <label>Identify Stakeholders</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a3" endpoint="" a:alt_id="2">
+    <parameters>
+      <label>Characterize Persona</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a5" endpoint="" a:alt_id="3">
+    <parameters>
+      <label>Elicit Stakeholder Needs</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a7" endpoint="" a:alt_id="4">
+    <parameters>
+      <label>Formulate and document Stakeholder Needs</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a9" endpoint="" a:alt_id="5">
+    <parameters>
+      <label>Identify Drivers &amp; Constraints</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a11" endpoint="" a:alt_id="6">
+    <parameters>
+      <label>Identify Stakeholders related to Drivers&amp;Constraints</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a13" endpoint="" a:alt_id="7">
+    <parameters>
+      <label>Formulate needs related to these Drivers &amp; Constraints and document them</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a15" endpoint="" a:alt_id="8">
+    <parameters>
+      <label>Identify Conflicting Needs</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a17" endpoint="" a:alt_id="9">
+    <parameters>
+      <label>Conduct Risks Assessment Stage 2</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a19" endpoint="" a:alt_id="10">
+    <parameters>
+      <label>Rate MAP project (Stage 2)</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a23" endpoint="" a:alt_id="12">
+    <parameters>
+      <label>Gate 2 decision</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+</description>
+</description>

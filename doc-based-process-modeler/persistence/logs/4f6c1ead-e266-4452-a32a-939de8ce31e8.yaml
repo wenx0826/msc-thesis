@@ -1,0 +1,279 @@
+---
+timestamp: '2026-03-24T06:43:00.395Z'
+event: project_created
+data:
+  id: 4f6c1ead-e266-4452-a32a-939de8ce31e8
+  name: Evaluation_Expert1_Task1
+---
+timestamp: '2026-03-24T08:45:28.062Z'
+event: document_uploaded
+data:
+  id: 159a3091-3166-414e-88f7-9686304d7367
+  projectId: 4f6c1ead-e266-4452-a32a-939de8ce31e8
+  name: Credit_Check.docx
+  latestVersionId: null
+  latestVersionNumber: 0
+  createdAt: '2026-03-24T08:45:23.211Z'
+  deletedAt: null
+---
+timestamp: '2026-03-24T08:45:31.549Z'
+event: document_uploaded
+data:
+  id: 912fe776-792e-4586-9881-18e77d2b7cfe
+  projectId: 4f6c1ead-e266-4452-a32a-939de8ce31e8
+  name: Order_Processing_Flow.docx
+  latestVersionId: null
+  latestVersionNumber: 0
+  createdAt: '2026-03-24T08:45:28.067Z'
+  deletedAt: null
+---
+timestamp: '2026-03-24T09:20:45.994Z'
+event: model_generated
+data:
+  id: 0b4185fc-d8ca-490d-a932-5ba811117f65
+  name: Model_1
+  data: |-
+    <description xmlns:dbpm="https://example.com/dbpm"><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+      <call id="a1" endpoint="" a:alt_id="1">
+        <parameters>
+          <label>Order Intake and Registration</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <loop mode="pre_test" condition="true">
+        <call id="a3" endpoint="" a:alt_id="2">
+          <parameters>
+            <label>Order Validation</label>
+            <method/>
+            <type>:task</type>
+            <arguments/>
+          </parameters>
+        </call>
+        <loop mode="pre_test" condition="Invalid" a:alt_id="3" language="text/javascript">
+          <call id="a3" endpoint="" a:alt_id="2">
+            <parameters>
+              <label>Order Validation</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </loop>
+        <call id="a7" endpoint="" a:alt_id="4">
+          <parameters>
+            <label>Contract and Credit Check</label>
+            <method/>
+            <type>:task</type>
+            <arguments/>
+          </parameters>
+        </call>
+        <choose mode="exclusive" a:alt_id="5">
+          <alternative condition="Pass" language="text/javascript"/>
+          <alternative condition="Fail" language="text/javascript">
+            <call id="a15" endpoint="" a:alt_id="7">
+              <parameters>
+                <label>Review and Approval</label>
+                <method/>
+                <type>:task</type>
+                <arguments/>
+              </parameters>
+            </call>
+          </alternative>
+        </choose>
+        <call id="a13" endpoint="" a:alt_id="6">
+          <parameters>
+            <label>Inventory Check</label>
+            <method/>
+            <type>:task</type>
+            <arguments/>
+          </parameters>
+        </call>
+        <choose mode="exclusive" a:alt_id="8">
+          <alternative condition="Available" language="text/javascript"/>
+          <alternative condition="Missing" language="text/javascript">
+            <call id="a23" endpoint="" a:alt_id="10">
+              <parameters>
+                <label>Delay or Partial Fulfillment</label>
+                <method/>
+                <type>:task</type>
+                <arguments/>
+              </parameters>
+            </call>
+          </alternative>
+        </choose>
+        <call id="a21" endpoint="" a:alt_id="9">
+          <parameters>
+            <label>Order Confirmation</label>
+            <method/>
+            <type>:task</type>
+            <arguments/>
+          </parameters>
+        </call>
+        <call id="a27" endpoint="" a:alt_id="11">
+          <parameters>
+            <label>Fulfillment and Shipping</label>
+            <method/>
+            <type>:task</type>
+            <arguments/>
+          </parameters>
+        </call>
+        <call id="a29" endpoint="" a:alt_id="12">
+          <parameters>
+            <label>Invoicing and Payment</label>
+            <method/>
+            <type>:task</type>
+            <arguments/>
+          </parameters>
+        </call>
+      </loop>
+    </description>
+    </description>
+---
+timestamp: '2026-03-24T09:23:17.316Z'
+event: model_version_created
+data:
+  modelId: 0b4185fc-d8ca-490d-a932-5ba811117f65
+  sourceVersionId: 813a0862-d999-42aa-8d44-0a19964f7d4e
+  newVersionId: b642bcfd-8fd2-4823-97ec-cc0d391d2fad
+  mode: payload
+  type: regeneration
+---
+timestamp: '2026-03-24T09:25:51.028Z'
+event: model_version_created
+data:
+  modelId: 0b4185fc-d8ca-490d-a932-5ba811117f65
+  sourceVersionId: b642bcfd-8fd2-4823-97ec-cc0d391d2fad
+  newVersionId: 2ebfb2ee-7026-4d76-a286-8e6a220442c3
+  mode: payload
+  type: refinement
+---
+timestamp: '2026-03-24T09:33:45.207Z'
+event: model_version_created
+data:
+  modelId: 0b4185fc-d8ca-490d-a932-5ba811117f65
+  sourceVersionId: 2ebfb2ee-7026-4d76-a286-8e6a220442c3
+  newVersionId: 0cc24bb0-19d9-4e80-9197-13f6dfd42889
+  mode: payload
+  type: refinement
+---
+timestamp: '2026-03-24T09:34:22.282Z'
+event: model_version_created
+data:
+  modelId: 0b4185fc-d8ca-490d-a932-5ba811117f65
+  sourceVersionId: 2ebfb2ee-7026-4d76-a286-8e6a220442c3
+  newVersionId: a3cc92ed-a22d-423f-bf16-233dd2e83826
+  mode: copy
+  type: manual_new_version_restore
+---
+timestamp: '2026-03-24T09:36:20.162Z'
+event: model_generated
+data:
+  id: 0f20b9b5-3b41-4a77-8f42-c2327009abd7
+  name: Model_2
+  data: |-
+    <description xmlns:dbpm="https://example.com/dbpm"><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+      <call id="a1" endpoint="" a:alt_id="1">
+        <parameters>
+          <label>Validate Order</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a3" endpoint="" a:alt_id="2">
+        <parameters>
+          <label>Credit Evaluation</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <choose mode="exclusive" a:alt_id="3">
+        <alternative condition="Credit OK" language="text/javascript">
+          <call id="a7" endpoint="" a:alt_id="12">
+            <parameters>
+              <label>Release Order</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+        <alternative condition="Credit Issue Detected" language="text/javascript">
+          <call id="a9" endpoint="" a:alt_id="4">
+            <parameters>
+              <label>Flag Order</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+          <call id="a11" endpoint="" a:alt_id="5">
+            <parameters>
+              <label>Place Order on Hold</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+          <call id="a13" endpoint="" a:alt_id="6">
+            <parameters>
+              <label>Assign for Review</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+          <call id="a15" endpoint="" a:alt_id="7">
+            <parameters>
+              <label>Assess Financial Situation</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+          <choose mode="exclusive" a:alt_id="8">
+            <alternative condition="Order Approved" language="text/javascript">
+              <call id="a19" endpoint="" a:alt_id="9">
+                <parameters>
+                  <label>Release Order</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="Order Rejected" language="text/javascript">
+              <call id="a21" endpoint="" a:alt_id="10">
+                <parameters>
+                  <label>Block Order</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+          </choose>
+        </alternative>
+      </choose>
+      <call id="a29" endpoint="" a:alt_id="13">
+        <parameters>
+          <label>Continue Processing</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </description>
+    </description>
+---
+timestamp: '2026-03-24T09:36:48.569Z'
+event: model_version_created
+data:
+  modelId: 0b4185fc-d8ca-490d-a932-5ba811117f65
+  sourceVersionId: 2ebfb2ee-7026-4d76-a286-8e6a220442c3
+  newVersionId: dc2d1fb8-5189-4464-868c-e4a65b3aa638
+  mode: copy
+  type: manual_new_version_restore

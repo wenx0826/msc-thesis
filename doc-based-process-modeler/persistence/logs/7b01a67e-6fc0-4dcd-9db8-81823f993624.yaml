@@ -1,0 +1,215 @@
+---
+timestamp: '2026-03-24T12:53:46.489Z'
+event: project_created
+data:
+  id: 7b01a67e-6fc0-4dcd-9db8-81823f993624
+  name: Evaluation_Expert3_Task2
+---
+timestamp: '2026-03-24T12:53:54.812Z'
+event: document_uploaded
+data:
+  id: 26fd7b3c-467b-4101-8c2e-c5e95dccc02d
+  projectId: 7b01a67e-6fc0-4dcd-9db8-81823f993624
+  name: 2023_Fire_Contract_PMT_SOP.pdf
+  latestVersionId: null
+  latestVersionNumber: 0
+  createdAt: '2026-03-24T12:53:51.026Z'
+  deletedAt: null
+---
+timestamp: '2026-03-24T13:14:02.112Z'
+event: model_generated
+data:
+  id: 91b8cffa-6c31-4990-99a0-bbae3e661963
+  name: Model_1
+  data: |-
+    <description xmlns:dbpm="https://example.com/dbpm"><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+      <call id="a1" endpoint="" a:alt_id="1">
+        <parameters>
+          <label>Expense Incurred</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a3" endpoint="" a:alt_id="2">
+        <parameters>
+          <label>Supervisor Approval</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a5" endpoint="" a:alt_id="3">
+        <parameters>
+          <label>Receive and Approve at Incident/Unit Level</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a7" endpoint="" a:alt_id="4">
+        <parameters>
+          <label>Flow Through Higher Authorities</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a9" endpoint="" a:alt_id="5">
+        <parameters>
+          <label>DNRC Financial Services Office Records Expense in SABHRS</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </description>
+    </description>
+---
+timestamp: '2026-03-24T13:14:39.593Z'
+event: model_generated
+data:
+  id: c1a96ca5-a6c0-4f48-9db5-a33759d77013
+  name: Model_2
+  data: |-
+    <description xmlns:dbpm="https://example.com/dbpm"><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+      <call id="a1" endpoint="" a:alt_id="1">
+        <parameters>
+          <label>Initiate FDO Fire Invoice Approval Sheet</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a3" endpoint="" a:alt_id="2">
+        <parameters>
+          <label>Assemble Documents</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a5" endpoint="" a:alt_id="3">
+        <parameters>
+          <label>Indicate TIN on OF-286</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <loop mode="pre_test" condition="true">
+        <call id="a7" endpoint="" a:alt_id="4">
+          <parameters>
+            <label>Accomplish Audit Objectives</label>
+            <method/>
+            <type>:task</type>
+            <arguments/>
+          </parameters>
+        </call>
+        <choose mode="exclusive" a:alt_id="5">
+          <alternative condition="Errors found" language="text/javascript">
+            <call id="a11" endpoint="" a:alt_id="6">
+              <parameters>
+                <label>Correct Invoices</label>
+                <method/>
+                <type>:task</type>
+                <arguments/>
+              </parameters>
+            </call>
+            <call id="a13" endpoint="" a:alt_id="7">
+              <parameters>
+                <label>Note Errors and Corrections</label>
+                <method/>
+                <type>:task</type>
+                <arguments/>
+              </parameters>
+            </call>
+          </alternative>
+          <alternative condition="No errors found" language="text/javascript"/>
+        </choose>
+        <loop mode="pre_test" condition="Invoice not accurate, complete, or is duplicative" a:alt_id="8" language="text/javascript">
+          <call id="a7" endpoint="" a:alt_id="4">
+            <parameters>
+              <label>Accomplish Audit Objectives</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+          <choose mode="exclusive" a:alt_id="5">
+            <alternative condition="Errors found" language="text/javascript">
+              <call id="a11" endpoint="" a:alt_id="6">
+                <parameters>
+                  <label>Correct Invoices</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+              <call id="a13" endpoint="" a:alt_id="7">
+                <parameters>
+                  <label>Note Errors and Corrections</label>
+                  <method/>
+                  <type>:task</type>
+                  <arguments/>
+                </parameters>
+              </call>
+            </alternative>
+            <alternative condition="No errors found" language="text/javascript"/>
+          </choose>
+        </loop>
+        <call id="a19" endpoint="" a:alt_id="9">
+          <parameters>
+            <label>Approve Invoice</label>
+            <method/>
+            <type>:task</type>
+            <arguments/>
+          </parameters>
+        </call>
+        <call id="a21" endpoint="" a:alt_id="10">
+          <parameters>
+            <label>Forward Payment Packet</label>
+            <method/>
+            <type>:task</type>
+            <arguments/>
+          </parameters>
+        </call>
+      </loop>
+    </description>
+    </description>
+---
+timestamp: '2026-03-24T13:15:54.660Z'
+event: model_version_created
+data:
+  modelId: 91b8cffa-6c31-4990-99a0-bbae3e661963
+  sourceVersionId: 3f3a5dc0-8902-4b00-95e2-5da475fc4534
+  newVersionId: 559c31c1-cae3-4700-857c-06d3993546e2
+  mode: payload
+  type: regeneration
+---
+timestamp: '2026-03-24T13:16:23.770Z'
+event: model_version_created
+data:
+  modelId: c1a96ca5-a6c0-4f48-9db5-a33759d77013
+  sourceVersionId: c5f79489-8629-4ffb-8fc0-5cc4fa3698ad
+  newVersionId: a8a8adf4-5fbe-48ed-9bb4-07f536ec6a93
+  mode: copy
+  type: manual_new_version_latest
+---
+timestamp: '2026-03-24T13:19:00.418Z'
+event: model_version_created
+data:
+  modelId: 91b8cffa-6c31-4990-99a0-bbae3e661963
+  sourceVersionId: 559c31c1-cae3-4700-857c-06d3993546e2
+  newVersionId: 24481cbc-eeec-4497-88ec-d41798af1823
+  mode: payload
+  type: refinement
+---
+timestamp: '2026-03-24T13:27:35.615Z'
+event: model_version_created
+data:
+  modelId: c1a96ca5-a6c0-4f48-9db5-a33759d77013
+  sourceVersionId: a8a8adf4-5fbe-48ed-9bb4-07f536ec6a93
+  newVersionId: 3c147212-e5a7-408b-aaf4-08ef4b1b969f
+  mode: payload
+  type: refinement

@@ -1,0 +1,91 @@
+<description xmlns:dbpm="https://example.com/dbpm"><dbpm:info><dbpm:model_info><dbpm:model_id>c1a96ca5-a6c0-4f48-9db5-a33759d77013</dbpm:model_id><dbpm:model_version_id>c5f79489-8629-4ffb-8fc0-5cc4fa3698ad</dbpm:model_version_id><dbpm:model_version_name>v1</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>26fd7b3c-467b-4101-8c2e-c5e95dccc02d</dbpm:document_id><dbpm:document_version_id>108b9d44-c0d6-4537-a5f1-ffd3baac291a</dbpm:document_version_id><dbpm:document_version_name>v1</dbpm:document_version_name><dbpm:document_file_name>2023_Fire_Contract_PMT_SOP.pdf</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>III. FIRE PAYMENT AUDITAND APPROVALScope The purpose of the fire payment audit is to ensure that the contracted resource is paid no more or less than the policy and agreements stipulate and is charged to the appropriate SABHRS org and account. The initial audit will be conducted at the incident or unit because it is most efficient to identify and correct errors at the lowest level possible. Each land office/unit is responsible for the payment approval of each packet within its jurisdiction.The audit focus is on the source documents and invoice. The auditor is expected to achieve the following key objectives, which are detailed in the Fire Payment Audit Guide.• Ensure the incident invoice complies with governing policy or agreements (EERA/IRA,VIPR, Mutual Aid, Cost-Share, Six-Party Agreement, SIIBM, FPB Manuals, DNRC or State policy, etc.).• Verify the accuracy of the invoice regarding mathematical computation and data entry.• Verify the source documents are complete and attached to the payment packet per SectionII of this SOP.• Confirm the payment is not duplicative and is coded to the proper org and account.Procedures Process: Fire Payment Audit (Land Office/Unit) Responsibility: Verify the accuracy of the incident invoice regarding mathematical computation, incident information, duplicate invoicing, document audit completion and payment approval.1. Initiate the FDO Fire Invoice Approval Sheet.2. Assemble the documents in order as previously stated in Section II.3. Indicate the TIN is listed on the OF-286 Emergency Equipment Use Invoice for allprivate vendors. TIN is not necessary on local government fire packets.4. Accomplish the audit objectives using the Fire Payment Audit Guide.FDO SOP - Fire Finance Contract Operations (revised June ‘23) Page 4 of 55. Correct invoices as necessary by redline only so that original documentation is still visible.6. Note errors, omissions, and corrections on the Approval Sheet for subsequent review.7. Ensure the invoice is accurate, complete, and not duplicative.8. Approve the invoice by signing the complete Fire Invoice Approval Sheet.9. Forward the original payment packet to the FDO and maintain a copy or scan at theland office/unit.</dbpm:selection></dbpm:text_selections></dbpm:document_info></dbpm:info><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+  <call id="a1" endpoint="" a:alt_id="1" svg-id="a1" svg-label="Initiate FDO Fire Invoice Approval Sheet" svg-type="call" svg-subtype="call">
+    <parameters>
+      <label>Initiate FDO Fire Invoice Approval Sheet</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a3" endpoint="" a:alt_id="2" svg-id="a3" svg-label="Assemble Documents" svg-type="call" svg-subtype="call">
+    <parameters>
+      <label>Assemble Documents</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a5" endpoint="" a:alt_id="3" svg-id="a5" svg-label="Indicate TIN on OF-286" svg-type="call" svg-subtype="call">
+    <parameters>
+      <label>Indicate TIN on OF-286</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <loop mode="pre_test" condition="true" svg-id="loop_1" svg-label="true" svg-type="loop" svg-subtype="loop_head">
+    <call id="a7" endpoint="subprocess" svg-id="a7" a:alt_id="4" svg-label="Accomplish Audit Objectives" svg-type="call" svg-subtype="call"><parameters><label>Accomplish Audit Objectives</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>91b8cffa-6c31-4990-99a0-bbae3e661963</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>https://lehre.bpm.in.tum.de/persistence/models/91b8cffa-6c31-4990-99a0-bbae3e661963.xml</url></arguments></parameters></call>
+    <choose mode="exclusive" a:alt_id="5" svg-id="choose_0" svg-type="choose" svg-subtype="choose_exclusive">
+      <alternative condition="Errors found" language="text/javascript" svg-id="alternative_0" svg-label="Errors found" svg-type="alternative" svg-subtype="alternative">
+        <call id="a11" endpoint="" a:alt_id="6" svg-id="a11" svg-label="Correct Invoices" svg-type="call" svg-subtype="call">
+          <parameters>
+            <label>Correct Invoices</label>
+            <method/>
+            <type>:task</type>
+            <arguments/>
+          </parameters>
+        </call>
+        <call id="a13" endpoint="" a:alt_id="7" svg-id="a13" svg-label="Note Errors and Corrections" svg-type="call" svg-subtype="call">
+          <parameters>
+            <label>Note Errors and Corrections</label>
+            <method/>
+            <type>:task</type>
+            <arguments/>
+          </parameters>
+        </call>
+      </alternative>
+      <alternative condition="No errors found" language="text/javascript" svg-id="alternative_1" svg-label="No errors found" svg-type="alternative" svg-subtype="alternative"/>
+    </choose>
+    <loop mode="pre_test" condition="Invoice not accurate, complete, or is duplicative" a:alt_id="8" language="text/javascript" svg-id="loop_0" svg-label="Invoice not accurate, complete, or is duplicative" svg-type="loop" svg-subtype="loop_head">
+      <call id="a7" endpoint="subprocess" svg-id="a7" a:alt_id="4" svg-label="Accomplish Audit Objectives" svg-type="call" svg-subtype="call"><parameters><label>Accomplish Audit Objectives</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>91b8cffa-6c31-4990-99a0-bbae3e661963</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>https://lehre.bpm.in.tum.de/persistence/models/91b8cffa-6c31-4990-99a0-bbae3e661963.xml</url></arguments></parameters></call>
+      <choose mode="exclusive" a:alt_id="5" svg-id="choose_1" svg-type="choose" svg-subtype="choose_exclusive">
+        <alternative condition="Errors found" language="text/javascript" svg-id="alternative_2" svg-label="Errors found" svg-type="alternative" svg-subtype="alternative">
+          <call id="a11" endpoint="" a:alt_id="6" svg-id="a11" svg-label="Correct Invoices" svg-type="call" svg-subtype="call">
+            <parameters>
+              <label>Correct Invoices</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+          <call id="a13" endpoint="" a:alt_id="7" svg-id="a13" svg-label="Note Errors and Corrections" svg-type="call" svg-subtype="call">
+            <parameters>
+              <label>Note Errors and Corrections</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+        <alternative condition="No errors found" language="text/javascript" svg-id="alternative_3" svg-label="No errors found" svg-type="alternative" svg-subtype="alternative"/>
+      </choose>
+    </loop>
+    <call id="a19" endpoint="" a:alt_id="9" svg-id="a19" svg-label="Approve Invoice" svg-type="call" svg-subtype="call">
+      <parameters>
+        <label>Approve Invoice</label>
+        <method/>
+        <type>:task</type>
+        <arguments/>
+      </parameters>
+    </call>
+    <call id="a21" endpoint="" a:alt_id="10" svg-id="a21" svg-label="Forward Payment Packet" svg-type="call" svg-subtype="call">
+      <parameters>
+        <label>Forward Payment Packet</label>
+        <method/>
+        <type>:task</type>
+        <arguments/>
+      </parameters>
+    </call>
+  </loop>
+</description>
+</description>

@@ -1,0 +1,490 @@
+ui-rest.main {
+  padding: 0 8px 5px 8px;
+}
+
+.main>ui-content {
+  background-color: var(--background-color);
+}
+
+:root {
+  --resize-handle-visual-width: 8px;
+  --resize-handle-hit-width: 16px;
+  --resize-handle-hit-overflow: calc((var(--resize-handle-hit-width) - var(--resize-handle-visual-width)) / 2);
+}
+
+ui-area {
+  padding: 0;
+}
+
+.pane {
+  min-width: 160px;
+}
+
+ui-rest.pane--left {
+  gap: 6px;
+}
+
+ui-rest.pane--left,
+ui-rest.pane--center {
+  flex: 0.4;
+}
+
+ui-rest.pane--right {
+  flex: 0.2;
+}
+
+*[is="x-ui-"] ui-resizehandle[data-direction="vertical"] {
+  flex: 0 0 var(--resize-handle-hit-width);
+  /* width: var(--resize-handle-hit-width); */
+  cursor: col-resize;
+  user-select: none;
+  position: relative;
+  z-index: 2;
+  padding: 0;
+  margin-left: calc(-1 * var(--resize-handle-hit-overflow));
+  margin-right: calc(-1 * var(--resize-handle-hit-overflow));
+}
+
+*[is="x-ui-"] ui-resizehandle[data-direction="vertical"]::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: 0;
+  margin-top: 0 !important;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--x-ui-border-color);
+  -webkit-transform: translate(-50%, -50%) rotate(0deg);
+  -moz-transform: translate(-50%, -50%) rotate(0deg);
+  transform: translate(-50%, -50%) rotate(0deg);
+  transform-origin: center center;
+  z-index: 1;
+  pointer-events: none;
+  box-shadow:
+    0 -6px 0 var(--x-ui-border-color),
+    0 6px 0 var(--x-ui-border-color);
+}
+
+ui-resizehandle[data-direction="vertical"]:hover::before {
+  background: var(--x-ui-text-muted-color);
+  box-shadow:
+    0 -6px 0 var(--x-ui-text-muted-color),
+    0 6px 0 var(--x-ui-text-muted-color);
+}
+
+*[is="x-ui-"] ui-resizehandle[data-direction="horizontal"] {
+  --resize-handle-horizontal-visual-height: var(--resize-handle-visual-width);
+  flex: 0 0 var(--resize-handle-hit-width);
+  height: var(--resize-handle-hit-width);
+  display: block;
+  position: relative;
+  z-index: 2;
+  cursor: row-resize;
+  user-select: none;
+  background: transparent;
+  margin-top: calc((var(--resize-handle-horizontal-visual-height) - var(--resize-handle-hit-width)) / 2);
+  margin-bottom: calc((var(--resize-handle-horizontal-visual-height) - var(--resize-handle-hit-width)) / 2);
+}
+
+*[is="x-ui-"] ui-resizehandle[data-direction="horizontal"][data-style="transparent"] {
+  --resize-handle-horizontal-visual-height: 1px;
+}
+
+
+*[is="x-ui-"] ui-resizehandle[data-direction="horizontal"][data-style="transparent"]::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1.5px;
+  background: var(--x-ui-border-color);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+*[is="x-ui-"] ui-resizehandle[data-direction="horizontal"][data-style="dots"]::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--x-ui-border-color);
+  transform: translate(-50%, -50%);
+  box-shadow:
+    -6px 0 0 var(--x-ui-border-color),
+    6px 0 0 var(--x-ui-border-color);
+}
+
+/* hover/drag 时稍微明显一点（可选） */
+*[is="x-ui-"] ui-resizehandle[data-direction="horizontal"][data-style="transparent"]:hover::before {
+  background: var(--x-ui-text-muted-color);
+}
+
+*[is="x-ui-"] ui-resizehandle[data-direction="horizontal"][data-style="dots"]:hover::before {
+  background: var(--x-ui-text-muted-color);
+  box-shadow:
+    -6px 0 0 var(--x-ui-text-muted-color),
+    6px 0 0 var(--x-ui-text-muted-color);
+}
+
+/* body.drag-in-progress ui-resizehandle::before {
+  background: rgba(59, 130, 246, 0.9);
+} */
+
+/* Strong override: ensure vertical handles are not rotated by other libs */
+ui-bar {
+  padding: 4px 10px;
+}
+
+fieldset.bar-controls {
+  display: contents;
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+.panel {
+  border: 1.5px solid var(--x-ui-border-color);
+  border-radius: 1em;
+  overflow: hidden;
+}
+
+/* Hidden by default and revealed by panel state rules when needed. */
+
+*[is=x-ui-] .state-controlled {
+  display: none;
+}
+
+#cy {
+  position: relative;
+}
+
+#projectGraphEmptyState {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  color: var(--x-ui-text-muted-color);
+  font-size: 15px;
+  font-weight: 500;
+  pointer-events: none;
+  z-index: 4;
+}
+
+#cy[data-empty="true"] #projectGraphEmptyState {
+  display: flex;
+}
+
+.panel-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+
+  min-height: 32px;
+  padding: 0 0.8rem;
+  /* background-color: var(--x-ui-light-back-color); */
+}
+
+/* .panel-header>* {
+  align-self: center;
+} */
+
+.panel-header__title {
+  font-weight: 650;
+  font-size: 16px;
+}
+
+.panel-header__subtitle {
+  font-weight: 450;
+  color: var(--x-ui-secondary-text-color);
+}
+
+#documentsPanel ui-tab {
+  font-size: 16px;
+  border-width: 1.5px;
+}
+
+#documentsPanel .panel-header {
+  cursor: default;
+  flex: 1 !important;
+}
+
+#documentsPanel ui-content {
+  margin: 0;
+  border-width: 1.5px;
+}
+
+#documentsPanel ui-tabbar {
+  padding: 0;
+}
+
+#documentsPanel ui-content {
+  padding: 0 0 0.5em 0;
+}
+
+/* button {
+    padding: 1em;
+    border: 1pt solid var(--x-ui-border-color);
+    border-radius: 0.5em;
+    background-color: var(--x-ui-content-light-background);
+    cursor: pointer;
+} */
+
+/* button:disabled {
+  background-color: var(--x-ui-disabled-background-color);
+  color: lightgray;
+} */
+
+
+#modelPopover {
+  position: fixed;
+  width: 300px;
+  height: 320px;
+  background: #fff;
+  /* color: #111; */
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+  border: 1px solid var(--x-ui-border-color);
+  z-index: 9999;
+  /* display: flex;
+  flex-direction: column; */
+  overflow: hidden;
+}
+
+
+/* #modelPopoverGrid {
+  display: block;
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+} */
+
+#modelPopover>ui-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  /* background: #fff; */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.model-popover-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 600;
+  color: #111;
+}
+
+#modelPopoverVersionName {
+  flex-shrink: 0;
+  font-size: 11px;
+  color: #555;
+}
+
+/* #modelPopoverGrid>svg {
+  display: block;
+} */
+
+
+.version-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 6px;
+  border-radius: 999px;
+  border: 1px solid var(--x-ui-border-color);
+  font-size: 11px;
+  line-height: 1.4;
+  font-weight: 600;
+  color: var(--x-ui-text-muted-color);
+  background-color: var(--x-ui-content-light-background);
+}
+
+.version-tag--latest {
+  color: #0f5132;
+  /* border-color: #b7dfc5; */
+  background-color: #eaf7ef;
+}
+
+.version-tag--historical {
+  color: #5f5a2b;
+  /* border-color: #ddd7a8; */
+  background-color: #f8f5de;
+}
+
+.version-tag--draft {
+  color: #1d4ed8;
+  background-color: #dbeafe;
+}
+
+li.list-item:nth-child(odd) {
+  background-color: var(--x-ui-content-light-background);
+}
+
+li.list-item:hover {
+  background-color: var(--x-ui-content-hover-background);
+}
+
+.action-cell {
+  flex: 0
+}
+
+.bulk-actions-bar {
+  border-top: 1px solid var(--x-ui-border-color);
+  border-bottom: 1px solid var(--x-ui-border-color);
+  background-color: var(--x-ui-content-light-background);
+}
+
+.bulk-actions-bar__count {
+  font-size: 12px;
+  color: var(--x-ui-text-muted-color);
+}
+
+/* .item-select-checkbox {
+  margin: 0;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  cursor: pointer;
+} */
+
+#documentsPanel .item-select-checkbox,
+#modelsPanel .item-select-checkbox {
+  display: none;
+}
+
+#documentsPanel[data-bulk-mode="true"] .bulk-actions-bar,
+#modelsPanel[data-bulk-mode="true"] .bulk-actions-bar {
+  display: flex;
+}
+
+#documentsPanel[data-bulk-mode="true"] .item-select-checkbox,
+#modelsPanel[data-bulk-mode="true"] .item-select-checkbox {
+  display: inline-flex;
+}
+
+/*--- document list pane ---*/
+#documentsList {
+  /* max-width: 100%; */
+  /* list-style: none;
+  padding: 0;
+  margin: 0; */
+}
+
+li.list-item {
+  display: flex;
+  align-items: center;
+  padding: 0.1em 0.5em;
+  min-width: 0;
+  cursor: pointer;
+  gap: 0.5em;
+  /* justify-content: space-between; */
+  /* align-items: center; */
+  /* width: 20%;
+  height: 80vh;
+  overflow-y: auto;
+  border-right: 1pt solid var(--x-ui-border-color);
+  padding-right: 0.5em; */
+}
+
+.version-name {
+  /* margin-left: auto; */
+  /* margin: 0 0.5em; */
+  font-size: 11px;
+  color: var(--x-ui-text-muted-color);
+  text-align: left;
+  /* flex: 0 0 7ch; */
+}
+
+li.list-item .inline-editor,
+.model-grid-item .inline-editor {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  max-width: 100%;
+  /* max-width: 50px; */
+}
+
+li.list-item .inline-editor__view {
+  /* display: inline-block; */
+  /* width: 100%; */
+  /* min-width: 0; */
+}
+
+li.list-item.is-current {
+  font-weight: 600;
+  background-color: var(--x-ui-content-highlighted-background);
+}
+
+
+/* li:hover {
+    cursor: pointer;
+    background-color: var(--x-ui-hover-background-color);
+} */
+
+/* ---------------- Right Pane ----------------*/
+/* ---------------- Right Pane - Models ----------------*/
+#modelsPanel[data-current-view="grid"] [data-belongs-to-view]:not([data-belongs-to-view="grid"]),
+#modelsPanel[data-current-view="list"] [data-belongs-to-view]:not([data-belongs-to-view="list"]) {
+  display: none;
+}
+
+#modelsDocumentFilterBar .field {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+}
+
+#modelsDocumentFilterBar .field>label {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+#modelsDocumentFilterBar #documentsSelect {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+}
+
+.model-grid-item {
+  border: 1.5px solid var(--x-ui-border-color);
+  /* padding: 0.5em; */
+  margin: 0.5em;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.model-grid-item ui-bar {
+  padding: 0;
+  gap: 0.3em;
+}
+
+.model-grid-item svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+.model-grid-item:hover {
+  border: 2px solid var(--wfadaptor-hover-border);
+}
+
+.model-grid-item.is-current {
+  border: 2px solid var(--wfadaptor-highlight);
+}
+
+/* ---------------- models pane ----------------*/

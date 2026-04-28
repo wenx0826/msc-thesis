@@ -1,0 +1,195 @@
+---
+timestamp: '2026-03-24T08:50:34.478Z'
+event: project_created
+data:
+  id: 4a03b5e4-7397-4bd7-8136-ec311071496a
+  name: U:Find
+---
+timestamp: '2026-03-24T08:51:43.494Z'
+event: document_uploaded
+data:
+  id: c706a634-79a5-4c76-812b-c46acf1b4b5d
+  projectId: 4a03b5e4-7397-4bd7-8136-ec311071496a
+  name: UFIND_Factsheet.docx
+  latestVersionId: null
+  latestVersionNumber: 0
+  createdAt: '2026-03-24T08:51:37.541Z'
+  deletedAt: null
+---
+timestamp: '2026-03-24T08:51:54.607Z'
+event: document_uploaded
+data:
+  id: fae3c8d9-0426-483a-8320-1c1902ff4202
+  projectId: 4a03b5e4-7397-4bd7-8136-ec311071496a
+  name: Spezifikationskatalog_Vorlesungsverzeichnis_Online_V0.9.pdf
+  latestVersionId: null
+  latestVersionNumber: 0
+  createdAt: '2026-03-24T08:51:50.163Z'
+  deletedAt: null
+---
+timestamp: '2026-03-24T08:53:32.663Z'
+event: model_generated
+data:
+  id: a1c1b5d7-1c48-4cb7-ac51-701acd568b8a
+  name: Model_1
+  data: |-
+    <description xmlns:dbpm="https://example.com/dbpm"><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+      <call id="a1" endpoint="" a:alt_id="1">
+        <parameters>
+          <label>Develop U:FIND</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a3" endpoint="" a:alt_id="2">
+        <parameters>
+          <label>Focus on User-Friendliness</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a5" endpoint="" a:alt_id="3">
+        <parameters>
+          <label>Adapt to Corporate Design</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </description>
+    </description>
+---
+timestamp: '2026-03-24T08:53:54.326Z'
+event: model_version_created
+data:
+  modelId: a1c1b5d7-1c48-4cb7-ac51-701acd568b8a
+  sourceVersionId: 559f914e-9a95-448c-8c54-8195a00f1950
+  newVersionId: 4dd4d3ee-8d54-4a99-ad4f-2bc8b9bb3228
+  mode: payload
+  type: regeneration
+---
+timestamp: '2026-03-24T08:54:47.372Z'
+event: model_generated
+data:
+  id: edc2262a-ee25-4d24-acbc-bf665a4a43e0
+  name: Model_2
+  data: |-
+    <description xmlns:dbpm="https://example.com/dbpm"><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+      <call id="a1" endpoint="" a:alt_id="1">
+        <parameters>
+          <label>Display Header and Footer</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a3" endpoint="" a:alt_id="2">
+        <parameters>
+          <label>Display Static Title Area</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a5" endpoint="" a:alt_id="3">
+        <parameters>
+          <label>Display Detail Area</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </description>
+    </description>
+---
+timestamp: '2026-03-24T13:21:31.635Z'
+event: model_generated
+data:
+  id: 4e41a8d9-867e-4f04-bf83-da64dfb6df3b
+  name: Model_3
+  data: |-
+    <description xmlns:dbpm="https://example.com/dbpm"><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+      <call id="a1" endpoint="" a:alt_id="1">
+        <parameters>
+          <label>Provide VVZ URLs</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a3" endpoint="" a:alt_id="2">
+        <parameters>
+          <label>Choose Leading URL</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a5" endpoint="" a:alt_id="3">
+        <parameters>
+          <label>Redirect Other URLs</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a7" endpoint="" a:alt_id="4">
+        <parameters>
+          <label>Set Landing Page to Search</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a9" endpoint="" a:alt_id="5">
+        <parameters>
+          <label>Maintain Existing URL with Redirection</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </description>
+    </description>
+---
+timestamp: '2026-03-24T13:22:54.706Z'
+event: model_generated
+data:
+  id: 31576e9f-b668-4df2-965a-34e46bd5b616
+  name: Model_4
+  data: |-
+    <description xmlns:dbpm="https://example.com/dbpm"><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+      <call id="a1" endpoint="" a:alt_id="1">
+        <parameters>
+          <label>Display Search Entry Page</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <choose mode="exclusive" a:alt_id="2">
+        <alternative condition="Extended Search" language="text/javascript">
+          <call id="a5" endpoint="" a:alt_id="3">
+            <parameters>
+              <label>Go to Use Case A2</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+        <alternative condition="Browse" language="text/javascript">
+          <call id="a7" endpoint="" a:alt_id="4">
+            <parameters>
+              <label>Go to Use Case B</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+      </choose>
+    </description>
+    </description>

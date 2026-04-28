@@ -1,0 +1,241 @@
+---
+timestamp: '2026-03-24T06:36:10.385Z'
+event: project_created
+data:
+  id: 92d3c52c-9fe8-44dd-bbe7-51b6dae42d19
+  name: test
+---
+timestamp: '2026-03-24T06:36:27.680Z'
+event: document_uploaded
+data:
+  id: 7137bc33-e534-427b-b26f-dfb310c05757
+  projectId: 92d3c52c-9fe8-44dd-bbe7-51b6dae42d19
+  name: qa_validation_process.docx
+  latestVersionId: null
+  latestVersionNumber: 0
+  createdAt: '2026-03-24T06:36:26.522Z'
+  deletedAt: null
+---
+timestamp: '2026-03-24T06:36:28.208Z'
+event: document_uploaded
+data:
+  id: b913b7be-ac28-4f86-87b6-49122d14206c
+  projectId: 92d3c52c-9fe8-44dd-bbe7-51b6dae42d19
+  name: feature_spec_payment.docx
+  latestVersionId: null
+  latestVersionNumber: 0
+  createdAt: '2026-03-24T06:36:27.684Z'
+  deletedAt: null
+---
+timestamp: '2026-03-24T06:36:43.359Z'
+event: model_generated
+data:
+  id: b00066ac-895e-4ca9-ba5d-1d2068c81860
+  name: Model_1
+  data: |-
+    <description xmlns:dbpm="https://example.com/dbpm"><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+      <call id="a1" endpoint="" a:alt_id="1">
+        <parameters>
+          <label>Select Test Scenarios</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a3" endpoint="" a:alt_id="2">
+        <parameters>
+          <label>Execute Tests</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </description>
+    </description>
+---
+timestamp: '2026-03-24T06:38:42.222Z'
+event: model_generated
+data:
+  id: 135cb750-90ce-46a4-af8b-e65323f85fb4
+  name: Model_2
+  data: |-
+    <description xmlns:dbpm="https://example.com/dbpm"><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+      <call id="a1" endpoint="" a:alt_id="1">
+        <parameters>
+          <label>Update Payment Workflow</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <parallel wait="-1" cancel="last" a:alt_id="2">
+        <parallel_branch>
+          <call id="a5" endpoint="" a:alt_id="3">
+            <parameters>
+              <label>QA Team Verifies Payment Processing</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </parallel_branch>
+        <parallel_branch>
+          <call id="a7" endpoint="" a:alt_id="4">
+            <parameters>
+              <label>Product Owner Confirms User Operations</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </parallel_branch>
+        <parallel_branch>
+          <call id="a9" endpoint="" a:alt_id="5">
+            <parameters>
+              <label>Operations Team Confirms Deployment Readiness</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </parallel_branch>
+      </parallel>
+      <loop mode="pre_test" condition="true">
+        <call id="a17" endpoint="" a:alt_id="7">
+          <parameters>
+            <label>Review Validation Results</label>
+            <method/>
+            <type>:task</type>
+            <arguments/>
+          </parameters>
+        </call>
+        <loop mode="pre_test" condition="Blocking Issues Found" a:alt_id="8" language="text/javascript">
+          <call id="a21" endpoint="" a:alt_id="9">
+            <parameters>
+              <label>Resolve Blocking Issues</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+          <call id="a23" endpoint="" a:alt_id="10">
+            <parameters>
+              <label>Re-execute Affected Validation Activities</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+          <call id="a17" endpoint="" a:alt_id="7">
+            <parameters>
+              <label>Review Validation Results</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </loop>
+        <choose mode="exclusive" a:alt_id="11">
+          <alternative condition="Readiness Criteria Met" language="text/javascript">
+            <call id="a29" endpoint="" a:alt_id="12">
+              <parameters>
+                <label>Approve Release</label>
+                <method/>
+                <type>:task</type>
+                <arguments/>
+              </parameters>
+            </call>
+          </alternative>
+          <alternative condition="Readiness Criteria Not Met" language="text/javascript">
+            <call id="a33" endpoint="" a:alt_id="14">
+              <parameters>
+                <label>Postpone Release</label>
+                <method/>
+                <type>:task</type>
+                <arguments/>
+              </parameters>
+            </call>
+          </alternative>
+        </choose>
+      </loop>
+    </description>
+    </description>
+---
+timestamp: '2026-03-24T06:41:14.099Z'
+event: model_version_created
+data:
+  modelId: b00066ac-895e-4ca9-ba5d-1d2068c81860
+  sourceVersionId: 1d368f32-788a-4144-8cc4-c2595cf6a904
+  newVersionId: ea4c9584-645d-4d93-843c-40339d11b564
+  mode: payload
+  type: regeneration
+---
+timestamp: '2026-03-24T06:41:45.169Z'
+event: model_version_created
+data:
+  modelId: b00066ac-895e-4ca9-ba5d-1d2068c81860
+  sourceVersionId: ea4c9584-645d-4d93-843c-40339d11b564
+  newVersionId: 00ff87cb-9615-4061-82f9-8005939fb6fe
+  mode: payload
+  type: regeneration
+---
+timestamp: '2026-03-24T06:42:37.085Z'
+event: model_version_created
+data:
+  modelId: b00066ac-895e-4ca9-ba5d-1d2068c81860
+  sourceVersionId: 00ff87cb-9615-4061-82f9-8005939fb6fe
+  newVersionId: 8d0d423a-6d73-42b8-92b9-1261f76ce2a6
+  mode: payload
+  type: refinement
+---
+timestamp: '2026-03-24T06:45:53.904Z'
+event: model_version_created
+data:
+  modelId: 135cb750-90ce-46a4-af8b-e65323f85fb4
+  sourceVersionId: 7a822000-f629-466f-a2c6-3e2db7175e9b
+  newVersionId: c32b309a-d77e-4cd4-80a2-b1db20639e10
+  mode: payload
+  type: regeneration
+---
+timestamp: '2026-03-24T06:48:39.260Z'
+event: model_version_created
+data:
+  modelId: 135cb750-90ce-46a4-af8b-e65323f85fb4
+  sourceVersionId: c32b309a-d77e-4cd4-80a2-b1db20639e10
+  newVersionId: ad67cc32-d95b-4902-b750-1a491d28b474
+  mode: payload
+  type: regeneration
+---
+timestamp: '2026-03-24T12:54:15.349Z'
+event: model_deleted
+data:
+  id: b00066ac-895e-4ca9-ba5d-1d2068c81860
+  name: Model_1
+  source: document_deleted_cascade
+  sourceDocumentId: 7137bc33-e534-427b-b26f-dfb310c05757
+---
+timestamp: '2026-03-24T12:54:15.693Z'
+event: document_deleted
+data:
+  id: 7137bc33-e534-427b-b26f-dfb310c05757
+  name: qa_validation_process.docx
+---
+timestamp: '2026-03-24T12:54:15.897Z'
+event: model_deleted
+data:
+  id: 135cb750-90ce-46a4-af8b-e65323f85fb4
+  name: Model_2
+  source: document_deleted_cascade
+  sourceDocumentId: b913b7be-ac28-4f86-87b6-49122d14206c
+---
+timestamp: '2026-03-24T12:54:16.251Z'
+event: document_deleted
+data:
+  id: b913b7be-ac28-4f86-87b6-49122d14206c
+  name: feature_spec_payment.docx
+---
+timestamp: '2026-03-24T12:54:16.625Z'
+event: project_deleted
+data:
+  id: 92d3c52c-9fe8-44dd-bbe7-51b6dae42d19
+  name: test

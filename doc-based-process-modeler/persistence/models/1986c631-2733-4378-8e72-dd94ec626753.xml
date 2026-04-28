@@ -1,0 +1,11 @@
+<description xmlns:dbpm="https://example.com/dbpm"><dbpm:info><dbpm:model_info><dbpm:model_id>1986c631-2733-4378-8e72-dd94ec626753</dbpm:model_id><dbpm:model_version_id>6cdabe3a-989f-4f28-83bc-81af431c14e3</dbpm:model_version_id><dbpm:model_version_name>v1</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>f724e881-dddc-4e4c-9992-6eb78025fc24</dbpm:document_id><dbpm:document_version_id>03a8a0ba-091e-43cf-8b6e-da7699998585</dbpm:document_version_id><dbpm:document_version_name>v1</dbpm:document_version_name><dbpm:document_file_name>Credit_Check.docx</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>The</dbpm:selection></dbpm:text_selections></dbpm:document_info></dbpm:info><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+  <call id="a1" endpoint="" a:alt_id="1">
+    <parameters>
+      <label>Process Description</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+</description>
+</description>
