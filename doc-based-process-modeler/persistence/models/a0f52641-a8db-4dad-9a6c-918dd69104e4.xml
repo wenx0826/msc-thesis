@@ -1,0 +1,44 @@
+<description xmlns:dbpm="https://example.com/dbpm"><dbpm:info><dbpm:model_info><dbpm:model_id>a8a75037-66e4-46dd-8172-a77d4a37f547</dbpm:model_id><dbpm:model_version_id>a0f52641-a8db-4dad-9a6c-918dd69104e4</dbpm:model_version_id><dbpm:model_version_name>v2</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>2ba3cbd7-17b3-45eb-b83b-5a7a6dbcd41b</dbpm:document_id><dbpm:document_version_id>9581023a-02c5-4950-af44-e3d15782dadd</dbpm:document_version_id><dbpm:document_version_name>v1</dbpm:document_version_name><dbpm:document_file_name>feature_spec_payment.docx</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>3. Validation and Release PreparationBefore release, the payment workflow update must undergo validation across multiple aspects of the system.Validation activities are carried out by different roles:- The QA team validates functional correctness of payment processing and retry behavior- The product owner verifies that user-facing behavior aligns with business expectations- The operations team confirms deployment readiness and system stabilityThese validation activities may be performed independently but must all be completed before proceeding.</dbpm:selection></dbpm:text_selections></dbpm:document_info><dbpm:prompts><dbpm:prompt>add a task review validation result task at the end</dbpm:prompt></dbpm:prompts></dbpm:info><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+  <call id="a1" endpoint="" a:alt_id="a1" svg-id="a1" svg-label="Initiate Validation" svg-type="call" svg-subtype="call">
+    <parameters>
+      <label>Initiate Validation</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <parallel wait="-1" cancel="last" a:alt_id="gw1s" svg-id="parallel_0" svg-type="parallel" svg-subtype="parallel_start">
+    <parallel_branch svg-id="parallel_branch_0" svg-type="parallel_branch" svg-subtype="parallel_branch_normal">
+      <call id="a5" endpoint="" a:alt_id="a5" svg-id="a5" svg-label="QA Validation" svg-type="call" svg-subtype="call">
+        <parameters>
+          <label>QA Validation</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </parallel_branch>
+    <parallel_branch svg-id="parallel_branch_1" svg-type="parallel_branch" svg-subtype="parallel_branch_normal">
+      <call id="a9" endpoint="" a:alt_id="a7" svg-id="a9" svg-label="Product Owner Verification" svg-type="call" svg-subtype="call">
+        <parameters>
+          <label>Product Owner Verification</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </parallel_branch>
+    <parallel_branch svg-id="parallel_branch_2" svg-type="parallel_branch" svg-subtype="parallel_branch_normal">
+      <call id="a13" endpoint="" a:alt_id="a9" svg-id="a13" svg-label="Operations Confirmation" svg-type="call" svg-subtype="call">
+        <parameters>
+          <label>Operations Confirmation</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </parallel_branch>
+  </parallel>
+  <call id="a17" endpoint="subprocess" svg-id="a17" a:alt_id="a10" svg-label="Review Validation Result" svg-type="call" svg-subtype="call"><parameters><label>Review Validation Result</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>c3fc4793-0055-44dd-a55b-572124820ea2</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:6688/persistence/models/c3fc4793-0055-44dd-a55b-572124820ea2.xml</url></arguments></parameters></call>
+</description>
+</description>

@@ -1,0 +1,43 @@
+<description xmlns:dbpm="https://example.com/dbpm"><dbpm:info><dbpm:model_info><dbpm:model_id>845d6e12-2af7-46a4-9a15-83962d806b86</dbpm:model_id><dbpm:model_version_id>aa7b1bb8-afaf-488e-8d19-84153a82809e</dbpm:model_version_id><dbpm:model_version_name>v1</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>d8be8925-3a8f-4ef8-b862-88ea3c5dd673</dbpm:document_id><dbpm:document_version_id>c85666d9-e72d-4ad1-ad35-a9b710d1211a</dbpm:document_version_id><dbpm:document_version_name>v1</dbpm:document_version_name><dbpm:document_file_name>feature_spec_payment.docx</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>3. Validation and Release PreparationBefore release, the payment workflow update must undergo validation across multiple aspects of the system.Validation activities are carried out by different roles:- The QA team validates functional correctness of payment processing and retry behavior- The product owner verifies that user-facing behavior aligns with business expectations- The operations team confirms deployment readiness and system stabilityThese validation activities may be performed independently but must all be completed before proceeding.</dbpm:selection><dbpm:selection>5. Validation Outcome HandlingAfter validation activities are completed, the results are reviewed collectively.If issues are identified, they are classified as:- Blocking issues, which affect transaction correctness or system stability- Non-blocking issues, which do not affect core functionalityBlocking issues must be resolved before release.After resolution, the affected validation activities must be performed again to confirm that the issues have been addressed.Non-blocking issues may be documented and do not prevent further progress.6. Release Readiness CriteriaThe release is considered ready only when:- All required validation activities have been completed- No blocking issues remain7. Release DecisionThe release decision is based on the overall validation outcome and readiness status.- If readiness criteria are satisfied, the release is approved- If blocking issues remain, the release is postponed until resolution and re-validation</dbpm:selection></dbpm:text_selections></dbpm:document_info></dbpm:info><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+  <parallel wait="-1" cancel="last" a:alt_id="1">
+    <parallel_branch>
+      <call id="a3" endpoint="" a:alt_id="2">
+        <parameters>
+          <label>QA Validation</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </parallel_branch>
+    <parallel_branch>
+      <call id="a5" endpoint="" a:alt_id="3">
+        <parameters>
+          <label>Product Owner Verification</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </parallel_branch>
+    <parallel_branch>
+      <call id="a7" endpoint="" a:alt_id="4">
+        <parameters>
+          <label>Operations Confirmation</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </parallel_branch>
+  </parallel>
+  <call id="a15" endpoint="" a:alt_id="6">
+    <parameters>
+      <label>Review Validation Results</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+</description>
+</description>

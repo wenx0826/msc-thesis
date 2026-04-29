@@ -1,0 +1,35 @@
+<description xmlns:dbpm="https://example.com/dbpm"><dbpm:info><dbpm:model_info><dbpm:model_id>06779bac-b9ce-4f3b-b7ca-273ef22407a1</dbpm:model_id><dbpm:model_version_id>b450e740-836c-447a-9f05-08427044fc43</dbpm:model_version_id><dbpm:model_version_name>v1</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>f4cfe702-7259-4b2f-9ffc-12dfcaf34808</dbpm:document_id><dbpm:document_version_id>51633c55-1822-4294-92b4-d6fe6445c3ef</dbpm:document_version_id><dbpm:document_version_name>v1</dbpm:document_version_name><dbpm:document_file_name>feature_spec_payment.docx</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>3. Validation and Release PreparationBefore release, the payment workflow update must undergo validation across multiple aspects of the system.Validation activities are carried out by different roles:- The QA team validates functional correctness of payment processing and retry behavior- The product owner verifies that user-facing behavior aligns with business expectations- The operations team confirms deployment readiness and system stabilityThese validation activities may be performed independently but must all be completed before proceeding.</dbpm:selection></dbpm:text_selections></dbpm:document_info></dbpm:info><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+  <parallel wait="-1" cancel="last" a:alt_id="1" svg-id="parallel_0" svg-type="parallel" svg-subtype="parallel_start">
+    <parallel_branch svg-id="parallel_branch_0" svg-type="parallel_branch" svg-subtype="parallel_branch_normal">
+      <call id="a3" endpoint="" a:alt_id="2" svg-id="a3" svg-label="Validate Functional Correctness (QA)" svg-type="call" svg-subtype="call">
+        <parameters>
+          <label>Validate Functional Correctness (QA)</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </parallel_branch>
+    <parallel_branch svg-id="parallel_branch_1" svg-type="parallel_branch" svg-subtype="parallel_branch_normal">
+      <call id="a5" endpoint="" a:alt_id="3" svg-id="a5" svg-label="Verify User-Facing Behavior (PO)" svg-type="call" svg-subtype="call">
+        <parameters>
+          <label>Verify User-Facing Behavior (PO)</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </parallel_branch>
+    <parallel_branch svg-id="parallel_branch_2" svg-type="parallel_branch" svg-subtype="parallel_branch_normal">
+      <call id="a7" endpoint="" a:alt_id="4" svg-id="a7" svg-label="Confirm Deployment Readiness (Ops)" svg-type="call" svg-subtype="call">
+        <parameters>
+          <label>Confirm Deployment Readiness (Ops)</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </parallel_branch>
+  </parallel>
+</description>
+</description>

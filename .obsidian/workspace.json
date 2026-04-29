@@ -25,14 +25,12 @@
             "id": "7cb210cc188b691e",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "video",
               "state": {
-                "file": "Pre/Demo_v0.md",
-                "mode": "source",
-                "source": false
+                "file": "QuickStartV1.mp4"
               },
               "icon": "lucide-file",
-              "title": "Demo_v0"
+              "title": "QuickStartV1"
             }
           },
           {
@@ -170,13 +168,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Pre/Demo_v0.md",
+                "file": "QuickStartV1.mp4",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of Demo_v0"
+              "title": "Outline of QuickStartV1"
             }
           },
           {
@@ -214,20 +212,29 @@
   },
   "active": "7cb210cc188b691e",
   "lastOpenFiles": [
+    "doc-based-process-modeler/persistence/models/44f1c4a5-eb6e-4501-b683-9ace8f0b4727.xml",
+    "doc-based-process-modeler/persistence/models/a5226229-0bbd-4784-9c97-0cd4f17c422a.xml",
+    "doc-based-process-modeler/persistence/models/95744e0c-8a9c-4ba5-8fc3-5abdff0f03f7.xml",
+    "doc-based-process-modeler/persistence/models/bbd7a740-77a0-4f22-a9d7-8247638115dc.xml",
+    "doc-based-process-modeler/persistence/documents/ce950c92-708b-4972-b529-81361a093f75.html",
+    "doc-based-process-modeler/persistence/models/88897b15-c548-4e66-b8e8-b6583d135c0d.xml",
+    "doc-based-process-modeler/persistence/models/5d8113ae-9c86-432a-9055-f60bbf40c95e.xml",
+    "doc-based-process-modeler/persistence/models/f68c004f-4765-486d-a3c0-5b9c956e93a3.xml",
+    "doc-based-process-modeler/persistence/models/f5a90463-f2dc-4796-8699-3dec4cffd8ac.xml",
+    "doc-based-process-modeler/persistence/models/5aee324d-ec88-4df7-a998-c9e7429abb77.xml",
+    "doc-based-process-modeler/persistence/models/06779bac-b9ce-4f3b-b7ca-273ef22407a1.xml",
+    "Pre/script v1.md",
     "Pre/Script v0.md",
+    "Pre/Demo_v0.md",
+    "Video Scripts/Script v0.md",
     "Pre/4_Evaluation.md",
     "Pre/3_Demo.md",
-    "Pre/Demo_v0.md",
     "Prop/Grok v0.1.md",
     "Prop/Grok v1.md",
-    "Prop/Untitled 1.base",
     "Prop/Gemini v0.1.md",
     "Video Scripts/Gemini v0 - Intro.md",
-    "Video Scripts/Script v0.md",
     "Video Scripts/Script v1.md",
     "Video Scripts/Untitled.md",
-    "Recording 20260428195409.m4a",
-    "Recording 20260426211824.m4a",
     "Pre/1_Motivation.md",
     "Pre/2_Solution Design.md",
     "05_Evaluation/v0.9.md",
@@ -235,13 +242,6 @@
     "05_Evaluation/v0.md",
     "05_Evaluation/1_Responses.md",
     "05_Evaluation/0_Responses (Original).md",
-    "Recording 20260429141507.m4a",
-    "Recording 20260429141406.m4a",
-    "Recording 20260429140752.m4a",
-    "doc-based-process-modeler/persistence/models/c7df884f-964c-4733-ae1a-f87a682b89b9.xml",
-    "doc-based-process-modeler/persistence/models/f768038a-7d32-4394-9f20-dfe8626fe05e.xml",
-    "doc-based-process-modeler/persistence/models/3a3a12d6-a26f-441a-a71b-e739db4478af.xml",
-    "doc-based-process-modeler/persistence/database.sqlite-journal",
     "Pasted image 20260428150553.png",
     "doc-based-process-modeler/backend/node_modules/setprototypeof/README.md",
     "doc-based-process-modeler/backend/node_modules/path-scurry/README.md",
@@ -250,8 +250,6 @@
     "doc-based-process-modeler/backend/node_modules/fastify/test/bundler/README.md",
     "doc-based-process-modeler/backend/node_modules/fastify/docs/resources/encapsulation_context.svg",
     "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/Warnings.md",
-    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/Validation-and-Serialization.md",
-    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/TypeScript.md",
     "doc-based-process-modeler/backend/node_modules/@fastify/static/test/static/shallow/sample.jpg",
     "doc-based-process-modeler/backend/node_modules/@fastify/static/example/public/images/sample.jpg",
     "doc-based-process-modeler/backend/node_modules/@fastify/send/test/fixtures/images/node-js.png",

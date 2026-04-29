@@ -5,6 +5,7 @@ import {
   getProjectLogURL,
 } from "../../../shared/utils/url.js";
 import { default as setProjectNameEditor } from "../../../shared/widgets/inline-editor.js";
+import workspaceStore from "../store/workspace.store.js";
 
 const projectId = getProjectIdFromURL();
 const $projectName = $("#projectName");
@@ -31,5 +32,10 @@ createUI({
     });
     $projectLogLink.attr("href", getProjectLogURL(projectId));
     $projectStatsLink.attr("href", "stats.html" + window.location.search);
+  },
+  bindListeners: () => {
+    $("#llmModelSelect").on("change", (e) => {
+      workspaceStore.setLlmModel(e.target.value);
+    });
   },
 });

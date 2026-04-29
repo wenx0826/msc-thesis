@@ -1,0 +1,48 @@
+<description xmlns:dbpm="https://example.com/dbpm"><dbpm:info><dbpm:model_info><dbpm:model_id>54a835d2-350d-4918-94eb-42bf5da1e19c</dbpm:model_id><dbpm:model_version_id>0b0408b7-67f2-4bd6-9f15-f88c7fc9a727</dbpm:model_version_id><dbpm:model_version_name>v1</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>b7efc83d-4b48-4518-82b9-ac1ceef8e546</dbpm:document_id><dbpm:document_version_id>8787dce9-fb7b-4a30-a640-6a3eb083a3b8</dbpm:document_version_id><dbpm:document_version_name>v1</dbpm:document_version_name><dbpm:document_file_name>qa_validation_process.docx</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>1. PurposeThis sub-process describes the QA validation activities performed to verify functional correctness of the payment workflow before release.2. Steps1. Select Test ScenariosIdentify representative payment scenarios, including success, failure, and retry cases.2. Execute TestsRun test scenarios and record system behavior.3. Review ResultsEvaluate outcomes to determine if expected behavior is achieved.4. Issues Identified?If issues are found, classify them.5. Blocking Issue?- Yes: Report defect and proceed to resolution.- No: Document issue and continue.6. Resolve IssuesFix blocking defects.7. Re-test ScenariosRe-run affected scenarios to confirm resolution.8. Complete ValidationFinalize validation results.</dbpm:selection></dbpm:text_selections></dbpm:document_info></dbpm:info><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+  <call id="a1" endpoint="" a:alt_id="1">
+    <parameters>
+      <label>Select Test Scenarios</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a3" endpoint="" a:alt_id="2">
+    <parameters>
+      <label>Execute Tests</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a5" endpoint="" a:alt_id="3">
+    <parameters>
+      <label>Review Results</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <choose mode="exclusive" a:alt_id="4">
+    <alternative condition="No Issues Found" language="text/javascript"/>
+    <alternative condition="Issues Found" language="text/javascript">
+      <call id="a11" endpoint="" a:alt_id="5">
+        <parameters>
+          <label>Classify Issues</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a15" endpoint="" a:alt_id="8">
+        <parameters>
+          <label/>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </alternative>
+  </choose>
+</description>
+</description>

@@ -1,0 +1,39 @@
+<description xmlns:dbpm="https://example.com/dbpm"><dbpm:info><dbpm:model_info><dbpm:model_id>a426f393-0ed0-4d47-861b-2db96d115fb3</dbpm:model_id><dbpm:model_version_id>95f083a8-1734-4f55-afd0-fbe765284ea2</dbpm:model_version_id><dbpm:model_version_name>v1</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>d8be8925-3a8f-4ef8-b862-88ea3c5dd673</dbpm:document_id><dbpm:document_version_id>c85666d9-e72d-4ad1-ad35-a9b710d1211a</dbpm:document_version_id><dbpm:document_version_name>v1</dbpm:document_version_name><dbpm:document_file_name>feature_spec_payment.docx</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>After validation activities are completed, the results are reviewed collectively.If issues are identified, they are classified as:- Blocking issues, which affect transaction correctness or system stability- Non-blocking issues, which do not affect core functionalityBlocking issues must be resolved before release.After resolution, the affected validation activities must be performed again to confirm that the issues have been addressed.Non-blocking issues may be documented and do not prevent further progress.6. Release Readiness CriteriaThe release is considered ready only when:- All required validation activities have been completed- No blocking issues remain7. Release DecisionThe release decision is based on the overall validation outcome and readiness status.- If readiness criteria are satisfied, the release is approved- If blocking issues remain, the release is postponed until resolution and re-validation</dbpm:selection></dbpm:text_selections></dbpm:document_info></dbpm:info><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+  <loop mode="pre_test" condition="true">
+    <call id="a1" endpoint="" a:alt_id="1">
+      <parameters>
+        <label>Review Validation Results</label>
+        <method/>
+        <type>:task</type>
+        <arguments/>
+      </parameters>
+    </call>
+    <loop mode="pre_test" condition="Issues Identified" a:alt_id="2" language="text/javascript">
+      <call id="a9" endpoint="" a:alt_id="4">
+        <parameters>
+          <label>Resolve Blocking Issues</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a11" endpoint="" a:alt_id="5">
+        <parameters>
+          <label>Re-perform Validation Activities</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a1" endpoint="" a:alt_id="1">
+        <parameters>
+          <label>Review Validation Results</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </loop>
+  </loop>
+</description>
+</description>

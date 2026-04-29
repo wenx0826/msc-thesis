@@ -1,0 +1,43 @@
+<description xmlns:dbpm="https://example.com/dbpm"><dbpm:info><dbpm:model_info><dbpm:model_id>a8a75037-66e4-46dd-8172-a77d4a37f547</dbpm:model_id><dbpm:model_version_id>ded53b68-6342-42df-b431-1bfe5d5b4513</dbpm:model_version_id><dbpm:model_version_name>v1</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>2ba3cbd7-17b3-45eb-b83b-5a7a6dbcd41b</dbpm:document_id><dbpm:document_version_id>9581023a-02c5-4950-af44-e3d15782dadd</dbpm:document_version_id><dbpm:document_version_name>v1</dbpm:document_version_name><dbpm:document_file_name>feature_spec_payment.docx</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>3. Validation and Release PreparationBefore release, the payment workflow update must undergo validation across multiple aspects of the system.Validation activities are carried out by different roles:- The QA team validates functional correctness of payment processing and retry behavior- The product owner verifies that user-facing behavior aligns with business expectations- The operations team confirms deployment readiness and system stabilityThese validation activities may be performed independently but must all be completed before proceeding.</dbpm:selection></dbpm:text_selections></dbpm:document_info></dbpm:info><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+  <call id="a1" endpoint="" a:alt_id="1">
+    <parameters>
+      <label>Initiate Validation</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <parallel wait="-1" cancel="last" a:alt_id="2">
+    <parallel_branch>
+      <call id="a5" endpoint="" a:alt_id="3">
+        <parameters>
+          <label>QA Validation</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </parallel_branch>
+    <parallel_branch>
+      <call id="a7" endpoint="" a:alt_id="4">
+        <parameters>
+          <label>Product Owner Verification</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </parallel_branch>
+    <parallel_branch>
+      <call id="a9" endpoint="" a:alt_id="5">
+        <parameters>
+          <label>Operations Confirmation</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </parallel_branch>
+  </parallel>
+</description>
+</description>

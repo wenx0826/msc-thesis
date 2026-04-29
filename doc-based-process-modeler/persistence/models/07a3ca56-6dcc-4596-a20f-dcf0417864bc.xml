@@ -1,0 +1,35 @@
+<description xmlns:dbpm="https://example.com/dbpm"><dbpm:info><dbpm:model_info><dbpm:model_id>db648526-2cc7-44e6-8bef-64fe7adbdcab</dbpm:model_id><dbpm:model_version_id>07a3ca56-6dcc-4596-a20f-dcf0417864bc</dbpm:model_version_id><dbpm:model_version_name>v1</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>d8be8925-3a8f-4ef8-b862-88ea3c5dd673</dbpm:document_id><dbpm:document_version_id>c85666d9-e72d-4ad1-ad35-a9b710d1211a</dbpm:document_version_id><dbpm:document_version_name>v1</dbpm:document_version_name><dbpm:document_file_name>feature_spec_payment.docx</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>3. Validation and Release PreparationBefore release, the payment workflow update must undergo validation across multiple aspects of the system.Validation activities are carried out by different roles:- The QA team validates functional correctness of payment processing and retry behavior- The product owner verifies that user-facing behavior aligns with business expectations- The operations team confirms deployment readiness and system stabilityThese validation activities may be performed independently but must all be completed before proceeding.4. Validation ScopeValidation focuses on core transaction flows and typical variations observed during normal operation.Detailed coverage of environment-specific variations and rare edge cases may be handled separately.5. Validation Outcome HandlingAfter validation activities are completed, the results are reviewed collectively.If issues are identified, they are classified as:- Blocking issues, which affect transaction correctness or system stability- Non-blocking issues, which do not affect core functionalityBlocking issues must be resolved before release.After resolution, the affected validation activities must be performed again to confirm that the issues have been addressed.Non-blocking issues may be documented and do not prevent further progress.</dbpm:selection></dbpm:text_selections></dbpm:document_info></dbpm:info><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+  <parallel wait="-1" cancel="last" a:alt_id="2" svg-id="parallel_0" svg-type="parallel" svg-subtype="parallel_start"><call xmlns="http://cpee.org/ns/description/1.0" id="a1" endpoint="" svg-id="a1" svg-type="call" svg-subtype="call"><parameters><label/><color/><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call>
+    <parallel_branch svg-id="parallel_branch_0" svg-type="parallel_branch" svg-subtype="parallel_branch_event">
+      <call id="a5" endpoint="" a:alt_id="3" svg-id="a5" svg-label="Validate Functional Correctness" svg-type="call" svg-subtype="call">
+        <parameters>
+          <label>Validate Functional Correctness</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </parallel_branch>
+    <parallel_branch svg-id="parallel_branch_1" svg-type="parallel_branch" svg-subtype="parallel_branch_event">
+      <call id="a7" endpoint="" a:alt_id="4" svg-id="a7" svg-label="Verify User-Facing Behavior" svg-type="call" svg-subtype="call">
+        <parameters>
+          <label>Verify User-Facing Behavior</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </parallel_branch>
+    <parallel_branch svg-id="parallel_branch_2" svg-type="parallel_branch" svg-subtype="parallel_branch_event">
+      <call id="a9" endpoint="" a:alt_id="5" svg-id="a9" svg-label="Confirm Deployment Readiness" svg-type="call" svg-subtype="call">
+        <parameters>
+          <label>Confirm Deployment Readiness</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </parallel_branch>
+  </parallel>
+</description>
+</description>

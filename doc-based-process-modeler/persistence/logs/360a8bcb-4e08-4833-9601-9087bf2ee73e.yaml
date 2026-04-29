@@ -1,0 +1,242 @@
+---
+timestamp: '2026-04-29T20:46:25.418Z'
+event: project_created
+data:
+  id: 360a8bcb-4e08-4833-9601-9087bf2ee73e
+  name: demo
+---
+timestamp: '2026-04-29T20:46:52.965Z'
+event: document_uploaded
+data:
+  id: b7efc83d-4b48-4518-82b9-ac1ceef8e546
+  projectId: 360a8bcb-4e08-4833-9601-9087bf2ee73e
+  name: qa_validation_process.docx
+  latestVersionId: null
+  latestVersionNumber: 0
+  createdAt: '2026-04-29T20:46:52.954Z'
+  deletedAt: null
+---
+timestamp: '2026-04-29T20:46:52.971Z'
+event: document_uploaded
+data:
+  id: d8be8925-3a8f-4ef8-b862-88ea3c5dd673
+  projectId: 360a8bcb-4e08-4833-9601-9087bf2ee73e
+  name: feature_spec_payment.docx
+  latestVersionId: null
+  latestVersionNumber: 0
+  createdAt: '2026-04-29T20:46:52.968Z'
+  deletedAt: null
+---
+timestamp: '2026-04-29T20:48:58.292Z'
+event: model_generated
+data:
+  id: db648526-2cc7-44e6-8bef-64fe7adbdcab
+  name: Model_1
+  data: |-
+    <description xmlns:dbpm="https://example.com/dbpm"><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+      <parallel wait="-1" cancel="last" a:alt_id="2">
+        <parallel_branch>
+          <call id="a5" endpoint="" a:alt_id="3">
+            <parameters>
+              <label>Validate Functional Correctness</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </parallel_branch>
+        <parallel_branch>
+          <call id="a7" endpoint="" a:alt_id="4">
+            <parameters>
+              <label>Verify User-Facing Behavior</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </parallel_branch>
+        <parallel_branch>
+          <call id="a9" endpoint="" a:alt_id="5">
+            <parameters>
+              <label>Confirm Deployment Readiness</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </parallel_branch>
+      </parallel>
+    </description>
+    </description>
+---
+timestamp: '2026-04-29T20:50:31.530Z'
+event: model_version_created
+data:
+  modelId: db648526-2cc7-44e6-8bef-64fe7adbdcab
+  sourceVersionId: 07a3ca56-6dcc-4596-a20f-dcf0417864bc
+  newVersionId: 4a26ae51-1e6a-4a34-858c-1068d74363a4
+  mode: payload
+  type: regeneration
+---
+timestamp: '2026-04-29T20:51:19.597Z'
+event: model_generated
+data:
+  id: 54a835d2-350d-4918-94eb-42bf5da1e19c
+  name: Model_2
+  data: |-
+    <description xmlns:dbpm="https://example.com/dbpm"><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+      <call id="a1" endpoint="" a:alt_id="1">
+        <parameters>
+          <label>Select Test Scenarios</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a3" endpoint="" a:alt_id="2">
+        <parameters>
+          <label>Execute Tests</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a5" endpoint="" a:alt_id="3">
+        <parameters>
+          <label>Review Results</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <choose mode="exclusive" a:alt_id="4">
+        <alternative condition="No Issues Found" language="text/javascript"/>
+        <alternative condition="Issues Found" language="text/javascript">
+          <call id="a11" endpoint="" a:alt_id="5">
+            <parameters>
+              <label>Classify Issues</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+          <call id="a15" endpoint="" a:alt_id="8">
+            <parameters>
+              <label/>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+      </choose>
+    </description>
+    </description>
+---
+timestamp: '2026-04-29T20:59:23.588Z'
+event: model_deleted
+data:
+  id: db648526-2cc7-44e6-8bef-64fe7adbdcab
+  name: Model_1
+---
+timestamp: '2026-04-29T20:59:26.051Z'
+event: model_deleted
+data:
+  id: 54a835d2-350d-4918-94eb-42bf5da1e19c
+  name: Model_2
+---
+timestamp: '2026-04-29T21:00:51.523Z'
+event: model_generated
+data:
+  id: 845d6e12-2af7-46a4-9a15-83962d806b86
+  name: Model_3
+  data: |-
+    <description xmlns:dbpm="https://example.com/dbpm"><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+      <parallel wait="-1" cancel="last" a:alt_id="1">
+        <parallel_branch>
+          <call id="a3" endpoint="" a:alt_id="2">
+            <parameters>
+              <label>QA Validation</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </parallel_branch>
+        <parallel_branch>
+          <call id="a5" endpoint="" a:alt_id="3">
+            <parameters>
+              <label>Product Owner Verification</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </parallel_branch>
+        <parallel_branch>
+          <call id="a7" endpoint="" a:alt_id="4">
+            <parameters>
+              <label>Operations Confirmation</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </parallel_branch>
+      </parallel>
+      <call id="a15" endpoint="" a:alt_id="6">
+        <parameters>
+          <label>Review Validation Results</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </description>
+    </description>
+---
+timestamp: '2026-04-29T21:01:56.716Z'
+event: model_generated
+data:
+  id: a426f393-0ed0-4d47-861b-2db96d115fb3
+  name: Model_4
+  data: |-
+    <description xmlns:dbpm="https://example.com/dbpm"><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+      <loop mode="pre_test" condition="true">
+        <call id="a1" endpoint="" a:alt_id="1">
+          <parameters>
+            <label>Review Validation Results</label>
+            <method/>
+            <type>:task</type>
+            <arguments/>
+          </parameters>
+        </call>
+        <loop mode="pre_test" condition="Issues Identified" a:alt_id="2" language="text/javascript">
+          <call id="a9" endpoint="" a:alt_id="4">
+            <parameters>
+              <label>Resolve Blocking Issues</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+          <call id="a11" endpoint="" a:alt_id="5">
+            <parameters>
+              <label>Re-perform Validation Activities</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+          <call id="a1" endpoint="" a:alt_id="1">
+            <parameters>
+              <label>Review Validation Results</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </loop>
+      </loop>
+    </description>
+    </description>

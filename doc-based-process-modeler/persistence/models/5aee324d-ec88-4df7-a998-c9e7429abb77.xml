@@ -1,0 +1,29 @@
+<description xmlns:dbpm="https://example.com/dbpm"><dbpm:info><dbpm:model_info><dbpm:model_id>06779bac-b9ce-4f3b-b7ca-273ef22407a1</dbpm:model_id><dbpm:model_version_id>5aee324d-ec88-4df7-a998-c9e7429abb77</dbpm:model_version_id><dbpm:model_version_name>v2</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>f4cfe702-7259-4b2f-9ffc-12dfcaf34808</dbpm:document_id><dbpm:document_version_id>51633c55-1822-4294-92b4-d6fe6445c3ef</dbpm:document_version_id><dbpm:document_version_name>v1</dbpm:document_version_name><dbpm:document_file_name>feature_spec_payment.docx</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>3. Validation and Release PreparationBefore release, the payment workflow update must undergo validation across multiple aspects of the system.Validation activities are carried out by different roles:- The QA team validates functional correctness of payment processing and retry behavior- The product owner verifies that user-facing behavior aligns with business expectations- The operations team confirms deployment readiness and system stabilityThese validation activities may be performed independently but must all be completed before proceeding.</dbpm:selection><dbpm:selection>5. Validation Outcome Handling</dbpm:selection></dbpm:text_selections></dbpm:document_info><dbpm:prompts><dbpm:prompt>Add a validation outcome handling task at the end</dbpm:prompt></dbpm:prompts></dbpm:info><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+  <parallel wait="-1" cancel="last" a:alt_id="gw1s" svg-id="parallel_0" svg-type="parallel" svg-subtype="parallel_start">
+    <parallel_branch svg-id="parallel_branch_0" svg-type="parallel_branch" svg-subtype="parallel_branch_normal">
+      <call id="a3" endpoint="subprocess" svg-id="a3" a:alt_id="a3" svg-label="Validate Functional Correctness \(QA\)" svg-type="call" svg-subtype="call"><parameters><label>Validate Functional Correctness \(QA\)</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>88897b15-c548-4e66-b8e8-b6583d135c0d</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:6688/persistence/models/88897b15-c548-4e66-b8e8-b6583d135c0d.xml</url></arguments></parameters></call>
+    </parallel_branch>
+    <parallel_branch svg-id="parallel_branch_1" svg-type="parallel_branch" svg-subtype="parallel_branch_normal">
+      <call id="a7" endpoint="" a:alt_id="a5" svg-id="a7" svg-label="Verify User-Facing Behavior \(PO\)" svg-type="call" svg-subtype="call">
+        <parameters>
+          <label>Verify User-Facing Behavior \(PO\)</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </parallel_branch>
+    <parallel_branch svg-id="parallel_branch_2" svg-type="parallel_branch" svg-subtype="parallel_branch_normal">
+      <call id="a11" endpoint="" a:alt_id="a7" svg-id="a11" svg-label="Confirm Deployment Readiness \(Ops\)" svg-type="call" svg-subtype="call">
+        <parameters>
+          <label>Confirm Deployment Readiness \(Ops\)</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </parallel_branch>
+  </parallel>
+  <call id="a15" endpoint="subprocess" svg-id="a15" a:alt_id="a8" svg-label="Validation Outcome Handling" svg-type="call" svg-subtype="call"><parameters><label>Validation Outcome Handling</label><color/><dbpm_type>subprocess</dbpm_type><dbpm_subprocess_model>f68c004f-4765-486d-a3c0-5b9c956e93a3</dbpm_subprocess_model><arguments><behavior>wait_for_running</behavior><url>http://localhost:6688/persistence/models/f68c004f-4765-486d-a3c0-5b9c956e93a3.xml</url></arguments></parameters></call>
+</description>
+</description>

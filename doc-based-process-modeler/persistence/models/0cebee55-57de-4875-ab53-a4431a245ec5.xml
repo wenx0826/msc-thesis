@@ -1,0 +1,91 @@
+<description xmlns:dbpm="https://example.com/dbpm"><dbpm:info><dbpm:model_info><dbpm:model_id>0cebee55-57de-4875-ab53-a4431a245ec5</dbpm:model_id><dbpm:model_version_id>cb8c1128-9512-4651-b9b4-2d9bf4c3822b</dbpm:model_version_id><dbpm:model_version_name>v1</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>2ba3cbd7-17b3-45eb-b83b-5a7a6dbcd41b</dbpm:document_id><dbpm:document_version_id>9581023a-02c5-4950-af44-e3d15782dadd</dbpm:document_version_id><dbpm:document_version_name>v1</dbpm:document_version_name><dbpm:document_file_name>feature_spec_payment.docx</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>3. Validation and Release PreparationBefore release, the payment workflow update must undergo validation across multiple aspects of the system.Validation activities are carried out by different roles:- The QA team validates functional correctness of payment processing and retry behavior- The product owner verifies that user-facing behavior aligns with business expectations- The operations team confirms deployment readiness and system stabilityThese validation activities may be performed independently but must all be completed before proceeding.</dbpm:selection><dbpm:selection>5. Validation Outcome HandlingAfter validation activities are completed, the results are reviewed collectively.If issues are identified, they are classified as:- Blocking issues, which affect transaction correctness or system stability- Non-blocking issues, which do not affect core functionalityBlocking issues must be resolved before release.After resolution, the affected validation activities must be performed again to confirm that the issues have been addressed.Non-blocking issues may be documented and do not prevent further progress.</dbpm:selection></dbpm:text_selections></dbpm:document_info></dbpm:info><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+  <call id="a1" endpoint="" a:alt_id="1">
+    <parameters>
+      <label>QA team validates functional correctness</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a3" endpoint="" a:alt_id="2">
+    <parameters>
+      <label>Product owner verifies user-facing behavior</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a5" endpoint="" a:alt_id="3">
+    <parameters>
+      <label>Operations team confirms deployment readiness</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <loop mode="pre_test" condition="true">
+    <call id="a9" endpoint="" a:alt_id="5">
+      <parameters>
+        <label>Review Validation Results</label>
+        <method/>
+        <type>:task</type>
+        <arguments/>
+      </parameters>
+    </call>
+    <choose mode="exclusive" a:alt_id="6">
+      <alternative condition="Blocking Issues" language="text/javascript">
+        <call id="a13" endpoint="" a:alt_id="7">
+          <parameters>
+            <label>Resolve Blocking Issues</label>
+            <method/>
+            <type>:task</type>
+            <arguments/>
+          </parameters>
+        </call>
+      </alternative>
+      <alternative condition="Non-blocking Issues" language="text/javascript">
+        <call id="a15" endpoint="" a:alt_id="8">
+          <parameters>
+            <label>Document Non-blocking Issues</label>
+            <method/>
+            <type>:task</type>
+            <arguments/>
+          </parameters>
+        </call>
+      </alternative>
+    </choose>
+    <loop mode="pre_test" condition="true" a:alt_id="10" language="text/javascript">
+      <call id="a9" endpoint="" a:alt_id="5">
+        <parameters>
+          <label>Review Validation Results</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <choose mode="exclusive" a:alt_id="6">
+        <alternative condition="Blocking Issues" language="text/javascript">
+          <call id="a13" endpoint="" a:alt_id="7">
+            <parameters>
+              <label>Resolve Blocking Issues</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+        <alternative condition="Non-blocking Issues" language="text/javascript">
+          <call id="a15" endpoint="" a:alt_id="8">
+            <parameters>
+              <label>Document Non-blocking Issues</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+      </choose>
+    </loop>
+  </loop>
+</description>
+</description>

@@ -1,0 +1,78 @@
+<description xmlns:dbpm="https://example.com/dbpm"><dbpm:info><dbpm:model_info><dbpm:model_id>88897b15-c548-4e66-b8e8-b6583d135c0d</dbpm:model_id><dbpm:model_version_id>5d8113ae-9c86-432a-9055-f60bbf40c95e</dbpm:model_version_id><dbpm:model_version_name>v1</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>b50f7541-f2d0-4480-8d10-275aef00a866</dbpm:document_id><dbpm:document_version_id>ce950c92-708b-4972-b529-81361a093f75</dbpm:document_version_id><dbpm:document_version_name>v2</dbpm:document_version_name><dbpm:document_file_name>feature_spec_payment.docx</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>2. Steps1. Select Test ScenariosIdentify representative payment scenarios, including success, failure, and retry cases.2. Execute TestsRun test scenarios and record system behavior.3. Review ResultsEvaluate outcomes to determine if expected behavior is achieved.4. Issues Identified?If issues are found, classify them.5. Blocking Issue?- Yes: Report defect and proceed to resolution.- No: Document issue and continue.6. Resolve IssuesFix blocking defects.7. Re-test ScenariosRe-run affected scenarios to confirm resolution.8. Complete ValidationFinalize validation results.</dbpm:selection></dbpm:text_selections></dbpm:document_info></dbpm:info><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+  <call id="a1" endpoint="" a:alt_id="1">
+    <parameters>
+      <label>Select Test Scenarios</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a3" endpoint="" a:alt_id="2">
+    <parameters>
+      <label>Execute Tests</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a5" endpoint="" a:alt_id="3">
+    <parameters>
+      <label>Review Results</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <choose mode="exclusive" a:alt_id="4">
+    <alternative condition="No Issues Found" language="text/javascript"/>
+    <alternative condition="">
+      <choose mode="exclusive" a:alt_id="7">
+        <alternative condition="Yes, Blocking" language="text/javascript">
+          <call id="a13" endpoint="" a:alt_id="8">
+            <parameters>
+              <label>Report Defect</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+          <call id="a15" endpoint="" a:alt_id="9">
+            <parameters>
+              <label>Resolve Issues</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+          <call id="a17" endpoint="" a:alt_id="10">
+            <parameters>
+              <label>Re-test Scenarios</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+        <alternative condition="No, Not Blocking" language="text/javascript">
+          <call id="a21" endpoint="" a:alt_id="11">
+            <parameters>
+              <label>Document Issue</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+      </choose>
+    </alternative>
+  </choose>
+  <call id="a27" endpoint="" a:alt_id="5">
+    <parameters>
+      <label>Complete Validation</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+</description>
+</description>
