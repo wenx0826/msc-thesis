@@ -1,4 +1,4 @@
-<description xmlns:dbpm="https://example.com/dbpm"><dbpm:info><dbpm:model_info><dbpm:model_id>56b215cc-7a39-40fb-b282-8e457d95d150</dbpm:model_id><dbpm:model_version_id>3a3a12d6-a26f-441a-a71b-e739db4478af</dbpm:model_version_id><dbpm:model_version_name>v2</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>a786ab5d-9f97-4db0-a576-e1eb933448c6</dbpm:document_id><dbpm:document_version_id>6ea9738e-477a-44ed-9ba0-3d6a3b3506cf</dbpm:document_version_id><dbpm:document_version_name>v1</dbpm:document_version_name><dbpm:document_file_name>MAP_Stages-_Inputs_Outputs_-_Data_Cleaned_-Comma_Separated.txt</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>Stage 2 OR Rejection                                                                                     | VP Zumtobel Brand &amp; Application VP Brand &amp; Application Thorn (others tbd) |     |     |     |
+<description xmlns:dbpm="https://example.com/dbpm"><dbpm:info><dbpm:model_info><dbpm:model_id>c7df884f-964c-4733-ae1a-f87a682b89b9</dbpm:model_id><dbpm:model_version_id>f768038a-7d32-4394-9f20-dfe8626fe05e</dbpm:model_version_id><dbpm:model_version_name>v1</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>a786ab5d-9f97-4db0-a576-e1eb933448c6</dbpm:document_id><dbpm:document_version_id>6ea9738e-477a-44ed-9ba0-3d6a3b3506cf</dbpm:document_version_id><dbpm:document_version_name>v1</dbpm:document_version_name><dbpm:document_file_name>MAP_Stages-_Inputs_Outputs_-_Data_Cleaned_-Comma_Separated.txt</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>Stage 2 OR Rejection                                                                                     | VP Zumtobel Brand &amp; Application VP Brand &amp; Application Thorn (others tbd) |     |     |     |
 |      |       2 | Identify Stakeholders                                                    | One Pager Template                                                                                                                                                                      | Stakeholder                                                                                                                     | PM or AM                                                                  |     |     |     |
 |      |       2 | Characterize Persona                                                     | Stakeholder                                                                                                                                                                             | Persona                                                                                                                         |                                                                           |     |     |     |
 |      |       2 | Elicit Stakeholder Needs                                                 | Stakeholder Persona                                                                                                                                                                     | Needs elicitation outcome                                                                                                       | PM or AM                                                                  |     |     |     |
@@ -9,60 +9,108 @@
 |      |       2 | Identify Conflicting  Needs                                              | * Need Statement *Originator/Author *Owner *Criticality *Rationale/Reason Why *Allocation / Budgeting                                                                                   | * Conflicting Needs link * Conflicting needs rational                                                                           | PM or AM                                                                  |     |     |     |
 |      |       2 | Conduct Risks Assessment Stage 2                                         | *Need Statement *Originator/Author *Owner *Criticality *Rationale/Reason Why *Allocation / Budgeting *Conflicting needs rational *trace to source                                       | Risk Identification                                                                                                             | PM or AM                                                                  |     |     |     |
 |      |       2 | Rate MAP project (Stage 2)                                               | *Need Statement *Originator/Author *Owner *Priority *Criticality *Rationale/Reason Why *Allocation / Budgeting *Conflicting needs link *Conflicting needs rational *Risk Identification | MAP project rating                                                                                                              | VP Zumtobel Brand &amp; Application VP Brand &amp; Application Thorn (others tbd) |     |     |     |
-|      |       2 | Gate 2 decision                                                          | MAP project rating                                                                                                                                                                      | Approval for moving to Stage 3 OR Rejection                                                                                     | VP Zumtobel Brand &amp; Application VP Brand &amp; Application Thorn (others tbd) |     |     |     |</dbpm:selection></dbpm:text_selections></dbpm:document_info><dbpm:prompts><dbpm:prompt>Pay attention to the input logic, if a task do not need the input from any task, they can be done in parallel</dbpm:prompt></dbpm:prompts></dbpm:info><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
-  <parallel wait="-1" cancel="last" a:alt_id="13">
-    <parallel_branch>
-      <call id="a3" endpoint="" a:alt_id="1">
+|      |       2 | Gate 2 decision                                                          | MAP project rating                                                                                                                                                                      | Approval for moving to Stage 3 OR Rejection                                                                                     | VP Zumtobel Brand &amp; Application VP Brand &amp; Application Thorn (others tbd) |     |     |     |</dbpm:selection></dbpm:text_selections></dbpm:document_info></dbpm:info><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+  <call id="a1" endpoint="" a:alt_id="1">
+    <parameters>
+      <label>Identify Stakeholders</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a3" endpoint="" a:alt_id="2">
+    <parameters>
+      <label>Characterize Persona</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a5" endpoint="" a:alt_id="3">
+    <parameters>
+      <label>Elicit Stakeholder Needs</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a7" endpoint="" a:alt_id="4">
+    <parameters>
+      <label>Formulate and document Stakeholder Needs</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a9" endpoint="" a:alt_id="5">
+    <parameters>
+      <label>Identify Drivers &amp; Constraints</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a11" endpoint="" a:alt_id="6">
+    <parameters>
+      <label>Identify Stakeholders related to Drivers&amp;Constraints</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a13" endpoint="" a:alt_id="7">
+    <parameters>
+      <label>Formulate needs related to Drivers &amp; Constraints</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a15" endpoint="" a:alt_id="8">
+    <parameters>
+      <label>Identify Conflicting Needs</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a17" endpoint="" a:alt_id="9">
+    <parameters>
+      <label>Conduct Risks Assessment Stage 2</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a19" endpoint="" a:alt_id="10">
+    <parameters>
+      <label>Rate MAP project (Stage 2)</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <choose mode="exclusive" a:alt_id="11">
+    <alternative condition="Approved for Stage 3" language="text/javascript">
+      <call id="a23" endpoint="" a:alt_id="12">
         <parameters>
-          <label>Identify Stakeholders</label>
+          <label>Approval for Stage 3</label>
           <method/>
           <type>:task</type>
           <arguments/>
         </parameters>
       </call>
-      <call id="a7" endpoint="" a:alt_id="2">
+    </alternative>
+    <alternative condition="Rejected" language="text/javascript">
+      <call id="a25" endpoint="" a:alt_id="13">
         <parameters>
-          <label>Characterize Persona</label>
+          <label>Rejection</label>
           <method/>
           <type>:task</type>
           <arguments/>
         </parameters>
       </call>
-      <call id="a9" endpoint="" a:alt_id="3">
-        <parameters>
-          <label>Elicit Stakeholder Needs</label>
-          <method/>
-          <type>:task</type>
-          <arguments/>
-        </parameters>
-      </call>
-      <call id="a11" endpoint="" a:alt_id="4">
-        <parameters>
-          <label>Formulate and document Stakeholder Needs</label>
-          <method/>
-          <type>:task</type>
-          <arguments/>
-        </parameters>
-      </call>
-    </parallel_branch>
-    <parallel_branch>
-      <call id="a5" endpoint="" a:alt_id="5">
-        <parameters>
-          <label>Identify Drivers &amp; Constraints</label>
-          <method/>
-          <type>:task</type>
-          <arguments/>
-        </parameters>
-      </call>
-      <call id="a13" endpoint="" a:alt_id="6">
-        <parameters>
-          <label>Identify Stakeholders related to Drivers&amp;Constraints</label>
-          <method/>
-          <type>:task</type>
-          <arguments/>
-        </parameters>
-      </call>
-    </parallel_branch>
-  </parallel>
+    </alternative>
+  </choose>
 </description>
 </description>

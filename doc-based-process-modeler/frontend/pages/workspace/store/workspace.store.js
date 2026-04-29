@@ -5,7 +5,7 @@ class WorkspaceStore extends Store {
     super({
       status: null, // 'loading', 'ready', 'error'
       projectId: null,
-      llmModel: "gemini-2.0-flash",
+      llmModel: "gemini-2.5-flash",
       theme: null,
       viewedDocument: null, // null | { id, versionId, isLatest }
       // `editingModel`: null | { id?, versionId?, sourceVersionId?, isLatest? }

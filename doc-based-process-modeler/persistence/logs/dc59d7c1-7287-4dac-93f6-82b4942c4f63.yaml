@@ -40,3 +40,89 @@ data:
   id: aee2d2e3-4036-47df-ba76-224a3ae65147
   name: Model_2
   data: <description xmlns:dbpm="https://example.com/dbpm"><description xmlns="http://cpee.org/ns/description/1.0"/></description>
+---
+timestamp: '2026-04-28T15:27:25.076Z'
+event: model_generated
+data:
+  id: f34a6be1-f342-4fd2-abf0-ab96f1b0ce03
+  name: Model_3
+  data: |-
+    <description xmlns:dbpm="https://example.com/dbpm"><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+      <call id="a1" endpoint="" a:alt_id="1">
+        <parameters>
+          <label>Prepare Test Data and Environment</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a3" endpoint="" a:alt_id="2">
+        <parameters>
+          <label>Execute Payment Workflow Test Cases</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a5" endpoint="" a:alt_id="3">
+        <parameters>
+          <label>Analyze Test Results</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <choose mode="exclusive" a:alt_id="4">
+        <alternative condition="Critical Defects Found" language="text/javascript">
+          <call id="a9" endpoint="" a:alt_id="5">
+            <parameters>
+              <label>Log Critical Defects</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+        <alternative condition="No Critical Defects" language="text/javascript">
+          <call id="a11" endpoint="" a:alt_id="6">
+            <parameters>
+              <label>Generate QA Validation Report</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+      </choose>
+      <call id="a17" endpoint="" a:alt_id="8">
+        <parameters>
+          <label>Review QA Validation Outcome</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <choose mode="exclusive" a:alt_id="9">
+        <alternative condition="Approved for Release" language="text/javascript">
+          <call id="a21" endpoint="" a:alt_id="10">
+            <parameters>
+              <label>Approve Payment Workflow</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+        <alternative condition="Rework Required" language="text/javascript">
+          <call id="a23" endpoint="" a:alt_id="11">
+            <parameters>
+              <label>Request Rework</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+      </choose>
+    </description>
+    </description>

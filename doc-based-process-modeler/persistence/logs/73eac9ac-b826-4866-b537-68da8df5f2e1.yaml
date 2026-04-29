@@ -113,3 +113,136 @@ data:
       </call>
     </description>
     </description>
+---
+timestamp: '2026-04-28T21:35:20.687Z'
+event: model_deleted
+data:
+  id: 56b215cc-7a39-40fb-b282-8e457d95d150
+  name: Model_1
+---
+timestamp: '2026-04-28T21:36:58.028Z'
+event: model_restored
+data:
+  id: 56b215cc-7a39-40fb-b282-8e457d95d150
+  name: Model_1
+---
+timestamp: '2026-04-28T21:40:20.777Z'
+event: model_version_created
+data:
+  modelId: 56b215cc-7a39-40fb-b282-8e457d95d150
+  sourceVersionId: f425394c-bd05-4c71-b7b2-eb32f6aa03bd
+  newVersionId: 3a3a12d6-a26f-441a-a71b-e739db4478af
+  mode: payload
+  type: regeneration
+---
+timestamp: '2026-04-28T21:41:10.792Z'
+event: model_generated
+data:
+  id: c7df884f-964c-4733-ae1a-f87a682b89b9
+  name: Model_2
+  data: |-
+    <description xmlns:dbpm="https://example.com/dbpm"><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+      <call id="a1" endpoint="" a:alt_id="1">
+        <parameters>
+          <label>Identify Stakeholders</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a3" endpoint="" a:alt_id="2">
+        <parameters>
+          <label>Characterize Persona</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a5" endpoint="" a:alt_id="3">
+        <parameters>
+          <label>Elicit Stakeholder Needs</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a7" endpoint="" a:alt_id="4">
+        <parameters>
+          <label>Formulate and document Stakeholder Needs</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a9" endpoint="" a:alt_id="5">
+        <parameters>
+          <label>Identify Drivers &amp; Constraints</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a11" endpoint="" a:alt_id="6">
+        <parameters>
+          <label>Identify Stakeholders related to Drivers&amp;Constraints</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a13" endpoint="" a:alt_id="7">
+        <parameters>
+          <label>Formulate needs related to Drivers &amp; Constraints</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a15" endpoint="" a:alt_id="8">
+        <parameters>
+          <label>Identify Conflicting Needs</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a17" endpoint="" a:alt_id="9">
+        <parameters>
+          <label>Conduct Risks Assessment Stage 2</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a19" endpoint="" a:alt_id="10">
+        <parameters>
+          <label>Rate MAP project (Stage 2)</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <choose mode="exclusive" a:alt_id="11">
+        <alternative condition="Approved for Stage 3" language="text/javascript">
+          <call id="a23" endpoint="" a:alt_id="12">
+            <parameters>
+              <label>Approval for Stage 3</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+        <alternative condition="Rejected" language="text/javascript">
+          <call id="a25" endpoint="" a:alt_id="13">
+            <parameters>
+              <label>Rejection</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+      </choose>
+    </description>
+    </description>

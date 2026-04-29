@@ -4,3 +4,9 @@ event: project_created
 data:
   id: 25f61fbc-3632-4c00-9bf8-c60415e50e2f
   name: Johannes
+---
+timestamp: '2026-04-28T13:31:25.527Z'
+event: project_deleted
+data:
+  id: 25f61fbc-3632-4c00-9bf8-c60415e50e2f
+  name: Johannes

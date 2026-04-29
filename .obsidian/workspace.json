@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Pre/4_Evaluation.md",
+                "file": "Pre/Demo_v0.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "4_Evaluation"
+              "title": "Demo_v0"
             }
           },
           {
@@ -170,13 +170,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Pre/4_Evaluation.md",
+                "file": "Pre/Demo_v0.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of 4_Evaluation"
+              "title": "Outline of Demo_v0"
             }
           },
           {
@@ -214,17 +214,35 @@
   },
   "active": "7cb210cc188b691e",
   "lastOpenFiles": [
-    "doc-based-process-modeler/evaluation_data/Task1_Fictional_B2BOrderProcessing/Order_Processing_Flow.docx",
-    "doc-based-process-modeler/evaluation_data/Task1_Fictional_B2BOrderProcessing/Credit_Check.docx",
-    "doc-based-process-modeler/evaluation_data/Task2_SOP",
-    "doc-based-process-modeler/evaluation_data/Task1_Fictional_B2BOrderProcessing",
-    "doc-based-process-modeler/evaluation_data",
-    "doc-based-process-modeler/persistence/models/fe6f8d49-cbbf-4c5a-8bfa-a1605de8fc6a.xml",
-    "doc-based-process-modeler/persistence/models/f425394c-bd05-4c71-b7b2-eb32f6aa03bd.xml",
-    "doc-based-process-modeler/persistence/models/f09f92ca-7433-45d5-bb2d-420636a72ec2.xml",
-    "doc-based-process-modeler/persistence/models/edc2262a-ee25-4d24-acbc-bf665a4a43e0.xml",
-    "doc-based-process-modeler/persistence/models/ed6d9ccf-a35e-4e00-8fe3-69b8a49e5d17.xml",
-    "doc-based-process-modeler/persistence/models/eb4a21a1-061e-4613-b221-3611f7bb49ee.xml",
+    "Pre/Script v0.md",
+    "Pre/4_Evaluation.md",
+    "Pre/3_Demo.md",
+    "Pre/Demo_v0.md",
+    "Prop/Grok v0.1.md",
+    "Prop/Grok v1.md",
+    "Prop/Untitled 1.base",
+    "Prop/Gemini v0.1.md",
+    "Video Scripts/Gemini v0 - Intro.md",
+    "Video Scripts/Script v0.md",
+    "Video Scripts/Script v1.md",
+    "Video Scripts/Untitled.md",
+    "Recording 20260428195409.m4a",
+    "Recording 20260426211824.m4a",
+    "Pre/1_Motivation.md",
+    "Pre/2_Solution Design.md",
+    "05_Evaluation/v0.9.md",
+    "05_Evaluation/v1.md",
+    "05_Evaluation/v0.md",
+    "05_Evaluation/1_Responses.md",
+    "05_Evaluation/0_Responses (Original).md",
+    "Recording 20260429141507.m4a",
+    "Recording 20260429141406.m4a",
+    "Recording 20260429140752.m4a",
+    "doc-based-process-modeler/persistence/models/c7df884f-964c-4733-ae1a-f87a682b89b9.xml",
+    "doc-based-process-modeler/persistence/models/f768038a-7d32-4394-9f20-dfe8626fe05e.xml",
+    "doc-based-process-modeler/persistence/models/3a3a12d6-a26f-441a-a71b-e739db4478af.xml",
+    "doc-based-process-modeler/persistence/database.sqlite-journal",
+    "Pasted image 20260428150553.png",
     "doc-based-process-modeler/backend/node_modules/setprototypeof/README.md",
     "doc-based-process-modeler/backend/node_modules/path-scurry/README.md",
     "doc-based-process-modeler/backend/node_modules/path-scurry/LICENSE.md",
@@ -234,23 +252,6 @@
     "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/Warnings.md",
     "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/Validation-and-Serialization.md",
     "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/TypeScript.md",
-    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/Type-Providers.md",
-    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/Server.md",
-    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/Routes.md",
-    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/Request.md",
-    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/Reply.md",
-    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/Principles.md",
-    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/Plugins.md",
-    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/Middleware.md",
-    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/Logging.md",
-    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/Lifecycle.md",
-    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/LTS.md",
-    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/Index.md",
-    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/Hooks.md",
-    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/HTTP2.md",
-    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/Errors.md",
-    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/Encapsulation.md",
-    "doc-based-process-modeler/backend/node_modules/fastify/docs/Reference/Decorators.md",
     "doc-based-process-modeler/backend/node_modules/@fastify/static/test/static/shallow/sample.jpg",
     "doc-based-process-modeler/backend/node_modules/@fastify/static/example/public/images/sample.jpg",
     "doc-based-process-modeler/backend/node_modules/@fastify/send/test/fixtures/images/node-js.png",
@@ -259,7 +260,6 @@
     "doc-based-process-modeler/backend/node_modules/kill-port/logo.png",
     "doc-based-process-modeler/backend/node_modules/pino/pretty-demo.png",
     "doc-based-process-modeler/backend/node_modules/pino/pino-tree.png",
-    "doc-based-process-modeler/backend/node_modules/pino/pino-logo-hire.png",
     "Untitled.canvas"
   ]
 }

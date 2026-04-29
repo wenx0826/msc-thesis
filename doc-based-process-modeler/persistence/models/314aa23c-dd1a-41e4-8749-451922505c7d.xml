@@ -1,0 +1,51 @@
+<description xmlns:dbpm="https://example.com/dbpm"><dbpm:info><dbpm:model_info><dbpm:model_id>314aa23c-dd1a-41e4-8749-451922505c7d</dbpm:model_id><dbpm:model_version_id>1dfdff60-02c4-4cdf-8e36-90a5f0dd0dd2</dbpm:model_version_id><dbpm:model_version_name>v1</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>087e2591-6a17-4544-8939-9953c453ee4e</dbpm:document_id><dbpm:document_version_id>737ad7af-5ae3-412d-88b0-27cecd7bccdd</dbpm:document_version_id><dbpm:document_version_name>v1</dbpm:document_version_name><dbpm:document_file_name>qa_validation_process.docx</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>1. PurposeThis sub-process describes the QA validation activities performed to verify functional correctness of the payment workflow before release.2. Steps1. Select Test ScenariosIdentify representative payment scenarios, including success, failure, and retry cases.2. Execute TestsRun test scenarios and record system behavior.3. Review ResultsEvaluate outcomes to determine if expected behavior is achieved.4. Issues Identified?If issues are found, classify them.5. Blocking Issue?- Yes: Report defect and proceed to resolution.- No: Document issue and continue.6. Resolve IssuesFix blocking defects.7. Re-test ScenariosRe-run affected scenarios to confirm resolution.8. Complete ValidationFinalize validation results.</dbpm:selection></dbpm:text_selections></dbpm:document_info></dbpm:info><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+  <call id="a1" endpoint="" a:alt_id="1">
+    <parameters>
+      <label>Select Test Scenarios</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a3" endpoint="" a:alt_id="2">
+    <parameters>
+      <label>Execute Tests</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a5" endpoint="" a:alt_id="3">
+    <parameters>
+      <label>Review Results</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a9" endpoint="" a:alt_id="5">
+    <parameters>
+      <label>Classify Issues</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a13" endpoint="" a:alt_id="7">
+    <parameters>
+      <label>Report Defect</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a15" endpoint="" a:alt_id="8">
+    <parameters>
+      <label>Resolve Issues</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+</description>
+</description>

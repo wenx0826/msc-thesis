@@ -1,0 +1,28 @@
+---
+timestamp: '2026-04-28T11:10:01.879Z'
+event: project_created
+data:
+  id: 5f6f7f06-9f9e-4416-826d-390656904d06
+  name: demo
+---
+timestamp: '2026-04-28T11:10:13.707Z'
+event: document_uploaded
+data:
+  id: 93ab6d5d-9396-4888-b725-40dfff494fb0
+  projectId: 5f6f7f06-9f9e-4416-826d-390656904d06
+  name: feature_spec_payment.docx
+  latestVersionId: null
+  latestVersionNumber: 0
+  createdAt: '2026-04-28T11:10:13.697Z'
+  deletedAt: null
+---
+timestamp: '2026-04-28T11:10:13.713Z'
+event: document_uploaded
+data:
+  id: 058dc177-83ac-440c-9959-25c8520304a4
+  projectId: 5f6f7f06-9f9e-4416-826d-390656904d06
+  name: qa_validation_process.docx
+  latestVersionId: null
+  latestVersionNumber: 0
+  createdAt: '2026-04-28T11:10:13.710Z'
+  deletedAt: null

@@ -1,0 +1,149 @@
+---
+timestamp: '2026-04-28T21:14:03.292Z'
+event: project_created
+data:
+  id: 08907b42-c9ef-45db-a084-bea8bdb37af0
+  name: demo
+---
+timestamp: '2026-04-28T21:14:10.556Z'
+event: document_uploaded
+data:
+  id: 087e2591-6a17-4544-8939-9953c453ee4e
+  projectId: 08907b42-c9ef-45db-a084-bea8bdb37af0
+  name: qa_validation_process.docx
+  latestVersionId: null
+  latestVersionNumber: 0
+  createdAt: '2026-04-28T21:14:10.546Z'
+  deletedAt: null
+---
+timestamp: '2026-04-28T21:14:10.569Z'
+event: document_uploaded
+data:
+  id: a4f60f73-b3cd-413b-ae07-cbdd90de7a02
+  projectId: 08907b42-c9ef-45db-a084-bea8bdb37af0
+  name: feature_spec_payment.docx
+  latestVersionId: null
+  latestVersionNumber: 0
+  createdAt: '2026-04-28T21:14:10.564Z'
+  deletedAt: null
+---
+timestamp: '2026-04-28T21:15:47.533Z'
+event: model_generated
+data:
+  id: de561e06-8cb0-4d29-94f8-6b9f01fdc1dd
+  name: Model_1
+  data: |-
+    <description xmlns:dbpm="https://example.com/dbpm"><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+      <parallel wait="-1" cancel="last" a:alt_id="1">
+        <parallel_branch>
+          <call id="a3" endpoint="" a:alt_id="2">
+            <parameters>
+              <label>QA Validation</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </parallel_branch>
+        <parallel_branch>
+          <call id="a5" endpoint="" a:alt_id="3">
+            <parameters>
+              <label>Product Owner Verification</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </parallel_branch>
+        <parallel_branch>
+          <call id="a7" endpoint="" a:alt_id="4">
+            <parameters>
+              <label>Operations Confirmation</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </parallel_branch>
+      </parallel>
+    </description>
+    </description>
+---
+timestamp: '2026-04-28T21:16:40.743Z'
+event: model_version_created
+data:
+  modelId: de561e06-8cb0-4d29-94f8-6b9f01fdc1dd
+  sourceVersionId: 30ffef43-746b-45ca-9c5c-60257ee2856c
+  newVersionId: 22ac5f1d-b527-480a-b761-a926abdc1872
+  mode: payload
+  type: refinement
+---
+timestamp: '2026-04-28T21:18:28.988Z'
+event: model_generated
+data:
+  id: 314aa23c-dd1a-41e4-8749-451922505c7d
+  name: Model_2
+  data: |-
+    <description xmlns:dbpm="https://example.com/dbpm"><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+      <call id="a1" endpoint="" a:alt_id="1">
+        <parameters>
+          <label>Select Test Scenarios</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a3" endpoint="" a:alt_id="2">
+        <parameters>
+          <label>Execute Tests</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a5" endpoint="" a:alt_id="3">
+        <parameters>
+          <label>Review Results</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a9" endpoint="" a:alt_id="5">
+        <parameters>
+          <label>Classify Issues</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a13" endpoint="" a:alt_id="7">
+        <parameters>
+          <label>Report Defect</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a15" endpoint="" a:alt_id="8">
+        <parameters>
+          <label>Resolve Issues</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </description>
+    </description>
+---
+timestamp: '2026-04-28T21:20:17.262Z'
+event: model_deleted
+data:
+  id: 314aa23c-dd1a-41e4-8749-451922505c7d
+  name: Model_2
+---
+timestamp: '2026-04-28T21:20:19.993Z'
+event: model_restored
+data:
+  id: 314aa23c-dd1a-41e4-8749-451922505c7d
+  name: Model_2
