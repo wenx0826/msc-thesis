@@ -1,0 +1,47 @@
+<description xmlns:dbpm="https://example.com/dbpm"><dbpm:info><dbpm:model_info><dbpm:model_id>f02154d4-8e3a-4ca7-b4ca-e078fe03c077</dbpm:model_id><dbpm:model_version_id>0a41427f-ac10-4781-8f32-ea5e67249f5d</dbpm:model_version_id><dbpm:model_version_name>v1</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>b50f7541-f2d0-4480-8d10-275aef00a866</dbpm:document_id><dbpm:document_version_id>ce950c92-708b-4972-b529-81361a093f75</dbpm:document_version_id><dbpm:document_version_name>v2</dbpm:document_version_name><dbpm:document_file_name>feature_spec_payment.docx</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>7. Release DecisionThe release decision is based on the overall validation outcome and readiness status.- If readiness criteria are satisfied, the release is approved- If blocking issues remain, the release is postponed until resolution and re-validation</dbpm:selection></dbpm:text_selections></dbpm:document_info></dbpm:info><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+  <loop mode="pre_test" condition="true">
+    <call id="a1" endpoint="" a:alt_id="1">
+      <parameters>
+        <label>Check Readiness Criteria</label>
+        <method/>
+        <type>:task</type>
+        <arguments/>
+      </parameters>
+    </call>
+    <loop mode="pre_test" condition="Blocking Issues Remain" a:alt_id="2" language="text/javascript">
+      <call id="a7" endpoint="" a:alt_id="4">
+        <parameters>
+          <label>Postpone Release</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a11" endpoint="" a:alt_id="6">
+        <parameters>
+          <label>Resolve Issues and Re-validate</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+      <call id="a1" endpoint="" a:alt_id="1">
+        <parameters>
+          <label>Check Readiness Criteria</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </loop>
+    <call id="a5" endpoint="" a:alt_id="3">
+      <parameters>
+        <label>Approve Release</label>
+        <method/>
+        <type>:task</type>
+        <arguments/>
+      </parameters>
+    </call>
+  </loop>
+</description>
+</description>

@@ -21,11 +21,16 @@ First, you can edit it manually.
 
   
 
-Second, you can use the refinement mode. For example, we can add a task at the end and send the request. Then you can choose to either replace the current model or save it as a new version. If you save it as a new version, a V2 will be created, while V1 remains the initial version.
+Second, you can use the refinement mode. 
+
+For example, we can add a task at the end and send the request. 
+Then you can choose to either replace the current model or save it as a new version. 
+If you save it as a new version, a V2 will be created, while V1 remains the initial version.
 
   
 
-Another option is to adjust the selected text. If you want to include more information, you can modify the text and regenerate the model. However, some previous changes may be lost, because this mode creates a new model from scratch based on the updated selection.
+Another option is to adjust the selected text.
+If you want to include more information, you can modify the text and regenerate the model. However, some previous changes may be lost, because this mode creates a new model from scratch based on the updated selection.
 
   
 

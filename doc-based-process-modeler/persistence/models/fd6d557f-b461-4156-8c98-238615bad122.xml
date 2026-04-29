@@ -1,0 +1,51 @@
+<description xmlns:dbpm="https://example.com/dbpm"><dbpm:info><dbpm:model_info><dbpm:model_id>88bc0acc-1da3-42f2-bd7f-77942c6d1fef</dbpm:model_id><dbpm:model_version_id>fd6d557f-b461-4156-8c98-238615bad122</dbpm:model_version_id><dbpm:model_version_name>v2</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>e4684ea6-e26b-4d2f-a14a-b65bdea0a529</dbpm:document_id><dbpm:document_version_id>bce7636b-3c78-47fe-9c69-9a9130f3d2f9</dbpm:document_version_id><dbpm:document_version_name>v1</dbpm:document_version_name><dbpm:document_file_name>feature_spec_payment.docx</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>3. Validation and Release PreparationBefore release, the payment workflow update must undergo validation across multiple aspects of the system.Validation activities are carried out by different roles:- The QA team validates functional correctness of payment processing and retry behavior- The product owner verifies that user-facing behavior aligns with business expectations- The operations team confirms deployment readiness and system stabilityThese validation activities may be performed independently but must all be completed before proceeding.</dbpm:selection></dbpm:text_selections></dbpm:document_info><dbpm:prompts><dbpm:prompt>add task X at the end</dbpm:prompt></dbpm:prompts></dbpm:info><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+  <choose mode="exclusive" a:alt_id="gw1s">
+    <alternative condition="">
+      <call id="a3" endpoint="" a:alt_id="a1">
+        <parameters>
+          <label>QA team validates functional correctness</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </alternative>
+    <alternative condition="">
+      <call id="a7" endpoint="" a:alt_id="a3">
+        <parameters>
+          <label>Product owner verifies user-facing behavior</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </alternative>
+    <alternative condition="">
+      <call id="a11" endpoint="" a:alt_id="a5">
+        <parameters>
+          <label>Operations team confirms deployment readiness</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </alternative>
+  </choose>
+  <call id="a15" endpoint="" a:alt_id="a13">
+    <parameters>
+      <label>All validations completed</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a17" endpoint="" a:alt_id="x">
+    <parameters>
+      <label>task X</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+</description>
+</description>

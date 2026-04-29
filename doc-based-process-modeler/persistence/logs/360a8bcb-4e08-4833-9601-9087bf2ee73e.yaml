@@ -240,3 +240,37 @@ data:
       </loop>
     </description>
     </description>
+---
+timestamp: '2026-04-29T23:10:20.255Z'
+event: document_deleted
+data:
+  id: b7efc83d-4b48-4518-82b9-ac1ceef8e546
+  name: qa_validation_process.docx
+---
+timestamp: '2026-04-29T23:10:20.258Z'
+event: model_deleted
+data:
+  id: 845d6e12-2af7-46a4-9a15-83962d806b86
+  name: Model_3
+  source: document_deleted_cascade
+  sourceDocumentId: d8be8925-3a8f-4ef8-b862-88ea3c5dd673
+---
+timestamp: '2026-04-29T23:10:20.259Z'
+event: model_deleted
+data:
+  id: a426f393-0ed0-4d47-861b-2db96d115fb3
+  name: Model_4
+  source: document_deleted_cascade
+  sourceDocumentId: d8be8925-3a8f-4ef8-b862-88ea3c5dd673
+---
+timestamp: '2026-04-29T23:10:20.260Z'
+event: document_deleted
+data:
+  id: d8be8925-3a8f-4ef8-b862-88ea3c5dd673
+  name: feature_spec_payment.docx
+---
+timestamp: '2026-04-29T23:10:20.261Z'
+event: project_deleted
+data:
+  id: 360a8bcb-4e08-4833-9601-9087bf2ee73e
+  name: demo

@@ -4,14 +4,12 @@ With the rise of large language models, many AI-assisted tools have emerged, whi
 However, most of these tools are primarily designed for text input. A few tools have started to support document upload, but this is usually not their primary design focus.
 
 At the same time, in practice, most process information is typically stored in documents.
-
   
 
 In addition, current tools usually focus on a single model. This makes it less flexible to decompose large processes into sub-processes or to connect related models, especially in complex scenarios.
 
 So, with these limitations, current AI-assisted tools are still not ideal for process modeling from documents.
 
-  
 
 Before we go further, let’s briefly look at the current landscape of AI-assisted tools.
 

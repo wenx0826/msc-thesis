@@ -147,3 +147,37 @@ event: model_restored
 data:
   id: 314aa23c-dd1a-41e4-8749-451922505c7d
   name: Model_2
+---
+timestamp: '2026-04-29T23:10:18.504Z'
+event: model_deleted
+data:
+  id: 314aa23c-dd1a-41e4-8749-451922505c7d
+  name: Model_2
+  source: document_deleted_cascade
+  sourceDocumentId: 087e2591-6a17-4544-8939-9953c453ee4e
+---
+timestamp: '2026-04-29T23:10:18.507Z'
+event: document_deleted
+data:
+  id: 087e2591-6a17-4544-8939-9953c453ee4e
+  name: qa_validation_process.docx
+---
+timestamp: '2026-04-29T23:10:18.508Z'
+event: model_deleted
+data:
+  id: de561e06-8cb0-4d29-94f8-6b9f01fdc1dd
+  name: Model_1
+  source: document_deleted_cascade
+  sourceDocumentId: a4f60f73-b3cd-413b-ae07-cbdd90de7a02
+---
+timestamp: '2026-04-29T23:10:18.509Z'
+event: document_deleted
+data:
+  id: a4f60f73-b3cd-413b-ae07-cbdd90de7a02
+  name: feature_spec_payment.docx
+---
+timestamp: '2026-04-29T23:10:18.511Z'
+event: project_deleted
+data:
+  id: 08907b42-c9ef-45db-a084-bea8bdb37af0
+  name: demo

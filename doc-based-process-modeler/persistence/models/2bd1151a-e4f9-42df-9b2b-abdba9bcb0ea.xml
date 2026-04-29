@@ -1,0 +1,66 @@
+<description xmlns:dbpm="https://example.com/dbpm"><dbpm:info><dbpm:model_info><dbpm:model_id>2bd1151a-e4f9-42df-9b2b-abdba9bcb0ea</dbpm:model_id><dbpm:model_version_id>ade4bb8d-335c-496d-9edc-0ad108392cfe</dbpm:model_version_id><dbpm:model_version_name>v1</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>acbdd7e3-1f97-4b7a-b97f-7c61c244c5a3</dbpm:document_id><dbpm:document_version_id>917ef652-0612-41bb-84b1-13100ed13182</dbpm:document_version_id><dbpm:document_version_name>v1</dbpm:document_version_name><dbpm:document_file_name>feature_spec_payment.docx</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>After validation activities are completed, the results are reviewed collectively.If issues are identified, they are classified as:- Blocking issues, which affect transaction correctness or system stability- Non-blocking issues, which do not affect core functionalityBlocking issues must be resolved before release.After resolution, the affected validation activities must be performed again to confirm that the issues have been addressed.Non-blocking issues may be documented and do not prevent further progress.</dbpm:selection></dbpm:text_selections></dbpm:document_info></dbpm:info><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0" svg-id="description" svg-type="description" svg-subtype="description">
+  
+  <call id="a3" endpoint="" a:alt_id="2" svg-id="a3" svg-label="Review Results" svg-type="call" svg-subtype="call">
+    <parameters>
+      <label>Review Results</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <loop mode="pre_test" condition="Issues Identified" svg-id="loop_0" svg-label="Issues Identified" svg-type="loop" svg-subtype="loop_head">
+    <choose mode="inclusive" a:alt_id="4" svg-id="choose_2" svg-type="choose" svg-subtype="choose_inclusive">
+      <alternative condition="" svg-id="alternative_2" svg-type="alternative" svg-subtype="alternative">
+        <choose mode="exclusive" a:alt_id="5" svg-id="choose_0" svg-type="choose" svg-subtype="choose_exclusive">
+          <alternative condition="Blocking Issues" language="text/javascript" svg-id="alternative_0" svg-label="Blocking Issues" svg-type="alternative" svg-subtype="alternative">
+            <call id="a15" endpoint="" a:alt_id="7" svg-id="a15" svg-label="Resolve Blocking Issues" svg-type="call" svg-subtype="call">
+              <parameters>
+                <label>Resolve Blocking Issues</label>
+                <method/>
+                <type>:task</type>
+                <arguments/>
+              </parameters>
+            </call>
+            <call id="a19" endpoint="" svg-id="a19" a:alt_id="9" svg-label="Re-perform Validation Activities" svg-type="call" svg-subtype="call"><parameters><label>Re-perform Validation Activities</label><color>#d8f0dd</color><dbpm_type>task</dbpm_type><dbpm_subprocess_model/><arguments/></parameters></call>
+          </alternative>
+          <alternative condition="" svg-id="alternative_1" svg-type="alternative" svg-subtype="alternative">
+            <escape a:alt_id="-1" svg-id="escape_0" svg-type="escape" svg-subtype="escape"/>
+          </alternative>
+        </choose>
+      </alternative>
+      <alternative condition="" svg-id="alternative_5" svg-type="alternative" svg-subtype="alternative">
+        <choose mode="exclusive" a:alt_id="6" svg-id="choose_1" svg-type="choose" svg-subtype="choose_exclusive">
+          <alternative condition="Non-blocking Issues" language="text/javascript" svg-id="alternative_3" svg-label="Non-blocking Issues" svg-type="alternative" svg-subtype="alternative">
+            <call id="a17" endpoint="" a:alt_id="8" svg-id="a17" svg-label="Document Non-blocking Issues" svg-type="call" svg-subtype="call">
+              <parameters>
+                <label>Document Non-blocking Issues</label>
+                <method/>
+                <type>:task</type>
+                <arguments/>
+              </parameters>
+            </call>
+            <call id="a9" endpoint="" a:alt_id="10" svg-id="a9" svg-label="Document Non-blocking Issues" svg-type="call" svg-subtype="call">
+              <parameters>
+                <label>Document Non-blocking Issues</label>
+                <method/>
+                <type>:task</type>
+                <arguments/>
+              </parameters>
+            </call>
+          </alternative>
+          <alternative condition="" svg-id="alternative_4" svg-type="alternative" svg-subtype="alternative"/>
+        </choose>
+        <escape a:alt_id="-1" svg-id="escape_1" svg-type="escape" svg-subtype="escape"/>
+      </alternative>
+    </choose>
+  </loop>
+  <call id="a9" endpoint="" a:alt_id="10" svg-id="a9" svg-label="Document Non-blocking Issues" svg-type="call" svg-subtype="call">
+    <parameters>
+      <label>Document Non-blocking Issues</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+</description>
+</description>

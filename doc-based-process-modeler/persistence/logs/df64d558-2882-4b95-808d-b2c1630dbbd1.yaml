@@ -1,0 +1,40 @@
+---
+timestamp: '2026-04-29T23:11:24.090Z'
+event: project_created
+data:
+  id: df64d558-2882-4b95-808d-b2c1630dbbd1
+  name: demo
+---
+timestamp: '2026-04-29T23:12:18.069Z'
+event: document_uploaded
+data:
+  id: 669b74bb-b14c-4038-8bbb-568070b9f271
+  projectId: df64d558-2882-4b95-808d-b2c1630dbbd1
+  name: feature_spec_payment.docx
+  latestVersionId: null
+  latestVersionNumber: 0
+  createdAt: '2026-04-29T23:12:18.060Z'
+  deletedAt: null
+---
+timestamp: '2026-04-29T23:12:18.074Z'
+event: document_uploaded
+data:
+  id: c947cf61-a17c-43c5-a604-e415377c55e5
+  projectId: df64d558-2882-4b95-808d-b2c1630dbbd1
+  name: qa_validation_process.docx
+  latestVersionId: null
+  latestVersionNumber: 0
+  createdAt: '2026-04-29T23:12:18.071Z'
+  deletedAt: null
+---
+timestamp: '2026-04-29T23:12:20.620Z'
+event: document_deleted
+data:
+  id: 669b74bb-b14c-4038-8bbb-568070b9f271
+  name: feature_spec_payment.docx
+---
+timestamp: '2026-04-29T23:12:22.272Z'
+event: document_deleted
+data:
+  id: c947cf61-a17c-43c5-a604-e415377c55e5
+  name: qa_validation_process.docx

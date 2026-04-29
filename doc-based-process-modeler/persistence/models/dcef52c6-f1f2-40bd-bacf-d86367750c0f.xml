@@ -1,0 +1,75 @@
+<description xmlns:dbpm="https://example.com/dbpm"><dbpm:info><dbpm:model_info><dbpm:model_id>74abdc5f-58f9-468b-a037-3fac013f0d33</dbpm:model_id><dbpm:model_version_id>dcef52c6-f1f2-40bd-bacf-d86367750c0f</dbpm:model_version_id><dbpm:model_version_name>v1</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>71595d0a-aa64-4690-b516-41b76682fdb3</dbpm:document_id><dbpm:document_version_id>ba86775b-8d2b-47c5-984e-917188ac4840</dbpm:document_version_id><dbpm:document_version_name>v1</dbpm:document_version_name><dbpm:document_file_name>qa_validation_process.docx</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>1. Select Test ScenariosIdentify representative payment scenarios, including success, failure, and retry cases.2. Execute TestsRun test scenarios and record system behavior.3. Review ResultsEvaluate outcomes to determine if expected behavior is achieved.4. Issues Identified?If issues are found, classify them.5. Blocking Issue?- Yes: Report defect and proceed to resolution.- No: Document issue and continue.6. Resolve IssuesFix blocking defects.7. Re-test ScenariosRe-run affected scenarios to confirm resolution.8. Complete ValidationFinalize validation results.</dbpm:selection></dbpm:text_selections></dbpm:document_info></dbpm:info><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+  <call id="a1" endpoint="" a:alt_id="1">
+    <parameters>
+      <label>Select Test Scenarios</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a3" endpoint="" a:alt_id="2">
+    <parameters>
+      <label>Execute Tests</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <call id="a5" endpoint="" a:alt_id="3">
+    <parameters>
+      <label>Review Results</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+  <loop mode="pre_test" condition="true" a:alt_id="4" language="text/javascript">
+    <call id="a9" endpoint="" a:alt_id="5">
+      <parameters>
+        <label>Classify Issues</label>
+        <method/>
+        <type>:task</type>
+        <arguments/>
+      </parameters>
+    </call>
+    <choose mode="exclusive" a:alt_id="6">
+      <alternative condition="Blocking Issue" language="text/javascript">
+        <call id="a15" endpoint="" a:alt_id="7">
+          <parameters>
+            <label>Report Defect and Resolve</label>
+            <method/>
+            <type>:task</type>
+            <arguments/>
+          </parameters>
+        </call>
+      </alternative>
+      <alternative condition="Not Blocking Issue" language="text/javascript">
+        <call id="a17" endpoint="" a:alt_id="9">
+          <parameters>
+            <label>Document Issue</label>
+            <method/>
+            <type>:task</type>
+            <arguments/>
+          </parameters>
+        </call>
+      </alternative>
+    </choose>
+    <call id="a19" endpoint="" a:alt_id="10">
+      <parameters>
+        <label>Re-test Scenarios</label>
+        <method/>
+        <type>:task</type>
+        <arguments/>
+      </parameters>
+    </call>
+  </loop>
+  <call id="a11" endpoint="" a:alt_id="8">
+    <parameters>
+      <label>Complete Validation</label>
+      <method/>
+      <type>:task</type>
+      <arguments/>
+    </parameters>
+  </call>
+</description>
+</description>

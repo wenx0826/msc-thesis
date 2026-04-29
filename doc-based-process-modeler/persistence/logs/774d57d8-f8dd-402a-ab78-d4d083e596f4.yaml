@@ -361,3 +361,158 @@ data:
       </call>
     </description>
     </description>
+---
+timestamp: '2026-04-29T22:50:42.763Z'
+event: model_generated
+data:
+  id: f02154d4-8e3a-4ca7-b4ca-e078fe03c077
+  name: Model_6
+  data: |-
+    <description xmlns:dbpm="https://example.com/dbpm"><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+      <loop mode="pre_test" condition="true">
+        <call id="a1" endpoint="" a:alt_id="1">
+          <parameters>
+            <label>Check Readiness Criteria</label>
+            <method/>
+            <type>:task</type>
+            <arguments/>
+          </parameters>
+        </call>
+        <loop mode="pre_test" condition="Blocking Issues Remain" a:alt_id="2" language="text/javascript">
+          <call id="a7" endpoint="" a:alt_id="4">
+            <parameters>
+              <label>Postpone Release</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+          <call id="a11" endpoint="" a:alt_id="6">
+            <parameters>
+              <label>Resolve Issues and Re-validate</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+          <call id="a1" endpoint="" a:alt_id="1">
+            <parameters>
+              <label>Check Readiness Criteria</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </loop>
+        <call id="a5" endpoint="" a:alt_id="3">
+          <parameters>
+            <label>Approve Release</label>
+            <method/>
+            <type>:task</type>
+            <arguments/>
+          </parameters>
+        </call>
+      </loop>
+    </description>
+    </description>
+---
+timestamp: '2026-04-29T22:51:37.908Z'
+event: model_generated
+data:
+  id: 5f786324-962c-4941-b783-f53567caca87
+  name: Model_7
+  data: |-
+    <description xmlns:dbpm="https://example.com/dbpm"><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+      <choose mode="exclusive" a:alt_id="0">
+        <alternative condition="">
+          <call id="a1" endpoint="" a:alt_id="1">
+            <parameters>
+              <label>QA team validates functional correctness</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+        <alternative condition="">
+          <call id="a3" endpoint="" a:alt_id="2">
+            <parameters>
+              <label>Product owner verifies user-facing behavior</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+        <alternative condition="">
+          <call id="a5" endpoint="" a:alt_id="3">
+            <parameters>
+              <label>Operations team confirms deployment readiness</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+      </choose>
+      <call id="a13" endpoint="" a:alt_id="5">
+        <parameters>
+          <label>All validations completed</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </description>
+    </description>
+---
+timestamp: '2026-04-29T22:53:07.067Z'
+event: model_version_created
+data:
+  modelId: 5f786324-962c-4941-b783-f53567caca87
+  sourceVersionId: b44769f2-6d7c-4440-bc8d-b209eb4f25c7
+  newVersionId: b44e6f4f-0cd4-4ea0-bcfd-2ff76531dfdb
+  mode: payload
+  type: regeneration
+---
+timestamp: '2026-04-29T23:10:23.684Z'
+event: model_deleted
+data:
+  id: 44f1c4a5-eb6e-4501-b683-9ace8f0b4727
+  name: Model_5
+  source: document_deleted_cascade
+  sourceDocumentId: f4cfe702-7259-4b2f-9ffc-12dfcaf34808
+---
+timestamp: '2026-04-29T23:10:23.686Z'
+event: document_deleted
+data:
+  id: f4cfe702-7259-4b2f-9ffc-12dfcaf34808
+  name: feature_spec_payment.docx
+---
+timestamp: '2026-04-29T23:10:23.689Z'
+event: model_deleted
+data:
+  id: f02154d4-8e3a-4ca7-b4ca-e078fe03c077
+  name: Model_6
+  source: document_deleted_cascade
+  sourceDocumentId: b50f7541-f2d0-4480-8d10-275aef00a866
+---
+timestamp: '2026-04-29T23:10:23.691Z'
+event: model_deleted
+data:
+  id: 5f786324-962c-4941-b783-f53567caca87
+  name: Model_7
+  source: document_deleted_cascade
+  sourceDocumentId: b50f7541-f2d0-4480-8d10-275aef00a866
+---
+timestamp: '2026-04-29T23:10:23.693Z'
+event: document_deleted
+data:
+  id: b50f7541-f2d0-4480-8d10-275aef00a866
+  name: qa_validation_process.docx
+---
+timestamp: '2026-04-29T23:10:23.695Z'
+event: project_deleted
+data:
+  id: 774d57d8-f8dd-402a-ab78-d4d083e596f4
+  name: demo

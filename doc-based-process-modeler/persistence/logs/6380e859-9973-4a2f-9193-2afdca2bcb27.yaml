@@ -4,3 +4,9 @@ event: project_created
 data:
   id: 6380e859-9973-4a2f-9193-2afdca2bcb27
   name: test
+---
+timestamp: '2026-04-29T23:10:30.712Z'
+event: project_deleted
+data:
+  id: 6380e859-9973-4a2f-9193-2afdca2bcb27
+  name: test

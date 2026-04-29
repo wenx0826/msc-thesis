@@ -466,3 +466,21 @@ event: model_deleted
 data:
   id: c3fc4793-0055-44dd-a55b-572124820ea2
   name: Model_5
+---
+timestamp: '2026-04-29T23:10:22.068Z'
+event: document_deleted
+data:
+  id: 2ba3cbd7-17b3-45eb-b83b-5a7a6dbcd41b
+  name: feature_spec_payment.docx
+---
+timestamp: '2026-04-29T23:10:22.070Z'
+event: document_deleted
+data:
+  id: 11f69d5b-0c98-4953-ab06-aeae576f134a
+  name: qa_validation_process.docx
+---
+timestamp: '2026-04-29T23:10:22.071Z'
+event: project_deleted
+data:
+  id: 40748d33-bc39-4c7c-bcda-24dd49eaa702
+  name: demo

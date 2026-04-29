@@ -21,7 +21,13 @@ It can then be either saved or discarded.
 Here, we save the model. 
 The model is then saved, with a link to the text established.  
 
-Further modifications can be made in several ways. It can be edited manually or refined with AI based on the current model. The linked text selections can also be adjusted. Changes must be applied to update the traceability. Alternatively, the model can be regenerated based on the current text selections, optionally with additional instructions. Any regenerated model is presented for review before proceeding. 
+Further modifications can be made in several ways. 
+
+It can be edited manually or refined with AI based on the current model. 
+
+The linked text selections can also be adjusted. Changes must be applied to update the traceability. 
+
+Alternatively, the model can be regenerated based on the current text selections, optionally with additional instructions. Any regenerated model is presented for review before proceeding. 
 
 **At this stage, it can be saved as a new version or used to replace the current one.** **Previous versions can also be revisited, restored, or used to create new versions.**
 

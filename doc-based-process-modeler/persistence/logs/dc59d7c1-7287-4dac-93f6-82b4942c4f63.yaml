@@ -126,3 +126,45 @@ data:
       </choose>
     </description>
     </description>
+---
+timestamp: '2026-04-29T23:10:29.101Z'
+event: model_deleted
+data:
+  id: 24f5223d-f0ee-43f9-81b2-4c74db613b74
+  name: Model_1
+  source: document_deleted_cascade
+  sourceDocumentId: 3d8d5006-43e6-4ba9-a466-9b5d70e9a883
+---
+timestamp: '2026-04-29T23:10:29.104Z'
+event: model_deleted
+data:
+  id: aee2d2e3-4036-47df-ba76-224a3ae65147
+  name: Model_2
+  source: document_deleted_cascade
+  sourceDocumentId: 3d8d5006-43e6-4ba9-a466-9b5d70e9a883
+---
+timestamp: '2026-04-29T23:10:29.106Z'
+event: document_deleted
+data:
+  id: 3d8d5006-43e6-4ba9-a466-9b5d70e9a883
+  name: feature_spec_payment.docx
+---
+timestamp: '2026-04-29T23:10:29.107Z'
+event: model_deleted
+data:
+  id: f34a6be1-f342-4fd2-abf0-ab96f1b0ce03
+  name: Model_3
+  source: document_deleted_cascade
+  sourceDocumentId: 2057c13d-dfe6-4fb8-8406-88369e0ef2e6
+---
+timestamp: '2026-04-29T23:10:29.109Z'
+event: document_deleted
+data:
+  id: 2057c13d-dfe6-4fb8-8406-88369e0ef2e6
+  name: qa_validation_process.docx
+---
+timestamp: '2026-04-29T23:10:29.110Z'
+event: project_deleted
+data:
+  id: dc59d7c1-7287-4dac-93f6-82b4942c4f63
+  name: test

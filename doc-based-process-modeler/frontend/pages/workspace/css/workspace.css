@@ -154,6 +154,15 @@ fieldset.bar-controls {
   overflow: hidden;
 }
 
+
+#llmModelSelect {
+  /* padding: 2px 4px;
+  border: 1px solid var(--x-ui-border-color);
+  border-radius: 4px; */
+  background-color: #fff;
+  /* font-size: 14px; */
+}
+
 /* Hidden by default and revealed by panel state rules when needed. */
 
 *[is=x-ui-] .state-controlled {
