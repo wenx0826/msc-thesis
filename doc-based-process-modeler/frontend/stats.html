@@ -70,19 +70,20 @@
             <ui-tab class="" style="flex: 1">
               <div class="entity-title">
                 <div class="entity-title-main">
-                  <h3><span class="document-name" data-ref="documentName"></span></h3>
+                  <h3 style="font-size: 1rem;"><span class="document-name" data-ref="documentName"></span></h3>
                   <span class="pill status-pill" data-ref="documentStatusPill"></span>
                 </div>
                 <button type="button" class="restore-btn" data-ref="restoreDocumentButton" hidden>
                   Restore
                 </button>
               </div>
-              <div class="field">
+              <!-- <div class="field" style="font-size: 0.8rem;">
                 <label for="docVersionSelect">Version:</label>
-                <span data-ref="documentVersion"></span>
-                <!-- <select id="docVersionSelect"></select> -->
-              </div>
-              <ul class="document-info">
+                <span data-ref="documentVersion"></span> -->
+              <!-- <select id="docVersionSelect"></select> -->
+              <!-- </div> -->
+              <ul class="document-info" style="font-size: 0.8rem;">
+                <li>version: <span data-ref="documentVersion"></span></li>
                 <li>words: <span data-ref="wordsCount"></span></li>
                 <li>
                   models: <span data-ref="modelsCount"></span>

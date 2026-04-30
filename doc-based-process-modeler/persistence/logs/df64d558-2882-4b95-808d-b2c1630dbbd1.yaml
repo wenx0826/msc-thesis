@@ -38,3 +38,76 @@ event: document_deleted
 data:
   id: c947cf61-a17c-43c5-a604-e415377c55e5
   name: qa_validation_process.docx
+---
+timestamp: '2026-04-30T05:48:58.270Z'
+event: document_uploaded
+data:
+  id: c2c7909b-0836-4b80-ae43-b77b7eb6e8fa
+  projectId: df64d558-2882-4b95-808d-b2c1630dbbd1
+  name: FeatureSpec Payment.docx
+  latestVersionId: null
+  latestVersionNumber: 0
+  createdAt: '2026-04-30T05:48:58.261Z'
+  deletedAt: null
+---
+timestamp: '2026-04-30T05:48:58.277Z'
+event: document_uploaded
+data:
+  id: 6083d2eb-d41a-492b-a70d-39b19e1cf00e
+  projectId: df64d558-2882-4b95-808d-b2c1630dbbd1
+  name: QA Team Validation Process.docx
+  latestVersionId: null
+  latestVersionNumber: 0
+  createdAt: '2026-04-30T05:48:58.273Z'
+  deletedAt: null
+---
+timestamp: '2026-04-30T05:50:03.206Z'
+event: model_generated
+data:
+  id: 847e1f99-6115-48e4-877c-b5974ae1bc01
+  name: Model_1
+  data: |-
+    <description xmlns:dbpm="https://example.com/dbpm"><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+      <choose mode="exclusive" a:alt_id="0">
+        <alternative condition="">
+          <call id="a1" endpoint="" a:alt_id="1">
+            <parameters>
+              <label>QA Team Validates Functional Correctness</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+        <alternative condition="">
+          <call id="a3" endpoint="" a:alt_id="2">
+            <parameters>
+              <label>Product Owner Verifies User-Facing Behavior</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+        <alternative condition="">
+          <call id="a5" endpoint="" a:alt_id="3">
+            <parameters>
+              <label>Operations Team Confirms Deployment Readiness</label>
+              <method/>
+              <type>:task</type>
+              <arguments/>
+            </parameters>
+          </call>
+        </alternative>
+      </choose>
+    </description>
+    </description>
+---
+timestamp: '2026-04-30T05:50:28.757Z'
+event: model_version_created
+data:
+  modelId: 847e1f99-6115-48e4-877c-b5974ae1bc01
+  sourceVersionId: 5f0681f8-df0d-4413-aca2-5ae234abef26
+  newVersionId: efbc4f1c-4d01-4e07-8ecc-80d28ee7b2dd
+  mode: payload
+  type: regeneration

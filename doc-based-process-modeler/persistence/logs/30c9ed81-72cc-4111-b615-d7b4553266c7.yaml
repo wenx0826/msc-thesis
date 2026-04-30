@@ -26,3 +26,21 @@ data:
   latestVersionNumber: 0
   createdAt: '2026-04-29T23:12:32.112Z'
   deletedAt: null
+---
+timestamp: '2026-04-30T05:48:44.198Z'
+event: document_deleted
+data:
+  id: 4317bb77-2538-45ea-ae7c-7479de8dacb8
+  name: feature_spec_payment.docx
+---
+timestamp: '2026-04-30T05:48:44.200Z'
+event: document_deleted
+data:
+  id: 5152d748-9282-47ef-a8d4-83d5bb6a8035
+  name: qa_validation_process.docx
+---
+timestamp: '2026-04-30T05:48:44.201Z'
+event: project_deleted
+data:
+  id: 30c9ed81-72cc-4111-b615-d7b4553266c7
+  name: demo

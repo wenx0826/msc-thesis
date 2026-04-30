@@ -1,0 +1,35 @@
+<description xmlns:dbpm="https://example.com/dbpm"><dbpm:info><dbpm:model_info><dbpm:model_id>847e1f99-6115-48e4-877c-b5974ae1bc01</dbpm:model_id><dbpm:model_version_id>5f0681f8-df0d-4413-aca2-5ae234abef26</dbpm:model_version_id><dbpm:model_version_name>v1</dbpm:model_version_name></dbpm:model_info><dbpm:document_info><dbpm:document_id>c2c7909b-0836-4b80-ae43-b77b7eb6e8fa</dbpm:document_id><dbpm:document_version_id>bacc5268-7618-42b1-8c1e-36d6794bc712</dbpm:document_version_id><dbpm:document_version_name>v1</dbpm:document_version_name><dbpm:document_file_name>FeatureSpec Payment.docx</dbpm:document_file_name><dbpm:text_selections><dbpm:selection>Before release, the payment workflow update must undergo validation across multiple aspects of the system.Validation activities are carried out by different roles:- The QA team validates functional correctness of payment processing and retry behavior- The product owner verifies that user-facing behavior aligns with business expectations- The operations team confirms deployment readiness and system stabilityThese validation activities may be performed independently but must all be completed before proceeding.</dbpm:selection></dbpm:text_selections></dbpm:document_info></dbpm:info><description xmlns="http://cpee.org/ns/description/1.0" xmlns:a="http://cpee.org/ns/annotation/1.0">
+  <choose mode="exclusive" a:alt_id="0">
+    <alternative condition="">
+      <call id="a1" endpoint="" a:alt_id="1">
+        <parameters>
+          <label>QA Team Validates Functional Correctness</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </alternative>
+    <alternative condition="">
+      <call id="a3" endpoint="" a:alt_id="2">
+        <parameters>
+          <label>Product Owner Verifies User-Facing Behavior</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </alternative>
+    <alternative condition="">
+      <call id="a5" endpoint="" a:alt_id="3">
+        <parameters>
+          <label>Operations Team Confirms Deployment Readiness</label>
+          <method/>
+          <type>:task</type>
+          <arguments/>
+        </parameters>
+      </call>
+    </alternative>
+  </choose>
+</description>
+</description>

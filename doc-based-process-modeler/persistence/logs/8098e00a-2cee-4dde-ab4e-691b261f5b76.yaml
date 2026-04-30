@@ -328,3 +328,83 @@ event: model_restored
 data:
   id: be7816a0-beb1-4042-bcff-766c603f794c
   name: Model_3
+---
+timestamp: '2026-04-30T05:26:45.366Z'
+event: model_deleted
+data:
+  id: be7816a0-beb1-4042-bcff-766c603f794c
+  name: Model_3
+  source: document_deleted_cascade
+  sourceDocumentId: 3c644b78-4965-444b-b7df-091dfd868809
+---
+timestamp: '2026-04-30T05:26:45.370Z'
+event: document_deleted
+data:
+  id: 3c644b78-4965-444b-b7df-091dfd868809
+  name: qa_validation_process.docx
+---
+timestamp: '2026-04-30T05:26:51.844Z'
+event: model_deleted
+data:
+  id: 0295ca37-bf08-45c9-bfb3-18ffde76b164
+  name: Model_1
+---
+timestamp: '2026-04-30T05:27:00.201Z'
+event: document_restored
+data:
+  id: 3c644b78-4965-444b-b7df-091dfd868809
+  name: qa_validation_process.docx
+---
+timestamp: '2026-04-30T05:27:01.006Z'
+event: model_restored
+data:
+  id: 0295ca37-bf08-45c9-bfb3-18ffde76b164
+  name: Model_1
+---
+timestamp: '2026-04-30T05:27:21.949Z'
+event: model_restored
+data:
+  id: be7816a0-beb1-4042-bcff-766c603f794c
+  name: Model_3
+---
+timestamp: '2026-04-30T05:48:41.612Z'
+event: model_deleted
+data:
+  id: 0295ca37-bf08-45c9-bfb3-18ffde76b164
+  name: Model_1
+  source: document_deleted_cascade
+  sourceDocumentId: 4987ae66-c6a9-454e-abca-8d48e50398f9
+---
+timestamp: '2026-04-30T05:48:41.614Z'
+event: model_deleted
+data:
+  id: ab0f26ad-9dae-48f7-ad49-cf7cdea33d96
+  name: Model_2
+  source: document_deleted_cascade
+  sourceDocumentId: 4987ae66-c6a9-454e-abca-8d48e50398f9
+---
+timestamp: '2026-04-30T05:48:41.616Z'
+event: document_deleted
+data:
+  id: 4987ae66-c6a9-454e-abca-8d48e50398f9
+  name: feature_spec_payment.docx
+---
+timestamp: '2026-04-30T05:48:41.618Z'
+event: model_deleted
+data:
+  id: be7816a0-beb1-4042-bcff-766c603f794c
+  name: Model_3
+  source: document_deleted_cascade
+  sourceDocumentId: 3c644b78-4965-444b-b7df-091dfd868809
+---
+timestamp: '2026-04-30T05:48:41.619Z'
+event: document_deleted
+data:
+  id: 3c644b78-4965-444b-b7df-091dfd868809
+  name: qa_validation_process.docx
+---
+timestamp: '2026-04-30T05:48:41.621Z'
+event: project_deleted
+data:
+  id: 8098e00a-2cee-4dde-ab4e-691b261f5b76
+  name: demo
